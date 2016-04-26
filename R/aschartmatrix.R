@@ -7,7 +7,19 @@
 # - Column names
 # - Row names if there are more than one rows
 
+textPeriodFromDate <- function(x, period = "m")
+{
+    year.two.digits <- strftime(x, "%y")
 
+    if (period == "m")
+        return(paste(substr(months(x), 1, 3), year.two.digits, sep = "-"))
+
+    if (period == "q")
+        return(paste(quarters(x), year.two.digits, sep = "-"))
+
+    if (period == "y")
+        return(strftime(x, "%y"))
+}
 
 isNumericOrInteger <- function(y)
 {
@@ -15,7 +27,7 @@ isNumericOrInteger <- function(y)
     {
         vector.class <- class(y)
         vector.mode <- mode(y)
-        stop(paste("Vectors passed to the y-parameter must be of the mode numeric or integer.  The vector passed is a",vector.class,"of mode: ",vector.mode))
+        stop(paste("Vectors passed to the y-parameter and/or weights must be of the mode numeric or integer.  The entity passed is a",vector.class,"of mode: ",vector.mode))
     }
     TRUE
 }
@@ -46,14 +58,33 @@ IsChartMatrix <- function(x, n.rows, n.columns)
 #' @export
 AsChartMatrix <- function(y,
                           x = NULL,
-                          # weights = NULL,
+                          weights = NULL,
                           # subset = NULL,
-                          transpose = FALSE)
+                          transpose = FALSE,
+                          date.aggregation = "m")  ## can be m(onth), q(uarter), y(ear)
 {
+    # Weight application
+    if (!is.null(weights))
+    {
+        if (!isNumericOrInteger(weights) | !isNumericOrInteger(y) | !equalNumberOfRows(y, weights))
+            stop("Either or both of your weights or y inputs is not numeric, or they have mismatched lengths")
+
+        y <- y * weights
+    }
+
     if (!is.null(x)) # Aggregating data over X.
     {
+        if (inherits(x, "POSIXct"))
+            x <- textPeriodFromDate(x,date.aggregation)
+
+        if (is.logical(x))
+            stop(paste("X cannot be a logical vector"))
+
         if (is.list(y))
             y <- as.data.frame(y)
+
+        if (is.list(x) | is.data.frame(x))
+            stop(paste("X cannot take data frames or lists. You have passed a ",class(x), sep=""))
 
         if (!equalNumberOfRows(y, x))
             stop("The length of all the elements in a list must be the same, but your Y input is ",
@@ -71,116 +102,8 @@ AsChartMatrix <- function(y,
         if (is.vector(y))
             y <- t(as.matrix(y))
     }
+
     if(transpose)
         return(t(y))
     y
 }
-
-
-
-
-
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#     # 1. Work out what data format y is.
-#     ## Is y a named vector?
-#     if (is.vector(y) && is.null(names(y)) && !is.list(y))
-#     {
-#         data.type <- "Named vector"
-#         y.length <- length(y)
-#     }
-#
-#     ## Is y an unnamed vector?
-#     # if (is.vector(y) && length(names(y)) == 0) data.type <- "Unnamed vector"
-#
-#     ## Is y a table with one (or more) rows?  Well, if it's a table, then it's a df or a matrix...
-#     if (is.data.frame(y))
-#     {
-#         data.type <- "Data frame"
-#         y.length <- nrows(y)
-#     }
-#
-#     if (is.matrix(y))
-#     {
-#         data.type <- "Matrix"
-#         y.length <- nrows(y)
-#     }
-#
-#     ## Is y a list?
-#     if (is.list(y) && !is.data.frame(y))
-#     {
-#         data.type <- "List"
-#         y.length <- length(y[[1]])
-#     }
-#
-#     ## Is y a factor?
-#     if (is.factor(y))
-#     {
-#         data.type <- "Factor"
-#         acceptable.input <- TRUE
-#         y.length <- length(y)
-#     }
-#
-#     # 2. Check for numeric and integer types in vectors, matrices, data frames and lists.
-#     ## If y is a vector, then make sure it is either an integer or numeric vector
-#     if (data.type == "Named vector" || data.type == "Matrix")
-#     {
-#
-#     }
-#
-#     # 3. If it's a data frame or a list then all columns/list elements must be either integer or numeric
-#     if (data.type == "Data frame" || data.type == "List")
-#     {
-#         temp.list.element.length <- integer()
-#         for (i in 1:length(y))
-#         {
-#             if (data.type == "List") temp.mode <- mode(y[[i]])
-#             # Store lengths of list elements
-#             temp.list.element.length <- c(temp.list.element.length, length(y[[i]]))
-#
-#             if (data.type == "Data frame") temp.mode <- mode(y[,i])
-#
-#             if (temp.mode != "numeric" && temp.mode != "integer")
-#             {
-#                 stop("List and data frame elements must all be integer or numeric vectors.")
-#             }
-#         }
-#         # If the list elements have variable lengths, then stop.
-#         if (length(unique(temp.list.element.length) != 1))
-#         {
-#             stop("The length of all the elements in a list must be the same.")
-#         }
-#         acceptable.input <- TRUE
-#     }
-#
-#     # A. Check if there is an x.  If there isn't, go to 6(?), else 8.
-#     if (x != NULL) x.length <- length(x)
-#
-#
-#     # 4. Check what data type x is.  Can be date, character, (Factor?  If it's numeric factor???); what if it's people's age? 0 to 100?
-#
-#     # 5. Check length of x vs. y
-#
-#     # 6. Check length of weights vs x/y
-#
-#     # 7. If tabluated data, would we weight it?  Else weight raw data.
-#
-#     # 8. Tabulate data that isn't already in a table (vectors, factors, vectors in lists)
-#
-#     # 9. How do we identify if a table needs to be transposed or not?
-#
-#     # 10. Transpose tables that need to be transposed
-#
-#     # 11. Double-check that our tables are matrices with named rows and columns.
-#
-#     # 12. Return the matrix to AreaCharts()
-#
-#     return(data.type)
-# }

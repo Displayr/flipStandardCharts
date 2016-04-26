@@ -7,6 +7,15 @@ var1 <- c(1,2,3,4,5)
 var2 <- c(5,4,3,2,1)
 var3 <- c(3,3,3,3,3)
 alpha.five <- LETTERS[1:5]
+logic.vector <- c(TRUE, FALSE, TRUE, TRUE, FALSE)
+logic.vector.named <- c(A = TRUE, B = FALSE, C = TRUE, D = TRUE, E = FALSE)
+named.vector.a <- c("A" = 1, "B" = 2, "C" = 3)
+named.vector.b <- c("D" = 3, "E" = 2, "F" = 1)
+factor.a <- factor(x.data)
+factor.b <- factor(y.data)
+x.dates <- c(1450236400000,1450236400000,1450332800000,1460332800000,1460419200000)
+x.dates <- as.POSIXct(x.dates/1000, origin = "1970-01-01")
+
 
 ##### GOOD CASES ######
 test_that("A named vector becomes a ChartMatrix", {
@@ -69,92 +78,207 @@ test_that("One or more numeric or integer vector(s) in a data frame and one char
     expect_true(IsChartMatrix(my.chart.matrix, 3, 5))
 })
 
-# Factor variables
-test_that("One or more numeric or integer vector(s) in a data frame and one character vector become a chart matrix", {
-    X <- as.factor(c("A","B","A","B","C","C"))
-    Y <- as.factor(c("A","B","A","B","C","C"))
-
-    my.chart.matrix <- AsChartMatrix(Y, X)
+test_that("One or more factors with the same levels in a data frame become a chart matrix", {
+    my.chart.matrix <- AsChartMatrix(factor.a, factor.a)
     expect_true(IsChartMatrix(my.chart.matrix, 3, 3))
 })
 
+test_that("One numeric or integer variable and one date variable become a chart matrix", {
+    my.chart.matrix <- AsChartMatrix(var2, x.dates)
+    expect_true(IsChartMatrix(my.chart.matrix, nrow(my.chart.matrix), ncol(my.chart.matrix)))
+})
+
+test_that("A numeric weight vector applied over integer Y before aggregation", {
+    my.chart.matrix <- AsChartMatrix(y = var3, x.data, weights = var1)
+    expect_true(IsChartMatrix(my.chart.matrix, 1, 3))
+})
+
+## What about lists of weights to be passed over a list of Y-vectors?  If, e.g. each entity in the Y-list
+## contained values that should be weighted differently?
+
+
+
 ##### BAD CASES ######
 
-## Regardless of X input, Y bad cases are:
-## Unnamed numeric vector
-Y <- c(1, 2, 3, 4, 5)
+## Y bad cases are:
+test_that("Y cannot take an unnamed numeric vector without an X input", {
+    my.chart.matrix <- AsChartMatrix(y.data)
+    expect_false(IsChartMatrix(my.chart.matrix, 1, 5))
+})
 
-## Unnamed logic vector
-logic.vector <- c(TRUE, FALSE, TRUE, TRUE, FALSE)
-Y <- c(TRUE, FALSE, TRUE, TRUE, FALSE)
+test_that("Y cannot take an unnamed logic vector regardless of X-value", {
+    my.chart.matrix <- AsChartMatrix(logic.vector)
+    expect_false(IsChartMatrix(my.chart.matrix, 1, 5))
+})
 
-## Named logic vector
-Y <- c(A = TRUE, B = FALSE, C = TRUE, D = TRUE, E = FALSE)
+test_that("Y cannot take a named logic vector", {
+    my.chart.matrix <- AsChartMatrix(logic.vector.named)
+    expect_error(IsChartMatrix(my.chart.matrix, 1, 5))
+})
 
-## List of logic vectors
-Y <- list(logic.vector, logic.vector, logic.vector)
+test_that("Y cannot take a list of logic vectors (unnamed)", {
+    Y <- list(logic.vector, logic.vector, logic.vector)
 
-## Data frame of logic vectors
-Y <- data.frame(cbind(logic.vector, logic.vector, logic.vector))
+    my.chart.matrix <- AsChartMatrix(Y)
+    expect_false(IsChartMatrix(my.chart.matrix, 1, 3))
+})
 
-## List of named vectors
-named.vector.a <- c("A" = 1, "B" = 2, "C" = 3)
-named.vector.b <- c("D" = 3, "E" = 2, "F" = 1)
-Y <- list(named.vector.a, named.vector.b)
+test_that("Y cannot take a list of logic vectors (named)", {
+    Y <- list(logic.vector.named, logic.vector.named, logic.vector.named)
 
-## Data frame of named vectors
-Y <- data.frame(cbind(named.vector.a, named.vector.b))
+    my.chart.matrix <- AsChartMatrix(Y)
+    expect_false(IsChartMatrix(my.chart.matrix, 1, 3))
+})
 
-## Mixed mode list - character and integer
-var4 <- c("A", "B", "C", "D", "C")
-Y <- list(var1, var2, var3, var4)
+test_that("Y cannot take a data frame of logic vectors (unnamed)", {
+    Y <- data.frame(cbind(logic.vector, logic.vector, logic.vector))
 
-## Mixed mode data frame - character and integer
-Y <- cbind(var1, var2, var3, var4)
+    my.chart.matrix <- AsChartMatrix(Y)
+    expect_error(IsChartMatrix(my.chart.matrix, 5, 3))
+})
 
-## List of factors
-factor.a <- factor(x.data)
-factor.b <- factor(y.data)
-Y <- list(factor.a, factor.b)
+test_that("Y cannot take a data frame of logic vectors (named)", {
+    Y <- data.frame(cbind(logic.vector.named, logic.vector.named, logic.vector.named))
 
-## Data frame of factors
-Y <- data.frame(factor.a, factor.b)
+    my.chart.matrix <- AsChartMatrix(Y)
+    expect_error(IsChartMatrix(my.chart.matrix, 5, 3))
+})
 
-## Mixed mode list - integer and factor
-Y <- list(factor.a, y.data)
+test_that("Y cannot take a list of differently named vectors", {
+    Y <- list(named.vector.a, named.vector.b)
 
-## Mixed mode list - character and factor
-Y <- list(factor.a, var4)
+    my.chart.matrix <- AsChartMatrix(Y)
+    expect_false(IsChartMatrix(my.chart.matrix, 1, 2))
+})
 
-## Mixed mode data frame - integer and factor
-Y <- data.frame(cbind(factor.a, y.data))
+test_that("Y cannot take a data frame of differently named vectors", {
+    Y <- data.frame(cbind(named.vector.a, named.vector.b))
 
-## Mixed mode data frame - character and factor
-Y <- data.frame(cbind(factor.a, var4))
+    my.chart.matrix <- AsChartMatrix(Y)
+    expect_error(IsChartMatrix(my.chart.matrix, 3, 2))
+})
 
-## Character matrix
-Y <- matrix(LETTERS[1:3])
+test_that("Y cannot take a list of character and integer vectors", {
+    Y <- list(var1, x.data)
 
-## Logic matrix
-Y <- matrix(rep(c(TRUE,FALSE),3))
+    my.chart.matrix <- AsChartMatrix(Y)
+    expect_false(IsChartMatrix(my.chart.matrix, 1, 2))
+})
 
-## Raw data consisting of one character vector
-Y <- LETTERS[1:5]
+test_that("Y cannot take a data frame of mixed character and integer vectors", {
+    Y <- cbind(var1, x.data)
 
-## Raw data consisting of multiple character vectors passed as a list
-Y <- list(LETTERS[1:5], LETTERS[6:10], LETTERS[11:15])
+    my.chart.matrix <- AsChartMatrix(Y)
+    expect_false(IsChartMatrix(my.chart.matrix, 5, 2))
+})
 
-## Raw data consisting of multiple character vectors passed as a data frame
-Y <- data.frame(cbind(LETTERS[1:5], LETTERS[6:10], LETTERS[11:15]))
+test_that("Y cannot take a list of multiple factors", {
+    Y <- list(factor.a, factor.b)
 
-## Regardless of Y input, X bad cases are:
-## X as a logic vector *********************** Would not make much sense as an area or line chart (but could be used in column or bar charts?)
-X <- logic.vector
+    my.chart.matrix <- AsChartMatrix(Y)
+    expect_false(IsChartMatrix(my.chart.matrix, 1, 2))
+})
 
-## X as a data frame, regardless of composition
-X <- data.frame(cbind(var1, var2, var3))
+test_that("Y cannot take a data frame of multiple factors", {
+    Y <- data.frame(factor.a, factor.b)
 
-## X as a list, regardless of composition
-X <- list(var1, var2, var3)
+    my.chart.matrix <- AsChartMatrix(Y)
+    expect_error(IsChartMatrix(my.chart.matrix, 5, 2))
+})
 
+test_that("Y cannot take a list of mixed integer vectors and factors", {
+    Y <- list(factor.a, y.data)
 
+    my.chart.matrix <- AsChartMatrix(Y)
+    expect_false(IsChartMatrix(my.chart.matrix, 1, 2))
+})
+
+test_that("Y cannot take a list of mixed character vectors and factors", {
+    Y <- list(factor.a, x.data)
+
+    my.chart.matrix <- AsChartMatrix(Y)
+    expect_false(IsChartMatrix(my.chart.matrix, 1, 2))
+})
+
+test_that("Y cannot take a data frame of mixed integer vectors and factors", {
+    Y <- data.frame(cbind(factor.a, y.data))
+
+    my.chart.matrix <- AsChartMatrix(Y)
+    expect_error(IsChartMatrix(my.chart.matrix, 5, 2))
+})
+
+test_that("Y cannot take a data frame of mixed integer vectors and factors", {
+    Y <- data.frame(cbind(factor.a, x.data))
+
+    my.chart.matrix <- AsChartMatrix(Y)
+    expect_error(IsChartMatrix(my.chart.matrix, 5, 2))
+})
+
+test_that("Y cannot take a character matrix", {
+    Y <- matrix(LETTERS[1:3])
+
+    my.chart.matrix <- AsChartMatrix(Y)
+    expect_false(IsChartMatrix(my.chart.matrix, 3, 1))
+})
+
+test_that("Y cannot take a logic matrix", {
+    Y <- matrix(rep(c(TRUE,FALSE),3))
+
+    my.chart.matrix <- AsChartMatrix(Y)
+    expect_false(IsChartMatrix(my.chart.matrix, 6, 1))
+})
+
+test_that("Y cannot take a character vector", {
+    Y <- LETTERS[1:5]
+
+    my.chart.matrix <- AsChartMatrix(Y)
+    expect_false(IsChartMatrix(my.chart.matrix, 1, 5))
+})
+
+test_that("Y cannot take a list of multiple character vectors", {
+    Y <- list(LETTERS[1:5], LETTERS[6:10], LETTERS[11:15])
+
+    my.chart.matrix <- AsChartMatrix(Y)
+    expect_false(IsChartMatrix(my.chart.matrix, 1, 3))
+})
+
+test_that("Y cannot take a data frame of multiple character vectors", {
+    Y <- data.frame(cbind(LETTERS[1:5], LETTERS[6:10], LETTERS[11:15]))
+
+    my.chart.matrix <- AsChartMatrix(Y)
+    expect_error(IsChartMatrix(my.chart.matrix, 5, 3))
+})
+
+## X bad cases are:
+test_that("X cannot take a logic vector", {
+    expect_error(AsChartMatrix(var1, logic.vector))
+})
+
+test_that("X cannot take a data frame", {
+    X <- data.frame(cbind(var1, var2, var3))
+
+    expect_error(AsChartMatrix(var1, X))
+})
+
+test_that("X cannot take a list", {
+    X <- list(var1, var2, var3)
+
+    expect_error(AsChartMatrix(var1, X))
+})
+
+## Bad weights
+test_that("A weight cannot be logical", {
+    expect_error(AsChartMatrix(y = var3, x.data, weights = logic.vector))
+})
+
+test_that("A weight cannot be characters", {
+    expect_error(AsChartMatrix(y = var3, x.data, weights = alpha.five))
+})
+
+test_that("A weight cannot be a factor", {
+    expect_error(AsChartMatrix(y = var3, x.data, weights = factor.a))
+})
+
+test_that("A weight cannot be a date", {
+    expect_error(AsChartMatrix(y = var3, x.data, weights = x.dates))
+})
