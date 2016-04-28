@@ -129,16 +129,16 @@ MakeColorGradient <- function (x, red, green, blue) {
 #' @export
 AreaChart <-   function(y,
                          x = NULL,
-                         weights = NULL,                                   ## Gets passed to AsChartMatrix <- add to that function first!
+                         # weights = NULL,                                 ## Gets passed to AsChartMatrix <- add to that function first!
                          # subset = NULL,                                  ## Gets passed to AsChartMatrix <- add to that function first!
                          transpose = FALSE,                                ## Should the inputs be transposed; TRUE or FALSE
-                         date.aggregation = "m",                           ## can be m(onth), q(uarter), y(ear)
-                         row.labels = NULL,                                ## Optional, overrides named vectors et c.
-                         column.labels = NULL,                             ## Optional
+                         aggregate.period = "month",                       ## can be month, quarter, year
+                         y.labels = NULL,                                  ## Optional, overrides named vectors et c.
+                         x.labels = NULL,                                  ## Optional
                          type = "Area",                                    ## Type of char; can be "Area", "Stacked Area", or "100% Stacked Area"
                          title = "",                                       ## Chart title
                          colors = qColors,                                 ## Vector of colors in RGB format
-                         transparency = 1,                                 ## Transparency of area fill colors
+                         transparency = 0.4,                               ## Transparency of area fill colors
                          chart.fill.color = rgb(255, 255, 255, max = 255), ## Chart (borders around plot) background color
                          chart.fill.transparency = 1,                      ## Chart (borders around plot) background color transparency
                          plot.fill.color = rgb(255, 255, 255, max = 255),  ## Plot (the plot area proper) background color
@@ -223,14 +223,15 @@ AreaChart <-   function(y,
                          series.line.width = 0,                            ## 0 = no line, else thickness of line for series.
                          series.line.color = qColors,                      ## A vector of colors to use for the lines
                          series.line.transparency = 1,                     ## Transparency for series lines
-                         hover.mode = "closest"                            ## Can be FALSE, "x", "y", or "closest"
+                         hover.mode = "closest",                           ## Can be FALSE, "x", "y", or "closest"
+                         show.modebar = FALSE                              ## T/F - show the zoom menu
 )
 {
     ## Get dependencies
     require(plotly)
 
     ## Make a chart matrix
-    chart.matrix <- AsChartMatrix(y, x, transpose = transpose, weights = weights, date.aggregation = date.aggregation)
+    chart.matrix <- AsChartMatrix(y, x, transpose = transpose, aggregate.period = aggregate.period)
 
     ## Check that the chart matrix is a success
     if (!IsChartMatrix(chart.matrix, n.rows = nrow(chart.matrix), n.columns = ncol(chart.matrix)))
@@ -246,16 +247,12 @@ AreaChart <-   function(y,
     else if (type == "100% Stacked Area")
         chart.matrix <- cum.data(chart.matrix, "cumulative.percentage")
 
-    ## Grab constants from the matrix
-    if (!is.null(column.labels))
-        x.labels <- column.labels
-    else
+    ## Get axes labels from the matrix labels if none manually specified
+    if (is.null(x.labels))
         x.labels <- clean.numeric.labels(colnames(chart.matrix))
 
-    if (!is.null(row.labels))
-        series.labels <- row.labels
-    else
-        series.labels <- rownames(chart.matrix)
+    if (is.null(y.labels))
+        y.labels <- rownames(chart.matrix)
 
     ## Determine whether to draw to zero y (overlapping area chart) or to next y (for stacked)
     if (type == "Area")
@@ -472,6 +469,9 @@ AreaChart <-   function(y,
     ## Initiate plotly object
     p <- plot_ly()
 
+    ## Config options
+    p <- config(displayModeBar = show.modebar)
+
     ## Add a trace for each row of data in the matrix
     for (a in 1:nrow(chart.matrix))
     {
@@ -489,7 +489,7 @@ AreaChart <-   function(y,
                            width = series.line.width,
                            color = toRGB(series.line.color[a], alpha = series.line.transparency)
                        ),
-                       name = series.labels[a],
+                       name = y.labels[a],
                        legendgroup = legend.group,
                        ## MARKERS
                        mode = series.mode,

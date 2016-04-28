@@ -7,17 +7,17 @@
 # - Column names
 # - Row names if there are more than one rows
 
-textPeriodFromDate <- function(x, period = "m")
+textPeriodFromDate <- function(x, period = "month")
 {
     year.two.digits <- strftime(x, "%y")
 
-    if (period == "m")
+    if (period == "month")
         return(paste(substr(months(x), 1, 3), year.two.digits, sep = "-"))
 
-    if (period == "q")
+    if (period == "quarter")
         return(paste(quarters(x), year.two.digits, sep = "-"))
 
-    if (period == "y")
+    if (period == "year")
         return(strftime(x, "%y"))
 }
 
@@ -34,7 +34,7 @@ isNumericOrInteger <- function(y)
 
 numberOfRows <- function(x)
 {
-    if (is.vector(x) | is.factor(x))
+    if (is.vector(x) | is.factor(x) | inherits(x, "POSIXct"))
         return(length(x))
     nrow(x)
 }
@@ -55,55 +55,63 @@ IsChartMatrix <- function(x, n.rows, n.columns)
     isNumericOrInteger(x)
 }
 
+# assignNames <- function(y)
+# {
+#     if (is.null(rownames(y)))
+#         return(paste("Series", 1:nrow(y)))
+#     else
+#         return(paste("Series", 1:ncol(y)))
+# }
+
 #' @export
 AsChartMatrix <- function(y,
                           x = NULL,
-                          weights = NULL,
+                          # weights = NULL,
                           # subset = NULL,
                           transpose = FALSE,
-                          date.aggregation = "m")  ## can be m(onth), q(uarter), y(ear)
+                          aggregate.period = "month")  ## can be m(onth), q(uarter), y(ear)
 {
-    # Weight application
-    if (!is.null(weights))
+    if (is.null(x)) # Aggregating data over X.
     {
-        if (!isNumericOrInteger(weights) | !isNumericOrInteger(y) | !equalNumberOfRows(y, weights))
-            stop("Either or both of your weights or y inputs is not numeric, or they have mismatched lengths")
+        if (!is.vector(y) && !is.table(y) && !is.matrix(y))
+            stop(paste("Y must be a vector"))
 
-        y <- y * weights
+        y <- t(as.matrix(y))
+
+        if(transpose)
+            return(t(y))
+
+        # if (is.null(rownames(y)))
+        #     rownames(y) <- assignNames(y)
+        #
+        # if (is.null(colnames(y)))
+        #     colnames(y) <- assignNames(y)
+
+        return(y)
     }
 
-    if (!is.null(x)) # Aggregating data over X.
-    {
-        if (inherits(x, "POSIXct"))
-            x <- textPeriodFromDate(x,date.aggregation)
+    if (is.logical(x))
+        stop(paste("X cannot be a logical vector"))
 
-        if (is.logical(x))
-            stop(paste("X cannot be a logical vector"))
+    if (is.list(x) | is.data.frame(x))
+        stop(paste("X cannot take data frames or lists. You have passed a ",class(x), sep=""))
 
-        if (is.list(y))
-            y <- as.data.frame(y)
+    if (is.list(y))
+        y <- as.data.frame(y)
 
-        if (is.list(x) | is.data.frame(x))
-            stop(paste("X cannot take data frames or lists. You have passed a ",class(x), sep=""))
+    if (!equalNumberOfRows(y, x))
+        stop("The length of all the elements in a list must be the same, but your Y input is ",
+             numberOfRows(y), " and your X input is ", numberOfRows(x))
 
-        if (!equalNumberOfRows(y, x))
-            stop("The length of all the elements in a list must be the same, but your Y input is ",
-                 numberOfRows(y), " and your X input is ", numberOfRows(x))
+    if (is.factor(y) | is.character(y))
+        return(xtabs(~ x + y))
 
-        if (is.factor(y) | is.character(y))
-            return(xtabs(~ x + y))
+    y <- aggregate(y, list(x), mean)
 
-        y <- aggregate(y, list(x), mean)
+    if (inherits(x, "POSIXct"))
+        rownames(y) <- textPeriodFromDate(y[, 1],aggregate.period)
+    else
         rownames(y) <- y[, 1]
-        return(t(y[, -1, drop = FALSE]))
-    }
-    else # Manipulating aggregated data
-    {
-        if (is.vector(y))
-            y <- t(as.matrix(y))
-    }
 
-    if(transpose)
-        return(t(y))
-    y
+    return(t(y[, -1, drop = FALSE]))
 }
