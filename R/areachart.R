@@ -285,9 +285,9 @@ AreaChart <-   function(y,
     }
 
     ## Group legend items if it's a stacked area chart as taking individual items off makes no sense
-    legend.group <- ""
-    if (type != "Area")
-        legend.group <- "grouped"
+    # legend.group <- ""
+    # if (type != "Area")
+    #     legend.group <- "grouped"
 
     ## If line thickness is zero, then we shouldn't show a line; ticks only shown if there's a line (same as Excel)
     ## Tick labels only shown if there's a line too - makes no sense either.
@@ -332,9 +332,9 @@ AreaChart <-   function(y,
     y.range = integer()
     y.autorange = TRUE
 
-    y.bounds.manual <- FALSE
-    if (!is.null(y.bounds.minimum) & !is.null(y.bounds.maximum) & !is.null(y.bounds.units.major))
-        y.bounds.manual <- checkBounds(y.bounds.minimum, y.bounds.maximum, y.bounds.units.major)
+    y.bounds.manual <- TRUE
+    if (is.null(y.bounds.minimum) | is.null(y.bounds.maximum) | is.null(y.bounds.units.major))
+        y.bounds.manual <- FALSE
 
     if (y.bounds.manual == TRUE)
     {
@@ -490,7 +490,7 @@ AreaChart <-   function(y,
                            color = toRGB(series.line.color[a], alpha = series.line.transparency)
                        ),
                        name = y.labels[a],
-                       legendgroup = legend.group,
+                       # legendgroup = legend.group,
                        ## MARKERS
                        mode = series.mode,
                        marker = list(
