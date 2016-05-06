@@ -1,0 +1,10 @@
+{
+    "dialog-state" : {
+        "caseSensitive" : false,
+        "filePatterns" : [
+        ],
+        "path" : "~/GitHub/flipStandardCharts",
+        "query" : "error.A.examples",
+        "regex" : false
+    }
+}

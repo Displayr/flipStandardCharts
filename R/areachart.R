@@ -1,131 +1,192 @@
-### Required colour vector
-qColors <- c(grDevices::rgb(91, 155, 213, 255, max = 255), # blue
-             grDevices::rgb(237, 125, 49, 255, max = 255), # orange
-             grDevices::rgb(165, 165, 165, 255, max = 255), # grey
-             grDevices::rgb(30, 192, 0, 255, max = 255), # yellow
-             grDevices::rgb(68, 114, 196, 255, max = 255), # darker blue
-             grDevices::rgb(112, 173, 71, 255, max = 255), # green
-             grDevices::rgb(37, 94, 145, 255, max = 255), # even darker blue
-             grDevices::rgb(158, 72, 14, 255, max = 255), # blood
-             grDevices::rgb(99, 99, 99, 255, max = 255), # dark grey
-             grDevices::rgb(153, 115, 0, 255, max = 255), # brown
-             grDevices::rgb(38, 68, 120, 255, max = 255), # very dark blue
-             grDevices::rgb(67, 104, 43, 255, max = 255), # darker green
-             grDevices::rgb(255, 255, 255, 255, max = 255), # black
-             grDevices::rgb(255, 35, 35, 255, max = 255)) # red
-
-plotlySymbols <- plotlySymbols <- c(0,100,200,300,1,101,201,301,2,102,202,302,3,103,203,303,4,104,204,304,5,105,205,305,6,106,206,306,7,107,207,307,8,108,208,308,9,109,209,309,10,110,210,310,11,111,211,311,12,112,212,312,13,113,213,313,14,114,214,314,15,115,215,315,16,116,216,316,17,117,217,317,18,118,218,318,19,119,219,319,20,120,220,320,21,121,221,321,22,122,222,322,23,123,223,323,24,124,224,324,25,125,26,126,27,127,28,128,29,129,30,130,31,131,32,132,33,133,34,134,35,135,36,136,37,137,38,138,39,139,40,140,41,141,42,142,43,143,44,144)
-
-######################## Auxiliary functions
-## Strips out any capital X followed by a digit, as this is R-imposed in case of numeric row or col names.
-clean.numeric.labels <- function(labels) {
-    labels <- gsub("^X","",labels)
-    return(labels)
-}
-
-### KNOWN ISSUES TO SOLVE:
-# The function "clean.numeric.labels" needs to allow for text variable names that begin with X but which
-# are not otherwise entirely numeric.  e.g. "Xylophone", "Xenophon", "X1Z", where the INTENT was to have
-# the "X" and it hasn't been automatically added by Q.  Needs to compare against the original data file
-# import to be truly accurate and not make too many guesses.
-
-## Takes a matrix, and returns a matrix of either a cumulative sum, or a cumulative sum of percentages.
-cum.data <- function(x, output = "cumulative.percentage") {
-    if (output == "cumulative.sum"){
-        x <- apply(x, 2, function(z) {cumsum(z)})
-    } else if (output == "cumulative.percentage") {
-        x <- apply(x, 2, function(z) {cumsum(prop.table(z))})
-    } else if (output == "column.percentage") {
-        x <- apply(x, 2, function(z) {prop.table(z)})
-    }
-
-    return(x)
-}
-
-## Function to return number format string and potential y-axis prefix
-printFormat <- function (tick.format = c("%", "0"))     # Uses above to set pre-specified formats, can be:  "n" (number), "%", "$", "£", "€" second value is number of decimals for rounding, default = 0
-{
-    tickformat <- character()
-    if (length(tick.format) != 2)
-        tickformat[2] <- "0"
-
-    if (tick.format[1] == "%")
-    {
-        tickformat <- paste(".", as.integer(tick.format[2]), "p", sep="")
-        tick.prefix <- ""
-    }
-    else if (tick.format[1] == "$" || tick.format[1] == "£")
-    {
-        tickformat <- paste(".", as.integer(tick.format[2]), "r", sep="")
-        tick.prefix <- tick.format[1]
-    }
-    else if (tick.format[1] == "n")
-    {
-        tickformat <- paste(".", as.integer(tick.format[2]), "r", sep="")
-        tick.prefix <- ""
-    }
-
-    return(c(tickformat,tick.prefix))
-}
-
-# Checks if all three vars have data, and if the first is greater than the second
-checkBounds <- function(min, max, maj)
-{
-    if (!is.null(min) & !is.null(max) & !is.null(maj) & max > min)
-        TRUE
-
-    FALSE
-}
-
-################################################################################################
-
-## Sorts rows of a matrix in descending order (high to low) based on overall mean of each row.
-#' @export
-MeanRowValueDescendingSort <- function(x) {
-    means <- apply(x, 1, function(z) {mean(z)})
-    x <- cbind(x, means)
-    x <- x[order(-means),]
-    x <- x[,1:(ncol(x)-1)]
-    return(x)
-}
-
-## Sorts rows of a matrix in descending alphabetical order
-#' @export
-AlphabeticRowNames <- function(x, desc = TRUE) {
-    x <- x[order(rownames(x), decreasing = desc),]
-    return(x)
-}
-
-## Gives a named-elements vector of colours for each row in a matrix,
-## where the base colour is specified, and the alpha value gradually
-## increases based on the row-mean of the matrix (darker = higher),
-## and where the colour vector is returned sorted alphabetically
-#' @export
-MakeColorGradient <- function (x, red, green, blue) {
-    col.vector <- ""
-    number.rows <- nrow(x) + 1
-
-    for (i in 1:nrow(x)){
-        red.factor <- ((255 - red) / number.rows) * i
-        green.factor <- ((255 - green) / number.rows) * i
-        blue.factor <- ((255 - blue) / number.rows) * i
-
-        col.vector <- c(col.vector, grDevices::rgb(red + red.factor, green + green.factor, blue + blue.factor, 255, max = 255))
-    }
-
-    ## Sort the matrix by mean
-    ordered.matrix <- MeanRowValueDescendingSort(x)
-
-    ## Assign matrix row names to col.vector
-    col.vector <- col.vector[2:length(col.vector)]
-    names(col.vector) <- rownames(ordered.matrix)
-
-    ## Sort the colour vector
-    col.vector <- AlphabeticRowNames(as.matrix(col.vector))
-
-    return(col.vector)
-}
-
+#' Generates an interactive area chart based on the plotly library.
+#'
+#' \code{AreaChart} generates an area chart.
+#'
+#' @param y A vector, matrix, list of vectors, data frame, or table.
+#' @param x A vector over which y will be aggregated. Must have the same
+#' number of elements as y.
+#' @param transpose Logical; should the final output be transposed?
+#' @param aggregate.period Character; can be "month", "quarter", "year".
+#' Only relevant when x is a vector of mode date.
+#' @param y.labels Character vector, overrides chart matrix row names.
+#' @param x.labels Character vector, overrides chart matrix column names.
+#' @param type Character; type of chart. Can be "Area", "Stacked Area",
+#' or "100\% Stacked Area".
+#' @param title Character; chart title.
+#' @param title.font.family Character; title font family.  Can be "Arial
+#' Black", "Arial", "Comic Sans MS", "Courier New", "Georgia", "Impact",
+#' "Lucida Console", "Lucida Sans Unicode", "Marlett", "Symbol", "Tahoma",
+#' "Times New Roman", "Trebuchet MS", "Verdana", "Webdings"
+#' @param title.font.color Title font color as a named color in character
+#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).
+#' @param title.font.size Title font size; default = 10.
+#' @param colors Vector of colors in RGB format.
+#' @param transparency Transparency of area fill colors as an alpha value
+#' (0 to 1).
+#' @param chart.fill.color Chart (borders around plot) background color as
+#' a named color in character format (e.g. "black") or an rgb value (e.g.
+#' rgb(0, 0, 0, max = 255)).
+#' @param chart.fill.transparency Chart (borders around plot) background
+#' transparency as an alpha value (0 to 1).
+#' @param plot.fill.color Plot (the plot area proper) background color as
+#' a named color in character format (e.g. "black") or an rgb value (e.g.
+#' rgb(0, 0, 0, max = 255)).
+#' @param plot.fill.transparency Plot (the plot area proper) background
+#' transparency as an alpha value (0 to 1).
+#' @param legend.show Logical; show the legend.
+#' @param legend.fill Legend fill color as a named color in character format
+#' (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).
+#' @param legend.border.color Legend border color as a named color in character
+#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).
+#' @param legend.border.line.width Integer; width in pixels of the border
+#' around the legend.  0 = no border.
+#' @param legend.font.color Legend font color as a named color in character
+#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).
+#' @param legend.font.family Character; legend font family.
+#' @param legend.font.size Integer; legend font size.
+#' @param legend.position Where the legend will be placed; can be "left" or
+#' "right" of plot.
+#' @param legend.sort.order Character; can be "normal" or "reversed" (see
+#' also grouping options, currently excluded from this function)
+#' @param margin.top Integer; margin between plot area and the top of the
+#' graphic in pixels
+#' @param margin.bottom Integer; margin between plot area and the top of the
+#' graphic in pixels
+#' @param margin.left Integer; margin between plot area and the top of the
+#' graphic in pixels
+#' @param margin.right Integer; margin between plot area and the top of the
+#' graphic in pixels
+#' @param margin.inner.pad Integer; padding in pixels between plot proper
+#' and axis lines
+#' @param y.title Character, y-axis title
+#' @param y.title.font.color Y-axis title font color as a named color in
+#' character format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0,
+#' max = 255)).
+#' @param y.title.font.family Character; Y-axis title font family
+#' @param y.title.font.size Integer; y-axis title font size
+#' @param y.line.width Integer; y-axis line in pixels, 0 = no line
+#' @param y.line.color Y-axis line color as a named color in character format
+#' (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).
+#' @param y.tick.marks Character; whether and where to show tick marks on the
+#' y axis.  Can be "outside", "inside", "none"
+#' @param y.tick.length Integer; length of tick marks in pixels.
+#' @param y.bounds.minimum Integer or NULL; set minimum of range for plotting;
+#' NULL = no manual range set.  Must be less than y.bounds.maximum
+#' @param y.bounds.maximum = Integer or NULL; set maximum of range for
+#' plotting; NULL = no manual range set.  Must be greater than y.bounds.minimum
+#' @param y.bounds.units.major Ingeger or NULL; set tick mark distance in
+#' y-axis units between minimum and maximum for plotting; NULL = no manual
+#' range set.
+#' @param y.zero.line.width Width in pixels of zero line; 0 = no zero line
+#' shown
+#' @param y.zero.line.color Color of horizontal zero (origo) line as a named
+#' color in character format (e.g. "black") or an rgb value (e.g.
+#' rgb(0, 0, 0, max = 255)).
+#' @param y.position Character; set y-axis position; can be "left" or "right"
+#' @param y.mirror Logical; mirror y-axis on other side?
+#' @param y.grid.width Integer; width of y-grid lines in pixels; 0 = no line
+#' @param y.grid.color Color of y-grid lines as a named color in character
+#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).
+#' @param y.tick.suffix Y-axis tick label suffix
+#' @param y.tick.prefix Y-axis tick label prefix
+#' @param y.tick.decimals Y-axis tick label decimal places
+#' @param y.tick.format.manual Overrides tick.prefix, suffix and decimals;
+#' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
+#' https://docs.python.org/release/3.1.3/library/string.html#formatspec
+#' @param y.hovertext.suffix Y-axis hover text number suffix
+#' @param y.hovertext.prefix Y-axis hover text number prefix
+#' @param y.hovertext.decimals Y-axis hover text decimal places
+#' @param y.hovertext.manual Overrides hovertext.prefix, suffix and decimals;
+#' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
+#' https://docs.python.org/release/3.1.3/library/string.html#formatspec
+#' @param y.tick.angle Integer, y-axis tick label angle in degrees.
+#' 90 = vertical; 0 = horizontal
+#' @param y.tick.font.color Y-axis tick label font color as a named color
+#' in character format (e.g. "black") or an rgb value (e.g.
+#' rgb(0, 0, 0, max = 255)).
+#' @param y.tick.font.family Character; y-axis tick label font family
+#' @param y.tick.font.size Integer; y-axis tick label font size
+#' @param x.title Character, x-axis title
+#' @param x.title.font.color x-axis title font color as a named color in
+#' character format (e.g. "black") or an rgb value (e.g.
+#' rgb(0, 0, 0, max = 255)).
+#' @param x.title.font.family Character; x-axis title font family
+#' @param x.title.font.size Integer; x-axis title font size
+#' @param x.line.width Integer; x-axis line in pixels, 0 = no line
+#' @param x.line.color X-axis line color as a named color in character format
+#' (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).
+#' @param x.tick.marks Character; whether and where to show tick marks on the
+#' y axis.  Can be "outside", "inside", "none"
+#' @param x.tick.length Integer; length of tick marks in pixels.
+#' @param x.bounds.minimum Integer or NULL; set minimum of range for plotting;
+#' NULL = no manual range set.  Must be less than x.bounds.maximum
+#' @param x.bounds.maximum = Integer or NULL; set maximum of range for
+#' plotting; NULL = no manual range set.  Must be greater than x.bounds.minimum
+#' @param x.bounds.units.major Ingeger or NULL; set tick mark distance in
+#' x-axis units between minimum and maximum for plotting; NULL = no manual
+#' range set.
+#' @param x.zero.line.width Width in pixels of zero line; 0 = no zero line
+#' shown
+#' @param x.zero.line.color Color of horizontal zero (origo) line as a named
+#' color in character format (e.g. "black") or an rgb value (e.g.
+#' rgb(0, 0, 0, max = 255)).
+#' @param x.position Character; set x-axis position; can be "left" or "right"
+#' @param x.mirror Logical; mirror x-axis on other side?
+#' @param x.grid.width Integer; width of y-grid lines in pixels; 0 = no line
+#' @param x.grid.color Color of y-grid lines as a named color in character
+#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).
+#' @param x.tick.suffix X.axis tick label suffix
+#' @param x.tick.prefix X.axis tick label prefix
+#' @param x.tick.decimals X.axis tick label decimal places
+#' @param x.tick.format.manual Overrides tick.prefix, suffix and decimals;
+#' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
+#' https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec
+#' @param x.hovertext.suffix X.axis hover text number suffix
+#' @param x.hovertext.prefix X.axis hover text number prefix
+#' @param x.hovertext.decimals X.axis hover text decimal places
+#' @param x.hovertext.manual Overrides hovertext.prefix, suffix and decimals;
+#' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
+#' https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec
+#' @param x.tick.angle Integer, x-axis tick label angle in degrees.
+#' 90 = vertical; 0 = horizontal
+#' @param x.tick.font.color X-axis tick label font color as a named color in
+#' character format (e.g. "black") or an rgb value (e.g.
+#' rgb(0, 0, 0, max = 255)).
+#' @param x.tick.font.family Character; x-axis tick label font family
+#' @param x.tick.font.size Integer; x-axis tick label font size
+#' @param series.marker.show Can be "none", "automatic" or a vector referencing
+#' the plotly symbol dictionary using either numerics or strings.
+#' @param series.marker.color Vector of colors in RGB format to use for the
+#' markers
+#' @param series.marker.transparency Integer; transparency for series markers
+#' as an alpha value (0 to 1)
+#' @param series.marker.size Integer; size in pixels of marker
+#' @param series.marker.border.width Integer; width in pixels of border/line
+#' around series markers; 0 is no line
+#' @param series.marker.border.color Vector of colors in RGB format for
+#' border/line around series markers
+#' @param series.marker.border.transparency Integer; transparency of
+#' border/line around series markers as an alpha value (0 to 1)
+#' @param series.line.width Integer; thickness, in pixels, of the series line
+#' @param series.line.color Vector of colors in RGB format for series the lines
+#' @param series.line.transparency Integer; transparency for series lines as an
+#' alpha value (0 to 1)
+#' @param hover.mode Character or logic; can be FALSE for no hover text, "x" to
+#' show all x-values for the hover point, "y" to show all y-values for the
+#' hover point, or "closest" to show the single, nearest, value.
+#' @param hover.include.source.value Logical; Include source data point value
+#' in the hover text.
+#' @param hover.include.source.value.prefix Character; prefix for source data
+#' point value in hover text.
+#' @param hover.include.source.value.suffix Character; suffix for source data
+#' point value in hover text.
+#' @param hover.include.source.value.percent Logical; multiplies source data
+#' point value by 100.
+#' @param show.modebar Logical; whether to show the zoom menu buttons or not.
+#' @examples
+#' data("y.data")
+#' data("x.data")
+#' AreaChart(y = y.data, x = x.data, transpose = FALSE)
 #' @export
 AreaChart <-   function(y,
                          x = NULL,
@@ -137,19 +198,22 @@ AreaChart <-   function(y,
                          x.labels = NULL,                                  ## Optional
                          type = "Area",                                    ## Type of char; can be "Area", "Stacked Area", or "100% Stacked Area"
                          title = "",                                       ## Chart title
+                         title.font.family = "Arial",                     ## Global font family
+                         title.font.color = rgb(44, 44, 44, maxColorValue = 255),   ## Global font color
+                         title.font.size = 16,                            ## Global font size
                          colors = qColors,                                 ## Vector of colors in RGB format
                          transparency = 0.4,                               ## Transparency of area fill colors
-                         chart.fill.color = rgb(255, 255, 255, max = 255), ## Chart (borders around plot) background color
+                         chart.fill.color = rgb(255, 255, 255, maxColorValue = 255), ## Chart (borders around plot) background color
                          chart.fill.transparency = 1,                      ## Chart (borders around plot) background color transparency
-                         plot.fill.color = rgb(255, 255, 255, max = 255),  ## Plot (the plot area proper) background color
+                         plot.fill.color = rgb(255, 255, 255, maxColorValue = 255),  ## Plot (the plot area proper) background color
                          plot.fill.transparency = 1,                       ## Plot (the plot area proper) background color transparency
                          legend.show = TRUE,                               ## Show the legend, TRUE or FALSE
-                         legend.fill = rgb(255, 255, 255, max = 255),      ## Legend fill color
-                         legend.border.color = rgb(44, 44, 44, max = 255), ## Legend border color
+                         legend.fill = rgb(255, 255, 255, maxColorValue = 255),      ## Legend fill color
+                         legend.border.color = rgb(44, 44, 44, maxColorValue = 255), ## Legend border color
                          legend.border.line.width = 0,                     ## >0 means border on; width in pixels
-                         legend.font.color = rgb(44, 44, 44, max = 255),   ## Legend font color
+                         legend.font.color = rgb(44, 44, 44, maxColorValue = 255),   ## Legend font color
                          legend.font.family = "Arial",                     ## Legend font family.
-                         legend.font.size = 12,                            ## Legend font size
+                         legend.font.size = 10,                            ## Legend font size
                          legend.position = "right",                        ## Can be "left" or "right"
                          legend.sort.order = "normal",                     ## Can be "normal" or "reversed" (see also grouping options, currently excluded from this function)
                          margin.top = 80,                                  ## Margin between plot area and the top of the graphic
@@ -158,59 +222,63 @@ AreaChart <-   function(y,
                          margin.right = 80,                                ## Margin between plot area and the right of the graphic
                          margin.inner.pad = 0,                             ## Padding between graph proper and axis lines
                          y.title = "",                                     ## Y-axis title
-                         y.title.font.color = rgb(44, 44, 44, max = 255),  ## Y-axis title font color
+                         y.title.font.color = rgb(44, 44, 44, maxColorValue = 255),  ## Y-axis title font color
                          y.title.font.family = "Arial",                    ## Y-axis title font family
-                         y.title.font.size = 16,                           ## Y-axis title font size
+                         y.title.font.size = 12,                           ## Y-axis title font size
                          y.line.width = 1,                                 ## Y-axis line in pixels, 0 = no line
-                         y.line.color = rgb(0, 0, 0, max = 255),           ## Y-axis line color
+                         y.line.color = rgb(0, 0, 0, maxColorValue = 255),           ## Y-axis line color
                          y.tick.marks = "",                                ## Can be "outside", "inside", "none"
                          y.tick.length = 5,                                ## Length in px of tick marks.
                          y.bounds.minimum = NULL,                          ## Set minimum of range for plotting; NULL = no manual range set
                          y.bounds.maximum = NULL,                          ## Set maximum of range for plotting; NULL = no manual range set
                          y.bounds.units.major = NULL,                      ## Set step between minimum and maximum for plotting; NULL = no manual range set
                          y.zero.line.width = 1,                            ## Width in pixels of zero line; 0 = no zero line shown
-                         y.zero.line.color = rgb(44, 44, 44, max = 255),   ## Color of zero line
+                         y.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),   ## Color of zero line
                          y.position = "left",                              ## Select y-axis position; can be "left" or "right"
                          y.mirror = FALSE,                                 ## Mirror y-axis on other side?
                          #y.values.reversed = FALSE,                       ## T/F - involves autorange and may be too complicated.
                          y.grid.width = 1,                                 ## Width of y-grid lines in pixels; 0 = no line
-                         y.grid.color = rgb(225, 225, 225, max = 255),     ## Color of y-grid lines
-                         y.ticksuffix = "",                                ## Y-axis tick label suffix
-                         y.tickprefix = "",                                ## Y-axis tick label prefix
-                         y.tick.angle = 0,                                 ## Y-axis tick label angle in degrees.  90 = vertical; 0 = horizontal
-                         y.tick.format.manual = "",                        ## See https://github.com/mbostock/d3/wiki/Formatting#numbers or https://docs.python.org/release/3.1.3/library/string.html#formatspec
-                         y.tick.format = c("",""),                         ## Uses above to set pre-specified formats, can be:  "n" (number), "%", "$", "£", second value is number of total digits showing (not decimals...)
-                         y.tick.font.color = rgb(0, 0, 0, max = 255),      ## Y-axis tick label font color
-                         y.tick.font.family = "Arial",                     ## Y-axis tick label font family
-                         y.tick.font.size = 10,                            ## Y-axis tick label font size
-                         y.hover.format.manual = "",                       ## See https://github.com/mbostock/d3/wiki/Formatting#numbers or https://docs.python.org/release/3.1.3/library/string.html#formatspec
-                         y.hover.format = c("",""),                        ## Uses above to set pre-specified formats, can be:  "n" (number), "%", "$", "£", second value is number of total digits showing (not decimals...)
+                         y.grid.color = rgb(225, 225, 225, maxColorValue = 255),     ## Color of y-grid lines
+                         y.tick.suffix = "",                               ## Y-axis tick label suffix
+                         y.tick.prefix = "",                               ## Y-axis tick label prefix
+                         y.tick.decimals = 1,                              ## Y-axis tick label decimal places
+                         y.tick.format.manual = "",                        ## Overrides tick.prefix, suffix and decimals; See https://github.com/mbostock/d3/wiki/Formatting#numbers or https://docs.python.org/release/3.1.3/library/string.html#formatspec
+                         y.hovertext.suffix = "",                          ## Y-axis hover text number suffix
+                         y.hovertext.prefix = "",                          ## Y-axis hover text number prefix
+                         y.hovertext.decimals = 1,                         ## Y-axis hover text decimal places
+                         y.hovertext.manual = "",                          ## Overrides hovertext.prefix, suffix and decimals; See https://github.com/mbostock/d3/wiki/Formatting#numbers or https://docs.python.org/release/3.1.3/library/string.html#formatspec
+                         y.tick.angle = 0,                                           ## Y-axis tick label angle in degrees.  90 = vertical; 0 = horizontal                         y.tick.format = c("",""),                         ## Uses above to set pre-specified formats, can be:  "n" (number), "%", "$", "£", second value is number of total digits showing (not decimals...)
+                         y.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),      ## Y-axis tick label font color
+                         y.tick.font.family = "Arial",                               ## Y-axis tick label font family
+                         y.tick.font.size = 10,                                      ## Y-axis tick label font size
                          x.title = "",                                     ## X-axis title
-                         x.title.font.color = rgb(44, 44, 44, max = 255),  ## X-axis title font color
+                         x.title.font.color = rgb(44, 44, 44, maxColorValue = 255),  ## X-axis title font color
                          x.title.font.family = "Arial",			           ## X-axis title font family
-                         x.title.font.size = 16,			               ## X-axis title font size
+                         x.title.font.size = 12,			               ## X-axis title font size
                          x.line.width = 1,                                 ## X-axis line in pixels, 0 = no line
-                         x.line.color = rgb(0, 0, 0, max = 255),	       ## X-axis line color
+                         x.line.color = rgb(0, 0, 0, maxColorValue = 255),	       ## X-axis line color
                          x.tick.marks = "",                                ## "outside", "inside", "none"
                          x.tick.length = 5,                                ## Length in px of tick marks.
-                         x.bounds.minimum = 0,                             ## Set minimum of range for plotting; NULL = no manual range set
-                         x.bounds.maximum = 1,                             ## Set maximum of range for plotting; NULL = no manual range set
-                         x.bounds.units.major = 0.2,                       ## Set step between minimum and maximum for plotting; NULL = no manual range set
+                         x.bounds.minimum = NULL,                             ## Set minimum of range for plotting; NULL = no manual range set
+                         x.bounds.maximum = NULL,                             ## Set maximum of range for plotting; NULL = no manual range set
+                         x.bounds.units.major = NULL,                       ## Set step between minimum and maximum for plotting; NULL = no manual range set
                          x.zero.line.width = 1,                            ## Width in pixels of zero line; 0 = no zero line shown
-                         x.zero.line.color = rgb(44, 44, 44, max = 255),   ## Color of zero line
+                         x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),   ## Color of zero line
                          x.position = "bottom",                            ## Select x-axis position ("top"/"bottom")
                          x.mirror = FALSE,                                 ## Mirror x-axis on other side?
                          #x.values.reversed = FALSE,                       ## T/F - involves autorange and may be too complicated.
                          x.grid.width = 0,                                 ## Width of x-grid lines in pixels; 0 = no line
-                         x.grid.color = rgb(225, 225, 225, max = 255),     ## Width of y-grid lines in pixels; 0 = no line
-                         x.ticksuffix = "",				                   ## X-axis tick label suffix
-                         x.tickprefix = "",				                   ## X-axis tick label prefix
-                         x.tick.angle = 0,				                   ## X-axis tick label angle in degrees.  90 = vertical; 0 = horizontal
+                         x.grid.color = rgb(225, 225, 225, maxColorValue = 255),     ## Width of y-grid lines in pixels; 0 = no line
+                         x.tick.suffix = "",                                ## Y-axis tick label suffix
+                         x.tick.prefix = "",                                ## Y-axis tick label prefix
+                         x.tick.decimals = 1,                               ## Y-axis tick label decimal places
                          x.tick.format.manual = "",                        ## See https://github.com/mbostock/d3/wiki/Formatting#numbers or https://docs.python.org/release/3.1.3/library/string.html#formatspec
-                         x.tick.format = c("",""),                         ## Uses above to set pre-specified formats, can be:  "n" (number), "%", "$", "£", second value is number of total digits showing (not decimals...)
-                         x.hover.format.manual = "",                       ## See https://github.com/mbostock/d3/wiki/Formatting#numbers or https://docs.python.org/release/3.1.3/library/string.html#formatspec
-                         x.hover.format = c("",""),                        ## Uses above to set pre-specified formats, can be:  "n" (number), "%", "$", "£", second value is number of total digits showing (not decimals...)
-                         x.tick.font.color = rgb(0, 0, 0, max = 255),	   ## Y-axis tick label font color
+                         x.hovertext.suffix = "",                          ## X-axis hover text number suffix
+                         x.hovertext.prefix = "",                          ## X-axis hover text number prefix
+                         x.hovertext.decimals = 1,                         ## X-axis hover text decimal places
+                         x.hovertext.manual = "",                          ## Overrides hovertext.prefix, suffix and decimals; See https://github.com/mbostock/d3/wiki/Formatting#numbers or https://docs.python.org/release/3.1.3/library/string.html#formatspec
+                         x.tick.angle = 0,				                   ## X-axis tick label angle in degrees.  90 = vertical; 0 = horizontal
+                         x.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),	   ## Y-axis tick label font color
                          x.tick.font.family = "Arial",			           ## Y-axis tick label font family
                          x.tick.font.size = 10,				               ## Y-axis tick label font size
                          series.marker.show = "none",                      ## Can be "none", "automatic" or a vector referencing the plotly symbol dictionary using either numerics or strings.
@@ -224,11 +292,14 @@ AreaChart <-   function(y,
                          series.line.color = qColors,                      ## A vector of colors to use for the lines
                          series.line.transparency = 1,                     ## Transparency for series lines
                          hover.mode = "closest",                           ## Can be FALSE, "x", "y", or "closest"
+                         hover.include.source.value = FALSE,               ## Include source data point value
+                         hover.include.source.value.prefix = "",           ## Source data point value prefix
+                         hover.include.source.value.suffix = "",           ## Source data point value suffix
+                         hover.include.source.value.percent = FALSE,       ## T/F - multiplies source data value by 100
                          show.modebar = FALSE                              ## T/F - show the zoom menu
 )
 {
-    ## Get dependencies
-    require(plotly)
+    # ## Get dependencies
 
     ## Make a chart matrix
     chart.matrix <- AsChartMatrix(y, x, transpose = transpose, aggregate.period = aggregate.period)
@@ -241,6 +312,16 @@ AreaChart <-   function(y,
     if (transparency == 1 && type == "Area")
         warning("Displaying this chart without transparent series will make it difficult to read as some data series may be obscured.")
 
+    ## Create text matrix of source data if required for hover
+    # if (hover.include.source.value)
+    # {
+    #     source.matrix <- chart.matrix
+    #     if (hover.include.source.value.percent)
+    #         source.matrix <- source.matrix * 100
+    #
+    #     source.matrix <- matrix(paste(hover.include.source.value.prefix, " ", source.matrix, hover.include.source.value.suffix, sep = ""), nrow = nrow(chart.matrix), ncol = ncol(chart.matrix))
+    # }
+
     ## Change the matrix data according to requirements of the chart type
     if (type == "Stacked Area")
         chart.matrix <- cum.data(chart.matrix, "cumulative.sum")
@@ -249,7 +330,7 @@ AreaChart <-   function(y,
 
     ## Get axes labels from the matrix labels if none manually specified
     if (is.null(x.labels))
-        x.labels <- clean.numeric.labels(colnames(chart.matrix))
+        x.labels <- colnames(chart.matrix)
 
     if (is.null(y.labels))
         y.labels <- rownames(chart.matrix)
@@ -285,9 +366,9 @@ AreaChart <-   function(y,
     }
 
     ## Group legend items if it's a stacked area chart as taking individual items off makes no sense
-    # legend.group <- ""
-    # if (type != "Area")
-    #     legend.group <- "grouped"
+    legend.group <- ""
+    if (type != "Area")
+        legend.group <- "grouped"
 
     ## If line thickness is zero, then we shouldn't show a line; ticks only shown if there's a line (same as Excel)
     ## Tick labels only shown if there's a line too - makes no sense either.
@@ -308,6 +389,13 @@ AreaChart <-   function(y,
     else
         y.tick.marks <- ""
 
+    # If specified no tick marks, then make sure they have no tick length, as this overrides showticks.
+    if (y.tick.marks == "none" | y.tick.length > 0)
+    {
+        y.showticks <- FALSE
+        y.tick.length <- 0
+    }
+
     x.showline <- FALSE
     x.showticklabels <- FALSE
     x.showticks <- FALSE
@@ -324,6 +412,13 @@ AreaChart <-   function(y,
     }
     else
         x.tick.marks <- ""
+
+    # If specified no tick marks, then make sure they have no tick length, as this overrides showticks.
+    if (x.tick.marks == "none" | x.tick.length > 0)
+    {
+        x.showticks <- FALSE
+        x.tick.length <- 0
+    }
 
     ## Resolve numeric tick values based on y.bounds.minimum and y.bounds.maximum, and y.bounds.units.major
     y.tickmode = "auto"
@@ -354,8 +449,8 @@ AreaChart <-   function(y,
     x.autorange = TRUE
 
     x.bounds.manual <- FALSE
-    if (!is.null(x.bounds.minimum) & !is.null(x.bounds.maximum) & !is.null(x.bounds.units.major))
-        x.bounds.manual <- checkBounds(x.bounds.minimum, x.bounds.maximum, x.bounds.units.major)
+    if (!is.null(x.bounds.minimum) | !is.null(x.bounds.maximum) | !is.null(x.bounds.units.major))
+        x.bounds.manual <- FALSE
 
     if (x.bounds.manual == TRUE)
     {
@@ -377,52 +472,26 @@ AreaChart <-   function(y,
     if (x.zero.line.width > 0)
         x.zero.line <- TRUE
 
-    ## Work out number format to use.
-    if (y.tick.format.manual != "")
+    ## Set tick and hover formats
+    if (!y.tick.format.manual == "")
         y.tickformat <- y.tick.format.manual
-    else if (y.tick.format[1] != "")
-    {
-        y.tickformat.vector <- printFormat(y.tick.format)
-        y.tickformat <- y.tickformat.vector[1]
-        y.tickprefix <- y.tickformat.vector[2]
-    }
     else
-        y.tickformat <- ""
+        y.tickformat <- paste(".", y.tick.decimals, "f", sep="")
 
-
-    if (x.tick.format.manual != "")
+    if (!x.tick.format.manual == "")
         x.tickformat <- x.tick.format.manual
-    else if (x.tick.format[1] != "")
-    {
-        x.tickformat.vector <- printFormat(x.tick.format)
-        x.tickformat <- x.tickformat.vector[1]
-        x.tickprefix <- x.tickformat.vector[2]
-    }
     else
-        x.tickformat <- ""
+        x.tickformat <- paste(".", y.tick.decimals, "f", sep="")
 
-    ## Hover number formats
-    if (y.hover.format.manual != "")
-        y.hoverformat <- y.hover.format.manual
-    else if (y.hover.format[1] != "")
-    {
-        y.hoverformat.vector <- printFormat(y.hover.format)
-        y.hoverformat <- y.hoverformat.vector[1]
-        y.hoverprefix <- y.hoverformat.vector[2]
-    }
+    if (!y.hovertext.manual == "")
+        y.hoverformat <- y.hovertext.manual
     else
-        y.hoverformat <- ""
+        y.hoverformat <- paste(".", y.hovertext.decimals, "f", sep="")
 
-    if (x.hover.format.manual != "")
-        x.hoverformat <- x.hover.format.manual
-    else if (x.hover.format[1] != "")
-    {
-        x.hoverformat.vector <- printFormat(x.hover.format)
-        x.hoverformat <- x.hoverformat.vector[1]
-        x.hoverprefix <- x.hoverformat.vector[2]
-    }
+    if (!x.hovertext.manual == "")
+        x.hoverformat <- x.hovertext.manual
     else
-        x.hoverformat <- ""
+        x.hoverformat <- paste(".", x.hovertext.decimals, "f", sep="")
 
     ## Mirror settings
     if (y.mirror == TRUE)
@@ -467,38 +536,44 @@ AreaChart <-   function(y,
     series.line.color <- rep(series.line.color, 100/length(series.line.color))
 
     ## Initiate plotly object
-    p <- plot_ly()
+    p <- plotly::plot_ly()
 
     ## Config options
-    p <- config(displayModeBar = show.modebar)
+    p <- plotly::config(displayModeBar = show.modebar)
 
     ## Add a trace for each row of data in the matrix
     for (a in 1:nrow(chart.matrix))
     {
-        y = as.numeric(chart.matrix[a,])
+        y = as.numeric(chart.matrix[a, ])
         x <- x.labels
 
-        p <- add_trace(p,
+        # if (!hover.include.source.value)
+        #     source.text <- ""
+        # else
+        #     source.text <- source.matrix[a, ]
+
+        p <- plotly::add_trace(p,
                        type = type,
                        x = x,
                        y = y,
                        evaluate = TRUE,
                        fill = fill.bound,
-                       fillcolor = toRGB(colors[a], alpha = transparency),
+                       fillcolor = plotly::toRGB(colors[a], alpha = transparency),
                        line = list(
                            width = series.line.width,
-                           color = toRGB(series.line.color[a], alpha = series.line.transparency)
+                           color = plotly::toRGB(series.line.color[a], alpha = series.line.transparency)
                        ),
                        name = y.labels[a],
-                       # legendgroup = legend.group,
+                       legendgroup = legend.group,
+                       # text = source.text,
                        ## MARKERS
                        mode = series.mode,
                        marker = list(
                            size = series.marker.size,
-                           color = toRGB(series.marker.color[a], alpha = series.marker.transparency),
+                           color = plotly::toRGB(series.marker.color[a], alpha = series.marker.transparency),
                            symbol = series.marker.symbols[a],
                            line = list(
-                               color = toRGB(series.marker.border.color[a], alpha = series.marker.border.transparency),
+                               color = plotly::toRGB(series.marker.border.color[a], alpha = series.marker.border.transparency),
                                width = series.marker.border.width
                            )
                        )
@@ -506,7 +581,7 @@ AreaChart <-   function(y,
     }
 
     ## Set plotly layout styles
-    p <- layout(
+    p <- plotly::layout(
         title = title,
         ## LEGEND
         showlegend = legend.show,
@@ -554,8 +629,8 @@ AreaChart <-   function(y,
             zerolinewidth = y.zero.line.width,
             zerolinecolor = y.zero.line.color,
             tickformat = y.tickformat,
-            tickprefix = y.tickprefix,
-            ticksuffix = y.ticksuffix,
+            tickprefix = y.tick.prefix,
+            ticksuffix = y.tick.suffix,
             autorange = y.autorange,
             side = y.position,
             mirror = y.mirror,
@@ -596,8 +671,8 @@ AreaChart <-   function(y,
             zerolinewidth = x.zero.line.width,
             zerolinecolor = x.zero.line.color,
             tickformat = x.tickformat,
-            tickprefix = x.tickprefix,
-            ticksuffix = x.ticksuffix,
+            tickprefix = x.tick.prefix,
+            ticksuffix = x.tick.suffix,
             autorange = x.autorange,
             side = x.position,
             mirror = x.mirror,
@@ -617,9 +692,14 @@ AreaChart <-   function(y,
             r = margin.right,
             pad = margin.inner.pad
         ),
-        plot_bgcolor = toRGB(plot.fill.color, alpha = plot.fill.transparency),
-        paper_bgcolor = toRGB(chart.fill.color, alpha = chart.fill.transparency),
-        hovermode = hover.mode
+        plot_bgcolor = plotly::toRGB(plot.fill.color, alpha = plot.fill.transparency),
+        paper_bgcolor = plotly::toRGB(chart.fill.color, alpha = chart.fill.transparency),
+        hovermode = hover.mode,
+        font = list(
+            family = title.font.family ,
+            color = title.font.color,
+            size = title.font.size
+        )
     )
 
     ## Return the chart

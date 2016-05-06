@@ -1,4 +1,4 @@
-context("AsChartMatrix")
+# context("AsChartMatrix")
 #  rm(list=ls())
 #
 # x.data = c("A","B","B","C","C")

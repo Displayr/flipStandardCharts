@@ -18,7 +18,7 @@ textPeriodFromDate <- function(x, period = "month")
         return(paste(quarters(x), year.two.digits, sep = "-"))
 
     if (period == "year")
-        return(strftime(x, "%y"))
+        return(strftime(x, "%Y"))
 }
 
 isNumericOrInteger <- function(y)
@@ -41,6 +41,18 @@ numberOfRows <- function(x)
 
 equalNumberOfRows <- function(y, x) {numberOfRows(y) == numberOfRows(x)}
 
+
+#' Test if a matrix is appropriate for charting.
+#'
+#' \code{IsChartMatrix} returns TRUE if the given matrix is suitable for charting, else FALSE.
+#'
+#' @param x A matrix.
+#' @param n.rows The number of rows in the matrix.
+#' @param n.columns The number of columns in the matrix.
+#' @return Logical; if matrix is a chart matrix.
+#' @examples
+#' data("z")
+#' IsChartMatrix(z, nrow(z), ncol(z))
 #' @export
 IsChartMatrix <- function(x, n.rows, n.columns)
 {
@@ -55,14 +67,26 @@ IsChartMatrix <- function(x, n.rows, n.columns)
     isNumericOrInteger(x)
 }
 
-# assignNames <- function(y)
-# {
-#     if (is.null(rownames(y)))
-#         return(paste("Series", 1:nrow(y)))
-#     else
-#         return(paste("Series", 1:ncol(y)))
-# }
-
+#' Converts one or more objects to a chart matrix.
+#'
+#' \code{AsChartMatrix} checks if data is in the appropriate format and
+#' attempts to coerce it to the appropriate format if so required.
+#'
+#' @param y A vector, matrix, list of vectors, data frame, or table.
+#' @param x A vector over which y will be aggregated. Must have the same
+#' number of elements as y.
+#' @param transpose Logical; should the final output be transposed?
+#' @param aggregate.period Period over which date varaibles passed to the x
+#' argument will be aggregated. Defaults to "month", and can also be "quarter"
+#' or "year".
+#' @return A chart matrix with named rows and columns.
+#' @examples
+#' data("y.data")
+#' data("x.data")
+#' data("var1")
+#' data("x.dates")
+#' AsChartMatrix(y = y.data, x = x.data, transpose = FALSE)
+#' AsChartMatrix(y = var1, x = x.dates, transpose = TRUE, aggregate.period = "year")
 #' @export
 AsChartMatrix <- function(y,
                           x = NULL,
@@ -80,12 +104,6 @@ AsChartMatrix <- function(y,
 
         if(transpose)
             return(t(y))
-
-        # if (is.null(rownames(y)))
-        #     rownames(y) <- assignNames(y)
-        #
-        # if (is.null(colnames(y)))
-        #     colnames(y) <- assignNames(y)
 
         return(y)
     }
@@ -106,12 +124,12 @@ AsChartMatrix <- function(y,
     if (is.factor(y) | is.character(y))
         return(xtabs(~ x + y))
 
+    if (inherits(x, "POSIXct"))
+        x <- textPeriodFromDate(x, period = aggregate.period)
+
     y <- aggregate(y, list(x), mean)
 
-    if (inherits(x, "POSIXct"))
-        rownames(y) <- textPeriodFromDate(y[, 1],aggregate.period)
-    else
-        rownames(y) <- y[, 1]
+    rownames(y) <- y[, 1]
 
     return(t(y[, -1, drop = FALSE]))
 }
