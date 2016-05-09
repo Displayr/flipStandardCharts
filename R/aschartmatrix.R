@@ -7,18 +7,44 @@
 # - Column names
 # - Row names if there are more than one rows
 
-textPeriodFromDate <- function(x, period = "month")
+# textPeriodsFromDate <- function(x, period = "month")
+# {
+#     year.two.digits <- strftime(x, "%y")
+#
+#     df <- cbind(strftime(x, "%Y"), quarters(x), paste(strftime(x, "%Y"), quarters(x), sep = ""), substr(months(x), 1, 3), strftime(x,"%m"), strftime(x,"%Y%m"))
+#
+#     return(df)
+# }
+
+aggregatePeriodFromDate <- function(x, period = "month")
 {
     year.two.digits <- strftime(x, "%y")
 
     if (period == "month")
-        return(paste(substr(months(x), 1, 3), year.two.digits, sep = "-"))
+        return(strftime(x,"%Y%m"))
+        #
 
     if (period == "quarter")
-        return(paste(quarters(x), year.two.digits, sep = "-"))
+        return(paste(strftime(x, "%Y"), quarters(x), sep = ""))
+        # return(paste(quarters(x), year.two.digits, sep = "-"))
 
     if (period == "year")
         return(strftime(x, "%Y"))
+}
+
+dateLabelling <- function(y, period = "month")
+{
+    year.two.digits <- substr(y[, 1], 3,4)
+
+    mth <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+    if (period == "month")
+        y[, 1] <- paste(mth[as.integer(substr(y[, 1], 5, 6))], year.two.digits, sep = "-")
+
+    if (period == "quarter")
+        y[, 1] <- paste(substr(y[, 1], 5, 6), year.two.digits, sep = "-")
+
+    y
 }
 
 isNumericOrInteger <- function(y)
@@ -124,10 +150,20 @@ AsChartMatrix <- function(y,
     if (is.factor(y) | is.character(y))
         return(xtabs(~ x + y))
 
+    ## Set dates to numeric values before aggregating to ensure correct sort order
+    date.labelling <- FALSE
     if (inherits(x, "POSIXct"))
-        x <- textPeriodFromDate(x, period = aggregate.period)
+    {
+        x <- aggregatePeriodFromDate(x, period = aggregate.period)
+        date.labelling <- TRUE
+    }
 
+    ## Aggregate (all cases)
     y <- aggregate(y, list(x), mean)
+
+    ## Fix up labelling for aggregated dates
+    if (date.labelling == TRUE)
+        y <- dateLabelling(y, period = aggregate.period)
 
     rownames(y) <- y[, 1]
 

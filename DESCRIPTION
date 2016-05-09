@@ -1,11 +1,11 @@
 Package: flipStandardCharts
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Standard R interactive charts
 Version: 0.1.0
-Author: Who wrote it
+Author: Numbers Pty. Ltd.
 Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Description: Wrapper for use in standard R of plotly interactive charts.
+License: GPL
 LazyData: TRUE
 Encoding: UTF-8
 Imports:

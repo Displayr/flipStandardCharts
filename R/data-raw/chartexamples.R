@@ -43,8 +43,8 @@ x.dates <- as.POSIXct(x.dates/1000, origin = "1970-01-01")
 z <- matrix(1:5, ncol = 1, dimnames = list(x = LETTERS[1:5], series = "Series 1"))
 
 good.examples <- list("A named vector becomes a ChartMatrix" = list(Y = c("A" = 1, "B" = 2, "C" = 3, "D" = 4, "E" = 5), X = NULL, transpose = FALSE, n.row = 1, n.columns = 5),
-                      "A single column table becomes a chart matrix" = list(X = NULL, Y = make.table(x.data, var3), transpose = TRUE, n.row = 5, n.columns = 1),
-                      "A numeric matrix with one column becomes a chart matrix" = list(X = NULL, Y = z, transpose = TRUE, n.row = 5, n.columns = 1),
+                      "A single column table becomes a chart matrix" = list(X = NULL, Y = make.table(x.data, var3), transpose = FALSE, n.row = 5, n.columns = 1),
+                      "A numeric matrix with one column becomes a chart matrix" = list(X = NULL, Y = z, transpose = FALSE, n.row = 5, n.columns = 1),
                       "A table with one row becomes a chart matrix" = list(X = NULL, Y = make.table(var3, x.data, row = FALSE), transpose = TRUE, n.row = 1, n.columns = 5),
                       "One numeric or integer vector and one character vector become a chart matrix" = list(X = x.data, Y = y.data, transpose = FALSE, n.row = 1, n.columns = 5),
                       "One numeric or integer vector and one factor vector become a chart matrix" = list(Y = y.data, X = factor(x.data), transpose = FALSE, n.row = 1, n.columns = 5),

@@ -17,7 +17,7 @@ MeanRowValueDescendingSort <- function(x) {
     x <- cbind(x, means)
     x <- x[order(-means),]
     x <- x[, 1:(ncol(x) - 1)]
-    return(x)
+    return(as.matrix(x))
 }
 
 #' Sorts a matrix by row names.
@@ -33,8 +33,12 @@ MeanRowValueDescendingSort <- function(x) {
 #' AlphabeticRowNames(z, desc = FALSE)
 #' @export
 AlphabeticRowNames <- function(x, desc = TRUE) {
-    x <- x[order(as.vector(rownames(x)), decreasing = desc),]
-    return(x)
+    if (length(rownames(x)) > 0 || length(names(x)) > 0)
+        ifelse(is.matrix(x), x <- x[order(rownames(x), decreasing = desc), ], x <- x[order(names(x), decreasing = desc)])
+    else
+        stop("The input does not have names")
+
+    x
 }
 
 #' Generates a vector of colors based on the number of rows in a matrix
@@ -54,6 +58,9 @@ AlphabeticRowNames <- function(x, desc = TRUE) {
 #' MakeColorGradient(z, red = 192, green = 35, blue = 220)
 #' @export
 MakeColorGradient <- function (x, red, green, blue) {
+    if (!is.matrix(x))
+        stop("Input is not a matrix")
+
     col.vector <- ""
     number.rows <- nrow(x) + 1
 
@@ -73,7 +80,7 @@ MakeColorGradient <- function (x, red, green, blue) {
     names(col.vector) <- rownames(ordered.matrix)
 
     ## Sort the colour vector
-    col.vector <- AlphabeticRowNames(as.matrix(col.vector))
+    col.vector <- AlphabeticRowNames(col.vector)
 
-    return(col.vector)
+    col.vector
 }

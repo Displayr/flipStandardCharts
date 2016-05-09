@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "## Color gradient function\n\n#' Sorts a matrix in descending order by the mean row value.\n#'\n#' \\code{MeanRowValueDescendingSort} returns a matrix where the rows\n#' have been sorted in descdening order based on the mean value of\n#' each row.\n#'\n#' @param x A matrix.\n#' @return A sorted matrix.\n#' @examples\n#' data(\"z\")\n#' MeanRowValueDescendingSort(z)\n#' @export\nMeanRowValueDescendingSort <- function(x) {\n    means <- apply(x, 1, function(z) {mean(z)})\n    x <- cbind(x, means)\n    x <- x[order(-means),]\n    x <- x[, 1:(ncol(x) - 1)]\n    return(as.matrix(x))\n}\n\n#' Sorts a matrix by row names.\n#'\n#' \\code{AlphabeticRowNames} returns a matrix where the rows have been sorted\n#' alphabetically by the row names\n#'\n#' @param x A matrix.\n#' @param desc Logic; if TRUE then sort order is descending, if FALSE ascending.\n#' @return A sorted matrix.\n#' @examples\n#' data(\"z\")\n#' AlphabeticRowNames(z, desc = FALSE)\n#' @export\nAlphabeticRowNames <- function(x, desc = TRUE) {\n    if (length(rownames(x)) > 0 || length(names(x)) > 0)\n        ifelse(is.matrix(x), x <- x[order(rownames(x), decreasing = desc), ], x <- x[order(names(x), decreasing = desc)])\n    else\n        stop(\"The input does not have names\")\n\n    x\n}\n\n#' Generates a vector of colors based on the number of rows in a matrix\n#'\n#' \\code{MakeColorGradient} Gives a named-elements vector of colours for\n#' each row in a matrix, where the base colour is specified, and the alpha\n#' value gradually decreases based on the row-mean of the matrix,\n#' and where the colour vector is returned sorted alphabetically\n#'\n#' @param x A matrix.\n#' @param red An integer between 0 and 255.\n#' @param green An integer between 0 and 255.\n#' @param blue An integer between 0 and 255.\n#' @return A named elements vector of colors with decreasing alpha values.\n#' @examples\n#' data(\"z\")\n#' MakeColorGradient(z, red = 192, green = 35, blue = 220)\n#' @export\nMakeColorGradient <- function (x, red, green, blue) {\n    if (!is.matrix(x))\n        stop(\"Input is not a matrix\")\n\n    col.vector <- \"\"\n    number.rows <- nrow(x) + 1\n\n    for (i in 1:nrow(x)) {\n        red.factor <- ((255 - red) / number.rows) * i\n        green.factor <- ((255 - green) / number.rows) * i\n        blue.factor <- ((255 - blue) / number.rows) * i\n\n        col.vector <- c(col.vector, grDevices::rgb(red + red.factor, green + green.factor, blue + blue.factor, 255, maxColorValue = 255))\n    }\n\n    ## Sort the matrix by mean\n    ordered.matrix <- MeanRowValueDescendingSort(x)\n\n    ## Assign matrix row names to col.vector\n    col.vector <- col.vector[2:length(col.vector)]\n    names(col.vector) <- rownames(ordered.matrix)\n\n    ## Sort the colour vector\n    col.vector <- AlphabeticRowNames(col.vector)\n\n    col.vector\n}\n",
+    "created" : 1462754205642.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1239011709",
+    "id" : "5F85275C",
+    "lastKnownWriteTime" : 1462757457,
+    "last_content_update" : 1462757457683,
+    "path" : "~/GitHub/flipStandardCharts/R/seriescolorgradient.R",
+    "project_path" : "R/seriescolorgradient.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 5,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

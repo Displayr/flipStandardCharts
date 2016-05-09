@@ -245,7 +245,7 @@ AreaChart <-   function(y,
                          y.tick.format.manual = "",                        ## Overrides tick.prefix, suffix and decimals; See https://github.com/mbostock/d3/wiki/Formatting#numbers or https://docs.python.org/release/3.1.3/library/string.html#formatspec
                          y.hovertext.suffix = "",                          ## Y-axis hover text number suffix
                          y.hovertext.prefix = "",                          ## Y-axis hover text number prefix
-                         y.hovertext.decimals = 1,                         ## Y-axis hover text decimal places
+                         y.hovertext.decimals = 0,                         ## Y-axis hover text decimal places
                          y.hovertext.manual = "",                          ## Overrides hovertext.prefix, suffix and decimals; See https://github.com/mbostock/d3/wiki/Formatting#numbers or https://docs.python.org/release/3.1.3/library/string.html#formatspec
                          y.tick.angle = 0,                                           ## Y-axis tick label angle in degrees.  90 = vertical; 0 = horizontal                         y.tick.format = c("",""),                         ## Uses above to set pre-specified formats, can be:  "n" (number), "%", "$", "£", second value is number of total digits showing (not decimals...)
                          y.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),      ## Y-axis tick label font color
@@ -275,7 +275,7 @@ AreaChart <-   function(y,
                          x.tick.format.manual = "",                        ## See https://github.com/mbostock/d3/wiki/Formatting#numbers or https://docs.python.org/release/3.1.3/library/string.html#formatspec
                          x.hovertext.suffix = "",                          ## X-axis hover text number suffix
                          x.hovertext.prefix = "",                          ## X-axis hover text number prefix
-                         x.hovertext.decimals = 1,                         ## X-axis hover text decimal places
+                         x.hovertext.decimals = 0,                         ## X-axis hover text decimal places
                          x.hovertext.manual = "",                          ## Overrides hovertext.prefix, suffix and decimals; See https://github.com/mbostock/d3/wiki/Formatting#numbers or https://docs.python.org/release/3.1.3/library/string.html#formatspec
                          x.tick.angle = 0,				                   ## X-axis tick label angle in degrees.  90 = vertical; 0 = horizontal
                          x.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),	   ## Y-axis tick label font color
@@ -299,8 +299,6 @@ AreaChart <-   function(y,
                          show.modebar = FALSE                              ## T/F - show the zoom menu
 )
 {
-    # ## Get dependencies
-
     ## Make a chart matrix
     chart.matrix <- AsChartMatrix(y, x, transpose = transpose, aggregate.period = aggregate.period)
 
@@ -312,15 +310,15 @@ AreaChart <-   function(y,
     if (transparency == 1 && type == "Area")
         warning("Displaying this chart without transparent series will make it difficult to read as some data series may be obscured.")
 
-    ## Create text matrix of source data if required for hover
-    # if (hover.include.source.value)
-    # {
-    #     source.matrix <- chart.matrix
-    #     if (hover.include.source.value.percent)
-    #         source.matrix <- source.matrix * 100
-    #
-    #     source.matrix <- matrix(paste(hover.include.source.value.prefix, " ", source.matrix, hover.include.source.value.suffix, sep = ""), nrow = nrow(chart.matrix), ncol = ncol(chart.matrix))
-    # }
+    # Create text matrix of source data if required for hover
+    if (hover.include.source.value)
+    {
+        source.matrix <- chart.matrix
+        if (hover.include.source.value.percent)
+            source.matrix <- source.matrix * 100
+
+        source.matrix <- matrix(paste(hover.include.source.value.prefix, " ", source.matrix, hover.include.source.value.suffix, sep = ""), nrow = nrow(chart.matrix), ncol = ncol(chart.matrix))
+    }
 
     ## Change the matrix data according to requirements of the chart type
     if (type == "Stacked Area")
@@ -473,25 +471,13 @@ AreaChart <-   function(y,
         x.zero.line <- TRUE
 
     ## Set tick and hover formats
-    if (!y.tick.format.manual == "")
-        y.tickformat <- y.tick.format.manual
-    else
-        y.tickformat <- paste(".", y.tick.decimals, "f", sep="")
+    ifelse(y.tick.format.manual == "", y.tickformat <- paste(".", y.tick.decimals, "f", sep=""), y.tickformat <- y.tick.format.manual)
 
-    if (!x.tick.format.manual == "")
-        x.tickformat <- x.tick.format.manual
-    else
-        x.tickformat <- paste(".", y.tick.decimals, "f", sep="")
+    ifelse(x.tick.format.manual == "", x.tickformat <- paste(".", x.tick.decimals, "f", sep=""), x.tickformat <- x.tick.format.manual)
 
-    if (!y.hovertext.manual == "")
-        y.hoverformat <- y.hovertext.manual
-    else
-        y.hoverformat <- paste(".", y.hovertext.decimals, "f", sep="")
+    ifelse(y.hovertext.manual == "", y.hoverformat <- paste(".", y.hovertext.decimals, "f", sep=""), y.hoverformat <- y.hovertext.manual)
 
-    if (!x.hovertext.manual == "")
-        x.hoverformat <- x.hovertext.manual
-    else
-        x.hoverformat <- paste(".", x.hovertext.decimals, "f", sep="")
+    ifelse(x.hovertext.manual == "", x.hoverformat <- paste(".", x.hovertext.decimals, "f", sep=""), x.hoverformat <- x.hovertext.manual)
 
     ## Mirror settings
     if (y.mirror == TRUE)
@@ -547,10 +533,10 @@ AreaChart <-   function(y,
         y = as.numeric(chart.matrix[a, ])
         x <- x.labels
 
-        # if (!hover.include.source.value)
-        #     source.text <- ""
-        # else
-        #     source.text <- source.matrix[a, ]
+        if (!hover.include.source.value)
+            source.text <- ""
+        else
+            source.text <- source.matrix[a, ]
 
         p <- plotly::add_trace(p,
                        type = type,
@@ -565,7 +551,7 @@ AreaChart <-   function(y,
                        ),
                        name = y.labels[a],
                        legendgroup = legend.group,
-                       # text = source.text,
+                       text = source.text,
                        ## MARKERS
                        mode = series.mode,
                        marker = list(
