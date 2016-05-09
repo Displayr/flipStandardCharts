@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "## Takes a matrix, and returns a matrix of either a cumulative sum, or a cumulative sum of percentages.\ncum.data <- function(x, output = \"cumulative.percentage\") {\n    if (output == \"cumulative.sum\"){\n        x <- apply(x, 2, function(z) {cumsum(z)})\n    } else if (output == \"cumulative.percentage\") {\n        x <- apply(x, 2, function(z) {cumsum(prop.table(z))})\n    } else if (output == \"column.percentage\") {\n        x <- apply(x, 2, function(z) {prop.table(z)})\n    }\n\n    return(x)\n}\n",
+    "created" : 1462764385655.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1709247661",
+    "id" : "6F258D29",
+    "lastKnownWriteTime" : 1462521654,
+    "last_content_update" : 1462521654,
+    "path" : "~/GitHub/flipStandardCharts/R/globalcharting.R",
+    "project_path" : "R/globalcharting.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

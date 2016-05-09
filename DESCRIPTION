@@ -6,6 +6,7 @@ Author: Numbers Pty. Ltd.
 Maintainer: Who to complain to <yourfault@somewhere.net>
 Description: Wrapper for use in standard R of plotly interactive charts.
 License: GPL
+Depends: R (>= 2.10)
 LazyData: TRUE
 Encoding: UTF-8
 Imports:

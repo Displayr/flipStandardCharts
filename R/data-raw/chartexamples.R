@@ -43,8 +43,8 @@ x.dates <- as.POSIXct(x.dates/1000, origin = "1970-01-01")
 z <- matrix(1:5, ncol = 1, dimnames = list(x = LETTERS[1:5], series = "Series 1"))
 
 good.examples <- list("A named vector becomes a ChartMatrix" = list(Y = c("A" = 1, "B" = 2, "C" = 3, "D" = 4, "E" = 5), X = NULL, transpose = FALSE, n.row = 1, n.columns = 5),
-                      "A single column table becomes a chart matrix" = list(X = NULL, Y = make.table(x.data, var3), transpose = FALSE, n.row = 5, n.columns = 1),
-                      "A numeric matrix with one column becomes a chart matrix" = list(X = NULL, Y = z, transpose = FALSE, n.row = 5, n.columns = 1),
+                      "A single column table becomes a chart matrix" = list(X = NULL, Y = make.table(x.data, var3), transpose = FALSE, n.row = 1, n.columns = 5),
+                      "A numeric matrix with one column becomes a chart matrix" = list(X = NULL, Y = z, transpose = FALSE, n.row = 1, n.columns = 5),
                       "A table with one row becomes a chart matrix" = list(X = NULL, Y = make.table(var3, x.data, row = FALSE), transpose = TRUE, n.row = 1, n.columns = 5),
                       "One numeric or integer vector and one character vector become a chart matrix" = list(X = x.data, Y = y.data, transpose = FALSE, n.row = 1, n.columns = 5),
                       "One numeric or integer vector and one factor vector become a chart matrix" = list(Y = y.data, X = factor(x.data), transpose = FALSE, n.row = 1, n.columns = 5),
@@ -70,15 +70,15 @@ bad.examples <- list("Y cannot take an unnamed numeric vector without an X input
                      "Y cannot take a list of multiple character vectors" = list(X = NULL, Y = list(LETTERS[1:5], LETTERS[6:10], LETTERS[11:15]), transpose = FALSE, n.row = 1, n.columns = 3))
 
 errorAsChartMatrix.examples <- list("Y cannot take a data frame of logic vectors (unnamed)" = list(X = NULL, Y = data.frame(cbind(logic.vector, logic.vector, logic.vector))),
-                       "Y cannot take a data frame of multiple character vectors" = list(X = NULL, Y = data.frame(cbind(LETTERS[1:5], LETTERS[6:10], LETTERS[11:15]))),
-                       "Y cannot take a data frame of mixed integer vectors and factors" = list(X = NULL, Y = data.frame(cbind(factor.a, x.data))),
-                       "Y cannot take a data frame of mixed integer vectors and factors" = list(X = NULL, Y = data.frame(cbind(factor.a, y.data))),
-                       "Y cannot take a data frame of multiple factors" = list(X = NULL, Y = data.frame(factor.a, factor.b)),
-                       "Y cannot take a data frame of differently named vectors" = list(X = NULL, Y = data.frame(cbind(named.vector.a, named.vector.b))),
-                       "Y cannot take a data frame of logic vectors (named)" = list(X = NULL, Y = data.frame(cbind(logic.vector.named, logic.vector.named, logic.vector.named))),
-                       "X cannot take a logic vector" = list(Y = var1, X = logic.vector, n.row = 1, n.columns = 5),
-                       "X cannot take a data frame" = list(Y = var1, X = data.frame(cbind(var1, var2, var3))),
-                       "X cannot take a list" = list(Y = var1, X = list(var1, var2, var3)))
+                                    "Y cannot take a data frame of multiple character vectors" = list(X = NULL, Y = data.frame(cbind(LETTERS[1:5], LETTERS[6:10], LETTERS[11:15]))),
+                                    "Y cannot take a data frame of mixed integer vectors and factors" = list(X = NULL, Y = data.frame(cbind(factor.a, x.data))),
+                                    "Y cannot take a data frame of mixed integer vectors and factors" = list(X = NULL, Y = data.frame(cbind(factor.a, y.data))),
+                                    "Y cannot take a data frame of multiple factors" = list(X = NULL, Y = data.frame(factor.a, factor.b)),
+                                    "Y cannot take a data frame of differently named vectors" = list(X = NULL, Y = data.frame(cbind(named.vector.a, named.vector.b))),
+                                    "Y cannot take a data frame of logic vectors (named)" = list(X = NULL, Y = data.frame(cbind(logic.vector.named, logic.vector.named, logic.vector.named))),
+                                    "X cannot take a logic vector" = list(Y = var1, X = logic.vector, n.row = 1, n.columns = 5),
+                                    "X cannot take a data frame" = list(Y = var1, X = data.frame(cbind(var1, var2, var3))),
+                                    "X cannot take a list" = list(Y = var1, X = list(var1, var2, var3)))
 
 errorIsChartMatrix.examples <- list("Y cannot take a named logic vector" = list(X = NULL, Y = logic.vector.named, transpose = FALSE, n.row = 1, n.columns = 5))
 
@@ -103,3 +103,4 @@ available.fonts <- c("Arial Black", "Arial", "Comic Sans MS", "Courier New", "Ge
 
 
 devtools::use_data(qColors, plotlySymbols, available.fonts, x.data, y.data, var1, var2, var3, var4, var5, alpha.five, logic.vector, logic.vector.named, named.vector.a, named.vector.b, factor.a, factor.b, x.dates, z, good.examples, bad.examples, errorAsChartMatrix.examples, errorIsChartMatrix.examples, internal = FALSE, overwrite = TRUE)
+devtools::use_data(qColors, plotlySymbols, available.fonts, internal = TRUE, overwrite = FALSE)
