@@ -60,7 +60,7 @@ isNumericOrInteger <- function(y)
 
 numberOfRows <- function(x)
 {
-    if (!is.matrix(x))
+    if (!is.matrix(x) && !is.data.frame(x) && !is.list(x))
         attributes(x) <- NULL
 
     if (is.vector(x) | inherits(x, "POSIXct"))
