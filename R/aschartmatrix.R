@@ -60,7 +60,10 @@ isNumericOrInteger <- function(y)
 
 numberOfRows <- function(x)
 {
-    if (is.vector(x) | is.factor(x) | inherits(x, "POSIXct"))
+    if (!is.matrix(x))
+        attributes(x) <- NULL
+
+    if (is.vector(x) | inherits(x, "POSIXct"))
         return(length(x))
     nrow(x)
 }
@@ -167,5 +170,9 @@ AsChartMatrix <- function(y,
 
     rownames(y) <- y[, 1]
 
-    return(t(y[, -1, drop = FALSE]))
+    y <- y[, -1, drop = FALSE]
+    if (!transpose)
+        return(t(y))
+
+    return(y)
 }

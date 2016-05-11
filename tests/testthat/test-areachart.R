@@ -5,8 +5,8 @@ for (i in 1:length(good.examples))
 {
     print(AreaChart(y = good.examples[[i]]$Y, x = good.examples[[i]]$X, type = "Area", transpose = good.examples[[i]]$transpose, title = names(good.examples)[i]), hover.include.source.value = TRUE)
 
-#     cat(paste("Press [enter] to continue (test ", i, "/", length(good.examples), ").", sep = ""))
-#     line <- readline()
+    # cat(paste("Press [enter] to continue (test ", i, "/", length(good.examples), ").", sep = ""))
+    # line <- readline()
 }
 
 
@@ -28,7 +28,6 @@ for (i in 1:length(good.examples))
 #           transparency = 0.4,
 #           transpose = TRUE,
 #           colors = myCols,
-#           y.tick.format = c("%","2"),
 #           series.line.width = 1,
 #           series.line.color = myLineCols,
 #           series.marker.show = "none",
@@ -37,7 +36,7 @@ for (i in 1:length(good.examples))
 #           y.bounds.maximum = 1.01,
 #           y.bounds.units.major = 0.1)
 #
-#
+
 #
 # ##### JUNK STYLE
 # a.matrix <- rbind(c(50,70,70,100,80,90,90), c(50,50,30,40,70,70,90), c(30,30,50,70,40,50,50), c(0,10,10,30,20,30,10))
@@ -99,8 +98,8 @@ for (i in 1:length(good.examples))
 # AreaChart(a.matrix,
 #           type = "Area")
 #
-# ##### 100% Stacked area chart example
-# ## Read in data
+##### 100% Stacked area chart example
+## Read in data
 # a.matrix <- as.matrix(read.csv("C:/R/consumerspending.csv", header = TRUE, row.names = 1))
 # ## Figure out colours
 # col.scheme <- MakeColorGradient(a.matrix,112,48,160)
@@ -113,7 +112,6 @@ for (i in 1:length(good.examples))
 #           colors = col.scheme,
 #           transpose = TRUE,
 #           transparency = 1,
-#           y.tick.format = c("%",1),
 #           legend.sort.order = "reverse",
 #           y.position = "right",
 #           y.hovertext.manual = "%")
@@ -121,7 +119,7 @@ for (i in 1:length(good.examples))
 # AreaChart(a.matrix,
 #           type = "100% Stacked Area")
 #
-# ## Excel equivalent "Stacked AC"
+## Excel equivalent "Stacked AC"
 # a.matrix <- as.matrix(read.csv("C:/R/resources.csv", header = TRUE, row.names = 1))
 #
 # AreaChart(a.matrix,
@@ -131,7 +129,7 @@ for (i in 1:length(good.examples))
 #           transparency = 1,
 #           legend.sort.order = "reverse",
 #           hover.mode = "x",
-#           y.tick.decimals = 3,
+#           y.tick.decimals = 2,
 #           hover.include.source.value = TRUE,
 #           hover.include.source.value.prefix = "Staff count:",
 #           x.hovertext.decimals = 0,

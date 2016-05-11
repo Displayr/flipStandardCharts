@@ -26,9 +26,9 @@ AreaChart(y, x = NULL, transpose = FALSE, aggregate.period = "month",
   y.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
   y.position = "left", y.mirror = FALSE, y.grid.width = 1,
   y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
-  y.tick.suffix = "", y.tick.prefix = "", y.tick.decimals = 1,
+  y.tick.suffix = "", y.tick.prefix = "", y.tick.decimals = 0,
   y.tick.format.manual = "", y.hovertext.suffix = "",
-  y.hovertext.prefix = "", y.hovertext.decimals = 0,
+  y.hovertext.prefix = "", y.hovertext.decimals = 2,
   y.hovertext.manual = "", y.tick.angle = 0, y.tick.font.color = rgb(0, 0,
   0, maxColorValue = 255), y.tick.font.family = "Arial",
   y.tick.font.size = 10, x.title = "", x.title.font.color = rgb(44, 44,
@@ -40,15 +40,15 @@ AreaChart(y, x = NULL, transpose = FALSE, aggregate.period = "month",
   x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
   x.position = "bottom", x.mirror = FALSE, x.grid.width = 0,
   x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
-  x.tick.suffix = "", x.tick.prefix = "", x.tick.decimals = 1,
+  x.tick.suffix = "", x.tick.prefix = "", x.tick.decimals = 0,
   x.tick.format.manual = "", x.hovertext.suffix = "",
-  x.hovertext.prefix = "", x.hovertext.decimals = 0,
+  x.hovertext.prefix = "", x.hovertext.decimals = 2,
   x.hovertext.manual = "", x.tick.angle = 0, x.tick.font.color = rgb(0, 0,
   0, maxColorValue = 255), x.tick.font.family = "Arial",
-  x.tick.font.size = 10, series.marker.show = "none",
-  series.marker.color = qColors, series.marker.transparency = 1,
-  series.marker.size = 6, series.marker.border.width = 1,
-  series.marker.border.color = qColors,
+  x.tick.font.size = 10, x.tick.label.autoformat = TRUE,
+  series.marker.show = "none", series.marker.color = qColors,
+  series.marker.transparency = 1, series.marker.size = 6,
+  series.marker.border.width = 1, series.marker.border.color = qColors,
   series.marker.border.transparency = 1, series.line.width = 0,
   series.line.color = qColors, series.line.transparency = 1,
   hover.mode = "closest", hover.include.source.value = FALSE,
@@ -297,6 +297,9 @@ rgb(0, 0, 0, max = 255)).}
 \item{x.tick.font.family}{Character; x-axis tick label font family}
 
 \item{x.tick.font.size}{Integer; x-axis tick label font size}
+
+\item{x.tick.label.autoformat}{Logical; whether to apply built-in auto-
+formatting of long (> 15 characters) text labels on the x-axis}
 
 \item{series.marker.show}{Can be "none", "automatic" or a vector referencing
 the plotly symbol dictionary using either numerics or strings.}

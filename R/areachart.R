@@ -154,6 +154,8 @@
 #' rgb(0, 0, 0, max = 255)).
 #' @param x.tick.font.family Character; x-axis tick label font family
 #' @param x.tick.font.size Integer; x-axis tick label font size
+#' @param x.tick.label.autoformat Logical; whether to apply built-in auto-
+#' formatting of long (> 15 characters) text labels on the x-axis
 #' @param series.marker.show Can be "none", "automatic" or a vector referencing
 #' the plotly symbol dictionary using either numerics or strings.
 #' @param series.marker.color Vector of colors in RGB format to use for the
@@ -241,11 +243,11 @@ AreaChart <-   function(y,
                          y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                          y.tick.suffix = "",
                          y.tick.prefix = "",
-                         y.tick.decimals = 1,
+                         y.tick.decimals = 0,
                          y.tick.format.manual = "",
                          y.hovertext.suffix = "",
                          y.hovertext.prefix = "",
-                         y.hovertext.decimals = 0,
+                         y.hovertext.decimals = 2,
                          y.hovertext.manual = "",
                          y.tick.angle = 0,
                          y.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),
@@ -271,16 +273,17 @@ AreaChart <-   function(y,
                          x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                          x.tick.suffix = "",
                          x.tick.prefix = "",
-                         x.tick.decimals = 1,
+                         x.tick.decimals = 0,
                          x.tick.format.manual = "",
                          x.hovertext.suffix = "",
                          x.hovertext.prefix = "",
-                         x.hovertext.decimals = 0,
+                         x.hovertext.decimals = 2,
                          x.hovertext.manual = "",
                          x.tick.angle = 0,
                          x.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),
                          x.tick.font.family = "Arial",
                          x.tick.font.size = 10,
+                         x.tick.label.autoformat = TRUE,
                          series.marker.show = "none",
                          series.marker.color = qColors,
                          series.marker.transparency = 1,
@@ -332,6 +335,16 @@ AreaChart <-   function(y,
 
     if (is.null(y.labels))
         y.labels <- rownames(chart.matrix)
+
+    ## If no angle set for x.tick.angle and x.labels are > 15 characters,
+    tally <- sapply(x.labels, function(x) nchar(x))
+    if (max(tally) > 15 && x.tick.label.autoformat == TRUE)
+    {
+        x.tick.angle <- 315
+        x.labels <- autoFormatLongLabels(x.labels)
+        if (margin.bottom == 80)
+            margin.bottom <- 100
+    }
 
     ## Determine whether to draw to zero y (overlapping area chart) or to next y (for stacked)
     if (type == "Area")
@@ -478,6 +491,10 @@ AreaChart <-   function(y,
     ifelse(y.hovertext.manual == "", y.hoverformat <- paste(".", y.hovertext.decimals, "f", sep=""), y.hoverformat <- y.hovertext.manual)
 
     ifelse(x.hovertext.manual == "", x.hoverformat <- paste(".", x.hovertext.decimals, "f", sep=""), x.hoverformat <- x.hovertext.manual)
+
+    ## If it's a 100% Stacked Area chart, and no options have been specified for y.tick.format, then set to %
+    if (type == "100% Stacked Area" && y.tick.format.manual == "" && y.tick.suffix == "" && y.tick.decimals == 0)
+        y.tickformat <- "%"
 
     ## Mirror settings
     if (y.mirror == TRUE)

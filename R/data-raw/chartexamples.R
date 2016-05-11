@@ -51,8 +51,8 @@ good.examples <- list("A named vector becomes a ChartMatrix" = list(Y = c("A" = 
                       "One numeric or integer vector and one ordered factor vector become a chart matrix" = list(Y = y.data, X = as.ordered(x.data), transpose = FALSE, n.row = 1, n.columns = 5),
                       "One or more numeric or integer vector(s) in a list and one character vector become a chart matrix" = list(Y = list(A = var1, B = var1, C = var1, D = var1, E = var1), X = alpha.five, transpose = FALSE, n.row = 5, n.columns = 5),
                       "One or more numeric or integer vector(s) in a data frame and one character vector become a chart matrix" = list(Y = cbind(var1, var1, var1, var1, var1), X = alpha.five, transpose = FALSE, n.row = 5, n.columns = 5),
-                      "One or more factors with the same levels in a data frame become a chart matrix" = list(X = factor.a, Y = factor.a, transpose = FALSE, n.row = 5, n.columns = 5),
-                      "One numeric or integer variable and one date variable become a chart matrix" = list(Y = var1, X = x.dates, transpose = TRUE, n.row = 1, n.columns = 5))
+                      "One or more factors with the same levels become a chart matrix" = list(X = factor.a, Y = factor.a, transpose = FALSE, n.row = 5, n.columns = 5),
+                      "One numeric or integer variable and one date variable become a chart matrix" = list(Y = var1, X = x.dates, transpose = FALSE, n.row = 1, n.columns = 5))
 
 bad.examples <- list("Y cannot take an unnamed numeric vector without an X input" = list(X = NULL, Y = y.data, transpose = FALSE, n.row = 1, n.columns = 5),
                      "Y cannot take an unnamed logic vector regardless of X-value" = list(X = NULL, Y = logic.vector, transpose = FALSE, n.row = 1, n.columns = 5),
@@ -103,4 +103,4 @@ available.fonts <- c("Arial Black", "Arial", "Comic Sans MS", "Courier New", "Ge
 
 
 devtools::use_data(qColors, plotlySymbols, available.fonts, x.data, y.data, var1, var2, var3, var4, var5, alpha.five, logic.vector, logic.vector.named, named.vector.a, named.vector.b, factor.a, factor.b, x.dates, z, good.examples, bad.examples, errorAsChartMatrix.examples, errorIsChartMatrix.examples, internal = FALSE, overwrite = TRUE)
-devtools::use_data(qColors, plotlySymbols, available.fonts, internal = TRUE, overwrite = FALSE)
+devtools::use_data(qColors, plotlySymbols, available.fonts, internal = TRUE, overwrite = TRUE)
