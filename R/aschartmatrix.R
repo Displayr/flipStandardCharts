@@ -172,7 +172,7 @@ AsChartMatrix <- function(y,
 
     y <- y[, -1, drop = FALSE]
     if (!transpose)
-        return(t(y))
+        return(y)
 
-    return(y)
+    return(t(y))
 }

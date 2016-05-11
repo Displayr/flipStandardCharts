@@ -188,7 +188,7 @@
 #' @examples
 #' data("y.data")
 #' data("x.data")
-#' AreaChart(y = y.data, x = x.data, transpose = FALSE)
+#' AreaChart(y = y.data, x = x.data, transpose = TRUE)
 #' @export
 AreaChart <-   function(y,
                          x = NULL,

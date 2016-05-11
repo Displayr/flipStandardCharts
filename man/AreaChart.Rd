@@ -352,6 +352,6 @@ point value by 100.}
 \examples{
 data("y.data")
 data("x.data")
-AreaChart(y = y.data, x = x.data, transpose = FALSE)
+AreaChart(y = y.data, x = x.data, transpose = TRUE)
 }
 

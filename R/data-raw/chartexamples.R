@@ -46,13 +46,13 @@ good.examples <- list("A named vector becomes a ChartMatrix" = list(Y = c("A" = 
                       "A single column table becomes a chart matrix" = list(X = NULL, Y = make.table(x.data, var3), transpose = FALSE, n.row = 1, n.columns = 5),
                       "A numeric matrix with one column becomes a chart matrix" = list(X = NULL, Y = z, transpose = FALSE, n.row = 1, n.columns = 5),
                       "A table with one row becomes a chart matrix" = list(X = NULL, Y = make.table(var3, x.data, row = FALSE), transpose = TRUE, n.row = 1, n.columns = 5),
-                      "One numeric or integer vector and one character vector become a chart matrix" = list(X = x.data, Y = y.data, transpose = FALSE, n.row = 1, n.columns = 5),
-                      "One numeric or integer vector and one factor vector become a chart matrix" = list(Y = y.data, X = factor(x.data), transpose = FALSE, n.row = 1, n.columns = 5),
-                      "One numeric or integer vector and one ordered factor vector become a chart matrix" = list(Y = y.data, X = as.ordered(x.data), transpose = FALSE, n.row = 1, n.columns = 5),
-                      "One or more numeric or integer vector(s) in a list and one character vector become a chart matrix" = list(Y = list(A = var1, B = var1, C = var1, D = var1, E = var1), X = alpha.five, transpose = FALSE, n.row = 5, n.columns = 5),
-                      "One or more numeric or integer vector(s) in a data frame and one character vector become a chart matrix" = list(Y = cbind(var1, var1, var1, var1, var1), X = alpha.five, transpose = FALSE, n.row = 5, n.columns = 5),
-                      "One or more factors with the same levels become a chart matrix" = list(X = factor.a, Y = factor.a, transpose = FALSE, n.row = 5, n.columns = 5),
-                      "One numeric or integer variable and one date variable become a chart matrix" = list(Y = var1, X = x.dates, transpose = FALSE, n.row = 1, n.columns = 5))
+                      "One numeric or integer vector and one character vector become a chart matrix" = list(X = x.data, Y = y.data, transpose = TRUE, n.row = 1, n.columns = 5),
+                      "One numeric or integer vector and one factor vector become a chart matrix" = list(Y = y.data, X = factor(x.data), transpose = TRUE, n.row = 1, n.columns = 5),
+                      "One numeric or integer vector and one ordered factor vector become a chart matrix" = list(Y = y.data, X = as.ordered(x.data), transpose = TRUE, n.row = 1, n.columns = 5),
+                      "One or more numeric or integer vector(s) in a list and one character vector become a chart matrix" = list(Y = list(A = var1, B = var1, C = var1, D = var1, E = var1), X = alpha.five, transpose = TRUE, n.row = 5, n.columns = 5),
+                      "One or more numeric or integer vector(s) in a data frame and one character vector become a chart matrix" = list(Y = cbind(var1, var1, var1, var1, var1), X = alpha.five, transpose = TRUE, n.row = 5, n.columns = 5),
+                      "One or more factors with the same levels become a chart matrix" = list(X = factor.a, Y = factor.a, transpose = TRUE, n.row = 5, n.columns = 5),
+                      "One numeric or integer variable and one date variable become a chart matrix" = list(Y = var1, X = x.dates, transpose = TRUE, n.row = 1, n.columns = 5))
 
 bad.examples <- list("Y cannot take an unnamed numeric vector without an X input" = list(X = NULL, Y = y.data, transpose = FALSE, n.row = 1, n.columns = 5),
                      "Y cannot take an unnamed logic vector regardless of X-value" = list(X = NULL, Y = logic.vector, transpose = FALSE, n.row = 1, n.columns = 5),
