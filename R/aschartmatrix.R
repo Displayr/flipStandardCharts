@@ -202,6 +202,10 @@ AsChartMatrix <- function(y,
         y <- formatDateRowNames(y, period = aggregate.period)
 
     y <- y[, -1, drop = FALSE]
+
+    if (ncol(y) == 1)
+        transpose <- TRUE
+
     if (!transpose)
         return(y)
 

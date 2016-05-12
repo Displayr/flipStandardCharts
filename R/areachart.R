@@ -345,6 +345,8 @@ AreaChart <-   function(y,
         if (margin.bottom == 80)
             margin.bottom <- 100
     }
+    else if (sum(tally) > 100 && x.tick.label.autoformat == TRUE)
+        x.tick.angle <- 315
 
     ## Determine whether to draw to zero y (overlapping area chart) or to next y (for stacked)
     if (type == "Area")
@@ -431,12 +433,26 @@ AreaChart <-   function(y,
         x.tick.length <- 0
     }
 
+    ## Set tick and hover formats
+    ifelse(y.tick.format.manual == "", y.tickformat <- paste(".", y.tick.decimals, "f", sep=""), y.tickformat <- y.tick.format.manual)
+
+    ifelse(x.tick.format.manual == "", x.tickformat <- paste(".", x.tick.decimals, "f", sep=""), x.tickformat <- x.tick.format.manual)
+
+    ifelse(y.hovertext.manual == "", y.hoverformat <- paste(".", y.hovertext.decimals, "f", sep=""), y.hoverformat <- y.hovertext.manual)
+
+    ifelse(x.hovertext.manual == "", x.hoverformat <- paste(".", x.hovertext.decimals, "f", sep=""), x.hoverformat <- x.hovertext.manual)
+
+    ## If it's a 100% Stacked Area chart, and no options have been specified for y.tick.format, then set to %
+    if (type == "100% Stacked Area" && y.tick.format.manual == "" && y.tick.suffix == "" && y.tick.decimals == 0)
+        y.tickformat <- "%"
+
     ## Resolve numeric tick values based on y.bounds.minimum and y.bounds.maximum, and y.bounds.units.major
     y.tickmode = "auto"
     y.tickvals = integer()
     y.ticktext = character()
     y.range = integer()
     y.autorange = TRUE
+    y.rangemode = "tozero"
 
     y.bounds.manual <- TRUE
     if (is.null(y.bounds.minimum) | is.null(y.bounds.maximum) | is.null(y.bounds.units.major))
@@ -451,6 +467,9 @@ AreaChart <-   function(y,
         {
             y.tickvals <- c(y.tickvals, a)
         }
+
+        if (y.tickformat == "%")
+            y.ticktext <- sapply(y.tickvals, function(x) paste(x * 100, "%", sep = ""))
     }
 
     x.tickmode = "auto"
@@ -482,19 +501,6 @@ AreaChart <-   function(y,
     x.zero.line <- FALSE
     if (x.zero.line.width > 0)
         x.zero.line <- TRUE
-
-    ## Set tick and hover formats
-    ifelse(y.tick.format.manual == "", y.tickformat <- paste(".", y.tick.decimals, "f", sep=""), y.tickformat <- y.tick.format.manual)
-
-    ifelse(x.tick.format.manual == "", x.tickformat <- paste(".", x.tick.decimals, "f", sep=""), x.tickformat <- x.tick.format.manual)
-
-    ifelse(y.hovertext.manual == "", y.hoverformat <- paste(".", y.hovertext.decimals, "f", sep=""), y.hoverformat <- y.hovertext.manual)
-
-    ifelse(x.hovertext.manual == "", x.hoverformat <- paste(".", x.hovertext.decimals, "f", sep=""), x.hoverformat <- x.hovertext.manual)
-
-    ## If it's a 100% Stacked Area chart, and no options have been specified for y.tick.format, then set to %
-    if (type == "100% Stacked Area" && y.tick.format.manual == "" && y.tick.suffix == "" && y.tick.decimals == 0)
-        y.tickformat <- "%"
 
     ## Mirror settings
     if (y.mirror == TRUE)
@@ -624,6 +630,7 @@ AreaChart <-   function(y,
             ticktext = y.ticktext,
             showticklabels = y.showticklabels,
             range = y.range,
+            rangemode = y.rangemode,
             ticks = y.tick.marks,
             tickangle = y.tick.angle,
             ticklen = y.tick.length,
