@@ -47,6 +47,24 @@ dateLabelling <- function(y, period = "month")
     y
 }
 
+formatDateRowNames <- function(y, period = "month")
+{
+    format.names <- rownames(y)
+
+    year.two.digits <- substr(format.names, 3,4)
+
+    mth <- c("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+
+    if (period == "month")
+        format.names <- paste(mth[as.integer(substr(format.names, 5, 6))], year.two.digits, sep = "-")
+
+    if (period == "quarter")
+        format.names <- paste(substr(format.names, 5, 6), year.two.digits, sep = "-")
+
+    rownames(y) <- format.names
+    y
+}
+
 isNumericOrInteger <- function(y)
 {
     if (!is.integer(y) && !is.numeric(y))
@@ -150,9 +168,6 @@ AsChartMatrix <- function(y,
         stop("The length of all the elements in a list must be the same, but your Y input is ",
              numberOfRows(y), " and your X input is ", numberOfRows(x))
 
-    if (is.factor(y) | is.character(y))
-        return(xtabs(~ x + y))
-
     ## Set dates to numeric values before aggregating to ensure correct sort order
     date.labelling <- FALSE
     if (inherits(x, "POSIXct"))
@@ -161,14 +176,30 @@ AsChartMatrix <- function(y,
         date.labelling <- TRUE
     }
 
+    if (is.factor(y) | is.character(y))
+    {
+        y <- xtabs(~ x + y)
+
+        if (date.labelling <- TRUE)
+        {
+            y <- formatDateRowNames(y, period = aggregate.period)
+            y <- t(y)
+        }
+
+        if (transpose)
+            return(t(y))
+
+        return(y)
+    }
+
     ## Aggregate (all cases)
     y <- aggregate(y, list(x), mean)
 
+    rownames(y) <- y[, 1]
+
     ## Fix up labelling for aggregated dates
     if (date.labelling == TRUE)
-        y <- dateLabelling(y, period = aggregate.period)
-
-    rownames(y) <- y[, 1]
+        y <- formatDateRowNames(y, period = aggregate.period)
 
     y <- y[, -1, drop = FALSE]
     if (!transpose)
