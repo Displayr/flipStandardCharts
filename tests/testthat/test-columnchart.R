@@ -1,9 +1,9 @@
-context("areaChart")
+context("columnChart")
 #  rm(list=ls())
 
 for (i in 1:length(good.examples))
 {
-    print(StandardChart(y = good.examples[[i]]$Y, x = good.examples[[i]]$X, type = "Area", transpose = good.examples[[i]]$transpose, title = names(good.examples)[i]), hover.include.source.value = TRUE)
+    print(StandardChart(y = good.examples[[i]]$Y, x = good.examples[[i]]$X, type = "Column", transpose = good.examples[[i]]$transpose, title = names(good.examples)[i]), hover.include.source.value = TRUE)
 
     # cat(paste("Press [enter] to continue (test ", i, "/", length(good.examples), ").", sep = ""))
     # line <- readline()

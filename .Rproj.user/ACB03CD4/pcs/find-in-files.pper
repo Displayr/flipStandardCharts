@@ -2,9 +2,11 @@
     "dialog-state" : {
         "caseSensitive" : false,
         "filePatterns" : [
+            "*.r",
+            "*.R"
         ],
         "path" : "~/GitHub/flipStandardCharts",
-        "query" : "qColors",
+        "query" : "rgb(0, 0, 0, max = 255)",
         "regex" : false
     }
 }

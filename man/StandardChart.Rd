@@ -5,11 +5,12 @@
 \title{Generates an interactive area chart based on the plotly library.}
 \usage{
 StandardChart(y, x = NULL, transpose = FALSE, aggregate.period = "month",
-  y.labels = NULL, x.labels = NULL, type = "Area", title = "",
-  title.font.family = "Arial", title.font.color = rgb(44, 44, 44,
-  maxColorValue = 255), title.font.size = 16, colors = qColors,
-  transparency = 0.4, chart.fill.color = rgb(255, 255, 255, maxColorValue =
-  255), chart.fill.transparency = 1, plot.fill.color = rgb(255, 255, 255,
+  y.labels = NULL, y.values = NULL, x.labels = NULL, x.values = NULL,
+  type = "Area", title = "", title.font.family = "Arial",
+  title.font.color = rgb(44, 44, 44, maxColorValue = 255),
+  title.font.size = 16, colors = qColors, transparency = 0.4,
+  chart.fill.color = rgb(255, 255, 255, maxColorValue = 255),
+  chart.fill.transparency = 1, plot.fill.color = rgb(255, 255, 255,
   maxColorValue = 255), plot.fill.transparency = 1, legend.show = TRUE,
   legend.fill = rgb(255, 255, 255, maxColorValue = 255),
   legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
@@ -36,9 +37,9 @@ StandardChart(y, x = NULL, transpose = FALSE, aggregate.period = "month",
   x.title.font.size = 12, x.line.width = 1, x.line.color = rgb(0, 0, 0,
   maxColorValue = 255), x.tick.marks = "", x.tick.length = 5,
   x.bounds.minimum = NULL, x.bounds.maximum = NULL,
-  x.bounds.units.major = NULL, x.zero.line.width = 1,
-  x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
-  x.position = "bottom", x.mirror = FALSE, x.grid.width = 0,
+  x.bounds.units.major = NULL, x.number.ticks = NULL,
+  x.zero.line.width = 1, x.zero.line.color = rgb(44, 44, 44, maxColorValue =
+  255), x.position = "bottom", x.mirror = FALSE, x.grid.width = 0,
   x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
   x.tick.suffix = "", x.tick.prefix = "", x.tick.decimals = 0,
   x.tick.format.manual = "", x.hovertext.suffix = "",
@@ -58,7 +59,13 @@ StandardChart(y, x = NULL, transpose = FALSE, aggregate.period = "month",
   hover.mode = "closest", hover.include.source.value = FALSE,
   hover.include.source.value.prefix = "",
   hover.include.source.value.suffix = "",
-  hover.include.source.value.percent = FALSE, show.modebar = FALSE)
+  hover.include.source.value.percent = FALSE, show.modebar = FALSE,
+  subtitle.text = "", subtitle.border.width = 0,
+  subtitle.border.color = "white", subtitle.background.color = "white",
+  subtitle.font.family = "Arial", subtitle.font.color = rgb(0, 0, 0,
+  maxColorValue = 255), subtitle.font.size = 10,
+  global.font.family.override = "", global.font.color.override = rgb(0, 0,
+  0, maxColorValue = 255))
 }
 \arguments{
 \item{y}{A vector, matrix, list of vectors, data frame, or table.}
@@ -73,7 +80,13 @@ Only relevant when x is a vector of mode date.}
 
 \item{y.labels}{Character vector, overrides chart matrix row names.}
 
+\item{y.values}{Integer vector, optiona, for manually specifying the points
+along the y-axis where the y.labels should appear.}
+
 \item{x.labels}{Character vector, overrides chart matrix column names.}
+
+\item{x.values}{Integer vector, optiona, for manually specifying the points
+along the x-axis where the x.labels should appear.}
 
 \item{type}{Character; type of chart. Can be "Area", "Stacked Area",
 or "100\% Stacked Area".}
@@ -86,7 +99,7 @@ Black", "Arial", "Comic Sans MS", "Courier New", "Georgia", "Impact",
 "Times New Roman", "Trebuchet MS", "Verdana", "Webdings"}
 
 \item{title.font.color}{Title font color as a named color in character
-format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).}
+format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{title.font.size}{Title font size; default = 10.}
 
@@ -97,14 +110,14 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).}
 
 \item{chart.fill.color}{Chart (borders around plot) background color as
 a named color in character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, max = 255)).}
+rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{chart.fill.transparency}{Chart (borders around plot) background
 transparency as an alpha value (0 to 1).}
 
 \item{plot.fill.color}{Plot (the plot area proper) background color as
 a named color in character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, max = 255)).}
+rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{plot.fill.transparency}{Plot (the plot area proper) background
 transparency as an alpha value (0 to 1).}
@@ -112,16 +125,16 @@ transparency as an alpha value (0 to 1).}
 \item{legend.show}{Logical; show the legend.}
 
 \item{legend.fill}{Legend fill color as a named color in character format
-(e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).}
+(e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{legend.border.color}{Legend border color as a named color in character
-format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).}
+format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{legend.border.line.width}{Integer; width in pixels of the border
 around the legend.  0 = no border.}
 
 \item{legend.font.color}{Legend font color as a named color in character
-format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).}
+format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{legend.font.family}{Character; legend font family.}
 
@@ -161,7 +174,7 @@ max = 255)).}
 \item{y.line.width}{Integer; y-axis line in pixels, 0 = no line}
 
 \item{y.line.color}{Y-axis line color as a named color in character format
-(e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).}
+(e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{y.tick.marks}{Character; whether and where to show tick marks on the
 y axis.  Can be "outside", "inside", "none"}
@@ -183,7 +196,7 @@ shown}
 
 \item{y.zero.line.color}{Color of horizontal zero (origo) line as a named
 color in character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, max = 255)).}
+rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{y.position}{Character; set y-axis position; can be "left" or "right"}
 
@@ -192,7 +205,7 @@ rgb(0, 0, 0, max = 255)).}
 \item{y.grid.width}{Integer; width of y-grid lines in pixels; 0 = no line}
 
 \item{y.grid.color}{Color of y-grid lines as a named color in character
-format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).}
+format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{y.tick.suffix}{Y-axis tick label suffix}
 
@@ -219,7 +232,7 @@ https://docs.python.org/release/3.1.3/library/string.html#formatspec}
 
 \item{y.tick.font.color}{Y-axis tick label font color as a named color
 in character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, max = 255)).}
+rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{y.tick.font.family}{Character; y-axis tick label font family}
 
@@ -229,7 +242,7 @@ rgb(0, 0, 0, max = 255)).}
 
 \item{x.title.font.color}{x-axis title font color as a named color in
 character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, max = 255)).}
+rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{x.title.font.family}{Character; x-axis title font family}
 
@@ -238,7 +251,7 @@ rgb(0, 0, 0, max = 255)).}
 \item{x.line.width}{Integer; x-axis line in pixels, 0 = no line}
 
 \item{x.line.color}{X-axis line color as a named color in character format
-(e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).}
+(e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{x.tick.marks}{Character; whether and where to show tick marks on the
 y axis.  Can be "outside", "inside", "none"}
@@ -255,12 +268,14 @@ plotting; NULL = no manual range set.  Must be greater than x.bounds.minimum}
 x-axis units between minimum and maximum for plotting; NULL = no manual
 range set.}
 
+\item{x.number.ticks}{Integer; number of ticks to show on x-axis.}
+
 \item{x.zero.line.width}{Width in pixels of zero line; 0 = no zero line
 shown}
 
 \item{x.zero.line.color}{Color of horizontal zero (origo) line as a named
 color in character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, max = 255)).}
+rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{x.position}{Character; set x-axis position; can be "left" or "right"}
 
@@ -269,7 +284,7 @@ rgb(0, 0, 0, max = 255)).}
 \item{x.grid.width}{Integer; width of y-grid lines in pixels; 0 = no line}
 
 \item{x.grid.color}{Color of y-grid lines as a named color in character
-format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).}
+format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{x.tick.suffix}{X.axis tick label suffix}
 
@@ -296,7 +311,7 @@ https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec}
 
 \item{x.tick.font.color}{X-axis tick label font color as a named color in
 character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, max = 255)).}
+rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{x.tick.font.family}{Character; x-axis tick label font family}
 
@@ -368,6 +383,36 @@ point value in hover text.}
 point value by 100.}
 
 \item{show.modebar}{Logical; whether to show the zoom menu buttons or not.}
+
+\item{subtitle.text}{Character; text string to appear as a sub-title}
+
+\item{subtitle.border.width}{Numeric; width in pixels of border around
+sub-title.}
+
+\item{subtitle.border.color}{Sub-title border color as a named color in
+character format (e.g. "black") or an rgb value (e.g.
+rgb(0, 0, 0, maxColorValue = 255)).}
+
+\item{subtitle.background.color}{Sub-title background color as a named
+color in character format (e.g. "black") or an rgb value (e.g.
+rgb(0, 0, 0, maxColorValue = 255)).}
+
+\item{subtitle.font.family}{Character; Sub-title font family}
+
+\item{subtitle.font.color}{Sub-title font color as a named color
+in character format (e.g. "black") or an rgb value (e.g.
+rgb(0, 0, 0, maxColorValue = 255)).}
+
+\item{subtitle.font.size}{Integer; Sub-title font size}
+
+\item{global.font.family.override}{Character; font family to override
+all occurrences of any font attribute for the chart instead of specifying
+font for all font attributes individually}
+
+\item{global.font.color.override}{Global font color as a named color
+in character format (e.g. "black") or an rgb value (e.g.
+rgb(0, 0, 0, maxColorValue = 255)).  Will only work if global.font.family.override
+is also set.}
 }
 \description{
 \code{StandardChart} generates standard charts from plotly library.

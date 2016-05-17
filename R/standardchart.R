@@ -9,7 +9,11 @@
 #' @param aggregate.period Character; can be "month", "quarter", "year".
 #' Only relevant when x is a vector of mode date.
 #' @param y.labels Character vector, overrides chart matrix row names.
+#' @param y.values Integer vector, optiona, for manually specifying the points
+#' along the y-axis where the y.labels should appear.
 #' @param x.labels Character vector, overrides chart matrix column names.
+#' @param x.values Integer vector, optiona, for manually specifying the points
+#' along the x-axis where the x.labels should appear.
 #' @param type Character; type of chart. Can be "Area", "Stacked Area",
 #' or "100\% Stacked Area".
 #' @param title Character; chart title.
@@ -18,30 +22,30 @@
 #' "Lucida Console", "Lucida Sans Unicode", "Marlett", "Symbol", "Tahoma",
 #' "Times New Roman", "Trebuchet MS", "Verdana", "Webdings"
 #' @param title.font.color Title font color as a named color in character
-#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).
+#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param title.font.size Title font size; default = 10.
 #' @param colors Vector of colors in RGB format.
 #' @param transparency Transparency of area fill colors as an alpha value
 #' (0 to 1).
 #' @param chart.fill.color Chart (borders around plot) background color as
 #' a named color in character format (e.g. "black") or an rgb value (e.g.
-#' rgb(0, 0, 0, max = 255)).
+#' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param chart.fill.transparency Chart (borders around plot) background
 #' transparency as an alpha value (0 to 1).
 #' @param plot.fill.color Plot (the plot area proper) background color as
 #' a named color in character format (e.g. "black") or an rgb value (e.g.
-#' rgb(0, 0, 0, max = 255)).
+#' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param plot.fill.transparency Plot (the plot area proper) background
 #' transparency as an alpha value (0 to 1).
 #' @param legend.show Logical; show the legend.
 #' @param legend.fill Legend fill color as a named color in character format
-#' (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).
+#' (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param legend.border.color Legend border color as a named color in character
-#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).
+#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param legend.border.line.width Integer; width in pixels of the border
 #' around the legend.  0 = no border.
 #' @param legend.font.color Legend font color as a named color in character
-#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).
+#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param legend.font.family Character; legend font family.
 #' @param legend.font.size Integer; legend font size.
 #' @param legend.position Where the legend will be placed; can be "left" or
@@ -66,7 +70,7 @@
 #' @param y.title.font.size Integer; y-axis title font size
 #' @param y.line.width Integer; y-axis line in pixels, 0 = no line
 #' @param y.line.color Y-axis line color as a named color in character format
-#' (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).
+#' (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param y.tick.marks Character; whether and where to show tick marks on the
 #' y axis.  Can be "outside", "inside", "none"
 #' @param y.tick.length Integer; length of tick marks in pixels.
@@ -81,12 +85,12 @@
 #' shown
 #' @param y.zero.line.color Color of horizontal zero (origo) line as a named
 #' color in character format (e.g. "black") or an rgb value (e.g.
-#' rgb(0, 0, 0, max = 255)).
+#' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param y.position Character; set y-axis position; can be "left" or "right"
 #' @param y.mirror Logical; mirror y-axis on other side?
 #' @param y.grid.width Integer; width of y-grid lines in pixels; 0 = no line
 #' @param y.grid.color Color of y-grid lines as a named color in character
-#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).
+#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param y.tick.suffix Y-axis tick label suffix
 #' @param y.tick.prefix Y-axis tick label prefix
 #' @param y.tick.decimals Y-axis tick label decimal places
@@ -103,18 +107,18 @@
 #' 90 = vertical; 0 = horizontal
 #' @param y.tick.font.color Y-axis tick label font color as a named color
 #' in character format (e.g. "black") or an rgb value (e.g.
-#' rgb(0, 0, 0, max = 255)).
+#' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param y.tick.font.family Character; y-axis tick label font family
 #' @param y.tick.font.size Integer; y-axis tick label font size
 #' @param x.title Character, x-axis title
 #' @param x.title.font.color x-axis title font color as a named color in
 #' character format (e.g. "black") or an rgb value (e.g.
-#' rgb(0, 0, 0, max = 255)).
+#' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param x.title.font.family Character; x-axis title font family
 #' @param x.title.font.size Integer; x-axis title font size
 #' @param x.line.width Integer; x-axis line in pixels, 0 = no line
 #' @param x.line.color X-axis line color as a named color in character format
-#' (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).
+#' (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param x.tick.marks Character; whether and where to show tick marks on the
 #' y axis.  Can be "outside", "inside", "none"
 #' @param x.tick.length Integer; length of tick marks in pixels.
@@ -125,16 +129,17 @@
 #' @param x.bounds.units.major Ingeger or NULL; set tick mark distance in
 #' x-axis units between minimum and maximum for plotting; NULL = no manual
 #' range set.
+#' @param x.number.ticks Integer; number of ticks to show on x-axis.
 #' @param x.zero.line.width Width in pixels of zero line; 0 = no zero line
 #' shown
 #' @param x.zero.line.color Color of horizontal zero (origo) line as a named
 #' color in character format (e.g. "black") or an rgb value (e.g.
-#' rgb(0, 0, 0, max = 255)).
+#' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param x.position Character; set x-axis position; can be "left" or "right"
 #' @param x.mirror Logical; mirror x-axis on other side?
 #' @param x.grid.width Integer; width of y-grid lines in pixels; 0 = no line
 #' @param x.grid.color Color of y-grid lines as a named color in character
-#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).
+#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param x.tick.suffix X.axis tick label suffix
 #' @param x.tick.prefix X.axis tick label prefix
 #' @param x.tick.decimals X.axis tick label decimal places
@@ -151,7 +156,7 @@
 #' 90 = vertical; 0 = horizontal
 #' @param x.tick.font.color X-axis tick label font color as a named color in
 #' character format (e.g. "black") or an rgb value (e.g.
-#' rgb(0, 0, 0, max = 255)).
+#' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param x.tick.font.family Character; x-axis tick label font family
 #' @param x.tick.font.size Integer; x-axis tick label font size
 #' @param x.tick.label.autoformat Logical; whether to apply built-in auto-
@@ -202,6 +207,27 @@
 #' data("y.data")
 #' data("x.data")
 #' StandardChart(y = y.data, x = x.data, type = "Area", transpose = TRUE)
+#' @param subtitle.text Character; text string to appear as a sub-title
+#' @param subtitle.border.width Numeric; width in pixels of border around
+#' sub-title.
+#' @param subtitle.border.color Sub-title border color as a named color in
+#' character format (e.g. "black") or an rgb value (e.g.
+#' rgb(0, 0, 0, maxColorValue = 255)).
+#' @param subtitle.background.color Sub-title background color as a named
+#' color in character format (e.g. "black") or an rgb value (e.g.
+#' rgb(0, 0, 0, maxColorValue = 255)).
+#' @param subtitle.font.family Character; Sub-title font family
+#' @param subtitle.font.size Integer; Sub-title font size
+#' @param subtitle.font.color Sub-title font color as a named color
+#' in character format (e.g. "black") or an rgb value (e.g.
+#' rgb(0, 0, 0, maxColorValue = 255)).
+#' @param global.font.family.override Character; font family to override
+#' all occurrences of any font attribute for the chart instead of specifying
+#' font for all font attributes individually
+#' @param global.font.color.override Global font color as a named color
+#' in character format (e.g. "black") or an rgb value (e.g.
+#' rgb(0, 0, 0, maxColorValue = 255)).  Will only work if global.font.family.override
+#' is also set.
 #' @export
 StandardChart <-   function(y,
                         x = NULL,
@@ -210,7 +236,9 @@ StandardChart <-   function(y,
                         transpose = FALSE,                                ## Should the inputs be transposed; TRUE or FALSE
                         aggregate.period = "month",
                         y.labels = NULL,
+                        y.values = NULL,
                         x.labels = NULL,
+                        x.values = NULL,
                         type = "Area",
                         title = "",
                         title.font.family = "Arial",
@@ -277,6 +305,7 @@ StandardChart <-   function(y,
                         x.bounds.minimum = NULL,
                         x.bounds.maximum = NULL,
                         x.bounds.units.major = NULL,
+                        x.number.ticks = NULL,
                         x.zero.line.width = 1,
                         x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
                         x.position = "bottom",
@@ -318,7 +347,17 @@ StandardChart <-   function(y,
                         hover.include.source.value.prefix = "",
                         hover.include.source.value.suffix = "",
                         hover.include.source.value.percent = FALSE,
-                        show.modebar = FALSE
+                        show.modebar = FALSE,
+                        subtitle.text = "",
+                        subtitle.border.width = 0,
+                        subtitle.border.color = "white",
+                        subtitle.background.color = "white",
+                        subtitle.font.family = "Arial",
+                        subtitle.font.color = rgb(0, 0, 0, maxColorValue=255),
+                        subtitle.font.size = 10,
+                        global.font.family.override = "",
+                        global.font.color.override = rgb(0, 0, 0, maxColorValue=255),
+                        orientation = NULL
 )
 {
     ## Make a chart matrix
@@ -355,16 +394,35 @@ StandardChart <-   function(y,
     ## Settings specific to Line Charts
     if (type == "Line")
     {
-        chart.type.outputs <- lineChart(series.line.width = series.line.width,
+        chart.type.outputs <- lineChart(chart.matrix = chart.matrix,
+                                        transpose = transpose,
+                                        series.line.width = series.line.width,
                                         series.marker.show = series.marker.show,
                                         series.marker.text = series.marker.text)
 
         series.mode <- chart.type.outputs$series.mode
         series.line.width <- chart.type.outputs$series.line.width
         y.tickformat <- ""
+        transpose <- chart.type.outputs$transpose
     }
 
     ## Settings specific to Column Charts
+    if (type == "Column" | type == "Stacked Column" | type == "100% Stacked Column")
+    {
+        chart.type.outputs <- columnChart(chart.matrix = chart.matrix,
+                                        type = type,
+                                        y.tick.format.manual = y.tick.format.manual,
+                                        y.tick.suffix = y.tick.format.manual,
+                                        y.tick.decimals = y.tick.format.manual
+        )
+
+        chart.matrix <- chart.type.outputs$chart.matrix
+        legend.group <- chart.type.outputs$legend.group
+        y.tickformat <- chart.type.outputs$y.tickformat
+        series.mode <- chart.type.outputs$series.mode
+        orientation <- chart.type.outputs$orientation
+        type <- chart.type.outputs$type
+    }
 
     ## Settings specific to Bar Charts
 
@@ -375,6 +433,59 @@ StandardChart <-   function(y,
 
 
     ## Common settings across all charts
+
+
+    # Set all fonts to global font override if required
+    if (global.font.family.override != "")
+    {
+        title.font.family <- global.font.family.override
+        legend.font.family <- global.font.family.override
+        y.title.font.family <- global.font.family.override
+        y.title.font.family <- global.font.family.override
+        y.tick.font.family <- global.font.family.override
+        x.title.font.family <- global.font.family.override
+        x.tick.font.family <- global.font.family.override
+        series.marker.text.family <- global.font.family.override
+        subtitle.font.family <- global.font.family.override
+
+        title.font.color <- global.font.color.override
+        legend.font.color <- global.font.color.override
+        y.title.font.color <- global.font.color.override
+        y.title.font.color <- global.font.color.override
+        y.tick.font.color <- global.font.color.override
+        x.title.font.color <- global.font.color.override
+        x.tick.font.color <- global.font.color.override
+        series.marker.text.color <- global.font.color.override
+        subtitle.font.color <- global.font.color.override
+    }
+
+    # Sort out the sub-title
+    if (subtitle.text != "")
+    {
+        # Allow some extra margin space
+        subtitle.text <- as.vector(subtitle.text)
+
+        if (margin.top < 81)
+            margin.top <- ifelse(length(unlist(regmatches(subtitle.text, gregexpr("<br>", subtitle.text)))) > 1, (margin.top + length(unlist(regmatches(subtitle.text, gregexpr("<br>", subtitle.text)))) * subtitle.font.size), margin.top)
+
+        subtitle <- list(y = 1.15,
+                         x = 0.5,
+                         text = subtitle.text,
+                         xref = "paper",
+                         yref = "paper",
+                         showarrow = FALSE,
+                         borderwidth = subtitle.border.width,
+                         bordercolor = subtitle.border.color,
+                         bgcolor = subtitle.background.color,
+                         font = list(
+                             color = subtitle.font.color,
+                             size = subtitle.font.size,
+                             family = subtitle.font.family
+                         )
+        )
+    }
+    else
+        subtitle <- list()
 
     # Create text matrix of source data if required for hover
     source.matrix <- chart.matrix
@@ -440,7 +551,7 @@ StandardChart <-   function(y,
         if (y.tick.marks == "")
         {
             y.showticks <- TRUE
-            y.tick.marks <- "outer"
+            y.tick.marks <- "outside"
         }
     }
     else
@@ -515,25 +626,41 @@ StandardChart <-   function(y,
             y.ticktext <- sapply(y.tickvals, function(x) paste(round(x, y.tick.decimals)))
     }
 
-    x.tickmode = "auto"
-    x.tickvals = integer()
-    x.ticktext = character()
-    x.range = integer()
-    x.autorange = TRUE
+    x.tickmode <- "auto"
+    x.tickvals <- integer()
+    x.ticktext <- character()
+    x.range <- integer()
+    x.autorange <- TRUE
+    x.nticks <- length(x.labels)
 
-    x.bounds.manual <- FALSE
-    if (!is.null(x.bounds.minimum) | !is.null(x.bounds.maximum) | !is.null(x.bounds.units.major))
-        x.bounds.manual <- FALSE
-
-    if (x.bounds.manual == TRUE)
+    if (!is.null(x.bounds.minimum) && !is.null(x.bounds.maximum) && !is.null(x.bounds.units.major))
     {
-        x.range <- c(x.bounds.minimum, x.bounds.maximum)
-        x.autorange = FALSE
         x.tickmode <- "array"
+        x.autorange <- FALSE
+        x.range <- c(x.bounds.minimum, x.bounds.maximum)
+
         for (a in seq(x.bounds.minimum, x.bounds.maximum, by = x.bounds.units.major))
         {
             x.tickvals <- c(x.tickvals, a)
+            x.ticktext <- x.labels[seq(1, length(x.labels), a)]
         }
+    }
+    else if (!is.null(x.values) && !is.null(x.labels))
+    {
+        x.tickmode <- "array"
+        # x.autorange <- TRUE
+        x.tickvals <- x.values
+        x.ticktext <- x.labels
+        # x.range <- c(x.values[1], x.values[ncol(chart.matrix)])
+    }
+    else
+    {
+        x.tickmode <- "auto"
+        x.autorange <- TRUE
+        if (is.null(x.number.ticks))
+            x.nticks <- length(x.labels)
+        else
+            x.nticks <- x.number.ticks
     }
 
     ## Should we draw a zero line
@@ -594,8 +721,8 @@ StandardChart <-   function(y,
     ## Add a trace for each row of data in the matrix
     for (a in 1:nrow(chart.matrix))
     {
-        y = as.numeric(chart.matrix[a, ])
-        x <- x.labels
+        y <- as.numeric(chart.matrix[a, ])
+        x <- as.character(colnames(chart.matrix))
 
         source.text <- source.matrix[a, ]
 
@@ -604,6 +731,7 @@ StandardChart <-   function(y,
                                x = x,
                                y = y,
                                evaluate = TRUE,
+                               orientation = orientation,
                                fill = fill.bound,
                                fillcolor = plotly::toRGB(colors[a], alpha = transparency),
                                line = list(
@@ -722,6 +850,7 @@ StandardChart <-   function(y,
             tickangle = x.tick.angle,
             ticklen = x.tick.length,
             tickcolor = x.line.color,
+            nticks = x.nticks,
             zeroline = x.zero.line,
             zerolinewidth = x.zero.line.width,
             zerolinecolor = x.zero.line.color,
@@ -754,7 +883,8 @@ StandardChart <-   function(y,
             family = title.font.family ,
             color = title.font.color,
             size = title.font.size
-        )
+        ),
+        annotations = subtitle
     )
 
     ## Return the chart

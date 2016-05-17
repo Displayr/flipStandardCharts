@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "lineChart <- function(chart.matrix,\n                      transpose,\n                      series.line.width,\n                      series.marker.show,\n                      series.marker.text)\n{\n    ## Check that line width is at least 1\n    if (series.line.width < 1)\n        series.line.width <- 1\n\n    ## if source data only has one column with multiple rows, then transpose\n    if (ncol(chart.matrix) == 1)\n        transpose <- TRUE\n    else\n        transpose <- transpose\n\n    ## Showing markers and lines\n    series.mode = \"lines+markers\"  #default = line and marker\n\n    if (series.line.width >= 1 && series.marker.show == \"none\")\n        series.mode <- \"lines\"\n\n    if (series.marker.text)\n        series.mode <- paste(series.mode, \"+text\", sep = \"\")\n\n    return(list(series.mode = series.mode,\n                series.line.width = series.line.width,\n                transpose = transpose))\n}\n",
+    "created" : 1463097281437.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1499272322",
+    "id" : "90F991F9",
+    "lastKnownWriteTime" : 1463463325,
+    "last_content_update" : 1463463325750,
+    "path" : "~/GitHub/flipStandardCharts/R/linechart.R",
+    "project_path" : "R/linechart.R",
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
