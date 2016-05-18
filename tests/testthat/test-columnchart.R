@@ -10,9 +10,12 @@ for (i in 1:length(good.examples))
 }
 
 
+
+
+
 #############################################################################
 #############################################################################
-##                            AREA CHART EXAMPLES                          ##
+##                         COLUMN CHART EXAMPLES                           ##
 #############################################################################
 #############################################################################
 
@@ -22,22 +25,25 @@ for (i in 1:length(good.examples))
 # colnames(a.matrix) <- c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
 #
 # myCols <- c(rgb(0,176,240, max=255), rgb(197,90,17, max=255))
-# myLineCols <- c(rgb(31,78,121, max=255),rgb(192,0,0, max=255))
+# myLineCols <- c(rgb(31,78,121, max=255), rgb(244, 177, 131, max=255))
 #
-# StandardChart(a.matrix, type = "Area",
-#           transparency = 0.4,
+# StandardChart(a.matrix, type = "Column",
+#           title.font.size = 12,
 #           transpose = TRUE,
-#           colors = myCols,
-#           series.line.width = 1,
-#           series.line.color = myLineCols,
-#           series.marker.show = "none",
-#           title = "Area chart - BASIC style",
+#           series.marker.color = myLineCols,
+#           series.marker.border.width = 0,
+#           title = "Column chart - BASIC style",
 #           y.bounds.minimum = 0,
 #           y.bounds.maximum = 1.01,
-#           y.bounds.units.major = 0.1)
-#
-#
-#
+#           y.bounds.units.major = 0.1,
+#           y.tick.format.manual = "%",
+#           y.tick.font.color = rgb(88, 88, 88, max = 255),
+#           x.tick.font.color = rgb(88, 88, 88, max = 255),
+#           x.line.color = rgb(188, 188, 188, max = 255),
+#           y.line.color = rgb(188, 188, 188, max = 255))
+
+
+
 # ##### JUNK STYLE
 # a.matrix <- rbind(c(50,70,70,100,80,90,90), c(50,50,30,40,70,70,90), c(30,30,50,70,40,50,50), c(0,10,10,30,20,30,10))
 # colnames(a.matrix) <- c("D0","D1","D2","D3","D4","D5","D6")

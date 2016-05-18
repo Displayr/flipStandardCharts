@@ -142,6 +142,9 @@ AsChartMatrix <- function(y,
                           transpose = FALSE,
                           aggregate.period = "month")  ## can be m(onth), q(uarter), y(ear)
 {
+    if (is.logical(x) && length(x) == 1)
+        x <- NULL
+
     if (is.null(x)) # Aggregating data over X.
     {
         if (!is.vector(y) && !is.table(y) && !is.matrix(y))

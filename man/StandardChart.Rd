@@ -65,7 +65,7 @@ StandardChart(y, x = NULL, transpose = FALSE, aggregate.period = "month",
   subtitle.font.family = "Arial", subtitle.font.color = rgb(0, 0, 0,
   maxColorValue = 255), subtitle.font.size = 10,
   global.font.family.override = "", global.font.color.override = rgb(0, 0,
-  0, maxColorValue = 255))
+  0, maxColorValue = 255), orientation = NULL)
 }
 \arguments{
 \item{y}{A vector, matrix, list of vectors, data frame, or table.}
@@ -413,6 +413,8 @@ font for all font attributes individually}
 in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).  Will only work if global.font.family.override
 is also set.}
+
+\item{orientation}{Character; "v" or "h" for vertical or horizontal bars}
 }
 \description{
 \code{StandardChart} generates standard charts from plotly library.

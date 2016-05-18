@@ -1,4 +1,4 @@
-ColumnChart <- function(chart.matrix,
+columnChart <- function(chart.matrix,
                       transparency,
                       type,
                       y.tick.format.manual = "",
@@ -30,21 +30,20 @@ ColumnChart <- function(chart.matrix,
         y.tickformat <- "%"
 
     ## Showing markers and lines
-    series.mode = "lines+markers"  #default = line and marker
-    if (series.line.width == 0 && series.marker.show != "none")
-        series.mode = "markers"
-
-    else if (series.line.width >= 1 && series.marker.show == "none")
-        series.mode = "lines"
-
-    else if (series.line.width == 0 && series.marker.show == "none")
-        series.mode = "none"
+    # series.mode = "lines+markers"  #default = line and marker
+    # if (series.line.width == 0 && series.marker.show != "none")
+    #     series.mode = "markers"
+    #
+    # else if (series.line.width >= 1 && series.marker.show == "none")
+    #     series.mode = "lines"
+    #
+    # else if (series.line.width == 0 && series.marker.show == "none")
+    #     series.mode = "none"
 
     return(list(chart.matrix = chart.matrix,
-                fill.bound = fill.bound,
                 legend.group = legend.group,
                 y.tickformat = y.tickformat,
-                series.mode = series.mode,
+                # series.mode = series.mode,
                 orientation = "v",
                 type = "bar",
                 barmode = barmode))
