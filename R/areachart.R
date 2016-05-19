@@ -17,6 +17,10 @@ areaChart <- function(chart.matrix,
     if (transparency == 1 && type == "Area")
         warning("Displaying this chart without transparent series will make it difficult to read as some data series may be obscured.")
 
+    ## Having transparency on non-overlapping series serves no purpose.
+    if (transparency != 1 && type != "Area")
+        transparency <- 1
+
     ## Determine whether to draw to zero y (overlapping area chart) or to next y (for stacked)
     if (type == "Area")
         fill.bound <- "tozeroy"
@@ -48,6 +52,7 @@ areaChart <- function(chart.matrix,
                 fill.bound = fill.bound,
                 legend.group = legend.group,
                 y.tickformat = y.tickformat,
-                series.mode = series.mode))
+                series.mode = series.mode,
+                transparency = transparency))
 }
 

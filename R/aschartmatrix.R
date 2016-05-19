@@ -168,8 +168,10 @@ AsChartMatrix <- function(y,
         y <- as.data.frame(y)
 
     if (!equalNumberOfRows(y, x))
-        stop("The length of all the elements in a list must be the same, but your Y input is ",
-             numberOfRows(y), " and your X input is ", numberOfRows(x))
+        stop("Either the Chart Data is a table already, and cannot be aggregated
+             against another variable (clear the question from the 'Aggregate by'
+             field to continue), OR the number of cases in your Chart Data is not
+             the same as the number of cases in your Aggregate by question.")
 
     ## Set dates to numeric values before aggregating to ensure correct sort order
     date.labelling <- FALSE

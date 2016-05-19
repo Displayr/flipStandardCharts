@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "removeRowsAndColumns <- function(chart.matrix, rows.to.ignore = \"\", cols.to.ignore = \"\")\n{\n    ## Get the individual headings from the input\n    remove.rows <- as.vector(sapply(strsplit(cols.to.ignore, \",\"), function(x) gsub(\"^\\\\s+|\\\\s+$\", \"\", x)))\n    remove.cols <- as.vector(sapply(strsplit(cols.to.ignore, \",\"), function(x) gsub(\"^\\\\s+|\\\\s+$\", \"\", x)))\n\n    ## Coerce to a df to get colnames\n    chart.matrix <- as.data.frame(chart.matrix)\n\n    ## Get rid of rows from matrix\n    chart.matrix <- chart.matrix[!rownames(chart.matrix) %in% remove.rows, ]\n    chart.matrix <- chart.matrix[, !(colnames(chart.matrix) %in% remove.cols)]\n\n    as.matrix(chart.matrix)\n}\n",
+    "created" : 1463633235025.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1044764769",
+    "id" : "D98FF5C3",
+    "lastKnownWriteTime" : 1463635305,
+    "last_content_update" : 1463635305018,
+    "path" : "~/GitHub/flipStandardCharts/R/removeRowsAndColumns.R",
+    "project_path" : "R/removeRowsAndColumns.R",
+    "properties" : {
+        "tempName" : "Untitled2"
+    },
+    "relative_order" : 14,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

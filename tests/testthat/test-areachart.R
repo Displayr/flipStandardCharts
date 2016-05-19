@@ -7,6 +7,10 @@ for (i in 1:length(good.examples))
 
     # cat(paste("Press [enter] to continue (test ", i, "/", length(good.examples), ").", sep = ""))
     # line <- readline()
+
+    # testthat::expect_
+    #
+    # testthat::expect_equal
 }
 
 

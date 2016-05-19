@@ -229,6 +229,10 @@
 #' rgb(0, 0, 0, maxColorValue = 255)).  Will only work if global.font.family.override
 #' is also set.
 #' @param orientation Character; "v" or "h" for vertical or horizontal bars
+#' @param rows.to.ignore Character; comma separated string of row headings to
+#' exclude from the charting.
+#' @param cols.to.ignore Character; comma separated string of column headings to
+#' exclude from the charting.
 #' @export
 StandardChart <-   function(y,
                         x = NULL,
@@ -358,7 +362,9 @@ StandardChart <-   function(y,
                         subtitle.font.size = 10,
                         global.font.family.override = "",
                         global.font.color.override = rgb(0, 0, 0, maxColorValue=255),
-                        orientation = NULL
+                        orientation = NULL,
+                        rows.to.ignore = "",
+                        cols.to.ignore = ""
 )
 {
     ## Make a chart matrix
@@ -367,6 +373,9 @@ StandardChart <-   function(y,
     ## Check that the chart matrix is a success
     if (!IsChartMatrix(chart.matrix, n.rows = nrow(chart.matrix), n.columns = ncol(chart.matrix)))
         stop(paste("Input data is not in a chart matrix format"))
+
+    ## Ignore rows or columns
+    chart.matrix <- removeRowsAndColumns(chart.matrix, rows.to.ignore, cols.to.ignore)
 
     ## Set defaults for chart specific items
     fill.bound <- ""
@@ -379,8 +388,8 @@ StandardChart <-   function(y,
                                         transparency = transparency,
                                         type = type,
                                         y.tick.format.manual = y.tick.format.manual,
-                                        y.tick.suffix = y.tick.format.manual,
-                                        y.tick.decimals = y.tick.format.manual,
+                                        y.tick.suffix = y.tick.suffix,
+                                        y.tick.decimals = y.tick.decimals,
                                         series.line.width = series.line.width,
                                         series.marker.show = series.marker.show
                                         )
@@ -390,6 +399,7 @@ StandardChart <-   function(y,
         legend.group <- chart.type.outputs$legend.group
         y.tickformat <- chart.type.outputs$y.tickformat
         series.mode <- chart.type.outputs$series.mode
+        transparency <- chart.type.outputs$transparency
     }
 
     ## Settings specific to Line Charts

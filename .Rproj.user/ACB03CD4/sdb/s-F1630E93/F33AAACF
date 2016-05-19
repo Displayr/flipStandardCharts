@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "install.packages(\"jpeg\")\nlibrary(jpeg)\n\nimage1 <- readJPEG(\"C:/R/Rplot.jpeg\")\nimage2 <- readJPEG(\"C:/R/Rplot2.jpg\")\n\nimage1 <- as.raster(image1)\nimage2 <- as.raster(image2)\n\ntotal <- ifelse(image1 == image2, TRUE, FALSE)\n\nif (sum(total) != length(image1)) \n{\n    paste(\"Images are not exactly the same.  \", length(image1) - sum(total), \" is the number of different pixels.\", sep = \"\")\n} else {\n    print(\"Huzzah\")\n}\n\n",
+    "created" : 1463546874753.000,
+    "dirty" : true,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "3352380389",
+    "id" : "F33AAACF",
+    "lastKnownWriteTime" : 14074079548014594,
+    "last_content_update" : 1463549589388,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "tempName" : "Untitled1"
+    },
+    "relative_order" : 13,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

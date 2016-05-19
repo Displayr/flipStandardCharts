@@ -65,7 +65,8 @@ StandardChart(y, x = NULL, transpose = FALSE, aggregate.period = "month",
   subtitle.font.family = "Arial", subtitle.font.color = rgb(0, 0, 0,
   maxColorValue = 255), subtitle.font.size = 10,
   global.font.family.override = "", global.font.color.override = rgb(0, 0,
-  0, maxColorValue = 255), orientation = NULL)
+  0, maxColorValue = 255), orientation = NULL, rows.to.ignore = "",
+  cols.to.ignore = "")
 }
 \arguments{
 \item{y}{A vector, matrix, list of vectors, data frame, or table.}
@@ -415,6 +416,12 @@ rgb(0, 0, 0, maxColorValue = 255)).  Will only work if global.font.family.overri
 is also set.}
 
 \item{orientation}{Character; "v" or "h" for vertical or horizontal bars}
+
+\item{rows.to.ignore}{Character; comma separated string of row headings to
+exclude from the charting.}
+
+\item{cols.to.ignore}{Character; comma separated string of column headings to
+exclude from the charting.}
 }
 \description{
 \code{StandardChart} generates standard charts from plotly library.
