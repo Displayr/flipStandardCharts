@@ -375,7 +375,8 @@ StandardChart <-   function(y,
         stop(paste("Input data is not in a chart matrix format"))
 
     ## Ignore rows or columns
-    chart.matrix <- removeRowsAndColumns(chart.matrix, rows.to.ignore, cols.to.ignore)
+    if (rows.to.ignore != "" | cols.to.ignore != "")
+        chart.matrix <- removeRowsAndColumns(chart.matrix, rows.to.ignore, cols.to.ignore)
 
     ## Set defaults for chart specific items
     fill.bound <- ""
