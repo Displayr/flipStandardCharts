@@ -233,6 +233,24 @@
 #' exclude from the charting.
 #' @param cols.to.ignore Character; comma separated string of column headings to
 #' exclude from the charting.
+#' @param bar.gap Integer; chart proportion between each bar or column if using
+#' bar or column charts, or between each cluster of bars or columns.
+#' @param bar.group.gap Integer; chart proportion between each bar or column in
+#' a cluster.
+#' @param bar.data.label.offset Numeric; number of y-axis units to offset the
+#' data label from the end of the column (use negative numbers for down, positive
+#' for up)
+#' @param bar.data.label Integer or Character; the offset from the top end of a
+#' column measured in y-axis units.  Can also be 'middle'.
+#' @param bar.data.label.family Character; font family for data label.
+#' @param bar.data.label.size Integer; font size for data label.
+#' @param bar.data.label.color Font color as a named color
+#' in character format (e.g. "black") or an rgb value (e.g.
+#' rgb(0, 0, 0, maxColorValue = 255)).
+#' @param bar.data.label.decimals Integer; number of decimal places to show in
+#' bar and column chart data labels.
+#' @param bar.data.label.as.percent Logical; whether to treat data labels in
+#' bar or column charts as percentages or not.
 #' @export
 StandardChart <-   function(y,
                         x = NULL,
@@ -364,7 +382,15 @@ StandardChart <-   function(y,
                         global.font.color.override = rgb(0, 0, 0, maxColorValue=255),
                         orientation = NULL,
                         rows.to.ignore = "",
-                        cols.to.ignore = ""
+                        cols.to.ignore = "",
+                        bar.gap = 0.15,
+                        bar.group.gap = NULL,
+                        bar.data.label.offset = NULL,
+                        bar.data.label.family = "Arial",
+                        bar.data.label.size = 10,
+                        bar.data.label.color = rgb(0, 0, 0, maxColorValue=255),
+                        bar.data.label.decimals = 0,
+                        bar.data.label.as.percent = FALSE
 )
 {
     ## Make a chart matrix
@@ -381,6 +407,7 @@ StandardChart <-   function(y,
     ## Set defaults for chart specific items
     fill.bound <- ""
     legend.group <- ""
+    barmode <- ""
 
     ## Settings specific to Area Charts
     if (type == "Area" | type == "Stacked Area" | type == "100% Stacked Area")
@@ -424,9 +451,11 @@ StandardChart <-   function(y,
         chart.type.outputs <- columnChart(chart.matrix = chart.matrix,
                                         type = type,
                                         y.tick.format.manual = y.tick.format.manual,
-                                        y.tick.suffix = y.tick.format.manual,
-                                        y.tick.decimals = y.tick.format.manual
-        )
+                                        y.tick.suffix = y.tick.suffix,
+                                        y.tick.decimals = y.tick.decimals,
+                                        series.marker.border.width = series.marker.border.width,
+                                        bar.group.gap = bar.group.gap
+                                        )
 
         chart.matrix <- chart.type.outputs$chart.matrix
         legend.group <- chart.type.outputs$legend.group
@@ -434,6 +463,8 @@ StandardChart <-   function(y,
         series.mode <- chart.type.outputs$series.mode
         orientation <- chart.type.outputs$orientation
         type <- chart.type.outputs$type
+        barmode <- chart.type.outputs$barmode
+        bar.group.gap <- chart.type.outputs$bar.group.gap
     }
 
     ## Settings specific to Bar Charts
@@ -459,6 +490,7 @@ StandardChart <-   function(y,
         x.tick.font.family <- global.font.family.override
         series.marker.text.family <- global.font.family.override
         subtitle.font.family <- global.font.family.override
+        bar.data.label.family <- global.font.family.override
 
         title.font.color <- global.font.color.override
         legend.font.color <- global.font.color.override
@@ -469,7 +501,21 @@ StandardChart <-   function(y,
         x.tick.font.color <- global.font.color.override
         series.marker.text.color <- global.font.color.override
         subtitle.font.color <- global.font.color.override
+        bar.data.label.color <- global.font.color.override
     }
+
+    # Bar and column chart data label annotations
+    if (!is.null(bar.data.label.offset))
+        data.annotations <- dataLabelAnnotation(chart.matrix = chart.matrix,
+                                                bar.offset = bar.data.label.offset,
+                                                bar.family = bar.data.label.family,
+                                                bar.size = bar.data.label.size,
+                                                bar.color = bar.data.label.color,
+                                                bar.decimals = bar.data.label.decimals,
+                                                barmode = barmode,
+                                                bar.data.label.as.percent = bar.data.label.as.percent)
+    else
+        data.annotations = list()
 
     # Sort out the sub-title
     if (subtitle.text != "")
@@ -634,6 +680,8 @@ StandardChart <-   function(y,
 
         if (y.tickformat == "%")
             y.ticktext <- sapply(y.tickvals, function(x) paste(round(x * 100, y.tick.decimals), "%", sep = ""))
+        else if (y.tickformat == "$")
+            y.ticktext <- sapply(y.tickvals, function(x) ifelse(x < 0, paste("-$", -1 * round(x, y.tick.decimals), sep = ""), paste("$", round(x, y.tick.decimals), sep = "")))
         else
             y.ticktext <- sapply(y.tickvals, function(x) paste(round(x, y.tick.decimals)))
     }
@@ -723,6 +771,11 @@ StandardChart <-   function(y,
     series.marker.color <- rep(series.marker.color, 100/length(series.marker.color))
     series.marker.border.color <- rep(series.marker.border.color, 100/length(series.marker.border.color))
     series.line.color <- rep(series.line.color, 100/length(series.line.color))
+
+
+    ## Build annotations list
+    if (subtitle.text != "")
+        data.annotations[length(data.annotations) + 1] <- subtitle
 
     ## Initiate plotly object
     p <- plotly::plot_ly()
@@ -896,7 +949,10 @@ StandardChart <-   function(y,
             color = title.font.color,
             size = title.font.size
         ),
-        annotations = subtitle
+        annotations = data.annotations,
+        bargap = bar.gap,
+        bargroupgap = bar.group.gap,
+        barmode = barmode
     )
 
     ## Return the chart

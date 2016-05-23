@@ -71,7 +71,7 @@ isNumericOrInteger <- function(y)
     {
         vector.class <- class(y)
         vector.mode <- mode(y)
-        stop(paste("Vectors passed to the y-parameter and/or weights must be of the mode numeric or integer.  The entity passed is a",vector.class,"of mode: ",vector.mode))
+        stop(paste("Try checking the 'transpose' box!  Vectors passed to the y-parameter and/or weights must be of the mode numeric or integer.  The entity passed is a",vector.class,"of mode: ",vector.mode))
     }
     TRUE
 }

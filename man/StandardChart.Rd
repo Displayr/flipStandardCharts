@@ -66,7 +66,11 @@ StandardChart(y, x = NULL, transpose = FALSE, aggregate.period = "month",
   maxColorValue = 255), subtitle.font.size = 10,
   global.font.family.override = "", global.font.color.override = rgb(0, 0,
   0, maxColorValue = 255), orientation = NULL, rows.to.ignore = "",
-  cols.to.ignore = "")
+  cols.to.ignore = "", bar.gap = 0.15, bar.group.gap = NULL,
+  bar.data.label.offset = NULL, bar.data.label.family = "Arial",
+  bar.data.label.size = 10, bar.data.label.color = rgb(0, 0, 0,
+  maxColorValue = 255), bar.data.label.decimals = 0,
+  bar.data.label.as.percent = FALSE)
 }
 \arguments{
 \item{y}{A vector, matrix, list of vectors, data frame, or table.}
@@ -422,6 +426,33 @@ exclude from the charting.}
 
 \item{cols.to.ignore}{Character; comma separated string of column headings to
 exclude from the charting.}
+
+\item{bar.gap}{Integer; chart proportion between each bar or column if using
+bar or column charts, or between each cluster of bars or columns.}
+
+\item{bar.group.gap}{Integer; chart proportion between each bar or column in
+a cluster.}
+
+\item{bar.data.label.offset}{Numeric; number of y-axis units to offset the
+data label from the end of the column (use negative numbers for down, positive
+for up)}
+
+\item{bar.data.label.family}{Character; font family for data label.}
+
+\item{bar.data.label.size}{Integer; font size for data label.}
+
+\item{bar.data.label.color}{Font color as a named color
+in character format (e.g. "black") or an rgb value (e.g.
+rgb(0, 0, 0, maxColorValue = 255)).}
+
+\item{bar.data.label.decimals}{Integer; number of decimal places to show in
+bar and column chart data labels.}
+
+\item{bar.data.label.as.percent}{Logical; whether to treat data labels in
+bar or column charts as percentages or not.}
+
+\item{bar.data.label}{Integer or Character; the offset from the top end of a
+column measured in y-axis units.  Can also be 'middle'.}
 }
 \description{
 \code{StandardChart} generates standard charts from plotly library.
