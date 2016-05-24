@@ -88,6 +88,7 @@
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param y.position Character; set y-axis position; can be "left" or "right"
 #' @param y.mirror Logical; mirror y-axis on other side?
+#' @param y.values.reversed; Logical; whether to reverse y-axis or not
 #' @param y.grid.width Integer; width of y-grid lines in pixels; 0 = no line
 #' @param y.grid.color Color of y-grid lines as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
@@ -137,6 +138,7 @@
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param x.position Character; set x-axis position; can be "left" or "right"
 #' @param x.mirror Logical; mirror x-axis on other side?
+#' @param x.values.reversed; Logical; whether to reverse x-axis or not
 #' @param x.grid.width Integer; width of y-grid lines in pixels; 0 = no line
 #' @param x.grid.color Color of y-grid lines as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
@@ -228,7 +230,6 @@
 #' in character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).  Will only work if global.font.family.override
 #' is also set.
-#' @param orientation Character; "v" or "h" for vertical or horizontal bars
 #' @param rows.to.ignore Character; comma separated string of row headings to
 #' exclude from the charting.
 #' @param cols.to.ignore Character; comma separated string of column headings to
@@ -241,7 +242,7 @@
 #' data label from the end of the column (use negative numbers for down, positive
 #' for up)
 #' @param bar.data.label Integer or Character; the offset from the top end of a
-#' column measured in y-axis units.  Can also be 'middle'.
+#' column measured in y-axis units.
 #' @param bar.data.label.family Character; font family for data label.
 #' @param bar.data.label.size Integer; font size for data label.
 #' @param bar.data.label.color Font color as a named color
@@ -298,11 +299,12 @@ StandardChart <-   function(y,
                         y.bounds.minimum = NULL,
                         y.bounds.maximum = NULL,
                         y.bounds.units.major = NULL,
+                        y.number.ticks = NULL,
                         y.zero.line.width = 1,
                         y.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
                         y.position = "left",
                         y.mirror = FALSE,
-                        #y.values.reversed = FALSE,                       ## T/F - involves autorange and may be too complicated.
+                        y.values.reversed = FALSE,                       ## T/F - involves autorange and may be too complicated.
                         y.grid.width = 1,
                         y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                         y.tick.suffix = "",
@@ -333,7 +335,7 @@ StandardChart <-   function(y,
                         x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
                         x.position = "bottom",
                         x.mirror = FALSE,
-                        #x.values.reversed = FALSE,                       ## T/F - involves autorange and may be too complicated.
+                        x.values.reversed = FALSE,                       ## T/F - involves autorange and may be too complicated.
                         x.grid.width = 0,
                         x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                         x.tick.suffix = "",
@@ -380,7 +382,6 @@ StandardChart <-   function(y,
                         subtitle.font.size = 10,
                         global.font.family.override = "",
                         global.font.color.override = rgb(0, 0, 0, maxColorValue=255),
-                        orientation = NULL,
                         rows.to.ignore = "",
                         cols.to.ignore = "",
                         bar.gap = 0.15,
@@ -408,6 +409,8 @@ StandardChart <-   function(y,
     fill.bound <- ""
     legend.group <- ""
     barmode <- ""
+    orientation <- NULL
+    swap.axes.and.data <- FALSE
 
     ## Settings specific to Area Charts
     if (type == "Area" | type == "Stacked Area" | type == "100% Stacked Area")
@@ -468,15 +471,37 @@ StandardChart <-   function(y,
     }
 
     ## Settings specific to Bar Charts
+    if (type == "Bar" | type == "Stacked Bar" | type == "100% Stacked Bar")
+    {
+        chart.type.outputs <- barChart(chart.matrix = chart.matrix,
+                                          type = type,
+                                          y.tick.format.manual = y.tick.format.manual,
+                                          y.tick.suffix = y.tick.suffix,
+                                          y.tick.decimals = y.tick.decimals,
+                                          series.marker.border.width = series.marker.border.width,
+                                          bar.group.gap = bar.group.gap
+        )
 
-    ## Scatterplot / bubbles
+        chart.matrix <- chart.type.outputs$chart.matrix
+        legend.group <- chart.type.outputs$legend.group
+        y.tickformat <- chart.type.outputs$y.tickformat
+        series.mode <- chart.type.outputs$series.mode
+        orientation <- chart.type.outputs$orientation
+        type <- chart.type.outputs$type
+        barmode <- chart.type.outputs$barmode
+        bar.group.gap <- chart.type.outputs$bar.group.gap
+        swap.axes.and.data <- chart.type.outputs$swap.axes.and.data
+    }
+
+    ## Pie Chart / Donut / multiple pie charts
+
+    ## Waterfall (part of column charts, really...)
+
+    ## Scatterplot
+
+    ## Radar/Polar plot
 
     ## ... Any other chart types...
-
-
-
-    ## Common settings across all charts
-
 
     # Set all fonts to global font override if required
     if (global.font.family.override != "")
@@ -513,7 +538,8 @@ StandardChart <-   function(y,
                                                 bar.color = bar.data.label.color,
                                                 bar.decimals = bar.data.label.decimals,
                                                 barmode = barmode,
-                                                bar.data.label.as.percent = bar.data.label.as.percent)
+                                                bar.data.label.as.percent = bar.data.label.as.percent,
+                                                swap.axes.and.data = swap.axes.and.data)
     else
         data.annotations = list()
 
@@ -658,24 +684,53 @@ StandardChart <-   function(y,
     ifelse(x.hovertext.manual == "", x.hoverformat <- paste(".", x.hovertext.decimals, "f", sep=""), x.hoverformat <- x.hovertext.manual)
 
     ## Resolve numeric tick values based on y.bounds.minimum and y.bounds.maximum, and y.bounds.units.major
-    y.tickmode = "auto"
-    y.tickvals = integer()
-    y.ticktext = character()
-    y.range = integer()
-    y.autorange = TRUE
-    y.rangemode = "tozero"
+    # y.tickmode = "auto"
+    # y.tickvals = integer()
+    # y.ticktext = character()
+    # y.range = integer()
+    # y.autorange = TRUE
+    # y.rangemode = "tozero"
+    #
+    # if (is.null(y.bounds.minimum) | is.null(y.bounds.maximum) | is.null(y.bounds.units.major))
+    #     y.bounds.manual <- FALSE
+    # else
+    # {
+    #     y.bounds.manual <- TRUE
+    #     y.range <- c(y.bounds.minimum, y.bounds.maximum)
+    #     y.autorange = FALSE
+    #     y.tickmode <- "array"
+    #     for (a in seq(y.bounds.minimum, y.bounds.maximum, by = y.bounds.units.major))
+    #     {
+    #         y.tickvals <- c(y.tickvals, a)
+    #     }
+    #
+    #     if (y.tickformat == "%")
+    #         y.ticktext <- sapply(y.tickvals, function(x) paste(round(x * 100, y.tick.decimals), "%", sep = ""))
+    #     else if (y.tickformat == "$")
+    #         y.ticktext <- sapply(y.tickvals, function(x) ifelse(x < 0, paste("-$", -1 * round(x, y.tick.decimals), sep = ""), paste("$", round(x, y.tick.decimals), sep = "")))
+    #     else
+    #         y.ticktext <- sapply(y.tickvals, function(x) paste(round(x, y.tick.decimals)))
+    # }
 
-    if (is.null(y.bounds.minimum) | is.null(y.bounds.maximum) | is.null(y.bounds.units.major))
-        y.bounds.manual <- FALSE
-    else
+    y.tickmode <- "auto"
+    y.tickvals <- integer()
+    y.ticktext <- character()
+    y.range <- integer()
+    y.autorange <- TRUE
+    y.nticks <- length(y.labels)
+    y.rangemode <- "tozero"
+
+    if (!is.null(y.bounds.minimum) && !is.null(y.bounds.maximum) && !is.null(y.bounds.units.major))
     {
-        y.bounds.manual <- TRUE
-        y.range <- c(y.bounds.minimum, y.bounds.maximum)
-        y.autorange = FALSE
         y.tickmode <- "array"
+        y.autorange <- FALSE
+        y.range <- c(y.bounds.minimum, y.bounds.maximum)
+
         for (a in seq(y.bounds.minimum, y.bounds.maximum, by = y.bounds.units.major))
         {
             y.tickvals <- c(y.tickvals, a)
+            # if (!swap.axes.and.data)
+            #     y.ticktext <- y.labels[seq(1, length(y.labels), a)]
         }
 
         if (y.tickformat == "%")
@@ -684,6 +739,23 @@ StandardChart <-   function(y,
             y.ticktext <- sapply(y.tickvals, function(x) ifelse(x < 0, paste("-$", -1 * round(x, y.tick.decimals), sep = ""), paste("$", round(x, y.tick.decimals), sep = "")))
         else
             y.ticktext <- sapply(y.tickvals, function(x) paste(round(x, y.tick.decimals)))
+    }
+    else if (!is.null(y.values) && !is.null(y.labels))
+    {
+        y.tickmode <- "array"
+        # y.autorange <- TRUE
+        y.tickvals <- y.values
+        y.ticktext <- y.labels
+        # y.range <- c(y.values[1], y.values[ncol(chart.matrix)])
+    }
+    else
+    {
+        y.tickmode <- "auto"
+        y.autorange <- TRUE
+        if (is.null(y.number.ticks))
+            y.nticks <- length(y.labels)
+        else
+            y.nticks <- y.number.ticks
     }
 
     x.tickmode <- "auto"
@@ -702,8 +774,16 @@ StandardChart <-   function(y,
         for (a in seq(x.bounds.minimum, x.bounds.maximum, by = x.bounds.units.major))
         {
             x.tickvals <- c(x.tickvals, a)
-            x.ticktext <- x.labels[seq(1, length(x.labels), a)]
+            if (!swap.axes.and.data)
+                x.ticktext <- x.labels[seq(1, length(x.labels), a)]
         }
+
+        if (x.tickformat == "%")
+            x.ticktext <- sapply(x.tickvals, function(x) paste(round(x * 100, x.tick.decimals), "%", sep = ""))
+        else if (x.tickformat == "$")
+            x.ticktext <- sapply(x.tickvals, function(x) ifelse(x < 0, paste("-$", -1 * round(x, x.tick.decimals), sep = ""), paste("$", round(x, x.tick.decimals), sep = "")))
+        else
+            x.ticktext <- sapply(x.tickvals, function(x) paste(round(x, x.tick.decimals)))
     }
     else if (!is.null(x.values) && !is.null(x.labels))
     {
@@ -722,6 +802,13 @@ StandardChart <-   function(y,
         else
             x.nticks <- x.number.ticks
     }
+
+    ## Should autorange be = "reverse"?
+    if (y.values.reversed == TRUE)
+        y.autorange = "reversed"
+
+    if (x.values.reversed == TRUE)
+        x.autorange = "reversed"
 
     ## Should we draw a zero line
     y.zero.line <- FALSE
@@ -761,17 +848,20 @@ StandardChart <-   function(y,
     if (series.marker.text)
         series.mode <- paste(series.mode, "+text", sep = "")
 
+    axis.to.show <- "y+"
+    if (swap.axes.and.data)
+        axis.to.show <- "x+"
+
     if (hover.include.source.value)
-        hoverinfo = "y+name+text"
+        hoverinfo = paste(axis.to.show, "name+text", sep = "")
     else
-        hoverinfo = "y+name"
+        hoverinfo = paste(axis.to.show, "name", sep = "")
 
     ## Increase number of colors in color vectors such that a max of 100 are stored, in case insufficient numbers have been specified
     colors <- rep(colors, 100/length(colors))
     series.marker.color <- rep(series.marker.color, 100/length(series.marker.color))
     series.marker.border.color <- rep(series.marker.border.color, 100/length(series.marker.border.color))
     series.line.color <- rep(series.line.color, 100/length(series.line.color))
-
 
     ## Build annotations list
     if (subtitle.text != "")
@@ -783,11 +873,23 @@ StandardChart <-   function(y,
     ## Config options
     p <- plotly::config(displayModeBar = show.modebar)
 
+    ## Swap axes
+
+
+
     ## Add a trace for each row of data in the matrix
     for (a in 1:nrow(chart.matrix))
     {
         y <- as.numeric(chart.matrix[a, ])
         x <- as.character(colnames(chart.matrix))
+
+        if (swap.axes.and.data == TRUE)
+        {
+            y.swap <- y
+            x.swap <- x
+            y <- x.swap
+            x <- y.swap
+        }
 
         source.text <- source.matrix[a, ]
 
@@ -873,6 +975,7 @@ StandardChart <-   function(y,
             tickangle = y.tick.angle,
             ticklen = y.tick.length,
             tickcolor = y.line.color,
+            nticks = y.nticks,
             zeroline = y.zero.line,
             zerolinewidth = y.zero.line.width,
             zerolinecolor = y.zero.line.color,

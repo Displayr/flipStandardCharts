@@ -1,0 +1,21 @@
+{
+    "collab_server" : "",
+    "contents" : "barChart <- function(chart.matrix,\n                        transparency,\n                        type,\n                        y.tick.format.manual = \"\",\n                        y.tick.suffix = \"\",\n                        y.tick.decimals = 0,\n                        series.marker.border.width,\n                        series.marker.show,\n                        data.label,\n                        bar.group.gap)\n{\n    ## Change the matrix data according to requirements of the chart type\n    # if (type == \"Stacked Column\")\n    #     chart.matrix <- cum.data(chart.matrix, \"cumulative.sum\")\n    if (type == \"100% Stacked Bar\")\n        chart.matrix <- cum.data(chart.matrix, \"column.percentage\")\n\n    # Should we stack or should we not?\n    if (type != \"Bar\")\n        barmode <- \"stack\"\n    else\n        barmode <- \"\"\n\n    # Bar or column?\n    orientation <- \"h\"\n\n    ## Group legend items if it's a stacked Column chart as taking individual items off makes no sense\n    legend.group <- \"\"\n    if (type != \"Bar\")\n        legend.group <- \"grouped\"\n\n    ## If it's a 100% Stacked Column chart, and no options have been specified for y.tick.format, then set to %\n    if (type == \"100% Stacked Bar\" && y.tick.format.manual == \"\" && y.tick.suffix == \"\" && y.tick.decimals == 0)\n        y.tickformat <- \"%\"\n    else\n        y.tickformat <- y.tick.format.manual\n\n    ## If it's got a series.line.width > 0 then set the bar.group.gap to that value.\n    if (series.marker.border.width > 0 && is.null(bar.group.gap))\n        bar.group.gap <- series.marker.border.width * 0.135\n    else\n        bar.group.gap <- bar.group.gap\n\n    return(list(chart.matrix = chart.matrix,\n                legend.group = legend.group,\n                y.tickformat = y.tickformat,\n                # series.mode = series.mode,\n                orientation = orientation,\n                type = \"bar\",\n                barmode = barmode,\n                bar.group.gap = bar.group.gap,\n                swap.axes.and.data = TRUE))\n}\n\n",
+    "created" : 1464045859615.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "691273502",
+    "id" : "BE4259A8",
+    "lastKnownWriteTime" : 1464066940,
+    "last_content_update" : 1464066940846,
+    "path" : "~/GitHub/flipStandardCharts/R/barchart.R",
+    "project_path" : "R/barchart.R",
+    "properties" : {
+        "tempName" : "Untitled2"
+    },
+    "relative_order" : 7,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

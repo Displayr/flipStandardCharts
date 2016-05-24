@@ -17,9 +17,12 @@ columnChart <- function(chart.matrix,
 
     # Should we stack or should we not?
     if (type != "Column")
-        barmode = "stack"
+        barmode <- "stack"
     else
-        barmode = ""
+        barmode <- ""
+
+    # Bar or column?
+    orientation <- "v"
 
     ## Group legend items if it's a stacked Column chart as taking individual items off makes no sense
     legend.group <- ""
@@ -42,7 +45,7 @@ columnChart <- function(chart.matrix,
                 legend.group = legend.group,
                 y.tickformat = y.tickformat,
                 # series.mode = series.mode,
-                orientation = "v",
+                orientation = orientation,
                 type = "bar",
                 barmode = barmode,
                 bar.group.gap = bar.group.gap))

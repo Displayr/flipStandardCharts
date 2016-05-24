@@ -6,7 +6,8 @@ dataLabelAnnotation <- function(chart.matrix,
                                 bar.color = "black",
                                 bar.decimals = 0,
                                 barmode = "",
-                                bar.data.label.as.percent = FALSE
+                                bar.data.label.as.percent = FALSE,
+                                swap.axes.and.data = FALSE
                         )
 {
 series.count <- nrow(chart.matrix)
@@ -86,12 +87,20 @@ for (a in loop.by)
 
         # Data label as percent formatting
         if (bar.data.label.as.percent)
-            text = paste(round((data.point * 100), bar.decimals), "%", sep = "")
+            text <- paste(round((data.point * 100), bar.decimals), "%", sep = "")
         else
-            text = round(data.point, bar.decimals)
+            text <- round(data.point, bar.decimals)
 
-        data.annotations[[length(data.annotations) + 1]] <- list(x = x.offsets[b],
-                                                                 y = ypos,
+        x <- x.offsets[b]
+        y <- ypos
+        if (swap.axes.and.data)
+        {
+            x <- ypos
+            y <- x.offsets[b]
+        }
+
+        data.annotations[[length(data.annotations) + 1]] <- list(x = x,
+                                                                 y = y,
                                                                  text = text,
                                                                  font = list(
                                                                      family = bar.family,

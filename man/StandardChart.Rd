@@ -23,10 +23,10 @@ StandardChart(y, x = NULL, transpose = FALSE, aggregate.period = "month",
   y.title.font.family = "Arial", y.title.font.size = 12, y.line.width = 1,
   y.line.color = rgb(0, 0, 0, maxColorValue = 255), y.tick.marks = "",
   y.tick.length = 5, y.bounds.minimum = NULL, y.bounds.maximum = NULL,
-  y.bounds.units.major = NULL, y.zero.line.width = 1,
-  y.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
-  y.position = "left", y.mirror = FALSE, y.grid.width = 1,
-  y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+  y.bounds.units.major = NULL, y.number.ticks = NULL,
+  y.zero.line.width = 1, y.zero.line.color = rgb(44, 44, 44, maxColorValue =
+  255), y.position = "left", y.mirror = FALSE, y.values.reversed = FALSE,
+  y.grid.width = 1, y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
   y.tick.suffix = "", y.tick.prefix = "", y.tick.decimals = 0,
   y.tick.format.manual = "", y.hovertext.suffix = "",
   y.hovertext.prefix = "", y.hovertext.decimals = 2,
@@ -39,10 +39,10 @@ StandardChart(y, x = NULL, transpose = FALSE, aggregate.period = "month",
   x.bounds.minimum = NULL, x.bounds.maximum = NULL,
   x.bounds.units.major = NULL, x.number.ticks = NULL,
   x.zero.line.width = 1, x.zero.line.color = rgb(44, 44, 44, maxColorValue =
-  255), x.position = "bottom", x.mirror = FALSE, x.grid.width = 0,
-  x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
-  x.tick.suffix = "", x.tick.prefix = "", x.tick.decimals = 0,
-  x.tick.format.manual = "", x.hovertext.suffix = "",
+  255), x.position = "bottom", x.mirror = FALSE,
+  x.values.reversed = FALSE, x.grid.width = 0, x.grid.color = rgb(225,
+  225, 225, maxColorValue = 255), x.tick.suffix = "", x.tick.prefix = "",
+  x.tick.decimals = 0, x.tick.format.manual = "", x.hovertext.suffix = "",
   x.hovertext.prefix = "", x.hovertext.decimals = 2,
   x.hovertext.manual = "", x.tick.angle = 0, x.tick.font.color = rgb(0, 0,
   0, maxColorValue = 255), x.tick.font.family = "Arial",
@@ -65,12 +65,11 @@ StandardChart(y, x = NULL, transpose = FALSE, aggregate.period = "month",
   subtitle.font.family = "Arial", subtitle.font.color = rgb(0, 0, 0,
   maxColorValue = 255), subtitle.font.size = 10,
   global.font.family.override = "", global.font.color.override = rgb(0, 0,
-  0, maxColorValue = 255), orientation = NULL, rows.to.ignore = "",
-  cols.to.ignore = "", bar.gap = 0.15, bar.group.gap = NULL,
-  bar.data.label.offset = NULL, bar.data.label.family = "Arial",
-  bar.data.label.size = 10, bar.data.label.color = rgb(0, 0, 0,
-  maxColorValue = 255), bar.data.label.decimals = 0,
-  bar.data.label.as.percent = FALSE)
+  0, maxColorValue = 255), rows.to.ignore = "", cols.to.ignore = "",
+  bar.gap = 0.15, bar.group.gap = NULL, bar.data.label.offset = NULL,
+  bar.data.label.family = "Arial", bar.data.label.size = 10,
+  bar.data.label.color = rgb(0, 0, 0, maxColorValue = 255),
+  bar.data.label.decimals = 0, bar.data.label.as.percent = FALSE)
 }
 \arguments{
 \item{y}{A vector, matrix, list of vectors, data frame, or table.}
@@ -419,8 +418,6 @@ in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).  Will only work if global.font.family.override
 is also set.}
 
-\item{orientation}{Character; "v" or "h" for vertical or horizontal bars}
-
 \item{rows.to.ignore}{Character; comma separated string of row headings to
 exclude from the charting.}
 
@@ -451,8 +448,12 @@ bar and column chart data labels.}
 \item{bar.data.label.as.percent}{Logical; whether to treat data labels in
 bar or column charts as percentages or not.}
 
+\item{y.values.reversed;}{Logical; whether to reverse y-axis or not}
+
+\item{x.values.reversed;}{Logical; whether to reverse x-axis or not}
+
 \item{bar.data.label}{Integer or Character; the offset from the top end of a
-column measured in y-axis units.  Can also be 'middle'.}
+column measured in y-axis units.}
 }
 \description{
 \code{StandardChart} generates standard charts from plotly library.
