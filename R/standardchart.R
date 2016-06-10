@@ -397,10 +397,6 @@ StandardChart <-   function(y,
     ## Make a chart matrix
     chart.matrix <- AsChartMatrix(y, x, transpose = transpose, aggregate.period = aggregate.period)
 
-    ## Check that the chart matrix is a success
-    if (!IsChartMatrix(chart.matrix, n.rows = nrow(chart.matrix), n.columns = ncol(chart.matrix)))
-        stop(paste("Input data is not in a chart matrix format"))
-
     ## Ignore rows or columns
     if (rows.to.ignore != "" | cols.to.ignore != "")
         chart.matrix <- removeRowsAndColumns(chart.matrix, rows.to.ignore, cols.to.ignore)
