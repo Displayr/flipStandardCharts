@@ -96,7 +96,7 @@ StandardChart(type = "Bar",
               x.bounds.units.major = 1,
               series.marker.color = nps.colors,
               bar.gap = 5,
-              legend.font.color = rgb(66, 66, 66, max = 255),adsf
+              legend.font.color = rgb(66, 66, 66, max = 255),
               x.tick.font.color = rgb(66, 66, 66, max = 255),
               y.tick.font.color = rgb(66, 66, 66, max = 255),
               x.zero.line.color = rgb(192, 192, 192, max = 255),

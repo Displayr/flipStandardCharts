@@ -38,7 +38,8 @@ StandardChart(y = a.matrix,
               )
 
 # Junk chart
-junk.data <- read.csv("C:\\R\\junk.csv", header = TRUE)
+data(junk)
+junk.data <- junk
 junk.data.text <- as.matrix((junk.data[, -1, drop = FALSE]))
 rownames(junk.data) <- junk.data[, 1]
 junk.data <- as.matrix(junk.data[, -1])
