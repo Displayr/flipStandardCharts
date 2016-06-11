@@ -5,6 +5,8 @@
 #' @param y A vector, matrix, list of vectors, data frame, or table.
 #' @param x A vector over which y will be aggregated. Must have the same
 #' number of elements as y.
+#' @param type Character; type of chart. Can be "Area", "Stacked Area",
+#' or "100\% Stacked Area".
 #' @param transpose Logical; should the final output be transposed?
 #' @param aggregate.period Character; can be "month", "quarter", "year".
 #' Only relevant when x is a vector of mode date.
@@ -14,8 +16,6 @@
 #' @param x.labels Character vector, overrides chart matrix column names.
 #' @param x.values Integer vector, optiona, for manually specifying the points
 #' along the x-axis where the x.labels should appear.
-#' @param type Character; type of chart. Can be "Area", "Stacked Area",
-#' or "100\% Stacked Area".
 #' @param title Character; chart title.
 #' @param title.font.family Character; title font family.  Can be "Arial
 #' Black", "Arial", "Comic Sans MS", "Courier New", "Georgia", "Impact",
@@ -257,13 +257,13 @@ StandardChart <-   function(y,
                         x = NULL,
                         # weights = NULL,                                 ## Gets passed to AsChartMatrix <- add to that function first!
                         # subset = NULL,                                  ## Gets passed to AsChartMatrix <- add to that function first!
+                        type = "Area",
                         transpose = FALSE,                                ## Should the inputs be transposed; TRUE or FALSE
                         aggregate.period = "month",
                         y.labels = NULL,
                         y.values = NULL,
                         x.labels = NULL,
                         x.values = NULL,
-                        type = "Area",
                         title = "",
                         title.font.family = "Arial",
                         title.font.color = rgb(44, 44, 44, maxColorValue = 255),

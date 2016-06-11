@@ -4,13 +4,13 @@
 \alias{StandardChart}
 \title{Generates an interactive area chart based on the plotly library.}
 \usage{
-StandardChart(y, x = NULL, transpose = FALSE, aggregate.period = "month",
-  y.labels = NULL, y.values = NULL, x.labels = NULL, x.values = NULL,
-  type = "Area", title = "", title.font.family = "Arial",
-  title.font.color = rgb(44, 44, 44, maxColorValue = 255),
-  title.font.size = 16, colors = qColors, transparency = 0.4,
-  chart.fill.color = rgb(255, 255, 255, maxColorValue = 255),
-  chart.fill.transparency = 1, plot.fill.color = rgb(255, 255, 255,
+StandardChart(y, x = NULL, type = "Area", transpose = FALSE,
+  aggregate.period = "month", y.labels = NULL, y.values = NULL,
+  x.labels = NULL, x.values = NULL, title = "",
+  title.font.family = "Arial", title.font.color = rgb(44, 44, 44,
+  maxColorValue = 255), title.font.size = 16, colors = qColors,
+  transparency = 0.4, chart.fill.color = rgb(255, 255, 255, maxColorValue =
+  255), chart.fill.transparency = 1, plot.fill.color = rgb(255, 255, 255,
   maxColorValue = 255), plot.fill.transparency = 1, legend.show = TRUE,
   legend.fill = rgb(255, 255, 255, maxColorValue = 255),
   legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
@@ -77,6 +77,9 @@ StandardChart(y, x = NULL, transpose = FALSE, aggregate.period = "month",
 \item{x}{A vector over which y will be aggregated. Must have the same
 number of elements as y.}
 
+\item{type}{Character; type of chart. Can be "Area", "Stacked Area",
+or "100\% Stacked Area".}
+
 \item{transpose}{Logical; should the final output be transposed?}
 
 \item{aggregate.period}{Character; can be "month", "quarter", "year".
@@ -91,9 +94,6 @@ along the y-axis where the y.labels should appear.}
 
 \item{x.values}{Integer vector, optiona, for manually specifying the points
 along the x-axis where the x.labels should appear.}
-
-\item{type}{Character; type of chart. Can be "Area", "Stacked Area",
-or "100\% Stacked Area".}
 
 \item{title}{Character; chart title.}
 
