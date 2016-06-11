@@ -2,7 +2,7 @@
 
 export(AlphabeticRowNames)
 export(AsChartMatrix)
+export(Chart)
 export(IsChartMatrix)
 export(MakeColorGradient)
 export(MeanRowValueDescendingSort)
-export(StandardChart)

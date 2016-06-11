@@ -3,7 +3,7 @@ context("columnChart")
 
 for (i in 1:length(good.examples))
 {
-    print(StandardChart(y = good.examples[[i]]$Y, x = good.examples[[i]]$X, type = "Column", transpose = good.examples[[i]]$transpose, title = names(good.examples)[i]), hover.include.source.value = TRUE)
+    print(Chart(y = good.examples[[i]]$Y, x = good.examples[[i]]$X, type = "Column", transpose = good.examples[[i]]$transpose, title = names(good.examples)[i]), hover.include.source.value = TRUE)
 
     # cat(paste("Press [enter] to continue (test ", i, "/", length(good.examples), ").", sep = ""))
     # line <- readline()
@@ -19,7 +19,7 @@ colnames(y.data) <- c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct
 myCols <- c(rgb(0,176,240, max=255), rgb(197,90,17, max=255))
 myLineCols <- c(rgb(31,78,121, max=255), rgb(244, 177, 131, max=255))
 
-StandardChart(type = "Column",
+Chart(type = "Column",
               y = y.data,
               transpose = TRUE,
               y.bounds.minimum = 0,
@@ -43,7 +43,7 @@ colnames(junk.data) <- c("29-Dec","30-Dec","31-Dec","01-Jan","02-Jan","03-Jan","
 rownames(junk.data) <- c("Blue", "Yellow", "Red")
 myLineCols <- c(rgb(68, 112, 236, max=255), rgb(255, 192, 0, max=255), rgb(210, 0, 0, max=255))
 
-StandardChart(type = "Column",
+Chart(type = "Column",
               title = "Sample Chart",
               title.font.color = rgb(192, 0, 0, max = 255),
               y = junk.data,
@@ -81,7 +81,7 @@ nps.colors <- c(grDevices::rgb(0, 176, 80, 255, max = 255), # Brand A; green.
 rownames(nps.data) <- c("Brand A", "Brand B", "Brand C")
 colnames(nps.data) <- c("Apr-15","May-15","Jun-15","Jul-15","Aug-15","Sep-15","Oct-15","Nov-15","Dec-15","Jan-16","Feb-16","Mar-16","Apr-16","May-16")
 
-StandardChart(type = "Column",
+Chart(type = "Column",
               title = "NPS",
               title.font.color = rgb(66, 66, 66, max = 255),
               y = nps.data,
@@ -125,7 +125,7 @@ text.colors <- c(grDevices::rgb(255, 255, 255, 255, max = 255),
                  grDevices::rgb(255, 255, 255, 255, max = 255),
                  grDevices::rgb(0, 0, 0, 255, max = 255))
 
-StandardChart(type = "Stacked Column",
+Chart(type = "Stacked Column",
               title = "U.S. Gun manufacture by type",
               title.font.color = rgb(66, 66, 66, max = 255),
               y = guns,
@@ -159,7 +159,7 @@ hotcols <- c(grDevices::rgb(7, 135, 65, 255, max = 255),
              grDevices::rgb(56, 184, 72, 255, max = 255),
              grDevices::rgb(162, 213, 101, 255, max = 255))
 
-StandardChart(type = "Stacked Column",
+Chart(type = "Stacked Column",
               title = "U.S. Gun manufacture by type",
               title.font.color = rgb(66, 66, 66, max = 255),
               y = hotdogs,

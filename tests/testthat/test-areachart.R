@@ -3,7 +3,7 @@ context("areaChart")
 
 for (i in 1:length(good.examples))
 {
-    print(StandardChart(y = good.examples[[i]]$Y, x = good.examples[[i]]$X, type = "Area", transpose = good.examples[[i]]$transpose, title = names(good.examples)[i]), hover.include.source.value = TRUE)
+    print(Chart(y = good.examples[[i]]$Y, x = good.examples[[i]]$X, type = "Area", transpose = good.examples[[i]]$transpose, title = names(good.examples)[i]), hover.include.source.value = TRUE)
 
     # cat(paste("Press [enter] to continue (test ", i, "/", length(good.examples), ").", sep = ""))
     # line <- readline()
@@ -28,7 +28,7 @@ for (i in 1:length(good.examples))
 # myCols <- c(rgb(0,176,240, max=255), rgb(197,90,17, max=255))
 # myLineCols <- c(rgb(31,78,121, max=255),rgb(192,0,0, max=255))
 #
-# StandardChart(a.matrix, type = "Area",
+# Chart(a.matrix, type = "Area",
 #           transparency = 0.4,
 #           transpose = TRUE,
 #           colors = myCols,
@@ -48,7 +48,7 @@ for (i in 1:length(good.examples))
 # rownames(a.matrix) <- c("pink","green","orange","blue")
 # markerCols <- c(rgb(245,56,177, max=255),rgb(56,193,55, max=255),rgb(245,163,65, max=255),rgb(61,108,255, max=255))
 #
-# StandardChart(a.matrix,
+# Chart(a.matrix,
 #           legend.show = FALSE,
 #           type = "Area",
 #           transparency = 0.4,
@@ -84,7 +84,7 @@ for (i in 1:length(good.examples))
 # rownames(a.matrix) <- c("Factory A", "Factory B", "Factory C")
 # itemCols <- c(rgb(46,117,182, max=255),rgb(248,203,173, max=255),rgb(79,190,70, max=255))
 #
-# StandardChart(a.matrix,
+# Chart(a.matrix,
 #           legend.show = TRUE,
 #           type = "Area",
 #           transparency = 0.4,
@@ -108,7 +108,7 @@ for (i in 1:length(good.examples))
 # ## Sort alphabetically descending
 # a.matrix <- AlphabeticRowNames(a.matrix)
 #
-# StandardChart(a.matrix,
+# Chart(a.matrix,
 #           legend.show = TRUE,
 #           type = "100% Stacked Area",
 #           colors = col.scheme,
@@ -122,7 +122,7 @@ for (i in 1:length(good.examples))
 # # Excel equivalent "Stacked AC"
 # a.matrix <- as.matrix(read.csv("C:/R/resources.csv", header = TRUE, row.names = 1))
 #
-# StandardChart(a.matrix,
+# Chart(a.matrix,
 #           legend.show = TRUE,
 #           type = "Stacked Area",
 #           transpose = TRUE,
@@ -181,7 +181,7 @@ for (i in 1:length(good.examples))
 # myCols <- c(rgb(0,176,240, max=255), rgb(197,90,17, max=255))
 # myLineCols <- c(rgb(31,78,121, max=255),rgb(192,0,0, max=255))
 #
-# StandardChart(a.matrix, type = "Line",
+# Chart(a.matrix, type = "Line",
 #           transparency = 0.4,
 #           colors = myCols,
 #           y.tick.format = c("%","2"),
@@ -201,7 +201,7 @@ for (i in 1:length(good.examples))
 # rownames(a.matrix) <- c("pink","green","orange","blue")
 # markerCols <- c(rgb(245,56,177, max=255),rgb(56,193,55, max=255),rgb(245,163,65, max=255),rgb(61,108,255, max=255))
 #
-# StandardChart(a.matrix,
+# Chart(a.matrix,
 #           legend.show = FALSE,
 #           type = "Line",
 #           transparency = 0.4,
@@ -236,7 +236,7 @@ for (i in 1:length(good.examples))
 # rownames(a.matrix) <- c("Factory 1", "Factory 2", "Factory 3")
 # itemCols <- c(rgb(46,117,182, max=255),rgb(248,203,173, max=255),rgb(79,190,70, max=255))
 #
-# StandardChart(a.matrix,
+# Chart(a.matrix,
 #           legend.show = TRUE,
 #           type = "Line",
 #           transparency = 0.4,
@@ -253,7 +253,7 @@ for (i in 1:length(good.examples))
 # ## Sort alphabetically descending
 # a.matrix <- alphabetic.row.names(a.matrix)
 #
-# StandardChart(a.matrix,
+# Chart(a.matrix,
 #           legend.show = TRUE,
 #           type = "100% Stacked Line",
 #           series.line.color = col.scheme,
@@ -265,7 +265,7 @@ for (i in 1:length(good.examples))
 # a.matrix <- as.matrix(read.csv("resources.csv", header = TRUE, row.names = 1))
 # a.matrix <- alphabetic.row.names(a.matrix)
 #
-# StandardChart(a.matrix,
+# Chart(a.matrix,
 #           legend.show = TRUE,
 #           type = "Line",
 #           series.line.width = 2,
@@ -286,7 +286,7 @@ for (i in 1:length(good.examples))
 # myCols <- c(rgb(0,176,240, max=255), rgb(197,90,17, max=255))
 # myLineCols <- c(rgb(31,78,121, max=255),rgb(192,0,0, max=255))
 #
-# StandardChart(a.matrix, type = "Clustered Column",
+# Chart(a.matrix, type = "Clustered Column",
 #           transparency = 0.4,
 #           colors = myCols,
 #           y.tick.format = c("%","2"),
@@ -303,7 +303,7 @@ for (i in 1:length(good.examples))
 # rownames(a.matrix) <- c("pink","green","orange","blue")
 # markerCols <- c(rgb(245,56,177, max=255),rgb(56,193,55, max=255),rgb(245,163,65, max=255),rgb(61,108,255, max=255))
 #
-# StandardChart(a.matrix,
+# Chart(a.matrix,
 #           legend.show = FALSE,
 #           type = "Clustered Bar",
 #           transparency = 0.4,
@@ -330,7 +330,7 @@ for (i in 1:length(good.examples))
 # rownames(a.matrix) <- c("Factory 1", "Factory 2", "Factory 3")
 # itemCols <- c(rgb(46,117,182, max=255),rgb(248,203,173, max=255),rgb(79,190,70, max=255))
 #
-# StandardChart(a.matrix,
+# Chart(a.matrix,
 #           legend.show = TRUE,
 #           type = "Stacked Column",
 #           transparency = 0.4,
@@ -346,7 +346,7 @@ for (i in 1:length(good.examples))
 # ## Sort alphabetically descending
 # a.matrix <- alphabetic.row.names(a.matrix)
 #
-# StandardChart(a.matrix,
+# Chart(a.matrix,
 #           legend.show = TRUE,
 #           type = "100% Stacked Column",
 #           series.line.color = col.scheme,
@@ -358,7 +358,7 @@ for (i in 1:length(good.examples))
 # a.matrix <- as.matrix(read.csv("resources.csv", header = TRUE, row.names = 1))
 # a.matrix <- alphabetic.row.names(a.matrix)
 #
-# StandardChart(a.matrix,
+# Chart(a.matrix,
 #           legend.show = TRUE,
 #           type = "100% Stacked Bar",
 #           series.line.width = 2,
@@ -411,7 +411,7 @@ for (i in 1:length(good.examples))
 # # myCols <- c(rgb(0,176,240, max=255), rgb(197,90,17, max=255))
 # # myLineCols <- c(rgb(31,78,121, max=255),rgb(192,0,0, max=255))
 # #
-# # StandardChart(a.matrix, type = "Line",
+# # Chart(a.matrix, type = "Line",
 # #           transparency = 0.4,
 # #           colors = myCols,
 # #           y.tick.format = c("%","2"),
@@ -431,7 +431,7 @@ for (i in 1:length(good.examples))
 # # rownames(a.matrix) <- c("pink","green","orange","blue")
 # # markerCols <- c(rgb(245,56,177, max=255),rgb(56,193,55, max=255),rgb(245,163,65, max=255),rgb(61,108,255, max=255))
 # #
-# # StandardChart(a.matrix,
+# # Chart(a.matrix,
 # #           legend.show = FALSE,
 # #           type = "Line",
 # #           transparency = 0.4,
@@ -466,7 +466,7 @@ for (i in 1:length(good.examples))
 # # rownames(a.matrix) <- c("Factory 1", "Factory 2", "Factory 3")
 # # itemCols <- c(rgb(46,117,182, max=255),rgb(248,203,173, max=255),rgb(79,190,70, max=255))
 # #
-# # StandardChart(a.matrix,
+# # Chart(a.matrix,
 # #           legend.show = TRUE,
 # #           type = "Line",
 # #           transparency = 0.4,
@@ -483,7 +483,7 @@ for (i in 1:length(good.examples))
 # # ## Sort alphabetically descending
 # # a.matrix <- alphabetic.row.names(a.matrix)
 # #
-# # StandardChart(a.matrix,
+# # Chart(a.matrix,
 # #           legend.show = TRUE,
 # #           type = "100% Stacked Line",
 # #           series.line.color = col.scheme,
@@ -495,7 +495,7 @@ for (i in 1:length(good.examples))
 # # a.matrix <- as.matrix(read.csv("resources.csv", header = TRUE, row.names = 1))
 # # a.matrix <- alphabetic.row.names(a.matrix)
 # #
-# # StandardChart(a.matrix,
+# # Chart(a.matrix,
 # #           legend.show = TRUE,
 # #           type = "Line",
 # #           series.line.width = 2,
@@ -516,7 +516,7 @@ for (i in 1:length(good.examples))
 # # myCols <- c(rgb(0,176,240, max=255), rgb(197,90,17, max=255))
 # # myLineCols <- c(rgb(31,78,121, max=255),rgb(192,0,0, max=255))
 # #
-# # StandardChart(a.matrix, type = "Clustered Column",
+# # Chart(a.matrix, type = "Clustered Column",
 # #           transparency = 0.4,
 # #           colors = myCols,
 # #           y.tick.format = c("%","2"),
@@ -533,7 +533,7 @@ for (i in 1:length(good.examples))
 # # rownames(a.matrix) <- c("pink","green","orange","blue")
 # # markerCols <- c(rgb(245,56,177, max=255),rgb(56,193,55, max=255),rgb(245,163,65, max=255),rgb(61,108,255, max=255))
 # #
-# # StandardChart(a.matrix,
+# # Chart(a.matrix,
 # #           legend.show = FALSE,
 # #           type = "Clustered Bar",
 # #           transparency = 0.4,
@@ -560,7 +560,7 @@ for (i in 1:length(good.examples))
 # # rownames(a.matrix) <- c("Factory 1", "Factory 2", "Factory 3")
 # # itemCols <- c(rgb(46,117,182, max=255),rgb(248,203,173, max=255),rgb(79,190,70, max=255))
 # #
-# # StandardChart(a.matrix,
+# # Chart(a.matrix,
 # #           legend.show = TRUE,
 # #           type = "Stacked Column",
 # #           transparency = 0.4,
@@ -576,7 +576,7 @@ for (i in 1:length(good.examples))
 # # ## Sort alphabetically descending
 # # a.matrix <- alphabetic.row.names(a.matrix)
 # #
-# # StandardChart(a.matrix,
+# # Chart(a.matrix,
 # #           legend.show = TRUE,
 # #           type = "100% Stacked Column",
 # #           series.line.color = col.scheme,
@@ -588,7 +588,7 @@ for (i in 1:length(good.examples))
 # # a.matrix <- as.matrix(read.csv("resources.csv", header = TRUE, row.names = 1))
 # # a.matrix <- alphabetic.row.names(a.matrix)
 # #
-# # StandardChart(a.matrix,
+# # Chart(a.matrix,
 # #           legend.show = TRUE,
 # #           type = "100% Stacked Bar",
 # #           series.line.width = 2,
@@ -609,19 +609,19 @@ for (i in 1:length(good.examples))
 # # ################## Additional bar and column examples based on other data types.
 # #
 # # ## Unnamed vector to matrix  - Doesn't make sense as an Area Chart...
-# # StandardChart(c(1,2,2,6,4),
+# # Chart(c(1,2,2,6,4),
 # #           row.labels = c("a","b","c","d","e"),
 # #           legend.show = TRUE,
 # #           type = "Column")
 # #
 # # ## Named vector to matrix, unique names   - Also doesn't make sense as an Area Chart...
-# # StandardChart(c(a = 1, b = 2, c = 2, d = 6, e = 4),
+# # Chart(c(a = 1, b = 2, c = 2, d = 6, e = 4),
 # #           legend.show = TRUE,
 # #           type = "Column")
 # #
 # # ## Single factor variable
 # # a <- as.factor(rep(c(1,4,12,5,3),10))
-# # StandardChart(a,
+# # Chart(a,
 # #           legend.show = TRUE,
 # #           type = "Bar")
 # #
@@ -629,7 +629,7 @@ for (i in 1:length(good.examples))
 # # b <- as.factor(rep(c(1,4,12,5,3),10))
 # # levels(b) <- c("Celery","Apples","Walnuts","Grapes","Mayonnaise")
 # # factor.list <- list(a, b)
-# # StandardChart(factor.list,
+# # Chart(factor.list,
 # #           legend.show = TRUE,
 # #           transparency = 0.4,
 # #           type = "Stacked Column")

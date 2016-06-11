@@ -3,7 +3,7 @@ context("lineChart")
 
 for (i in 1:length(good.examples))
 {
-    print(StandardChart(y = good.examples[[i]]$Y, x = good.examples[[i]]$X, type = "Line", transpose = good.examples[[i]]$transpose, title = names(good.examples)[i]), hover.include.source.value = TRUE)
+    print(Chart(y = good.examples[[i]]$Y, x = good.examples[[i]]$X, type = "Line", transpose = good.examples[[i]]$transpose, title = names(good.examples)[i]), hover.include.source.value = TRUE)
 
     # cat(paste("Press [enter] to continue (test ", i, "/", length(good.examples), ").", sep = ""))
     # line <- readline()
@@ -21,7 +21,7 @@ colnames(a.matrix) <- c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","O
 myCols <- c(rgb(0,176,240, max=255), rgb(197,90,17, max=255))
 myLineCols <- c(rgb(31,78,121, max=255),rgb(192,0,0, max=255))
 
-StandardChart(y = a.matrix,
+Chart(y = a.matrix,
               type = "Line",
               transpose = TRUE,
               series.line.color = myLineCols,
@@ -64,7 +64,7 @@ junk.colors <- c(grDevices::rgb(219, 99, 24, 255, max = 255), # Apples, orange-i
                  grDevices::rgb(50, 125, 194, 255, max = 255), # Blueberries
                  grDevices::rgb(210, 96, 18, 255, max = 255)) # Lingonberries
 
-StandardChart(y = junk.data,
+Chart(y = junk.data,
               transpose = TRUE,
               title = "Monthly Sales",
               type = "Line",
@@ -105,7 +105,7 @@ nps.colors <- c(grDevices::rgb(46, 117, 182, 255, max = 255), # Brand A; blue.
                 grDevices::rgb(192, 0, 0, 255, max = 255), # Brand B; red.
                 grDevices::rgb(0, 176, 80, 255, max = 255)) # Brand C; green.
 
-StandardChart(y = nps.data,
+Chart(y = nps.data,
               title = "NPS",
               transpose = TRUE,
               type = "Line",
@@ -148,7 +148,7 @@ setColors <- function (x, red, green, blue) {
 
 age.colors <- setColors(age.data, 38, 85, 154)
 
-StandardChart(y = age.data,
+Chart(y = age.data,
               title.font.size = 12,
               title.font.color = rgb(66, 66, 66, max = 255),
               type = "Line",
@@ -172,7 +172,7 @@ tufte.data <- as.matrix(c(8, 7, 5.7, 7, 7, 7.5, 7.5, 8, 9, 8.5, 12, 13, 14, 14.5
 rownames(tufte.data) <- c(1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008)
 colnames(tufte.data) <- "Series 1"
 
-StandardChart(y = tufte.data,
+Chart(y = tufte.data,
               type = "Line",
               series.line.width = 7,
               x.tick.font.size = 12,

@@ -1,6 +1,6 @@
 #' Generates an interactive area chart based on the plotly library.
 #'
-#' \code{StandardChart} generates standard charts from plotly library.
+#' \code{Chart} generates standard charts from plotly library.
 #'
 #' @param y A vector, matrix, list of vectors, data frame, or table.
 #' @param x A vector over which y will be aggregated. Must have the same
@@ -253,7 +253,7 @@
 #' @param bar.data.label.as.percent Logical; whether to treat data labels in
 #' bar or column charts as percentages or not.
 #' @export
-StandardChart <-   function(y,
+Chart <-   function(y,
                         x = NULL,
                         # weights = NULL,                                 ## Gets passed to AsChartMatrix <- add to that function first!
                         # subset = NULL,                                  ## Gets passed to AsChartMatrix <- add to that function first!
