@@ -23,9 +23,9 @@ Chart(y, x = NULL, type = "Area", transpose = FALSE,
   y.title.font.family = "Arial", y.title.font.size = 12, y.line.width = 1,
   y.line.color = rgb(0, 0, 0, maxColorValue = 255), y.tick.marks = "",
   y.tick.length = 5, y.bounds.minimum = NULL, y.bounds.maximum = NULL,
-  y.bounds.units.major = NULL, y.number.ticks = NULL,
-  y.zero.line.width = 1, y.zero.line.color = rgb(44, 44, 44, maxColorValue =
-  255), y.position = "left", y.mirror = FALSE, y.values.reversed = FALSE,
+  y.bounds.units.major = NULL, y.zero.line.width = 1,
+  y.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
+  y.position = "left", y.mirror = FALSE, y.values.reversed = FALSE,
   y.grid.width = 1, y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
   y.tick.suffix = "", y.tick.prefix = "", y.tick.decimals = 0,
   y.tick.format.manual = "", y.hovertext.suffix = "",
@@ -206,6 +206,8 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{y.mirror}{Logical; mirror y-axis on other side?}
 
+\item{y.values.reversed}{Logical; whether to reverse y-axis or not}
+
 \item{y.grid.width}{Integer; width of y-grid lines in pixels; 0 = no line}
 
 \item{y.grid.color}{Color of y-grid lines as a named color in character
@@ -284,6 +286,8 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{x.position}{Character; set x-axis position; can be "left" or "right"}
 
 \item{x.mirror}{Logical; mirror x-axis on other side?}
+
+\item{x.values.reversed}{Logical; whether to reverse x-axis or not}
 
 \item{x.grid.width}{Integer; width of y-grid lines in pixels; 0 = no line}
 
@@ -448,10 +452,6 @@ bar and column chart data labels.}
 \item{bar.data.label.as.percent}{Logical; whether to treat data labels in
 bar or column charts as percentages or not.}
 
-\item{y.values.reversed;}{Logical; whether to reverse y-axis or not}
-
-\item{x.values.reversed;}{Logical; whether to reverse x-axis or not}
-
 \item{bar.data.label}{Integer or Character; the offset from the top end of a
 column measured in y-axis units.}
 }
@@ -461,6 +461,6 @@ column measured in y-axis units.}
 \examples{
 data("y.data")
 data("x.data")
-StandardChart(y = y.data, x = x.data, type = "Area", transpose = TRUE)
+Chart(y = y.data, x = x.data, type = "Area", transpose = TRUE)
 }
 

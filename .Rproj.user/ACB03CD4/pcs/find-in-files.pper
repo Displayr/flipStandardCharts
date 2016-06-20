@@ -1,12 +1,12 @@
 {
     "dialog-state" : {
-        "caseSensitive" : false,
+        "caseSensitive" : true,
         "filePatterns" : [
             "*.r",
             "*.R"
         ],
         "path" : "~/GitHub/flipStandardCharts",
-        "query" : "rgb(0, 0, 0, max = 255)",
+        "query" : "StandardChart",
         "regex" : false
     }
 }

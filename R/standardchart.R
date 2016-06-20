@@ -88,7 +88,7 @@
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param y.position Character; set y-axis position; can be "left" or "right"
 #' @param y.mirror Logical; mirror y-axis on other side?
-#' @param y.values.reversed; Logical; whether to reverse y-axis or not
+#' @param y.values.reversed Logical; whether to reverse y-axis or not
 #' @param y.grid.width Integer; width of y-grid lines in pixels; 0 = no line
 #' @param y.grid.color Color of y-grid lines as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
@@ -138,7 +138,7 @@
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param x.position Character; set x-axis position; can be "left" or "right"
 #' @param x.mirror Logical; mirror x-axis on other side?
-#' @param x.values.reversed; Logical; whether to reverse x-axis or not
+#' @param x.values.reversed Logical; whether to reverse x-axis or not
 #' @param x.grid.width Integer; width of y-grid lines in pixels; 0 = no line
 #' @param x.grid.color Color of y-grid lines as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
@@ -208,7 +208,7 @@
 #' @examples
 #' data("y.data")
 #' data("x.data")
-#' StandardChart(y = y.data, x = x.data, type = "Area", transpose = TRUE)
+#' Chart(y = y.data, x = x.data, type = "Area", transpose = TRUE)
 #' @param subtitle.text Character; text string to appear as a sub-title
 #' @param subtitle.border.width Numeric; width in pixels of border around
 #' sub-title.
@@ -299,7 +299,7 @@ Chart <-   function(y,
                         y.bounds.minimum = NULL,
                         y.bounds.maximum = NULL,
                         y.bounds.units.major = NULL,
-                        y.number.ticks = NULL,
+                        # y.number.ticks = NULL,
                         y.zero.line.width = 1,
                         y.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
                         y.position = "left",
@@ -407,6 +407,7 @@ Chart <-   function(y,
     barmode <- ""
     orientation <- NULL
     swap.axes.and.data <- FALSE
+    y.nticks <- NULL
 
     ## Settings specific to Area Charts
     if (type == "Area" | type == "Stacked Area" | type == "100% Stacked Area")
@@ -475,7 +476,11 @@ Chart <-   function(y,
                                           y.tick.suffix = y.tick.suffix,
                                           y.tick.decimals = y.tick.decimals,
                                           series.marker.border.width = series.marker.border.width,
-                                          bar.group.gap = bar.group.gap
+                                          bar.group.gap = bar.group.gap,
+                                          y.bounds.minimum = y.bounds.minimum,
+                                          y.bounds.maximum = y.bounds.maximum,
+                                          y.bounds.units.major = y.bounds.units.major,
+                                          y.nticks = length(colnames(chart.matrix))
         )
 
         chart.matrix <- chart.type.outputs$chart.matrix
@@ -487,6 +492,10 @@ Chart <-   function(y,
         barmode <- chart.type.outputs$barmode
         bar.group.gap <- chart.type.outputs$bar.group.gap
         swap.axes.and.data <- chart.type.outputs$swap.axes.and.data
+        y.bounds.minimum <- chart.type.outputs$y.bounds.minimum
+        y.bounds.maximum <- chart.type.outputs$y.bounds.maximum
+        y.bounds.units.major <- chart.type.outputs$y.bounds.units.major
+        y.nticks <- y.nticks
     }
 
     ## Pie Chart / Donut / multiple pie charts
@@ -713,7 +722,7 @@ Chart <-   function(y,
     y.ticktext <- character()
     y.range <- integer()
     y.autorange <- TRUE
-    y.nticks <- length(y.labels)
+    # y.nticks <- length(y.labels)
     y.rangemode <- "tozero"
 
     if (!is.null(y.bounds.minimum) && !is.null(y.bounds.maximum) && !is.null(y.bounds.units.major))
@@ -748,10 +757,8 @@ Chart <-   function(y,
     {
         y.tickmode <- "auto"
         y.autorange <- TRUE
-        if (is.null(y.number.ticks))
-            y.nticks <- length(y.labels)
-        else
-            y.nticks <- y.number.ticks
+        # if (!is.null(y.number.ticks))
+        #     y.nticks <- y.number.ticks
     }
 
     x.tickmode <- "auto"

@@ -153,10 +153,7 @@ Chart(type = "Stacked Bar",
               bar.data.label.decimals = 2,
               bar.data.label.color = text.colors,
               series.marker.border.width = 0,
-              bar.data.label.as.percent = TRUE,
-              y.bounds.minimum = 1995,
-              y.bounds.maximum = 2010,
-              y.bounds.units.major = 1)
+              bar.data.label.as.percent = TRUE)
 
 ## Hot Dogs
 hotdogs <- as.matrix(rbind("1st" = c(25, 50, 50.5, 44.5, 53.5, 49, 54, 66, 59, 68, 54),

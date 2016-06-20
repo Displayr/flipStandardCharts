@@ -114,3 +114,7 @@
 #' @format All valid Plotly marker symbols in character format.
 "available.fonts"
 
+#' CSV file of data for junk chart demo
+#'
+#' @format 13 columns by 20 rows; first col alpha, remainder numeric
+"junk"
