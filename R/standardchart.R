@@ -546,9 +546,10 @@ Chart <-   function(y,
                                                 bar.data.label.as.percent = bar.data.label.as.percent,
                                                 swap.axes.and.data = swap.axes.and.data)
     else
-        data.annotations = list()
+        data.annotations <- list()
 
     # Sort out the sub-title
+    subtitle <- list()
     if (subtitle.text != "")
     {
         # Allow some extra margin space
@@ -573,8 +574,7 @@ Chart <-   function(y,
                          )
         )
     }
-    else
-        subtitle <- list()
+
 
     # Create text matrix of source data if required for hover
     source.matrix <- chart.matrix
@@ -868,17 +868,17 @@ Chart <-   function(y,
 
     ## Build annotations list
     if (subtitle.text != "")
-        data.annotations[length(data.annotations) + 1] <- subtitle
+        data.annotations[[length(data.annotations) + 1]] <- subtitle
+
+    ## Hide legend if only one series to plot
+    if (nrow(chart.matrix) == 1)
+        legend.show <- FALSE
 
     ## Initiate plotly object
     p <- plotly::plot_ly()
 
     ## Config options
     p <- plotly::config(displayModeBar = show.modebar)
-
-    ## Swap axes
-
-
 
     ## Add a trace for each row of data in the matrix
     for (a in 1:nrow(chart.matrix))
