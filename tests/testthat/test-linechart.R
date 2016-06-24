@@ -31,7 +31,6 @@ Chart(y = a.matrix,
               y.bounds.minimum = 0,
               y.bounds.maximum = 1,
               y.bounds.units.major = 0.1,
-              x.tick.marks = "outside",
               y.tick.font.size = 16,
               x.tick.font.size = 16,
               legend.font.size = 14

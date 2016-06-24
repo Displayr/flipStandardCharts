@@ -61,7 +61,7 @@ Chart(type = "Column",
               legend.fill = rgb(64, 64, 64, max = 255),
               legend.font.color = rgb(192, 192, 192, max = 255),
               y.tick.font.color = rgb(192, 192, 192, max = 255),
-              x.line.width = 0,
+              x.tick.font.color = rgb(192, 192, 192, max = 255),
               y.zero.line.width = 3,
               y.zero.line.color = rgb(100, 100, 100, max = 255),
               y.line.color = rgb(64, 64, 64, max = 255),
@@ -146,8 +146,7 @@ Chart(type = "Stacked Column",
               bar.data.label.decimals = 2,
               bar.data.label.color = text.colors,
               series.marker.border.width = 0,
-              bar.data.label.as.percent = TRUE,
-              x.number.ticks = 15)
+              bar.data.label.as.percent = TRUE)
 
 ## Hot Dogs
 hotdogs <- as.matrix(rbind("1st" = c(25, 50, 50.5, 44.5, 53.5, 49, 54, 66, 59, 68, 54),

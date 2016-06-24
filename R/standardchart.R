@@ -130,7 +130,7 @@
 #' @param x.bounds.units.major Ingeger or NULL; set tick mark distance in
 #' x-axis units between minimum and maximum for plotting; NULL = no manual
 #' range set.
-#' @param x.number.ticks Integer; number of ticks to show on x-axis.
+#' @param x.tickgap Integer; number of ticks to show on x-axis.
 #' @param x.zero.line.width Width in pixels of zero line; 0 = no zero line
 #' shown
 #' @param x.zero.line.color Color of horizontal zero (origo) line as a named
@@ -292,7 +292,7 @@ Chart <-   function(y,
                         y.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
                         y.title.font.family = "Arial",
                         y.title.font.size = 12,
-                        y.line.width = 1,
+                        y.line.width = 0,
                         y.line.color = rgb(0, 0, 0, maxColorValue = 255),
                         y.tick.marks = "",
                         y.tick.length = 5,
@@ -300,7 +300,7 @@ Chart <-   function(y,
                         y.bounds.maximum = NULL,
                         y.bounds.units.major = NULL,
                         # y.number.ticks = NULL,
-                        y.zero.line.width = 1,
+                        y.zero.line.width = 0,
                         y.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
                         y.position = "left",
                         y.mirror = FALSE,
@@ -323,15 +323,15 @@ Chart <-   function(y,
                         x.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
                         x.title.font.family = "Arial",
                         x.title.font.size = 12,
-                        x.line.width = 1,
+                        x.line.width = 0,
                         x.line.color = rgb(0, 0, 0, maxColorValue = 255),
                         x.tick.marks = "",
                         x.tick.length = 5,
                         x.bounds.minimum = NULL,
                         x.bounds.maximum = NULL,
                         x.bounds.units.major = NULL,
-                        x.number.ticks = NULL,
-                        x.zero.line.width = 1,
+                        x.tickgap = NULL,
+                        x.zero.line.width = 0,
                         x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
                         x.position = "bottom",
                         x.mirror = FALSE,
@@ -628,14 +628,15 @@ Chart <-   function(y,
     }
 
     ## If line thickness is zero, then we shouldn't show a line; ticks only shown if there's a line (same as Excel)
-    ## Tick labels only shown if there's a line too - makes no sense either.
+    ## Tick labels only shown if there's a line.
     y.showline <- FALSE
-    y.showticklabels <- FALSE
+    # y.showticklables <- FALSE
+    y.showticklabels <- TRUE
     y.showticks <- FALSE
     if (y.line.width >= 1)
     {
         y.showline <- TRUE
-        y.showticklabels <- TRUE
+        # y.showticklabels <- TRUE
         # Default to outer tick marks if they are to be shown, but have not been specified
         if (y.tick.marks == "")
         {
@@ -654,12 +655,13 @@ Chart <-   function(y,
     }
 
     x.showline <- FALSE
-    x.showticklabels <- FALSE
+    x.showticklabels <- TRUE
+    #x.showticklabels <- FALSE
     x.showticks <- FALSE
     if (x.line.width >= 1)
     {
         x.showline <- TRUE
-        x.showticklabels <- TRUE
+        #x.showticklabels <- TRUE
         # Default to outer tick marks if they are to be shown, but have not been specified
         if (x.tick.marks == "")
         {
@@ -767,6 +769,8 @@ Chart <-   function(y,
     x.range <- integer()
     x.autorange <- TRUE
     x.nticks <- length(x.labels)
+    x.dtick <- NULL
+    x.tick0 <- NULL
 
     if (!is.null(x.bounds.minimum) && !is.null(x.bounds.maximum) && !is.null(x.bounds.units.major))
     {
@@ -798,12 +802,28 @@ Chart <-   function(y,
     }
     else
     {
-        x.tickmode <- "auto"
-        x.autorange <- TRUE
-        if (is.null(x.number.ticks))
-            x.nticks <- length(x.labels)
+        x.tickmode <- "linear"
+        if (is.null(x.tickgap))
+        {
+            # Check if the column headings are numeric, and if so, make the step the diff between item 1 and 2
+            if (length(which(is.na(suppressWarnings(as.numeric(colnames(chart.matrix)))))) == 0)
+            {
+                numeric.cols <- as.numeric(colnames(chart.matrix))
+                tick.gap <- numeric.cols[2] - numeric.cols[1]
+                x.dtick <- tick.gap
+                x.tick0 <- 0
+            }
+            else
+            {
+                x.dtick <- 1
+                x.tick0 <- 1
+            }
+        }
         else
-            x.nticks <- x.number.ticks
+        {
+            x.dtick <- x.tickgap # round((length(x.labels) / x.number.ticks), digits = 0)
+            x.tick0 <- 1
+        }
     }
 
     ## Should autorange be = "reverse"?
@@ -851,14 +871,18 @@ Chart <-   function(y,
     if (series.marker.text)
         series.mode <- paste(series.mode, "+text", sep = "")
 
-    axis.to.show <- "y+"
+    axis.to.show <- "y"
     if (swap.axes.and.data)
-        axis.to.show <- "x+"
+        axis.to.show <- "x"
+
+    show.series.name = "+name"
+    if (nrow(chart.matrix) == 1)
+        show.series.name = ""
 
     if (hover.include.source.value)
-        hoverinfo = paste(axis.to.show, "name+text", sep = "")
+        hoverinfo = paste(axis.to.show, show.series.name, "+text", sep = "")
     else
-        hoverinfo = paste(axis.to.show, "name", sep = "")
+        hoverinfo = paste(axis.to.show, show.series.name, sep = "")
 
     ## Increase number of colors in color vectors such that a max of 100 are stored, in case insufficient numbers have been specified
     colors <- rep(colors, 100/length(colors))
@@ -871,7 +895,10 @@ Chart <-   function(y,
         data.annotations[[length(data.annotations) + 1]] <- subtitle
 
     ## Hide legend if only one series to plot
-    if (nrow(chart.matrix) == 1)
+    if ((type != "Bar" & type != "Stacked Bar" & type != "100% Stacked Bar") && nrow(chart.matrix) == 1)
+        legend.show <- FALSE
+
+    if ((type == "Bar" | type == "Stacked Bar" | type == "100% Stacked Bar") && ncol(chart.matrix) == 1)
         legend.show <- FALSE
 
     ## Initiate plotly object
@@ -979,6 +1006,8 @@ Chart <-   function(y,
             ticklen = y.tick.length,
             tickcolor = y.line.color,
             nticks = y.nticks,
+            dtick = NULL,
+            tick0 = NULL,
             zeroline = y.zero.line,
             zerolinewidth = y.zero.line.width,
             zerolinecolor = y.zero.line.color,
@@ -1022,6 +1051,8 @@ Chart <-   function(y,
             ticklen = x.tick.length,
             tickcolor = x.line.color,
             nticks = x.nticks,
+            dtick = x.dtick,
+            tick0 = x.tick0,
             zeroline = x.zero.line,
             zerolinewidth = x.zero.line.width,
             zerolinecolor = x.zero.line.color,

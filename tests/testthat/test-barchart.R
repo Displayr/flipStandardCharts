@@ -12,8 +12,8 @@ for (i in 1:length(good.examples))
 
 ## Basic style
 
-y.data <- rbind(c(0.2,0.3,0.3,0.5,0.3,0.6,0.4,0.8,0.2,0.5,0.1,0.3),c(0.3,0.5,0.1,0.3,0.1,0.2,0.1,0.4,0.1,0.2,0.1,0.4))
-rownames(y.data) <- c("Series1","Series2")
+y.data <- rbind(c(0.2,0.3,0.3,0.5,0.3,0.6,0.4,0.8,0.2,0.5,0.1,0.3), c(0.3,0.5,0.1,0.3,0.1,0.2,0.1,0.4,0.1,0.2,0.1,0.4))
+rownames(y.data) <- c("Series1", "Series2")
 colnames(y.data) <- c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
 
 myCols <- c(rgb(0,176,240, max=255), rgb(197,90,17, max=255))
