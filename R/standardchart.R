@@ -130,7 +130,7 @@
 #' @param x.bounds.units.major Ingeger or NULL; set tick mark distance in
 #' x-axis units between minimum and maximum for plotting; NULL = no manual
 #' range set.
-#' @param x.tickgap Integer; number of ticks to show on x-axis.
+#' @param x.tick.frequency Integer; number of ticks to show on x-axis.
 #' @param x.zero.line.width Width in pixels of zero line; 0 = no zero line
 #' shown
 #' @param x.zero.line.color Color of horizontal zero (origo) line as a named
@@ -330,7 +330,7 @@ Chart <-   function(y,
                         x.bounds.minimum = NULL,
                         x.bounds.maximum = NULL,
                         x.bounds.units.major = NULL,
-                        x.tickgap = NULL,
+                        x.tick.frequency = NULL,
                         x.zero.line.width = 0,
                         x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
                         x.position = "bottom",
@@ -803,7 +803,7 @@ Chart <-   function(y,
     else
     {
         x.tickmode <- "linear"
-        if (is.null(x.tickgap))
+        if (is.null(x.tick.frequency))
         {
             # Check if the column headings are numeric, and if so, make the step the diff between item 1 and 2
             if (length(which(is.na(suppressWarnings(as.numeric(colnames(chart.matrix)))))) == 0)
@@ -821,7 +821,7 @@ Chart <-   function(y,
         }
         else
         {
-            x.dtick <- x.tickgap # round((length(x.labels) / x.number.ticks), digits = 0)
+            x.dtick <- x.tick.frequency # round((length(x.labels) / x.number.ticks), digits = 0)
             x.tick0 <- 1
         }
     }
