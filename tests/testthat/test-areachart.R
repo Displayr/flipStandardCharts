@@ -97,7 +97,7 @@ Chart(a.matrix,
           # x.bounds.units.major = .1,
           y.tick.format.manual = "%",
           y.hovertext.manual = "%",
-          x.tickgap = 5,
+          x.tick.frequency = 5,
           hover.mode = "x")
 
 #### 100% Stacked area chart example

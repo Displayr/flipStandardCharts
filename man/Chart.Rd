@@ -2,7 +2,7 @@
 % Please edit documentation in R/standardchart.R
 \name{Chart}
 \alias{Chart}
-\title{Generates an interactive area chart based on the plotly library.}
+\title{Generates an interactive chart based on the plotly library.}
 \usage{
 Chart(y, x = NULL, type = "Area", transpose = FALSE,
   aggregate.period = "month", y.labels = NULL, y.values = NULL,
@@ -20,10 +20,10 @@ Chart(y, x = NULL, type = "Area", transpose = FALSE,
   margin.top = 80, margin.bottom = 80, margin.left = 80,
   margin.right = 80, margin.inner.pad = 0, y.title = "",
   y.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
-  y.title.font.family = "Arial", y.title.font.size = 12, y.line.width = 1,
+  y.title.font.family = "Arial", y.title.font.size = 12, y.line.width = 0,
   y.line.color = rgb(0, 0, 0, maxColorValue = 255), y.tick.marks = "",
   y.tick.length = 5, y.bounds.minimum = NULL, y.bounds.maximum = NULL,
-  y.bounds.units.major = NULL, y.zero.line.width = 1,
+  y.bounds.units.major = NULL, y.zero.line.width = 0,
   y.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
   y.position = "left", y.mirror = FALSE, y.values.reversed = FALSE,
   y.grid.width = 1, y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
@@ -34,11 +34,11 @@ Chart(y, x = NULL, type = "Area", transpose = FALSE,
   0, maxColorValue = 255), y.tick.font.family = "Arial",
   y.tick.font.size = 10, x.title = "", x.title.font.color = rgb(44, 44,
   44, maxColorValue = 255), x.title.font.family = "Arial",
-  x.title.font.size = 12, x.line.width = 1, x.line.color = rgb(0, 0, 0,
+  x.title.font.size = 12, x.line.width = 0, x.line.color = rgb(0, 0, 0,
   maxColorValue = 255), x.tick.marks = "", x.tick.length = 5,
   x.bounds.minimum = NULL, x.bounds.maximum = NULL,
-  x.bounds.units.major = NULL, x.number.ticks = NULL,
-  x.zero.line.width = 1, x.zero.line.color = rgb(44, 44, 44, maxColorValue =
+  x.bounds.units.major = NULL, x.tick.frequency = NULL,
+  x.zero.line.width = 0, x.zero.line.color = rgb(44, 44, 44, maxColorValue =
   255), x.position = "bottom", x.mirror = FALSE,
   x.values.reversed = FALSE, x.grid.width = 0, x.grid.color = rgb(225,
   225, 225, maxColorValue = 255), x.tick.suffix = "", x.tick.prefix = "",
@@ -274,7 +274,7 @@ plotting; NULL = no manual range set.  Must be greater than x.bounds.minimum}
 x-axis units between minimum and maximum for plotting; NULL = no manual
 range set.}
 
-\item{x.number.ticks}{Integer; number of ticks to show on x-axis.}
+\item{x.tick.frequency}{Integer; number of ticks to show on x-axis.}
 
 \item{x.zero.line.width}{Width in pixels of zero line; 0 = no zero line
 shown}

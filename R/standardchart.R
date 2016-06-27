@@ -1,4 +1,4 @@
-#' Generates an interactive area chart based on the plotly library.
+#' Generates an interactive chart based on the plotly library.
 #'
 #' \code{Chart} generates standard charts from plotly library.
 #'
