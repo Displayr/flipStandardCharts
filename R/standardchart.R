@@ -771,6 +771,8 @@ Chart <-   function(y,
     x.nticks <- length(x.labels)
     x.dtick <- NULL
     x.tick0 <- NULL
+    # Below entity only used conditionally; if script does not encounter when running, Displayr throws unused var error.
+    x.tick.frequency <- x.tick.frequency
 
     if (!is.null(x.bounds.minimum) && !is.null(x.bounds.maximum) && !is.null(x.bounds.units.major))
     {
