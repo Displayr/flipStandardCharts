@@ -140,7 +140,7 @@ AsChartMatrix <- function(y,
                           # weights = NULL,
                           # subset = NULL,
                           transpose = FALSE,
-                          aggregate.period = "month")  ## can be m(onth), q(uarter), y(ear)
+                          aggregate.period = "none")  ## can be m(onth), q(uarter), y(ear), n(one)
 {
     if (is.logical(x) && length(x) == 1)
         x <- NULL

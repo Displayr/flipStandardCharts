@@ -259,7 +259,7 @@ Chart <-   function(y,
                         # subset = NULL,                                  ## Gets passed to AsChartMatrix <- add to that function first!
                         type = "Area",
                         transpose = FALSE,                                ## Should the inputs be transposed; TRUE or FALSE
-                        aggregate.period = "month",
+                        aggregate.period = "none",
                         y.labels = NULL,
                         y.values = NULL,
                         x.labels = NULL,
@@ -400,6 +400,16 @@ Chart <-   function(y,
     ## Ignore rows or columns
     if (rows.to.ignore != "" | cols.to.ignore != "")
         chart.matrix <- removeRowsAndColumns(chart.matrix, rows.to.ignore, cols.to.ignore)
+
+    if (type == "Pie" | type == "Donut")
+    {
+        ## First, convert the chart matrix into a flat format so that we can use it as a pie chart
+        pie.data <- cbind(stack(as.data.frame(chart.matrix[,1:ncol(chart.matrix)])), labels = rep(rownames(chart.matrix),ncol(chart.matrix)))
+
+        ## First column is values, second groups, third is labels.
+
+
+    }
 
     ## Set defaults for chart specific items
     fill.bound <- ""
