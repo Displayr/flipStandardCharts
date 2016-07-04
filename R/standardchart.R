@@ -205,10 +205,6 @@
 #' @param hover.include.source.value.percent Logical; multiplies source data
 #' point value by 100.
 #' @param show.modebar Logical; whether to show the zoom menu buttons or not.
-#' @examples
-#' data("y.data")
-#' data("x.data")
-#' Chart(y = y.data, x = x.data, type = "Area", transpose = TRUE)
 #' @param subtitle.text Character; text string to appear as a sub-title
 #' @param subtitle.border.width Numeric; width in pixels of border around
 #' sub-title.
@@ -252,16 +248,16 @@
 #' bar and column chart data labels.
 #' @param bar.data.label.as.percent Logical; whether to treat data labels in
 #' bar or column charts as percentages or not.
-#' #' @param pie.group.colors Vector of colors for pie chart segment groupings.
+#' @param pie.groups.colors Vector of colors for pie chart segment groupings.
 #' @param pie.values.font.family Character; font family for label values.
 #' @param pie.values.font.size Numeric; font size of label values.
 #' @param pie.segment.colors Vector of colors for pie chart segments.
 #' @param pie.values.prefix Character; prefix for label values.
 #' @param pie.values.suffix Character; suffix for label values.
-#' @param pie.values.display.format Character; either "%" or "original";
+#' @param pie.values.display.format Character; either "\%" or "original";
 #' yields a percentage or the source values as specified.
 #' @param pie.values.thres.percent Numeric; 0-1, the percentage value at
-#' which labels should not be shown.  Default 0.3%.
+#' which labels should not be shown.  Default 0.3\%.
 #' @param pie.values.order Character; "descending", "initial", or
 #' "alphabetical"; default is "descending" sort on values; "alphabetical"
 #' sorts on labels.
@@ -280,10 +276,14 @@
 #' segments.
 #' @param pie.segment.color.gradient Logical; if no pie.segment.colors are
 #' specified, a gradient will be generated.
-#' @param pie.inner.radius Character; must be passed as a percentage value,
-#' e.g. "75%"; produces a donut chart; default is "0%"
+#' @param pie.inner.radius Numeric; must be passed as a percentage value,
+#' e.g. 75; produces a donut chart; default is 0 (pie chart)
 #' @param pie.max.label.length Numeric; maximum character length before
 #' wrapping of labels.
+#' @examples
+#' data("y.data")
+#' data("x.data")
+#' Chart(y = y.data, x = x.data, type = "Area", transpose = TRUE)
 #' @export
 Chart <-   function(y,
                         x = NULL,
@@ -424,7 +424,6 @@ Chart <-   function(y,
                         bar.data.label.color = rgb(0, 0, 0, maxColorValue=255),
                         bar.data.label.decimals = 0,
                         bar.data.label.as.percent = FALSE,
-                        pie.group.colors = qColors,
                         pie.values.font.family = "Arial",
                         pie.values.font.size = 10,
                         pie.segment.colors = qColors,
@@ -440,11 +439,11 @@ Chart <-   function(y,
                         pie.labels.inner = FALSE,
                         pie.groups.font.family = "Arial",
                         pie.groups.font.size = 10,
-                        pie.groups.color = qColors,
+                        pie.groups.colors = qColors,
                         pie.groups.order = "descending",
-                        pie.border.color = rgb(255, 255, 255, max = 255),
+                        pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
                         pie.segment.color.gradient = FALSE,
-                        pie.inner.radius = "0%",
+                        pie.inner.radius = 0,
                         pie.max.label.length = 60)
 {
     ## Make a chart matrix
@@ -453,63 +452,6 @@ Chart <-   function(y,
     ## Ignore rows or columns
     if (rows.to.ignore != "" | cols.to.ignore != "")
         chart.matrix <- removeRowsAndColumns(chart.matrix, rows.to.ignore, cols.to.ignore)
-
-    if (type == "Pie" | type == "Donut")
-    {
-        ## First, convert the chart matrix into a flat format so that we can use it as a pie chart
-        pie.data <- cbind(stack(as.data.frame(chart.matrix[,1:ncol(chart.matrix)])), labels = rep(rownames(chart.matrix),ncol(chart.matrix)))
-
-        ## First column is values, second groups, third is labels.
-        d.values <- pie.data[, 1]
-        if (length(unique(pie.data[,2])) == 1)
-        {
-            d.labels <- as.character(pie.data[, 3])
-            d.groups <- NULL
-        }
-        else
-        {
-            d.labels <- as.character(pie.data[, 3])
-            d.groups <- as.character(pie.data[, 2])
-        }
-
-        # Make sure there are enough colours to cover the categories
-        values.color <- rep(rep_len(pie.segment.colors, nrow(chart.matrix)), ncol(chart.matrix))
-        values.color <- stripAlphaChannel(values.color)
-
-        # ...and that enough have been provided to cover the groups
-        groups.color <- stripAlphaChannel(pie.groups.color)
-
-        # Values display
-        if (pie.values.display.format == "%")
-            values.display <- "percentage"
-        else
-            values.display <- "original"
-
-        return(rhtmlDonut::Donut(values = d.values,
-                                 labels = d.labels,
-                                 values.font = pie.values.font.family,
-                                 values.size = pie.values.font.size,
-                                 values.color = values.color,
-                                 values.display = values.display,
-                                 values.thres = pie.values.thres.percent,
-                                 values.order = pie.values.order,
-                                 labels.font = pie.labels.font.family,
-                                 labels.size = pie.labels.font.size,
-                                 labels.color = pie.labels.font.color,
-                                 labels.minFontSize = pie.labels.minFontSize,
-                                 labels.inner = pie.labels.inner,
-                                 groups = d.groups,
-                                 groups.font = pie.groups.font.family,
-                                 groups.size = pie.groups.font.size,
-                                 groups.color = groups.color,
-                                 groups.order = pie.groups.order,
-                                 prefix = pie.values.prefix,
-                                 suffix = pie.values.suffix,
-                                 border.color = pie.border.color,
-                                 gradient = pie.segment.color.gradient,
-                                 inner.radius = pie.inner.radius,
-                                 max.label.length = pie.max.label.length))
-    }
 
     ## Set defaults for chart specific items
     fill.bound <- ""
@@ -608,7 +550,58 @@ Chart <-   function(y,
         y.nticks <- y.nticks
     }
 
-    ## Pie Chart / Donut / multiple pie charts
+    if (type == "Pie")
+    {
+        pie <- pieChart(chart.matrix = chart.matrix,
+                transpose = transpose,
+                pie.values.font.family = pie.values.font.family,
+                pie.values.font.size = pie.values.font.size,
+                pie.segment.colors = pie.segment.colors,
+                pie.values.prefix = pie.values.prefix,
+                pie.values.suffix = pie.values.suffix,
+                pie.values.display.format = pie.values.display.format,
+                pie.values.thres.percent = pie.values.thres.percent,
+                pie.values.order = pie.values.order,
+                pie.labels.font.family = pie.labels.font.family,
+                pie.labels.font.size = pie.labels.font.size,
+                pie.labels.font.color =  pie.labels.font.color,
+                pie.labels.minFontSize = pie.labels.minFontSize,
+                pie.labels.inner = pie.labels.inner,
+                pie.groups.font.family = pie.groups.font.family,
+                pie.groups.font.size = pie.groups.font.size,
+                pie.groups.colors = pie.groups.colors,
+                pie.groups.order = pie.groups.order,
+                pie.border.color = pie.border.color,
+                pie.segment.color.gradient = pie.segment.color.gradient,
+                pie.inner.radius = pie.inner.radius,
+                pie.max.label.length = pie.max.label.length)
+
+        return(rhtmlDonut::Donut(values = pie$values,
+                                 labels = pie$labels,
+                                 values.font = pie$values.font,
+                                 values.size = pie$values.size,
+                                 values.color = pie$values.color,
+                                 values.display = pie$values.display,
+                                 values.thres = pie$values.thres,
+                                 values.order = pie$values.order,
+                                 labels.font = pie$labels.font,
+                                 labels.size = pie$labels.size,
+                                 labels.color = pie$labels.color,
+                                 labels.minFontSize = pie$minFontSize,
+                                 labels.inner = pie$labels.inner,
+                                 groups = pie$groups,
+                                 groups.font = pie$groups.font,
+                                 groups.size = pie$groups.size,
+                                 groups.color = pie$groups.color,
+                                 groups.order = pie$groups.order,
+                                 prefix = pie$prefix,
+                                 suffix = pie$suffix,
+                                 border.color = pie$border.color,
+                                 gradient = pie$gradient,
+                                 inner.radius = pie$inner.radius,
+                                 max.label.length = pie$max.label.length))
+
+    }
 
     ## Waterfall (part of column charts, really...)
 

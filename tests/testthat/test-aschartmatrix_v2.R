@@ -18,7 +18,7 @@ for (example in examples)
         if (type != "error")
         {
             test_that(paste(type, names(example)[i], i), {
-                my.chart.matrix <- AsChartMatrix(y = ex$Y, x = ex$X, transpose = ex$transpose)
+                my.chart.matrix <- AsChartMatrix(y = ex$Y, x = ex$X, transpose = ex$transpose, aggregate.period = ex$aggregate.period)
                 expect_that(IsChartMatrix(my.chart.matrix, ex$n.row, ex$n.columns),
                             switch(type,
                                    "good" = is_true(),

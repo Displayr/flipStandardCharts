@@ -3,7 +3,7 @@ context("columnChart")
 
 for (i in 1:length(good.examples))
 {
-    print(Chart(y = good.examples[[i]]$Y, x = good.examples[[i]]$X, type = "Column", transpose = good.examples[[i]]$transpose, title = names(good.examples)[i]), hover.include.source.value = TRUE)
+    print(Chart(y = good.examples[[i]]$Y, x = good.examples[[i]]$X, type = "Column", transpose = good.examples[[i]]$transpose, title = names(good.examples)[i], aggregate.period = good.examples[[i]]$aggregate.period, hover.include.source.value = TRUE))
 
     # cat(paste("Press [enter] to continue (test ", i, "/", length(good.examples), ").", sep = ""))
     # line <- readline()
@@ -29,10 +29,10 @@ Chart(type = "Column",
               series.marker.color = myLineCols,
               series.marker.border.width = 0,
               title = "Column chart - BASIC STYLE",
-              x.line.color = rgb(225, 225, 225, max = 255),
-              y.line.color = rgb(225, 225, 225, max = 255),
-              y.tick.font.color = rgb(100, 100, 100, max = 255),
-              x.tick.font.color = rgb(100, 100, 100, max = 255)
+              x.line.color = rgb(225, 225, 225, maxColorValue = 255),
+              y.line.color = rgb(225, 225, 225, maxColorValue = 255),
+              y.tick.font.color = rgb(100, 100, 100, maxColorValue = 255),
+              x.tick.font.color = rgb(100, 100, 100, maxColorValue = 255)
 )
 
 ## Junk Chart
@@ -45,7 +45,7 @@ myLineCols <- c(rgb(68, 112, 236, max=255), rgb(255, 192, 0, max=255), rgb(210, 
 
 Chart(type = "Column",
               title = "Sample Chart",
-              title.font.color = rgb(192, 0, 0, max = 255),
+              title.font.color = rgb(192, 0, 0, maxColorValue = 255),
               y = junk.data,
               transpose = TRUE,
               y.bounds.minimum = -40.01,
@@ -56,16 +56,16 @@ Chart(type = "Column",
               series.marker.border.width = 3,
               series.marker.border.color = myLineCols,
               bar.gap = 0,
-              chart.fill.color = rgb(64, 64, 64, max = 255),
-              plot.fill.color = rgb(64, 64, 64, max = 255),
-              legend.fill = rgb(64, 64, 64, max = 255),
-              legend.font.color = rgb(192, 192, 192, max = 255),
-              y.tick.font.color = rgb(192, 192, 192, max = 255),
-              x.tick.font.color = rgb(192, 192, 192, max = 255),
+              chart.fill.color = rgb(64, 64, 64, maxColorValue = 255),
+              plot.fill.color = rgb(64, 64, 64, maxColorValue = 255),
+              legend.fill = rgb(64, 64, 64, maxColorValue = 255),
+              legend.font.color = rgb(192, 192, 192, maxColorValue = 255),
+              y.tick.font.color = rgb(192, 192, 192, maxColorValue = 255),
+              x.tick.font.color = rgb(192, 192, 192, maxColorValue = 255),
               y.zero.line.width = 3,
-              y.zero.line.color = rgb(100, 100, 100, max = 255),
-              y.line.color = rgb(64, 64, 64, max = 255),
-              y.grid.color = rgb(100, 100, 100, max = 255),
+              y.zero.line.color = rgb(100, 100, 100, maxColorValue = 255),
+              y.line.color = rgb(64, 64, 64, maxColorValue = 255),
+              y.grid.color = rgb(100, 100, 100, maxColorValue = 255),
               y.tick.format.manual = "$",
               bar.data.label.offset = 5,
               bar.data.label.decimals = 0,
@@ -75,15 +75,15 @@ Chart(type = "Column",
 nps.data <- as.matrix(rbind(c(-4.35000, -4.30000, -4.25000, -4.20000, -4.15000, -4.10000, -4.05000, -4.00000, -3.95000, -3.90000, -3.85000, -3.80000, -3.75000, -3.70000),
                             c(1.70000, 1.80000, 1.90000, 2.00000, 2.10000, 2.20000, 2.30000, 2.40000, 2.50000, 2.60000, 2.70000, 2.80000, 2.90000, 3.00000),
                             c(3.17928, 2.71607, 2.18535, 1.60391, 0.98690, 0.34856, 0.29722, 0.93666, 1.55589, 2.14070, 2.67604, 3.14530, 3.52948, 3.80684)))
-nps.colors <- c(grDevices::rgb(0, 176, 80, 255, max = 255), # Brand A; green.
-                grDevices::rgb(192, 0, 0, 255, max = 255), # Brand B; red.
-                grDevices::rgb(46, 117, 182, 255, max = 255)) # Brand C; blue.
+nps.colors <- c(grDevices::rgb(0, 176, 80, 255, maxColorValue = 255), # Brand A; green.
+                grDevices::rgb(192, 0, 0, 255, maxColorValue = 255), # Brand B; red.
+                grDevices::rgb(46, 117, 182, 255, maxColorValue = 255)) # Brand C; blue.
 rownames(nps.data) <- c("Brand A", "Brand B", "Brand C")
 colnames(nps.data) <- c("Apr-15","May-15","Jun-15","Jul-15","Aug-15","Sep-15","Oct-15","Nov-15","Dec-15","Jan-16","Feb-16","Mar-16","Apr-16","May-16")
 
 Chart(type = "Column",
               title = "NPS",
-              title.font.color = rgb(66, 66, 66, max = 255),
+              title.font.color = rgb(66, 66, 66, maxColorValue = 255),
               y = nps.data,
               transpose = TRUE,
               y.bounds.minimum = -5,
@@ -91,10 +91,10 @@ Chart(type = "Column",
               y.bounds.units.major = 1,
               series.marker.color = nps.colors,
               bar.gap = 5,
-              legend.font.color = rgb(66, 66, 66, max = 255),
-              y.tick.font.color = rgb(66, 66, 66, max = 255),
-              x.tick.font.color = rgb(66, 66, 66, max = 255),
-              y.zero.line.color = rgb(192, 192, 192, max = 255),
+              legend.font.color = rgb(66, 66, 66, maxColorValue = 255),
+              y.tick.font.color = rgb(66, 66, 66, maxColorValue = 255),
+              x.tick.font.color = rgb(66, 66, 66, maxColorValue = 255),
+              y.zero.line.color = rgb(192, 192, 192, maxColorValue = 255),
               y.grid.width = 0,
               x.line.color = "white",
               y.line.color = "white",
@@ -113,21 +113,21 @@ guns <- as.matrix(rbind(Pistols = c(0.26, 0.24, 0.25, 0.21, 0.22, 0.25, 0.24, 0.
                         "All others" = c(0.01, 0.03, 0.03, 0.02, 0.01, 0.01, 0, 0.01, 0.01, 0.02, 0.02, 0.02, 0.01, 0.03)))
 colnames(guns) <- c(1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009)
 
-gun.colors <- c(grDevices::rgb(0, 112, 192, 255, max = 255), # blue.
-                grDevices::rgb(237, 125, 49, 255, max = 255), # orange
-                grDevices::rgb(102, 255, 255, 255, max = 255), # bright turquoise
-                grDevices::rgb(128, 128, 0, 255, max = 255), # green
-                grDevices::rgb(244, 177, 131, 255, max = 255)) # beige
+gun.colors <- c(grDevices::rgb(0, 112, 192, 255, maxColorValue = 255), # blue.
+                grDevices::rgb(237, 125, 49, 255, maxColorValue = 255), # orange
+                grDevices::rgb(102, 255, 255, 255, maxColorValue = 255), # bright turquoise
+                grDevices::rgb(128, 128, 0, 255, maxColorValue = 255), # green
+                grDevices::rgb(244, 177, 131, 255, maxColorValue = 255)) # beige
 
-text.colors <- c(grDevices::rgb(255, 255, 255, 255, max = 255),
-                 grDevices::rgb(0, 0, 0, 255, max = 255),
-                 grDevices::rgb(0, 0, 0, 255, max = 255),
-                 grDevices::rgb(255, 255, 255, 255, max = 255),
-                 grDevices::rgb(0, 0, 0, 255, max = 255))
+text.colors <- c(grDevices::rgb(255, 255, 255, 255, maxColorValue = 255),
+                 grDevices::rgb(0, 0, 0, 255, maxColorValue = 255),
+                 grDevices::rgb(0, 0, 0, 255, maxColorValue = 255),
+                 grDevices::rgb(255, 255, 255, 255, maxColorValue = 255),
+                 grDevices::rgb(0, 0, 0, 255, maxColorValue = 255))
 
 Chart(type = "Stacked Column",
               title = "U.S. Gun manufacture by type",
-              title.font.color = rgb(66, 66, 66, max = 255),
+              title.font.color = rgb(66, 66, 66, maxColorValue = 255),
               y = guns,
               transpose = TRUE,
               y.bounds.minimum = 0,
@@ -136,10 +136,10 @@ Chart(type = "Stacked Column",
               y.tick.format.manual = "%",
               series.marker.color = gun.colors,
               bar.gap = 5,
-              legend.font.color = rgb(66, 66, 66, max = 255),
-              y.tick.font.color = rgb(66, 66, 66, max = 255),
-              x.tick.font.color = rgb(66, 66, 66, max = 255),
-              y.zero.line.color = rgb(192, 192, 192, max = 255),
+              legend.font.color = rgb(66, 66, 66, maxColorValue = 255),
+              y.tick.font.color = rgb(66, 66, 66, maxColorValue = 255),
+              x.tick.font.color = rgb(66, 66, 66, maxColorValue = 255),
+              y.zero.line.color = rgb(192, 192, 192, maxColorValue = 255),
               x.line.color = "white",
               y.line.color = "white",
               bar.data.label.offset = -0.3,
@@ -154,13 +154,13 @@ hotdogs <- as.matrix(rbind("1st" = c(25, 50, 50.5, 44.5, 53.5, 49, 54, 66, 59, 6
                            "3rd" = c(22, 23.5, 25.5, 29.5, 32, 32, 37, 49, 42, 55, 37)))
 colnames(hotdogs) <- c("`00", "`01", "`02", "`03", "`04", "`05", "`06", "`07", "`08", "`09", "`10")
 
-hotcols <- c(grDevices::rgb(7, 135, 65, 255, max = 255),
-             grDevices::rgb(56, 184, 72, 255, max = 255),
-             grDevices::rgb(162, 213, 101, 255, max = 255))
+hotcols <- c(grDevices::rgb(7, 135, 65, 255, maxColorValue = 255),
+             grDevices::rgb(56, 184, 72, 255, maxColorValue = 255),
+             grDevices::rgb(162, 213, 101, 255, maxColorValue = 255))
 
 Chart(type = "Stacked Column",
               title = "U.S. Gun manufacture by type",
-              title.font.color = rgb(66, 66, 66, max = 255),
+              title.font.color = rgb(66, 66, 66, maxColorValue = 255),
               y = hotdogs,
               transpose = TRUE,
               y.bounds.minimum = 0,

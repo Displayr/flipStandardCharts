@@ -80,30 +80,30 @@
 #
 # p2 <- layout(p2,
 #              font = list(
-#                  color = plotly::toRGB(rgb(192, 0, 0, max = 255))
+#                  color = plotly::toRGB(rgb(192, 0, 0, maxColorValue = 255))
 #              ),
 #              title = "<b>Sample Chart</b>",
 #              legend = list(
 #                  font = list(
-#                      color = plotly::toRGB(rgb(192, 192, 192, max = 255)),
+#                      color = plotly::toRGB(rgb(192, 192, 192, maxColorValue = 255)),
 #                      size = 14
 #                  )
 #              ),
-#              plot_bgcolor = plotly::toRGB(rgb(64, 64, 64, max = 255)),
-#              paper_bgcolor = plotly::toRGB(rgb(64, 64, 64, max = 255)),
+#              plot_bgcolor = plotly::toRGB(rgb(64, 64, 64, maxColorValue = 255)),
+#              paper_bgcolor = plotly::toRGB(rgb(64, 64, 64, maxColorValue = 255)),
 #              bargap = 0,
 #              bargroupgap = 0.15,
 #              yaxis = list(
-#                  gridcolor = plotly::toRGB(rgb(104, 104, 104, max = 255)),
+#                  gridcolor = plotly::toRGB(rgb(104, 104, 104, maxColorValue = 255)),
 #                  tickfont = list(
-#                      color = plotly::toRGB(rgb(192, 192, 192, max = 255))
+#                      color = plotly::toRGB(rgb(192, 192, 192, maxColorValue = 255))
 #                  ),
 #                  range = list(-41, 81),
 #                  tickformat = "$"
 #              ),
 #              xaxis = list(
 #                  tickfont = list(
-#                      color = plotly::toRGB(rgb(192, 192, 192, max = 255))
+#                      color = plotly::toRGB(rgb(192, 192, 192, maxColorValue = 255))
 #                  )
 #              ),
 #              annotations = data.annotations,

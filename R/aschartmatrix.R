@@ -175,6 +175,7 @@ AsChartMatrix <- function(y,
 
     ## Set dates to numeric values before aggregating to ensure correct sort order
     date.labelling <- FALSE
+
     if (inherits(x, "POSIXct"))
     {
         x <- aggregatePeriodFromDate(x, period = aggregate.period)
@@ -185,8 +186,9 @@ AsChartMatrix <- function(y,
     {
         y <- xtabs(~ x + y)
 
-        if (date.labelling <- TRUE)
+        if (date.labelling == TRUE)
         {
+            print("date labelling is true")
             y <- formatDateRowNames(y, period = aggregate.period)
             y <- t(y)
         }

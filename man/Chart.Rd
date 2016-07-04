@@ -5,7 +5,7 @@
 \title{Generates an interactive chart based on the plotly library.}
 \usage{
 Chart(y, x = NULL, type = "Area", transpose = FALSE,
-  aggregate.period = "month", y.labels = NULL, y.values = NULL,
+  aggregate.period = "none", y.labels = NULL, y.values = NULL,
   x.labels = NULL, x.values = NULL, title = "",
   title.font.family = "Arial", title.font.color = rgb(44, 44, 44,
   maxColorValue = 255), title.font.size = 16, colors = qColors,
@@ -69,7 +69,19 @@ Chart(y, x = NULL, type = "Area", transpose = FALSE,
   bar.gap = 0.15, bar.group.gap = NULL, bar.data.label.offset = NULL,
   bar.data.label.family = "Arial", bar.data.label.size = 10,
   bar.data.label.color = rgb(0, 0, 0, maxColorValue = 255),
-  bar.data.label.decimals = 0, bar.data.label.as.percent = FALSE)
+  bar.data.label.decimals = 0, bar.data.label.as.percent = FALSE,
+  pie.values.font.family = "Arial", pie.values.font.size = 10,
+  pie.segment.colors = qColors, pie.values.prefix = "",
+  pie.values.suffix = "", pie.values.display.format = "\%",
+  pie.values.thres.percent = 0.3, pie.values.order = "initial",
+  pie.labels.font.family = "Arial", pie.labels.font.size = 10,
+  pie.labels.font.color = rgb(44, 44, 44, maxColorValue = 255),
+  pie.labels.minFontSize = 8, pie.labels.inner = FALSE,
+  pie.groups.font.family = "Arial", pie.groups.font.size = 10,
+  pie.groups.colors = qColors, pie.groups.order = "descending",
+  pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
+  pie.segment.color.gradient = FALSE, pie.inner.radius = 0,
+  pie.max.label.length = 60)
 }
 \arguments{
 \item{y}{A vector, matrix, list of vectors, data frame, or table.}
@@ -451,6 +463,59 @@ bar and column chart data labels.}
 
 \item{bar.data.label.as.percent}{Logical; whether to treat data labels in
 bar or column charts as percentages or not.}
+
+\item{pie.values.font.family}{Character; font family for label values.}
+
+\item{pie.values.font.size}{Numeric; font size of label values.}
+
+\item{pie.segment.colors}{Vector of colors for pie chart segments.}
+
+\item{pie.values.prefix}{Character; prefix for label values.}
+
+\item{pie.values.suffix}{Character; suffix for label values.}
+
+\item{pie.values.display.format}{Character; either "\%" or "original";
+yields a percentage or the source values as specified.}
+
+\item{pie.values.thres.percent}{Numeric; 0-1, the percentage value at
+which labels should not be shown.  Default 0.3\%.}
+
+\item{pie.values.order}{Character; "descending", "initial", or
+"alphabetical"; default is "descending" sort on values; "alphabetical"
+sorts on labels.}
+
+\item{pie.labels.font.family}{Character; font family for label text.}
+
+\item{pie.labels.font.size}{Numeric; font size for label text}
+
+\item{pie.labels.font.color}{A single color for label text.}
+
+\item{pie.labels.minFontSize}{Numeric; minimum font size of label text.}
+
+\item{pie.labels.inner}{Logical; if labels should be on top of (TRUE)
+or next to (FALSE) the chart.}
+
+\item{pie.groups.font.family}{Character; font family for group labels}
+
+\item{pie.groups.font.size}{Numeric; font size of group label text}
+
+\item{pie.groups.colors}{Vector of colors for pie chart segment groupings.}
+
+\item{pie.groups.order}{Character; "descending", "initial", or
+"alphabetical"; default is "descending" sort on values; "alphabetical"
+sorts on labels.}
+
+\item{pie.border.color}{A single color for space around pie and between
+segments.}
+
+\item{pie.segment.color.gradient}{Logical; if no pie.segment.colors are
+specified, a gradient will be generated.}
+
+\item{pie.inner.radius}{Numeric; must be passed as a percentage value,
+e.g. 75; produces a donut chart; default is 0 (pie chart)}
+
+\item{pie.max.label.length}{Numeric; maximum character length before
+wrapping of labels.}
 
 \item{bar.data.label}{Integer or Character; the offset from the top end of a
 column measured in y-axis units.}

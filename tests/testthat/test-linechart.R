@@ -3,7 +3,7 @@ context("lineChart")
 
 for (i in 1:length(good.examples))
 {
-    print(Chart(y = good.examples[[i]]$Y, x = good.examples[[i]]$X, type = "Line", transpose = good.examples[[i]]$transpose, title = names(good.examples)[i]), hover.include.source.value = TRUE)
+    print(Chart(y = good.examples[[i]]$Y, x = good.examples[[i]]$X, type = "Line", transpose = good.examples[[i]]$transpose, title = names(good.examples)[i], aggregate.period = good.examples[[i]]$aggregate.period, hover.include.source.value = TRUE))
 
     # cat(paste("Press [enter] to continue (test ", i, "/", length(good.examples), ").", sep = ""))
     # line <- readline()
@@ -42,33 +42,33 @@ junk.data <- junk
 junk.data.text <- as.matrix((junk.data[, -1, drop = FALSE]))
 rownames(junk.data) <- junk.data[, 1]
 junk.data <- as.matrix(junk.data[, -1])
-junk.colors <- c(grDevices::rgb(219, 99, 24, 255, max = 255), # Apples, orange-ish.
-                 grDevices::rgb(13, 168, 170, 255, max = 255), # Bananas, teal.
-                 grDevices::rgb(110, 18, 90, 255, max = 255), # Lemons, dark purple
-                 grDevices::rgb(21, 113, 189, 255, max = 255), # Limes, blue
-                 grDevices::rgb(97, 111, 2, 255, max = 255), # Oranges, dark green
-                 grDevices::rgb(8, 68, 111, 255, max = 255), # Pears, dark blue
-                 grDevices::rgb(175, 21, 1, 255, max = 255), # Strawberries, dark red
-                 grDevices::rgb(158, 72, 14, 255, max = 255), # Gooseberries
-                 grDevices::rgb(99, 99, 99, 255, max = 255), # Cloudberries
-                 grDevices::rgb(153, 115, 0, 255, max = 255), # Kiwi fruit
-                 grDevices::rgb(38, 68, 120, 255, max = 255), # Raspberries
-                 grDevices::rgb(67, 104, 43, 255, max = 255), # Blackberries
-                 grDevices::rgb(124, 175, 221, 255, max = 255), # Currants
-                 grDevices::rgb(241, 151, 90, 255, max = 255), # Rhubarb
-                 grDevices::rgb(183, 183, 183, 255, max = 255), # Peach
-                 grDevices::rgb(255, 205, 51, 255, max = 255), # Mango
-                 grDevices::rgb(105, 142, 208, 255, max = 255), # Papaya
-                 grDevices::rgb(140, 193, 104, 255, max = 255), # Goat
-                 grDevices::rgb(50, 125, 194, 255, max = 255), # Blueberries
-                 grDevices::rgb(210, 96, 18, 255, max = 255)) # Lingonberries
+junk.colors <- c(grDevices::rgb(219, 99, 24, 255, maxColorValue = 255), # Apples, orange-ish.
+                 grDevices::rgb(13, 168, 170, 255, maxColorValue = 255), # Bananas, teal.
+                 grDevices::rgb(110, 18, 90, 255, maxColorValue = 255), # Lemons, dark purple
+                 grDevices::rgb(21, 113, 189, 255, maxColorValue = 255), # Limes, blue
+                 grDevices::rgb(97, 111, 2, 255, maxColorValue = 255), # Oranges, dark green
+                 grDevices::rgb(8, 68, 111, 255, maxColorValue = 255), # Pears, dark blue
+                 grDevices::rgb(175, 21, 1, 255, maxColorValue = 255), # Strawberries, dark red
+                 grDevices::rgb(158, 72, 14, 255, maxColorValue = 255), # Gooseberries
+                 grDevices::rgb(99, 99, 99, 255, maxColorValue = 255), # Cloudberries
+                 grDevices::rgb(153, 115, 0, 255, maxColorValue = 255), # Kiwi fruit
+                 grDevices::rgb(38, 68, 120, 255, maxColorValue = 255), # Raspberries
+                 grDevices::rgb(67, 104, 43, 255, maxColorValue = 255), # Blackberries
+                 grDevices::rgb(124, 175, 221, 255, maxColorValue = 255), # Currants
+                 grDevices::rgb(241, 151, 90, 255, maxColorValue = 255), # Rhubarb
+                 grDevices::rgb(183, 183, 183, 255, maxColorValue = 255), # Peach
+                 grDevices::rgb(255, 205, 51, 255, maxColorValue = 255), # Mango
+                 grDevices::rgb(105, 142, 208, 255, maxColorValue = 255), # Papaya
+                 grDevices::rgb(140, 193, 104, 255, maxColorValue = 255), # Goat
+                 grDevices::rgb(50, 125, 194, 255, maxColorValue = 255), # Blueberries
+                 grDevices::rgb(210, 96, 18, 255, maxColorValue = 255)) # Lingonberries
 
 Chart(y = junk.data,
               transpose = TRUE,
               title = "Monthly Sales",
               type = "Line",
-              plot.fill.color = rgb(222, 233, 254, max = 255),
-              chart.fill.color = rgb(222, 233, 254, max = 255),
+              plot.fill.color = rgb(222, 233, 254, maxColorValue = 255),
+              chart.fill.color = rgb(222, 233, 254, maxColorValue = 255),
               y.grid.width = 0,
               y.bounds.minimum = 0,
               y.bounds.maximum = 45,
@@ -77,7 +77,7 @@ Chart(y = junk.data,
               y.tick.font.size = 11,
               y.tick.font.family = "Tahoma",
               series.marker.text = TRUE,
-              series.marker.text.color = rgb(192, 192, 192, max = 255),
+              series.marker.text.color = rgb(192, 192, 192, maxColorValue = 255),
               series.marker.text.size = 12,
               series.line.width = 3,
               series.line.color = junk.colors,
@@ -87,11 +87,11 @@ Chart(y = junk.data,
               series.marker.size = 10,
               series.marker.border.color = "black",
               margin.t = 30,
-              legend.fill = rgb(222, 233, 254, max = 255),
+              legend.fill = rgb(222, 233, 254, maxColorValue = 255),
               legend.font.size = 14,
               legend.font.family = "Tahoma",
-              y.line.color = rgb(222, 233, 254, max = 255),
-              x.line.color = rgb(222, 233, 254, max = 255))
+              y.line.color = rgb(222, 233, 254, maxColorValue = 255),
+              x.line.color = rgb(222, 233, 254, maxColorValue = 255))
 
 ## NPS chart
 nps.data <- as.matrix(rbind(c(-4.35000, -4.30000, -4.25000, -4.20000, -4.15000, -4.10000, -4.05000, -4.00000, -3.95000, -3.90000, -3.85000, -3.80000, -3.75000, -3.70000),
@@ -100,9 +100,9 @@ nps.data <- as.matrix(rbind(c(-4.35000, -4.30000, -4.25000, -4.20000, -4.15000, 
 colnames(nps.data) <- c("Apr-15","May-15","Jun-15","Jul-15","Aug-15","Sep-15","Oct-15","Nov-15","Dec-15","Jan-16","Feb-16","Mar-16","Apr-16","May-16")
 rownames(nps.data) <- c("Brand A", "Brand B", "Brand C")
 
-nps.colors <- c(grDevices::rgb(46, 117, 182, 255, max = 255), # Brand A; blue.
-                grDevices::rgb(192, 0, 0, 255, max = 255), # Brand B; red.
-                grDevices::rgb(0, 176, 80, 255, max = 255)) # Brand C; green.
+nps.colors <- c(grDevices::rgb(46, 117, 182, 255, maxColorValue = 255), # Brand A; blue.
+                grDevices::rgb(192, 0, 0, 255, maxColorValue = 255), # Brand B; red.
+                grDevices::rgb(0, 176, 80, 255, maxColorValue = 255)) # Brand C; green.
 
 Chart(y = nps.data,
               title = "NPS",
@@ -114,7 +114,7 @@ Chart(y = nps.data,
               y.bounds.maximum = 5,
               y.bounds.units.major = 1,
               y.grid.width = 0,
-              y.zero.line.color = rgb(225, 225, 225, max = 255),
+              y.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
               x.tick.angle = 315,
               y.tick.font.size = 10,
               legend.font.size = 14)
@@ -139,7 +139,7 @@ setColors <- function (x, red, green, blue) {
         green.factor <- ((255 - green) / number.rows) * i
         blue.factor <- ((255 - blue) / number.rows) * i
 
-        col.vector <- c(col.vector, grDevices::rgb(red + red.factor, green + green.factor, blue + blue.factor, 255, max = 255))
+        col.vector <- c(col.vector, grDevices::rgb(red + red.factor, green + green.factor, blue + blue.factor, 255, maxColorValue = 255))
     }
 
     return(col.vector[-1, drop = FALSE])
@@ -149,7 +149,7 @@ age.colors <- setColors(age.data, 38, 85, 154)
 
 Chart(y = age.data,
               title.font.size = 12,
-              title.font.color = rgb(66, 66, 66, max = 255),
+              title.font.color = rgb(66, 66, 66, maxColorValue = 255),
               type = "Line",
               title = "<b>AN AGING POPULATION</b>",
               transpose = TRUE,
@@ -157,7 +157,7 @@ Chart(y = age.data,
               series.line.width = 3,
               y.tick.format.manual = "%",
               y.line.color = "white",
-              x.line.color = rgb(222, 222, 222, max = 255),
+              x.line.color = rgb(222, 222, 222, maxColorValue = 255),
               y.zero.line.width = 0,
               x.zero.line.width = 0,
               subtitle.text = "In 1860, an estimated 13.1 percent of the U.S. population was 45 years or older.<br>In 2005, the estimate is up to 23.9 percent.",

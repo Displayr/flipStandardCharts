@@ -49,10 +49,10 @@ if (barmode == "stack")
 ## Are column headers to be treated as numbers?
 column.names <- colnames(chart.matrix)
 check.coercion <- tryCatch(as.numeric(column.names), error = function(e) e, warning = function(w) w)
-if (is(check.coercion, "warning"))
+
+column.character <- FALSE
+if (inherits(check.coercion, "warning"))
     column.character <- TRUE
-else
-    column.character <- FALSE
 
 if (barmode == "stack")
     loop.by <- 1:length(x.items)

@@ -52,7 +52,7 @@ good.examples <- list("A named vector becomes a ChartMatrix" = list(Y = c("A" = 
                       "One or more numeric or integer vector(s) in a list and one character vector become a chart matrix" = list(Y = list(A = var1, B = var1, C = var1, D = var1, E = var1), X = alpha.five, transpose = TRUE, n.row = 5, n.columns = 5),
                       "One or more numeric or integer vector(s) in a data frame and one character vector become a chart matrix" = list(Y = cbind(var1, var1, var1, var1, var1), X = alpha.five, transpose = TRUE, n.row = 5, n.columns = 5),
                       "One or more factors with the same levels become a chart matrix" = list(X = factor.a, Y = factor.a, transpose = TRUE, n.row = 5, n.columns = 5),
-                      "One numeric or integer variable and one date variable become a chart matrix" = list(Y = var1, X = x.dates, transpose = TRUE, n.row = 1, n.columns = 5))
+                      "One numeric or integer variable and one date variable become a chart matrix" = list(Y = var1, X = x.dates, transpose = TRUE, n.row = 1, n.columns = 5, aggregate.period = "month"))
 
 bad.examples <- list("Y cannot take an unnamed numeric vector without an X input" = list(X = NULL, Y = y.data, transpose = FALSE, n.row = 1, n.columns = 5),
                      "Y cannot take an unnamed logic vector regardless of X-value" = list(X = NULL, Y = logic.vector, transpose = FALSE, n.row = 1, n.columns = 5),
