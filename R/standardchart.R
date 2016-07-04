@@ -532,7 +532,9 @@ Chart <-   function(y,
                                           y.bounds.minimum = y.bounds.minimum,
                                           y.bounds.maximum = y.bounds.maximum,
                                           y.bounds.units.major = y.bounds.units.major,
-                                          y.nticks = length(colnames(chart.matrix))
+                                          y.nticks = length(colnames(chart.matrix)),
+                                          x.tick.format.manual = x.tick.format.manual,
+                                          x.tick.frequency = x.tick.frequency
         )
 
         chart.matrix <- chart.type.outputs$chart.matrix
@@ -548,6 +550,8 @@ Chart <-   function(y,
         y.bounds.maximum <- chart.type.outputs$y.bounds.maximum
         y.bounds.units.major <- chart.type.outputs$y.bounds.units.major
         y.nticks <- y.nticks
+        x.tick.format.manual <- chart.type.outputs$x.tick.format.manual
+        x.tick.frequency <- chart.type.outputs$x.tick.frequency
     }
 
     if (type == "Pie")
@@ -874,8 +878,6 @@ Chart <-   function(y,
     x.nticks <- length(x.labels)
     x.dtick <- NULL
     x.tick0 <- NULL
-    # Below entity only used conditionally; if script does not encounter when running, Displayr throws unused var error.
-    # x.tick.frequency <- x.tick.frequency
 
     if (!is.null(x.bounds.minimum) && !is.null(x.bounds.maximum) && !is.null(x.bounds.units.major))
     {

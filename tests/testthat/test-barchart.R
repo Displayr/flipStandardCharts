@@ -129,7 +129,7 @@ text.colors <- c(grDevices::rgb(255, 255, 255, 255, maxColorValue = 255),
                  grDevices::rgb(255, 255, 255, 255, maxColorValue = 255),
                  grDevices::rgb(0, 0, 0, 255, maxColorValue = 255))
 
-Chart(type = "Stacked Bar",
+Chart(type = "100% Stacked Bar",
               title = "U.S. Gun manufacture by type",
               title.font.color = rgb(66, 66, 66, maxColorValue = 255),
               y = guns,

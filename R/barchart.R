@@ -11,13 +11,22 @@ barChart <- function(chart.matrix,
                         y.bounds.minimum,
                         y.bounds.maximum,
                         y.bounds.units.major,
-                        y.nticks)
+                        y.nticks,
+                        x.tick.format.manual,
+                        x.tick.frequency)
 {
     ## Change the matrix data according to requirements of the chart type
     # if (type == "Stacked Column")
     #     chart.matrix <- cum.data(chart.matrix, "cumulative.sum")
     if (type == "100% Stacked Bar")
+    {
         chart.matrix <- cum.data(chart.matrix, "column.percentage")
+        if (x.tick.format.manual != "%")
+            x.tick.format.manual <- "%"
+
+        if (is.null(x.tick.frequency))
+            x.tick.frequency <- 0.2
+    }
 
     # Should we stack or should we not?
     if (type != "Bar")
@@ -70,6 +79,8 @@ barChart <- function(chart.matrix,
                 y.bounds.minimum = y.bounds.minimum,
                 y.bounds.maximum = y.bounds.maximum,
                 y.bounds.units.major = y.bounds.units.major,
-                y.nticks = y.nticks))
+                y.nticks = y.nticks,
+                x.tick.format.manual = x.tick.format.manual,
+                x.tick.frequency = x.tick.frequency))
 }
 
