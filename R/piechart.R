@@ -26,6 +26,9 @@ pieChart <- function(chart.matrix,
     if (nrow(chart.matrix) == 1)
         chart.matrix <- t(chart.matrix)
 
+    ## As some charts get passed in as xtabs objects, rather than pure matrices, we need to unclass, for the stack to work later.
+    chart.matrix <- stripClassAndCallFromXtabs(chart.matrix)
+
     ## If there's only one column at this stage, then we need to manually provide some data.
     if (ncol(chart.matrix) == 1)
     {

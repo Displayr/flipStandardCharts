@@ -66,3 +66,15 @@ stripAlphaChannel <- function(hex.colors)
     else
         return(hex.colors)
 }
+
+stripClassAndCallFromXtabs <- function(chart.matrix)
+{
+    if (class(chart.matrix) == "xtabs" || class(chart.matrix) == "table")
+    {
+        attr(chart.matrix, "class") <- NULL
+        attr(chart.matrix, "call") <- NULL
+        return(chart.matrix)
+    }
+    else
+        return(chart.matrix)
+}
