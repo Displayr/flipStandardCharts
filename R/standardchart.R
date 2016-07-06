@@ -98,10 +98,8 @@
 #' @param y.tick.format.manual Overrides tick.prefix, suffix and decimals;
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 #' https://docs.python.org/release/3.1.3/library/string.html#formatspec
-#' @param y.hovertext.suffix Y-axis hover text number suffix
-#' @param y.hovertext.prefix Y-axis hover text number prefix
 #' @param y.hovertext.decimals Y-axis hover text decimal places
-#' @param y.hovertext.manual Overrides hovertext.prefix, suffix and decimals;
+#' @param y.hovertext.format.manual Overrides hovertext.prefix, suffix and decimals;
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 #' https://docs.python.org/release/3.1.3/library/string.html#formatspec
 #' @param y.tick.angle Integer, y-axis tick label angle in degrees.
@@ -148,10 +146,8 @@
 #' @param x.tick.format.manual Overrides tick.prefix, suffix and decimals;
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 #' https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec
-#' @param x.hovertext.suffix X.axis hover text number suffix
-#' @param x.hovertext.prefix X.axis hover text number prefix
 #' @param x.hovertext.decimals X.axis hover text decimal places
-#' @param x.hovertext.manual Overrides hovertext.prefix, suffix and decimals;
+#' @param x.hovertext.format.manual Overrides hovertext.prefix, suffix and decimals;
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 #' https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec
 #' @param x.tick.angle Integer, x-axis tick label angle in degrees.
@@ -343,10 +339,10 @@ Chart <-   function(y,
                         y.tick.prefix = "",
                         y.tick.decimals = 0,
                         y.tick.format.manual = "",
-                        y.hovertext.suffix = "",
-                        y.hovertext.prefix = "",
+                        # y.hovertext.suffix = NULL,
+                        # y.hovertext.prefix = NULL,
                         y.hovertext.decimals = 2,
-                        y.hovertext.manual = "",
+                        y.hovertext.format.manual = "",
                         y.tick.angle = 0,
                         y.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),
                         y.tick.font.family = "Arial",
@@ -372,12 +368,12 @@ Chart <-   function(y,
                         x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                         x.tick.suffix = "",
                         x.tick.prefix = "",
-                        x.tick.decimals = 0,
+                        x.tick.decimals = 2,
                         x.tick.format.manual = "",
-                        x.hovertext.suffix = "",
-                        x.hovertext.prefix = "",
-                        x.hovertext.decimals = 2,
-                        x.hovertext.manual = "",
+                        # x.hovertext.suffix = NULL,
+                        # x.hovertext.prefix = NULL,
+                        x.hovertext.decimals = 5,
+                        x.hovertext.format.manual = "",
                         x.tick.angle = 0,
                         x.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),
                         x.tick.font.family = "Arial",
@@ -554,6 +550,7 @@ Chart <-   function(y,
         x.tick.frequency <- chart.type.outputs$x.tick.frequency
     }
 
+    # Settings specific to Pie charts
     if (type == "Pie")
     {
         pie <- pieChart(chart.matrix = chart.matrix,
@@ -788,14 +785,27 @@ Chart <-   function(y,
         x.tick.length <- 0
     }
 
+    ## Resolve tick prefix and suffixes
+    # if (is.null(y.hovertext.format.prefix))
+    #     y.hovertext.prefix <- y.tick.prefix
+    #
+    # if (is.null(y.hovertext.suffix))
+    #     y.hovertext.suffix <- y.tick.suffix
+    #
+    # if (is.null(x.hovertext.prefix))
+    #     x.hovertext.prefix <- x.tick.prefix
+    #
+    # if (is.null(x.hovertext.suffix))
+    #     x.hovertext.suffix <- x.tick.suffix
+
     ## Set tick and hover formats
     ifelse((y.tick.format.manual == "" && is.null(y.tickformat)), y.tickformat <- paste(".", y.tick.decimals, "f", sep=""), y.tickformat <- y.tick.format.manual)
 
     ifelse(x.tick.format.manual == "", x.tickformat <- paste(".", x.tick.decimals, "f", sep=""), x.tickformat <- x.tick.format.manual)
 
-    ifelse(y.hovertext.manual == "", y.hoverformat <- paste(".", y.hovertext.decimals, "f", sep=""), y.hoverformat <- y.hovertext.manual)
+    ifelse(y.hovertext.format.manual == "", y.hoverformat <- paste(".", y.hovertext.decimals, "f", sep=""), y.hoverformat <- y.hovertext.format.manual)
 
-    ifelse(x.hovertext.manual == "", x.hoverformat <- paste(".", x.hovertext.decimals, "f", sep=""), x.hoverformat <- x.hovertext.manual)
+    ifelse(x.hovertext.format.manual == "", x.hoverformat <- paste(".", x.hovertext.decimals, "f", sep=""), x.hoverformat <- x.hovertext.format.manual)
 
     ## Resolve numeric tick values based on y.bounds.minimum and y.bounds.maximum, and y.bounds.units.major
     # y.tickmode = "auto"

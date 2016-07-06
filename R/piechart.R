@@ -23,18 +23,31 @@ pieChart <- function(chart.matrix,
                      pie.max.label.length)
 {
     ## If transpose is false and there's only one row in chart.matrix
-    if (transpose == FALSE && nrow(chart.matrix) == 1)
+    if (nrow(chart.matrix) == 1)
         chart.matrix <- t(chart.matrix)
 
-    ## Convert the chart matrix into a flat format so that we can use it as a pie chart
-    df.chart.matrix <-  as.data.frame(chart.matrix[ , 1:ncol(chart.matrix)])
-    pie.data <- cbind(suppressWarnings(stack(df.chart.matrix)), labels = rep(rownames(chart.matrix), ncol(chart.matrix)))
+    print(chart.matrix)
+
+    ## If there's only one column at this stage, then we need to manually provide some data.
+    if (ncol(chart.matrix) == 1)
+    {
+        # pie.data <- cbind(as.numeric(chart.matrix[ ,1]))
+        chart.matrix <- cbind(chart.matrix, rownames(chart.matrix))
+        chart.matrix <- cbind(chart.matrix, rep("group", nrow(chart.matrix)))
+        pie.data <- chart.matrix
+    }
+    else
+    {
+        pie.data <- cbind(stack(as.data.frame(chart.matrix[,1:ncol(chart.matrix)])), labels = rep(rownames(chart.matrix),ncol(chart.matrix))) #cbind(suppressWarnings(stack(chart.matrix)), labels = rep(rownames(chart.matrix), ncol(chart.matrix))) #as.data.frame(chart.matrix[ , 1:ncol(chart.matrix)])
+        pie.data <- pie.data[with(pie.data,order(pie.data[,2])),]
+    }
+    print(pie.data)
 
     ## First column is values, second groups, third is labels.
-    d.values <- pie.data[, 1]
-    if (length(unique(pie.data[,2])) == 1)
+    d.values <- as.numeric(pie.data[, 1])
+    if (length(unique(pie.data[, 3])) == 1)
     {
-        d.labels <- as.character(pie.data[, 3])
+        d.labels <- as.character(pie.data[, 2])
         d.groups <- NULL
     }
     else
