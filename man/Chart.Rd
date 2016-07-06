@@ -28,28 +28,27 @@ Chart(y, x = NULL, type = "Area", transpose = FALSE,
   y.position = "left", y.mirror = FALSE, y.values.reversed = FALSE,
   y.grid.width = 1, y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
   y.tick.suffix = "", y.tick.prefix = "", y.tick.decimals = 0,
-  y.tick.format.manual = "", y.hovertext.suffix = "",
-  y.hovertext.prefix = "", y.hovertext.decimals = 2,
-  y.hovertext.manual = "", y.tick.angle = 0, y.tick.font.color = rgb(0, 0,
-  0, maxColorValue = 255), y.tick.font.family = "Arial",
-  y.tick.font.size = 10, x.title = "", x.title.font.color = rgb(44, 44,
-  44, maxColorValue = 255), x.title.font.family = "Arial",
-  x.title.font.size = 12, x.line.width = 0, x.line.color = rgb(0, 0, 0,
-  maxColorValue = 255), x.tick.marks = "", x.tick.length = 5,
-  x.bounds.minimum = NULL, x.bounds.maximum = NULL,
+  y.tick.format.manual = "", y.hovertext.decimals = 2,
+  y.hovertext.format.manual = "", y.tick.angle = 0,
+  y.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),
+  y.tick.font.family = "Arial", y.tick.font.size = 10, x.title = "",
+  x.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
+  x.title.font.family = "Arial", x.title.font.size = 12, x.line.width = 0,
+  x.line.color = rgb(0, 0, 0, maxColorValue = 255), x.tick.marks = "",
+  x.tick.length = 5, x.bounds.minimum = NULL, x.bounds.maximum = NULL,
   x.bounds.units.major = NULL, x.tick.frequency = NULL,
   x.zero.line.width = 0, x.zero.line.color = rgb(44, 44, 44, maxColorValue =
   255), x.position = "bottom", x.mirror = FALSE,
   x.values.reversed = FALSE, x.grid.width = 0, x.grid.color = rgb(225,
   225, 225, maxColorValue = 255), x.tick.suffix = "", x.tick.prefix = "",
-  x.tick.decimals = 0, x.tick.format.manual = "", x.hovertext.suffix = "",
-  x.hovertext.prefix = "", x.hovertext.decimals = 2,
-  x.hovertext.manual = "", x.tick.angle = 0, x.tick.font.color = rgb(0, 0,
-  0, maxColorValue = 255), x.tick.font.family = "Arial",
-  x.tick.font.size = 10, x.tick.label.autoformat = TRUE,
-  series.marker.show = "none", series.marker.color = qColors,
-  series.marker.transparency = 1, series.marker.size = 6,
-  series.marker.border.width = 1, series.marker.border.color = qColors,
+  x.tick.decimals = 2, x.tick.format.manual = "",
+  x.hovertext.decimals = 5, x.hovertext.format.manual = "",
+  x.tick.angle = 0, x.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),
+  x.tick.font.family = "Arial", x.tick.font.size = 10,
+  x.tick.label.autoformat = TRUE, series.marker.show = "none",
+  series.marker.color = qColors, series.marker.transparency = 1,
+  series.marker.size = 6, series.marker.border.width = 1,
+  series.marker.border.color = qColors,
   series.marker.border.transparency = 1, series.marker.text = FALSE,
   series.marker.text.position = "top middle",
   series.marker.text.color = rgb(0, 0, 0, maxColorValue = 255),
@@ -235,13 +234,9 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 https://docs.python.org/release/3.1.3/library/string.html#formatspec}
 
-\item{y.hovertext.suffix}{Y-axis hover text number suffix}
-
-\item{y.hovertext.prefix}{Y-axis hover text number prefix}
-
 \item{y.hovertext.decimals}{Y-axis hover text decimal places}
 
-\item{y.hovertext.manual}{Overrides hovertext.prefix, suffix and decimals;
+\item{y.hovertext.format.manual}{Overrides hovertext.prefix, suffix and decimals;
 See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 https://docs.python.org/release/3.1.3/library/string.html#formatspec}
 
@@ -316,13 +311,9 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec}
 
-\item{x.hovertext.suffix}{X.axis hover text number suffix}
-
-\item{x.hovertext.prefix}{X.axis hover text number prefix}
-
 \item{x.hovertext.decimals}{X.axis hover text decimal places}
 
-\item{x.hovertext.manual}{Overrides hovertext.prefix, suffix and decimals;
+\item{x.hovertext.format.manual}{Overrides hovertext.prefix, suffix and decimals;
 See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec}
 

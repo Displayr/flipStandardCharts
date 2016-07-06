@@ -26,8 +26,6 @@ pieChart <- function(chart.matrix,
     if (nrow(chart.matrix) == 1)
         chart.matrix <- t(chart.matrix)
 
-    print(chart.matrix)
-
     ## If there's only one column at this stage, then we need to manually provide some data.
     if (ncol(chart.matrix) == 1)
     {
@@ -38,10 +36,9 @@ pieChart <- function(chart.matrix,
     }
     else
     {
-        pie.data <- cbind(stack(as.data.frame(chart.matrix[,1:ncol(chart.matrix)])), labels = rep(rownames(chart.matrix),ncol(chart.matrix))) #cbind(suppressWarnings(stack(chart.matrix)), labels = rep(rownames(chart.matrix), ncol(chart.matrix))) #as.data.frame(chart.matrix[ , 1:ncol(chart.matrix)])
+        pie.data <- cbind(suppressWarnings(stack(as.data.frame(chart.matrix[,1:ncol(chart.matrix)]))), labels = rep(rownames(chart.matrix),ncol(chart.matrix))) #cbind(suppressWarnings(stack(chart.matrix)), labels = rep(rownames(chart.matrix), ncol(chart.matrix))) #as.data.frame(chart.matrix[ , 1:ncol(chart.matrix)])
         pie.data <- pie.data[with(pie.data,order(pie.data[,2])),]
     }
-    print(pie.data)
 
     ## First column is values, second groups, third is labels.
     d.values <- as.numeric(pie.data[, 1])

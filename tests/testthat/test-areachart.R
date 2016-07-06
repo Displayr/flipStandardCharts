@@ -92,7 +92,7 @@ Chart(a.matrix,
           # x.bounds.maximum = 1,
           # x.bounds.units.major = .1,
           y.tick.format.manual = "%",
-          y.hovertext.manual = "%",
+          y.hovertext.format.manual = "%",
           x.tick.frequency = 5,
           hover.mode = "x")
 
@@ -112,7 +112,7 @@ Chart(a.matrix,
           transparency = 1,
           legend.sort.order = "reverse",
           y.position = "right",
-          y.hovertext.manual = "%",
+          y.hovertext.format.manual = "%",
           y.tick.format.manual = "%")
 
 # Excel equivalent "Stacked AC"
