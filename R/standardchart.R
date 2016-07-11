@@ -443,7 +443,7 @@ Chart <-   function(y,
                         pie.max.label.length = 60)
 {
     ## Make a chart matrix
-    chart.matrix <- AsChartMatrix(y, x, transpose = transpose, aggregate.period = aggregate.period)
+    chart.matrix <- AsChartMatrix(y, x, transpose = transpose, aggregate.period = aggregate.period, type = type)
 
     ## Ignore rows or columns
     if (rows.to.ignore != "" | cols.to.ignore != "")
@@ -489,6 +489,18 @@ Chart <-   function(y,
 
         series.mode <- chart.type.outputs$series.mode
         series.line.width <- chart.type.outputs$series.line.width
+        y.tickformat <- ""
+        transpose <- chart.type.outputs$transpose
+    }
+
+    ## Settings specific to Scatter Plot Charts
+    if (type == "Scatter Plot")
+    {
+        chart.type.outputs <- scatterPlotChart(chart.matrix = chart.matrix,
+                                                transpose = transpose,
+                                                series.marker.text = series.marker.text)
+
+        series.mode <- chart.type.outputs$series.mode
         y.tickformat <- ""
         transpose <- chart.type.outputs$transpose
     }

@@ -140,15 +140,19 @@ AsChartMatrix <- function(y,
                           # weights = NULL,
                           # subset = NULL,
                           transpose = FALSE,
-                          aggregate.period = "none")  ## can be m(onth), q(uarter), y(ear), n(one)
+                          aggregate.period = "none",
+                          type = NULL)  ## can be m(onth), q(uarter), y(ear), n(one)
 {
     if (is.logical(x) && length(x) == 1)
         x <- NULL
 
     if (is.null(x)) # Aggregating data over X.
     {
-        if (!is.vector(y) && !is.table(y) && !is.matrix(y))
+        if (!is.vector(y) && !is.table(y) && !is.matrix(y) && !is.factor(y) || (is.factor(y) && type != "Pie"))
             stop(paste("Y must be a vector"))
+
+        if (is.factor(y) && type == "Pie")
+            y <- table(y)
 
         y <- t(as.matrix(y))
 
