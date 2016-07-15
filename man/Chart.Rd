@@ -103,7 +103,7 @@ along the y-axis where the y.labels should appear.}
 
 \item{x.labels}{Character vector, overrides chart matrix column names.}
 
-\item{x.values}{Integer vector, optiona, for manually specifying the points
+\item{x.values}{Integer vector, optional, for manually specifying the points
 along the x-axis where the x.labels should appear.}
 
 \item{title}{Character; chart title.}

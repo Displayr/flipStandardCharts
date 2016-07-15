@@ -14,7 +14,7 @@
 #' @param y.values Integer vector, optiona, for manually specifying the points
 #' along the y-axis where the y.labels should appear.
 #' @param x.labels Character vector, overrides chart matrix column names.
-#' @param x.values Integer vector, optiona, for manually specifying the points
+#' @param x.values Integer vector, optional, for manually specifying the points
 #' along the x-axis where the x.labels should appear.
 #' @param title Character; chart title.
 #' @param title.font.family Character; title font family.  Can be "Arial
@@ -443,7 +443,10 @@ Chart <-   function(y,
                         pie.max.label.length = 60)
 {
     ## Make a chart matrix
-    chart.matrix <- AsChartMatrix(y, x, transpose = transpose, aggregate.period = aggregate.period, type = type)
+    if (type != "Scatter Plot" && is.null(x))
+        chart.matrix <- AsChartMatrix(y, x, transpose = transpose, aggregate.period = aggregate.period, type = type)
+    else
+        chart.matrix <- y
 
     ## Ignore rows or columns
     if (rows.to.ignore != "" | cols.to.ignore != "")
@@ -498,11 +501,23 @@ Chart <-   function(y,
     {
         chart.type.outputs <- scatterPlotChart(chart.matrix = chart.matrix,
                                                 transpose = transpose,
-                                                series.marker.text = series.marker.text)
+                                                series.marker.text = series.marker.text,
+                                                x.tick.frequency = x.tick.frequency,
+                                                x.tick.decimals = x.tick.decimals,
+                                                x.labels = x.labels,
+                                                x.bounds.minimum = x.bounds.minimum,
+                                                x.bounds.maximum = x.bounds.maximum,
+                                                x.bounds.units.major = x.bounds.units.major)
 
+        chart.matrix <- chart.type.outputs$chart.matrix
         series.mode <- chart.type.outputs$series.mode
         y.tickformat <- ""
         transpose <- chart.type.outputs$transpose
+        x.tick.frequency <- chart.type.outputs$x.tick.frequency
+        x.tick.decimals <- chart.type.outputs$x.tick.decimals
+        x.bounds.minimum <- chart.type.outputs$x.bounds.minimum
+        x.bounds.maximum <- chart.type.outputs$x.bounds.maximum
+        x.bounds.units.major <- chart.type.outputs$x.bounds.units.major
     }
 
     ## Settings specific to Column Charts
@@ -708,7 +723,10 @@ Chart <-   function(y,
         y.labels <- rownames(chart.matrix)
 
     ## If no angle set for x.tick.angle and x.labels are > 15 characters,
-    tally <- sapply(x.labels, function(x) nchar(x))
+    tally <- as.numeric(sapply(x.labels, function(x) nchar(x)))
+
+    print(x.labels)
+
     if (max(tally) > 15 && x.tick.label.autoformat == TRUE)
     {
         x.tick.angle <- 315
@@ -862,12 +880,7 @@ Chart <-   function(y,
         y.autorange <- FALSE
         y.range <- c(y.bounds.minimum, y.bounds.maximum)
 
-        for (a in seq(y.bounds.minimum, y.bounds.maximum, by = y.bounds.units.major))
-        {
-            y.tickvals <- c(y.tickvals, a)
-            # if (!swap.axes.and.data)
-            #     y.ticktext <- y.labels[seq(1, length(y.labels), a)]
-        }
+        y.tickvals <- seq(y.bounds.minimum, y.bounds.maximum, by = y.bounds.units.major)
 
         if (y.tickformat == "%")
             y.ticktext <- sapply(y.tickvals, function(x) paste(round(x * 100, y.tick.decimals), "%", sep = ""))
@@ -901,18 +914,17 @@ Chart <-   function(y,
     x.dtick <- NULL
     x.tick0 <- NULL
 
+    print(x.labels)
+
     if (!is.null(x.bounds.minimum) && !is.null(x.bounds.maximum) && !is.null(x.bounds.units.major))
     {
         x.tickmode <- "array"
         x.autorange <- FALSE
         x.range <- c(x.bounds.minimum, x.bounds.maximum)
 
-        for (a in seq(x.bounds.minimum, x.bounds.maximum, by = x.bounds.units.major))
-        {
-            x.tickvals <- c(x.tickvals, a)
-            if (!swap.axes.and.data)
-                x.ticktext <- x.labels[seq(1, length(x.labels), a)]
-        }
+        x.tickvals <- seq(x.bounds.minimum, x.bounds.maximum, by = x.bounds.units.major)
+        if (!swap.axes.and.data)
+            x.ticktext <- as.character(x.tickvals)
 
         if (x.tickformat == "%")
             x.ticktext <- sapply(x.tickvals, function(x) paste(round(x * 100, x.tick.decimals), "%", sep = ""))
@@ -1004,8 +1016,8 @@ Chart <-   function(y,
     if (swap.axes.and.data)
         axis.to.show <- "x"
 
-    show.series.name = "+name"
-    if (nrow(chart.matrix) == 1)
+    show.series.name <- "+name"
+    if (nrow(chart.matrix) == 1 && type != "Scatter Plot")
         show.series.name = ""
 
     if (hover.include.source.value)

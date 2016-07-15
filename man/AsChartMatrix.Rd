@@ -4,7 +4,8 @@
 \alias{AsChartMatrix}
 \title{Converts one or more objects to a chart matrix.}
 \usage{
-AsChartMatrix(y, x = NULL, transpose = FALSE, aggregate.period = "none")
+AsChartMatrix(y, x = NULL, transpose = FALSE, aggregate.period = "none",
+  type = NULL)
 }
 \arguments{
 \item{y}{A vector, matrix, list of vectors, data frame, or table.}
