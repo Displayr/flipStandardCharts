@@ -8,6 +8,7 @@ scatterPlotChart <- function(chart.matrix,
                              x.bounds.maximum,
                              x.bounds.units.major)
 {
+
     if (!is.matrix(chart.matrix))
         chart.matrix <- as.matrix(chart.matrix)
 

@@ -1,4 +1,5 @@
-pieChart <- function(chart.matrix,
+pieChart <- function(y,
+                     chart.matrix,
                      transpose,
                      pie.values.font.family,
                      pie.values.font.size,

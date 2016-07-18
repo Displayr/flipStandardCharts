@@ -50,8 +50,7 @@
 #' @param legend.font.size Integer; legend font size.
 #' @param legend.position Where the legend will be placed; can be "left" or
 #' "right" of plot.
-#' @param legend.sort.order Character; can be "normal" or "reversed" (see
-#' also grouping options, currently excluded from this function)
+#' @param legend.ascending Logical; TRUE for ascending, FALSE for descending
 #' @param margin.top Integer; margin between plot area and the top of the
 #' graphic in pixels
 #' @param margin.bottom Integer; margin between plot area and the top of the
@@ -310,7 +309,7 @@ Chart <-   function(y,
                         legend.font.family = "Arial",
                         legend.font.size = 10,
                         legend.position = "right",
-                        legend.sort.order = "normal",
+                        legend.ascending = TRUE,
                         margin.top = 80,
                         margin.bottom = 80,
                         margin.left = 80,
@@ -368,7 +367,7 @@ Chart <-   function(y,
                         x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                         x.tick.suffix = "",
                         x.tick.prefix = "",
-                        x.tick.decimals = 2,
+                        x.tick.decimals = 0,
                         x.tick.format.manual = "",
                         # x.hovertext.suffix = NULL,
                         # x.hovertext.prefix = NULL,
@@ -443,10 +442,15 @@ Chart <-   function(y,
                         pie.max.label.length = 60)
 {
     ## Make a chart matrix
-    if (type != "Scatter Plot" && is.null(x))
+    if (type != "Scatter Plot" || (type == "Scatter Plot" && !is.null(x)))
         chart.matrix <- AsChartMatrix(y, x, transpose = transpose, aggregate.period = aggregate.period, type = type)
     else
         chart.matrix <- y
+
+    ## Only allow a single factor variable if it's a pie-chart; chart-specific test not appropriate for AsChartMatrix, so
+    ## included here rather than in that function.
+    if (is.factor(y) && is.null(x) && type != "Pie")
+        stop(paste("Y must be either a vector, matrix, or table.  Currently it is: ", class(y)))
 
     ## Ignore rows or columns
     if (rows.to.ignore != "" | cols.to.ignore != "")
@@ -633,9 +637,9 @@ Chart <-   function(y,
 
     ## Waterfall (part of column charts, really...)
 
-    ## Scatterplot
-
     ## Radar/Polar plot
+
+    ## Heat map
 
     ## ... Any other chart types...
 
@@ -725,8 +729,6 @@ Chart <-   function(y,
     ## If no angle set for x.tick.angle and x.labels are > 15 characters,
     tally <- as.numeric(sapply(x.labels, function(x) nchar(x)))
 
-    print(x.labels)
-
     if (max(tally) > 15 && x.tick.label.autoformat == TRUE)
     {
         x.tick.angle <- 315
@@ -742,6 +744,10 @@ Chart <-   function(y,
     legend.y.anchor <- "auto"
     legend.y <- 1
     legend.x <- 1.02
+
+    legend.sort.order <- "normal"
+    if (legend.ascending == FALSE)
+        legend.sort.order <- "reversed"
 
     ### If legend on right and there's a y-axis on the right too:
     y2 = ""
@@ -914,8 +920,6 @@ Chart <-   function(y,
     x.dtick <- NULL
     x.tick0 <- NULL
 
-    print(x.labels)
-
     if (!is.null(x.bounds.minimum) && !is.null(x.bounds.maximum) && !is.null(x.bounds.units.major))
     {
         x.tickmode <- "array"
@@ -1016,9 +1020,11 @@ Chart <-   function(y,
     if (swap.axes.and.data)
         axis.to.show <- "x"
 
+    #################################### - This bit's broken!
     show.series.name <- "+name"
-    if (nrow(chart.matrix) == 1 && type != "Scatter Plot")
-        show.series.name = ""
+    if (nrow(chart.matrix) == 1)
+        show.series.name <- ""
+    ###########################################
 
     if (hover.include.source.value)
         hoverinfo = paste(axis.to.show, show.series.name, "+text", sep = "")

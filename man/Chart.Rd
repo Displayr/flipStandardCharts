@@ -16,13 +16,13 @@ Chart(y, x = NULL, type = "Area", transpose = FALSE,
   legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
   legend.border.line.width = 0, legend.font.color = rgb(44, 44, 44,
   maxColorValue = 255), legend.font.family = "Arial", legend.font.size = 10,
-  legend.position = "right", legend.sort.order = "normal",
-  margin.top = 80, margin.bottom = 80, margin.left = 80,
-  margin.right = 80, margin.inner.pad = 0, y.title = "",
-  y.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
-  y.title.font.family = "Arial", y.title.font.size = 12, y.line.width = 0,
-  y.line.color = rgb(0, 0, 0, maxColorValue = 255), y.tick.marks = "",
-  y.tick.length = 5, y.bounds.minimum = NULL, y.bounds.maximum = NULL,
+  legend.position = "right", legend.ascending = TRUE, margin.top = 80,
+  margin.bottom = 80, margin.left = 80, margin.right = 80,
+  margin.inner.pad = 0, y.title = "", y.title.font.color = rgb(44, 44, 44,
+  maxColorValue = 255), y.title.font.family = "Arial",
+  y.title.font.size = 12, y.line.width = 0, y.line.color = rgb(0, 0, 0,
+  maxColorValue = 255), y.tick.marks = "", y.tick.length = 5,
+  y.bounds.minimum = NULL, y.bounds.maximum = NULL,
   y.bounds.units.major = NULL, y.zero.line.width = 0,
   y.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
   y.position = "left", y.mirror = FALSE, y.values.reversed = FALSE,
@@ -41,7 +41,7 @@ Chart(y, x = NULL, type = "Area", transpose = FALSE,
   255), x.position = "bottom", x.mirror = FALSE,
   x.values.reversed = FALSE, x.grid.width = 0, x.grid.color = rgb(225,
   225, 225, maxColorValue = 255), x.tick.suffix = "", x.tick.prefix = "",
-  x.tick.decimals = 2, x.tick.format.manual = "",
+  x.tick.decimals = 0, x.tick.format.manual = "",
   x.hovertext.decimals = 5, x.hovertext.format.manual = "",
   x.tick.angle = 0, x.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),
   x.tick.font.family = "Arial", x.tick.font.size = 10,
@@ -158,8 +158,7 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 \item{legend.position}{Where the legend will be placed; can be "left" or
 "right" of plot.}
 
-\item{legend.sort.order}{Character; can be "normal" or "reversed" (see
-also grouping options, currently excluded from this function)}
+\item{legend.ascending}{Logical; TRUE for ascending, FALSE for descending}
 
 \item{margin.top}{Integer; margin between plot area and the top of the
 graphic in pixels}

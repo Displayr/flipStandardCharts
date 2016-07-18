@@ -148,10 +148,10 @@ AsChartMatrix <- function(y,
 
     if (is.null(x)) # Aggregating data over X.
     {
-        if (!is.vector(y) && !is.table(y) && !is.matrix(y) && !is.factor(y) || (is.factor(y) && type != "Pie"))
-            stop(paste("Y must be a vector"))
+        if (!is.vector(y) && !is.table(y) && !is.matrix(y) && !is.factor(y))
+            stop(paste("Y must be either a vector, matrix, factor, or table.  Currently it is: ", class(y)))
 
-        if (is.factor(y) && type == "Pie")
+        if (is.factor(y))
             y <- table(y)
 
         y <- t(as.matrix(y))
