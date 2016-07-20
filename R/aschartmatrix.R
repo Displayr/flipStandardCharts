@@ -145,8 +145,8 @@ AsChartMatrix <- function(y,
 
     if (is.null(x)) # Aggregating data over X.
     {
-        if (is.list(y))
-            y <- as.matrix(y)
+        if (is.atomic(y) && !is.vector(y) && !is.table(y) && !is.matrix(y) && !is.factor(y) && length(attributes) > 0)
+            y <- as.vector(y)
 
         if (!is.vector(y) && !is.table(y) && !is.matrix(y) && !is.factor(y))
             stop(paste("Y must be either a vector, matrix, factor, or table.  Currently it is: ", class(y)))
