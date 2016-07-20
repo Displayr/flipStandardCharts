@@ -140,15 +140,14 @@ AsChartMatrix <- function(y,
                           # weights = NULL,
                           # subset = NULL,
                           transpose = FALSE,
-                          aggregate.period = "none",
-                          type = NULL)
+                          aggregate.period = "none")
 {
     if (is.logical(x) && length(x) == 1)
         x <- NULL
 
     if (is.null(x)) # Aggregating data over X.
     {
-        if (!is.vector(y) && !is.table(y) && !is.matrix(y) && !is.factor(y))
+        if (!is.vector(y) && !is.table(y) && !is.matrix(y) && !is.factor(y) && !is.numeric(y))
             stop(paste("Y must be either a vector, matrix, factor, or table.  Currently it is: ", class(y)))
 
         if (is.factor(y))

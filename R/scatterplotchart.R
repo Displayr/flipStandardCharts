@@ -54,6 +54,10 @@ scatterPlotChart <- function(chart.matrix,
     if (transpose)
         chart.matrix <- t(chart.matrix)
 
+    ## If there are no column names at this stage, then assign them:
+    if (is.null(colnames(chart.matrix)))
+        colnames(chart.matrix) <- paste("trace ", 1:ncol(chart.matrix))
+
     return(list(chart.matrix = chart.matrix,
                 series.mode = series.mode,
                 transpose = transpose,
