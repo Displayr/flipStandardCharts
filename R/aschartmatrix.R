@@ -145,11 +145,11 @@ AsChartMatrix <- function(y,
 
     if (is.null(x)) # Aggregating data over X.
     {
-        if (!is.vector(y) && !is.table(y) && !is.matrix(y) && !is.factor(y) && !is.data.frame(y))
-            stop(paste("Y must be either a vector, matrix, factor, or table.  Currently it is: ", class(y)))
-
-        if (is.data.frame(y))
+        if (is.list(y))
             y <- as.matrix(y)
+
+        if (!is.vector(y) && !is.table(y) && !is.matrix(y) && !is.factor(y))
+            stop(paste("Y must be either a vector, matrix, factor, or table.  Currently it is: ", class(y)))
 
         if (is.factor(y))
             y <- table(y)
@@ -166,7 +166,7 @@ AsChartMatrix <- function(y,
         stop(paste("X cannot be a logical vector"))
 
     if (is.list(x) | is.data.frame(x))
-        stop(paste("X cannot take data frames or lists. You have passed a ",class(x), sep=""))
+        stop(paste("X cannot take data frames or lists. You have passed a ", class(x), sep=""))
 
     if (is.list(y))
         y <- as.data.frame(y)

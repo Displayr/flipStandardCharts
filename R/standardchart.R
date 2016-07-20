@@ -443,7 +443,7 @@ Chart <-   function(y,
 {
     ## Make a chart matrix
     if (type != "Scatter Plot" || (type == "Scatter Plot" && !is.null(x)))
-        chart.matrix <- AsChartMatrix(y, x, transpose = transpose, aggregate.period = aggregate.period, type = type)
+        chart.matrix <- AsChartMatrix(y, x, transpose = transpose, aggregate.period = aggregate.period)
     else
         chart.matrix <- y
 
