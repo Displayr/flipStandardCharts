@@ -22,11 +22,9 @@ aggregatePeriodFromDate <- function(x, period = "month")
 
     if (period == "month")
         return(strftime(x,"%Y%m"))
-        #
 
     if (period == "quarter")
         return(paste(strftime(x, "%Y"), quarters(x), sep = ""))
-        # return(paste(quarters(x), year.two.digits, sep = "-"))
 
     if (period == "year")
         return(strftime(x, "%Y"))
@@ -147,8 +145,11 @@ AsChartMatrix <- function(y,
 
     if (is.null(x)) # Aggregating data over X.
     {
-        if (!is.vector(y) && !is.table(y) && !is.matrix(y) && !is.factor(y) && !is.numeric(y))
+        if (!is.vector(y) && !is.table(y) && !is.matrix(y) && !is.factor(y) && !is.list(y))
             stop(paste("Y must be either a vector, matrix, factor, or table.  Currently it is: ", class(y)))
+
+        if (is.list(y))
+            y <- as.matrix(y)
 
         if (is.factor(y))
             y <- table(y)
@@ -191,7 +192,6 @@ AsChartMatrix <- function(y,
 
         if (date.labelling == TRUE)
         {
-            print("date labelling is true")
             y <- formatDateRowNames(y, period = aggregate.period)
             y <- t(y)
         }
