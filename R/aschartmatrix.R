@@ -145,6 +145,7 @@ AsChartMatrix <- function(y,
 
     if (is.null(x)) # Aggregating data over X.
     {
+        ## Allows single numeric variables (for scatter plots).
         if (is.numeric(y) && !is.vector(y) && !is.table(y) && !is.matrix(y) && !is.factor(y) && length(attributes) > 0)
             y <- as.vector(y)
 

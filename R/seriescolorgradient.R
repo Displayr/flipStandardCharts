@@ -52,12 +52,16 @@ AlphabeticRowNames <- function(x, desc = TRUE) {
 #' @param red An integer between 0 and 255.
 #' @param green An integer between 0 and 255.
 #' @param blue An integer between 0 and 255.
+#' @param by A string indicating what feature of the data determines how the
+#' gradient should be ordered.  "series" makes the first series the lightest,
+#' and then progresses to darkest for the last series.  "mean" generates
+#' gradients by the row mean of each series, with the lowest value the lightest.
 #' @return A named elements vector of colors with decreasing alpha values.
 #' @examples
 #' data("z")
 #' MakeColorGradient(z, red = 192, green = 35, blue = 220)
 #' @export
-MakeColorGradient <- function (x, red, green, blue) {
+MakeColorGradient <- function (x, red, green, blue, by = "series") {
     if (!is.matrix(x))
         stop("Input is not a matrix")
 
@@ -72,15 +76,38 @@ MakeColorGradient <- function (x, red, green, blue) {
         col.vector <- c(col.vector, grDevices::rgb(red + red.factor, green + green.factor, blue + blue.factor, 255, maxColorValue = 255))
     }
 
-    ## Sort the matrix by mean
-    ordered.matrix <- MeanRowValueDescendingSort(x)
+    ## Default is by = "series"
+    if (by == "series")
+        col.vector <- col.vector[-1, drop = FALSE]
 
-    ## Assign matrix row names to col.vector
-    col.vector <- col.vector[2:length(col.vector)]
-    names(col.vector) <- rownames(ordered.matrix)
+    if (by == "mean")
+    {
+        ## Sort the matrix by mean
+        ordered.matrix <- MeanRowValueDescendingSort(x)
 
-    ## Sort the colour vector
-    col.vector <- AlphabeticRowNames(col.vector)
+        ## Assign matrix row names to col.vector
+        col.vector <- col.vector[2:length(col.vector)]
+        names(col.vector) <- rownames(ordered.matrix)
+
+        ## Sort the colour vector
+        col.vector <- AlphabeticRowNames(col.vector)
+    }
 
     col.vector
+}
+
+# Assigns a vector of colours of as many members as the passed-in vector x, in increasing lightness from a given source colour
+SetColors <- function (x, red, green, blue) {
+    col.vector <- ""
+    number.rows <- nrow(x) + 1
+
+    for (i in nrow(x):1){
+        red.factor <- ((255 - red) / number.rows) * i
+        green.factor <- ((255 - green) / number.rows) * i
+        blue.factor <- ((255 - blue) / number.rows) * i
+
+        col.vector <- c(col.vector, grDevices::rgb(red + red.factor, green + green.factor, blue + blue.factor, 255, maxColorValue = 255))
+    }
+
+    return(col.vector[-1, drop = FALSE])
 }

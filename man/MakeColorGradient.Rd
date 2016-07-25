@@ -4,7 +4,7 @@
 \alias{MakeColorGradient}
 \title{Generates a vector of colors based on the number of rows in a matrix}
 \usage{
-MakeColorGradient(x, red, green, blue)
+MakeColorGradient(x, red, green, blue, by = "series")
 }
 \arguments{
 \item{x}{A matrix.}
@@ -14,6 +14,11 @@ MakeColorGradient(x, red, green, blue)
 \item{green}{An integer between 0 and 255.}
 
 \item{blue}{An integer between 0 and 255.}
+
+\item{by}{A string indicating what feature of the data determines how the
+gradient should be ordered.  "series" makes the first series the lightest,
+and then progresses to darkest for the last series.  "mean" generates
+gradients by the row mean of each series, with the lowest value the lightest.}
 }
 \value{
 A named elements vector of colors with decreasing alpha values.

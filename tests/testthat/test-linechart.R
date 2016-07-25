@@ -129,23 +129,9 @@ x.labels <- c("1860", "1870", "1880", "1890", "1900", "1910", "1920", "1930", "1
 rownames(age.data) <- c("Under 5","5 to 19","20 to 44","45 to 64","65+")
 colnames(age.data) <- x.labels
 
-# Assigns a vector of colours of as many members as the passed in vector x, in increasing lightness from a given source colour
-setColors <- function (x, red, green, blue) {
-    col.vector <- ""
-    number.rows <- nrow(x) + 1
 
-    for (i in nrow(x):1){
-        red.factor <- ((255 - red) / number.rows) * i
-        green.factor <- ((255 - green) / number.rows) * i
-        blue.factor <- ((255 - blue) / number.rows) * i
 
-        col.vector <- c(col.vector, grDevices::rgb(red + red.factor, green + green.factor, blue + blue.factor, 255, maxColorValue = 255))
-    }
-
-    return(col.vector[-1, drop = FALSE])
-}
-
-age.colors <- setColors(age.data, 38, 85, 154)
+age.colors <- MakeColorGradient(age.data, 38, 85, 154)
 
 Chart(y = age.data,
               title.font.size = 12,
@@ -153,7 +139,7 @@ Chart(y = age.data,
               type = "Line",
               title = "<b>AN AGING POPULATION</b>",
               transpose = TRUE,
-              series.line.color = age.colors,
+              series.line.color = MakeColorGradient(age.data, 38, 85, 154, by = "mean"), #rainbow(ncol(age.data))
               series.line.width = 3,
               y.tick.format.manual = "%",
               y.line.color = "white",
