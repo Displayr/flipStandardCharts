@@ -9,9 +9,10 @@ License: GPL
 Depends: R (>= 2.10)
 LazyData: TRUE
 Encoding: UTF-8
-Imports: 
+Imports:
 	plotly,
-	rhtmlDonut
+	rhtmlDonut,
+	dplyr
 Suggests:
     testthat
 RoxygenNote: 5.0.1

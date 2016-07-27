@@ -46,68 +46,123 @@ AlphabeticRowNames <- function(x, desc = TRUE) {
 #' \code{MakeColorGradient} Gives a named-elements vector of colours for
 #' each row in a matrix, where the base colour is specified, and the alpha
 #' value gradually decreases based on the row-mean of the matrix,
-#' and where the colour vector is returned sorted alphabetically
+#' and where the colour vector is returned sorted alphabetically.
 #'
-#' @param x A matrix.
-#' @param red An integer between 0 and 255.
-#' @param green An integer between 0 and 255.
-#' @param blue An integer between 0 and 255.
+#' The parameters y, x, and transpose should be the same as those passed to
+#' the standard R function "Charts" and this function will calculate, from there
+#' how many colours are needed.  Alternatively, if you know the number of series,
+#' you can specify the number of series for which you wish to generate colors.
+#'
+#' The function will calculate the specified number of colours, using the base
+#' color provided (in rgb format to the parameters base.red, base.green, and
+#' base.blue) in progressively lighter tones.  Thus, the base color should be
+#' the darkest version of the colour you wish to see.
+#'
+#' Specifying the by values (either "series" or "mean") will allow you to
+#' determine if the gradient should go in the order of the series, or in order
+#' of row mean.  This is only relevant if y, x, and transpose have been
+#' specified, and will not work if only the number of series has been given.
+#'
+#' Finally, base.first (defaults to TRUE), should be used for the first item
+#' to be colored, with the subsequent items being lighter, or (FALSE) when
+#' the first item will use the lightest color and the last item the base color.
+#'
+#' @param y A vector, matrix, list of vectors, data frame, or table.  Optional
+#' if number.series is specified.
+#' @param x A vector over which y will be aggregated. Must have the same
+#' number of elements as y. Optional if number.series is specified.
+#' @param transpose Logical; should the final output be transposed? Optional
+#' if number.series is specified.
+#' @param number.series Numeric; the number of colours to generate, which
+#' should match the number of series in the data you want to display.
+#' @param base.red An integer between 0 and 255.
+#' @param base.green An integer between 0 and 255.
+#' @param base.blue An integer between 0 and 255.
 #' @param by A string indicating what feature of the data determines how the
 #' gradient should be ordered.  "series" makes the first series the lightest,
 #' and then progresses to darkest for the last series.  "mean" generates
 #' gradients by the row mean of each series, with the lowest value the lightest.
+#' @param base.first Logical; if the specified base colour should come first or
+#' last.
 #' @return A named elements vector of colors with decreasing alpha values.
 #' @examples
 #' data("z")
-#' MakeColorGradient(z, red = 192, green = 35, blue = 220)
+#' MakeColorGradient(y = z, base.red = 192, base.green = 35, base.blue = 220)
 #' @export
-MakeColorGradient <- function (x, red, green, blue, by = "series") {
-    if (!is.matrix(x))
-        stop("Input is not a matrix")
+MakeColorGradient <- function (y = NULL,
+                               x = NULL,
+                               transpose = FALSE,
+                               number.series = NULL,
+                               base.red = 0,
+                               base.green = 0,
+                               base.blue = 0,
+                               by = "series",
+                               base.first = TRUE)
+{
+    if (is.null(y) && is.null(number.series))
+        stop("You must provide either the data, or the number of series.")
 
-    col.vector <- ""
-    number.rows <- nrow(x) + 1
-
-    for (i in 1:nrow(x)) {
-        red.factor <- ((255 - red) / number.rows) * i
-        green.factor <- ((255 - green) / number.rows) * i
-        blue.factor <- ((255 - blue) / number.rows) * i
-
-        col.vector <- c(col.vector, grDevices::rgb(red + red.factor, green + green.factor, blue + blue.factor, 255, maxColorValue = 255))
+    if (!is.null(y))
+    {
+        chart.matrix <- AsChartMatrix(y = y, x = x, transpose = transpose)
+        number.rows <- nrow(chart.matrix) + 1
     }
 
-    ## Default is by = "series"
-    if (by == "series")
-        col.vector <- col.vector[-1, drop = FALSE]
+    if (!is.null(number.series))
+        number.rows <- number.series + 1
 
-    if (by == "mean")
+    col.vector <- character()
+
+    for (i in 1:number.rows) {
+        red.factor <- ((255 - base.red) / number.rows) * i
+        green.factor <- ((255 - base.green) / number.rows) * i
+        blue.factor <- ((255 - base.blue) / number.rows) * i
+
+        col.vector <- c(col.vector, grDevices::rgb(base.red + red.factor, base.green + green.factor, base.blue + blue.factor, 255, maxColorValue = 255))
+    }
+
+    col.vector <- col.vector[1:number.rows-1]
+
+    if (!base.first)
+        col.vector <- rev(col.vector)
+
+    if (by == "mean" && !is.null(y))
     {
         ## Sort the matrix by mean
-        ordered.matrix <- MeanRowValueDescendingSort(x)
+        ordered.matrix <- MeanRowValueDescendingSort(chart.matrix)
 
         ## Assign matrix row names to col.vector
-        col.vector <- col.vector[2:length(col.vector)]
         names(col.vector) <- rownames(ordered.matrix)
 
-        ## Sort the colour vector
-        col.vector <- AlphabeticRowNames(col.vector)
+        ## Sort the colour vector, by name, in the same order as the source data matrix.
+        ## Turn the color vector into a data frame with named columns
+        col.df <- cbind(series = names(col.vector), colors = col.vector)
+
+        ## Get the original order, also as a data frame.
+        original.order.names <- data.frame(series = rownames(chart.matrix))
+
+        ## Join the original order df to the sorted col.df
+        col.vector2 <- dplyr::left_join(original.order.names, col.df, by = "series", copy = TRUE)
+
+        ## Take the second column, now with the colours sorted appropriately
+        col.vector <- col.vector2[, 2]
     }
 
     col.vector
 }
 
-# Assigns a vector of colours of as many members as the passed-in vector x, in increasing lightness from a given source colour
-SetColors <- function (x, red, green, blue) {
-    col.vector <- ""
-    number.rows <- nrow(x) + 1
-
-    for (i in nrow(x):1){
-        red.factor <- ((255 - red) / number.rows) * i
-        green.factor <- ((255 - green) / number.rows) * i
-        blue.factor <- ((255 - blue) / number.rows) * i
-
-        col.vector <- c(col.vector, grDevices::rgb(red + red.factor, green + green.factor, blue + blue.factor, 255, maxColorValue = 255))
-    }
-
-    return(col.vector[-1, drop = FALSE])
-}
+# # Assigns a vector of colours of as many members as the passed-in vector x, in increasing lightness from a given source colour
+# SetColors <- function (x, red, green, blue) {
+#     col.vector <- ""
+#     number.rows <- nrow(x) + 1
+#
+#     for (i in nrow(x):1){
+#         red.factor <- ((255 - red) / number.rows) * i
+#         green.factor <- ((255 - green) / number.rows) * i
+#         blue.factor <- ((255 - blue) / number.rows) * i
+#
+#         col.vector <- c(col.vector, grDevices::rgb(red + red.factor, green + green.factor, blue + blue.factor, 255, maxColorValue = 255))
+#     }
+#
+#     return(col.vector[-1, drop = FALSE])
+# }

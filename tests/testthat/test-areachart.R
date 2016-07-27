@@ -100,7 +100,7 @@ Chart(a.matrix,
 # Read in data
 a.matrix <- as.matrix(read.csv("C:/R/consumerspending.csv", header = TRUE, row.names = 1))
 ## Figure out colours
-col.scheme <- MakeColorGradient(a.matrix,112,48,160)
+col.scheme <- MakeColorGradient(y = a.matrix, transpose = TRUE, base.red = 112, base.green = 48, base.blue = 160, by = "mean")
 ## Sort alphabetically descending
 a.matrix <- AlphabeticRowNames(a.matrix)
 

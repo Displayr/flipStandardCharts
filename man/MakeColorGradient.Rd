@@ -4,21 +4,36 @@
 \alias{MakeColorGradient}
 \title{Generates a vector of colors based on the number of rows in a matrix}
 \usage{
-MakeColorGradient(x, red, green, blue, by = "series")
+MakeColorGradient(y = NULL, x = NULL, transpose = FALSE,
+  number.series = NULL, base.red = 0, base.green = 0, base.blue = 0,
+  by = "series", base.first = TRUE)
 }
 \arguments{
-\item{x}{A matrix.}
+\item{y}{A vector, matrix, list of vectors, data frame, or table.  Optional
+if number.series is specified.}
 
-\item{red}{An integer between 0 and 255.}
+\item{x}{A vector over which y will be aggregated. Must have the same
+number of elements as y. Optional if number.series is specified.}
 
-\item{green}{An integer between 0 and 255.}
+\item{transpose}{Logical; should the final output be transposed? Optional
+if number.series is specified.}
 
-\item{blue}{An integer between 0 and 255.}
+\item{number.series}{Numeric; the number of colours to generate, which
+should match the number of series in the data you want to display.}
+
+\item{base.red}{An integer between 0 and 255.}
+
+\item{base.green}{An integer between 0 and 255.}
+
+\item{base.blue}{An integer between 0 and 255.}
 
 \item{by}{A string indicating what feature of the data determines how the
 gradient should be ordered.  "series" makes the first series the lightest,
 and then progresses to darkest for the last series.  "mean" generates
 gradients by the row mean of each series, with the lowest value the lightest.}
+
+\item{base.first}{Logical; if the specified base colour should come first or
+last.}
 }
 \value{
 A named elements vector of colors with decreasing alpha values.
@@ -27,10 +42,30 @@ A named elements vector of colors with decreasing alpha values.
 \code{MakeColorGradient} Gives a named-elements vector of colours for
 each row in a matrix, where the base colour is specified, and the alpha
 value gradually decreases based on the row-mean of the matrix,
-and where the colour vector is returned sorted alphabetically
+and where the colour vector is returned sorted alphabetically.
+}
+\details{
+The parameters y, x, and transpose should be the same as those passed to
+the standard R function "Charts" and this function will calculate, from there
+how many colours are needed.  Alternatively, if you know the number of series,
+you can specify the number of series for which you wish to generate colors.
+
+The function will calculate the specified number of colours, using the base
+color provided (in rgb format to the parameters base.red, base.green, and
+base.blue) in progressively lighter tones.  Thus, the base color should be
+the darkest version of the colour you wish to see.
+
+Specifying the by values (either "series" or "mean") will allow you to
+determine if the gradient should go in the order of the series, or in order
+of row mean.  This is only relevant if y, x, and transpose have been
+specified, and will not work if only the number of series has been given.
+
+Finally, base.first (defaults to TRUE), should be used for the first item
+to be colored, with the subsequent items being lighter, or (FALSE) when
+the first item will use the lightest color and the last item the base color.
 }
 \examples{
 data("z")
-MakeColorGradient(z, red = 192, green = 35, blue = 220)
+MakeColorGradient(y = z, base.red = 192, base.green = 35, base.blue = 220)
 }
 

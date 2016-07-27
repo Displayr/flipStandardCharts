@@ -130,27 +130,26 @@ rownames(age.data) <- c("Under 5","5 to 19","20 to 44","45 to 64","65+")
 colnames(age.data) <- x.labels
 
 
-
-age.colors <- MakeColorGradient(age.data, 38, 85, 154)
+#
+# age.colors <- MakeColorGradient(age.data, 38, 85, 154)
 
 Chart(y = age.data,
-              title.font.size = 12,
-              title.font.color = rgb(66, 66, 66, maxColorValue = 255),
-              type = "Line",
-              title = "<b>AN AGING POPULATION</b>",
-              transpose = TRUE,
-              series.line.color = MakeColorGradient(age.data, 38, 85, 154, by = "mean"), #rainbow(ncol(age.data))
-              series.line.width = 3,
-              y.tick.format.manual = "%",
-              y.line.color = "white",
-              x.line.color = rgb(222, 222, 222, maxColorValue = 255),
-              y.zero.line.width = 0,
-              x.zero.line.width = 0,
-              subtitle.text = "In 1860, an estimated 13.1 percent of the U.S. population was 45 years or older.<br>In 2005, the estimate is up to 23.9 percent.",
-              subtitle.font.size = 12,
-              global.font.family.override = "Times New Roman"
-              )
-
+      title.font.size = 12,
+      title.font.color = rgb(66, 66, 66, maxColorValue = 255),
+      type = "Line",
+      title = "<b>AN AGING POPULATION</b>",
+      transpose = TRUE,
+      series.line.color = MakeColorGradient(y = age.data, transpose = TRUE, base.red = 38, base.green = 85, base.blue = 154, by = "mean", base.first = TRUE), #rainbow(ncol(age.data))
+      series.line.width = 3,
+      y.tick.format.manual = "%",
+      y.line.color = "white",
+      x.line.color = rgb(222, 222, 222, maxColorValue = 255),
+      y.zero.line.width = 0,
+      x.zero.line.width = 0,
+      subtitle.text = "In 1860, an estimated 13.1 percent of the U.S. population was 45 years or older.<br>In 2005, the estimate is up to 23.9 percent.",
+      subtitle.font.size = 12,
+      global.font.family.override = "Times New Roman"
+)
 
 ### Tufte
 tufte.data <- as.matrix(c(8, 7, 5.7, 7, 7, 7.5, 7.5, 8, 9, 8.5, 12, 13, 14, 14.5, 15, 15.5, 20, 22, 30, 37, 39, 41.9))
