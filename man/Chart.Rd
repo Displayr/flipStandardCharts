@@ -47,16 +47,16 @@ Chart(y, x = NULL, type = "Area", transpose = FALSE,
   x.tick.angle = 0, x.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),
   x.tick.font.family = "Arial", x.tick.font.size = 10,
   x.tick.label.autoformat = TRUE, series.marker.show = "none",
-  series.marker.color = qColors, series.marker.color.reverse = FALSE,
+  series.marker.color = NULL, series.marker.color.reverse = FALSE,
   series.marker.transparency = 1, series.marker.size = 6,
-  series.marker.border.width = 1, series.marker.border.color = qColors,
+  series.marker.border.width = 1, series.marker.border.color = NULL,
   series.marker.border.color.reverse = FALSE,
   series.marker.border.transparency = 1, series.marker.text = FALSE,
   series.marker.text.position = "top middle",
   series.marker.text.color = rgb(0, 0, 0, maxColorValue = 255),
   series.marker.text.family = "Arial", series.marker.text.size = 10,
   series.marker.text.percent = FALSE, series.line.width = 0,
-  series.line.color = qColors, series.line.color.reverse = FALSE,
+  series.line.color = NULL, series.line.color.reverse = FALSE,
   series.line.transparency = 1, hover.mode = "closest",
   hover.include.source.value = FALSE,
   hover.include.source.value.prefix = "",
@@ -73,14 +73,13 @@ Chart(y, x = NULL, type = "Area", transpose = FALSE,
   bar.data.label.color = rgb(0, 0, 0, maxColorValue = 255),
   bar.data.label.decimals = 0, bar.data.label.as.percent = FALSE,
   pie.values.font.family = "Arial", pie.values.font.size = 10,
-  pie.segment.colors = qColors, pie.segment.colors.reverse = FALSE,
   pie.values.prefix = "", pie.values.suffix = "",
   pie.values.display.format = "\%", pie.values.thres.percent = 0.3,
   pie.values.order = "initial", pie.labels.font.family = "Arial",
   pie.labels.font.size = 10, pie.labels.font.color = rgb(44, 44, 44,
   maxColorValue = 255), pie.labels.minFontSize = 8,
   pie.labels.inner = FALSE, pie.groups.font.family = "Arial",
-  pie.groups.font.size = 10, pie.groups.colors = qColors,
+  pie.groups.font.size = 10, pie.groups.colors = NULL,
   pie.groups.colors.reverse = FALSE, pie.groups.order = "descending",
   pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
   pie.segment.color.gradient = FALSE, pie.inner.radius = 0,
@@ -478,13 +477,6 @@ bar or column charts as percentages or not.}
 \item{pie.values.font.family}{Character; font family for label values.}
 
 \item{pie.values.font.size}{Numeric; font size of label values.}
-
-\item{pie.segment.colors}{Character; a vector containing one or more named
-colors from grDevices OR one or more specified hex value colors OR a single
-named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
-
-\item{pie.segment.colors.reverse}{Logical; if the order of the colors
-should be reversed.}
 
 \item{pie.values.prefix}{Character; prefix for label values.}
 

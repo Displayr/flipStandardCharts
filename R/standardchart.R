@@ -263,11 +263,6 @@
 #' should be reversed.
 #' @param pie.values.font.family Character; font family for label values.
 #' @param pie.values.font.size Numeric; font size of label values.
-#' @param pie.segment.colors  Character; a vector containing one or more named
-#' colors from grDevices OR one or more specified hex value colors OR a single
-#' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
-#' @param pie.segment.colors.reverse Logical; if the order of the colors
-#' should be reversed.
 #' @param pie.values.prefix Character; prefix for label values.
 #' @param pie.values.suffix Character; suffix for label values.
 #' @param pie.values.display.format Character; either "\%" or "original";
@@ -401,12 +396,12 @@ Chart <-   function(y,
                         x.tick.font.size = 10,
                         x.tick.label.autoformat = TRUE,
                         series.marker.show = "none",
-                        series.marker.color = qColors,
+                        series.marker.color = NULL,
                         series.marker.color.reverse = FALSE,
                         series.marker.transparency = 1,
                         series.marker.size = 6,
                         series.marker.border.width = 1,
-                        series.marker.border.color = qColors,
+                        series.marker.border.color = NULL,
                         series.marker.border.color.reverse = FALSE,
                         series.marker.border.transparency = 1,
                         series.marker.text = FALSE,
@@ -416,7 +411,7 @@ Chart <-   function(y,
                         series.marker.text.size = 10,
                         series.marker.text.percent = FALSE,
                         series.line.width = 0,
-                        series.line.color = qColors,
+                        series.line.color = NULL,
                         series.line.color.reverse = FALSE,
                         series.line.transparency = 1,
                         hover.mode = "closest",
@@ -446,8 +441,6 @@ Chart <-   function(y,
                         bar.data.label.as.percent = FALSE,
                         pie.values.font.family = "Arial",
                         pie.values.font.size = 10,
-                        pie.segment.colors = qColors,
-                        pie.segment.colors.reverse = FALSE,
                         pie.values.prefix = "",
                         pie.values.suffix = "",
                         pie.values.display.format = "%",
@@ -460,7 +453,7 @@ Chart <-   function(y,
                         pie.labels.inner = FALSE,
                         pie.groups.font.family = "Arial",
                         pie.groups.font.size = 10,
-                        pie.groups.colors = qColors,
+                        pie.groups.colors = NULL,
                         pie.groups.colors.reverse = FALSE,
                         pie.groups.order = "descending",
                         pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
@@ -490,6 +483,19 @@ Chart <-   function(y,
     orientation <- NULL
     swap.axes.and.data <- FALSE
     y.nticks <- NULL
+
+    ## Color inheritance
+    if (is.null(series.marker.color))
+        series.marker.color <- colors
+
+    if (is.null(series.marker.border.color))
+        series.marker.border.color <- series.marker.color
+
+    if (is.null(series.line.color))
+        series.line.color <- colors
+
+    if (is.null(pie.groups.colors))
+        pie.groups.colors <- colors
 
     ## Settings specific to Area Charts
     if (type == "Area" | type == "Stacked Area" | type == "100% Stacked Area")
@@ -611,14 +617,14 @@ Chart <-   function(y,
     # Settings specific to Pie charts
     if (type == "Pie")
     {
-        pie.segment.colors <- ChartColors(chart.matrix = chart.matrix, given.colors = pie.segment.colors, reverse = pie.segment.colors.reverse)
+        colors <- ChartColors(chart.matrix = chart.matrix, given.colors = colors, reverse = colors.reverse)
         pie.groups.colors <- ChartColors(chart.matrix = chart.matrix, given.colors = pie.groups.colors, reverse = pie.groups.colors.reverse)
 
         pie <- pieChart(chart.matrix = chart.matrix,
                 transpose = transpose,
                 pie.values.font.family = pie.values.font.family,
                 pie.values.font.size = pie.values.font.size,
-                pie.segment.colors = pie.segment.colors,
+                pie.segment.colors = colors,
                 pie.values.prefix = pie.values.prefix,
                 pie.values.suffix = pie.values.suffix,
                 pie.values.display.format = pie.values.display.format,

@@ -27,7 +27,7 @@ colnames(data1) <- "Language"
 
 Chart(y = data1,
       type = "Pie",
-      pie.segment.colors = basic.style.colors,
+      colors = basic.style.colors,
       pie.values.order = "initial",
       pie.values.display.format = "original")
 
@@ -61,7 +61,7 @@ colnames(data2) <- "Browser"
 
 Chart(y = data2,
       type = "Pie",
-      pie.segment.colors = junk.style.colors,
+      colors = junk.style.colors,
       pie.values.order = "initial",
       pie.values.display.format = "original",
       pie.labels.inner = TRUE,
@@ -90,7 +90,7 @@ colnames(data4) <- "Procrastination"
 
 Chart(y = data4,
       type = "Pie",
-      pie.segment.colors = donut.style.colors,
+      colors = donut.style.colors,
       pie.inner.radius = 60,
       pie.values.order = "initial",
       pie.values.display.format = "%",
@@ -111,7 +111,7 @@ colnames(data3) <- "Items"
 
 Chart(y = data3,
       type = "Pie",
-      pie.segment.colors = misleading.style.colors,
+      colors = misleading.style.colors,
       pie.inner.radius = 50,
       pie.values.order = "initial",
       pie.values.display.format = "%")
@@ -134,7 +134,7 @@ colnames(data5) <- "Procrastination"
 
 Chart(y = data5,
       type = "Pie",
-      pie.segment.colors = mini.style.colors,
+      colors = mini.style.colors,
       pie.inner.radius = 50,
       pie.values.order = "initial",
       pie.values.display.format = "%",
