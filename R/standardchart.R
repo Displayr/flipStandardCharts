@@ -24,7 +24,10 @@
 #' @param title.font.color Title font color as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param title.font.size Title font size; default = 10.
-#' @param colors Vector of colors in RGB format.
+#' @param colors Character; a vector containing one or more named
+#' colors from grDevices OR one or more specified hex value colors OR a single
+#' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
+#' @param colors.reverse Logical; if the order of the colors should be reversed.
 #' @param transparency Transparency of area fill colors as an alpha value
 #' (0 to 1).
 #' @param chart.fill.color Chart (borders around plot) background color as
@@ -160,15 +163,21 @@
 #' formatting of long (> 15 characters) text labels on the x-axis
 #' @param series.marker.show Can be "none", "automatic" or a vector referencing
 #' the plotly symbol dictionary using either numerics or strings.
-#' @param series.marker.color Vector of colors in RGB format to use for the
-#' markers
+#' @param series.marker.color Character; a vector containing one or more named
+#' colors from grDevices OR one or more specified hex value colors OR a single
+#' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
+#' @param series.marker.color.reverse Logical; if the order of the colors should
+#' be reversed.
 #' @param series.marker.transparency Integer; transparency for series markers
 #' as an alpha value (0 to 1)
 #' @param series.marker.size Integer; size in pixels of marker
 #' @param series.marker.border.width Integer; width in pixels of border/line
 #' around series markers; 0 is no line
-#' @param series.marker.border.color Vector of colors in RGB format for
-#' border/line around series markers
+#' @param series.marker.border.color Character; a vector containing one or more named
+#' colors from grDevices OR one or more specified hex value colors OR a single
+#' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
+#' @param series.marker.border.color.reverse Logical; if the order of the colors
+#' should be reversed.
 #' @param series.marker.border.transparency Integer; transparency of
 #' border/line around series markers as an alpha value (0 to 1)
 #' @param series.marker.text Logical; whether to include data point with the
@@ -185,7 +194,11 @@
 #' @param series.marker.text.percent Logical; if the source value should be
 #' multiplied by 100.
 #' @param series.line.width Integer; thickness, in pixels, of the series line
-#' @param series.line.color Vector of colors in RGB format for series the lines
+#' @param series.line.color  Character; a vector containing one or more named
+#' colors from grDevices OR one or more specified hex value colors OR a single
+#' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
+#' @param series.line.color.reverse Logical; if the order of the colors
+#' should be reversed.
 #' @param series.line.transparency Integer; transparency for series lines as an
 #' alpha value (0 to 1)
 #' @param hover.mode Character or logic; can be FALSE for no hover text, "x" to
@@ -243,10 +256,18 @@
 #' bar and column chart data labels.
 #' @param bar.data.label.as.percent Logical; whether to treat data labels in
 #' bar or column charts as percentages or not.
-#' @param pie.groups.colors Vector of colors for pie chart segment groupings.
+#' @param pie.groups.colors  Character; a vector containing one or more named
+#' colors from grDevices OR one or more specified hex value colors OR a single
+#' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
+#' @param pie.groups.colors.reverse Logical; if the order of the colors
+#' should be reversed.
 #' @param pie.values.font.family Character; font family for label values.
 #' @param pie.values.font.size Numeric; font size of label values.
-#' @param pie.segment.colors Vector of colors for pie chart segments.
+#' @param pie.segment.colors  Character; a vector containing one or more named
+#' colors from grDevices OR one or more specified hex value colors OR a single
+#' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
+#' @param pie.segment.colors.reverse Logical; if the order of the colors
+#' should be reversed.
 #' @param pie.values.prefix Character; prefix for label values.
 #' @param pie.values.suffix Character; suffix for label values.
 #' @param pie.values.display.format Character; either "\%" or "original";
@@ -296,6 +317,7 @@ Chart <-   function(y,
                         title.font.color = rgb(44, 44, 44, maxColorValue = 255),
                         title.font.size = 16,
                         colors = qColors,
+                        colors.reverse = FALSE,
                         transparency = 0.4,
                         chart.fill.color = rgb(255, 255, 255, maxColorValue = 255),
                         chart.fill.transparency = 1,
@@ -380,10 +402,12 @@ Chart <-   function(y,
                         x.tick.label.autoformat = TRUE,
                         series.marker.show = "none",
                         series.marker.color = qColors,
+                        series.marker.color.reverse = FALSE,
                         series.marker.transparency = 1,
                         series.marker.size = 6,
                         series.marker.border.width = 1,
                         series.marker.border.color = qColors,
+                        series.marker.border.color.reverse = FALSE,
                         series.marker.border.transparency = 1,
                         series.marker.text = FALSE,
                         series.marker.text.position = "top middle",
@@ -393,6 +417,7 @@ Chart <-   function(y,
                         series.marker.text.percent = FALSE,
                         series.line.width = 0,
                         series.line.color = qColors,
+                        series.line.color.reverse = FALSE,
                         series.line.transparency = 1,
                         hover.mode = "closest",
                         hover.include.source.value = FALSE,
@@ -422,6 +447,7 @@ Chart <-   function(y,
                         pie.values.font.family = "Arial",
                         pie.values.font.size = 10,
                         pie.segment.colors = qColors,
+                        pie.segment.colors.reverse = FALSE,
                         pie.values.prefix = "",
                         pie.values.suffix = "",
                         pie.values.display.format = "%",
@@ -435,6 +461,7 @@ Chart <-   function(y,
                         pie.groups.font.family = "Arial",
                         pie.groups.font.size = 10,
                         pie.groups.colors = qColors,
+                        pie.groups.colors.reverse = FALSE,
                         pie.groups.order = "descending",
                         pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
                         pie.segment.color.gradient = FALSE,
@@ -584,6 +611,9 @@ Chart <-   function(y,
     # Settings specific to Pie charts
     if (type == "Pie")
     {
+        pie.segment.colors <- ChartColors(chart.matrix = chart.matrix, given.colors = pie.segment.colors, reverse = pie.segment.colors.reverse)
+        pie.groups.colors <- ChartColors(chart.matrix = chart.matrix, given.colors = pie.groups.colors, reverse = pie.groups.colors.reverse)
+
         pie <- pieChart(chart.matrix = chart.matrix,
                 transpose = transpose,
                 pie.values.font.family = pie.values.font.family,
@@ -642,6 +672,12 @@ Chart <-   function(y,
     ## Heat map
 
     ## ... Any other chart types...
+
+    ## Work out color ranges; n.b. some color ranges worked out in the chart specific functions.
+    colors <- ChartColors(chart.matrix = chart.matrix, given.colors = colors, reverse = colors.reverse)
+    series.marker.color <- ChartColors(chart.matrix = chart.matrix, given.colors = series.marker.color, reverse = series.marker.color.reverse)
+    series.marker.border.color <- ChartColors(chart.matrix = chart.matrix, given.colors = series.marker.border.color, reverse = series.marker.border.color.reverse)
+    series.line.color <- ChartColors(chart.matrix = chart.matrix, given.colors = series.line.color, reverse = series.line.color.reverse)
 
     # Set all fonts to global font override if required
     if (global.font.family.override != "")
@@ -1030,12 +1066,6 @@ Chart <-   function(y,
         hoverinfo = paste(axis.to.show, show.series.name, "+text", sep = "")
     else
         hoverinfo = paste(axis.to.show, show.series.name, sep = "")
-
-    ## Increase number of colors in color vectors such that a max of 100 are stored, in case insufficient numbers have been specified
-    colors <- rep(colors, 100/length(colors))
-    series.marker.color <- rep(series.marker.color, 100/length(series.marker.color))
-    series.marker.border.color <- rep(series.marker.border.color, 100/length(series.marker.border.color))
-    series.line.color <- rep(series.line.color, 100/length(series.line.color))
 
     ## Build annotations list
     if (subtitle.text != "")

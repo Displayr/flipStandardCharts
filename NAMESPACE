@@ -3,6 +3,7 @@
 export(AlphabeticRowNames)
 export(AsChartMatrix)
 export(Chart)
+export(ChartColors)
 export(IsChartMatrix)
 export(MakeColorGradient)
 export(MeanRowValueDescendingSort)

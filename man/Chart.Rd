@@ -9,13 +9,14 @@ Chart(y, x = NULL, type = "Area", transpose = FALSE,
   x.labels = NULL, x.values = NULL, title = "",
   title.font.family = "Arial", title.font.color = rgb(44, 44, 44,
   maxColorValue = 255), title.font.size = 16, colors = qColors,
-  transparency = 0.4, chart.fill.color = rgb(255, 255, 255, maxColorValue =
-  255), chart.fill.transparency = 1, plot.fill.color = rgb(255, 255, 255,
-  maxColorValue = 255), plot.fill.transparency = 1, legend.show = TRUE,
-  legend.fill = rgb(255, 255, 255, maxColorValue = 255),
-  legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
-  legend.border.line.width = 0, legend.font.color = rgb(44, 44, 44,
-  maxColorValue = 255), legend.font.family = "Arial", legend.font.size = 10,
+  colors.reverse = FALSE, transparency = 0.4, chart.fill.color = rgb(255,
+  255, 255, maxColorValue = 255), chart.fill.transparency = 1,
+  plot.fill.color = rgb(255, 255, 255, maxColorValue = 255),
+  plot.fill.transparency = 1, legend.show = TRUE, legend.fill = rgb(255,
+  255, 255, maxColorValue = 255), legend.border.color = rgb(44, 44, 44,
+  maxColorValue = 255), legend.border.line.width = 0,
+  legend.font.color = rgb(44, 44, 44, maxColorValue = 255),
+  legend.font.family = "Arial", legend.font.size = 10,
   legend.position = "right", legend.ascending = TRUE, margin.top = 80,
   margin.bottom = 80, margin.left = 80, margin.right = 80,
   margin.inner.pad = 0, y.title = "", y.title.font.color = rgb(44, 44, 44,
@@ -46,16 +47,18 @@ Chart(y, x = NULL, type = "Area", transpose = FALSE,
   x.tick.angle = 0, x.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),
   x.tick.font.family = "Arial", x.tick.font.size = 10,
   x.tick.label.autoformat = TRUE, series.marker.show = "none",
-  series.marker.color = qColors, series.marker.transparency = 1,
-  series.marker.size = 6, series.marker.border.width = 1,
-  series.marker.border.color = qColors,
+  series.marker.color = qColors, series.marker.color.reverse = FALSE,
+  series.marker.transparency = 1, series.marker.size = 6,
+  series.marker.border.width = 1, series.marker.border.color = qColors,
+  series.marker.border.color.reverse = FALSE,
   series.marker.border.transparency = 1, series.marker.text = FALSE,
   series.marker.text.position = "top middle",
   series.marker.text.color = rgb(0, 0, 0, maxColorValue = 255),
   series.marker.text.family = "Arial", series.marker.text.size = 10,
   series.marker.text.percent = FALSE, series.line.width = 0,
-  series.line.color = qColors, series.line.transparency = 1,
-  hover.mode = "closest", hover.include.source.value = FALSE,
+  series.line.color = qColors, series.line.color.reverse = FALSE,
+  series.line.transparency = 1, hover.mode = "closest",
+  hover.include.source.value = FALSE,
   hover.include.source.value.prefix = "",
   hover.include.source.value.suffix = "",
   hover.include.source.value.percent = FALSE, show.modebar = FALSE,
@@ -70,14 +73,15 @@ Chart(y, x = NULL, type = "Area", transpose = FALSE,
   bar.data.label.color = rgb(0, 0, 0, maxColorValue = 255),
   bar.data.label.decimals = 0, bar.data.label.as.percent = FALSE,
   pie.values.font.family = "Arial", pie.values.font.size = 10,
-  pie.segment.colors = qColors, pie.values.prefix = "",
-  pie.values.suffix = "", pie.values.display.format = "\%",
-  pie.values.thres.percent = 0.3, pie.values.order = "initial",
-  pie.labels.font.family = "Arial", pie.labels.font.size = 10,
-  pie.labels.font.color = rgb(44, 44, 44, maxColorValue = 255),
-  pie.labels.minFontSize = 8, pie.labels.inner = FALSE,
-  pie.groups.font.family = "Arial", pie.groups.font.size = 10,
-  pie.groups.colors = qColors, pie.groups.order = "descending",
+  pie.segment.colors = qColors, pie.segment.colors.reverse = FALSE,
+  pie.values.prefix = "", pie.values.suffix = "",
+  pie.values.display.format = "\%", pie.values.thres.percent = 0.3,
+  pie.values.order = "initial", pie.labels.font.family = "Arial",
+  pie.labels.font.size = 10, pie.labels.font.color = rgb(44, 44, 44,
+  maxColorValue = 255), pie.labels.minFontSize = 8,
+  pie.labels.inner = FALSE, pie.groups.font.family = "Arial",
+  pie.groups.font.size = 10, pie.groups.colors = qColors,
+  pie.groups.colors.reverse = FALSE, pie.groups.order = "descending",
   pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
   pie.segment.color.gradient = FALSE, pie.inner.radius = 0,
   pie.max.label.length = 60)
@@ -118,7 +122,11 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{title.font.size}{Title font size; default = 10.}
 
-\item{colors}{Vector of colors in RGB format.}
+\item{colors}{Character; a vector containing one or more named
+colors from grDevices OR one or more specified hex value colors OR a single
+named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
+
+\item{colors.reverse}{Logical; if the order of the colors should be reversed.}
 
 \item{transparency}{Transparency of area fill colors as an alpha value
 (0 to 1).}
@@ -333,8 +341,12 @@ formatting of long (> 15 characters) text labels on the x-axis}
 \item{series.marker.show}{Can be "none", "automatic" or a vector referencing
 the plotly symbol dictionary using either numerics or strings.}
 
-\item{series.marker.color}{Vector of colors in RGB format to use for the
-markers}
+\item{series.marker.color}{Character; a vector containing one or more named
+colors from grDevices OR one or more specified hex value colors OR a single
+named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
+
+\item{series.marker.color.reverse}{Logical; if the order of the colors should
+be reversed.}
 
 \item{series.marker.transparency}{Integer; transparency for series markers
 as an alpha value (0 to 1)}
@@ -344,8 +356,12 @@ as an alpha value (0 to 1)}
 \item{series.marker.border.width}{Integer; width in pixels of border/line
 around series markers; 0 is no line}
 
-\item{series.marker.border.color}{Vector of colors in RGB format for
-border/line around series markers}
+\item{series.marker.border.color}{Character; a vector containing one or more named
+colors from grDevices OR one or more specified hex value colors OR a single
+named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
+
+\item{series.marker.border.color.reverse}{Logical; if the order of the colors
+should be reversed.}
 
 \item{series.marker.border.transparency}{Integer; transparency of
 border/line around series markers as an alpha value (0 to 1)}
@@ -371,7 +387,12 @@ multiplied by 100.}
 
 \item{series.line.width}{Integer; thickness, in pixels, of the series line}
 
-\item{series.line.color}{Vector of colors in RGB format for series the lines}
+\item{series.line.color}{Character; a vector containing one or more named
+colors from grDevices OR one or more specified hex value colors OR a single
+named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
+
+\item{series.line.color.reverse}{Logical; if the order of the colors
+should be reversed.}
 
 \item{series.line.transparency}{Integer; transparency for series lines as an
 alpha value (0 to 1)}
@@ -458,7 +479,12 @@ bar or column charts as percentages or not.}
 
 \item{pie.values.font.size}{Numeric; font size of label values.}
 
-\item{pie.segment.colors}{Vector of colors for pie chart segments.}
+\item{pie.segment.colors}{Character; a vector containing one or more named
+colors from grDevices OR one or more specified hex value colors OR a single
+named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
+
+\item{pie.segment.colors.reverse}{Logical; if the order of the colors
+should be reversed.}
 
 \item{pie.values.prefix}{Character; prefix for label values.}
 
@@ -489,7 +515,12 @@ or next to (FALSE) the chart.}
 
 \item{pie.groups.font.size}{Numeric; font size of group label text}
 
-\item{pie.groups.colors}{Vector of colors for pie chart segment groupings.}
+\item{pie.groups.colors}{Character; a vector containing one or more named
+colors from grDevices OR one or more specified hex value colors OR a single
+named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
+
+\item{pie.groups.colors.reverse}{Logical; if the order of the colors
+should be reversed.}
 
 \item{pie.groups.order}{Character; "descending", "initial", or
 "alphabetical"; default is "descending" sort on values; "alphabetical"

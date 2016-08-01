@@ -12,7 +12,10 @@ Encoding: UTF-8
 Imports:
 	plotly,
 	rhtmlDonut,
-	dplyr
+	dplyr,
+	RColorBrewer,
+    colorspace,
+    colorRamps
 Suggests:
     testthat
 RoxygenNote: 5.0.1
