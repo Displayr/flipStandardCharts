@@ -121,9 +121,9 @@ ChartColors <- function(chart.matrix = NULL, given.colors = qColors, reverse = F
             chart.colors <- col.vector[1:number.series]
 
         }
-        else if (number.colors >= 2)
+        else if (number.colors >= 2 && number.series > number.colors)
             chart.colors <- grDevices::colorRampPalette(given.colors)(number.series)
-        else if (number.colors == number.series)
+        else if (number.colors >= number.series)
             chart.colors <- given.colors
     }
 
