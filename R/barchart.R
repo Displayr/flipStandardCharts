@@ -43,7 +43,7 @@ barChart <- function(chart.matrix,
         legend.group <- "grouped"
 
     ## If it's a 100% Stacked Column chart, and no options have been specified for y.tick.format, then set to %
-    if (type == "100% Stacked Bar" && y.tick.format.manual == "" && y.tick.suffix == "" && y.tick.decimals == 0)
+    if (type == "100% Stacked Column" && y.tick.format.manual == "" && y.tick.suffix == "" && y.tick.decimals == 0)
         y.tickformat <- "%"
     else
         y.tickformat <- y.tick.format.manual

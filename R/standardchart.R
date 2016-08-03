@@ -877,7 +877,11 @@ Chart <-   function(y,
     #     x.hovertext.suffix <- x.tick.suffix
 
     ## Set tick and hover formats
-    ifelse((y.tick.format.manual == "" && is.null(y.tickformat)), y.tickformat <- paste(".", y.tick.decimals, "f", sep=""), y.tickformat <- y.tick.format.manual)
+
+    if (y.tick.format.manual != "" && y.tick.format.manual != y.tickformat)
+        y.tickformat <- y.tick.format.manual
+
+    ifelse((y.tick.format.manual == "" && (is.null(y.tickformat) || y.tickformat == "")), y.tickformat <- paste(".", y.tick.decimals, "f", sep=""), FALSE) #y.tickformat <- y.tick.format.manual)
 
     ifelse(x.tick.format.manual == "", x.tickformat <- paste(".", x.tick.decimals, "f", sep=""), x.tickformat <- x.tick.format.manual)
 
