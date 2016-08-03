@@ -12,11 +12,11 @@ needed, then a gradient will be calculated towards white. If more than
 one but fewer than needed are provided, a gradient will be calculated
 between the provided colors.}
 \usage{
-ChartColors(chart.matrix = NULL, given.colors = qColors, reverse = FALSE)
+ChartColors(number.colors.needed = NULL, given.colors = qColors,
+  reverse = FALSE)
 }
 \arguments{
-\item{chart.matrix}{Any item with a positive non-zero integer returned by
-the function nrow.}
+\item{number.colors.needed}{Integer; number of colors to generate.}
 
 \item{given.colors}{Character; a vector containing one or more named
 colors from grDevices OR one or more specified hex value colors OR a single
@@ -31,11 +31,10 @@ Alpha channels are ignored and set to 255/FF.
 \code{ChartColors} generates a vector of colors.
 }
 \examples{
-chart.matrix <- rbind(var1, var2, var3, var4, var5)
-ChartColors(chart.matrix = chart.matrix, given.colors = c("blue", "orange",
+ChartColors(number.colors.needed = 5, given.colors = c("blue", "orange",
 "green"))
-ChartColors(chart.matrix = chart.matrix, given.colors = "blue")
-ChartColors(chart.matrix = chart.matrix, given.colors = "#9CFF73")
-ChartColors(chart.matrix = chart.matrix, given.colors = "Set3", reverse = TRUE)
+ChartColors(number.colors.needed = 5, given.colors = "blue")
+ChartColors(number.colors.needed = 5, given.colors = "#9CFF73")
+ChartColors(number.colors.needed = 5, given.colors = "Set3", reverse = TRUE)
 }
 

@@ -617,8 +617,8 @@ Chart <-   function(y,
     # Settings specific to Pie charts
     if (type == "Pie")
     {
-        colors <- ChartColors(chart.matrix = chart.matrix, given.colors = colors, reverse = colors.reverse)
-        pie.groups.colors <- ChartColors(chart.matrix = chart.matrix, given.colors = pie.groups.colors, reverse = pie.groups.colors.reverse)
+        colors <- ChartColors(number.colors.needed = nrow(chart.matrix), given.colors = colors, reverse = colors.reverse)
+        pie.groups.colors <- ChartColors(number.colors.needed = nrow(chart.matrix), given.colors = pie.groups.colors, reverse = pie.groups.colors.reverse)
 
         pie <- pieChart(chart.matrix = chart.matrix,
                 transpose = transpose,
@@ -680,10 +680,10 @@ Chart <-   function(y,
     ## ... Any other chart types...
 
     ## Work out color ranges; n.b. some color ranges worked out in the chart specific functions.
-    colors <- ChartColors(chart.matrix = chart.matrix, given.colors = colors, reverse = colors.reverse)
-    series.marker.color <- ChartColors(chart.matrix = chart.matrix, given.colors = series.marker.color, reverse = series.marker.color.reverse)
-    series.marker.border.color <- ChartColors(chart.matrix = chart.matrix, given.colors = series.marker.border.color, reverse = series.marker.border.color.reverse)
-    series.line.color <- ChartColors(chart.matrix = chart.matrix, given.colors = series.line.color, reverse = series.line.color.reverse)
+    colors <- ChartColors(number.colors.needed = nrow(chart.matrix), given.colors = colors, reverse = colors.reverse)
+    series.marker.color <- ChartColors(number.colors.needed = nrow(chart.matrix), given.colors = series.marker.color, reverse = series.marker.color.reverse)
+    series.marker.border.color <- ChartColors(number.colors.needed = nrow(chart.matrix), given.colors = series.marker.border.color, reverse = series.marker.border.color.reverse)
+    series.line.color <- ChartColors(number.colors.needed = nrow(chart.matrix), given.colors = series.line.color, reverse = series.line.color.reverse)
 
     # Set all fonts to global font override if required
     if (global.font.family.override != "")

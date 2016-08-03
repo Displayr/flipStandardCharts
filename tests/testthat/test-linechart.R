@@ -139,7 +139,7 @@ Chart(y = age.data,
       type = "Line",
       title = "<b>AN AGING POPULATION</b>",
       transpose = TRUE,
-      series.line.color = MakeColorGradient(y = age.data, transpose = TRUE, base.red = 38, base.green = 85, base.blue = 154, by = "mean", base.first = TRUE), #rainbow(ncol(age.data))
+      colors = "rainbow",
       series.line.width = 3,
       y.tick.format.manual = "%",
       y.line.color = "white",
