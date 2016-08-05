@@ -5,6 +5,8 @@
 #' @param y A vector, matrix, list of vectors, data frame, or table.
 #' @param x A vector over which y will be aggregated. Must have the same
 #' number of elements as y.
+#' @param subset A logical (or binary) vector of the same length as y (and x),
+#' to filter the input data.
 #' @param type Character; type of chart. Can be "Area", "Stacked Area",
 #' or "100\% Stacked Area".
 #' @param transpose Logical; should the final output be transposed?
@@ -299,7 +301,7 @@
 Chart <-   function(y,
                         x = NULL,
                         # weights = NULL,                                 ## Gets passed to AsChartMatrix <- add to that function first!
-                        # subset = NULL,                                  ## Gets passed to AsChartMatrix <- add to that function first!
+                        subset = NULL,                                    ## Gets passed to AsChartMatrix <- add to that function first!
                         type = "Area",
                         transpose = FALSE,                                ## Should the inputs be transposed; TRUE or FALSE
                         aggregate.period = "none",
@@ -463,7 +465,7 @@ Chart <-   function(y,
 {
     ## Make a chart matrix
     if (type != "Scatter Plot" || (type == "Scatter Plot" && !is.null(x)))
-        chart.matrix <- AsChartMatrix(y, x, transpose = transpose, aggregate.period = aggregate.period)
+        chart.matrix <- AsChartMatrix(y, x, transpose = transpose, aggregate.period = aggregate.period, subset = subset)
     else
         chart.matrix <- y
 

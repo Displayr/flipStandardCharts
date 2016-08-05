@@ -86,6 +86,30 @@ numberOfRows <- function(x)
 
 equalNumberOfRows <- function(y, x) {numberOfRows(y) == numberOfRows(x)}
 
+#' Filter y and x by a third (logical) variable.
+#'
+#' \code{FilterData} returns the orignial objects filtered by filter.
+#'
+#' @param y A vector, matrix, or data frame.
+#' @param x A vector
+#' @param filter A logical (or binary 0/1) vector
+#' @return List of filtered y and x objects
+#' @examples
+#' data("z")
+#' FilterData(y = z, filter = sample(0:1, length(z), replace = TRUE))
+#' @export
+FilterData <- function(y, x = NULL, filter)
+{
+    if (is.matrix(y) || is.data.frame(y))
+        y <- y[which(filter == TRUE), ]
+    else
+        y <- y[which(filter == TRUE)]
+
+    if (!is.null(x))
+        x <- x[which(filter == TRUE)]
+
+    return(list(y = y, x = x))
+}
 
 #' Test if a matrix is appropriate for charting.
 #'
@@ -120,6 +144,8 @@ IsChartMatrix <- function(x, n.rows, n.columns)
 #' @param y A vector, matrix, list of vectors, data frame, or table.
 #' @param x A vector over which y will be aggregated. Must have the same
 #' number of elements as y.
+#' @param subset A logical (or binary) vector of the same length as y (and x),
+#' to filter the input data.
 #' @param transpose Logical; should the final output be transposed?
 #' @param aggregate.period Period over which date varaibles passed to the x
 #' argument will be aggregated. Defaults to "month", and can also be "quarter"
@@ -136,10 +162,20 @@ IsChartMatrix <- function(x, n.rows, n.columns)
 AsChartMatrix <- function(y,
                           x = NULL,
                           # weights = NULL,
-                          # subset = NULL,
+                          subset = NULL,
                           transpose = FALSE,
                           aggregate.period = "none")
 {
+    if (!is.null(subset) && length(subset) != 1 && subset != "NaN")
+    {
+        filtered.data <- FilterData(y = y , x = x, filter = subset)
+
+        y <- filtered.data$y
+
+        if(!is.null(x))
+            x <- filtered.data$x
+    }
+
     if (is.logical(x) && length(x) == 1)
         x <- NULL
 

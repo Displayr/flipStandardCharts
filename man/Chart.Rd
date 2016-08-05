@@ -4,7 +4,7 @@
 \alias{Chart}
 \title{Generates an interactive chart based on the plotly library.}
 \usage{
-Chart(y, x = NULL, type = "Area", transpose = FALSE,
+Chart(y, x = NULL, subset = NULL, type = "Area", transpose = FALSE,
   aggregate.period = "none", y.labels = NULL, y.values = NULL,
   x.labels = NULL, x.values = NULL, title = "",
   title.font.family = "Arial", title.font.color = rgb(44, 44, 44,
@@ -90,6 +90,9 @@ Chart(y, x = NULL, type = "Area", transpose = FALSE,
 
 \item{x}{A vector over which y will be aggregated. Must have the same
 number of elements as y.}
+
+\item{subset}{A logical (or binary) vector of the same length as y (and x),
+to filter the input data.}
 
 \item{type}{Character; type of chart. Can be "Area", "Stacked Area",
 or "100\% Stacked Area".}
