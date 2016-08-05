@@ -355,7 +355,7 @@ Chart <-   function(y,
                         y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                         y.tick.suffix = "",
                         y.tick.prefix = "",
-                        y.tick.decimals = 0,
+                        y.tick.decimals = 2,
                         y.tick.format.manual = "",
                         # y.hovertext.suffix = NULL,
                         # y.hovertext.prefix = NULL,
@@ -386,7 +386,7 @@ Chart <-   function(y,
                         x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                         x.tick.suffix = "",
                         x.tick.prefix = "",
-                        x.tick.decimals = 0,
+                        x.tick.decimals = 2,
                         x.tick.format.manual = "",
                         # x.hovertext.suffix = NULL,
                         # x.hovertext.prefix = NULL,
@@ -937,7 +937,7 @@ Chart <-   function(y,
         y.tickvals <- seq(y.bounds.minimum, y.bounds.maximum, by = y.bounds.units.major)
 
         if (y.tickformat == "%")
-            y.ticktext <- sapply(y.tickvals, function(x) paste(round(x * 100, y.tick.decimals), "%", sep = ""))
+            y.ticktext <- sapply(y.tickvals, function(x) paste(round(x * 100, 0), "%", sep = ""))
         else if (y.tickformat == "$")
             y.ticktext <- sapply(y.tickvals, function(x) ifelse(x < 0, paste("-$", -1 * round(x, y.tick.decimals), sep = ""), paste("$", round(x, y.tick.decimals), sep = "")))
         else
@@ -979,7 +979,7 @@ Chart <-   function(y,
             x.ticktext <- as.character(x.tickvals)
 
         if (x.tickformat == "%")
-            x.ticktext <- sapply(x.tickvals, function(x) paste(round(x * 100, x.tick.decimals), "%", sep = ""))
+            x.ticktext <- sapply(x.tickvals, function(x) paste(round(x * 100, 0), "%", sep = ""))
         else if (x.tickformat == "$")
             x.ticktext <- sapply(x.tickvals, function(x) ifelse(x < 0, paste("-$", -1 * round(x, x.tick.decimals), sep = ""), paste("$", round(x, x.tick.decimals), sep = "")))
         else

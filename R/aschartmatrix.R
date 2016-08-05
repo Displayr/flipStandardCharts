@@ -171,9 +171,7 @@ AsChartMatrix <- function(y,
         filtered.data <- FilterData(y = y , x = x, filter = subset)
 
         y <- filtered.data$y
-
-        if(!is.null(x))
-            x <- filtered.data$x
+        x <- filtered.data$x
     }
 
     if (is.logical(x) && length(x) == 1)
