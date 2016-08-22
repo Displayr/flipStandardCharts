@@ -2,11 +2,7 @@
 #'
 #' \code{Chart} generates standard charts from plotly library.
 #'
-#' @param y A vector, matrix, list of vectors, data frame, or table.
-#' @param x A vector over which y will be aggregated. Must have the same
-#' number of elements as y.
-#' @param subset A logical (or binary) vector of the same length as y (and x),
-#' to filter the input data.
+#' @param y A matrix, or numeric vector.
 #' @param type Character; type of chart. Can be "Area", "Stacked Area",
 #' or "100\% Stacked Area".
 #' @param transpose Logical; should the final output be transposed?
@@ -293,15 +289,21 @@
 #' e.g. 75; produces a donut chart; default is 0 (pie chart)
 #' @param pie.max.label.length Numeric; maximum character length before
 #' wrapping of labels.
+#' @param test logical; saves an image of the plotly output for unit testing.
+#' @param plotly_username character; your plotly username to allow for unit
+#' testing.
+#' @param plotly_api_key character; your plotly api key to allow for unit
+#' testing.
 #' @examples
-#' data("y.data")
-#' data("x.data")
-#' Chart(y = y.data, x = x.data, type = "Area", transpose = TRUE)
+#' data("z")
+#' z <- cbind(z, z[,1])
+#' colnames(z) <- c("A", "B")
+#' Chart(y = z, type = "Area", transpose = TRUE)
 #' @export
 Chart <-   function(y,
-                        x = NULL,
+                        # x = NULL,
                         # weights = NULL,                                 ## Gets passed to AsChartMatrix <- add to that function first!
-                        subset = NULL,                                    ## Gets passed to AsChartMatrix <- add to that function first!
+                        # subset = NULL,                                    ## Gets passed to AsChartMatrix <- add to that function first!
                         type = "Area",
                         transpose = FALSE,                                ## Should the inputs be transposed; TRUE or FALSE
                         aggregate.period = "none",
@@ -461,18 +463,46 @@ Chart <-   function(y,
                         pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
                         pie.segment.color.gradient = FALSE,
                         pie.inner.radius = 0,
-                        pie.max.label.length = 60)
+                        pie.max.label.length = 60,
+                        test = FALSE,
+                        plotly_username = "",
+                        plotly_api_key = ""
+                        )
 {
+    chart.matrix <- y
+    statistic <- attr(chart.matrix, "statistic")
+
+    ## If it's a one column entity, make sure it's a matrix and that it's got a column heading.
+    if (is.array(chart.matrix) && length(dim(chart.matrix)) == 1)
+    {
+        chart.matrix <- as.matrix(chart.matrix)
+        colnames(chart.matrix) <- statistic
+    }
+
+    ## Can only take a Q table
+    if (!is.matrix(chart.matrix))
+        stop("The input needs to be a matrix")
+
+    ## Transform chart.matrix based on transposition requirements.
+    if (ncol(chart.matrix) == 1)
+        chart.matrix <- t(chart.matrix)
+
+    if (transpose == TRUE)
+        chart.matrix <- t(chart.matrix)
+
     ## Make a chart matrix
-    if (type != "Scatter Plot" || (type == "Scatter Plot" && !is.null(x)))
-        chart.matrix <- AsChartMatrix(y, x, transpose = transpose, aggregate.period = aggregate.period, subset = subset)
-    else
-        chart.matrix <- y
+    # if (type != "Scatter Plot" || (type == "Scatter Plot" && !is.null(x)))
+    #     chart.matrix <- AsChartMatrix(y, x, transpose = transpose, aggregate.period = aggregate.period, subset = subset, weights = weights)
+    # else
+    #     chart.matrix <- y
+
+    ## Make sure that the provided data will work with the desired chart type
+    checkDataForChartType(chart.matrix = chart.matrix, type = type)
 
     ## Only allow a single factor variable if it's a pie-chart; chart-specific test not appropriate for AsChartMatrix, so
     ## included here rather than in that function.
-    if (is.factor(y) && is.null(x) && type != "Pie")
-        stop(paste("Y must be either a vector, matrix, or table.  Currently it is: ", class(y)))
+    # if (is.factor(y) && is.null(x) && type != "Pie")
+    #     warning(paste("The data selected is not best displayed as an", type, "chart.  Consider changing the chart type. (Old message: Y must be either a vector, matrix, or table.  Currently it is: ", class(y), ")"))
 
     ## Ignore rows or columns
     if (rows.to.ignore != "" | cols.to.ignore != "")
@@ -1280,6 +1310,16 @@ Chart <-   function(y,
         bargroupgap = bar.group.gap,
         barmode = barmode
     )
+
+    ## If test = TRUE, then save the chart as a .png
+    if (test)
+    {
+        Sys.setenv("plotly_username" = paste(plotly_username))
+        Sys.setenv("plotly_api_key" = paste(plotly_api_key))
+        image.location <- getwd()
+
+        plotly::plotly_IMAGE(p, format = "png", out_file = paste(image.location, "/",title,".png", sep = ""))
+    }
 
     ## Return the chart
     p

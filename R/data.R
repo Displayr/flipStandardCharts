@@ -118,3 +118,13 @@
 #'
 #' @format 13 columns by 20 rows; first col alpha, remainder numeric
 "junk"
+
+#' Examples of tables dput from Q
+#'
+#' @format List of example tables exported using dput from Q
+"qTab.examples"
+
+#' Bad examples of tables dput from Q
+#'
+#' @format List of bad example tables exported using dput from Q
+"qTab.bad.examples"

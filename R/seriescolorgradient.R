@@ -67,14 +67,7 @@ AlphabeticRowNames <- function(x, desc = TRUE) {
 #' to be colored, with the subsequent items being lighter, or (FALSE) when
 #' the first item will use the lightest color and the last item the base color.
 #'
-#' @param y A vector, matrix, list of vectors, data frame, or table.  Optional
-#' if number.series is specified.
-#' @param x A vector over which y will be aggregated. Must have the same
-#' number of elements as y. Optional if number.series is specified.
-#' @param transpose Logical; should the final output be transposed? Optional
-#' if number.series is specified.
-#' @param number.series Numeric; the number of colours to generate, which
-#' should match the number of series in the data you want to display.
+#' @param chart.matrix Matrix; the tabulated data passed to the chart.
 #' @param base.red An integer between 0 and 255.
 #' @param base.green An integer between 0 and 255.
 #' @param base.blue An integer between 0 and 255.
@@ -87,29 +80,16 @@ AlphabeticRowNames <- function(x, desc = TRUE) {
 #' @return A named elements vector of colors with decreasing alpha values.
 #' @examples
 #' data("z")
-#' MakeColorGradient(y = z, base.red = 192, base.green = 35, base.blue = 220)
+#' MakeColorGradient(chart.matrix = z, base.red = 192, base.green = 35, base.blue = 220)
 #' @export
-MakeColorGradient <- function (y = NULL,
-                               x = NULL,
-                               transpose = FALSE,
-                               number.series = NULL,
+MakeColorGradient <- function (chart.matrix = NULL,
                                base.red = 0,
                                base.green = 0,
                                base.blue = 0,
                                by = "series",
                                base.first = TRUE)
 {
-    if (is.null(y) && is.null(number.series))
-        stop("You must provide either the data, or the number of series.")
-
-    if (!is.null(y))
-    {
-        chart.matrix <- AsChartMatrix(y = y, x = x, transpose = transpose)
-        number.rows <- nrow(chart.matrix) + 1
-    }
-
-    if (!is.null(number.series))
-        number.rows <- number.series + 1
+    number.rows <- nrow(chart.matrix)
 
     col.vector <- character()
 
@@ -121,12 +101,12 @@ MakeColorGradient <- function (y = NULL,
         col.vector <- c(col.vector, grDevices::rgb(base.red + red.factor, base.green + green.factor, base.blue + blue.factor, 255, maxColorValue = 255))
     }
 
-    col.vector <- col.vector[1:number.rows-1]
+    col.vector <- col.vector[1:number.rows]
 
     if (!base.first)
         col.vector <- rev(col.vector)
 
-    if (by == "mean" && !is.null(y))
+    if (by == "mean" && !is.null(chart.matrix))
     {
         ## Sort the matrix by mean
         ordered.matrix <- MeanRowValueDescendingSort(chart.matrix)

@@ -4,22 +4,11 @@
 \alias{MakeColorGradient}
 \title{Generates a vector of colors based on the number of rows in a matrix}
 \usage{
-MakeColorGradient(y = NULL, x = NULL, transpose = FALSE,
-  number.series = NULL, base.red = 0, base.green = 0, base.blue = 0,
-  by = "series", base.first = TRUE)
+MakeColorGradient(chart.matrix = NULL, base.red = 0, base.green = 0,
+  base.blue = 0, by = "series", base.first = TRUE)
 }
 \arguments{
-\item{y}{A vector, matrix, list of vectors, data frame, or table.  Optional
-if number.series is specified.}
-
-\item{x}{A vector over which y will be aggregated. Must have the same
-number of elements as y. Optional if number.series is specified.}
-
-\item{transpose}{Logical; should the final output be transposed? Optional
-if number.series is specified.}
-
-\item{number.series}{Numeric; the number of colours to generate, which
-should match the number of series in the data you want to display.}
+\item{chart.matrix}{Matrix; the tabulated data passed to the chart.}
 
 \item{base.red}{An integer between 0 and 255.}
 
@@ -66,6 +55,6 @@ the first item will use the lightest color and the last item the base color.
 }
 \examples{
 data("z")
-MakeColorGradient(y = z, base.red = 192, base.green = 35, base.blue = 220)
+MakeColorGradient(chart.matrix = z, base.red = 192, base.green = 35, base.blue = 220)
 }
 

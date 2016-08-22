@@ -15,7 +15,8 @@ Imports:
 	dplyr,
 	RColorBrewer,
     colorspace,
-    colorRamps
+    colorRamps,
+    png
 Suggests:
     testthat
 RoxygenNote: 5.0.1

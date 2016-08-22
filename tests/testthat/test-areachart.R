@@ -1,14 +1,38 @@
 context("areaChart")
-#  rm(list=ls())
 
-for (i in 1:length(good.examples))
+library(png)
+library(plotly)
+
+for (i in 1:length(qTab.examples))
 {
-    print(Chart(y = good.examples[[i]]$Y, x = good.examples[[i]]$X, type = "Area", transpose = good.examples[[i]]$transpose, title = names(good.examples)[i], aggregate.period = good.examples[[i]]$aggregate.period, hover.include.source.value = TRUE))
+    ## Run image and chart output
+    print(Chart(y = qTab.examples[[i]]$y, type = qTab.examples[[i]]$type, transpose = qTab.examples[[i]]$transpose, title = attr(qTab.examples[[i]]$y, "name"), y.title = qTab.examples[[i]]$y.title, test = TRUE, plotly_username = "mattiasengdahl", plotly_api_key = "3v66dv7blj"))
+
+    image.location <- getwd()
+
+    ## Load existing image
+    existing.image <- as.raster(readPNG(paste(image.location, "/images/", attr(qTab.examples[[i]]$y, "name"), ".png", sep = "")))
+
+    ## Load new image
+    new.image <- as.raster(readPNG(paste(image.location, "/", attr(qTab.examples[[i]]$y, "name"), ".png", sep = "")))
+
+    ## Test_that the images match, in the case of good examples
+    test_that(paste(names(qTab.examples[i])), {expect_that(all(existing.image == new.image), is_true())})
 
     # cat(paste("Press [enter] to continue (test ", i, "/", length(good.examples), ").", sep = ""))
     # line <- readline()
 }
 
+for (i in 1:length(qTab.bad.examples))
+{
+    test_that(paste(names(qTab.bad.examples[i])), {expect_error(
+        Chart(y = qTab.bad.examples[[i]]$y,
+              type = qTab.bad.examples[[i]]$type,
+              transpose = qTab.bad.examples[[i]]$transpose,
+              title = attr(qTab.bad.examples[[i]]$y, "name"),
+              y.title = qTab.bad.examples[[i]]$y.title))})
+
+}
 
 #############################################################################
 #############################################################################
@@ -24,7 +48,7 @@ colnames(a.matrix) <- c("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","O
 myCols <- c(rgb(0,176,240, max=255), rgb(197,90,17, max=255))
 myLineCols <- c(rgb(31,78,121, max=255),rgb(192,0,0, max=255))
 
-Chart(a.matrix, type = "Area",
+myPlot <- Chart(a.matrix, type = "Area",
           transparency = 0.4,
           transpose = TRUE,
           colors = myCols,
@@ -36,7 +60,7 @@ Chart(a.matrix, type = "Area",
           y.bounds.maximum = 1.01,
           y.bounds.units.major = 0.1)
 
-
+myPlot
 
 ##### JUNK STYLE
 a.matrix <- rbind(c(50,70,70,100,80,90,90), c(50,50,30,40,70,70,90), c(30,30,50,70,40,50,50), c(0,10,10,30,20,30,10))
@@ -100,7 +124,7 @@ Chart(a.matrix,
 # Read in data
 a.matrix <- as.matrix(read.csv("C:/R/consumerspending.csv", header = TRUE, row.names = 1))
 ## Figure out colours
-col.scheme <- MakeColorGradient(y = a.matrix, transpose = TRUE, base.red = 112, base.green = 48, base.blue = 160, by = "mean")
+col.scheme <- MakeColorGradient(chart.matrix = a.matrix, base.red = 112, base.green = 48, base.blue = 160, by = "mean")
 ## Sort alphabetically descending
 a.matrix <- AlphabeticRowNames(a.matrix)
 

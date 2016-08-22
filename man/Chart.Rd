@@ -4,11 +4,10 @@
 \alias{Chart}
 \title{Generates an interactive chart based on the plotly library.}
 \usage{
-Chart(y, x = NULL, subset = NULL, type = "Area", transpose = FALSE,
-  aggregate.period = "none", y.labels = NULL, y.values = NULL,
-  x.labels = NULL, x.values = NULL, title = "",
-  title.font.family = "Arial", title.font.color = rgb(44, 44, 44,
-  maxColorValue = 255), title.font.size = 16, colors = qColors,
+Chart(y, type = "Area", transpose = FALSE, aggregate.period = "none",
+  y.labels = NULL, y.values = NULL, x.labels = NULL, x.values = NULL,
+  title = "", title.font.family = "Arial", title.font.color = rgb(44, 44,
+  44, maxColorValue = 255), title.font.size = 16, colors = qColors,
   colors.reverse = FALSE, transparency = 0.4, chart.fill.color = rgb(255,
   255, 255, maxColorValue = 255), chart.fill.transparency = 1,
   plot.fill.color = rgb(255, 255, 255, maxColorValue = 255),
@@ -28,7 +27,7 @@ Chart(y, x = NULL, subset = NULL, type = "Area", transpose = FALSE,
   y.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
   y.position = "left", y.mirror = FALSE, y.values.reversed = FALSE,
   y.grid.width = 1, y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
-  y.tick.suffix = "", y.tick.prefix = "", y.tick.decimals = 0,
+  y.tick.suffix = "", y.tick.prefix = "", y.tick.decimals = 2,
   y.tick.format.manual = "", y.hovertext.decimals = 2,
   y.hovertext.format.manual = "", y.tick.angle = 0,
   y.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),
@@ -42,7 +41,7 @@ Chart(y, x = NULL, subset = NULL, type = "Area", transpose = FALSE,
   255), x.position = "bottom", x.mirror = FALSE,
   x.values.reversed = FALSE, x.grid.width = 0, x.grid.color = rgb(225,
   225, 225, maxColorValue = 255), x.tick.suffix = "", x.tick.prefix = "",
-  x.tick.decimals = 0, x.tick.format.manual = "",
+  x.tick.decimals = 2, x.tick.format.manual = "",
   x.hovertext.decimals = 5, x.hovertext.format.manual = "",
   x.tick.angle = 0, x.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),
   x.tick.font.family = "Arial", x.tick.font.size = 10,
@@ -83,16 +82,11 @@ Chart(y, x = NULL, subset = NULL, type = "Area", transpose = FALSE,
   pie.groups.colors.reverse = FALSE, pie.groups.order = "descending",
   pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
   pie.segment.color.gradient = FALSE, pie.inner.radius = 0,
-  pie.max.label.length = 60)
+  pie.max.label.length = 60, test = FALSE, plotly_username = "",
+  plotly_api_key = "")
 }
 \arguments{
-\item{y}{A vector, matrix, list of vectors, data frame, or table.}
-
-\item{x}{A vector over which y will be aggregated. Must have the same
-number of elements as y.}
-
-\item{subset}{A logical (or binary) vector of the same length as y (and x),
-to filter the input data.}
+\item{y}{A matrix, or numeric vector.}
 
 \item{type}{Character; type of chart. Can be "Area", "Stacked Area",
 or "100\% Stacked Area".}
@@ -533,6 +527,14 @@ e.g. 75; produces a donut chart; default is 0 (pie chart)}
 \item{pie.max.label.length}{Numeric; maximum character length before
 wrapping of labels.}
 
+\item{test}{logical; saves an image of the plotly output for unit testing.}
+
+\item{plotly_username}{character; your plotly username to allow for unit
+testing.}
+
+\item{plotly_api_key}{character; your plotly api key to allow for unit
+testing.}
+
 \item{bar.data.label}{Integer or Character; the offset from the top end of a
 column measured in y-axis units.}
 }
@@ -540,8 +542,9 @@ column measured in y-axis units.}
 \code{Chart} generates standard charts from plotly library.
 }
 \examples{
-data("y.data")
-data("x.data")
-Chart(y = y.data, x = x.data, type = "Area", transpose = TRUE)
+data("z")
+z <- cbind(z, z[,1])
+colnames(z) <- c("A", "B")
+Chart(y = z, type = "Area", transpose = TRUE)
 }
 

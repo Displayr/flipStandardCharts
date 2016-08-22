@@ -7,6 +7,16 @@ areaChart <- function(chart.matrix,
                       series.line.width,
                       series.marker.show)
 {
+    ## Check for negative values in the input table
+    if (type == "Stacked Area" || type == "100% Stacked Area")
+    {
+        if (any(chart.matrix) < 0)
+            stop("Negative values are not compatible with stacked charts.")
+
+        if (any(is.na(chart.matrix)))
+            stop("NaN values are not compatible with stacked charts.")
+    }
+
     ## Change the matrix data according to requirements of the chart type
     if (type == "Stacked Area")
         chart.matrix <- cum.data(chart.matrix, "cumulative.sum")
@@ -34,7 +44,7 @@ areaChart <- function(chart.matrix,
 
     ## If it's a 100% Stacked Area chart, and no options have been specified for y.tick.format, then set to %
     y.tickformat <- ""
-    if (type == "100% Stacked Area" && y.tick.format.manual == "" && y.tick.suffix == "" && y.tick.decimals == 0)
+    if (type == "100% Stacked Area" && y.tick.format.manual == "" && y.tick.suffix == "")
         y.tickformat <- "%"
 
     ## Showing markers and lines
