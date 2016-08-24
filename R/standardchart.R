@@ -2,7 +2,7 @@
 #'
 #' \code{Chart} generates standard charts from plotly library.
 #'
-#' @param y A matrix, or numeric vector.
+#' @param y A table or matrix.
 #' @param type Character; type of chart. Can be "Area", "Stacked Area",
 #' or "100\% Stacked Area".
 #' @param transpose Logical; should the final output be transposed?
@@ -289,11 +289,6 @@
 #' e.g. 75; produces a donut chart; default is 0 (pie chart)
 #' @param pie.max.label.length Numeric; maximum character length before
 #' wrapping of labels.
-#' @param test logical; saves an image of the plotly output for unit testing.
-#' @param plotly_username character; your plotly username to allow for unit
-#' testing.
-#' @param plotly_api_key character; your plotly api key to allow for unit
-#' testing.
 #' @examples
 #' data("z")
 #' z <- cbind(z, z[,1])
@@ -463,32 +458,70 @@ Chart <-   function(y,
                         pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
                         pie.segment.color.gradient = FALSE,
                         pie.inner.radius = 0,
-                        pie.max.label.length = 60,
-                        test = FALSE,
-                        plotly_username = "",
-                        plotly_api_key = ""
+                        pie.max.label.length = 60
                         )
 {
     chart.matrix <- y
-    statistic <- attr(chart.matrix, "statistic")
+
+    # qinput <- FALSE
+    # if (!is.null(chart.matrix$questions))
+    #     qinput <- TRUE
+
+
+    # q.axis.labels <- attr(chart.matrix, "questions")
+    # q.name <- attr(chart.matrix, "name")
+    q.statistic <- attr(chart.matrix, "statistic")
 
     ## If it's a one column entity, make sure it's a matrix and that it's got a column heading.
     if (is.array(chart.matrix) && length(dim(chart.matrix)) == 1)
     {
         chart.matrix <- as.matrix(chart.matrix)
-        colnames(chart.matrix) <- statistic
+
+
+        colnames(chart.matrix) <- q.statistic
     }
 
-    ## Can only take a Q table
-    if (!is.matrix(chart.matrix))
-        stop("The input needs to be a matrix")
+    ## Check if the input is a 2D object
+    if (length(dim(chart.matrix)) != 2)
+        stop("The input needs to be a 2 dimensional object (table or matrix)")
+
+    ## Make sure it's not a character matrix
+    if (is.character(chart.matrix))
+        stop("The input must be numeric")
+
+    ## Check if the input is labelled
+    if (is.null(rownames(chart.matrix)) || is.null(colnames(chart.matrix)))
+        stop("The input lacks row and/or column labels")
+
+    ## If it's a data frame with only numerics, make it a matrix
+    if (sum(sapply(chart.matrix, is.numeric)) == ncol(chart.matrix))
+        chart.matrix <- as.matrix(chart.matrix)
+
+    ## Can only take items of class matrix or table.
+    if (!is.matrix(chart.matrix) && !is.table(chart.matrix))
+        stop("The input needs to be either a matrix, a table, or a data frame consisting entirely of numerics")
 
     ## Transform chart.matrix based on transposition requirements.
     if (ncol(chart.matrix) == 1)
+    {
         chart.matrix <- t(chart.matrix)
+        #q.axis.labels <- rev(q.axis.labels)
+    }
 
-    if (transpose == TRUE)
+    if (transpose)
+    {
         chart.matrix <- t(chart.matrix)
+        #q.axis.labels <- rev(q.axis.labels)
+    }
+
+    #q.y.label <- attr(chart.matrix, "questions")[1]
+    #q.x.label <- attr(chart.matrix, "questions")[2]
+    #
+    # if (y.title == "")
+    #     y.title <- q.y.label
+    #
+    # if (x.title == "")
+    #     x.title <- q.x.label
 
     ## Make a chart matrix
     # if (type != "Scatter Plot" || (type == "Scatter Plot" && !is.null(x)))
@@ -1310,16 +1343,6 @@ Chart <-   function(y,
         bargroupgap = bar.group.gap,
         barmode = barmode
     )
-
-    ## If test = TRUE, then save the chart as a .png
-    if (test)
-    {
-        Sys.setenv("plotly_username" = paste(plotly_username))
-        Sys.setenv("plotly_api_key" = paste(plotly_api_key))
-        image.location <- getwd()
-
-        plotly::plotly_IMAGE(p, format = "png", out_file = paste(image.location, "/",title,".png", sep = ""))
-    }
 
     ## Return the chart
     p

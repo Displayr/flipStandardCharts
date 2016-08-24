@@ -82,11 +82,10 @@ Chart(y, type = "Area", transpose = FALSE, aggregate.period = "none",
   pie.groups.colors.reverse = FALSE, pie.groups.order = "descending",
   pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
   pie.segment.color.gradient = FALSE, pie.inner.radius = 0,
-  pie.max.label.length = 60, test = FALSE, plotly_username = "",
-  plotly_api_key = "")
+  pie.max.label.length = 60)
 }
 \arguments{
-\item{y}{A matrix, or numeric vector.}
+\item{y}{A table or matrix.}
 
 \item{type}{Character; type of chart. Can be "Area", "Stacked Area",
 or "100\% Stacked Area".}
@@ -526,14 +525,6 @@ e.g. 75; produces a donut chart; default is 0 (pie chart)}
 
 \item{pie.max.label.length}{Numeric; maximum character length before
 wrapping of labels.}
-
-\item{test}{logical; saves an image of the plotly output for unit testing.}
-
-\item{plotly_username}{character; your plotly username to allow for unit
-testing.}
-
-\item{plotly_api_key}{character; your plotly api key to allow for unit
-testing.}
 
 \item{bar.data.label}{Integer or Character; the offset from the top end of a
 column measured in y-axis units.}

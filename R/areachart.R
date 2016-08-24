@@ -10,7 +10,7 @@ areaChart <- function(chart.matrix,
     ## Check for negative values in the input table
     if (type == "Stacked Area" || type == "100% Stacked Area")
     {
-        if (any(chart.matrix) < 0)
+        if (any(chart.matrix < 0))
             stop("Negative values are not compatible with stacked charts.")
 
         if (any(is.na(chart.matrix)))
