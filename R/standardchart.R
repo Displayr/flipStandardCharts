@@ -463,22 +463,29 @@ Chart <-   function(y,
 {
     chart.matrix <- y
 
-    # qinput <- FALSE
-    # if (!is.null(chart.matrix$questions))
-    #     qinput <- TRUE
+    qinput <- FALSE
+    if (!is.null(attr(chart.matrix, "statistic")))
+        qinput <- TRUE
 
+    table.axes.labels <- c("Dimension 1", "Dimension 2")
 
-    # q.axis.labels <- attr(chart.matrix, "questions")
-    # q.name <- attr(chart.matrix, "name")
-    q.statistic <- attr(chart.matrix, "statistic")
+    if (qinput)
+    {
+        table.axes.labels <- attr(chart.matrix, "questions")
+        table.name <- attr(chart.matrix, "name")
+        table.statistic <- attr(chart.matrix, "statistic")
+    } else {
+        if (length(names(dimnames(chart.matrix))) == 2)
+            table.axes.labels <- names(dimnames(chart.matrix))
+
+        table.statistic <- ""
+    }
 
     ## If it's a one column entity, make sure it's a matrix and that it's got a column heading.
     if (is.array(chart.matrix) && length(dim(chart.matrix)) == 1)
     {
         chart.matrix <- as.matrix(chart.matrix)
-
-
-        colnames(chart.matrix) <- q.statistic
+        colnames(chart.matrix) <- table.statistic
     }
 
     ## Check if the input is a 2D object
@@ -505,23 +512,24 @@ Chart <-   function(y,
     if (ncol(chart.matrix) == 1)
     {
         chart.matrix <- t(chart.matrix)
-        #q.axis.labels <- rev(q.axis.labels)
+        table.axes.labels <- rev(table.axes.labels)
     }
 
     if (transpose)
     {
         chart.matrix <- t(chart.matrix)
-        #q.axis.labels <- rev(q.axis.labels)
+        table.axes.labels <- rev(table.axes.labels)
     }
 
-    #q.y.label <- attr(chart.matrix, "questions")[1]
-    #q.x.label <- attr(chart.matrix, "questions")[2]
-    #
-    # if (y.title == "")
-    #     y.title <- q.y.label
-    #
-    # if (x.title == "")
-    #     x.title <- q.x.label
+    ## If no x.title or y.title provided, take defaults from data input
+    if (x.title == "")
+        x.title <- table.axes.labels[2]
+
+    # if (y.title == "" && qinput)
+    y.title <- table.statistic
+
+    # if (y.title == "" && !qinput)
+    #     y.title <- table.axes.labels[2]
 
     ## Make a chart matrix
     # if (type != "Scatter Plot" || (type == "Scatter Plot" && !is.null(x)))

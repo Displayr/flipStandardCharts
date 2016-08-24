@@ -164,13 +164,72 @@ qTab.bad.examples <- list("Cannot take unnamed matrix" = list(y = structure(c(0,
 ######  For each plotly plot, there are two lists created:
 library(plotly)
 
+replace_zero_length <- function(x) {
+  lapply(x, function(x) {
+    if (is.list(x)){
+      replace_null(x)
+      } else{
+        if(length(x) == 0) "" else(x)
+      }
+    })
+}
+
+replace_null <- function(x) {
+  lapply(x, function(x) {
+    if (is.list(x)){
+      replace_null(x)
+      } else{
+        if(is.null(x)) "" else(x)
+      }
+    })
+}
+
 for (i in 1:length(qTab.examples))
 {
     example.number <- i
-    assign(paste("ex", i, ".1", sep = ""), as.list(plotly_build(Chart(y = qTab.examples[[example.number]]$y, type = qTab.examples[[example.number]]$type, transpose = qTab.examples[[example.number]]$transpose, title = attr(qTab.examples[[example.number]]$y, "name"), y.title = qTab.examples[[example.number]]$y.title))[[1]]))
-    assign(paste("ex", i, ".2", sep = ""), as.list(plotly_build(Chart(y = qTab.examples[[example.number]]$y, type = qTab.examples[[example.number]]$type, transpose = qTab.examples[[example.number]]$transpose, title = attr(qTab.examples[[example.number]]$y, "name"), y.title = qTab.examples[[example.number]]$y.title))[[2]]))
+    assign(paste("ex", i, ".1", sep = ""), as.list(plotly_build(Chart(y = qTab.examples[[example.number]]$y, type = qTab.examples[[example.number]]$type, transpose = qTab.examples[[example.number]]$transpose, title = attr(qTab.examples[[example.number]]$y, "name")))[[1]]))
+    assign(paste("ex", i, ".2", sep = ""), as.list(plotly_build(Chart(y = qTab.examples[[example.number]]$y, type = qTab.examples[[example.number]]$type, transpose = qTab.examples[[example.number]]$transpose, title = attr(qTab.examples[[example.number]]$y, "name")))[[2]]))
 }
+
+ex1.1 <- replace_zero_length(ex1.1)
+ex1.2 <- replace_zero_length(ex1.2)
+ex2.1 <- replace_zero_length(ex2.1)
+ex2.2 <- replace_zero_length(ex2.2)
+ex3.1 <- replace_zero_length(ex3.1)
+ex3.2 <- replace_zero_length(ex3.2)
+ex4.1 <- replace_zero_length(ex4.1)
+ex4.2 <- replace_zero_length(ex4.2)
+ex5.1 <- replace_zero_length(ex5.1)
+ex5.2 <- replace_zero_length(ex5.2)
+ex6.1 <- replace_zero_length(ex6.1)
+ex6.2 <- replace_zero_length(ex6.2)
+ex7.1 <- replace_zero_length(ex7.1)
+ex7.2 <- replace_zero_length(ex7.2)
+ex8.1 <- replace_zero_length(ex8.1)
+ex8.2 <- replace_zero_length(ex8.2)
+
+ex1.1 <- replace_null(ex1.1)
+ex1.2 <- replace_null(ex1.2)
+ex2.1 <- replace_null(ex2.1)
+ex2.2 <- replace_null(ex2.2)
+ex3.1 <- replace_null(ex3.1)
+ex3.2 <- replace_null(ex3.2)
+ex4.1 <- replace_null(ex4.1)
+ex4.2 <- replace_null(ex4.2)
+ex5.1 <- replace_null(ex5.1)
+ex5.2 <- replace_null(ex5.2)
+ex6.1 <- replace_null(ex6.1)
+ex6.2 <- replace_null(ex6.2)
+ex7.1 <- replace_null(ex7.1)
+ex7.2 <- replace_null(ex7.2)
+ex8.1 <- replace_null(ex8.1)
+ex8.2 <- replace_null(ex8.2)
+
+
+
 ##### End of repeated code for diffs setting
+
+
 
 
 qColors <- c(grDevices::rgb(91, 155, 213, 255, maxColorValue = 255), # blue

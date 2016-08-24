@@ -10,8 +10,8 @@ for (i in 1:length(qTab.examples))
     ## Run image and chart output
     print(Chart(y = qTab.examples[[i]]$y, type = qTab.examples[[i]]$type, transpose = qTab.examples[[i]]$transpose, title = attr(qTab.examples[[i]]$y, "name"), y.title = qTab.examples[[i]]$y.title))
 
-    test.1 <- as.list(plotly_build(Chart(y = qTab.examples[[i]]$y, type = qTab.examples[[i]]$type, transpose = qTab.examples[[i]]$transpose, title = attr(qTab.examples[[i]]$y, "name"), y.title = qTab.examples[[i]]$y.title))[[1]])
-    test.2 <- as.list(plotly_build(Chart(y = qTab.examples[[i]]$y, type = qTab.examples[[i]]$type, transpose = qTab.examples[[i]]$transpose, title = attr(qTab.examples[[i]]$y, "name"), y.title = qTab.examples[[i]]$y.title))[[2]])
+    test.1 <- as.list(plotly_build(Chart(y = qTab.examples[[i]]$y, type = qTab.examples[[i]]$type, transpose = qTab.examples[[i]]$transpose, title = attr(qTab.examples[[i]]$y, "name")))[[1]])
+    test.2 <- as.list(plotly_build(Chart(y = qTab.examples[[i]]$y, type = qTab.examples[[i]]$type, transpose = qTab.examples[[i]]$transpose, title = attr(qTab.examples[[i]]$y, "name")))[[2]])
 
     approved.1 <- get(paste("ex", i, ".1", sep=""))
     approved.2 <- get(paste("ex", i, ".2", sep=""))
@@ -29,29 +29,116 @@ for (i in 1:length(qTab.examples))
                         {
                             for (d in 1:length(test.1[[a]][[b]][[c]]))
                             {
-                                if (!is.null(test.1[[a]][[b]][[c]][[d]]) && !is.na(test.1[[a]][[b]][[c]][[d]]))
-                                {
+                                if (is.null(test.1[[a]][[b]][[c]][[d]]) || is.na(test.1[[a]][[b]][[c]][[d]]) || length(test.1[[a]][[b]][[c]][[d]]) == 0)
+                                    test.1[[a]][[b]][[c]][[d]] <- ""
+
+                                if (is.null(approved.1[[a]][[b]][[c]][[d]]) || is.na(approved.1[[a]][[b]][[c]][[d]]) || length(approved.1[[a]][[b]][[c]][[d]]) == 0)
+                                    approved.1[[a]][[b]][[c]][[d]] <- ""
+
+                                # if (!is.null(test.1[[a]][[b]][[c]][[d]]) && !is.na(test.1[[a]][[b]][[c]][[d]]))
+                                # {
                                     #print(paste("in test (", a, " ", b, " ", c, " ", d, "): ", test.1[[a]][[b]][[c]][[d]], " / in approved: ", approved.1[[a]][[b]][[c]][[d]], sep = ""))
                                     test_that(paste("in test (", a, " ", b, " ", c, " ", d,"): ", test.1[[a]][[b]][[c]][[d]], " / in approved: ", approved.1[[a]][[b]][[c]][[d]], sep = ""), {expect_that(test.1[[a]][[b]][[c]][[d]] == approved.1[[a]][[b]][[c]][[d]], is_true())})
-                                }
+                                # }
                             }
                         } else {
-                            if (!is.null(test.1[[a]][[b]][[c]]) && !is.na(test.1[[a]][[b]][[c]]))
-                            {
+                            if (is.null(test.1[[a]][[b]][[c]]) || is.na(test.1[[a]][[b]][[c]]) || length(test.1[[a]][[b]][[c]]) == 0)
+                                test.1[[a]][[b]][[c]] <- ""
+
+                            if (is.null(approved.1[[a]][[b]][[c]]) || is.na(approved.1[[a]][[b]][[c]]) || length(approved.1[[a]][[b]][[c]]) == 0)
+                                approved.1[[a]][[b]][[c]] <- ""
+
+                            # if (!is.null(test.1[[a]][[b]][[c]]) && !is.na(test.1[[a]][[b]][[c]]))
+                            # {
                                 #print(paste("in test (", a, " ", b, " ", c, "): ", test.1[[a]][[b]][[c]], " / in approved: ", approved.1[[a]][[b]][[c]], sep = ""))
                                 test_that(paste("in test (", a, " ", b, " ", c, "): ", test.1[[a]][[b]][[c]], " / in approved: ", approved.1[[a]][[b]][[c]], sep = ""), {expect_that(test.1[[a]][[b]][[c]] == approved.1[[a]][[b]][[c]], is_true())})
-                            }
+                            # }
                         }
                 } else {
-                    if (!is.null(test.1[[a]][[b]]) && !is.na(test.1[[a]][[b]]))
-                    {
+                    if (is.null(test.1[[a]][[b]]) || is.na(test.1[[a]][[b]]) || length(test.1[[a]][[b]]) == 0)
+                        test.1[[a]][[b]] <- ""
+
+                    if (is.null(approved.1[[a]][[b]]) || is.na(approved.1[[a]][[b]]) || length(approved.1[[a]][[b]]) == 0)
+                        approved.1[[a]][[b]] <- ""
+
+                    # if (!is.null(test.1[[a]][[b]]) && !is.na(test.1[[a]][[b]]))
+                    # {
                         #print(paste("in test (", a, " ", b, "): ", test.1[[a]][[b]], " / in approved: ", approved.1[[a]][[b]], sep = ""))
                         test_that(paste("in test (", a, " ", b, "): ", test.1[[a]][[b]], " / in approved: ", approved.1[[a]][[b]], sep = ""), {expect_that(test.1[[a]][[b]] == approved.1[[a]][[b]], is_true())})
-                    }
+                    # }
                 }
             }
         } else {
+            if (is.null(test.1[[a]]) || is.na(test.1[[a]]) || length(test.1[[a]]) == 0)
+                test.2[[a]] <- ""
+
+            if (is.null(approved.1[[a]]) || is.na(approved.1[[a]]) || length(approved.1[[a]]) == 0)
+                approved.1[[a]] <- ""
+
             test_that(paste("in test (", a, "): ", test.1[[a]], " / in approved: ", approved.1[[a]], sep = ""), {expect_that(test.1[[a]] == approved.1[[a]], is_true())})
+        }
+    }
+
+    for (a in 1:length(test.2))
+    {
+        if(length(test.2[[a]]) > 1)
+        {
+            for (b in 1:length(test.2[[a]]))
+            {
+                if (length(test.2[[a]][[b]]) > 1)
+                {
+                    for (c in 1:length(test.2[[a]][[b]]))
+                        if (length(test.2[[a]][[b]][[c]]) > 1)
+                        {
+                            for (d in 1:length(test.2[[a]][[b]][[c]]))
+                            {
+                                if (is.null(test.2[[a]][[b]][[c]][[d]]) || is.na(test.2[[a]][[b]][[c]][[d]]) || length(test.2[[a]][[b]][[c]][[d]]) == 0)
+                                    test.2[[a]][[b]][[c]][[d]] <- ""
+
+                                if (is.null(approved.2[[a]][[b]][[c]][[d]]) || is.na(approved.2[[a]][[b]][[c]][[d]]) || length(approved.2[[a]][[b]][[c]][[d]]) == 0)
+                                    approved.2[[a]][[b]][[c]][[d]] <- ""
+
+                                # if (!is.null(test.2[[a]][[b]][[c]][[d]]) && !is.na(test.2[[a]][[b]][[c]][[d]]))
+                                # {
+                                    #print(paste("in test (", a, " ", b, " ", c, " ", d, "): ", test.2[[a]][[b]][[c]][[d]], " / in approved: ", approved.2[[a]][[b]][[c]][[d]], sep = ""))
+                                    test_that(paste("in test (", a, " ", b, " ", c, " ", d,"): ", test.2[[a]][[b]][[c]][[d]], " / in approved: ", approved.2[[a]][[b]][[c]][[d]], sep = ""), {expect_that(test.2[[a]][[b]][[c]][[d]] == approved.2[[a]][[b]][[c]][[d]], is_true())})
+                                # }
+                            }
+                        } else {
+                            if (is.null(test.2[[a]][[b]][[c]]) || is.na(test.2[[a]][[b]][[c]]) || length(test.2[[a]][[b]][[c]]) == 0)
+                                test.2[[a]][[b]][[c]] <- ""
+
+                            if (is.null(approved.2[[a]][[b]][[c]]) || is.na(approved.2[[a]][[b]][[c]]) || length(approved.2[[a]][[b]][[c]]) == 0)
+                                approved.2[[a]][[b]][[c]] <- ""
+
+                            # if (!is.null(test.2[[a]][[b]][[c]]) && !is.na(test.2[[a]][[b]][[c]]))
+                            # {
+                                #print(paste("in test (", a, " ", b, " ", c, "): ", test.2[[a]][[b]][[c]], " / in approved: ", approved.2[[a]][[b]][[c]], sep = ""))
+                                test_that(paste("in test (", a, " ", b, " ", c, "): ", test.2[[a]][[b]][[c]], " / in approved: ", approved.2[[a]][[b]][[c]], sep = ""), {expect_that(test.2[[a]][[b]][[c]] == approved.2[[a]][[b]][[c]], is_true())})
+                            # }
+                        }
+                } else {
+                    if (is.null(test.2[[a]][[b]]) || is.na(test.2[[a]][[b]]) || length(test.2[[a]][[b]]) == 0)
+                        test.2[[a]][[b]] <- ""
+
+                    if (is.null(approved.2[[a]][[b]]) || is.na(approved.2[[a]][[b]]) || length(approved.2[[a]][[b]]) == 0)
+                        approved.2[[a]][[b]] <- ""
+
+                    # if (!is.null(test.2[[a]][[b]]) && !is.na(test.2[[a]][[b]]))
+                    # {
+                        #print(paste("in test (", a, " ", b, "): ", test.2[[a]][[b]], " / in approved: ", approved.2[[a]][[b]], sep = ""))
+                        test_that(paste("in test (", a, " ", b, "): ", test.2[[a]][[b]], " / in approved: ", approved.2[[a]][[b]], sep = ""), {expect_that(test.2[[a]][[b]] == approved.2[[a]][[b]], is_true())})
+                    # }
+                }
+            }
+        } else {
+            if (is.null(test.2[[a]]) || is.na(test.2[[a]]) || length(test.2[[a]]) == 0)
+                test.2[[a]] <- ""
+
+            if (is.null(approved.2[[a]]) || is.na(approved.2[[a]]) || length(approved.2[[a]]) == 0)
+                approved.2[[a]] <- ""
+
+            test_that(paste("in test (", a, "): ", test.2[[a]], " / in approved: ", approved.2[[a]], sep = ""), {expect_that(test.2[[a]] == approved.2[[a]], is_true())})
         }
     }
 }
