@@ -522,11 +522,11 @@ Chart <-   function(y,
     }
 
     ## If no x.title or y.title provided, take defaults from data input
-    if (x.title == "")
+    if (x.title == "" || length(x.title) == 0)
         x.title <- table.axes.labels[2]
 
-    # if (y.title == "" && qinput)
-    y.title <- table.statistic
+    if (y.title == "" || length(y.title) == 0)
+        y.title <- table.statistic
 
     # if (y.title == "" && !qinput)
     #     y.title <- table.axes.labels[2]
