@@ -2,6 +2,7 @@ context("areaChart")
 
 library(png)
 library(plotly)
+library(testthat)
 
 for (i in 1:length(qTab.examples))
 {
@@ -34,12 +35,7 @@ for (i in 1:length(qTab.examples))
 
                                 if (is.null(approved.1[[a]][[b]][[c]][[d]]) || is.na(approved.1[[a]][[b]][[c]][[d]]) || length(approved.1[[a]][[b]][[c]][[d]]) == 0)
                                     approved.1[[a]][[b]][[c]][[d]] <- ""
-
-                                # if (!is.null(test.1[[a]][[b]][[c]][[d]]) && !is.na(test.1[[a]][[b]][[c]][[d]]))
-                                # {
-                                    #print(paste("in test (", a, " ", b, " ", c, " ", d, "): ", test.1[[a]][[b]][[c]][[d]], " / in approved: ", approved.1[[a]][[b]][[c]][[d]], sep = ""))
                                     test_that(paste("in test (", a, " ", b, " ", c, " ", d,"): ", test.1[[a]][[b]][[c]][[d]], " / in approved: ", approved.1[[a]][[b]][[c]][[d]], sep = ""), {expect_that(test.1[[a]][[b]][[c]][[d]] == approved.1[[a]][[b]][[c]][[d]], is_true())})
-                                # }
                             }
                         } else {
                             if (is.null(test.1[[a]][[b]][[c]]) || is.na(test.1[[a]][[b]][[c]]) || length(test.1[[a]][[b]][[c]]) == 0)
@@ -47,12 +43,8 @@ for (i in 1:length(qTab.examples))
 
                             if (is.null(approved.1[[a]][[b]][[c]]) || is.na(approved.1[[a]][[b]][[c]]) || length(approved.1[[a]][[b]][[c]]) == 0)
                                 approved.1[[a]][[b]][[c]] <- ""
-
-                            # if (!is.null(test.1[[a]][[b]][[c]]) && !is.na(test.1[[a]][[b]][[c]]))
-                            # {
-                                #print(paste("in test (", a, " ", b, " ", c, "): ", test.1[[a]][[b]][[c]], " / in approved: ", approved.1[[a]][[b]][[c]], sep = ""))
                                 test_that(paste("in test (", a, " ", b, " ", c, "): ", test.1[[a]][[b]][[c]], " / in approved: ", approved.1[[a]][[b]][[c]], sep = ""), {expect_that(test.1[[a]][[b]][[c]] == approved.1[[a]][[b]][[c]], is_true())})
-                            # }
+
                         }
                 } else {
                     if (is.null(test.1[[a]][[b]]) || is.na(test.1[[a]][[b]]) || length(test.1[[a]][[b]]) == 0)
@@ -60,12 +52,7 @@ for (i in 1:length(qTab.examples))
 
                     if (is.null(approved.1[[a]][[b]]) || is.na(approved.1[[a]][[b]]) || length(approved.1[[a]][[b]]) == 0)
                         approved.1[[a]][[b]] <- ""
-
-                    # if (!is.null(test.1[[a]][[b]]) && !is.na(test.1[[a]][[b]]))
-                    # {
-                        #print(paste("in test (", a, " ", b, "): ", test.1[[a]][[b]], " / in approved: ", approved.1[[a]][[b]], sep = ""))
                         test_that(paste("in test (", a, " ", b, "): ", test.1[[a]][[b]], " / in approved: ", approved.1[[a]][[b]], sep = ""), {expect_that(test.1[[a]][[b]] == approved.1[[a]][[b]], is_true())})
-                    # }
                 }
             }
         } else {
@@ -97,12 +84,7 @@ for (i in 1:length(qTab.examples))
 
                                 if (is.null(approved.2[[a]][[b]][[c]][[d]]) || is.na(approved.2[[a]][[b]][[c]][[d]]) || length(approved.2[[a]][[b]][[c]][[d]]) == 0)
                                     approved.2[[a]][[b]][[c]][[d]] <- ""
-
-                                # if (!is.null(test.2[[a]][[b]][[c]][[d]]) && !is.na(test.2[[a]][[b]][[c]][[d]]))
-                                # {
-                                    #print(paste("in test (", a, " ", b, " ", c, " ", d, "): ", test.2[[a]][[b]][[c]][[d]], " / in approved: ", approved.2[[a]][[b]][[c]][[d]], sep = ""))
                                     test_that(paste("in test (", a, " ", b, " ", c, " ", d,"): ", test.2[[a]][[b]][[c]][[d]], " / in approved: ", approved.2[[a]][[b]][[c]][[d]], sep = ""), {expect_that(test.2[[a]][[b]][[c]][[d]] == approved.2[[a]][[b]][[c]][[d]], is_true())})
-                                # }
                             }
                         } else {
                             if (is.null(test.2[[a]][[b]][[c]]) || is.na(test.2[[a]][[b]][[c]]) || length(test.2[[a]][[b]][[c]]) == 0)
@@ -110,12 +92,7 @@ for (i in 1:length(qTab.examples))
 
                             if (is.null(approved.2[[a]][[b]][[c]]) || is.na(approved.2[[a]][[b]][[c]]) || length(approved.2[[a]][[b]][[c]]) == 0)
                                 approved.2[[a]][[b]][[c]] <- ""
-
-                            # if (!is.null(test.2[[a]][[b]][[c]]) && !is.na(test.2[[a]][[b]][[c]]))
-                            # {
-                                #print(paste("in test (", a, " ", b, " ", c, "): ", test.2[[a]][[b]][[c]], " / in approved: ", approved.2[[a]][[b]][[c]], sep = ""))
                                 test_that(paste("in test (", a, " ", b, " ", c, "): ", test.2[[a]][[b]][[c]], " / in approved: ", approved.2[[a]][[b]][[c]], sep = ""), {expect_that(test.2[[a]][[b]][[c]] == approved.2[[a]][[b]][[c]], is_true())})
-                            # }
                         }
                 } else {
                     if (is.null(test.2[[a]][[b]]) || is.na(test.2[[a]][[b]]) || length(test.2[[a]][[b]]) == 0)
@@ -123,12 +100,7 @@ for (i in 1:length(qTab.examples))
 
                     if (is.null(approved.2[[a]][[b]]) || is.na(approved.2[[a]][[b]]) || length(approved.2[[a]][[b]]) == 0)
                         approved.2[[a]][[b]] <- ""
-
-                    # if (!is.null(test.2[[a]][[b]]) && !is.na(test.2[[a]][[b]]))
-                    # {
-                        #print(paste("in test (", a, " ", b, "): ", test.2[[a]][[b]], " / in approved: ", approved.2[[a]][[b]], sep = ""))
                         test_that(paste("in test (", a, " ", b, "): ", test.2[[a]][[b]], " / in approved: ", approved.2[[a]][[b]], sep = ""), {expect_that(test.2[[a]][[b]] == approved.2[[a]][[b]], is_true())})
-                    # }
                 }
             }
         } else {
@@ -187,11 +159,10 @@ colnames(a.matrix) <- c("D0","D1","D2","D3","D4","D5","D6")
 rownames(a.matrix) <- c("pink","green","orange","blue")
 markerCols <- c(rgb(245,56,177, max=255),rgb(56,193,55, max=255),rgb(245,163,65, max=255),rgb(61,108,255, max=255))
 
-yourPlot <- Chart(a.matrix,
+Chart(a.matrix,
           legend.show = FALSE,
           type = "Area",
           transparency = 0.4,
-          transpose = TRUE,
           colors = rgb(255, 255, 255, max=255),
           plot.fill.color = rgb(176, 191, 214, maxColorValue = 255),
           chart.fill.color = rgb(176, 191, 214, maxColorValue = 255),
@@ -250,7 +221,6 @@ Chart(a.matrix,
           legend.show = TRUE,
           type = "100% Stacked Area",
           colors = col.scheme,
-          transpose = TRUE,
           transparency = 1,
           legend.ascending = FALSE,
           y.position = "right",
@@ -263,7 +233,6 @@ a.matrix <- as.matrix(read.csv("C:/R/resources.csv", header = TRUE, row.names = 
 Chart(a.matrix,
           legend.show = TRUE,
           type = "Stacked Area",
-          transpose = TRUE,
           transparency = 1,
           legend.ascending = FALSE,
           hover.mode = "x",

@@ -525,8 +525,14 @@ Chart <-   function(y,
     if (x.title == "" || length(x.title) == 0)
         x.title <- table.axes.labels[2]
 
+    if (x.title == "FALSE" || x.title == FALSE)
+        x.title <- ""
+
     if (y.title == "" || length(y.title) == 0)
         y.title <- table.statistic
+
+    if (y.title == "FALSE" || y.title == FALSE)
+        y.title <- ""
 
     # if (y.title == "" && !qinput)
     #     y.title <- table.axes.labels[2]
