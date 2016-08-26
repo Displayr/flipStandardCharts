@@ -178,7 +178,8 @@ graphic in pixels}
 \item{margin.inner.pad}{Integer; padding in pixels between plot proper
 and axis lines}
 
-\item{y.title}{Character, y-axis title}
+\item{y.title}{Character, y-axis title; defaults to chart input values;
+to turn off set to "FALSE".}
 
 \item{y.title.font.color}{Y-axis title font color as a named color in
 character format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0,
@@ -253,7 +254,8 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{y.tick.font.size}{Integer; y-axis tick label font size}
 
-\item{x.title}{Character, x-axis title}
+\item{x.title}{Character, x-axis title; defaults to chart input values;
+to turn off set to "FALSE".}
 
 \item{x.title.font.color}{x-axis title font color as a named color in
 character format (e.g. "black") or an rgb value (e.g.

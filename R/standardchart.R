@@ -62,7 +62,8 @@
 #' graphic in pixels
 #' @param margin.inner.pad Integer; padding in pixels between plot proper
 #' and axis lines
-#' @param y.title Character, y-axis title
+#' @param y.title Character, y-axis title; defaults to chart input values;
+#' to turn off set to "FALSE".
 #' @param y.title.font.color Y-axis title font color as a named color in
 #' character format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0,
 #' max = 255)).
@@ -109,7 +110,8 @@
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param y.tick.font.family Character; y-axis tick label font family
 #' @param y.tick.font.size Integer; y-axis tick label font size
-#' @param x.title Character, x-axis title
+#' @param x.title Character, x-axis title; defaults to chart input values;
+#' to turn off set to "FALSE".
 #' @param x.title.font.color x-axis title font color as a named color in
 #' character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
@@ -467,7 +469,7 @@ Chart <-   function(y,
     if (!is.null(attr(chart.matrix, "statistic")))
         qinput <- TRUE
 
-    table.axes.labels <- c("Dimension 1", "Dimension 2")
+    table.axes.labels <- c("", "")
 
     if (qinput)
     {
@@ -855,7 +857,7 @@ Chart <-   function(y,
         x.tick.angle <- 315
         x.labels <- autoFormatLongLabels(x.labels)
         if (margin.bottom == 80)
-            margin.bottom <- 100
+            margin.bottom <- 140
     }
     else if (sum(tally) > 100 && x.tick.label.autoformat == TRUE)
         x.tick.angle <- 315
@@ -1172,6 +1174,9 @@ Chart <-   function(y,
 
     ## Config options
     p <- plotly::config(displayModeBar = show.modebar)
+
+    ## Make sure x.labels are actually used
+    colnames(chart.matrix) <- x.labels
 
     ## Add a trace for each row of data in the matrix
     for (a in 1:nrow(chart.matrix))
