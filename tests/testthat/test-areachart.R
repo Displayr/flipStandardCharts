@@ -1,7 +1,7 @@
 context("areaChart")
 
-library(png)
 library(plotly)
+library(flipChartBasics)
 library(testthat)
 
 for (i in 1:length(qTab.examples))
@@ -213,9 +213,7 @@ Chart(a.matrix,
 # Read in data
 a.matrix <- as.matrix(read.csv("C:/R/consumerspending.csv", header = TRUE, row.names = 1))
 ## Figure out colours
-col.scheme <- MakeColorGradient(chart.matrix = a.matrix, base.red = 112, base.green = 48, base.blue = 160, by = "mean")
-## Sort alphabetically descending
-a.matrix <- AlphabeticRowNames(a.matrix)
+col.scheme <- flipChartBasics::ChartColors(ncol(a.matrix), given.colors = c(rgb(112,48,160, max=255), rgb(255,255,255, max=255)))
 
 Chart(a.matrix,
           legend.show = TRUE,
@@ -241,25 +239,3 @@ Chart(a.matrix,
           hover.include.source.value.prefix = "Staff count:",
           x.hovertext.decimals = 0,
           y.hovertext.decimals = 0)
-
-
-
-### Code for running unit tests off images / only works if you have API access to plotly. :(
-
-
-    # if (image.test)
-    # {
-    #     image.location <- getwd()
-    #
-    #     ## Load existing image
-    #     existing.image <- as.raster(readPNG(paste(image.location, "/images/", attr(qTab.examples[[i]]$y, "name"), ".png", sep = "")))
-    #
-    #     ## Load new image
-    #     new.image <- as.raster(readPNG(paste(image.location, "/", attr(qTab.examples[[i]]$y, "name"), ".png", sep = "")))
-    #
-    #     ## Test_that the images match, in the case of good examples
-    #     test_that(paste(names(qTab.examples[i])), {expect_that(all(existing.image == new.image), is_true())})
-    #
-    #     # cat(paste("Press [enter] to continue (test ", i, "/", length(good.examples), ").", sep = ""))
-    #     # line <- readline()
-    # }
