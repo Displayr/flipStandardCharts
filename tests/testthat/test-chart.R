@@ -1,4 +1,4 @@
-context("areaChart")
+context("Chart")
 
 library(plotly)
 library(flipChartBasics)
@@ -161,7 +161,7 @@ markerCols <- c(rgb(245,56,177, max=255),rgb(56,193,55, max=255),rgb(245,163,65,
 
 Chart(a.matrix,
           legend.show = FALSE,
-          type = "Area",
+          type = "Column",
           transparency = 0.4,
           colors = rgb(255, 255, 255, max=255),
           plot.fill.color = rgb(176, 191, 214, maxColorValue = 255),
@@ -215,7 +215,28 @@ a.matrix <- as.matrix(read.csv("C:/R/consumerspending.csv", header = TRUE, row.n
 ## Figure out colours
 col.scheme <- flipChartBasics::ChartColors(ncol(a.matrix), given.colors = c(rgb(112,48,160, max=255), rgb(255,255,255, max=255)))
 
-Chart(a.matrix,
+consumer.spending <- rbind(c(4304,4587,4842,4600,5093,5187,5120,5151,5228,5453,6044,6014,6382,6457,6616,7011,7417,7633,7759,7781,7801,8344,8508,8758,8604),
+c(228,219,230,232,242,261,274,276,275,268,259,269,255,264,273,300,319,308,320,290,288,319,327,323,317),
+c(132,141,140,142,150,157,153,163,162,166,165,162,159,164,161,159,146,141,139,127,130,126,117,118,116),
+c(1897,2016,2127,2175,2249,2472,2592,2787,2750,2908,2938,2964,3060,3223,3381,3436,3365,3737,3899,4055,4823,5204,5270,5336,5605),
+c(289,303,303,330,334,366,364,399,387,385,397,403,513,528,401,408,564,485,526,527,581,541,585,588,616),
+c(451,529,522,562,578,643,842,860,765,715,749,766,855,847,860,867,776,750,792,606,690,808,846,808,840),
+c(6674,7087,7292,7569,8079,8609,8703,9252,9477,9636,10106,10458,10747,11272,11713,12057,12319,13011,13283,13432,13918,15167,16366,16920,17109),
+c(1049,1108,1135,1135,1298,1407,1480,1554,1634,1776,1755,1732,1770,1841,1903,1959,2066,2182,2350,2416,2574,2664,2766,2853,2976),
+c(3290,3477,3448,3664,3748,4152,4296,4271,4723,4399,4411,4505,4698,4801,4810,5031,5158,5321,5375,5340,5781,5931,6111,6113,6443),
+c(1055,1170,1149,1193,1329,1424,1422,1472,1500,1626,1567,1612,1834,1813,1746,1891,1863,1953,2079,2060,2218,2388,2376,2698,2835),
+c(303,321,314,337,342,367,406,447,426,455,460,471,524,571,580,635,632,648,752,783,905,940,888,945,1046),
+c(706,805,746,741,693,900,816,950,958,961,960,925,940,1001,1109,1181,1192,1258,1277,1370,1408,1663,1869,1821,1737),
+c(1319,1420,1346,1446,1489,1582,1618,1735,1710,1676,1644,1704,1752,1729,1674,1743,1856,1743,1749,1640,1816,1886,1874,1881,1801),
+c(275,306,271,289,269,284,293,297,301,268,278,277,309,309,309,318,372,349,376,391,459,426,497,457,444))
+
+rownames(consumer.spending) <- c("Transportation", "Tobacco Products","Reading","Personal Insurance","Personal Care","Miscellaneous","Housing","Healthcare","Food","Entertainment","Education","Cash Contributions","Apparel","Alcoholic Beverages")
+colnames(consumer.spending) <- c("1984","1985","1986","1987","1988","1989","1990","1991","1992","1993","1994","1995","1996","1997","1998","1999","2000","2001","2002","2003","2004","2005","2006","2007","2008")
+
+consumer.spending
+
+
+Chart(consumer.spending,
           legend.show = TRUE,
           type = "100% Stacked Area",
           colors = col.scheme,
@@ -226,16 +247,26 @@ Chart(a.matrix,
           y.tick.format.manual = "%")
 
 # Excel equivalent "Stacked AC"
-a.matrix <- as.matrix(read.csv("C:/R/resources.csv", header = TRUE, row.names = 1))
+resources <- rbind(c(1,1,2,2,2,4,5,5,5),
+c(2,3,4,5,6,6,7,8,9),
+c(6,8,11,14,17,19,22,25,28),
+c(0,2,2,3,3,4,4,5,5),
+c(1,1,1,1,2,2,2,2,3))
 
-Chart(a.matrix,
+rownames(resources) <- c("Sales", "Ops (tech)", "Ops (field)", "Admin", "Accounts")
+colnames(resources) <- c("10", "15", "20", "25", "30", "35", "40", "45", "50")
+
+Chart(resources,
           legend.show = TRUE,
-          type = "Stacked Area",
+          type = "Stacked Column",
           transparency = 1,
           legend.ascending = FALSE,
           hover.mode = "x",
-          y.tick.decimals = 2,
+          y.tick.decimals = 0,
           hover.include.source.value = TRUE,
           hover.include.source.value.prefix = "Staff count:",
           x.hovertext.decimals = 0,
-          y.hovertext.decimals = 0)
+          y.hovertext.decimals = 0,
+          subtitle.text = "Wassail, wassail, all over the town!<br>Our bread it is white and our ale it is brown.  Our bowl it is made, of the green maple tree<br> In the wassail bowl we'll drink unto thee.",
+          subtitle.align = "right",
+          title = "Fancy Chart Title")

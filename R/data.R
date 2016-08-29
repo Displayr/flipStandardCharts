@@ -136,96 +136,141 @@
 
 #' Plotly objects created from dput structure out of Q or R for
 #' unit testing
-#'
 #' @format Plotly object
 "ex1.1"
 
 #' Plotly objects created from dput structure out of Q or R for
 #' unit testing
-#'
-#' @format Plotly object
-"ex1.2"
-
-#' Plotly objects created from dput structure out of Q or R for
-#' unit testing
-#'
 #' @format Plotly object
 "ex2.1"
 
 #' Plotly objects created from dput structure out of Q or R for
 #' unit testing
-#'
-#' @format Plotly object
-"ex2.2"
-
-#' Plotly objects created from dput structure out of Q or R for
-#' unit testing
-#'
 #' @format Plotly object
 "ex3.1"
 
 #' Plotly objects created from dput structure out of Q or R for
 #' unit testing
-#'
-#' @format Plotly object
-"ex3.2"
-
-#' Plotly objects created from dput structure out of Q or R for
-#' unit testing
-#'
 #' @format Plotly object
 "ex4.1"
 
 #' Plotly objects created from dput structure out of Q or R for
 #' unit testing
-#'
-#' @format Plotly object
-"ex4.2"
-
-#' Plotly objects created from dput structure out of Q or R for
-#' unit testing
-#'
 #' @format Plotly object
 "ex5.1"
 
 #' Plotly objects created from dput structure out of Q or R for
 #' unit testing
-#'
-#' @format Plotly object
-"ex5.2"
-
-#' Plotly objects created from dput structure out of Q or R for
-#' unit testing
-#'
 #' @format Plotly object
 "ex6.1"
 
 #' Plotly objects created from dput structure out of Q or R for
 #' unit testing
-#'
-#' @format Plotly object
-"ex6.2"
-
-#' Plotly objects created from dput structure out of Q or R for
-#' unit testing
-#'
 #' @format Plotly object
 "ex7.1"
 
 #' Plotly objects created from dput structure out of Q or R for
 #' unit testing
-#'
-#' @format Plotly object
-"ex7.2"
-
-#' Plotly objects created from dput structure out of Q or R for
-#' unit testing
-#'
 #' @format Plotly object
 "ex8.1"
 
 #' Plotly objects created from dput structure out of Q or R for
 #' unit testing
-#'
+#' @format Plotly object
+"ex9.1"
+
+#' Plotly objects created from dput structure out of Q or R for
+#' unit testing
+#' @format Plotly object
+"ex10.1"
+
+#' Plotly objects created from dput structure out of Q or R for
+#' unit testing
+#' @format Plotly object
+"ex11.1"
+
+#' Plotly objects created from dput structure out of Q or R for
+#' unit testing
+#' @format Plotly object
+"ex12.1"
+
+#' Plotly objects created from dput structure out of Q or R for
+#' unit testing
+#' @format Plotly object
+"ex13.1"
+
+#' Plotly objects created from dput structure out of Q or R for
+#' unit testing
+#' @format Plotly object
+"ex14.1"
+
+#' Plotly objects created from dput structure out of Q or R for
+#' unit testing
+#' @format Plotly object
+"ex1.2"
+
+#' Plotly objects created from dput structure out of Q or R for
+#' unit testing
+#' @format Plotly object
+"ex2.2"
+
+#' Plotly objects created from dput structure out of Q or R for
+#' unit testing
+#' @format Plotly object
+"ex3.2"
+
+#' Plotly objects created from dput structure out of Q or R for
+#' unit testing
+#' @format Plotly object
+"ex4.2"
+
+#' Plotly objects created from dput structure out of Q or R for
+#' unit testing
+#' @format Plotly object
+"ex5.2"
+
+#' Plotly objects created from dput structure out of Q or R for
+#' unit testing
+#' @format Plotly object
+"ex6.2"
+
+#' Plotly objects created from dput structure out of Q or R for
+#' unit testing
+#' @format Plotly object
+"ex7.2"
+
+#' Plotly objects created from dput structure out of Q or R for
+#' unit testing
 #' @format Plotly object
 "ex8.2"
+
+#' Plotly objects created from dput structure out of Q or R for
+#' unit testing
+#' @format Plotly object
+"ex9.2"
+
+#' Plotly objects created from dput structure out of Q or R for
+#' unit testing
+#' @format Plotly object
+"ex10.2"
+
+#' Plotly objects created from dput structure out of Q or R for
+#' unit testing
+#' @format Plotly object
+"ex11.2"
+
+#' Plotly objects created from dput structure out of Q or R for
+#' unit testing
+#' @format Plotly object
+"ex12.2"
+
+#' Plotly objects created from dput structure out of Q or R for
+#' unit testing
+#' @format Plotly object
+"ex13.2"
+
+#' Plotly objects created from dput structure out of Q or R for
+#' unit testing
+#' @format Plotly object
+"ex14.2"
+

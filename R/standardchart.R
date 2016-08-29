@@ -213,7 +213,8 @@
 #' @param hover.include.source.value.percent Logical; multiplies source data
 #' point value by 100.
 #' @param show.modebar Logical; whether to show the zoom menu buttons or not.
-#' @param subtitle.text Character; text string to appear as a sub-title
+#' @param subtitle.text Character; text string to appear as a sub-title.
+#' @param subtitle.align Character; either "left", "right", "center".
 #' @param subtitle.border.width Numeric; width in pixels of border around
 #' sub-title.
 #' @param subtitle.border.color Sub-title border color as a named color in
@@ -385,7 +386,7 @@ Chart <-   function(y,
                         x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                         x.tick.suffix = "",
                         x.tick.prefix = "",
-                        x.tick.decimals = 2,
+                        x.tick.decimals = 0,
                         x.tick.format.manual = "",
                         # x.hovertext.suffix = NULL,
                         # x.hovertext.prefix = NULL,
@@ -422,6 +423,7 @@ Chart <-   function(y,
                         hover.include.source.value.percent = FALSE,
                         show.modebar = FALSE,
                         subtitle.text = "",
+                        subtitle.align = "left",
                         subtitle.border.width = 0,
                         subtitle.border.color = "white",
                         subtitle.background.color = "white",
@@ -535,6 +537,9 @@ Chart <-   function(y,
 
     if (y.title == "FALSE" || y.title == FALSE)
         y.title <- ""
+
+    ## Store chart type for later use
+    original.type <- type
 
     # if (y.title == "" && !qinput)
     #     y.title <- table.axes.labels[2]
@@ -696,7 +701,7 @@ Chart <-   function(y,
     }
 
     # Settings specific to Pie charts
-    if (type == "Pie")
+    if (type == "Pie" || type == "Donut")
     {
         colors <- flipChartBasics::ChartColors(number.colors.needed = nrow(chart.matrix), given.colors = colors, reverse = colors.reverse)
         pie.groups.colors <- flipChartBasics::ChartColors(number.colors.needed = nrow(chart.matrix), given.colors = pie.groups.colors, reverse = pie.groups.colors.reverse)
@@ -813,14 +818,32 @@ Chart <-   function(y,
         # Allow some extra margin space
         subtitle.text <- as.vector(subtitle.text)
 
-        if (margin.top < 81)
-            margin.top <- ifelse(length(unlist(regmatches(subtitle.text, gregexpr("<br>", subtitle.text)))) > 1, (margin.top + length(unlist(regmatches(subtitle.text, gregexpr("<br>", subtitle.text)))) * subtitle.font.size), margin.top)
+        ## Attempt to determine y-position, which varies depending on chart type and chart data.
+        y.position <- max(chart.matrix)
+        if (!is.null(y.bounds.maximum))
+            y.position <- y.bounds.maximum
 
-        subtitle <- list(y = 1.15,
-                         x = 0.5,
+        if (original.type == "Bar" || original.type == "Stacked Bar" || original.type == "100% Stacked Bar")
+            y.position <- ncol(chart.matrix)
+
+        if (original.type == "100% Stacked Column")
+            y.position <- 1
+
+        if (original.type == "Stacked Column")
+            y.position <- max(apply(chart.matrix, 2, FUN = function(x) sum(x)))
+
+        if (subtitle.align == "left")
+            x.position = 0
+        else if (subtitle.align == "right")
+            x.position = 1
+        else
+            x.position = 0.5
+
+        subtitle <- list(y = y.position,
+                         x = x.position,
                          text = subtitle.text,
                          xref = "paper",
-                         yref = "paper",
+                         yref = "y",
                          showarrow = FALSE,
                          borderwidth = subtitle.border.width,
                          bordercolor = subtitle.border.color,
@@ -829,10 +852,12 @@ Chart <-   function(y,
                              color = subtitle.font.color,
                              size = subtitle.font.size,
                              family = subtitle.font.family
-                         )
+                         ),
+                         borderpad = 10,
+                         yanchor = "bottom",
+                         align = subtitle.align
         )
     }
-
 
     # Create text matrix of source data if required for hover
     source.matrix <- chart.matrix

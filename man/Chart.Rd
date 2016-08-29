@@ -41,7 +41,7 @@ Chart(y, type = "Area", transpose = FALSE, aggregate.period = "none",
   255), x.position = "bottom", x.mirror = FALSE,
   x.values.reversed = FALSE, x.grid.width = 0, x.grid.color = rgb(225,
   225, 225, maxColorValue = 255), x.tick.suffix = "", x.tick.prefix = "",
-  x.tick.decimals = 2, x.tick.format.manual = "",
+  x.tick.decimals = 0, x.tick.format.manual = "",
   x.hovertext.decimals = 5, x.hovertext.format.manual = "",
   x.tick.angle = 0, x.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),
   x.tick.font.family = "Arial", x.tick.font.size = 10,
@@ -61,7 +61,7 @@ Chart(y, type = "Area", transpose = FALSE, aggregate.period = "none",
   hover.include.source.value.prefix = "",
   hover.include.source.value.suffix = "",
   hover.include.source.value.percent = FALSE, show.modebar = FALSE,
-  subtitle.text = "", subtitle.border.width = 0,
+  subtitle.text = "", subtitle.align = "left", subtitle.border.width = 0,
   subtitle.border.color = "white", subtitle.background.color = "white",
   subtitle.font.family = "Arial", subtitle.font.color = rgb(0, 0, 0,
   maxColorValue = 255), subtitle.font.size = 10,
@@ -412,7 +412,9 @@ point value by 100.}
 
 \item{show.modebar}{Logical; whether to show the zoom menu buttons or not.}
 
-\item{subtitle.text}{Character; text string to appear as a sub-title}
+\item{subtitle.text}{Character; text string to appear as a sub-title.}
+
+\item{subtitle.align}{Character; either "left", "right", "center".}
 
 \item{subtitle.border.width}{Numeric; width in pixels of border around
 sub-title.}
