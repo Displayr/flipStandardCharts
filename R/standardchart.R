@@ -213,7 +213,8 @@
 #' @param hover.include.source.value.percent Logical; multiplies source data
 #' point value by 100.
 #' @param show.modebar Logical; whether to show the zoom menu buttons or not.
-#' @param subtitle.text Character; text string to appear as a sub-title.
+#' @param subtitle.text Character; text string to appear as a sub-title;
+#' defaults to NULL.
 #' @param subtitle.align Character; either "left", "right", "center".
 #' @param subtitle.border.width Numeric; width in pixels of border around
 #' sub-title.
@@ -422,7 +423,7 @@ Chart <-   function(y,
                         hover.include.source.value.suffix = "",
                         hover.include.source.value.percent = FALSE,
                         show.modebar = FALSE,
-                        subtitle.text = "",
+                        subtitle.text = NULL,
                         subtitle.align = "left",
                         subtitle.border.width = 0,
                         subtitle.border.color = "white",
@@ -811,27 +812,29 @@ Chart <-   function(y,
     else
         data.annotations <- list()
 
+    # Find maximum value in chart matrix; needed for subtitle positioning and setting y-axis limits
+    # Should more accurately be moved in to the chart-type functions.
+    y.max <- max(chart.matrix)
+    if (!is.null(y.bounds.maximum))
+        y.max <- y.bounds.maximum
+
+    if (original.type == "Bar" || original.type == "Stacked Bar" || original.type == "100% Stacked Bar")
+        y.max <- ncol(chart.matrix)
+
+    if (original.type == "100% Stacked Column")
+        y.max <- 1
+
+    if (original.type == "Stacked Column")
+        y.max <- max(apply(chart.matrix, 2, FUN = function(x) sum(x)))
+
     # Sort out the sub-title
     subtitle <- list()
-    if (subtitle.text != "")
+    if (!is.null(subtitle.text))
     {
         # Allow some extra margin space
         subtitle.text <- as.vector(subtitle.text)
 
         ## Attempt to determine y-position, which varies depending on chart type and chart data.
-        y.position <- max(chart.matrix)
-        if (!is.null(y.bounds.maximum))
-            y.position <- y.bounds.maximum
-
-        if (original.type == "Bar" || original.type == "Stacked Bar" || original.type == "100% Stacked Bar")
-            y.position <- ncol(chart.matrix)
-
-        if (original.type == "100% Stacked Column")
-            y.position <- 1
-
-        if (original.type == "Stacked Column")
-            y.position <- max(apply(chart.matrix, 2, FUN = function(x) sum(x)))
-
         if (subtitle.align == "left")
             x.position = 0
         else if (subtitle.align == "right")
@@ -839,7 +842,7 @@ Chart <-   function(y,
         else
             x.position = 0.5
 
-        subtitle <- list(y = y.position,
+        subtitle <- list(y = y.max,
                          x = x.position,
                          text = subtitle.text,
                          xref = "paper",
@@ -1050,17 +1053,20 @@ Chart <-   function(y,
     else if (!is.null(y.values) && !is.null(y.labels))
     {
         y.tickmode <- "array"
-        # y.autorange <- TRUE
         y.tickvals <- y.values
         y.ticktext <- y.labels
-        # y.range <- c(y.values[1], y.values[ncol(chart.matrix)])
     }
-    else
+    else if (!is.null(subtitle.text))
     {
-        y.tickmode <- "auto"
+        y.tickmode <- "array"
+        y.tickvals <- seq(0, y.max, y.max / 5)
+        y.ticktext <- seq(0, y.max, y.max / 5)
         y.autorange <- TRUE
         # if (!is.null(y.number.ticks))
         #     y.nticks <- y.number.ticks
+    } else {
+        y.tickmode <- "auto"
+        y.autorange <- TRUE
     }
 
     x.tickmode <- "auto"
@@ -1184,7 +1190,7 @@ Chart <-   function(y,
         hoverinfo = paste(axis.to.show, show.series.name, sep = "")
 
     ## Build annotations list
-    if (subtitle.text != "")
+    if (!is.null(subtitle.text))
         data.annotations[[length(data.annotations) + 1]] <- subtitle
 
     ## Hide legend if only one series to plot

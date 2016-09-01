@@ -207,6 +207,11 @@
 #' Plotly objects created from dput structure out of Q or R for
 #' unit testing
 #' @format Plotly object
+"ex15.1"
+
+#' Plotly objects created from dput structure out of Q or R for
+#' unit testing
+#' @format Plotly object
 "ex1.2"
 
 #' Plotly objects created from dput structure out of Q or R for
@@ -274,3 +279,7 @@
 #' @format Plotly object
 "ex14.2"
 
+#' Plotly objects created from dput structure out of Q or R for
+#' unit testing
+#' @format Plotly object
+"ex15.2"

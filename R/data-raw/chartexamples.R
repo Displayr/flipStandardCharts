@@ -103,7 +103,8 @@ qTab.examples <- list("ex1 - Area - Pick One by Pick One" = list(y = structure(c
                                                                   .Dim = c(10L, 2L), statistic = "n", .Dimnames = list(c("Less than 18", "18 to 24",
                                                                   "25 to 29", "30 to 34", "35 to 39", "40 to 44", "45 to 49", "50 to 54", "55 to 64",
                                                                   "65 or more"), c("Male", "Female")), name = "Y.Pick.One.by.X.Pick.One.Area.Chart", questions =
-                                                                   c("Q3. Age", "Q2. Gender")), transpose = TRUE, type = "Area"),
+                                                                   c("Q3. Age", "Q2. Gender")), transpose = TRUE, type = "Area",
+                                                                   subtitle.text = NULL),
                       "ex2 - Area - Y Number Multi" = list(y = structure(c(2.98165137614679, 4.11009174311927, 3.07339449541284,
                                                               2.63302752293578, 3.34862385321101, 2.45565749235474, 3.40366972477064,
                                                               3.52905198776758, 4.02752293577982, 2.28440366972477), .Dim = 10L, statistic = "Average", .Dimnames = list(
@@ -114,13 +115,15 @@ qTab.examples <- list("ex1 - Area - Pick One by Pick One" = list(y = structure(c
                                                               "I think it is important to follow and maintain traditions",
                                                               "I enjoy being attractive to the opposite sex", "I am young at heart",
                                                               "I follow all the latest fashions")), name = "Y.Number.Multi.Area.Chart", questions = c("Q25. Respondent image (number multi)",
-                                                              "SUMMARY")), transpose = FALSE, type = "Area"),
+                                                              "SUMMARY")), transpose = FALSE, type = "Area",
+                                                               subtitle.text = NULL),
                       "ex3 - Area - Y Number by Pick One" = list(y = structure(c(2.92537313432836, 3.01666666666667, 3.02380952380952,
                                                               3.08, 3.22222222222222, 2.91666666666667), .Dim = c(1L, 6L), statistic = "Average", .Dimnames = list(
                                                               "My friends would describe me as cultured, and refined",
                                                               c("Coca Cola", "Coke Zero", "Diet Coke", "Pepsi", "Pepsi Light",
                                                               "Pepsi Max")), name = "Y.Number.by.X.Pick.One.Area.Chart", questions = c("My friends would describe me as cultured, and refined",
-                                                              "Global frequentCola - Categorical")), transpose = FALSE, type = "Area"),
+                                                              "Global frequentCola - Categorical")), transpose = FALSE, type = "Area",
+                                                               subtitle.text = NULL),
                       "ex4 - Area - Y Pick One by X Pick One for stacked example" = list(y = structure(c(0, 26, 17, 13, 20, 12, 6, 19, 14, 7, 0, 8, 10, 6,
                                                                6, 4, 8, 8, 8, 2, 0, 2, 3, 4, 8, 6, 3, 6, 8, 2, 0, 4, 0, 4, 1,
                                                                3, 3, 1, 7, 2, 0, 0, 1, 1, 0, 3, 2, 2, 4, 5, 0, 4, 8, 5, 1, 7,
@@ -129,7 +132,8 @@ qTab.examples <- list("ex1 - Area - Pick One by Pick One" = list(y = structure(c
                                                                "40 to 44", "45 to 49", "50 to 54", "55 to 64", "65 or more"
                                                                ), c("Coca Cola", "Coke Zero", "Diet Coke", "Pepsi", "Pepsi Light",
                                                                "Pepsi Max")), name = "Y.Pick.One.by.X.Pick.One.stacked.Area.Chart", questions = c("Q3. Age",
-                                                               "Global frequentCola - Categorical")), transpose = TRUE, type = "Stacked Area"),
+                                                               "Global frequentCola - Categorical")), transpose = TRUE, type = "Stacked Area",
+                                                               subtitle.text = NULL),
                       "ex5 - Area - Y Pick One by X Pick One for 100pct stacked example" = list(y = structure(c(0, 26, 17, 13, 20, 12, 6, 19, 14, 7, 0, 8, 10, 6,
                                                                6, 4, 8, 8, 8, 2, 0, 2, 3, 4, 8, 6, 3, 6, 8, 2, 0, 4, 0, 4, 1,
                                                                3, 3, 1, 7, 2, 0, 0, 1, 1, 0, 3, 2, 2, 4, 5, 0, 4, 8, 5, 1, 7,
@@ -138,24 +142,29 @@ qTab.examples <- list("ex1 - Area - Pick One by Pick One" = list(y = structure(c
                                                                "40 to 44", "45 to 49", "50 to 54", "55 to 64", "65 or more"
                                                                ), c("Coca Cola", "Coke Zero", "Diet Coke", "Pepsi", "Pepsi Light",
                                                                "Pepsi Max")), name = "Y.Pick.One.by.X.Pick.One.100pct.stacked.Area.Chart", questions = c("Q3. Age",
-                                                               "Global frequentCola - Categorical")), transpose = TRUE, type = "100% Stacked Area"),
+                                                               "Global frequentCola - Categorical")), transpose = TRUE, type = "100% Stacked Area",
+                                                               subtitle.text = NULL),
                       "ex6 - Area - R-generated named table" = list(y = structure(c(0L, 0L, 0L, 0L, 1L, 0L, 0L, 0L, 1L, 0L, 0L, 0L, 1L,
                                                                0L, 0L, 0L, 1L, 0L, 0L, 0L, 1L, 0L, 0L, 0L, 0L), .Dim = c(5L,
                                                                5L), .Dimnames = structure(list(var1 = c("1", "2", "3", "4",
                                                                "5"), var2 = c("1", "2", "3", "4", "5")), .Names = c("var1",
-                                                               "var2")), class = "table", name = "R-generated.named.table"), type = "Area", transpose = FALSE),
+                                                               "var2")), class = "table", name = "R-generated.named.table"), type = "Area", transpose = FALSE,
+                                                               subtitle.text = NULL),
                       "ex7 - Area - R-generated named numeric matrix" = list(y = structure(c(1L, 2L, 3L, 4L, 5L, 1L, 2L, 3L, 4L, 5L), .Dim = c(5L,
                                                                2L), .Dimnames = list(c("A", "B", "C", "D", "E"), c("Series 1",
-                                                               "Series 2")), name = "R-generated.named.numeric.matrix"), type = "Area", transpose = TRUE),
+                                                               "Series 2")), name = "R-generated.named.numeric.matrix"), type = "Area", transpose = TRUE,
+                                                               subtitle.text = NULL),
                       "ex8 - Area - R-generated named numeric data frame" = list(y = structure(list(A = c(4L, 10L, 8L, 1L, 5L, 6L, 9L, 2L, 3L, 7L),
                                                                B = c(8L, 3L, 2L, 4L, 10L, 7L, 5L, 1L, 6L, 9L)), .Names = c("A",
                                                                "B"), row.names = c("A", "B", "C", "D", "E", "F", "G", "H", "I",
-                                                               "J"), name = "R-generated.named.numeric.data.frame", class = "data.frame"), type = "Area", transpose = TRUE),
+                                                               "J"), name = "R-generated.named.numeric.data.frame", class = "data.frame"), type = "Area", transpose = TRUE,
+                                                               subtitle.text = NULL),
                       "ex9 - Line - Pick One by Pick One" = list(y = structure(c(0, 22, 18, 15, 16, 19, 13, 18, 27, 12, 0, 22, 21, 18, 20, 16, 14, 22, 24, 10),
                                                                   .Dim = c(10L, 2L), statistic = "n", .Dimnames = list(c("Less than 18", "18 to 24",
                                                                   "25 to 29", "30 to 34", "35 to 39", "40 to 44", "45 to 49", "50 to 54", "55 to 64",
                                                                   "65 or more"), c("Male", "Female")), name = "Y.Pick.One.by.X.Pick.One.Line.Chart", questions =
-                                                                   c("Q3. Age", "Q2. Gender")), transpose = TRUE, type = "Line"),
+                                                                   c("Q3. Age", "Q2. Gender")), transpose = TRUE, type = "Line",
+                                                               subtitle.text = NULL),
                       "ex10 - Line - Y Number Multi" = list(y = structure(c(2.98165137614679, 4.11009174311927, 3.07339449541284,
                                                               2.63302752293578, 3.34862385321101, 2.45565749235474, 3.40366972477064,
                                                               3.52905198776758, 4.02752293577982, 2.28440366972477), .Dim = 10L, statistic = "Average", .Dimnames = list(
@@ -166,25 +175,35 @@ qTab.examples <- list("ex1 - Area - Pick One by Pick One" = list(y = structure(c
                                                               "I think it is important to follow and maintain traditions",
                                                               "I enjoy being attractive to the opposite sex", "I am young at heart",
                                                               "I follow all the latest fashions")), name = "Y.Number.Multi.Line.Chart", questions = c("Q25. Respondent image (number multi)",
-                                                              "SUMMARY")), transpose = FALSE, type = "Line"),
+                                                              "SUMMARY")), transpose = FALSE, type = "Line",
+                                                               subtitle.text = NULL),
                       "ex11 - Line - Y Number by Pick One" = list(y = structure(c(2.92537313432836, 3.01666666666667, 3.02380952380952,
                                                               3.08, 3.22222222222222, 2.91666666666667), .Dim = c(1L, 6L), statistic = "Average", .Dimnames = list(
                                                               "My friends would describe me as cultured, and refined",
                                                               c("Coca Cola", "Coke Zero", "Diet Coke", "Pepsi", "Pepsi Light",
                                                               "Pepsi Max")), name = "Y.Number.by.X.Pick.One.Line.Chart", questions = c("My friends would describe me as cultured, and refined",
-                                                              "Global frequentCola - Categorical")), transpose = FALSE, type = "Line"),
+                                                              "Global frequentCola - Categorical")), transpose = FALSE, type = "Line",
+                                                               subtitle.text = NULL),
                       "ex12 - Line - R-generated named table" = list(y = structure(c(0L, 0L, 0L, 0L, 1L, 0L, 0L, 0L, 1L, 0L, 0L, 0L, 1L,
                                                                0L, 0L, 0L, 1L, 0L, 0L, 0L, 1L, 0L, 0L, 0L, 0L), .Dim = c(5L,
                                                                5L), .Dimnames = structure(list(var1 = c("1", "2", "3", "4",
                                                                "5"), var2 = c("1", "2", "3", "4", "5")), .Names = c("var1",
-                                                               "var2")), class = "table", name = "R-generated.named.table"), type = "Line", transpose = FALSE),
+                                                               "var2")), class = "table", name = "R-generated.named.table"), type = "Line", transpose = FALSE,
+                                                               subtitle.text = NULL),
                       "ex13 - Line - R-generated named numeric matrix" = list(y = structure(c(1L, 2L, 3L, 4L, 5L, 1L, 2L, 3L, 4L, 5L), .Dim = c(5L,
                                                                2L), .Dimnames = list(c("A", "B", "C", "D", "E"), c("Series 1",
-                                                               "Series 2")), name = "R-generated.named.numeric.matrix"), type = "Line", transpose = TRUE),
+                                                               "Series 2")), name = "R-generated.named.numeric.matrix"), type = "Line", transpose = TRUE,
+                                                               subtitle.text = NULL),
                       "ex14 - Line - R-generated named numeric data frame" = list(y = structure(list(A = c(4L, 10L, 8L, 1L, 5L, 6L, 9L, 2L, 3L, 7L),
                                                                B = c(8L, 3L, 2L, 4L, 10L, 7L, 5L, 1L, 6L, 9L)), .Names = c("A",
                                                                "B"), row.names = c("A", "B", "C", "D", "E", "F", "G", "H", "I",
-                                                               "J"), name = "R-generated.named.numeric.data.frame", class = "data.frame"), type = "Line", transpose = TRUE))
+                                                               "J"), name = "R-generated.named.numeric.data.frame", class = "data.frame"), type = "Line", transpose = TRUE,
+                                                               subtitle.text = NULL),
+                      "ex15 - Area - R-generated named numeric data frame with subtitle" = list(y = structure(list(A = c(4L, 10L, 8L, 1L, 5L, 6L, 9L, 2L, 3L, 7L),
+                                                               B = c(8L, 3L, 2L, 4L, 10L, 7L, 5L, 1L, 6L, 9L)), .Names = c("A",
+                                                               "B"), row.names = c("A", "B", "C", "D", "E", "F", "G", "H", "I",
+                                                               "J"), name = "R-generated.named.numeric.data.frame", class = "data.frame"), type = "Area", transpose = TRUE,
+                                                               subtitle.text = "in magnis siquidem corporibus aut certe maioribus facilis officina sequaci<br>materia fuit: in his tam parvis atque tam nullis..."))
 
 qTab.bad.examples <- list("Cannot take unnamed matrix" = list(y = structure(c(0, 22, 18, 15, 16, 19, 13, 18, 27, 12, 0, 22, 21, 18, 20, 16, 14, 22, 24, 10),
                                                                   .Dim = c(10L, 2L), statistic = "n", name = "Y.Pick.One.by.X.Pick.One.Area.Chart", questions =
@@ -227,8 +246,8 @@ replace_null <- function(x) {
 for (i in 1:length(qTab.examples))
 {
     example.number <- i
-    assign(paste("ex", i, ".1", sep = ""), as.list(plotly_build(Chart(y = qTab.examples[[example.number]]$y, type = qTab.examples[[example.number]]$type, transpose = qTab.examples[[example.number]]$transpose, title = attr(qTab.examples[[example.number]]$y, "name")))[[1]]))
-    assign(paste("ex", i, ".2", sep = ""), as.list(plotly_build(Chart(y = qTab.examples[[example.number]]$y, type = qTab.examples[[example.number]]$type, transpose = qTab.examples[[example.number]]$transpose, title = attr(qTab.examples[[example.number]]$y, "name")))[[2]]))
+    assign(paste("ex", i, ".1", sep = ""), as.list(plotly_build(Chart(y = qTab.examples[[example.number]]$y, type = qTab.examples[[example.number]]$type, transpose = qTab.examples[[example.number]]$transpose, title = attr(qTab.examples[[example.number]]$y, "name"), subtitle.text = qTab.examples[[example.number]]$subtitle.text))[[1]]))
+    assign(paste("ex", i, ".2", sep = ""), as.list(plotly_build(Chart(y = qTab.examples[[example.number]]$y, type = qTab.examples[[example.number]]$type, transpose = qTab.examples[[example.number]]$transpose, title = attr(qTab.examples[[example.number]]$y, "name"), subtitle.text = qTab.examples[[example.number]]$subtitle.text))[[2]]))
 }
 
 ex1.1 <- replace_zero_length(ex1.1)
@@ -246,7 +265,6 @@ ex12.1 <- replace_zero_length(ex12.1)
 ex13.1 <- replace_zero_length(ex13.1)
 ex14.1 <- replace_zero_length(ex14.1)
 ex15.1 <- replace_zero_length(ex15.1)
-ex16.1 <- replace_zero_length(ex16.1)
 ex1.2 <- replace_zero_length(ex1.2)
 ex2.2 <- replace_zero_length(ex2.2)
 ex3.2 <- replace_zero_length(ex3.2)
@@ -261,6 +279,7 @@ ex11.2 <- replace_zero_length(ex11.2)
 ex12.2 <- replace_zero_length(ex12.2)
 ex13.2 <- replace_zero_length(ex13.2)
 ex14.2 <- replace_zero_length(ex14.2)
+ex15.2 <- replace_zero_length(ex15.2)
 
 ex1.1 <- replace_null(ex1.1)
 ex2.1 <- replace_null(ex2.1)
@@ -277,7 +296,6 @@ ex12.1 <- replace_null(ex12.1)
 ex13.1 <- replace_null(ex13.1)
 ex14.1 <- replace_null(ex14.1)
 ex15.1 <- replace_null(ex15.1)
-ex16.1 <- replace_null(ex16.1)
 ex1.2 <- replace_null(ex1.2)
 ex2.2 <- replace_null(ex2.2)
 ex3.2 <- replace_null(ex3.2)
@@ -292,6 +310,7 @@ ex11.2 <- replace_null(ex11.2)
 ex12.2 <- replace_null(ex12.2)
 ex13.2 <- replace_null(ex13.2)
 ex14.2 <- replace_null(ex14.2)
+ex15.2 <- replace_null(ex15.2)
 
 
 
@@ -320,5 +339,5 @@ plotlySymbols <- plotlySymbols <- c(0,100,200,300,1,101,201,301,2,102,202,302,3,
 available.fonts <- c("Arial Black", "Arial", "Comic Sans MS", "Courier New", "Georgia", "Impact", "Lucida Console", "Lucida Sans Unicode", "Marlett", "Symbol", "Tahoma", "Times New Roman", "Trebuchet MS", "Verdana", "Webdings")
 
 devtools::use_data(qTab.examples, qTab.bad.examples, character.matrix, qColors, plotlySymbols, available.fonts, x.data, y.data, var1, var2, var3, var4, var5, alpha.five, logic.vector, logic.vector.named, named.vector.a, named.vector.b, factor.a, factor.b, x.dates, z, good.examples, bad.examples, errorAsChartMatrix.examples, errorIsChartMatrix.examples,
-                   ex1.1, ex2.1, ex3.1, ex4.1, ex5.1, ex6.1, ex7.1, ex8.1, ex9.1, ex10.1, ex11.1, ex12.1, ex13.1, ex14.1, ex1.2, ex2.2, ex3.2, ex4.2, ex5.2, ex6.2, ex7.2, ex8.2, ex9.2, ex10.2, ex11.2, ex12.2, ex13.2, ex14.2, internal = FALSE, overwrite = TRUE)
+                   ex1.1, ex2.1, ex3.1, ex4.1, ex5.1, ex6.1, ex7.1, ex8.1, ex9.1, ex10.1, ex11.1, ex12.1, ex13.1, ex14.1, ex15.1, ex1.2, ex2.2, ex3.2, ex4.2, ex5.2, ex6.2, ex7.2, ex8.2, ex9.2, ex10.2, ex11.2, ex12.2, ex13.2, ex14.2, ex15.2, internal = FALSE, overwrite = TRUE)
 devtools::use_data(qColors, plotlySymbols, available.fonts, internal = TRUE, overwrite = TRUE)

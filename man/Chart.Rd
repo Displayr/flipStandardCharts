@@ -61,13 +61,14 @@ Chart(y, type = "Area", transpose = FALSE, aggregate.period = "none",
   hover.include.source.value.prefix = "",
   hover.include.source.value.suffix = "",
   hover.include.source.value.percent = FALSE, show.modebar = FALSE,
-  subtitle.text = "", subtitle.align = "left", subtitle.border.width = 0,
-  subtitle.border.color = "white", subtitle.background.color = "white",
-  subtitle.font.family = "Arial", subtitle.font.color = rgb(0, 0, 0,
-  maxColorValue = 255), subtitle.font.size = 10,
-  global.font.family.override = "", global.font.color.override = rgb(0, 0,
-  0, maxColorValue = 255), rows.to.ignore = "", cols.to.ignore = "",
-  bar.gap = 0.15, bar.group.gap = NULL, bar.data.label.offset = NULL,
+  subtitle.text = NULL, subtitle.align = "left",
+  subtitle.border.width = 0, subtitle.border.color = "white",
+  subtitle.background.color = "white", subtitle.font.family = "Arial",
+  subtitle.font.color = rgb(0, 0, 0, maxColorValue = 255),
+  subtitle.font.size = 10, global.font.family.override = "",
+  global.font.color.override = rgb(0, 0, 0, maxColorValue = 255),
+  rows.to.ignore = "", cols.to.ignore = "", bar.gap = 0.15,
+  bar.group.gap = NULL, bar.data.label.offset = NULL,
   bar.data.label.family = "Arial", bar.data.label.size = 10,
   bar.data.label.color = rgb(0, 0, 0, maxColorValue = 255),
   bar.data.label.decimals = 0, bar.data.label.as.percent = FALSE,
@@ -412,7 +413,8 @@ point value by 100.}
 
 \item{show.modebar}{Logical; whether to show the zoom menu buttons or not.}
 
-\item{subtitle.text}{Character; text string to appear as a sub-title.}
+\item{subtitle.text}{Character; text string to appear as a sub-title;
+defaults to NULL.}
 
 \item{subtitle.align}{Character; either "left", "right", "center".}
 
