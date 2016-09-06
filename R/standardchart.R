@@ -274,6 +274,8 @@
 #' @param pie.values.order Character; "descending", "initial", or
 #' "alphabetical"; default is "descending" sort on values; "alphabetical"
 #' sorts on labels.
+#' @param pie.values.decimals Numeric; number of decimal points to show;
+#' defaults to zero.
 #' @param pie.labels.font.family Character; font family for label text.
 #' @param pie.labels.font.size Numeric; font size for label text
 #' @param pie.labels.font.color A single color for label text.
@@ -282,6 +284,9 @@
 #' or next to (FALSE) the chart.
 #' @param pie.groups.font.family Character; font family for group labels
 #' @param pie.groups.font.size Numeric; font size of group label text
+#' @param pie.groups.font.color A single color for group label text.
+#' @param pie.groups.minFontSize Numeric; minimum font size of group label
+#' text.
 #' @param pie.groups.order Character; "descending", "initial", or
 #' "alphabetical"; default is "descending" sort on values; "alphabetical"
 #' sorts on labels.
@@ -289,10 +294,12 @@
 #' segments.
 #' @param pie.segment.color.gradient Logical; if no pie.segment.colors are
 #' specified, a gradient will be generated.
-#' @param pie.inner.radius Numeric; must be passed as a percentage value,
-#' e.g. 75; produces a donut chart; default is 0 (pie chart)
-#' @param pie.max.label.length Numeric; maximum character length before
-#' wrapping of labels.
+#' @param pie.groups.radius Numeric; must be passed as a proportion out of
+#' 100 (e.g. 75); specifies the radius of the groups where the data are 2D;
+#' only relevant to pit charts; defaults to 70.
+#' @param donut.hole.radius Numeric; must be passed as a proportion out of
+#' 100 (e.g. 75); specifies the radius of the donut hole; only relevant to
+#' donut charts; defaults to 70.
 #' @examples
 #' data("z")
 #' z <- cbind(z, z[,1])
@@ -447,24 +454,27 @@ Chart <-   function(y,
                         pie.values.font.size = 10,
                         pie.values.prefix = "",
                         pie.values.suffix = "",
-                        pie.values.display.format = "%",
+                        pie.values.display.format = "",
                         pie.values.thres.percent = 0.3,
                         pie.values.order = "initial",
+                        pie.values.decimals = 0,
                         pie.labels.font.family = "Arial",
                         pie.labels.font.size = 10,
-                        pie.labels.font.color =  rgb(44, 44, 44, maxColorValue = 255),
+                        pie.labels.font.color = rgb(44, 44, 44, maxColorValue = 255),
                         pie.labels.minFontSize = 8,
                         pie.labels.inner = FALSE,
                         pie.groups.font.family = "Arial",
                         pie.groups.font.size = 10,
+                        pie.groups.font.color = rgb(44, 44, 44, maxColorValue = 255),
+                        pie.groups.minFontSize = 8,
                         pie.groups.colors = NULL,
                         pie.groups.colors.reverse = FALSE,
                         pie.groups.order = "descending",
+                        pie.groups.radius = 60,
                         pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
                         pie.segment.color.gradient = FALSE,
-                        pie.inner.radius = 0,
-                        pie.max.label.length = 60
-                        )
+                        donut.hole.radius = 0
+                    )
 {
     chart.matrix <- y
 
@@ -704,58 +714,70 @@ Chart <-   function(y,
     # Settings specific to Pie charts
     if (type == "Pie" || type == "Donut")
     {
-        colors <- flipChartBasics::ChartColors(number.colors.needed = nrow(chart.matrix), given.colors = colors, reverse = colors.reverse)
-        pie.groups.colors <- flipChartBasics::ChartColors(number.colors.needed = nrow(chart.matrix), given.colors = pie.groups.colors, reverse = pie.groups.colors.reverse)
+        # colors <- flipChartBasics::ChartColors(number.colors.needed = nrow(chart.matrix), given.colors = colors, reverse = colors.reverse)
+        # pie.groups.colors <- flipChartBasics::ChartColors(number.colors.needed = nrow(chart.matrix), given.colors = pie.groups.colors, reverse = pie.groups.colors.reverse)
 
         pie <- pieChart(chart.matrix = chart.matrix,
                 transpose = transpose,
+                type = type,
+                values.color = colors,
+                colors.reverse = colors.reverse,
                 pie.values.font.family = pie.values.font.family,
                 pie.values.font.size = pie.values.font.size,
-                pie.segment.colors = colors,
                 pie.values.prefix = pie.values.prefix,
                 pie.values.suffix = pie.values.suffix,
                 pie.values.display.format = pie.values.display.format,
                 pie.values.thres.percent = pie.values.thres.percent,
                 pie.values.order = pie.values.order,
+                pie.values.decimals = pie.values.decimals,
                 pie.labels.font.family = pie.labels.font.family,
                 pie.labels.font.size = pie.labels.font.size,
-                pie.labels.font.color =  pie.labels.font.color,
+                pie.labels.font.color = pie.labels.font.color,
                 pie.labels.minFontSize = pie.labels.minFontSize,
                 pie.labels.inner = pie.labels.inner,
                 pie.groups.font.family = pie.groups.font.family,
                 pie.groups.font.size = pie.groups.font.size,
+                pie.groups.font.color = pie.groups.font.color,
+                pie.groups.minFontSize = pie.groups.minFontSize,
                 pie.groups.colors = pie.groups.colors,
+                pie.groups.colors.reverse = pie.groups.colors.reverse,
                 pie.groups.order = pie.groups.order,
+                pie.groups.radius = pie.groups.radius,
                 pie.border.color = pie.border.color,
                 pie.segment.color.gradient = pie.segment.color.gradient,
-                pie.inner.radius = pie.inner.radius,
-                pie.max.label.length = pie.max.label.length)
+                donut.hole.radius = donut.hole.radius)
 
-        return(rhtmlDonut::Donut(values = pie$values,
+        return(rhtmlDonut::Donut(values = pie$values.data,
                                  labels = pie$labels,
-                                 values.font = pie$values.font,
-                                 values.size = pie$values.size,
-                                 values.color = pie$values.color,
-                                 values.display = pie$values.display,
-                                 values.thres = pie$values.thres,
-                                 values.order = pie$values.order,
-                                 labels.font = pie$labels.font,
-                                 labels.size = pie$labels.size,
-                                 labels.color = pie$labels.color,
-                                 labels.minFontSize = pie$minFontSize,
-                                 labels.inner = pie$labels.inner,
+                                 values.color = pie$pie.values.color,
+                                 values.order = pie$pie.values.order,
+                                 values.font.family = pie$pie.values.font.family,
+                                 values.font.size = pie$pie.values.font.size,
+                                 values.decimal.places = pie$pie.values.decimals,
+                                 values.display.as = pie$values.display,
+                                 values.display.thres = pie$pie.values.thres.percent,
+                                 labels.font.family = pie$pie.labels.font.family,
+                                 labels.font.color = pie$pie.labels.font.color,
+                                 labels.font.size = pie$pie.labels.font.size,
+                                 labels.min.font.size = pie$pie.labels.minFontSize,
+                                 labels.inner = pie$pie.labels.inner,
                                  groups = pie$groups,
-                                 groups.font = pie$groups.font,
-                                 groups.size = pie$groups.size,
-                                 groups.color = pie$groups.color,
-                                 groups.order = pie$groups.order,
-                                 prefix = pie$prefix,
-                                 suffix = pie$suffix,
-                                 border.color = pie$border.color,
-                                 gradient = pie$gradient,
-                                 inner.radius = pie$inner.radius,
-                                 max.label.length = pie$max.label.length))
-
+                                 groups.color = pie$pie.groups.colors,
+                                 groups.order = pie$pie.groups.order,
+                                 groups.font.family = pie$pie.groups.font.family,
+                                 groups.font.color = pie$pie.groups.font.color,
+                                 groups.font.size = pie$pie.groups.font.size,
+                                 groups.min.font.size = pie$pie.groups.min.font.size,
+                                 title = title,
+                                 title.font.family = title.font.family,
+                                 title.font.size = title.font.size,
+                                 title.font.color = title.font.color,
+                                 prefix = pie$pie.values.prefix,
+                                 suffix = pie$pie.values.suffix,
+                                 border.color = pie$pie.border.color,
+                                 gradient = pie$pie.segment.color.gradient,
+                                 inner.radius = pie$inner.radius
+                                 ))
     }
 
     ## Waterfall (part of column charts, really...)

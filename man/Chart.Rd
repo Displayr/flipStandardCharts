@@ -74,16 +74,18 @@ Chart(y, type = "Area", transpose = FALSE, aggregate.period = "none",
   bar.data.label.decimals = 0, bar.data.label.as.percent = FALSE,
   pie.values.font.family = "Arial", pie.values.font.size = 10,
   pie.values.prefix = "", pie.values.suffix = "",
-  pie.values.display.format = "\%", pie.values.thres.percent = 0.3,
-  pie.values.order = "initial", pie.labels.font.family = "Arial",
-  pie.labels.font.size = 10, pie.labels.font.color = rgb(44, 44, 44,
-  maxColorValue = 255), pie.labels.minFontSize = 8,
-  pie.labels.inner = FALSE, pie.groups.font.family = "Arial",
-  pie.groups.font.size = 10, pie.groups.colors = NULL,
+  pie.values.display.format = "", pie.values.thres.percent = 0.3,
+  pie.values.order = "initial", pie.values.decimals = 0,
+  pie.labels.font.family = "Arial", pie.labels.font.size = 10,
+  pie.labels.font.color = rgb(44, 44, 44, maxColorValue = 255),
+  pie.labels.minFontSize = 8, pie.labels.inner = FALSE,
+  pie.groups.font.family = "Arial", pie.groups.font.size = 10,
+  pie.groups.font.color = rgb(44, 44, 44, maxColorValue = 255),
+  pie.groups.minFontSize = 8, pie.groups.colors = NULL,
   pie.groups.colors.reverse = FALSE, pie.groups.order = "descending",
-  pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
-  pie.segment.color.gradient = FALSE, pie.inner.radius = 0,
-  pie.max.label.length = 60)
+  pie.groups.radius = 60, pie.border.color = rgb(255, 255, 255,
+  maxColorValue = 255), pie.segment.color.gradient = FALSE,
+  donut.hole.radius = 0)
 }
 \arguments{
 \item{y}{A table or matrix.}
@@ -494,6 +496,9 @@ which labels should not be shown.  Default 0.3\%.}
 "alphabetical"; default is "descending" sort on values; "alphabetical"
 sorts on labels.}
 
+\item{pie.values.decimals}{Numeric; number of decimal points to show;
+defaults to zero.}
+
 \item{pie.labels.font.family}{Character; font family for label text.}
 
 \item{pie.labels.font.size}{Numeric; font size for label text}
@@ -509,6 +514,11 @@ or next to (FALSE) the chart.}
 
 \item{pie.groups.font.size}{Numeric; font size of group label text}
 
+\item{pie.groups.font.color}{A single color for group label text.}
+
+\item{pie.groups.minFontSize}{Numeric; minimum font size of group label
+text.}
+
 \item{pie.groups.colors}{Character; a vector containing one or more named
 colors from grDevices OR one or more specified hex value colors OR a single
 named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
@@ -520,17 +530,19 @@ should be reversed.}
 "alphabetical"; default is "descending" sort on values; "alphabetical"
 sorts on labels.}
 
+\item{pie.groups.radius}{Numeric; must be passed as a proportion out of
+100 (e.g. 75); specifies the radius of the groups where the data are 2D;
+only relevant to pit charts; defaults to 70.}
+
 \item{pie.border.color}{A single color for space around pie and between
 segments.}
 
 \item{pie.segment.color.gradient}{Logical; if no pie.segment.colors are
 specified, a gradient will be generated.}
 
-\item{pie.inner.radius}{Numeric; must be passed as a percentage value,
-e.g. 75; produces a donut chart; default is 0 (pie chart)}
-
-\item{pie.max.label.length}{Numeric; maximum character length before
-wrapping of labels.}
+\item{donut.hole.radius}{Numeric; must be passed as a proportion out of
+100 (e.g. 75); specifies the radius of the donut hole; only relevant to
+donut charts; defaults to 70.}
 
 \item{bar.data.label}{Integer or Character; the offset from the top end of a
 column measured in y-axis units.}
