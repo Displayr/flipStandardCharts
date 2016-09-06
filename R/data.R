@@ -209,6 +209,21 @@
 #' @format Plotly object
 "ex15.1"
 
+#' rhtmlDonut objects created from dput structure out of Q or R for
+#' unit testing
+#' @format rhtmlDonut object
+"ex16.1"
+
+#' rhtmlDonut objects created from dput structure out of Q or R for
+#' unit testing
+#' @format rhtmlDonut object
+"ex17.1"
+
+#' rhtmlDonut objects created from dput structure out of Q or R for
+#' unit testing
+#' @format rhtmlDonut object
+"ex18.1"
+
 #' Plotly objects created from dput structure out of Q or R for
 #' unit testing
 #' @format Plotly object
@@ -283,3 +298,18 @@
 #' unit testing
 #' @format Plotly object
 "ex15.2"
+
+#' rhtmlDonut objects created from dput structure out of Q or R for
+#' unit testing
+#' @format rhtmlDonut object
+"ex16.2"
+
+#' rhtmlDonut objects created from dput structure out of Q or R for
+#' unit testing
+#' @format rhtmlDonut object
+"ex17.2"
+
+#' rhtmlDonut objects created from dput structure out of Q or R for
+#' unit testing
+#' @format rhtmlDonut object
+"ex18.2"

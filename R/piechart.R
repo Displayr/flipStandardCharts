@@ -50,10 +50,16 @@ pieChart <- function(y,
         pie.data <- pie.data[with(pie.data,order(pie.data[,2])),]
     }
 
+    ## Stop if asked for a donut but passed a 2D table
+    if (length(unique(pie.data[, 3])) >= 2 && type == "Donut")
+        warning("Donuts should not be used to display 2D data.  Change chart type to: Pie")
+
     ## set inner.radius from donut.hole.radius or pie.groups.radius
-    inner.radius <- pie.groups.radius
-    if (type == "Donut")
-        inner.radius <- donut.hole.radius
+    if (type == "Donut" && donut.hole.radius == 0)
+        inner.radius <- donut.hole.radius <- 70
+
+    if (type == "Pie" && pie.groups.radius == 0)
+        inner.radius <- pie.groups.radius <- 70
 
     ## First column is values, second groups, third is labels.
     d.values <- as.numeric(pie.data[, 1])
@@ -61,14 +67,19 @@ pieChart <- function(y,
     {
         d.labels <- as.character(pie.data[, 2])
         d.groups <- NULL
-        inner.radius <- 0
+        if (type == "Pie")
+            inner.radius <- 0
+        else
+            inner.radius <- donut.hole.radius
     }
     else
     {
         d.labels <- as.character(pie.data[, 3])
         d.groups <- as.character(pie.data[, 2])
-        if (inner.radius == 0)
-            inner.radius <- 70
+        if (type == "Pie")
+            inner.radius <- pie.groups.radius
+        else
+            inner.radius <- donut.hole.radius
     }
 
     # Resolving colors
@@ -88,7 +99,7 @@ pieChart <- function(y,
         values.display <- "original"
 
     # If Donut chart, ensure default hole is a hole
-    if (type == "Donut" && inner.radius == 0)
+    if (type == "Donut" && donut.hole.radius == 0)
         inner.radius = 70
 
     # Convert pie.inner.radius to character
@@ -121,26 +132,6 @@ pieChart <- function(y,
                 inner.radius = inner.radius,
                 pie.border.color = pie.border.color,
                 pie.segment.color.gradient = pie.segment.color.gradient
-
-                # values.color = values.color,
-                # values.display = values.display,
-                # values.thres = pie.values.thres.percent,
-                # values.order = pie.values.order,
-                # labels.font = pie.labels.font.family,
-                # labels.size = pie.labels.font.size,
-                # labels.color = pie.labels.font.color,
-                # labels.minFontSize = pie.labels.minFontSize,
-                # labels.inner = pie.labels.inner,
-                # groups = d.groups,
-                # groups.font = pie.groups.font.family,
-                # groups.size = pie.groups.font.size,
-                # groups.color = groups.color,
-                # groups.order = pie.groups.order,
-                # prefix = pie.values.prefix,
-                # suffix = pie.values.suffix,
-                # border.color = pie.border.color,
-                # gradient = pie.segment.color.gradient,
-                # inner.radius = inner.radius
                 )
 
     return(output)
