@@ -83,9 +83,9 @@ Chart(y, type = "Area", transpose = FALSE, aggregate.period = "none",
   pie.groups.font.color = rgb(44, 44, 44, maxColorValue = 255),
   pie.groups.minFontSize = 8, pie.groups.colors = NULL,
   pie.groups.colors.reverse = FALSE, pie.groups.order = "descending",
-  pie.groups.radius = 60, pie.border.color = rgb(255, 255, 255,
-  maxColorValue = 255), pie.segment.color.gradient = FALSE,
-  donut.hole.radius = 0)
+  pie.groups.radius = 60, pie.segment.colors.repeat.by.group = TRUE,
+  pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
+  pie.segment.color.gradient = FALSE, donut.hole.radius = 0)
 }
 \arguments{
 \item{y}{A table or matrix.}
@@ -533,6 +533,10 @@ sorts on labels.}
 \item{pie.groups.radius}{Numeric; must be passed as a proportion out of
 100 (e.g. 75); specifies the radius of the groups where the data are 2D;
 only relevant to pit charts; defaults to 70.}
+
+\item{pie.segment.colors.repeat.by.group}{Logical; if, when a grouped
+pie chart is displayed, the colors of the segments should repeat
+by group, or be different throughout; defaults to TRUE.}
 
 \item{pie.border.color}{A single color for space around pie and between
 segments.}

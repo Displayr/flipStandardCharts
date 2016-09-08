@@ -290,6 +290,9 @@
 #' @param pie.groups.order Character; "descending", "initial", or
 #' "alphabetical"; default is "descending" sort on values; "alphabetical"
 #' sorts on labels.
+#' @param pie.segment.colors.repeat.by.group Logical; if, when a grouped
+#' pie chart is displayed, the colors of the segments should repeat
+#' by group, or be different throughout; defaults to TRUE.
 #' @param pie.border.color A single color for space around pie and between
 #' segments.
 #' @param pie.segment.color.gradient Logical; if no pie.segment.colors are
@@ -471,6 +474,7 @@ Chart <-   function(y,
                         pie.groups.colors.reverse = FALSE,
                         pie.groups.order = "descending",
                         pie.groups.radius = 60,
+                        pie.segment.colors.repeat.by.group = TRUE,
                         pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
                         pie.segment.color.gradient = FALSE,
                         donut.hole.radius = 0
@@ -743,6 +747,7 @@ Chart <-   function(y,
                 pie.groups.colors.reverse = pie.groups.colors.reverse,
                 pie.groups.order = pie.groups.order,
                 pie.groups.radius = pie.groups.radius,
+                pie.segment.colors.repeat.by.group = pie.segment.colors.repeat.by.group,
                 pie.border.color = pie.border.color,
                 pie.segment.color.gradient = pie.segment.color.gradient,
                 donut.hole.radius = donut.hole.radius)

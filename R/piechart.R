@@ -27,7 +27,8 @@ pieChart <- function(y,
                      pie.groups.radius,
                      pie.border.color,
                      pie.segment.color.gradient,
-                     donut.hole.radius)
+                     donut.hole.radius,
+                     pie.segment.colors.repeat.by.group)
 {
     ## If transpose is false and there's only one row in chart.matrix
     if (nrow(chart.matrix) == 1)
@@ -83,7 +84,12 @@ pieChart <- function(y,
     }
 
     # Resolving colors
-    values.color <- stripAlphaChannel(flipChartBasics::ChartColors(number.colors.needed = nrow(chart.matrix), given.colors = values.color, reverse = colors.reverse))
+    num.colors <- nrow(chart.matrix)
+    if (!pie.segment.colors.repeat.by.group)
+        num.colors <- nrow(chart.matrix) * ncol(chart.matrix)
+
+
+    values.color <- stripAlphaChannel(flipChartBasics::ChartColors(number.colors.needed = num.colors, given.colors = values.color, reverse = colors.reverse))
     groups.color <- stripAlphaChannel(flipChartBasics::ChartColors(number.colors.needed = ncol(chart.matrix), given.colors = pie.groups.colors, reverse = pie.groups.colors.reverse))
 
     values.color <- rep(values.color, ncol(chart.matrix))
