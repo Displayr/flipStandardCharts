@@ -5,7 +5,7 @@
 \title{Generates an interactive chart based on the plotly library.}
 \usage{
 Chart(y, type = "Area", transpose = FALSE, aggregate.period = "none",
-  y.labels = NULL, y.values = NULL, x.labels = NULL, x.values = NULL,
+  y.labels = NULL, y.data = NULL, x.labels = NULL, x.data = NULL,
   title = "", title.font.family = "Arial", title.font.color = rgb(44, 44,
   44, maxColorValue = 255), title.font.size = 16, colors = qColors,
   colors.reverse = FALSE, transparency = 0.4, chart.fill.color = rgb(255,
@@ -25,7 +25,7 @@ Chart(y, type = "Area", transpose = FALSE, aggregate.period = "none",
   y.bounds.minimum = NULL, y.bounds.maximum = NULL,
   y.bounds.units.major = NULL, y.zero.line.width = 0,
   y.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
-  y.position = "left", y.mirror = FALSE, y.values.reversed = FALSE,
+  y.position = "left", y.mirror = FALSE, y.data.reversed = FALSE,
   y.grid.width = 1, y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
   y.tick.suffix = "", y.tick.prefix = "", y.tick.decimals = 2,
   y.tick.format.manual = "", y.hovertext.decimals = 2,
@@ -38,12 +38,12 @@ Chart(y, type = "Area", transpose = FALSE, aggregate.period = "none",
   x.tick.length = 5, x.bounds.minimum = NULL, x.bounds.maximum = NULL,
   x.bounds.units.major = NULL, x.tick.frequency = NULL,
   x.zero.line.width = 0, x.zero.line.color = rgb(44, 44, 44, maxColorValue =
-  255), x.position = "bottom", x.mirror = FALSE,
-  x.values.reversed = FALSE, x.grid.width = 0, x.grid.color = rgb(225,
-  225, 225, maxColorValue = 255), x.tick.suffix = "", x.tick.prefix = "",
-  x.tick.decimals = 0, x.tick.format.manual = "",
-  x.hovertext.decimals = 5, x.hovertext.format.manual = "",
-  x.tick.angle = 0, x.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),
+  255), x.position = "bottom", x.mirror = FALSE, x.data.reversed = FALSE,
+  x.grid.width = 0, x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+  x.tick.suffix = "", x.tick.prefix = "", x.tick.decimals = 0,
+  x.tick.format.manual = "", x.hovertext.decimals = 5,
+  x.hovertext.format.manual = "", x.tick.angle = 0,
+  x.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),
   x.tick.font.family = "Arial", x.tick.font.size = 10,
   x.tick.label.autoformat = TRUE, series.marker.show = "none",
   series.marker.color = NULL, series.marker.color.reverse = FALSE,
@@ -57,10 +57,9 @@ Chart(y, type = "Area", transpose = FALSE, aggregate.period = "none",
   series.marker.text.percent = FALSE, series.line.width = 0,
   series.line.color = NULL, series.line.color.reverse = FALSE,
   series.line.transparency = 1, hover.mode = "closest",
-  hover.include.source.value = FALSE,
-  hover.include.source.value.prefix = "",
-  hover.include.source.value.suffix = "",
-  hover.include.source.value.percent = FALSE, show.modebar = FALSE,
+  hover.include.source.data = FALSE, hover.include.source.data.prefix = "",
+  hover.include.source.data.suffix = "",
+  hover.include.source.data.percent = FALSE, show.modebar = FALSE,
   subtitle.text = NULL, subtitle.align = "left",
   subtitle.border.width = 0, subtitle.border.color = "white",
   subtitle.background.color = "white", subtitle.font.family = "Arial",
@@ -72,10 +71,10 @@ Chart(y, type = "Area", transpose = FALSE, aggregate.period = "none",
   bar.data.label.family = "Arial", bar.data.label.size = 10,
   bar.data.label.color = rgb(0, 0, 0, maxColorValue = 255),
   bar.data.label.decimals = 0, bar.data.label.as.percent = FALSE,
-  pie.values.font.family = "Arial", pie.values.font.size = 10,
-  pie.values.prefix = "", pie.values.suffix = "",
-  pie.values.display.format = "", pie.values.thres.percent = 0.3,
-  pie.values.order = "initial", pie.values.decimals = 0,
+  pie.data.font.family = "Arial", pie.data.font.size = 10,
+  pie.data.prefix = "", pie.data.suffix = "",
+  pie.data.display.format = "", pie.data.thres.percent = 0.3,
+  pie.data.order = "initial", pie.data.decimals = 0,
   pie.labels.font.family = "Arial", pie.labels.font.size = 10,
   pie.labels.font.color = rgb(44, 44, 44, maxColorValue = 255),
   pie.labels.minFontSize = 8, pie.labels.inner = FALSE,
@@ -100,12 +99,12 @@ Only relevant when x is a vector of mode date.}
 
 \item{y.labels}{Character vector, overrides chart matrix row names.}
 
-\item{y.values}{Integer vector, optiona, for manually specifying the points
+\item{y.data}{Integer vector, optiona, for manually specifying the points
 along the y-axis where the y.labels should appear.}
 
 \item{x.labels}{Character vector, overrides chart matrix column names.}
 
-\item{x.values}{Integer vector, optional, for manually specifying the points
+\item{x.data}{Integer vector, optional, for manually specifying the points
 along the x-axis where the x.labels should appear.}
 
 \item{title}{Character; chart title.}
@@ -223,7 +222,7 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{y.mirror}{Logical; mirror y-axis on other side?}
 
-\item{y.values.reversed}{Logical; whether to reverse y-axis or not}
+\item{y.data.reversed}{Logical; whether to reverse y-axis or not}
 
 \item{y.grid.width}{Integer; width of y-grid lines in pixels; 0 = no line}
 
@@ -301,7 +300,7 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{x.mirror}{Logical; mirror x-axis on other side?}
 
-\item{x.values.reversed}{Logical; whether to reverse x-axis or not}
+\item{x.data.reversed}{Logical; whether to reverse x-axis or not}
 
 \item{x.grid.width}{Integer; width of y-grid lines in pixels; 0 = no line}
 
@@ -401,16 +400,16 @@ alpha value (0 to 1)}
 show all x-values for the hover point, "y" to show all y-values for the
 hover point, or "closest" to show the single, nearest, value.}
 
-\item{hover.include.source.value}{Logical; Include source data point value
+\item{hover.include.source.data}{Logical; Include source data point value
 in the hover text.}
 
-\item{hover.include.source.value.prefix}{Character; prefix for source data
+\item{hover.include.source.data.prefix}{Character; prefix for source data
 point value in hover text.}
 
-\item{hover.include.source.value.suffix}{Character; suffix for source data
+\item{hover.include.source.data.suffix}{Character; suffix for source data
 point value in hover text.}
 
-\item{hover.include.source.value.percent}{Logical; multiplies source data
+\item{hover.include.source.data.percent}{Logical; multiplies source data
 point value by 100.}
 
 \item{show.modebar}{Logical; whether to show the zoom menu buttons or not.}
@@ -478,25 +477,25 @@ bar and column chart data labels.}
 \item{bar.data.label.as.percent}{Logical; whether to treat data labels in
 bar or column charts as percentages or not.}
 
-\item{pie.values.font.family}{Character; font family for label values.}
+\item{pie.data.font.family}{Character; font family for label values.}
 
-\item{pie.values.font.size}{Numeric; font size of label values.}
+\item{pie.data.font.size}{Numeric; font size of label values.}
 
-\item{pie.values.prefix}{Character; prefix for label values.}
+\item{pie.data.prefix}{Character; prefix for label values.}
 
-\item{pie.values.suffix}{Character; suffix for label values.}
+\item{pie.data.suffix}{Character; suffix for label values.}
 
-\item{pie.values.display.format}{Character; either "\%" or "original";
+\item{pie.data.display.format}{Character; either "\%" or "original";
 yields a percentage or the source values as specified.}
 
-\item{pie.values.thres.percent}{Numeric; 0-1, the percentage value at
+\item{pie.data.thres.percent}{Numeric; 0-1, the percentage value at
 which labels should not be shown.  Default 0.3\%.}
 
-\item{pie.values.order}{Character; "descending", "initial", or
+\item{pie.data.order}{Character; "descending", "initial", or
 "alphabetical"; default is "descending" sort on values; "alphabetical"
 sorts on labels.}
 
-\item{pie.values.decimals}{Numeric; number of decimal points to show;
+\item{pie.data.decimals}{Numeric; number of decimal points to show;
 defaults to zero.}
 
 \item{pie.labels.font.family}{Character; font family for label text.}

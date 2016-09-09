@@ -9,10 +9,10 @@
 #' @param aggregate.period Character; can be "month", "quarter", "year".
 #' Only relevant when x is a vector of mode date.
 #' @param y.labels Character vector, overrides chart matrix row names.
-#' @param y.values Integer vector, optiona, for manually specifying the points
+#' @param y.data Integer vector, optiona, for manually specifying the points
 #' along the y-axis where the y.labels should appear.
 #' @param x.labels Character vector, overrides chart matrix column names.
-#' @param x.values Integer vector, optional, for manually specifying the points
+#' @param x.data Integer vector, optional, for manually specifying the points
 #' along the x-axis where the x.labels should appear.
 #' @param title Character; chart title.
 #' @param title.font.family Character; title font family.  Can be "Arial
@@ -89,7 +89,7 @@
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param y.position Character; set y-axis position; can be "left" or "right"
 #' @param y.mirror Logical; mirror y-axis on other side?
-#' @param y.values.reversed Logical; whether to reverse y-axis or not
+#' @param y.data.reversed Logical; whether to reverse y-axis or not
 #' @param y.grid.width Integer; width of y-grid lines in pixels; 0 = no line
 #' @param y.grid.color Color of y-grid lines as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
@@ -138,7 +138,7 @@
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param x.position Character; set x-axis position; can be "left" or "right"
 #' @param x.mirror Logical; mirror x-axis on other side?
-#' @param x.values.reversed Logical; whether to reverse x-axis or not
+#' @param x.data.reversed Logical; whether to reverse x-axis or not
 #' @param x.grid.width Integer; width of y-grid lines in pixels; 0 = no line
 #' @param x.grid.color Color of y-grid lines as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
@@ -204,13 +204,13 @@
 #' @param hover.mode Character or logic; can be FALSE for no hover text, "x" to
 #' show all x-values for the hover point, "y" to show all y-values for the
 #' hover point, or "closest" to show the single, nearest, value.
-#' @param hover.include.source.value Logical; Include source data point value
+#' @param hover.include.source.data Logical; Include source data point value
 #' in the hover text.
-#' @param hover.include.source.value.prefix Character; prefix for source data
+#' @param hover.include.source.data.prefix Character; prefix for source data
 #' point value in hover text.
-#' @param hover.include.source.value.suffix Character; suffix for source data
+#' @param hover.include.source.data.suffix Character; suffix for source data
 #' point value in hover text.
-#' @param hover.include.source.value.percent Logical; multiplies source data
+#' @param hover.include.source.data.percent Logical; multiplies source data
 #' point value by 100.
 #' @param show.modebar Logical; whether to show the zoom menu buttons or not.
 #' @param subtitle.text Character; text string to appear as a sub-title;
@@ -263,18 +263,18 @@
 #' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
 #' @param pie.groups.colors.reverse Logical; if the order of the colors
 #' should be reversed.
-#' @param pie.values.font.family Character; font family for label values.
-#' @param pie.values.font.size Numeric; font size of label values.
-#' @param pie.values.prefix Character; prefix for label values.
-#' @param pie.values.suffix Character; suffix for label values.
-#' @param pie.values.display.format Character; either "\%" or "original";
+#' @param pie.data.font.family Character; font family for label values.
+#' @param pie.data.font.size Numeric; font size of label values.
+#' @param pie.data.prefix Character; prefix for label values.
+#' @param pie.data.suffix Character; suffix for label values.
+#' @param pie.data.display.format Character; either "\%" or "original";
 #' yields a percentage or the source values as specified.
-#' @param pie.values.thres.percent Numeric; 0-1, the percentage value at
+#' @param pie.data.thres.percent Numeric; 0-1, the percentage value at
 #' which labels should not be shown.  Default 0.3\%.
-#' @param pie.values.order Character; "descending", "initial", or
+#' @param pie.data.order Character; "descending", "initial", or
 #' "alphabetical"; default is "descending" sort on values; "alphabetical"
 #' sorts on labels.
-#' @param pie.values.decimals Numeric; number of decimal points to show;
+#' @param pie.data.decimals Numeric; number of decimal points to show;
 #' defaults to zero.
 #' @param pie.labels.font.family Character; font family for label text.
 #' @param pie.labels.font.size Numeric; font size for label text
@@ -317,9 +317,9 @@ Chart <-   function(y,
                         transpose = FALSE,                                ## Should the inputs be transposed; TRUE or FALSE
                         aggregate.period = "none",
                         y.labels = NULL,
-                        y.values = NULL,
+                        y.data = NULL,
                         x.labels = NULL,
-                        x.values = NULL,
+                        x.data = NULL,
                         title = "",
                         title.font.family = "Arial",
                         title.font.color = rgb(44, 44, 44, maxColorValue = 255),
@@ -361,7 +361,7 @@ Chart <-   function(y,
                         y.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
                         y.position = "left",
                         y.mirror = FALSE,
-                        y.values.reversed = FALSE,                       ## T/F - involves autorange and may be too complicated.
+                        y.data.reversed = FALSE,                       ## T/F - involves autorange and may be too complicated.
                         y.grid.width = 1,
                         y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                         y.tick.suffix = "",
@@ -392,7 +392,7 @@ Chart <-   function(y,
                         x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
                         x.position = "bottom",
                         x.mirror = FALSE,
-                        x.values.reversed = FALSE,                       ## T/F - involves autorange and may be too complicated.
+                        x.data.reversed = FALSE,                       ## T/F - involves autorange and may be too complicated.
                         x.grid.width = 0,
                         x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                         x.tick.suffix = "",
@@ -428,10 +428,10 @@ Chart <-   function(y,
                         series.line.color.reverse = FALSE,
                         series.line.transparency = 1,
                         hover.mode = "closest",
-                        hover.include.source.value = FALSE,
-                        hover.include.source.value.prefix = "",
-                        hover.include.source.value.suffix = "",
-                        hover.include.source.value.percent = FALSE,
+                        hover.include.source.data = FALSE,
+                        hover.include.source.data.prefix = "",
+                        hover.include.source.data.suffix = "",
+                        hover.include.source.data.percent = FALSE,
                         show.modebar = FALSE,
                         subtitle.text = NULL,
                         subtitle.align = "left",
@@ -453,14 +453,14 @@ Chart <-   function(y,
                         bar.data.label.color = rgb(0, 0, 0, maxColorValue=255),
                         bar.data.label.decimals = 0,
                         bar.data.label.as.percent = FALSE,
-                        pie.values.font.family = "Arial",
-                        pie.values.font.size = 10,
-                        pie.values.prefix = "",
-                        pie.values.suffix = "",
-                        pie.values.display.format = "",
-                        pie.values.thres.percent = 0.3,
-                        pie.values.order = "initial",
-                        pie.values.decimals = 0,
+                        pie.data.font.family = "Arial",
+                        pie.data.font.size = 10,
+                        pie.data.prefix = "",
+                        pie.data.suffix = "",
+                        pie.data.display.format = "",
+                        pie.data.thres.percent = 0.3,
+                        pie.data.order = "initial",
+                        pie.data.decimals = 0,
                         pie.labels.font.family = "Arial",
                         pie.labels.font.size = 10,
                         pie.labels.font.color = rgb(44, 44, 44, maxColorValue = 255),
@@ -726,14 +726,14 @@ Chart <-   function(y,
                 type = type,
                 values.color = colors,
                 colors.reverse = colors.reverse,
-                pie.values.font.family = pie.values.font.family,
-                pie.values.font.size = pie.values.font.size,
-                pie.values.prefix = pie.values.prefix,
-                pie.values.suffix = pie.values.suffix,
-                pie.values.display.format = pie.values.display.format,
-                pie.values.thres.percent = pie.values.thres.percent,
-                pie.values.order = pie.values.order,
-                pie.values.decimals = pie.values.decimals,
+                pie.values.font.family = pie.data.font.family,
+                pie.values.font.size = pie.data.font.size,
+                pie.values.prefix = pie.data.prefix,
+                pie.values.suffix = pie.data.suffix,
+                pie.values.display.format = pie.data.display.format,
+                pie.values.thres.percent = pie.data.thres.percent,
+                pie.values.order = pie.data.order,
+                pie.values.decimals = pie.data.decimals,
                 pie.labels.font.family = pie.labels.font.family,
                 pie.labels.font.size = pie.labels.font.size,
                 pie.labels.font.color = pie.labels.font.color,
@@ -891,11 +891,11 @@ Chart <-   function(y,
 
     # Create text matrix of source data if required for hover
     source.matrix <- chart.matrix
-    if (hover.include.source.value.percent | series.marker.text.percent)
+    if (hover.include.source.data.percent | series.marker.text.percent)
         source.matrix <- source.matrix * 100
 
-    if (hover.include.source.value.percent)
-        source.matrix <- matrix(paste(hover.include.source.value.prefix, " ", source.matrix, hover.include.source.value.suffix, sep = ""), nrow = nrow(chart.matrix), ncol = ncol(chart.matrix))
+    if (hover.include.source.data.percent)
+        source.matrix <- matrix(paste(hover.include.source.data.prefix, " ", source.matrix, hover.include.source.data.suffix, sep = ""), nrow = nrow(chart.matrix), ncol = ncol(chart.matrix))
 
     ## Get axes labels from the matrix labels if none manually specified
     if (is.null(x.labels))
@@ -1077,10 +1077,10 @@ Chart <-   function(y,
         else
             y.ticktext <- sapply(y.tickvals, function(x) paste(round(x, y.tick.decimals)))
     }
-    else if (!is.null(y.values) && !is.null(y.labels))
+    else if (!is.null(y.data) && !is.null(y.labels))
     {
         y.tickmode <- "array"
-        y.tickvals <- y.values
+        y.tickvals <- y.data
         y.ticktext <- y.labels
     }
     else if (!is.null(subtitle.text))
@@ -1122,13 +1122,13 @@ Chart <-   function(y,
         else
             x.ticktext <- sapply(x.tickvals, function(x) paste(round(x, x.tick.decimals)))
     }
-    else if (!is.null(x.values) && !is.null(x.labels))
+    else if (!is.null(x.data) && !is.null(x.labels))
     {
         x.tickmode <- "array"
         # x.autorange <- TRUE
-        x.tickvals <- x.values
+        x.tickvals <- x.data
         x.ticktext <- x.labels
-        # x.range <- c(x.values[1], x.values[ncol(chart.matrix)])
+        # x.range <- c(x.data[1], x.data[ncol(chart.matrix)])
     }
     else
     {
@@ -1157,10 +1157,10 @@ Chart <-   function(y,
     }
 
     ## Should autorange be = "reverse"?
-    if (y.values.reversed == TRUE)
+    if (y.data.reversed == TRUE)
         y.autorange = "reversed"
 
-    if (x.values.reversed == TRUE)
+    if (x.data.reversed == TRUE)
         x.autorange = "reversed"
 
     ## Should we draw a zero line
@@ -1211,7 +1211,7 @@ Chart <-   function(y,
         show.series.name <- ""
     ###########################################
 
-    if (hover.include.source.value)
+    if (hover.include.source.data)
         hoverinfo = paste(axis.to.show, show.series.name, "+text", sep = "")
     else
         hoverinfo = paste(axis.to.show, show.series.name, sep = "")

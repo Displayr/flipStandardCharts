@@ -207,7 +207,7 @@ markerCols <- c(rgb(245,56,177, max=255),rgb(56,193,55, max=255),rgb(245,163,65,
 
 Chart(a.matrix,
           legend.show = FALSE,
-          type = "Column",
+          type = "Area",
           transparency = 0.4,
           colors = rgb(255, 255, 255, max=255),
           plot.fill.color = rgb(176, 191, 214, maxColorValue = 255),
@@ -302,15 +302,15 @@ c(1,1,1,1,2,2,2,2,3))
 rownames(resources) <- c("Sales", "Ops (tech)", "Ops (field)", "Admin", "Accounts")
 colnames(resources) <- c("10", "15", "20", "25", "30", "35", "40", "45", "50")
 
-topic <- Chart(resources,
+Chart(y = resources,
           legend.show = TRUE,
-          type = "Stacked Column",
+          type = "Stacked Area",
           transparency = 1,
           legend.ascending = FALSE,
           hover.mode = "x",
           y.tick.decimals = 0,
-          hover.include.source.value = TRUE,
-          hover.include.source.value.prefix = "Staff count:",
+          hover.include.source.data = TRUE,
+          hover.include.source.data.prefix = "Staff count:",
           x.hovertext.decimals = 0,
           y.hovertext.decimals = 0,
           subtitle.text = "Wassail, wassail, all over the town!<br>Our bread it is white and our ale it is brown.  Our bowl it is made, of the green maple tree<br> In the wassail bowl we'll drink unto thee.",
