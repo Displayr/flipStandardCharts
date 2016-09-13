@@ -34,10 +34,10 @@ pieChart <- function(y,
     ## Check that the table statistic is appropriate for the chart type
     print(table.statistic)
 
-    permitted.statistics <- c("Total %", "n", "Population", "Average", "Sum", "% Share", "% Total Share")
+    permitted.statistics <- c("%", "Total %", "n", "Population", "Average", "Sum", "% Share", "% Total Share")
 
     if (!length(permitted.statistics[which(table.statistic == permitted.statistics)]) > 0)
-        warning("It is recommended that you use one of the following statistics in this chart: Total %, n, Population, Average, Sum, % Share, or % Total Share")
+        warning("It is recommended that you use one of the following statistics in this chart: %, Total %, n, Population, Average, Sum, % Share, or % Total Share")
 
     ## If transpose is false and there's only one row in chart.matrix
     if (nrow(chart.matrix) == 1)
