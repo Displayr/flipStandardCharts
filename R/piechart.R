@@ -28,8 +28,17 @@ pieChart <- function(y,
                      pie.border.color,
                      pie.segment.color.gradient,
                      donut.hole.radius,
-                     pie.segment.colors.repeat.by.group)
+                     pie.segment.colors.repeat.by.group,
+                     table.statistic)
 {
+    ## Check that the table statistic is appropriate for the chart type
+    print(table.statistic)
+
+    permitted.statistics <- c("Total %", "n", "Population", "Average", "Sum", "% Share", "% Total Share")
+
+    if (!length(permitted.statistics[which(table.statistic == permitted.statistics)]) > 0)
+        warning("It is recommended that you use one of the following statistics in this chart: Total %, n, Population, Average, Sum, % Total Share, or Trimmed Average")
+
     ## If transpose is false and there's only one row in chart.matrix
     if (nrow(chart.matrix) == 1)
         chart.matrix <- t(chart.matrix)

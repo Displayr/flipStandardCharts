@@ -556,6 +556,8 @@ Chart <-   function(y,
     ## Store chart type for later use
     original.type <- type
 
+
+
     # if (y.title == "" && !qinput)
     #     y.title <- table.axes.labels[2]
 
@@ -750,7 +752,8 @@ Chart <-   function(y,
                 pie.segment.colors.repeat.by.group = pie.segment.colors.repeat.by.group,
                 pie.border.color = pie.border.color,
                 pie.segment.color.gradient = pie.segment.color.gradient,
-                donut.hole.radius = donut.hole.radius)
+                donut.hole.radius = donut.hole.radius,
+                table.statistic = table.statistic)
 
         return(rhtmlDonut::Donut(values = pie$values.data,
                                  labels = pie$labels,
