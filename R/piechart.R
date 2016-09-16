@@ -44,10 +44,6 @@ pieChart <- function(y,
     ## As some charts get passed in as xtabs objects, rather than pure matrices, we need to unclass, for the stack to work later.
     chart.matrix <- stripClassAndCallFromXtabs(chart.matrix)
 
-    ## If type is donut and data is a 2D table, then warning and do Pie.
-    if (type == "Donut" && ncol(chart.matrix) > 1)
-        warning("The table supplied is two-dimensional and cannot be displayed as a donut chart.  A grouped pie chart has been drawn instead.")
-
     ## If there's only one column at this stage, then we need to manually provide some data.
     if (ncol(chart.matrix) == 1)
     {
@@ -64,7 +60,7 @@ pieChart <- function(y,
 
     ## Stop if asked for a donut but passed a 2D table
     if (length(unique(pie.data[, 3])) >= 2 && type == "Donut")
-        warning("Donuts should not be used to display 2D data.  Change chart type to: Pie")
+        warning("The table supplied is two-dimensional and cannot be displayed as a donut chart.  A grouped pie chart has been drawn instead.")
 
     ## set inner.radius from donut.hole.radius or pie.groups.radius
     if (type == "Donut" && donut.hole.radius == 0)
