@@ -67,14 +67,6 @@ autoFormatLongLabels <- function(x, n = 21)
     output.text
 }
 
-stripAlphaChannel <- function(hex.colors)
-{
-    if (nchar(hex.colors[1]) == 9)
-        return(gsub("(FF|ff)$", "", hex.colors))
-    else
-        return(hex.colors)
-}
-
 stripClassAndCallFromXtabs <- function(chart.matrix)
 {
     if (class(chart.matrix) == "xtabs" || class(chart.matrix) == "table")

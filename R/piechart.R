@@ -32,8 +32,6 @@ pieChart <- function(y,
                      table.statistic)
 {
     ## Check that the table statistic is appropriate for the chart type
-    print(table.statistic)
-
     permitted.statistics <- c("%", "Total %", "n", "Population", "Average", "Sum", "% Share", "% Total Share")
 
     if (!length(permitted.statistics[which(table.statistic == permitted.statistics)]) > 0)
@@ -45,6 +43,10 @@ pieChart <- function(y,
 
     ## As some charts get passed in as xtabs objects, rather than pure matrices, we need to unclass, for the stack to work later.
     chart.matrix <- stripClassAndCallFromXtabs(chart.matrix)
+
+    ## If type is donut and data is a 2D table, then warning and do Pie.
+    if (type == "Donut" && ncol(chart.matrix) > 1)
+        warning("The table supplied is two-dimensional and cannot be displayed as a donut chart.  A grouped pie chart has been drawn instead.")
 
     ## If there's only one column at this stage, then we need to manually provide some data.
     if (ncol(chart.matrix) == 1)
@@ -98,8 +100,8 @@ pieChart <- function(y,
         num.colors <- nrow(chart.matrix) * ncol(chart.matrix)
 
 
-    values.color <- stripAlphaChannel(flipChartBasics::ChartColors(number.colors.needed = num.colors, given.colors = values.color, reverse = colors.reverse))
-    groups.color <- stripAlphaChannel(flipChartBasics::ChartColors(number.colors.needed = ncol(chart.matrix), given.colors = pie.groups.colors, reverse = pie.groups.colors.reverse))
+    values.color <- flipChartBasics::StripAlphaChannel(flipChartBasics::ChartColors(number.colors.needed = num.colors, given.colors = values.color, reverse = colors.reverse))
+    groups.color <- flipChartBasics::StripAlphaChannel(flipChartBasics::ChartColors(number.colors.needed = ncol(chart.matrix), given.colors = pie.groups.colors, reverse = pie.groups.colors.reverse))
 
     values.color <- rep(values.color, ncol(chart.matrix))
 
