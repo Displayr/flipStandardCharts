@@ -11,7 +11,11 @@ for (i in 1:length(qTab.examples))
     ## Run image and chart output
     print(Chart(y = qTab.examples[[i]]$y, type = qTab.examples[[i]]$type, transpose = qTab.examples[[i]]$transpose, title = attr(qTab.examples[[i]]$y, "name"), y.title = qTab.examples[[i]]$y.title, subtitle.text = qTab.examples[[i]]$subtitle.text))
 
-    if (qTab.examples[[i]]$type == "Pie" || qTab.examples[[i]]$type == "Donut")
+    if (qTab.examples[[i]]$type == "Labeled Scatterplot" || qTab.examples[[i]]$type == "Labeled Bubbleplot")
+    {
+        ## Do nothing for now
+    }
+    else if (qTab.examples[[i]]$type == "Pie" || qTab.examples[[i]]$type == "Donut")
     {
         example.number <- i
         test.1 <- as.list(unlist(Chart(y = qTab.examples[[i]]$y, type = qTab.examples[[i]]$type, transpose = qTab.examples[[i]]$transpose, title = attr(qTab.examples[[i]]$y, "name"), subtitle.text = qTab.examples[[i]]$subtitle.text))[[1]])

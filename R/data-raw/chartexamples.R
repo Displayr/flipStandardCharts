@@ -223,7 +223,116 @@ qTab.examples <- list("ex1 - Area - Pick One by Pick One" = list(y = structure(c
                                                                c("Coca Cola", "Coke Zero", "Diet Coke", "Pepsi", "Pepsi Light",
                                                                "Pepsi Max")), name = "Donut.1D.table", questions = c("My friends would describe me as cultured, and refined",
                                                                "Global frequentCola - Categorical")), transpose = FALSE, type = "Donut",
-                                                               subtitle.text = NULL)
+                                                               subtitle.text = NULL))
+                      # "ex19 - LScatter - Two columns, no span" = list(y = structure(c(3.263125, 0.866312500000001, 4.5294375, 8.658875,
+                      #                                          3.58682634730539, 0.746706586826349, 3.80167664670659, 8.13520958083833
+                      #                                          ), .Dim = c(4L, 2L), statistic = "Average", .Dimnames = list(
+                      #                                          c("Colas (e.g., Coca Cola, Pepsi Max)?", "Sparkling mineral water",
+                      #                                          "Coffee", "SUM"), c("Male", "Female")), name = "Q4.  Frequency numeric by Q2. Gender", questions = c("Q4.  Frequency numeric",
+                      #                                          "Q2. Gender")), transpose = FALSE, type = "Labeled Scatterplot", subtitle.text = NULL),
+                      # "ex20 - LScatter - Three columns, no span" = list(y = structure(c(11.3149847094801, 10.7033639143731, 7.64525993883792,
+                      #                                           9.48012232415902, 7.95107033639144, 7.64525993883792, 9.1743119266055,
+                      #                                           12.5382262996942, 4.89296636085627, 2.44648318042813, 1.22324159021407,
+                      #                                           3.36391437308868, 2.44648318042813, 2.75229357798165, 3.05810397553517,
+                      #                                           3.6697247706422, 4.58715596330275, 1.8348623853211, 7.3394495412844,
+                      #                                           7.64525993883792, 4.58715596330275, 8.86850152905199, 7.3394495412844,
+                      #                                           6.42201834862385, 8.86850152905199, 11.9266055045872, 5.81039755351682
+                      #                                           ), .Dim = c(9L, 3L), statistic = "Total %", .Dimnames = list(
+                      #                                           c("18 to 24", "25 to 29", "30 to 34", "35 to 39", "40 to 44",
+                      #                                           "45 to 49", "50 to 54", "55 to 64", "65 or more"), c("Colas (e.g., Coca Cola, Pepsi Max)?",
+                      #                                           "Sparkling mineral water", "Coffee")), name = "Q3. Age by Q4. Drink categorical", questions = c("Q3. Age",
+                      #                                           "Q4. Drink categorical")), transpose = FALSE, type = "Labeled Scatterplot", subtitle.text = NULL),
+                      # "ex21 - LScatter - Span in stub, two columns" = list(y = structure(c(10.625, 3.125, 8.125, 9.375, 1.25, 7.5, 8.125, 3.75,
+                      #                                           5.625, 7.5, 1.875, 6.875, 9.375, 3.75, 8.125, 7.5, 5, 6.875,
+                      #                                           9.375, 3.125, 10, 14.375, 5.625, 15, 5, 1.875, 6.875, 11.9760479041916,
+                      #                                           1.79640718562874, 6.58682634730539, 11.9760479041916, 1.19760479041916,
+                      #                                           7.78443113772455, 7.18562874251497, 2.9940119760479, 3.59281437125748,
+                      #                                           11.377245508982, 2.9940119760479, 10.7784431137725, 6.58682634730539,
+                      #                                           1.79640718562874, 6.58682634730539, 7.78443113772455, 1.19760479041916,
+                      #                                           5.98802395209581, 8.98203592814371, 4.19161676646707, 7.78443113772455,
+                      #                                           10.7784431137725, 3.59281437125748, 8.98203592814371, 4.79041916167665,
+                      #                                           1.79640718562874, 4.79041916167665), .Dim = c(27L, 2L), statistic = "Column %", .Dimnames = list(
+                      #                                           c("Colas (e.g., Coca Cola, Pepsi Max)?", "Sparkling mineral water",
+                      #                                           "Coffee", "Colas (e.g., Coca Cola, Pepsi Max)?", "Sparkling mineral water",
+                      #                                           "Coffee", "Colas (e.g., Coca Cola, Pepsi Max)?", "Sparkling mineral water",
+                      #                                           "Coffee", "Colas (e.g., Coca Cola, Pepsi Max)?", "Sparkling mineral water",
+                      #                                           "Coffee", "Colas (e.g., Coca Cola, Pepsi Max)?", "Sparkling mineral water",
+                      #                                           "Coffee", "Colas (e.g., Coca Cola, Pepsi Max)?", "Sparkling mineral water",
+                      #                                           "Coffee", "Colas (e.g., Coca Cola, Pepsi Max)?", "Sparkling mineral water",
+                      #                                           "Coffee", "Colas (e.g., Coca Cola, Pepsi Max)?", "Sparkling mineral water",
+                      #                                           "Coffee", "Colas (e.g., Coca Cola, Pepsi Max)?", "Sparkling mineral water",
+                      #                                           "Coffee"), c("Male", "Female")), name = "Span in Stub", questions = c("BANNER",
+                      #                                           "Q2. Gender")), transpose = FALSE, subtitle.text = NULL, type = "Labeled Scatterplot"),
+                      # "ex22 - LScatter - Span in stub, three columns" = list(y = structure(c(13.9097744360902, 3.00751879699248, 7.89473684210526,
+                      #                                           13.1578947368421, 1.50375939849624, 8.27067669172932, 9.3984962406015,
+                      #                                           3.7593984962406, 4.88721804511278, 11.6541353383459, 2.25563909774436,
+                      #                                           9.77443609022556, 9.77443609022556, 2.63157894736842, 6.39097744360902,
+                      #                                           9.3984962406015, 3.7593984962406, 7.14285714285714, 11.2781954887218,
+                      #                                           3.38345864661654, 7.89473684210526, 15.4135338345865, 4.13533834586466,
+                      #                                           12.0300751879699, 6.01503759398496, 1.8796992481203, 4.88721804511278,
+                      #                                           9.63855421686747, 9.63855421686747, 8.43373493975904, 4.81927710843374,
+                      #                                           4.81927710843374, 3.6144578313253, 12.0481927710843, 13.2530120481928,
+                      #                                           7.2289156626506, 7.2289156626506, 9.63855421686747, 9.63855421686747,
+                      #                                           8.43373493975904, 10.8433734939759, 9.63855421686747, 12.0481927710843,
+                      #                                           12.0481927710843, 8.43373493975904, 10.8433734939759, 14.4578313253012,
+                      #                                           10.8433734939759, 13.2530120481928, 18.0722891566265, 15.6626506024096,
+                      #                                           6.02409638554217, 7.2289156626506, 7.2289156626506, 9.33333333333333,
+                      #                                           3.11111111111111, 10.6666666666667, 9.77777777777778, 1.33333333333333,
+                      #                                           11.1111111111111, 5.77777777777778, 2.66666666666667, 6.66666666666667,
+                      #                                           11.5555555555556, 3.55555555555556, 12.8888888888889, 7.55555555555556,
+                      #                                           3.55555555555556, 10.6666666666667, 8.44444444444444, 3.11111111111111,
+                      #                                           9.33333333333333, 9.33333333333333, 4, 12.8888888888889, 14.2222222222222,
+                      #                                           5.77777777777778, 17.3333333333333, 5.77777777777778, 2.66666666666667,
+                      #                                           8.44444444444444), .Dim = c(27L, 3L), statistic = "Column %", .Dimnames = list(
+                      #                                           c("Colas (e.g., Coca Cola, Pepsi Max)?", "Sparkling mineral water",
+                      #                                           "Coffee", "Colas (e.g., Coca Cola, Pepsi Max)?", "Sparkling mineral water",
+                      #                                           "Coffee", "Colas (e.g., Coca Cola, Pepsi Max)?", "Sparkling mineral water",
+                      #                                           "Coffee", "Colas (e.g., Coca Cola, Pepsi Max)?", "Sparkling mineral water",
+                      #                                           "Coffee", "Colas (e.g., Coca Cola, Pepsi Max)?", "Sparkling mineral water",
+                      #                                           "Coffee", "Colas (e.g., Coca Cola, Pepsi Max)?", "Sparkling mineral water",
+                      #                                           "Coffee", "Colas (e.g., Coca Cola, Pepsi Max)?", "Sparkling mineral water",
+                      #                                           "Coffee", "Colas (e.g., Coca Cola, Pepsi Max)?", "Sparkling mineral water",
+                      #                                           "Coffee", "Colas (e.g., Coca Cola, Pepsi Max)?", "Sparkling mineral water",
+                      #                                           "Coffee"), c("Colas (e.g., Coca Cola, Pepsi Max)?", "Sparkling mineral water",
+                      #                                           "Coffee")), name = "BANNER by Q4. Drink categorical", questions = c("BANNER",
+                      #                                           "Q4. Drink categorical")), transpose = FALSE, type = "Labeled Scatterplot", subtitle.text = FALSE),
+                      # "ex23 - LScatter - Span in banner, two columns" = list(y = structure(c(13.0769230769231, 11.5384615384615, 10, 9.23076923076923,
+                      #                                           11.5384615384615, 9.23076923076923, 11.5384615384615, 17.6923076923077,
+                      #                                           6.15384615384615, 14.7058823529412, 14.7058823529412, 8.82352941176471,
+                      #                                           13.9705882352941, 8.08823529411765, 9.55882352941176, 11.0294117647059,
+                      #                                           13.2352941176471, 5.88235294117647, 10.6382978723404, 4.25531914893617,
+                      #                                           12.7659574468085, 6.38297872340426, 12.7659574468085, 17.0212765957447,
+                      #                                           10.6382978723404, 19.1489361702128, 6.38297872340426, 8.33333333333333,
+                      #                                           5.55555555555556, 13.8888888888889, 13.8888888888889, 8.33333333333333,
+                      #                                           5.55555555555556, 19.4444444444444, 16.6666666666667, 8.33333333333333,
+                      #                                           10.8333333333333, 10, 7.5, 9.16666666666667, 10.8333333333333,
+                      #                                           9.16666666666667, 13.3333333333333, 20, 9.16666666666667, 10.4761904761905,
+                      #                                           12.3809523809524, 5.71428571428571, 17.1428571428571, 10.4761904761905,
+                      #                                           9.52380952380952, 12.3809523809524, 14.2857142857143, 7.61904761904762
+                      #                                           ), .Dim = c(9L, 6L), statistic = "Column %", .Dimnames = list(
+                      #                                           c("18 to 24", "25 to 29", "30 to 34", "35 to 39", "40 to 44",
+                      #                                           "45 to 49", "50 to 54", "55 to 64", "65 or more"), c("Male",
+                      #                                           "Female", "Male", "Female", "Male", "Female")), name = "Q3. Age by BANNER2", questions = c("Q3. Age",
+                      #                                           "BANNER2")), transpose = FALSE, type = "Labeled Scatterplot", subtitle.text = NULL),
+                      # "ex24 - LScatter - Span in banner, three columns" = list(y = structure(c(13.0769230769231, 11.5384615384615, 10, 9.23076923076923,
+                      #                                           11.5384615384615, 9.23076923076923, 11.5384615384615, 17.6923076923077,
+                      #                                           6.15384615384615, 10.6382978723404, 4.25531914893617, 12.7659574468085,
+                      #                                           6.38297872340426, 12.7659574468085, 17.0212765957447, 10.6382978723404,
+                      #                                           19.1489361702128, 6.38297872340426, 10.8333333333333, 10, 7.5,
+                      #                                           9.16666666666667, 10.8333333333333, 9.16666666666667, 13.3333333333333,
+                      #                                           20, 9.16666666666667, 14.7058823529412, 14.7058823529412, 8.82352941176471,
+                      #                                           13.9705882352941, 8.08823529411765, 9.55882352941176, 11.0294117647059,
+                      #                                           13.2352941176471, 5.88235294117647, 8.33333333333333, 5.55555555555556,
+                      #                                           13.8888888888889, 13.8888888888889, 8.33333333333333, 5.55555555555556,
+                      #                                           19.4444444444444, 16.6666666666667, 8.33333333333333, 10.4761904761905,
+                      #                                           12.3809523809524, 5.71428571428571, 17.1428571428571, 10.4761904761905,
+                      #                                           9.52380952380952, 12.3809523809524, 14.2857142857143, 7.61904761904762
+                      #                                           ), .Dim = c(9L, 6L), statistic = "Column %", .Dimnames = list(
+                      #                                           c("18 to 24", "25 to 29", "30 to 34", "35 to 39", "40 to 44",
+                      #                                           "45 to 49", "50 to 54", "55 to 64", "65 or more"), c("Colas (e.g., Coca Cola, Pepsi Max)?",
+                      #                                           "Sparkling mineral water", "Coffee", "Colas (e.g., Coca Cola, Pepsi Max)?",
+                      #                                           "Sparkling mineral water", "Coffee")), name = "Span in Banner", questions = c("Q3. Age",
+                      #                                           "BANNER1")), transpose = FALSE, type = "Labeled Scatterplot", subtitle.text = NULL)
 )
 
 qTab.bad.examples <- list("Cannot take unnamed matrix" = list(y = structure(c(0, 22, 18, 15, 16, 19, 13, 18, 27, 12, 0, 22, 21, 18, 20, 16, 14, 22, 24, 10),
@@ -266,8 +375,12 @@ replace_null <- function(x) {
 
 for (i in 1:length(qTab.examples))
 {
-
-    if (qTab.examples[[i]]$type == "Pie" || qTab.examples[[i]]$type == "Donut")
+    if (qTab.examples[[i]]$type == "Labeled Scatterplot" || qTab.examples[[i]]$type == "Labeled Bubbleplot")
+    {
+        example.number <- i
+        ## Do nothing for now.
+    }
+    else if (qTab.examples[[i]]$type == "Pie" || qTab.examples[[i]]$type == "Donut")
     {
         example.number <- i
         assign(paste("ex", i, ".1", sep = ""), as.list(unlist(Chart(y = qTab.examples[[example.number]]$y, type = qTab.examples[[example.number]]$type, transpose = qTab.examples[[example.number]]$transpose, title = attr(qTab.examples[[example.number]]$y, "name"), subtitle.text = qTab.examples[[example.number]]$subtitle.text))[[1]]))

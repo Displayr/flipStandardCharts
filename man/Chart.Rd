@@ -84,7 +84,12 @@ Chart(y, type = "Area", transpose = FALSE, aggregate.period = "none",
   pie.groups.colors.reverse = FALSE, pie.groups.order = "descending",
   pie.groups.radius = 60, pie.segment.colors.repeat.by.group = TRUE,
   pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
-  pie.segment.color.gradient = FALSE, donut.hole.radius = 0)
+  pie.segment.color.gradient = FALSE, donut.hole.radius = 0,
+  bubble.legend.title = NULL, bubble.decimals = 0,
+  bubble.label.prefix = "", scatter.data.label.show = TRUE,
+  scatter.marker.radius = 3, scatter.labels.font.family = "Arial",
+  scatter.labels.font.size = 10, scatter.labels.font.color = rgb(44, 44, 44,
+  maxColorValue = 255))
 }
 \arguments{
 \item{y}{A table or matrix.}
@@ -546,6 +551,26 @@ specified, a gradient will be generated.}
 \item{donut.hole.radius}{Numeric; must be passed as a proportion out of
 100 (e.g. 75); specifies the radius of the donut hole; only relevant to
 donut charts; defaults to 70.}
+
+\item{bubble.legend.title}{Character; title of the bubble-size legend.}
+
+\item{bubble.decimals}{Numeric; number of decimal points to show for
+bubble-size data values.}
+
+\item{bubble.label.prefix}{Character; label prefix to bubble values.}
+
+\item{scatter.data.label.show}{Logical; whether to show labels in the
+plot or not.}
+
+\item{scatter.marker.radius}{Numeric; the radius of the scatter plot
+markers if no bubble size has been provided.}
+
+\item{scatter.labels.font.family}{Character; font to use for labels in
+in plot.}
+
+\item{scatter.labels.font.size}{Numeric; font size for plot labels.}
+
+\item{scatter.labels.font.color}{Color for plot labels.}
 
 \item{bar.data.label}{Integer or Character; the offset from the top end of a
 column measured in y-axis units.}

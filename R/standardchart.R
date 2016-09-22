@@ -303,6 +303,18 @@
 #' @param donut.hole.radius Numeric; must be passed as a proportion out of
 #' 100 (e.g. 75); specifies the radius of the donut hole; only relevant to
 #' donut charts; defaults to 70.
+#' @param bubble.legend.title Character; title of the bubble-size legend.
+#' @param bubble.decimals Numeric; number of decimal points to show for
+#' bubble-size data values.
+#' @param bubble.label.prefix Character; label prefix to bubble values.
+#' @param scatter.data.label.show Logical; whether to show labels in the
+#' plot or not.
+#' @param scatter.marker.radius Numeric; the radius of the scatter plot
+#' markers if no bubble size has been provided.
+#' @param scatter.labels.font.family Character; font to use for labels in
+#' in plot.
+#' @param scatter.labels.font.size Numeric; font size for plot labels.
+#' @param scatter.labels.font.color Color for plot labels.
 #' @examples
 #' data("z")
 #' z <- cbind(z, z[,1])
@@ -477,7 +489,15 @@ Chart <-   function(y,
                         pie.segment.colors.repeat.by.group = TRUE,
                         pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
                         pie.segment.color.gradient = FALSE,
-                        donut.hole.radius = 0
+                        donut.hole.radius = 0,
+                        bubble.legend.title = NULL,
+                        bubble.decimals = 0,
+                        bubble.label.prefix = "",
+                        scatter.data.label.show = TRUE,
+                        scatter.marker.radius = 3,
+                        scatter.labels.font.family = "Arial",
+                        scatter.labels.font.size = 10,
+                        scatter.labels.font.color = rgb(44, 44, 44, maxColorValue = 255)
                     )
 {
     chart.matrix <- y
@@ -586,6 +606,7 @@ Chart <-   function(y,
     orientation <- NULL
     swap.axes.and.data <- FALSE
     y.nticks <- NULL
+    y.tickformat <- NULL
 
     ## Color inheritance
     if (is.null(series.marker.color))
@@ -720,9 +741,6 @@ Chart <-   function(y,
     # Settings specific to Pie charts
     if (type == "Pie" || type == "Donut")
     {
-        # colors <- flipChartBasics::ChartColors(number.colors.needed = nrow(chart.matrix), given.colors = colors, reverse = colors.reverse)
-        # pie.groups.colors <- flipChartBasics::ChartColors(number.colors.needed = nrow(chart.matrix), given.colors = pie.groups.colors, reverse = pie.groups.colors.reverse)
-
         pie <- pieChart(chart.matrix = chart.matrix,
                 transpose = transpose,
                 type = type,
@@ -753,7 +771,8 @@ Chart <-   function(y,
                 pie.border.color = pie.border.color,
                 pie.segment.color.gradient = pie.segment.color.gradient,
                 donut.hole.radius = donut.hole.radius,
-                table.statistic = table.statistic)
+                table.statistic = table.statistic,
+                qinput = qinput)
 
         return(rhtmlDonut::Donut(values = pie$values.data,
                                  labels = pie$labels,
@@ -787,6 +806,65 @@ Chart <-   function(y,
                                  inner.radius = pie$inner.radius
                                  ))
     }
+
+    ## Settings specific to labelled scatter plots
+    if (type == "Labeled Scatterplot" || type == "Labeled Bubbleplot")
+    {
+        labeled.scatterplot <- labeledScatterplot(chart.matrix = chart.matrix,
+                                                  type = type,
+                                                  group = NULL,
+                                                  grid = TRUE, # if x and y grid are both 0; else draw grid?
+                                                  origin = FALSE, # base on y and x.zero.line.width
+                                                  transpose = transpose,
+                                                  colors = colors,
+                                                  qinput = qinput
+                                                  )
+
+        return(rhtmlLabeledScatter::LabeledScatter(X = labeled.scatterplot$X,
+                       Y = labeled.scatterplot$Y,
+                       Z = labeled.scatterplot$Z,
+                       label = labeled.scatterplot$label,
+                       fixed.aspect = FALSE,
+                       group = labeled.scatterplot$group,
+                       grid = labeled.scatterplot$grid,
+                       origin = labeled.scatterplot$origin,
+                       origin.align = FALSE,
+                       labels.show = TRUE,
+                       colors = labeled.scatterplot$colors,
+                       y.title = y.title,
+                       y.title.font.family = y.title.font.family,
+                       y.title.font.color = y.title.font.color,
+                       y.title.font.size = y.title.font.size,
+                       axis.font.family = y.tick.font.family,
+                       axis.font.color = y.tick.font.color,
+                       axis.font.size = y.tick.font.size,
+                       x.title = x.title,
+                       x.title.font.family = y.title.font.family,
+                       x.title.font.color = y.title.font.color,
+                       x.title.font.size = y.title.font.size,
+                       # x.axis.font.family = x.tick.font.family,
+                       # x.axis.font.color = x.tick.font.color,
+                       # X.axis.font.size = x.tick.font.size,
+                       z.title = bubble.legend.title,
+                       y.decimals = y.tick.decimals,
+                       x.decimals = x.tick.decimals,
+                       z.decimals = bubble.decimals,
+                       x.prefix = x.tick.prefix,
+                       y.prefix = y.tick.prefix,
+                       z.prefix = bubble.label.prefix,
+                       title.font.family = title.font.family,
+                       title.font.color = title.font.color,
+                       title.font.size = title.font.size,
+                       labels.font.family = scatter.labels.font.family,
+                       labels.font.color = scatter.labels.font.color,
+                       labels.font.size = scatter.labels.font.size,
+                       point.radius = scatter.marker.radius
+                       # tooltip.font.color = y.tick.font.family,
+                       # tooltip.font.size = y.tick.font.size,
+                       # tooltip.font.family = y.tick.font.family
+                       ))
+    }
+
 
     ## Waterfall (part of column charts, really...)
 

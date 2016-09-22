@@ -29,12 +29,13 @@ pieChart <- function(y,
                      pie.segment.color.gradient,
                      donut.hole.radius,
                      pie.segment.colors.repeat.by.group,
-                     table.statistic)
+                     table.statistic,
+                     qinput)
 {
     ## Check that the table statistic is appropriate for the chart type
     permitted.statistics <- c("%", "Total %", "n", "Population", "Average", "Sum", "% Share", "% Total Share")
 
-    if (!length(permitted.statistics[which(table.statistic == permitted.statistics)]) > 0)
+    if (!length(permitted.statistics[which(table.statistic == permitted.statistics)]) > 0 && qinput)
         warning("It is recommended that you use one of the following statistics in this chart: %, Total %, n, Population, Average, Sum, % Share, or % Total Share")
 
     ## If transpose is false and there's only one row in chart.matrix
@@ -60,7 +61,7 @@ pieChart <- function(y,
 
     ## Stop if asked for a donut but passed a 2D table
     if (length(unique(pie.data[, 3])) >= 2 && type == "Donut")
-        warning("The table supplied is two-dimensional and cannot be displayed as a donut chart.  A grouped pie chart has been drawn instead.")
+        stop("The table supplied is two-dimensional and cannot be displayed as a donut chart.  Please change the chart type to 'Pie' and update.")
 
     ## set inner.radius from donut.hole.radius or pie.groups.radius
     if (type == "Donut" && donut.hole.radius == 0)
