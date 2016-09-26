@@ -13,11 +13,11 @@ for (i in 1:length(qTab.examples))
 
     if (qTab.examples[[i]]$type == "Labeled Scatterplot" || qTab.examples[[i]]$type == "Labeled Bubbleplot")
     {
-        ## Do nothing for now
+        test.1 <- as.list(unlist(Chart(y = qTab.examples[[i]]$y, type = qTab.examples[[i]]$type)))
+        test.2 <- as.list(c(blank = "empty"))
     }
     else if (qTab.examples[[i]]$type == "Pie" || qTab.examples[[i]]$type == "Donut")
     {
-        example.number <- i
         test.1 <- as.list(unlist(Chart(y = qTab.examples[[i]]$y, type = qTab.examples[[i]]$type, transpose = qTab.examples[[i]]$transpose, title = attr(qTab.examples[[i]]$y, "name"), subtitle.text = qTab.examples[[i]]$subtitle.text))[[1]])
         test.2 <- as.list(unlist(Chart(y = qTab.examples[[i]]$y, type = qTab.examples[[i]]$type, transpose = qTab.examples[[i]]$transpose, title = attr(qTab.examples[[i]]$y, "name"), subtitle.text = qTab.examples[[i]]$subtitle.text))[[2]])
     } else {
@@ -165,6 +165,7 @@ for (i in 1:length(qTab.examples))
     }
 }
 
+## Plotly bad examples
 for (i in 1:length(qTab.bad.examples))
 {
     test_that(paste(names(qTab.bad.examples[i])), {expect_error(
@@ -173,8 +174,29 @@ for (i in 1:length(qTab.bad.examples))
               transpose = qTab.bad.examples[[i]]$transpose,
               title = attr(qTab.bad.examples[[i]]$y, "name"),
               y.title = qTab.bad.examples[[i]]$y.title))})
-
 }
+
+## Check that we get an error when the type is reversed
+for (i in 1:length(qTab.examples))
+{
+    run.test <- qTab.examples[[i]]$type %in% c("Labeled Bubbleplot", "Labeled Scatterplot")
+
+    if (run.test)
+    {
+        if (qTab.examples[[i]]$type == "Labeled Bubbleplot")
+            type = "Labeled Scatterplot"
+
+        if (qTab.examples[[i]]$type == "Labeled Scatterplot")
+            type = "Labeled Bubbleplot"
+
+        test_that(paste(names(qTab.examples[i])), {expect_error(
+            Chart(y = qTab.examples[[i]]$y,
+                  type = type)
+        )})
+    }
+}
+
+
 
 #############################################################################
 #############################################################################

@@ -224,6 +224,56 @@
 #' @format rhtmlDonut object
 "ex18.1"
 
+#' rhtmlLabeledScatter objects created from dput structure out of
+#' Q or R for #' unit testing
+#' @format rhtmlLabeledScatter object
+"ex19.1"
+
+#' rhtmlLabeledScatter objects created from dput structure out of
+#' Q or R for #' unit testing
+#' @format rhtmlLabeledScatter object
+"ex20.1"
+
+#' rhtmlLabeledScatter objects created from dput structure out of
+#' Q or R for #' unit testing
+#' @format rhtmlLabeledScatter object
+"ex21.1"
+
+#' rhtmlLabeledScatter objects created from dput structure out of
+#' Q or R for #' unit testing
+#' @format rhtmlLabeledScatter object
+"ex22.1"
+
+#' rhtmlLabeledScatter objects created from dput structure out of
+#' Q or R for #' unit testing
+#' @format rhtmlLabeledScatter object
+"ex23.1"
+
+#' rhtmlLabeledScatter objects created from dput structure out of
+#' Q or R for #' unit testing
+#' @format rhtmlLabeledScatter object
+"ex24.1"
+
+#' rhtmlLabeledScatter objects created from dput structure out of
+#' Q or R for #' unit testing
+#' @format rhtmlLabeledScatter object
+"ex25.1"
+
+#' rhtmlLabeledScatter objects created from dput structure out of
+#' Q or R for #' unit testing
+#' @format rhtmlLabeledScatter object
+"ex26.1"
+
+#' rhtmlLabeledScatter objects created from dput structure out of
+#' Q or R for #' unit testing
+#' @format rhtmlLabeledScatter object
+"ex27.1"
+
+#' rhtmlLabeledScatter objects created from dput structure out of
+#' Q or R for #' unit testing
+#' @format rhtmlLabeledScatter object
+"ex28.1"
+
 #' Plotly objects created from dput structure out of Q or R for
 #' unit testing
 #' @format Plotly object
@@ -313,3 +363,53 @@
 #' unit testing
 #' @format rhtmlDonut object
 "ex18.2"
+
+#' rhtmlLabeledScatter objects created from dput structure out of
+#' Q or R for #' unit testing
+#' @format rhtmlLabeledScatter object
+"ex19.2"
+
+#' rhtmlLabeledScatter objects created from dput structure out of
+#' Q or R for #' unit testing
+#' @format rhtmlLabeledScatter object
+"ex20.2"
+
+#' rhtmlLabeledScatter objects created from dput structure out of
+#' Q or R for #' unit testing
+#' @format rhtmlLabeledScatter object
+"ex21.2"
+
+#' rhtmlLabeledScatter objects created from dput structure out of
+#' Q or R for #' unit testing
+#' @format rhtmlLabeledScatter object
+"ex22.2"
+
+#' rhtmlLabeledScatter objects created from dput structure out of
+#' Q or R for #' unit testing
+#' @format rhtmlLabeledScatter object
+"ex23.2"
+
+#' rhtmlLabeledScatter objects created from dput structure out of
+#' Q or R for #' unit testing
+#' @format rhtmlLabeledScatter object
+"ex24.2"
+
+#' rhtmlLabeledScatter objects created from dput structure out of
+#' Q or R for #' unit testing
+#' @format rhtmlLabeledScatter object
+"ex25.2"
+
+#' rhtmlLabeledScatter objects created from dput structure out of
+#' Q or R for #' unit testing
+#' @format rhtmlLabeledScatter object
+"ex26.2"
+
+#' rhtmlLabeledScatter objects created from dput structure out of
+#' Q or R for #' unit testing
+#' @format rhtmlLabeledScatter object
+"ex27.2"
+
+#' rhtmlLabeledScatter objects created from dput structure out of
+#' Q or R for #' unit testing
+#' @format rhtmlLabeledScatter object
+"ex28.2"

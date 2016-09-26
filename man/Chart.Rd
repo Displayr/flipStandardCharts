@@ -86,10 +86,10 @@ Chart(y, type = "Area", transpose = FALSE, aggregate.period = "none",
   pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
   pie.segment.color.gradient = FALSE, donut.hole.radius = 0,
   bubble.legend.title = NULL, bubble.decimals = 0,
-  bubble.label.prefix = "", scatter.data.label.show = TRUE,
-  scatter.marker.radius = 3, scatter.labels.font.family = "Arial",
-  scatter.labels.font.size = 10, scatter.labels.font.color = rgb(44, 44, 44,
-  maxColorValue = 255))
+  bubble.label.prefix = "", scatter.group.labels = NULL,
+  scatter.data.label.show = TRUE, scatter.marker.radius = 3,
+  scatter.labels.font.family = "Arial", scatter.labels.font.size = 10,
+  scatter.labels.font.color = rgb(44, 44, 44, maxColorValue = 255))
 }
 \arguments{
 \item{y}{A table or matrix.}
@@ -558,6 +558,9 @@ donut charts; defaults to 70.}
 bubble-size data values.}
 
 \item{bubble.label.prefix}{Character; label prefix to bubble values.}
+
+\item{scatter.group.labels}{Character vector; overrides any automatically
+generated series/group labels.}
 
 \item{scatter.data.label.show}{Logical; whether to show labels in the
 plot or not.}

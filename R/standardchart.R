@@ -307,6 +307,8 @@
 #' @param bubble.decimals Numeric; number of decimal points to show for
 #' bubble-size data values.
 #' @param bubble.label.prefix Character; label prefix to bubble values.
+#' @param scatter.group.labels Character vector; overrides any automatically
+#' generated series/group labels.
 #' @param scatter.data.label.show Logical; whether to show labels in the
 #' plot or not.
 #' @param scatter.marker.radius Numeric; the radius of the scatter plot
@@ -493,6 +495,7 @@ Chart <-   function(y,
                         bubble.legend.title = NULL,
                         bubble.decimals = 0,
                         bubble.label.prefix = "",
+                        scatter.group.labels = NULL,
                         scatter.data.label.show = TRUE,
                         scatter.marker.radius = 3,
                         scatter.labels.font.family = "Arial",
@@ -527,38 +530,42 @@ Chart <-   function(y,
         colnames(chart.matrix) <- table.statistic
     }
 
-    ## Check if the input is a 2D object
-    if (length(dim(chart.matrix)) != 2)
-        stop("The input needs to be a 2 dimensional object (table or matrix)")
-
-    ## Make sure it's not a character matrix
-    if (is.character(chart.matrix))
-        stop("The input must be numeric")
-
-    ## Check if the input is labelled
-    if (is.null(rownames(chart.matrix)) || is.null(colnames(chart.matrix)))
-        stop("The input lacks row and/or column labels")
-
-    ## If it's a data frame with only numerics, make it a matrix
-    if (sum(sapply(chart.matrix, is.numeric)) == ncol(chart.matrix))
-        chart.matrix <- as.matrix(chart.matrix)
-
-    ## Can only take items of class matrix or table.
-    if (!is.matrix(chart.matrix) && !is.table(chart.matrix))
-        stop("The input needs to be either a matrix, a table, or a data frame consisting entirely of numerics")
-
-    ## Transform chart.matrix based on transposition requirements.
-    if (ncol(chart.matrix) == 1)
+    if (!(type %in% c("Labeled Scatterplot", "Labeled Bubbleplot")))
     {
-        chart.matrix <- t(chart.matrix)
-        table.axes.labels <- rev(table.axes.labels)
+        ## Check if the input is a 2D object
+        if (length(dim(chart.matrix)) != 2)
+            stop("The input needs to be a 2 dimensional object (table or matrix)")
+
+        ## Make sure it's not a character matrix
+        if (is.character(chart.matrix))
+            stop("The input must be numeric")
+
+        ## Check if the input is labelled
+        if (is.null(rownames(chart.matrix)) || is.null(colnames(chart.matrix)))
+            stop("The input lacks row and/or column labels")
+
+        ## If it's a data frame with only numerics, make it a matrix
+        if (sum(sapply(chart.matrix, is.numeric)) == ncol(chart.matrix))
+            chart.matrix <- as.matrix(chart.matrix)
+
+        ## Can only take items of class matrix or table.
+        if (!is.matrix(chart.matrix) && !is.table(chart.matrix))
+            stop("The input needs to be either a matrix, a table, or a data frame consisting entirely of numerics")
+
+        ## Transform chart.matrix based on transposition requirements.
+        if (ncol(chart.matrix) == 1)
+        {
+            chart.matrix <- t(chart.matrix)
+            table.axes.labels <- rev(table.axes.labels)
+        }
+
+        if (transpose)
+        {
+            chart.matrix <- t(chart.matrix)
+            table.axes.labels <- rev(table.axes.labels)
+        }
     }
 
-    if (transpose)
-    {
-        chart.matrix <- t(chart.matrix)
-        table.axes.labels <- rev(table.axes.labels)
-    }
 
     ## If no x.title or y.title provided, take defaults from data input
     if (x.title == "" || length(x.title) == 0)
@@ -812,7 +819,7 @@ Chart <-   function(y,
     {
         labeled.scatterplot <- labeledScatterplot(chart.matrix = chart.matrix,
                                                   type = type,
-                                                  group = NULL,
+                                                  group = scatter.group.labels,
                                                   grid = TRUE, # if x and y grid are both 0; else draw grid?
                                                   origin = FALSE, # base on y and x.zero.line.width
                                                   transpose = transpose,
@@ -858,7 +865,13 @@ Chart <-   function(y,
                        labels.font.family = scatter.labels.font.family,
                        labels.font.color = scatter.labels.font.color,
                        labels.font.size = scatter.labels.font.size,
-                       point.radius = scatter.marker.radius
+                       point.radius = scatter.marker.radius,
+                       y.bounds.maximum = y.bounds.maximum,
+                       y.bounds.minimum = y.bounds.minimum,
+                       y.bounds.units.major = y.bounds.units.major,
+                       x.bounds.maximum = y.bounds.maximum,
+                       x.bounds.minimum = y.bounds.minimum,
+                       x.bounds.units.major = y.bounds.units.major
                        # tooltip.font.color = y.tick.font.family,
                        # tooltip.font.size = y.tick.font.size,
                        # tooltip.font.family = y.tick.font.family
