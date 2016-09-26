@@ -20,7 +20,7 @@ labeledScatterplot <- function(chart.matrix,
         if (q.array)
         {
             chart.matrix <- as.matrix(stats::ftable(chart.matrix))
-            groups <- unlist(lapply(strsplit(rownames(as.matrix(stats::ftable(chart.matrix))), "_"), function(x) x[1]))
+            group <- unlist(lapply(strsplit(rownames(as.matrix(stats::ftable(chart.matrix))), "_"), function(x) x[1]))
             rownames(chart.matrix) <- unlist(lapply(strsplit(rownames(as.matrix(stats::ftable(chart.matrix))), "_"), function(x) x[2]))
        ## If it's not an array
         } else {
@@ -39,7 +39,6 @@ labeledScatterplot <- function(chart.matrix,
         reshaped <- rItemTransform(chart.matrix, is.bubble)
         chart.matrix <- reshaped[[1]]
         group <- reshaped[[2]]
-
     }
 
     ## If transpose = true, then swap x and y
@@ -143,12 +142,12 @@ spanCheck <- function(chart.matrix, span.labels = NULL)
 
         ## Create vector of group names
         if (is.null(span.labels) || length(span.labels) != repetitions)
-            group.names <- paste("Category ", 1:repetitions)
+            group.names <- paste("Category ", each = 1:repetitions)
         else
             group.names <- span.labels
 
         ### Get as many group names as required (i.e. same as number of rows)
-        groups <- rep(group.names, each = repetitions)
+        groups <- rep(group.names, each = unique.rows)
     }
 
     ## If the span is in the stub, then the data is already structured, and we just need to create the groups
@@ -157,18 +156,22 @@ spanCheck <- function(chart.matrix, span.labels = NULL)
         repetitions <- rows / unique.rows
 
         if (is.null(span.labels) || length(span.labels) != repetitions)
-            group.names <- paste("Category ", 1:repetitions)
+            group.names <- paste("Category ", each = 1:repetitions)
         else
             group.names <- span.labels
 
-        groups <- rep(group.names, each = repetitions)
+        groups <- rep(group.names, each = unique.rows)
     }
 
     ## If no span, make single group
     if (no.span && is.null(span.labels))
+    {
         groups <- rep("Category", rows)
-    else
+    }
+    else if (!is.null(span.labels))
+    {
         groups <- rep(span.labels, each = unique.rows)
+    }
 
     return(list(chart.matrix = chart.matrix,
                 groups = groups))

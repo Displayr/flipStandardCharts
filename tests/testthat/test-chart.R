@@ -196,6 +196,17 @@ for (i in 1:length(qTab.examples))
     }
 }
 
+## Draw all scatter plots
+# Chart(y = qTab.examples[[19]]$y, type = qTab.examples[[19]]$type)
+# Chart(y = qTab.examples[[20]]$y, type = qTab.examples[[20]]$type)
+# Chart(y = qTab.examples[[21]]$y, type = qTab.examples[[21]]$type)
+# Chart(y = qTab.examples[[22]]$y, type = qTab.examples[[22]]$type)
+# Chart(y = qTab.examples[[23]]$y, type = qTab.examples[[23]]$type)
+# Chart(y = qTab.examples[[24]]$y, type = qTab.examples[[24]]$type)
+# Chart(y = qTab.examples[[25]]$y, type = qTab.examples[[25]]$type)
+# Chart(y = qTab.examples[[26]]$y, type = qTab.examples[[26]]$type)
+# Chart(y = qTab.examples[[27]]$y, type = qTab.examples[[27]]$type)
+# Chart(y = qTab.examples[[28]]$y, type = qTab.examples[[28]]$type)
 
 
 #############################################################################
