@@ -380,7 +380,7 @@ Chart <-   function(y,
                         y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                         y.tick.suffix = "",
                         y.tick.prefix = "",
-                        y.tick.decimals = 2,
+                        y.tick.decimals = NULL,
                         y.tick.format.manual = "",
                         # y.hovertext.suffix = NULL,
                         # y.hovertext.prefix = NULL,
@@ -411,7 +411,7 @@ Chart <-   function(y,
                         x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                         x.tick.suffix = "",
                         x.tick.prefix = "",
-                        x.tick.decimals = 0,
+                        x.tick.decimals = NULL,
                         x.tick.format.manual = "",
                         # x.hovertext.suffix = NULL,
                         # x.hovertext.prefix = NULL,
@@ -504,6 +504,16 @@ Chart <-   function(y,
                     )
 {
     chart.matrix <- y
+
+    ## Check decimal input
+    if (!(type %in% c("Labeled Scatterplot", "Labeled Bubbleplot")))
+    {
+        if (is.null(x.tick.decimals))
+            x.tick.decimals <- 0
+
+        if (is.null(y.tick.decimals))
+            y.tick.decimals <- 2
+    }
 
     qinput <- FALSE
     if (!is.null(attr(chart.matrix, "statistic")))
@@ -869,9 +879,9 @@ Chart <-   function(y,
                        y.bounds.maximum = y.bounds.maximum,
                        y.bounds.minimum = y.bounds.minimum,
                        y.bounds.units.major = y.bounds.units.major,
-                       x.bounds.maximum = y.bounds.maximum,
-                       x.bounds.minimum = y.bounds.minimum,
-                       x.bounds.units.major = y.bounds.units.major
+                       x.bounds.maximum = x.bounds.maximum,
+                       x.bounds.minimum = x.bounds.minimum,
+                       x.bounds.units.major = x.bounds.units.major
                        # tooltip.font.color = y.tick.font.family,
                        # tooltip.font.size = y.tick.font.size,
                        # tooltip.font.family = y.tick.font.family

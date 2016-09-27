@@ -20,7 +20,12 @@ labeledScatterplot <- function(chart.matrix,
         if (q.array)
         {
             chart.matrix <- as.matrix(stats::ftable(chart.matrix))
-            group <- unlist(lapply(strsplit(rownames(as.matrix(stats::ftable(chart.matrix))), "_"), function(x) x[1]))
+
+            if (!is.null(group))
+                group <- rep(group, nrow(chart.matrix) / length(group))
+            else
+                group <- unlist(lapply(strsplit(rownames(as.matrix(stats::ftable(chart.matrix))), "_"), function(x) x[1]))
+
             rownames(chart.matrix) <- unlist(lapply(strsplit(rownames(as.matrix(stats::ftable(chart.matrix))), "_"), function(x) x[2]))
        ## If it's not an array
         } else {
@@ -36,7 +41,7 @@ labeledScatterplot <- function(chart.matrix,
             stop("The number of columns in the input table must be 2 or a multiple of 2 for a scatterplot.")
     } else {
         ## If the input is not from q, i.e. an rItem
-        reshaped <- rItemTransform(chart.matrix, is.bubble)
+        reshaped <- rItemTransform(chart.matrix, is.bubble, group)
         chart.matrix <- reshaped[[1]]
         group <- reshaped[[2]]
     }
@@ -178,7 +183,7 @@ spanCheck <- function(chart.matrix, span.labels = NULL)
 }
 
 
-rItemTransform <- function(chart.matrix, is.bubble)
+rItemTransform <- function(chart.matrix, is.bubble, span.labels)
 {
 
     if ((is.matrix(chart.matrix) && is.numeric(chart.matrix))
@@ -194,7 +199,11 @@ rItemTransform <- function(chart.matrix, is.bubble)
             stop("You need exactly two data columns for a scatterplot")
 
         ## Make group
-        groups <- rep("Category", nrow(chart.matrix))
+        use.text <- c("Category")
+        if (!is.null(span.labels))
+            use.text <- span.labels
+
+        groups <- rep(use.text, each = nrow(chart.matrix) / length(use.text))
 
         ## If it's a data frame, make matrix
         temp <- as.data.frame(chart.matrix)
@@ -247,11 +256,16 @@ rItemTransform <- function(chart.matrix, is.bubble)
                 stop("Your row labels must be unique")
 
         ## Generate suitable output
-        if (!is.bubble && ncol(chart.matrix) == 4)
-            groups <- chart.matrix[, 4]
+        if (!is.null(span.labels))
+            use.text <- span.labels
 
-        if (is.bubble && ncol(chart.matrix) == 5)
-            groups <- chart.matrix[, 5]
+        if (!is.bubble && ncol(chart.matrix) == 4 && is.null(span.labels))
+            use.text <- chart.matrix[, 4]
+
+        if (is.bubble && ncol(chart.matrix) == 5 && is.null(span.labels))
+            use.text <- chart.matrix[, 5]
+
+        groups <- rep(use.text, each = nrow(chart.matrix) / length(use.text))
 
         if (is.bubble)
             get.col <- 3
