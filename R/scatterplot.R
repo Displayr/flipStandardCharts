@@ -5,7 +5,8 @@ labeledScatterplot <- function(chart.matrix,
                         origin = FALSE,
                         transpose = FALSE,
                         colors = NULL,
-                        qinput = FALSE
+                        qinput = FALSE,
+                        rows.to.ignore = ""
                         )
 {
     is.bubble <- type == "Labeled Bubbleplot"
@@ -52,6 +53,18 @@ labeledScatterplot <- function(chart.matrix,
     else if (transpose && ncol(chart.matrix) == 3)
         chart.matrix <- chart.matrix[, c(2, 1, 3)]
 
+    ## Remove rows to ignore
+    remove.rows <- as.vector(sapply(strsplit(rows.to.ignore, ","), function(x) gsub("^\\s+|\\s+$", "", x)))
+    ## First, remove any rows with a corresponding item to ignore in the groups
+    chart.matrix <- chart.matrix[!group %in% remove.rows, ]
+    ## Second, remove any items from group with corresponding items to ignore
+    group <- group[!group %in% remove.rows]
+    ## Third, remove any items from group with corresponding items to ignore in the chart.matrix (labels)
+    group <- group[!rownames(chart.matrix) %in% remove.rows]
+    ## Fourt, remove any rows from chart.matric with items to ignore in the row names
+    chart.matrix <- chart.matrix[!rownames(chart.matrix) %in% remove.rows, ]
+
+    ## Populate the final items for output
     X <- as.numeric(chart.matrix[, 1])
     Y <- as.numeric(chart.matrix[, 2])
     Z <- NULL

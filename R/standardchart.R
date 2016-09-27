@@ -239,7 +239,8 @@
 #' @param rows.to.ignore Character; comma separated string of row headings to
 #' exclude from the charting.
 #' @param cols.to.ignore Character; comma separated string of column headings to
-#' exclude from the charting.
+#' exclude from the charting.  Does not apply to Labeled Scatterplot or Labeled
+#' Bubbleplot, which both need to have the correct columns prior to charting.
 #' @param bar.gap Integer; chart proportion between each bar or column if using
 #' bar or column charts, or between each cluster of bars or columns.
 #' @param bar.group.gap Integer; chart proportion between each bar or column in
@@ -515,6 +516,7 @@ Chart <-   function(y,
             y.tick.decimals <- 2
     }
 
+    ## Is it a Q input?
     qinput <- FALSE
     if (!is.null(attr(chart.matrix, "statistic")))
         qinput <- TRUE
@@ -613,7 +615,7 @@ Chart <-   function(y,
     #     warning(paste("The data selected is not best displayed as an", type, "chart.  Consider changing the chart type. (Old message: Y must be either a vector, matrix, or table.  Currently it is: ", class(y), ")"))
 
     ## Ignore rows or columns
-    if (rows.to.ignore != "" | cols.to.ignore != "")
+    if ((rows.to.ignore != "" | cols.to.ignore != "") && !(type %in% c("Labeled Scatterplot", "Labeled Bubbleplot")))
         chart.matrix <- removeRowsAndColumns(chart.matrix, rows.to.ignore, cols.to.ignore)
 
     ## Set defaults for chart specific items
@@ -834,7 +836,8 @@ Chart <-   function(y,
                                                   origin = FALSE, # base on y and x.zero.line.width
                                                   transpose = transpose,
                                                   colors = colors,
-                                                  qinput = qinput
+                                                  qinput = qinput,
+                                                  rows.to.ignore = rows.to.ignore
                                                   )
 
         return(rhtmlLabeledScatter::LabeledScatter(X = labeled.scatterplot$X,
