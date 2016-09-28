@@ -274,6 +274,11 @@
 #' @format rhtmlLabeledScatter object
 "ex28.1"
 
+#' rhtmlLabeledScatter objects created from dput structure out of
+#' Q or R for #' unit testing
+#' @format rhtmlLabeledScatter object
+"ex29.1"
+
 #' Plotly objects created from dput structure out of Q or R for
 #' unit testing
 #' @format Plotly object
@@ -413,3 +418,8 @@
 #' Q or R for #' unit testing
 #' @format rhtmlLabeledScatter object
 "ex28.2"
+
+#' rhtmlLabeledScatter objects created from dput structure out of
+#' Q or R for #' unit testing
+#' @format rhtmlLabeledScatter object
+"ex29.2"

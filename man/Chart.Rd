@@ -27,7 +27,7 @@ Chart(y, type = "Area", transpose = FALSE, aggregate.period = "none",
   y.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
   y.position = "left", y.mirror = FALSE, y.data.reversed = FALSE,
   y.grid.width = 1, y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
-  y.tick.suffix = "", y.tick.prefix = "", y.tick.decimals = 2,
+  y.tick.suffix = "", y.tick.prefix = "", y.tick.decimals = NULL,
   y.tick.format.manual = "", y.hovertext.decimals = 2,
   y.hovertext.format.manual = "", y.tick.angle = 0,
   y.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),
@@ -40,7 +40,7 @@ Chart(y, type = "Area", transpose = FALSE, aggregate.period = "none",
   x.zero.line.width = 0, x.zero.line.color = rgb(44, 44, 44, maxColorValue =
   255), x.position = "bottom", x.mirror = FALSE, x.data.reversed = FALSE,
   x.grid.width = 0, x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
-  x.tick.suffix = "", x.tick.prefix = "", x.tick.decimals = 0,
+  x.tick.suffix = "", x.tick.prefix = "", x.tick.decimals = NULL,
   x.tick.format.manual = "", x.hovertext.decimals = 5,
   x.hovertext.format.manual = "", x.tick.angle = 0,
   x.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),
@@ -456,7 +456,8 @@ is also set.}
 exclude from the charting.}
 
 \item{cols.to.ignore}{Character; comma separated string of column headings to
-exclude from the charting.}
+exclude from the charting.  Does not apply to Labeled Scatterplot or Labeled
+Bubbleplot, which both need to have the correct columns prior to charting.}
 
 \item{bar.gap}{Integer; chart proportion between each bar or column if using
 bar or column charts, or between each cluster of bars or columns.}
