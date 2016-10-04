@@ -21,6 +21,10 @@ labeledScatterplot <- function(chart.matrix,
     rows.to.ignore <- as.vector(sapply(strsplit(rows.to.ignore, ","), function(x) gsub("^\\s+|\\s+$", "", x)))
     cols.to.ignore <- as.vector(sapply(strsplit(cols.to.ignore, ","), function(x) gsub("^\\s+|\\s+$", "", x)))
 
+    ## Separate group string into vector
+    if (!is.null(group))
+        group <- as.vector(sapply(strsplit(group, ","), function(x) gsub("^\\s+|\\s+$", "", x)))
+
     if (is.array(chart.matrix) && !is.matrix(chart.matrix))
     {
         ## Get column names
