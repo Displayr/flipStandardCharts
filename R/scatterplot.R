@@ -124,7 +124,7 @@ labeledScatterplot <- function(chart.matrix,
 
     label <- rownames(chart.matrix)
 
-    if (length(unique(group)) == 1)
+    if (length(unique(group)) == 1 && type %in% c("Labeled Scatterplot"))
         legend.show = FALSE
 
     # Resolving colors
