@@ -834,15 +834,17 @@ Chart <-   function(y,
     if (type == "Labeled Scatterplot" || type == "Labeled Bubbleplot")
     {
         labeled.scatterplot <- labeledScatterplot(chart.matrix = chart.matrix,
+                                                  colors = colors,
+                                                  colors.reverse = colors.reverse,
                                                   type = type,
                                                   group = scatter.group.labels,
                                                   grid = TRUE, # if x and y grid are both 0; else draw grid?
                                                   origin = FALSE, # base on y and x.zero.line.width
                                                   transpose = transpose,
-                                                  colors = colors,
                                                   qinput = qinput,
                                                   rows.to.ignore = rows.to.ignore,
-                                                  cols.to.ignore = cols.to.ignore
+                                                  cols.to.ignore = cols.to.ignore,
+                                                  legend.show = legend.show
                                                   )
 
         return(rhtmlLabeledScatter::LabeledScatter(X = labeled.scatterplot$X,
@@ -855,6 +857,10 @@ Chart <-   function(y,
                        origin = labeled.scatterplot$origin,
                        origin.align = FALSE,
                        labels.show = TRUE,
+                       legend.show = labeled.scatterplot$legend.show,
+                       legend.font.color = legend.font.color,
+                       legend.font.family = legend.font.family,
+                       legend.font.size = legend.font.size,
                        colors = labeled.scatterplot$colors,
                        y.title = y.title,
                        y.title.font.family = y.title.font.family,

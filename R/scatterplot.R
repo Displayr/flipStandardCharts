@@ -1,19 +1,25 @@
 labeledScatterplot <- function(chart.matrix,
+                        colors = qColors,
+                        colors.reverse = FALSE,
                         type = "Labeled Scatterplot",
                         group = NULL,
                         grid = TRUE,
                         origin = FALSE,
                         transpose = FALSE,
-                        colors = NULL,
                         qinput = FALSE,
                         rows.to.ignore = "",
-                        cols.to.ignore = ""
+                        cols.to.ignore = "",
+                        legend.show = TRUE
                         )
 {
     is.bubble <- type == "Labeled Bubbleplot"
     is.scatter <- type == "Labeled Scatterplot"
     has.spans <- length(dim(chart.matrix)) == 3
     q.array <- is.array(chart.matrix) && qinput && length(dim(chart.matrix)) == 3
+
+    ## As rows and columns to ignore are dealt with locally for these plot types, we need to separate on comma here.
+    rows.to.ignore <- as.vector(sapply(strsplit(rows.to.ignore, ","), function(x) gsub("^\\s+|\\s+$", "", x)))
+    cols.to.ignore <- as.vector(sapply(strsplit(cols.to.ignore, ","), function(x) gsub("^\\s+|\\s+$", "", x)))
 
     if (is.array(chart.matrix) && !is.matrix(chart.matrix))
     {
@@ -26,7 +32,7 @@ labeledScatterplot <- function(chart.matrix,
         ## Set the row-names
         rownames(chart.matrix) <- unlist(lapply(strsplit(rownames(as.matrix(stats::ftable(chart.matrix))), "_"), function(x) x[2]))
 
-        ## If there are "columns" to remove, they're now stored in column names, so remove these from the chart.matrix
+        ## If there are "columns" to remove, they're now stored in column names, so remove these from the chart.matrix.
         ## "rows" to remove are removed further down; this is only relevant to array inputs.
         if (cols.to.ignore[1] != "")
             chart.matrix <- chart.matrix[!(column.names %in% cols.to.ignore), ]
@@ -118,17 +124,23 @@ labeledScatterplot <- function(chart.matrix,
 
     label <- rownames(chart.matrix)
 
-    ## Strip out alpha
-    colors <- flipChartBasics::StripAlphaChannel(colors)
+    if (length(unique(group)) == 1)
+        legend.show = FALSE
+
+    # Resolving colors
+    num.colors <- length(unique(group))
+    colors <- flipChartBasics::StripAlphaChannel(flipChartBasics::ChartColors(number.colors.needed = num.colors, given.colors = colors, reverse = colors.reverse))
 
     output <- list(X = X,
                    Y = Y,
                    Z = Z,
+                   colors = colors,
                    label = label,
                    group = group,
                    grid = grid,
                    origin = origin,
-                   colors = colors)
+                   colors = colors,
+                   legend.show = legend.show)
 
     return(output)
 }
