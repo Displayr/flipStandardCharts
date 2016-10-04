@@ -12,6 +12,7 @@ Encoding: UTF-8
 Imports:
 	plotly,
     flipChartBasics,
+    flipData,
 	rhtmlDonut,
 	dplyr,
 	rhtmlLabeledScatter,

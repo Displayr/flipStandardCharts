@@ -615,8 +615,12 @@ Chart <-   function(y,
     #     warning(paste("The data selected is not best displayed as an", type, "chart.  Consider changing the chart type. (Old message: Y must be either a vector, matrix, or table.  Currently it is: ", class(y), ")"))
 
     ## Ignore rows or columns
-    if ((rows.to.ignore != "" | cols.to.ignore != "") && !(type %in% c("Labeled Scatterplot", "Labeled Bubbleplot")))
-        chart.matrix <- removeRowsAndColumns(chart.matrix, rows.to.ignore, cols.to.ignore)
+    # if ((rows.to.ignore != "" | cols.to.ignore != "") && !(type %in% c("Labeled Scatterplot", "Labeled Bubbleplot")))
+    #     chart.matrix <- removeRowsAndColumns(chart.matrix, rows.to.ignore, cols.to.ignore)
+
+    ## Ignore rows or columns, using flipData::GetTidyTwoDimensionalArray()
+    if (!(type %in% c("Labeled Bubbleplot", "Labeled Scatterplot")))
+        chart.matrix <- flipData::GetTidyTwoDimensionalArray(chart.matrix, rows.to.ignore, cols.to.ignore)
 
     ## Set defaults for chart specific items
     fill.bound <- ""
@@ -837,7 +841,8 @@ Chart <-   function(y,
                                                   transpose = transpose,
                                                   colors = colors,
                                                   qinput = qinput,
-                                                  rows.to.ignore = rows.to.ignore
+                                                  rows.to.ignore = rows.to.ignore,
+                                                  cols.to.ignore = cols.to.ignore
                                                   )
 
         return(rhtmlLabeledScatter::LabeledScatter(X = labeled.scatterplot$X,
