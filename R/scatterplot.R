@@ -9,13 +9,16 @@ labeledScatterplot <- function(chart.matrix,
                         qinput = FALSE,
                         rows.to.ignore = "",
                         cols.to.ignore = "",
-                        legend.show = TRUE
+                        legend.show = TRUE,
+                        x.title = "",
+                        y.title = ""
                         )
 {
     is.bubble <- type == "Labeled Bubbleplot"
     is.scatter <- type == "Labeled Scatterplot"
     has.spans <- length(dim(chart.matrix)) == 3
     q.array <- is.array(chart.matrix) && qinput && length(dim(chart.matrix)) == 3
+    stored.group <- group
 
     ## As rows and columns to ignore are dealt with locally for these plot types, we need to separate on comma here.
     rows.to.ignore <- as.vector(sapply(strsplit(rows.to.ignore, ","), function(x) gsub("^\\s+|\\s+$", "", x)))
@@ -132,12 +135,27 @@ labeledScatterplot <- function(chart.matrix,
 
     label <- rownames(chart.matrix)
 
-    if (length(unique(group)) == 1 && type %in% c("Labeled Scatterplot"))
+    ## Resolve whether to show the legend for groups/colors or not.
+    if ((nchar(stored.group) == 0 || is.null(stored.group)) && length(unique(group)) == 1 && type %in% c("Labeled Scatterplot") )
         legend.show = FALSE
 
-    # Resolving colors
+    ## Resolving colors
     num.colors <- length(unique(group))
     colors <- flipChartBasics::StripAlphaChannel(flipChartBasics::ChartColors(number.colors.needed = num.colors, given.colors = colors, reverse = colors.reverse))
+
+    ## Resolve axes labels if none specified manually
+    if (x.title == "" || length(x.title) == 0)
+        x.title <- colnames(chart.matrix)[1]
+
+    if (x.title == "FALSE" || x.title == FALSE)
+        x.title <- ""
+
+    if (y.title == "" || length(y.title) == 0)
+        y.title <- colnames(chart.matrix)[2]
+
+    if (y.title == "FALSE" || y.title == FALSE)
+        y.title <- ""
+
 
     output <- list(X = X,
                    Y = Y,

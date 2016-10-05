@@ -576,21 +576,20 @@ Chart <-   function(y,
             chart.matrix <- t(chart.matrix)
             table.axes.labels <- rev(table.axes.labels)
         }
+
+        ## If no x.title or y.title provided, take defaults from data input
+        if (x.title == "" || length(x.title) == 0)
+            x.title <- table.axes.labels[2]
+
+        if (x.title == "FALSE" || x.title == FALSE)
+            x.title <- ""
+
+        if (y.title == "" || length(y.title) == 0)
+            y.title <- table.statistic
+
+        if (y.title == "FALSE" || y.title == FALSE)
+            y.title <- ""
     }
-
-
-    ## If no x.title or y.title provided, take defaults from data input
-    if (x.title == "" || length(x.title) == 0)
-        x.title <- table.axes.labels[2]
-
-    if (x.title == "FALSE" || x.title == FALSE)
-        x.title <- ""
-
-    if (y.title == "" || length(y.title) == 0)
-        y.title <- table.statistic
-
-    if (y.title == "FALSE" || y.title == FALSE)
-        y.title <- ""
 
     ## Store chart type for later use
     original.type <- type
@@ -844,7 +843,9 @@ Chart <-   function(y,
                                                   qinput = qinput,
                                                   rows.to.ignore = rows.to.ignore,
                                                   cols.to.ignore = cols.to.ignore,
-                                                  legend.show = legend.show
+                                                  legend.show = legend.show,
+                                                  x.title = x.title,
+                                                  y.title = y.title
                                                   )
 
         return(rhtmlLabeledScatter::LabeledScatter(X = labeled.scatterplot$X,
@@ -862,14 +863,14 @@ Chart <-   function(y,
                        legend.font.family = legend.font.family,
                        legend.font.size = legend.font.size,
                        colors = labeled.scatterplot$colors,
-                       y.title = y.title,
+                       y.title = labeled.scatterplot$y.title,
                        y.title.font.family = y.title.font.family,
                        y.title.font.color = y.title.font.color,
                        y.title.font.size = y.title.font.size,
                        axis.font.family = y.tick.font.family,
                        axis.font.color = y.tick.font.color,
                        axis.font.size = y.tick.font.size,
-                       x.title = x.title,
+                       x.title = labeled.scatterplot$x.title,
                        x.title.font.family = y.title.font.family,
                        x.title.font.color = y.title.font.color,
                        x.title.font.size = y.title.font.size,
