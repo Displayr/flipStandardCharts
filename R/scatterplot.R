@@ -166,7 +166,9 @@ labeledScatterplot <- function(chart.matrix,
                    grid = grid,
                    origin = origin,
                    colors = colors,
-                   legend.show = legend.show)
+                   legend.show = legend.show,
+                   x.title = x.title,
+                   y.title = y.title)
 
     return(output)
 }
