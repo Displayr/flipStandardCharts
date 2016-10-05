@@ -21,6 +21,10 @@ labeledScatterplot <- function(chart.matrix,
     rows.to.ignore <- as.vector(sapply(strsplit(rows.to.ignore, ","), function(x) gsub("^\\s+|\\s+$", "", x)))
     cols.to.ignore <- as.vector(sapply(strsplit(cols.to.ignore, ","), function(x) gsub("^\\s+|\\s+$", "", x)))
 
+    ## Is there an empty group string?
+    if (nchar(group) == 0 && !is.null(group))
+        group <- NULL
+
     ## Separate group string into vector
     if (!is.null(group))
         group <- as.vector(sapply(strsplit(group, ","), function(x) gsub("^\\s+|\\s+$", "", x)))
