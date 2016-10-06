@@ -439,7 +439,7 @@ Chart <-   function(y,
                         series.marker.text.size = 10,
                         series.marker.text.percent = FALSE,
                         series.line.width = 0,
-                        series.line.color = NULL,
+                        series.line.color = qColors,
                         series.line.color.reverse = FALSE,
                         series.line.transparency = 1,
                         hover.mode = "closest",
@@ -1336,8 +1336,10 @@ Chart <-   function(y,
         hoverinfo = paste(axis.to.show, show.series.name, sep = "")
 
     ## Build annotations list
-    if (!is.null(subtitle.text))
+    if (!is.null(subtitle.text) && length(data.annotations) >= 1)
         data.annotations[[length(data.annotations) + 1]] <- subtitle
+    else
+        data.annotations <- subtitle
 
     ## Hide legend if only one series to plot
     if ((type != "Bar" & type != "Stacked Bar" & type != "100% Stacked Bar") && nrow(chart.matrix) == 1)
@@ -1347,13 +1349,21 @@ Chart <-   function(y,
         legend.show <- FALSE
 
     ## Initiate plotly object
-    p <- plotly::plot_ly()
+    p <- plotly::plot_ly(as.data.frame(chart.matrix))
 
     ## Config options
-    p <- plotly::config(displayModeBar = show.modebar)
+    p <- plotly::config(p, displayModeBar = show.modebar)
 
     ## Make sure x.labels are actually used
     colnames(chart.matrix) <- x.labels
+
+    ## Convert type to plotly type
+    if (type %in% c("Bar", "Stacked Bar", "100% Stacked Bar"))
+        type <- "bar"
+    else
+        type <- "scatter"
+
+
 
     ## Add a trace for each row of data in the matrix
     for (a in 1:nrow(chart.matrix))
@@ -1371,44 +1381,62 @@ Chart <-   function(y,
 
         source.text <- source.matrix[a, ]
 
+        ## Add trace components
+        if (regexpr('lines', series.mode) >= 1)
+        {
+            lines = list(width = series.line.width,
+                         color = plotly::toRGB(series.line.color[a], alpha = series.line.transparency)
+                         )
+        } else {
+            lines <- NULL
+        }
+
+        if (regexpr('text', series.mode) >= 1)
+        {
+            textfont <- list(family = series.marker.text.family,
+                             color = plotly::toRGB(series.marker.text.color, alpha = 1),
+                             size = series.marker.text.size
+                             )
+        } else {
+            textfont <- NULL
+        }
+
+        if (regexpr('marker', series.mode) >= 1)
+        {
+            marker = list(size = series.marker.size,
+                          color = plotly::toRGB(series.marker.color[a], alpha = series.marker.transparency),
+                          symbol = series.marker.symbols[a],
+                          line = list(
+                              color = plotly::toRGB(series.marker.border.color[a], alpha = series.marker.border.transparency),
+                              width = series.marker.border.width
+                              )
+                          )
+        } else {
+             marker <- NULL
+        }
+
         p <- plotly::add_trace(p,
                                type = type,
                                x = x,
                                y = y,
-                               evaluate = TRUE,
+                               # evaluate = TRUE,
                                orientation = orientation,
                                fill = fill.bound,
                                fillcolor = plotly::toRGB(colors[a], alpha = transparency),
-                               line = list(
-                                   width = series.line.width,
-                                   color = plotly::toRGB(series.line.color[a], alpha = series.line.transparency)
-                               ),
+                               line = lines,
                                name = y.labels[a],
                                legendgroup = legend.group,
                                text = source.text,
                                textposition = series.marker.text.position,
-                               textfont = list(
-                                   family = series.marker.text.family,
-                                   color = plotly::toRGB(series.marker.text.color, alpha = 1),
-                                   size = series.marker.text.size
-                               ),
-                               ## MARKERS
+                               # MARKERS
                                mode = series.mode,
-                               marker = list(
-                                   size = series.marker.size,
-                                   color = plotly::toRGB(series.marker.color[a], alpha = series.marker.transparency),
-                                   symbol = series.marker.symbols[a],
-                                   line = list(
-                                       color = plotly::toRGB(series.marker.border.color[a], alpha = series.marker.border.transparency),
-                                       width = series.marker.border.width
-                                   )
-                               ),
+                               marker = marker,
                                hoverinfo = hoverinfo
         )
     }
 
     ## Set plotly layout styles
-    p <- plotly::layout(
+    p <- plotly::layout(p,
         title = title,
         ## LEGEND
         showlegend = legend.show,
@@ -1541,6 +1569,6 @@ Chart <-   function(y,
     )
 
     ## Return the chart
-    p
+    return(p)
 }
 

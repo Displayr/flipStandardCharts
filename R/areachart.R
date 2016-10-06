@@ -56,7 +56,7 @@ areaChart <- function(chart.matrix,
         series.mode = "lines"
 
     else if (series.line.width == 0 && series.marker.show == "none")
-        series.mode = "none"
+        series.mode = "lines"
 
     return(list(chart.matrix = chart.matrix,
                 fill.bound = fill.bound,

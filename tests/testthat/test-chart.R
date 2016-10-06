@@ -14,19 +14,19 @@ for (i in 1:length(qTab.examples))
     if (qTab.examples[[i]]$type == "Labeled Scatterplot" || qTab.examples[[i]]$type == "Labeled Bubbleplot")
     {
         test.1 <- as.list(unlist(Chart(y = qTab.examples[[i]]$y, type = qTab.examples[[i]]$type)))
-        test.2 <- as.list(c(blank = "empty"))
+        # test.2 <- as.list(c(blank = "empty"))
     }
     else if (qTab.examples[[i]]$type == "Pie" || qTab.examples[[i]]$type == "Donut")
     {
         test.1 <- as.list(unlist(Chart(y = qTab.examples[[i]]$y, type = qTab.examples[[i]]$type, transpose = qTab.examples[[i]]$transpose, title = attr(qTab.examples[[i]]$y, "name"), subtitle.text = qTab.examples[[i]]$subtitle.text))[[1]])
-        test.2 <- as.list(unlist(Chart(y = qTab.examples[[i]]$y, type = qTab.examples[[i]]$type, transpose = qTab.examples[[i]]$transpose, title = attr(qTab.examples[[i]]$y, "name"), subtitle.text = qTab.examples[[i]]$subtitle.text))[[2]])
+        # test.2 <- as.list(unlist(Chart(y = qTab.examples[[i]]$y, type = qTab.examples[[i]]$type, transpose = qTab.examples[[i]]$transpose, title = attr(qTab.examples[[i]]$y, "name"), subtitle.text = qTab.examples[[i]]$subtitle.text))[[2]])
     } else {
         test.1 <- as.list(plotly_build(Chart(y = qTab.examples[[i]]$y, type = qTab.examples[[i]]$type, transpose = qTab.examples[[i]]$transpose, title = attr(qTab.examples[[i]]$y, "name"), subtitle.text = qTab.examples[[i]]$subtitle.text))[[1]])
-        test.2 <- as.list(plotly_build(Chart(y = qTab.examples[[i]]$y, type = qTab.examples[[i]]$type, transpose = qTab.examples[[i]]$transpose, title = attr(qTab.examples[[i]]$y, "name"), subtitle.text = qTab.examples[[i]]$subtitle.text))[[2]])
+        # test.2 <- as.list(plotly_build(Chart(y = qTab.examples[[i]]$y, type = qTab.examples[[i]]$type, transpose = qTab.examples[[i]]$transpose, title = attr(qTab.examples[[i]]$y, "name"), subtitle.text = qTab.examples[[i]]$subtitle.text))[[2]])
     }
 
     approved.1 <- get(paste("ex", i, ".1", sep=""))
-    approved.2 <- get(paste("ex", i, ".2", sep=""))
+    # approved.2 <- get(paste("ex", i, ".2", sep=""))
 
     for (a in 1:length(test.1))
     {
@@ -96,73 +96,74 @@ for (i in 1:length(qTab.examples))
         }
     }
 
-    for (a in 1:length(test.2))
-    {
-        if(length(test.2[[a]]) > 0)
-        {
-            for (b in 1:length(test.2[[a]]))
-            {
-                if (length(test.2[[a]][[b]]) > 0)
-                {
-                    for (c in 1:length(test.2[[a]][[b]]))
-                    {
-                        if (length(test.2[[a]][[b]][[c]]) > 0)
-                        {
-                            for (d in 1:length(test.2[[a]][[b]][[c]]))
-                            {
-                                if (length(test.2[[a]][[b]][[c]][[d]]) > 0)
-                                {
-                                    for (e in 1:length(test.2[[a]][[b]][[c]][[d]]))
-                                    {
-                                        if (is.null(test.2[[a]][[b]][[c]][[d]][[e]]) || is.na(test.2[[a]][[b]][[c]][[d]][[e]]) || length(test.2[[a]][[b]][[c]][[d]][[e]]) == 0)
-                                            test.2[[a]][[b]][[c]][[d]][[e]] <- ""
-
-                                        if (is.null(approved.2[[a]][[b]][[c]][[d]][[e]]) || is.na(approved.2[[a]][[b]][[c]][[d]][[e]]) || length(approved.2[[a]][[b]][[c]][[d]][[e]]) == 0)
-                                            approved.2[[a]][[b]][[c]][[d]][[e]] <- ""
-
-                                        test_that(paste(names(qTab.examples[i]), " - in test (", a, " ", b, " ", c, " ", d, " ", e, "): ", test.2[[a]][[b]][[c]][[d]][[e]], " / in approved: ", approved.2[[a]][[b]][[c]][[d]][[e]], sep = ""), {expect_that(unlist(test.2[[a]][[b]][[c]][[d]][[e]]) == unlist(approved.2[[a]][[b]][[c]][[d]][[e]]), is_true())})
-                                    }
-                                } else {
-                                    if (is.null(test.2[[a]][[b]][[c]][[d]]) || is.na(test.2[[a]][[b]][[c]][[d]]) || length(test.2[[a]][[b]][[c]][[d]]) == 0)
-                                        test.2[[a]][[b]][[c]][[d]] <- ""
-
-                                    if (is.null(approved.2[[a]][[b]][[c]][[d]]) || is.na(approved.2[[a]][[b]][[c]][[d]]) || length(approved.2[[a]][[b]][[c]][[d]]) == 0)
-                                        approved.2[[a]][[b]][[c]][[d]] <- ""
-
-                                    test_that(paste(names(qTab.examples[i]), " - in test (", a, " ", b, " ", c, " ", d,"): ", test.2[[a]][[b]][[c]][[d]], " / in approved: ", approved.2[[a]][[b]][[c]][[d]], sep = ""), {expect_that(unlist(test.2[[a]][[b]][[c]][[d]]) == unlist(approved.2[[a]][[b]][[c]][[d]]), is_true())})
-                                }
-                            }
-                        } else {
-                            if (is.null(test.2[[a]][[b]][[c]]) || is.na(test.2[[a]][[b]][[c]]) || length(test.2[[a]][[b]][[c]]) == 0)
-                                test.2[[a]][[b]][[c]] <- ""
-
-                            if (is.null(approved.2[[a]][[b]][[c]]) || is.na(approved.2[[a]][[b]][[c]]) || length(approved.2[[a]][[b]][[c]]) == 0)
-                                approved.2[[a]][[b]][[c]] <- ""
-
-                            test_that(paste(names(qTab.examples[i]), " - in test (", a, " ", b, " ", c, "): ", test.2[[a]][[b]][[c]], " / in approved: ", approved.2[[a]][[b]][[c]], sep = ""), {expect_that(unlist(test.2[[a]][[b]][[c]]) == unlist(approved.2[[a]][[b]][[c]]), is_true())})
-
-                        }
-                    }
-                } else {
-                    if (is.null(test.2[[a]][[b]]) || is.na(test.2[[a]][[b]]) || length(test.2[[a]][[b]]) == 0)
-                        test.2[[a]][[b]] <- ""
-
-                    if (is.null(approved.2[[a]][[b]]) || is.na(approved.2[[a]][[b]]) || length(approved.2[[a]][[b]]) == 0)
-                        approved.2[[a]][[b]] <- ""
-
-                    test_that(paste(names(qTab.examples[i]), " - in test (", a, " ", b, "): ", test.2[[a]][[b]], " / in approved: ", approved.2[[a]][[b]], sep = ""), {expect_that(unlist(test.2[[a]][[b]]) == unlist(approved.2[[a]][[b]]), is_true())})
-                }
-            }
-        } else {
-            if (is.null(test.2[[a]]) || is.na(test.2[[a]]) || length(test.2[[a]]) == 0)
-                test.2[[a]] <- ""
-
-            if (is.null(approved.2[[a]]) || is.na(approved.2[[a]]) || length(approved.2[[a]]) == 0)
-                approved.2[[a]] <- ""
-
-            test_that(paste(names(qTab.examples[i]), " - in test (", a, "): ", test.2[[a]], " / in approved: ", approved.2[[a]], sep = ""), {expect_that(unlist(test.2[[a]]) == unlist(approved.2[[a]]), is_true())})
-        }
-    }
+#
+#     for (a in 1:length(test.2))
+#     {
+#         if(length(test.2[[a]]) > 0)
+#         {
+#             for (b in 1:length(test.2[[a]]))
+#             {
+#                 if (length(test.2[[a]][[b]]) > 0)
+#                 {
+#                     for (c in 1:length(test.2[[a]][[b]]))
+#                     {
+#                         if (length(test.2[[a]][[b]][[c]]) > 0)
+#                         {
+#                             for (d in 1:length(test.2[[a]][[b]][[c]]))
+#                             {
+#                                 if (length(test.2[[a]][[b]][[c]][[d]]) > 0)
+#                                 {
+#                                     for (e in 1:length(test.2[[a]][[b]][[c]][[d]]))
+#                                     {
+#                                         if (is.null(test.2[[a]][[b]][[c]][[d]][[e]]) || is.na(test.2[[a]][[b]][[c]][[d]][[e]]) || length(test.2[[a]][[b]][[c]][[d]][[e]]) == 0)
+#                                             test.2[[a]][[b]][[c]][[d]][[e]] <- ""
+#
+#                                         if (is.null(approved.2[[a]][[b]][[c]][[d]][[e]]) || is.na(approved.2[[a]][[b]][[c]][[d]][[e]]) || length(approved.2[[a]][[b]][[c]][[d]][[e]]) == 0)
+#                                             approved.2[[a]][[b]][[c]][[d]][[e]] <- ""
+#
+#                                         test_that(paste(names(qTab.examples[i]), " - in test (", a, " ", b, " ", c, " ", d, " ", e, "): ", test.2[[a]][[b]][[c]][[d]][[e]], " / in approved: ", approved.2[[a]][[b]][[c]][[d]][[e]], sep = ""), {expect_that(unlist(test.2[[a]][[b]][[c]][[d]][[e]]) == unlist(approved.2[[a]][[b]][[c]][[d]][[e]]), is_true())})
+#                                     }
+#                                 } else {
+#                                     if (is.null(test.2[[a]][[b]][[c]][[d]]) || is.na(test.2[[a]][[b]][[c]][[d]]) || length(test.2[[a]][[b]][[c]][[d]]) == 0)
+#                                         test.2[[a]][[b]][[c]][[d]] <- ""
+#
+#                                     if (is.null(approved.2[[a]][[b]][[c]][[d]]) || is.na(approved.2[[a]][[b]][[c]][[d]]) || length(approved.2[[a]][[b]][[c]][[d]]) == 0)
+#                                         approved.2[[a]][[b]][[c]][[d]] <- ""
+#
+#                                     test_that(paste(names(qTab.examples[i]), " - in test (", a, " ", b, " ", c, " ", d,"): ", test.2[[a]][[b]][[c]][[d]], " / in approved: ", approved.2[[a]][[b]][[c]][[d]], sep = ""), {expect_that(unlist(test.2[[a]][[b]][[c]][[d]]) == unlist(approved.2[[a]][[b]][[c]][[d]]), is_true())})
+#                                 }
+#                             }
+#                         } else {
+#                             if (is.null(test.2[[a]][[b]][[c]]) || is.na(test.2[[a]][[b]][[c]]) || length(test.2[[a]][[b]][[c]]) == 0)
+#                                 test.2[[a]][[b]][[c]] <- ""
+#
+#                             if (is.null(approved.2[[a]][[b]][[c]]) || is.na(approved.2[[a]][[b]][[c]]) || length(approved.2[[a]][[b]][[c]]) == 0)
+#                                 approved.2[[a]][[b]][[c]] <- ""
+#
+#                             test_that(paste(names(qTab.examples[i]), " - in test (", a, " ", b, " ", c, "): ", test.2[[a]][[b]][[c]], " / in approved: ", approved.2[[a]][[b]][[c]], sep = ""), {expect_that(unlist(test.2[[a]][[b]][[c]]) == unlist(approved.2[[a]][[b]][[c]]), is_true())})
+#
+#                         }
+#                     }
+#                 } else {
+#                     if (is.null(test.2[[a]][[b]]) || is.na(test.2[[a]][[b]]) || length(test.2[[a]][[b]]) == 0)
+#                         test.2[[a]][[b]] <- ""
+#
+#                     if (is.null(approved.2[[a]][[b]]) || is.na(approved.2[[a]][[b]]) || length(approved.2[[a]][[b]]) == 0)
+#                         approved.2[[a]][[b]] <- ""
+#
+#                     test_that(paste(names(qTab.examples[i]), " - in test (", a, " ", b, "): ", test.2[[a]][[b]], " / in approved: ", approved.2[[a]][[b]], sep = ""), {expect_that(unlist(test.2[[a]][[b]]) == unlist(approved.2[[a]][[b]]), is_true())})
+#                 }
+#             }
+#         } else {
+#             if (is.null(test.2[[a]]) || is.na(test.2[[a]]) || length(test.2[[a]]) == 0)
+#                 test.2[[a]] <- ""
+#
+#             if (is.null(approved.2[[a]]) || is.na(approved.2[[a]]) || length(approved.2[[a]]) == 0)
+#                 approved.2[[a]] <- ""
+#
+#             test_that(paste(names(qTab.examples[i]), " - in test (", a, "): ", test.2[[a]], " / in approved: ", approved.2[[a]], sep = ""), {expect_that(unlist(test.2[[a]]) == unlist(approved.2[[a]]), is_true())})
+#         }
+#     }
 }
 
 ## Plotly bad examples

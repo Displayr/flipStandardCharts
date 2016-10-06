@@ -245,7 +245,7 @@ spanCheck <- function(chart.matrix, span.labels = NULL)
 
         ## Create vector of group names
         if (is.null(span.labels) || length(span.labels) != repetitions)
-            group.names <- paste("Category ", each = 1:repetitions)
+            group.names <- paste("Group ", each = 1:repetitions)
         else
             group.names <- span.labels
 
@@ -259,7 +259,7 @@ spanCheck <- function(chart.matrix, span.labels = NULL)
         repetitions <- rows / unique.rows
 
         if (is.null(span.labels) || length(span.labels) != repetitions)
-            group.names <- paste("Category ", each = 1:repetitions)
+            group.names <- paste("Group ", each = 1:repetitions)
         else
             group.names <- span.labels
 
@@ -269,7 +269,7 @@ spanCheck <- function(chart.matrix, span.labels = NULL)
     ## If no span, make single group
     if (no.span && is.null(span.labels))
     {
-        groups <- rep("Category", rows)
+        groups <- rep("Group", rows)
     }
     else if (!is.null(span.labels))
     {
@@ -297,7 +297,7 @@ spanCheck <- function(chart.matrix, span.labels = NULL)
 #             stop("You need exactly two data columns for a scatterplot")
 #
 #         ## Make group
-#         use.text <- c("Category")
+#         use.text <- c("Group")
 #         if (!is.null(span.labels))
 #             use.text <- span.labels
 #
