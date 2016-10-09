@@ -474,11 +474,11 @@ for (i in 1:length(qTab.examples))
     }
     else if (qTab.examples[[i]]$type == "Pie" || qTab.examples[[i]]$type == "Donut")
     {
-        assign(paste("ex", i, ".1", sep = ""), as.list(unlist(Chart(y = qTab.examples[[example.number]]$y, type = qTab.examples[[example.number]]$type, transpose = qTab.examples[[example.number]]$transpose, title = attr(qTab.examples[[example.number]]$y, "name"), subtitle.text = qTab.examples[[example.number]]$subtitle.text))[[1]]))
-        assign(paste("ex", i, ".2", sep = ""), as.list(unlist(Chart(y = qTab.examples[[example.number]]$y, type = qTab.examples[[example.number]]$type, transpose = qTab.examples[[example.number]]$transpose, title = attr(qTab.examples[[example.number]]$y, "name"), subtitle.text = qTab.examples[[example.number]]$subtitle.text))[[2]]))
+        assign(paste("ex", i, ".1", sep = ""), as.list(unlist(Chart(y = qTab.examples[[example.number]]$y, type = qTab.examples[[example.number]]$type, transpose = qTab.examples[[example.number]]$transpose, title = attr(qTab.examples[[example.number]]$y, "name")))[[1]]))
+        assign(paste("ex", i, ".2", sep = ""), as.list(unlist(Chart(y = qTab.examples[[example.number]]$y, type = qTab.examples[[example.number]]$type, transpose = qTab.examples[[example.number]]$transpose, title = attr(qTab.examples[[example.number]]$y, "name")))[[2]]))
     } else {
-        assign(paste("ex", i, ".1", sep = ""), as.list(plotly_build(Chart(y = qTab.examples[[example.number]]$y, type = qTab.examples[[example.number]]$type, transpose = qTab.examples[[example.number]]$transpose, title = attr(qTab.examples[[example.number]]$y, "name"), subtitle.text = qTab.examples[[example.number]]$subtitle.text))[[1]]))
-        assign(paste("ex", i, ".2", sep = ""), as.list(plotly_build(Chart(y = qTab.examples[[example.number]]$y, type = qTab.examples[[example.number]]$type, transpose = qTab.examples[[example.number]]$transpose, title = attr(qTab.examples[[example.number]]$y, "name"), subtitle.text = qTab.examples[[example.number]]$subtitle.text))[[2]]))
+        assign(paste("ex", i, ".1", sep = ""), as.list(plotly_build(Chart(y = qTab.examples[[example.number]]$y, type = qTab.examples[[example.number]]$type, transpose = qTab.examples[[example.number]]$transpose, title = attr(qTab.examples[[example.number]]$y, "name")))[[1]]))
+        assign(paste("ex", i, ".2", sep = ""), as.list(plotly_build(Chart(y = qTab.examples[[example.number]]$y, type = qTab.examples[[example.number]]$type, transpose = qTab.examples[[example.number]]$transpose, title = attr(qTab.examples[[example.number]]$y, "name")))[[2]]))
     }
 }
 

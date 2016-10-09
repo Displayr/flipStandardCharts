@@ -60,14 +60,9 @@ Chart(y, type = "Area", transpose = FALSE, aggregate.period = "none",
   hover.include.source.data = FALSE, hover.include.source.data.prefix = "",
   hover.include.source.data.suffix = "",
   hover.include.source.data.percent = FALSE, show.modebar = FALSE,
-  subtitle.text = NULL, subtitle.align = "left",
-  subtitle.border.width = 0, subtitle.border.color = "white",
-  subtitle.background.color = "white", subtitle.font.family = "Arial",
-  subtitle.font.color = rgb(0, 0, 0, maxColorValue = 255),
-  subtitle.font.size = 10, global.font.family.override = "",
-  global.font.color.override = rgb(0, 0, 0, maxColorValue = 255),
-  rows.to.ignore = "", cols.to.ignore = "", bar.gap = 0.15,
-  bar.group.gap = NULL, bar.data.label.offset = NULL,
+  global.font.family.override = "", global.font.color.override = rgb(0, 0,
+  0, maxColorValue = 255), rows.to.ignore = "", cols.to.ignore = "",
+  bar.gap = 0.15, bar.group.gap = NULL, bar.data.label.offset = NULL,
   bar.data.label.family = "Arial", bar.data.label.size = 10,
   bar.data.label.color = rgb(0, 0, 0, maxColorValue = 255),
   bar.data.label.decimals = 0, bar.data.label.as.percent = FALSE,
@@ -418,30 +413,6 @@ point value in hover text.}
 point value by 100.}
 
 \item{show.modebar}{Logical; whether to show the zoom menu buttons or not.}
-
-\item{subtitle.text}{Character; text string to appear as a sub-title;
-defaults to NULL.}
-
-\item{subtitle.align}{Character; either "left", "right", "center".}
-
-\item{subtitle.border.width}{Numeric; width in pixels of border around
-sub-title.}
-
-\item{subtitle.border.color}{Sub-title border color as a named color in
-character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
-
-\item{subtitle.background.color}{Sub-title background color as a named
-color in character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
-
-\item{subtitle.font.family}{Character; Sub-title font family}
-
-\item{subtitle.font.color}{Sub-title font color as a named color
-in character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
-
-\item{subtitle.font.size}{Integer; Sub-title font size}
 
 \item{global.font.family.override}{Character; font family to override
 all occurrences of any font attribute for the chart instead of specifying

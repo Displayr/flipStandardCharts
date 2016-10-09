@@ -213,22 +213,6 @@
 #' @param hover.include.source.data.percent Logical; multiplies source data
 #' point value by 100.
 #' @param show.modebar Logical; whether to show the zoom menu buttons or not.
-#' @param subtitle.text Character; text string to appear as a sub-title;
-#' defaults to NULL.
-#' @param subtitle.align Character; either "left", "right", "center".
-#' @param subtitle.border.width Numeric; width in pixels of border around
-#' sub-title.
-#' @param subtitle.border.color Sub-title border color as a named color in
-#' character format (e.g. "black") or an rgb value (e.g.
-#' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param subtitle.background.color Sub-title background color as a named
-#' color in character format (e.g. "black") or an rgb value (e.g.
-#' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param subtitle.font.family Character; Sub-title font family
-#' @param subtitle.font.size Integer; Sub-title font size
-#' @param subtitle.font.color Sub-title font color as a named color
-#' in character format (e.g. "black") or an rgb value (e.g.
-#' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param global.font.family.override Character; font family to override
 #' all occurrences of any font attribute for the chart instead of specifying
 #' font for all font attributes individually
@@ -448,14 +432,14 @@ Chart <-   function(y,
                         hover.include.source.data.suffix = "",
                         hover.include.source.data.percent = FALSE,
                         show.modebar = FALSE,
-                        subtitle.text = NULL,
-                        subtitle.align = "left",
-                        subtitle.border.width = 0,
-                        subtitle.border.color = "white",
-                        subtitle.background.color = "white",
-                        subtitle.font.family = "Arial",
-                        subtitle.font.color = rgb(0, 0, 0, maxColorValue=255),
-                        subtitle.font.size = 10,
+                        # subtitle.text = NULL,
+                        # subtitle.align = "left",
+                        # subtitle.border.width = 0,
+                        # subtitle.border.color = "white",
+                        # subtitle.background.color = "white",
+                        # subtitle.font.family = "Arial",
+                        # subtitle.font.color = rgb(0, 0, 0, maxColorValue=255),
+                        # subtitle.font.size = 10,
                         global.font.family.override = "",
                         global.font.color.override = rgb(0, 0, 0, maxColorValue=255),
                         rows.to.ignore = "",
@@ -959,7 +943,6 @@ Chart <-   function(y,
         data.annotations <- list()
 
     # Find maximum value in chart matrix; needed for subtitle positioning and setting y-axis limits
-    # Should more accurately be moved in to the chart-type functions.
     y.max <- max(chart.matrix)
     if (!is.null(y.bounds.maximum))
         y.max <- y.bounds.maximum
@@ -973,12 +956,29 @@ Chart <-   function(y,
     if (original.type == "Stacked Column")
         y.max <- max(apply(chart.matrix, 2, FUN = function(x) sum(x)))
 
+    # Set subtitle defaults - this should be done in signature, but sutitle function removed due to formatting no longer available in Plotly 10 10 16
+    subtitle.text <- NULL
+    subtitle.align <- "left"
+    subtitle.border.width <- 0
+    subtitle.border.color <- "white"
+    subtitle.background.color <- "white"
+    subtitle.font.family <- "Arial"
+    subtitle.font.color <- rgb(0, 0, 0, maxColorValue=255)
+    subtitle.font.size <- 10
+
     # Sort out the sub-title
     subtitle <- list()
+
+    if (!is.null(subtitle.text))
+        warning("Subtitles are currently not formattable and should not be used.")
+
     if (!is.null(subtitle.text))
     {
         # Allow some extra margin space
         subtitle.text <- as.vector(subtitle.text)
+
+        # Manually insert line-breaks every 61 characters
+        # subtitle.text <- lineBreakEveryN(subtitle.text, n = 61)
 
         ## Attempt to determine y-position, which varies depending on chart type and chart data.
         if (subtitle.align == "left")
@@ -987,6 +987,10 @@ Chart <-   function(y,
             x.position = 1
         else
             x.position = 0.5
+
+        sfont <- list(color = subtitle.font.color,
+                      size = subtitle.font.size,
+                      family = subtitle.font.family)
 
         subtitle <- list(y = y.max,
                          x = x.position,
@@ -997,11 +1001,7 @@ Chart <-   function(y,
                          borderwidth = subtitle.border.width,
                          bordercolor = subtitle.border.color,
                          bgcolor = subtitle.background.color,
-                         font = list(
-                             color = subtitle.font.color,
-                             size = subtitle.font.size,
-                             family = subtitle.font.family
-                         ),
+                         font = sfont,
                          borderpad = 10,
                          yanchor = "bottom",
                          align = subtitle.align
@@ -1070,7 +1070,12 @@ Chart <-   function(y,
     # y.showticklables <- FALSE
     y.showticklabels <- TRUE
     y.showticks <- FALSE
-    if (y.line.width >= 1)
+
+    ## If no line, then set to NULL to satisfy Plotly
+    if (y.line.width == 0)
+        y.line.width <- NULL
+
+    if (y.line.width >= 1 && !is.null(y.line.width))
     {
         y.showline <- TRUE
         # y.showticklabels <- TRUE
@@ -1095,7 +1100,12 @@ Chart <-   function(y,
     x.showticklabels <- TRUE
     #x.showticklabels <- FALSE
     x.showticks <- FALSE
-    if (x.line.width >= 1)
+
+    ## If no line, then set to NULL to satisfy Plotly
+    if (x.line.width == 0)
+        x.line.width <- NULL
+
+    if (x.line.width >= 1 && !is.null(x.line.width))
     {
         x.showline <- TRUE
         #x.showticklabels <- TRUE
@@ -1338,8 +1348,8 @@ Chart <-   function(y,
     ## Build annotations list
     if (!is.null(subtitle.text) && length(data.annotations) >= 1)
         data.annotations[[length(data.annotations) + 1]] <- subtitle
-    else
-        data.annotations <- subtitle
+    # else
+    #     data.annotations <- subtitle
 
     ## Hide legend if only one series to plot
     if ((type != "Bar" & type != "Stacked Bar" & type != "100% Stacked Bar") && nrow(chart.matrix) == 1)

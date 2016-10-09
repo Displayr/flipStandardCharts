@@ -9,7 +9,7 @@ for (i in 1:length(qTab.examples))
     image.test <- FALSE
 
     ## Run image and chart output
-    print(Chart(y = qTab.examples[[i]]$y, type = qTab.examples[[i]]$type, transpose = qTab.examples[[i]]$transpose, title = attr(qTab.examples[[i]]$y, "name"), y.title = qTab.examples[[i]]$y.title, subtitle.text = qTab.examples[[i]]$subtitle.text))
+    print(Chart(y = qTab.examples[[i]]$y, type = qTab.examples[[i]]$type, transpose = qTab.examples[[i]]$transpose, title = attr(qTab.examples[[i]]$y, "name"), y.title = qTab.examples[[i]]$y.title))
 
     if (qTab.examples[[i]]$type == "Labeled Scatterplot" || qTab.examples[[i]]$type == "Labeled Bubbleplot")
     {
@@ -18,10 +18,10 @@ for (i in 1:length(qTab.examples))
     }
     else if (qTab.examples[[i]]$type == "Pie" || qTab.examples[[i]]$type == "Donut")
     {
-        test.1 <- as.list(unlist(Chart(y = qTab.examples[[i]]$y, type = qTab.examples[[i]]$type, transpose = qTab.examples[[i]]$transpose, title = attr(qTab.examples[[i]]$y, "name"), subtitle.text = qTab.examples[[i]]$subtitle.text))[[1]])
+        test.1 <- as.list(unlist(Chart(y = qTab.examples[[i]]$y, type = qTab.examples[[i]]$type, transpose = qTab.examples[[i]]$transpose, title = attr(qTab.examples[[i]]$y, "name")))[[1]])
         # test.2 <- as.list(unlist(Chart(y = qTab.examples[[i]]$y, type = qTab.examples[[i]]$type, transpose = qTab.examples[[i]]$transpose, title = attr(qTab.examples[[i]]$y, "name"), subtitle.text = qTab.examples[[i]]$subtitle.text))[[2]])
     } else {
-        test.1 <- as.list(plotly_build(Chart(y = qTab.examples[[i]]$y, type = qTab.examples[[i]]$type, transpose = qTab.examples[[i]]$transpose, title = attr(qTab.examples[[i]]$y, "name"), subtitle.text = qTab.examples[[i]]$subtitle.text))[[1]])
+        test.1 <- as.list(plotly_build(Chart(y = qTab.examples[[i]]$y, type = qTab.examples[[i]]$type, transpose = qTab.examples[[i]]$transpose, title = attr(qTab.examples[[i]]$y, "name")))[[1]])
         # test.2 <- as.list(plotly_build(Chart(y = qTab.examples[[i]]$y, type = qTab.examples[[i]]$type, transpose = qTab.examples[[i]]$transpose, title = attr(qTab.examples[[i]]$y, "name"), subtitle.text = qTab.examples[[i]]$subtitle.text))[[2]])
     }
 
@@ -351,6 +351,4 @@ Chart(y = resources,
           hover.include.source.data.prefix = "Staff count:",
           x.hovertext.decimals = 0,
           y.hovertext.decimals = 0,
-          subtitle.text = "Wassail, wassail, all over the town!<br>Our bread it is white and our ale it is brown.  Our bowl it is made, of the green maple tree<br> In the wassail bowl we'll drink unto thee.",
-          subtitle.align = "right",
           title = "Fancy Chart Title")
