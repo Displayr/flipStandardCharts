@@ -816,12 +816,14 @@ Chart <-   function(y,
     ## Settings specific to labelled scatter plots
     if (type == "Labeled Scatterplot" || type == "Labeled Bubbleplot")
     {
+        draw.grid <- (x.grid.width != 0 && y.grid.width != 0)
+
         labeled.scatterplot <- labeledScatterplot(chart.matrix = chart.matrix,
                                                   colors = colors,
                                                   colors.reverse = colors.reverse,
                                                   type = type,
                                                   group = scatter.group.labels,
-                                                  grid = TRUE, # if x and y grid are both 0; else draw grid?
+                                                  grid = draw.grid, # if x and y grid are both 0; else draw grid?
                                                   origin = FALSE, # base on y and x.zero.line.width
                                                   transpose = transpose,
                                                   qinput = qinput,
