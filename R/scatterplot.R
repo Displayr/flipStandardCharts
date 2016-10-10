@@ -156,7 +156,6 @@ labeledScatterplot <- function(chart.matrix,
     if (y.title == "FALSE" || y.title == FALSE)
         y.title <- ""
 
-
     output <- list(X = X,
                    Y = Y,
                    Z = Z,
@@ -250,7 +249,7 @@ spanCheck <- function(chart.matrix, span.labels = NULL)
             group.names <- span.labels
 
         ### Get as many group names as required (i.e. same as number of rows)
-        groups <- rep(group.names, each = unique.rows)
+            groups <- rep(group.names, each = unique.rows)
     }
 
     ## If the span is in the stub, then the data is already structured, and we just need to create the groups
@@ -273,7 +272,10 @@ spanCheck <- function(chart.matrix, span.labels = NULL)
     }
     else if (!is.null(span.labels))
     {
-        groups <- rep(span.labels, each = unique.rows)
+        if (length(span.labels) < unique.rows)
+            groups <- rep(span.labels, each = unique.rows)
+        else
+            groups <- span.labels
     }
 
     return(list(chart.matrix = chart.matrix,
