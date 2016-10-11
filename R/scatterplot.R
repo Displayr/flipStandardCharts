@@ -68,42 +68,6 @@ labeledScatterplot <- function(chart.matrix,
     if (!is.bubble && ncol(chart.matrix) != 2)
         stop("The number of columns in the input table must be 2 or a multiple of 2 for a scatterplot.")
 
-    #
-    #
-    #
-    # ## Check for spans and restructure if needed
-    # if (qinput)
-    # {
-    #     ## If the input is an array
-    #     if (q.array)
-    #     {
-    #         chart.matrix <- as.matrix(stats::ftable(chart.matrix))
-    #
-    #         if (!is.null(group))
-    #             group <- rep(group, nrow(chart.matrix) / length(group))
-    #         else
-    #             group <- unlist(lapply(strsplit(rownames(as.matrix(stats::ftable(chart.matrix))), "_"), function(x) x[1]))
-    #
-    #         rownames(chart.matrix) <- unlist(lapply(strsplit(rownames(as.matrix(stats::ftable(chart.matrix))), "_"), function(x) x[2]))
-    #    ## If it's not an array
-    #     } else {
-    #         reshaped <- spanCheck(chart.matrix, group)
-    #         chart.matrix <- reshaped[[1]]
-    #         group <- reshaped[[2]]
-    #     }
-    #
-    #     if (is.bubble && ncol(chart.matrix) != 3)
-    #         stop("The number of columns in the input table must be 3 or a multiple of 3 for a bubbleplot.")
-    #
-    #     if (!is.bubble && ncol(chart.matrix) != 2)
-    #         stop("The number of columns in the input table must be 2 or a multiple of 2 for a scatterplot.")
-    # } else {
-    #     ## If the input is not from q, i.e. an rItem
-    #     reshaped <- rItemTransform(chart.matrix, is.bubble, group)
-    #     chart.matrix <- reshaped[[1]]
-    #     group <- reshaped[[2]]
-    # }
-
     ## If transpose = true, then swap x and y
     if (transpose && ncol(chart.matrix) == 2)
         chart.matrix <- chart.matrix[, c(2, 1)]
@@ -113,17 +77,6 @@ labeledScatterplot <- function(chart.matrix,
     if (rows.to.ignore[1] != "")
     {
         chart.matrix <- flipData::GetTidyTwoDimensionalArray(chart.matrix, rows.to.ignore)
-
-        # ## Remove rows to ignore - special operation to allow array input.
-        # remove.rows <- as.vector(sapply(strsplit(rows.to.ignore, ","), function(x) gsub("^\\s+|\\s+$", "", x)))
-        # ## First, remove any rows with a corresponding item to ignore in the groups
-        # chart.matrix <- chart.matrix[!group %in% remove.rows, ]
-        # ## Second, remove any items from group with corresponding items to ignore
-        # group <- group[!group %in% remove.rows]
-        # ## Third, remove any items from group with corresponding items to ignore in the chart.matrix (labels)
-        # group <- group[!rownames(chart.matrix) %in% remove.rows]
-        # ## Fourth, remove any rows from chart.matric with items to ignore in the row names
-        # chart.matrix <- chart.matrix[!rownames(chart.matrix) %in% remove.rows, ]
     }
 
     ## Populate the final items for output
@@ -136,8 +89,14 @@ labeledScatterplot <- function(chart.matrix,
     label <- rownames(chart.matrix)
 
     ## Resolve whether to show the legend for groups/colors or not.
-    if ((nchar(stored.group) == 0 || is.null(stored.group)) && length(unique(group)) == 1 && type %in% c("Labeled Scatterplot") )
-        legend.show = FALSE
+    if ((nchar(stored.group) == 0 || is.null(stored.group)) && length(unique(group)) == 1)
+        legend.show <- FALSE
+
+    ## Resolve whether to show bubble legend or not
+    if (is.bubble)
+        legend.bubbles.show <- TRUE
+    else
+        legend.bubbles.show <- FALSE
 
     ## Resolving colors
     num.colors <- length(unique(group))
@@ -166,6 +125,7 @@ labeledScatterplot <- function(chart.matrix,
                    origin = origin,
                    colors = colors,
                    legend.show = legend.show,
+                   legend.bubbles.show = legend.bubbles.show,
                    x.title = x.title,
                    y.title = y.title)
 
