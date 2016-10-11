@@ -95,7 +95,7 @@ for (i in 1:length(qTab.examples))
             test_that(paste(names(qTab.examples[i]), " - in test (", a, "): ", test.1[[a]], " / in approved: ", approved.1[[a]], sep = ""), {expect_that(unlist(test.1[[a]]) == unlist(approved.1[[a]]), is_true())})
         }
     }
-
+}
 #
 #     for (a in 1:length(test.2))
 #     {
@@ -164,7 +164,7 @@ for (i in 1:length(qTab.examples))
 #             test_that(paste(names(qTab.examples[i]), " - in test (", a, "): ", test.2[[a]], " / in approved: ", approved.2[[a]], sep = ""), {expect_that(unlist(test.2[[a]]) == unlist(approved.2[[a]]), is_true())})
 #         }
 #     }
-}
+
 
 ## Plotly bad examples
 for (i in 1:length(qTab.bad.examples))

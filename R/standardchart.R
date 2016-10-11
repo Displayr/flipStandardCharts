@@ -392,7 +392,7 @@ Chart <-   function(y,
                         x.position = "bottom",
                         x.mirror = FALSE,
                         x.data.reversed = FALSE,                       ## T/F - involves autorange and may be too complicated.
-                        x.grid.width = 0,
+                        x.grid.width = 1,
                         x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                         x.tick.suffix = "",
                         x.tick.prefix = "",

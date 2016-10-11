@@ -39,7 +39,7 @@ Chart(y, type = "Area", transpose = FALSE, aggregate.period = "none",
   x.bounds.units.major = NULL, x.tick.frequency = NULL,
   x.zero.line.width = 0, x.zero.line.color = rgb(44, 44, 44, maxColorValue =
   255), x.position = "bottom", x.mirror = FALSE, x.data.reversed = FALSE,
-  x.grid.width = 0, x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+  x.grid.width = 1, x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
   x.tick.suffix = "", x.tick.prefix = "", x.tick.decimals = NULL,
   x.tick.format.manual = "", x.hovertext.decimals = 5,
   x.hovertext.format.manual = "", x.tick.angle = 0,
