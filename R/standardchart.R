@@ -883,10 +883,11 @@ Chart <-   function(y,
                        y.bounds.units.major = y.bounds.units.major,
                        x.bounds.maximum = x.bounds.maximum,
                        x.bounds.minimum = x.bounds.minimum,
-                       x.bounds.units.major = x.bounds.units.major
+                       x.bounds.units.major = x.bounds.units.major,
                        # tooltip.font.color = y.tick.font.family,
                        # tooltip.font.size = y.tick.font.size,
-                       # tooltip.font.family = y.tick.font.family
+                       # tooltip.font.family = y.tick.font.family,
+                       title = title
                        ))
     }
 
