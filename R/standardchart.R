@@ -1377,8 +1377,6 @@ Chart <-   function(y,
     else
         type <- "scatter"
 
-
-
     ## Add a trace for each row of data in the matrix
     for (a in 1:nrow(chart.matrix))
     {
@@ -1518,6 +1516,7 @@ Chart <-   function(y,
         ## X-AXIS
         xaxis = list(
             title = x.title,
+            type = "category",
             titlefont = list(
                 color = x.title.font.color,
                 family = x.title.font.family,
@@ -1528,6 +1527,8 @@ Chart <-   function(y,
                 family = x.tick.font.family,
                 size = x.tick.font.size
             ),
+            #categoryorder = "array",
+            #categoryarray = rownames(chart.matrix),
             showline = x.showline,
             linecolor = x.line.color,
             linewidth = x.line.width,

@@ -19,6 +19,7 @@ labeledScatterplot <- function(chart.matrix,
     has.spans <- length(dim(chart.matrix)) == 3
     q.array <- is.array(chart.matrix) && qinput && length(dim(chart.matrix)) == 3
     stored.group <- group
+    is.reshaped <- FALSE
 
     ## As rows and columns to ignore are dealt with locally for these plot types, we need to separate on comma here.
     rows.to.ignore <- as.vector(sapply(strsplit(rows.to.ignore, ","), function(x) gsub("^\\s+|\\s+$", "", x)))
@@ -57,9 +58,11 @@ labeledScatterplot <- function(chart.matrix,
 
     } else if (is.matrix(chart.matrix) || is.data.frame(chart.matrix))
     {
-        reshaped <- spanCheck(chart.matrix, group)
+        reshaped <- spanCheck(chart.matrix, group, colors, colors.reverse)
         chart.matrix <- reshaped[[1]]
-        group <- reshaped[[2]]
+        group <- reshaped$groups
+        group.colors <- reshaped[[3]]
+        is.reshaped <- TRUE
     }
 
     if (is.bubble && ncol(chart.matrix) != 3)
@@ -99,8 +102,12 @@ labeledScatterplot <- function(chart.matrix,
         legend.bubbles.show <- FALSE
 
     ## Resolving colors
-    num.colors <- length(unique(group))
-    colors <- flipChartBasics::StripAlphaChannel(flipChartBasics::ChartColors(number.colors.needed = num.colors, given.colors = colors, reverse = colors.reverse))
+    #f (!is.reshaped)
+    #{
+        num.colors <- length(unique(group))
+        colors <- flipChartBasics::StripAlphaChannel(flipChartBasics::ChartColors(number.colors.needed = num.colors, given.colors = colors, reverse = colors.reverse))
+    #} else
+    #    colors <- group.colors
 
     ## Resolve axes labels if none specified manually
     if (x.title == "" || length(x.title) == 0)
@@ -133,7 +140,7 @@ labeledScatterplot <- function(chart.matrix,
 }
 
 ## Resolving structure where there is no indication of spans
-spanCheck <- function(chart.matrix, span.labels = NULL)
+spanCheck <- function(chart.matrix, span.labels = NULL, group.colors = qColors, colors.reverse = FALSE)
 {
     rows <- dim(chart.matrix)[1]
     cols <- dim(chart.matrix)[2]
@@ -146,6 +153,7 @@ spanCheck <- function(chart.matrix, span.labels = NULL)
     span.in.banner <- FALSE
     span.in.stub <- FALSE
     no.span <- FALSE
+
     if (unique.cols < cols)
     {
         if (cols %% unique.cols == 0)
@@ -230,7 +238,7 @@ spanCheck <- function(chart.matrix, span.labels = NULL)
     {
         groups <- rep("Group", rows)
     }
-    else if (!is.null(span.labels))
+    else if (!is.null(span.labels) && !span.in.stub)
     {
         if (length(span.labels) < unique.rows)
             groups <- rep(span.labels, each = unique.rows)
@@ -239,7 +247,8 @@ spanCheck <- function(chart.matrix, span.labels = NULL)
     }
 
     return(list(chart.matrix = chart.matrix,
-                groups = groups))
+                groups = groups,
+                group.colors = group.colors))
 }
 
 
