@@ -442,8 +442,8 @@ Chart <-   function(y,
                         # subtitle.font.size = 10,
                         global.font.family.override = "",
                         global.font.color.override = rgb(0, 0, 0, maxColorValue=255),
-                        rows.to.ignore = "",
-                        cols.to.ignore = "",
+                        rows.to.ignore = "Total, NET, SUM",
+                        cols.to.ignore = "Total, NET, SUM",
                         bar.gap = 0.15,
                         bar.group.gap = NULL,
                         bar.data.label.offset = NULL,
@@ -519,15 +519,42 @@ Chart <-   function(y,
         table.statistic <- ""
     }
 
-    ## If it's a one column entity, make sure it's a matrix and that it's got a column heading.
-    if (is.array(chart.matrix) && length(dim(chart.matrix)) == 1)
-    {
-        chart.matrix <- as.matrix(chart.matrix)
-        colnames(chart.matrix) <- table.statistic
-    }
+    ## If it's an array with an attribute of names, then assign those names to the rows
+    if (is.array(chart.matrix) && length(names(chart.matrix)) != 0)
+        rownames(chart.matrix) <- names(chart.matrix)
 
     if (!(type %in% c("Labeled Scatterplot", "Labeled Bubbleplot")))
     {
+        ## If it's a one column entity, make sure it's a matrix and that it's got a column heading.
+        has.statistic <- "statistic" %in% names(attributes(chart.matrix))
+        if (is.array(chart.matrix))
+        {
+            chart.matrix <- as.matrix(chart.matrix)
+            if (ncol(chart.matrix) == 1 && has.statistic)
+            {
+                colnames(chart.matrix) <- table.statistic
+            } else if (ncol(chart.matrix) == 1 && !has.statistic) {
+                colnames(chart.matrix) <- c("n")
+            }
+        }
+
+        original.row.count <- nrow(chart.matrix)
+        original.col.count <- ncol(chart.matrix)
+
+        ## Ignore rows or columns, using flipData::GetTidyTwoDimensionalArray()
+        chart.matrix <- flipData::GetTidyTwoDimensionalArray(chart.matrix, rows.to.ignore, cols.to.ignore)
+
+        ## Check if the input is labelled
+        if (is.null(rownames(chart.matrix)) || is.null(colnames(chart.matrix)))
+            stop("The input lacks row and/or column labels")
+
+        ## Issue warning if any rows or columns have been removed
+        if (original.row.count != nrow(chart.matrix))
+            warning(paste("Any rows labelled", rows.to.ignore, "have been removed from the chart."), sep = "")
+
+        if (original.col.count != ncol(chart.matrix))
+            warning(paste("Any columns labelled", cols.to.ignore, "have been removed from the chart."), sep = "")
+
         ## Check if the input is a 2D object
         if (length(dim(chart.matrix)) != 2)
             stop("The input needs to be a 2 dimensional object (table or matrix)")
@@ -535,10 +562,6 @@ Chart <-   function(y,
         ## Make sure it's not a character matrix
         if (is.character(chart.matrix))
             stop("The input must be numeric")
-
-        ## Check if the input is labelled
-        if (is.null(rownames(chart.matrix)) || is.null(colnames(chart.matrix)))
-            stop("The input lacks row and/or column labels")
 
         ## If it's a data frame with only numerics, make it a matrix
         if (sum(sapply(chart.matrix, is.numeric)) == ncol(chart.matrix))
@@ -601,9 +624,8 @@ Chart <-   function(y,
     # if ((rows.to.ignore != "" | cols.to.ignore != "") && !(type %in% c("Labeled Scatterplot", "Labeled Bubbleplot")))
     #     chart.matrix <- removeRowsAndColumns(chart.matrix, rows.to.ignore, cols.to.ignore)
 
-    ## Ignore rows or columns, using flipData::GetTidyTwoDimensionalArray()
-    if (!(type %in% c("Labeled Bubbleplot", "Labeled Scatterplot")))
-        chart.matrix <- flipData::GetTidyTwoDimensionalArray(chart.matrix, rows.to.ignore, cols.to.ignore)
+
+
 
     ## Set defaults for chart specific items
     fill.bound <- ""
@@ -959,6 +981,14 @@ Chart <-   function(y,
 
     if (original.type == "Stacked Column")
         y.max <- max(apply(chart.matrix, 2, FUN = function(x) sum(x)))
+
+
+    # Set axis category based on data type in rows/columns.
+    # If the labels on the x-axis are numerical, then the category needs to be swapped to "linear", else it should be "category"
+    # if (all(is.numeric(as.numeric(rownames(chart.matrix)))))
+        # x.axis.type = "linear"
+    # else
+        x.axis.type = "category"
 
     # Set subtitle defaults - this should be done in signature, but sutitle function removed due to formatting no longer available in Plotly 10 10 16
     subtitle.text <- NULL
@@ -1516,7 +1546,7 @@ Chart <-   function(y,
         ## X-AXIS
         xaxis = list(
             title = x.title,
-            type = "category",
+            type = x.axis.type,
             titlefont = list(
                 color = x.title.font.color,
                 family = x.title.font.family,
@@ -1527,8 +1557,6 @@ Chart <-   function(y,
                 family = x.tick.font.family,
                 size = x.tick.font.size
             ),
-            #categoryorder = "array",
-            #categoryarray = rownames(chart.matrix),
             showline = x.showline,
             linecolor = x.line.color,
             linewidth = x.line.width,

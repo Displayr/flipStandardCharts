@@ -374,15 +374,18 @@ qTab.examples <- list("ex1 - Area - Pick One by Pick One" = list(y = structure(c
                     "ex28 - LScatter - R-created labelled matrix, two cols" = list(y = structure(c(1, 2, 3, 4, 5, 2, 3, 4, 5, 6), .Dim = c(5L, 2L), .Dimnames = list(
                                                                 c("A", "B", "C", "D", "E"), c("A", "B"))), transpose = FALSE, type = "Labeled Scatterplot", subtitle.text = NULL))
 
-qTab.bad.examples <- list("1 Cannot take unnamed matrix" = list(y = structure(c(0, 22, 18, 15, 16, 19, 13, 18, 27, 12, 0, 22, 21, 18, 20, 16, 14, 22, 24, 10),
-                                                                  .Dim = c(10L, 2L), statistic = "n", name = "Y.Pick.One.by.X.Pick.One.Area.Chart", questions =
-                                                                   c("Q3. Age", "Q2. Gender")), transpose = TRUE, type = "Area"),
-                          "2 Cannot take a numeric vector" = list(y = sample(1:10, 10), transpose = FALSE, type = "Area"),
+## With the introduction of flipData::GetTidyTwoDimensionalArray unnamed matrices et c. get labelled in that function and so the below cases are not
+## errors any more.
+# "1 Cannot take unnamed matrix" = list(y = structure(c(0, 22, 18, 15, 16, 19, 13, 18, 27, 12, 0, 22, 21, 18, 20, 16, 14, 22, 24, 10),
+#                                                                   .Dim = c(10L, 2L), statistic = "n", name = "Y.Pick.One.by.X.Pick.One.Area.Chart", questions =
+#                                                                    c("Q3. Age", "Q2. Gender")), transpose = TRUE, type = "Area"),
+# "5 Cannot take unnamed matrix" = list(y = structure(c(0, 22, 18, 15, 16, 19, 13, 18, 27, 12, 0, 22, 21, 18, 20, 16, 14, 22, 24, 10),
+#                                                                   .Dim = c(10L, 2L), statistic = "n", name = "Y.Pick.One.by.X.Pick.One.Area.Chart", questions =
+#                                                                    c("Q3. Age", "Q2. Gender")), transpose = TRUE, type = "Line"),
+
+qTab.bad.examples <- list("2 Cannot take a numeric vector" = list(y = sample(1:10, 10), transpose = FALSE, type = "Area"),
                           "3 Cannot take a character vector" = list(y = sample(LETTERS[1:10], 10), transpose = FALSE, type = "Area"),
                           "4 Cannot take a character matrix" = list(y = character.matrix, transpose = FALSE, type = "Area"),
-                          "5 Cannot take unnamed matrix" = list(y = structure(c(0, 22, 18, 15, 16, 19, 13, 18, 27, 12, 0, 22, 21, 18, 20, 16, 14, 22, 24, 10),
-                                                                  .Dim = c(10L, 2L), statistic = "n", name = "Y.Pick.One.by.X.Pick.One.Area.Chart", questions =
-                                                                   c("Q3. Age", "Q2. Gender")), transpose = TRUE, type = "Line"),
                           "6 Cannot take a numeric vector" = list(y = sample(1:10, 10), transpose = FALSE, type = "Line"),
                           "7 Cannot take a character vector" = list(y = sample(LETTERS[1:10], 10), transpose = FALSE, type = "Line"),
                           "8 Cannot take a character matrix" = list(y = character.matrix, transpose = FALSE, type = "Line"),
