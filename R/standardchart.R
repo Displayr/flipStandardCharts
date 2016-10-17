@@ -983,12 +983,8 @@ Chart <-   function(y,
         y.max <- max(apply(chart.matrix, 2, FUN = function(x) sum(x)))
 
 
-    # Set axis category based on data type in rows/columns.
-    # If the labels on the x-axis are numerical, then the category needs to be swapped to "linear", else it should be "category"
-    # if (all(is.numeric(as.numeric(rownames(chart.matrix)))))
-        # x.axis.type = "linear"
-    # else
-        x.axis.type = "category"
+    # Specify x.axis as categorical to prevent Plotly from automatically manipulating inputs.
+    x.axis.type = "category"
 
     # Set subtitle defaults - this should be done in signature, but sutitle function removed due to formatting no longer available in Plotly 10 10 16
     subtitle.text <- NULL
