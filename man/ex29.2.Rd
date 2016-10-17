@@ -3,14 +3,14 @@
 \docType{data}
 \name{ex29.2}
 \alias{ex29.2}
-\title{rhtmlLabeledScatter objects created from dput structure out of
+\title{Vector data objects created from dput structure out of
 Q or R for #' unit testing}
-\format{rhtmlLabeledScatter object}
+\format{Plotly object}
 \usage{
 ex29.2
 }
 \description{
-rhtmlLabeledScatter objects created from dput structure out of
+Vector data objects created from dput structure out of
 Q or R for #' unit testing
 }
 \keyword{datasets}
