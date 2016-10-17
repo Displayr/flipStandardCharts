@@ -372,7 +372,13 @@ qTab.examples <- list("ex1 - Area - Pick One by Pick One" = list(y = structure(c
                                                                 c("1", "2", "3", "4", "5"), c("1", "2"))),
                                                                 transpose = FALSE, type = "Labeled Scatterplot", subtitle.text = NULL),
                     "ex28 - LScatter - R-created labelled matrix, two cols" = list(y = structure(c(1, 2, 3, 4, 5, 2, 3, 4, 5, 6), .Dim = c(5L, 2L), .Dimnames = list(
-                                                                c("A", "B", "C", "D", "E"), c("A", "B"))), transpose = FALSE, type = "Labeled Scatterplot", subtitle.text = NULL))
+                                                                c("A", "B", "C", "D", "E"), c("A", "B"))), transpose = FALSE, type = "Labeled Scatterplot", subtitle.text = NULL),
+                    "ex29 - Data - Accept single column matrix with no col label" = list(y = structure(c(1, 2, 3, 4, 5, 6, 7, 8, 9, 100), .Dim = c(10L, 1L
+                                                                ), .Dimnames = list(c("2001", "2002", "2003", "2004", "2005",
+                                                                "2006", "2007", "2008", "2009", "Total"), "Dog"), name = "Data single col matrix no label"), transpose = FALSE, type = "Area", subtitle.text = NULL),
+                    "ex30 - Data - Accept single column vector with rownames in attribute 'name'" = list(y = structure(c(1, 2, 3, 4, 5, 6, 7, 8, 9, 100), .Dim = c(10L, 1L
+                                                                ), .Names = c("2001", "2002", "2003", "2004", "2005", "2006",
+                                                                "2007", "2008", "2009", "Total"), name = "Data single col names in attributes"), transpose = FALSE, type = "Area", subtitle.text = NULL))
 
 ## With the introduction of flipData::GetTidyTwoDimensionalArray unnamed matrices et c. get labelled in that function and so the below cases are not
 ## errors any more.
@@ -481,7 +487,9 @@ for (i in 1:length(qTab.examples))
         assign(paste("ex", i, ".2", sep = ""), as.list(unlist(Chart(y = qTab.examples[[example.number]]$y, type = qTab.examples[[example.number]]$type, transpose = qTab.examples[[example.number]]$transpose, title = attr(qTab.examples[[example.number]]$y, "name")))[[2]]))
     } else {
         assign(paste("ex", i, ".1", sep = ""), as.list(plotly_build(Chart(y = qTab.examples[[example.number]]$y, type = qTab.examples[[example.number]]$type, transpose = qTab.examples[[example.number]]$transpose, title = attr(qTab.examples[[example.number]]$y, "name")))[[1]]))
+        print("success 1")
         assign(paste("ex", i, ".2", sep = ""), as.list(plotly_build(Chart(y = qTab.examples[[example.number]]$y, type = qTab.examples[[example.number]]$type, transpose = qTab.examples[[example.number]]$transpose, title = attr(qTab.examples[[example.number]]$y, "name")))[[2]]))
+        print("success 2")
     }
 }
 
@@ -513,6 +521,8 @@ ex25.1 <- replace_zero_length(ex25.1)
 ex26.1 <- replace_zero_length(ex26.1)
 ex27.1 <- replace_zero_length(ex27.1)
 ex28.1 <- replace_zero_length(ex28.1)
+ex29.1 <- replace_zero_length(ex29.1)
+ex30.1 <- replace_zero_length(ex30.1)
 
 ex1.2 <- replace_zero_length(ex1.2)
 ex2.2 <- replace_zero_length(ex2.2)
@@ -542,6 +552,8 @@ ex25.2 <- replace_zero_length(ex25.2)
 ex26.2 <- replace_zero_length(ex26.2)
 ex27.2 <- replace_zero_length(ex27.2)
 ex28.2 <- replace_zero_length(ex28.2)
+ex29.2 <- replace_zero_length(ex29.2)
+ex30.2 <- replace_zero_length(ex30.2)
 
 ex1.1 <- replace_null(ex1.1)
 ex2.1 <- replace_null(ex2.1)
@@ -571,6 +583,8 @@ ex25.1 <- replace_null(ex25.1)
 ex26.1 <- replace_null(ex26.1)
 ex27.1 <- replace_null(ex27.1)
 ex28.1 <- replace_null(ex28.1)
+ex29.1 <- replace_null(ex29.1)
+ex30.1 <- replace_null(ex30.1)
 
 ex1.2 <- replace_null(ex1.2)
 ex2.2 <- replace_null(ex2.2)
@@ -600,6 +614,8 @@ ex25.2 <- replace_null(ex25.2)
 ex26.2 <- replace_null(ex26.2)
 ex27.2 <- replace_null(ex27.2)
 ex28.2 <- replace_null(ex28.2)
+ex29.2 <- replace_null(ex29.2)
+ex30.2 <- replace_null(ex30.2)
 
 ##### End of repeated code for diffs setting
 
@@ -623,7 +639,7 @@ plotlySymbols <- plotlySymbols <- c(0,100,200,300,1,101,201,301,2,102,202,302,3,
 available.fonts <- c("Arial Black", "Arial", "Comic Sans MS", "Courier New", "Georgia", "Impact", "Lucida Console", "Lucida Sans Unicode", "Marlett", "Symbol", "Tahoma", "Times New Roman", "Trebuchet MS", "Verdana", "Webdings")
 
 devtools::use_data(qTab.examples, qTab.bad.examples, character.matrix, qColors, plotlySymbols, available.fonts, x.data, y.data, var1, var2, var3, var4, var5, alpha.five, logic.vector, logic.vector.named, named.vector.a, named.vector.b, factor.a, factor.b, x.dates, z, good.examples, bad.examples, errorAsChartMatrix.examples, errorIsChartMatrix.examples,
-                   ex1.1, ex2.1, ex3.1, ex4.1, ex5.1, ex6.1, ex7.1, ex8.1, ex9.1, ex10.1, ex11.1, ex12.1, ex13.1, ex14.1, ex15.1, ex16.1, ex17.1, ex18.1, ex19.1, ex20.1, ex21.1, ex22.1, ex23.1, ex24.1, ex25.1, ex26.1, ex27.1, ex28.1,
-                   ex1.2, ex2.2, ex3.2, ex4.2, ex5.2, ex6.2, ex7.2, ex8.2, ex9.2, ex10.2, ex11.2, ex12.2, ex13.2, ex14.2, ex15.2, ex16.2, ex17.2, ex18.2, ex19.2, ex20.2, ex21.2, ex22.2, ex23.2, ex24.2, ex25.2, ex26.2, ex27.2, ex28.2,
+                   ex1.1, ex2.1, ex3.1, ex4.1, ex5.1, ex6.1, ex7.1, ex8.1, ex9.1, ex10.1, ex11.1, ex12.1, ex13.1, ex14.1, ex15.1, ex16.1, ex17.1, ex18.1, ex19.1, ex20.1, ex21.1, ex22.1, ex23.1, ex24.1, ex25.1, ex26.1, ex27.1, ex28.1, ex29.1, ex30.1,
+                   ex1.2, ex2.2, ex3.2, ex4.2, ex5.2, ex6.2, ex7.2, ex8.2, ex9.2, ex10.2, ex11.2, ex12.2, ex13.2, ex14.2, ex15.2, ex16.2, ex17.2, ex18.2, ex19.2, ex20.2, ex21.2, ex22.2, ex23.2, ex24.2, ex25.2, ex26.2, ex27.2, ex28.2, ex29.2, ex30.2,
                    internal = FALSE, overwrite = TRUE)
 devtools::use_data(qColors, plotlySymbols, available.fonts, internal = TRUE, overwrite = TRUE)

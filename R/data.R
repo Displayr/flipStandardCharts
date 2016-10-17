@@ -274,10 +274,15 @@
 #' @format rhtmlLabeledScatter object
 "ex28.1"
 
-#' rhtmlLabeledScatter objects created from dput structure out of
+#' Vector data objects created from dput structure out of
 #' Q or R for #' unit testing
-#' @format rhtmlLabeledScatter object
+#' @format Plotly object
 "ex29.1"
+
+#' Vector data objects created from dput structure out of
+#' Q or R for #' unit testing
+#' @format Plotly object
+"ex30.1"
 
 #' Plotly objects created from dput structure out of Q or R for
 #' unit testing
@@ -419,7 +424,12 @@
 #' @format rhtmlLabeledScatter object
 "ex28.2"
 
-#' rhtmlLabeledScatter objects created from dput structure out of
+#' Vector data objects created from dput structure out of
 #' Q or R for #' unit testing
-#' @format rhtmlLabeledScatter object
+#' @format Plotly object
 "ex29.2"
+
+#' Vector data objects created from dput structure out of
+#' Q or R for #' unit testing
+#' @format Plotly object
+"ex30.2"
