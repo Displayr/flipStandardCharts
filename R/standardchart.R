@@ -650,6 +650,9 @@ Chart <-   function(y,
     if (is.null(pie.groups.colors))
         pie.groups.colors <- colors
 
+    # Set any NaN to 0 so that it won't chart.
+    chart.matrix[is.nan(chart.matrix)] <- 0
+
     ## Settings specific to Area Charts
     if (type == "Area" | type == "Stacked Area" | type == "100% Stacked Area")
     {
@@ -804,36 +807,37 @@ Chart <-   function(y,
                 qinput = qinput)
 
         return(rhtmlDonut::Donut(values = pie$values.data,
-                                 labels = pie$labels,
-                                 values.color = pie$pie.values.color,
-                                 values.order = pie$pie.values.order,
-                                 values.font.family = pie$pie.values.font.family,
-                                 values.font.size = pie$pie.values.font.size,
-                                 values.decimal.places = pie$pie.values.decimals,
-                                 values.display.as = pie$values.display,
-                                 values.display.thres = pie$pie.values.thres.percent,
-                                 labels.font.family = pie$pie.labels.font.family,
-                                 labels.font.color = pie$pie.labels.font.color,
-                                 labels.font.size = pie$pie.labels.font.size,
-                                 labels.min.font.size = pie$pie.labels.minFontSize,
-                                 labels.inner = pie$pie.labels.inner,
-                                 groups = pie$groups,
-                                 groups.color = pie$pie.groups.colors,
-                                 groups.order = pie$pie.groups.order,
-                                 groups.font.family = pie$pie.groups.font.family,
-                                 groups.font.color = pie$pie.groups.font.color,
-                                 groups.font.size = pie$pie.groups.font.size,
-                                 groups.min.font.size = pie$pie.groups.min.font.size,
-                                 title = title,
-                                 title.font.family = title.font.family,
-                                 title.font.size = title.font.size,
-                                 title.font.color = title.font.color,
-                                 prefix = pie$pie.values.prefix,
-                                 suffix = pie$pie.values.suffix,
-                                 border.color = pie$pie.border.color,
-                                 gradient = pie$pie.segment.color.gradient,
-                                 inner.radius = pie$inner.radius
-                                 ))
+                 labels = pie$labels,
+                 values.color = pie$pie.values.color,
+                 values.order = pie$pie.values.order,
+                 values.font.family = pie$pie.values.font.family,
+                 values.font.size = pie$pie.values.font.size,
+                 values.decimal.places = pie$pie.values.decimals,
+                 values.display.as = pie$values.display,
+                 values.display.thres = pie$pie.values.thres.percent,
+                 labels.font.family = pie$pie.labels.font.family,
+                 labels.font.color = pie$pie.labels.font.color,
+                 labels.font.size = pie$pie.labels.font.size,
+                 labels.min.font.size = pie$pie.labels.minFontSize,
+                 labels.inner = pie$pie.labels.inner,
+                 groups = pie$groups,
+                 groups.color = pie$pie.groups.colors,
+                 groups.order = pie$pie.groups.order,
+                 groups.font.family = pie$pie.groups.font.family,
+                 groups.font.color = pie$pie.groups.font.color,
+                 groups.font.size = pie$pie.groups.font.size,
+                 groups.min.font.size = pie$pie.groups.min.font.size,
+                 title = title,
+                 title.font.family = title.font.family,
+                 title.font.size = title.font.size,
+                 title.font.color = title.font.color,
+                 prefix = pie$pie.values.prefix,
+                 suffix = pie$pie.values.suffix,
+                 border.color = pie$pie.border.color,
+                 gradient = pie$pie.segment.color.gradient,
+                 inner.radius = pie$inner.radius
+                 )
+        )
     }
 
     ## Settings specific to labelled scatter plots
