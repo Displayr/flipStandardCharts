@@ -636,6 +636,7 @@ Chart <-   function(y,
     swap.axes.and.data <- FALSE
     y.nticks <- NULL
     y.tickformat <- NULL
+    connectgap <- NULL
 
     ## Color inheritance
     if (is.null(series.marker.color))
@@ -650,12 +651,15 @@ Chart <-   function(y,
     if (is.null(pie.groups.colors))
         pie.groups.colors <- colors
 
-    # Set any NaN to 0 so that it won't chart.
-    chart.matrix[is.nan(chart.matrix)] <- 0
+
 
     ## Settings specific to Area Charts
     if (type == "Area" | type == "Stacked Area" | type == "100% Stacked Area")
     {
+
+        if (any(is.nan(as.matrix(chart.matrix))))
+            warning("Your data contains NaN values which will not appear in the chart.")
+
         chart.type.outputs <- areaChart(chart.matrix = chart.matrix,
                                         transparency = transparency,
                                         type = type,
@@ -687,11 +691,19 @@ Chart <-   function(y,
         series.line.width <- chart.type.outputs$series.line.width
         y.tickformat <- ""
         transpose <- chart.type.outputs$transpose
+        connectgap <- TRUE
     }
 
     ## Settings specific to Scatter Plot Charts
     if (type == "Scatter Plot")
     {
+        if (any(is.nan(as.matrix(chart.matrix))))
+        {
+            warning("Your data contains NaN values which will not appear in the chart.")
+
+            chart.matrix <- chart.matrix[!is.nan(rowSums(chart.matrix)), ]
+        }
+
         chart.type.outputs <- scatterPlotChart(chart.matrix = chart.matrix,
                                                 transpose = transpose,
                                                 series.marker.text = series.marker.text,
@@ -773,6 +785,16 @@ Chart <-   function(y,
     # Settings specific to Pie charts
     if (type == "Pie" || type == "Donut")
     {
+
+
+        # Set any NaN to 0 so that it won't chart.
+        chart.matrix <- as.matrix(chart.matrix)
+
+        if (any(is.nan(chart.matrix)))
+            warning("Your data contains NaN values which will not appear in the chart.")
+
+        chart.matrix[is.nan(chart.matrix)] <- 0
+
         pie <- pieChart(chart.matrix = chart.matrix,
                 transpose = transpose,
                 type = type,
@@ -844,6 +866,12 @@ Chart <-   function(y,
     if (type == "Labeled Scatterplot" || type == "Labeled Bubbleplot")
     {
         draw.grid <- (x.grid.width != 0 && y.grid.width != 0)
+
+        if (any(is.nan(as.matrix(chart.matrix))))
+        {
+            warning("Your data contains NaN values which will not appear in the chart.")
+            chart.matrix <- chart.matrix[!is.nan(rowSums(chart.matrix)), ]
+        }
 
         labeled.scatterplot <- labeledScatterplot(chart.matrix = chart.matrix,
                                                   colors = colors,
@@ -1474,7 +1502,8 @@ Chart <-   function(y,
                                # MARKERS
                                mode = series.mode,
                                marker = marker,
-                               hoverinfo = hoverinfo
+                               hoverinfo = hoverinfo,
+                               connectgaps = connectgap
         )
     }
 
