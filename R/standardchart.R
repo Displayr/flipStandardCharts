@@ -161,6 +161,8 @@
 #' @param x.tick.font.size Integer; x-axis tick label font size
 #' @param x.tick.label.autoformat Logical; whether to apply built-in auto-
 #' formatting of long (> 15 characters) text labels on the x-axis
+#' @param x.show.missing.data.markers Logical; whether to show markers
+#' on the x axis when there is no corresponding data.
 #' @param series.marker.show Can be "none", "automatic" or a vector referencing
 #' the plotly symbol dictionary using either numerics or strings.
 #' @param series.marker.color Character; a vector containing one or more named
@@ -408,6 +410,7 @@ Chart <-   function(y,
                         x.tick.font.family = "Arial",
                         x.tick.font.size = 10,
                         x.tick.label.autoformat = TRUE,
+                        x.show.missing.data.markers = TRUE,
                         series.marker.show = "none",
                         series.marker.color = NULL,
                         series.marker.color.reverse = FALSE,
@@ -1337,6 +1340,14 @@ Chart <-   function(y,
             }
             else
             {
+                # x.tickmode <- "array"
+                # x.autorange <- TRUE
+                # x.tickvals <- 1:length(x.labels)
+                # x.ticktext <- x.labels
+                #
+                # print(x.tickvals)
+                # print(x.ticktext)
+
                 x.dtick <- 1
                 x.tick0 <- 1
             }
@@ -1436,6 +1447,7 @@ Chart <-   function(y,
     else
         type <- "scatter"
 
+
     ## Add a trace for each row of data in the matrix
     for (a in 1:nrow(chart.matrix))
     {
@@ -1449,6 +1461,16 @@ Chart <-   function(y,
             y <- x.swap
             x <- y.swap
         }
+
+        ## Whether to show missing data markers on the x-axis or not
+        x.categoryorder = "array"
+        x.categoryarray = x
+        if (!x.show.missing.data.markers)
+        {
+            x.categoryorder = "trace"
+            x.categoryarray = NULL
+        }
+
 
         source.text <- source.matrix[a, ]
 
@@ -1616,7 +1638,9 @@ Chart <-   function(y,
             hoverformat = x.hoverformat,
             showexponent = "all",
             showtickprefix = TRUE,
-            showticksuffix = TRUE
+            showticksuffix = TRUE,
+            categoryorder = x.categoryorder,
+            categoryarray = x.categoryarray
         ),
         ## MARGINS
         margin = list(

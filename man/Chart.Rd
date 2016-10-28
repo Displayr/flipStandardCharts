@@ -45,10 +45,11 @@ Chart(y, type = "Area", transpose = FALSE, aggregate.period = "none",
   x.hovertext.format.manual = "", x.tick.angle = 0,
   x.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),
   x.tick.font.family = "Arial", x.tick.font.size = 10,
-  x.tick.label.autoformat = TRUE, series.marker.show = "none",
-  series.marker.color = NULL, series.marker.color.reverse = FALSE,
-  series.marker.transparency = 1, series.marker.size = 6,
-  series.marker.border.width = 1, series.marker.border.color = NULL,
+  x.tick.label.autoformat = TRUE, x.show.missing.data.markers = TRUE,
+  series.marker.show = "none", series.marker.color = NULL,
+  series.marker.color.reverse = FALSE, series.marker.transparency = 1,
+  series.marker.size = 6, series.marker.border.width = 1,
+  series.marker.border.color = NULL,
   series.marker.border.color.reverse = FALSE,
   series.marker.border.transparency = 1, series.marker.text = FALSE,
   series.marker.text.position = "top middle",
@@ -337,6 +338,9 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{x.tick.label.autoformat}{Logical; whether to apply built-in auto-
 formatting of long (> 15 characters) text labels on the x-axis}
+
+\item{x.show.missing.data.markers}{Logical; whether to show markers
+on the x axis when there is no corresponding data.}
 
 \item{series.marker.show}{Can be "none", "automatic" or a vector referencing
 the plotly symbol dictionary using either numerics or strings.}
