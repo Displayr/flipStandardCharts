@@ -284,6 +284,16 @@
 #' @format Plotly object
 "ex30.1"
 
+#' Vector data objects created from dput structure out of
+#' Q or R for #' unit testing
+#' @format Plotly object
+"ex31.1"
+
+#' Vector data objects created from dput structure out of
+#' Q or R for #' unit testing
+#' @format Plotly object
+"ex32.1"
+
 #' Plotly objects created from dput structure out of Q or R for
 #' unit testing
 #' @format Plotly object
@@ -433,3 +443,14 @@
 #' Q or R for #' unit testing
 #' @format Plotly object
 "ex30.2"
+
+#' Vector data objects created from dput structure out of
+#' Q or R for #' unit testing
+#' @format Plotly object
+"ex31.2"
+
+#' Vector data objects created from dput structure out of
+#' Q or R for #' unit testing
+#' @format Plotly object
+"ex32.2"
+

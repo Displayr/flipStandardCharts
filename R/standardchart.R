@@ -306,7 +306,7 @@
 #' data("z")
 #' z <- cbind(z, z[,1])
 #' colnames(z) <- LETTERS[1:2]
-#' rownames(z) <- LETTERS[1:10]
+#' rownames(z) <- LETTERS[1:5]
 #' Chart(y = z, type = "Area", transpose = TRUE)
 #' @export
 Chart <-   function(y,
@@ -1502,8 +1502,7 @@ Chart <-   function(y,
                                # MARKERS
                                mode = series.mode,
                                marker = marker,
-                               hoverinfo = hoverinfo,
-                               connectgaps = connectgap
+                               hoverinfo = hoverinfo
         )
     }
 
