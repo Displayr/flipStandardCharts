@@ -504,6 +504,10 @@ Chart <-   function(y,
             y.tick.decimals <- 2
     }
 
+    ## If the input is 3D, then error
+    if (length(dim(chart.matrix)) > 2 && is.null(attr(chart.matrix, "statistic")))
+        stop("The input consists of more than one table, or has multiple statistics.  Please include only one table and/or statistic.")
+
     ## Is it a Q input?
     qinput <- FALSE
     if (!is.null(attr(chart.matrix, "statistic")))
