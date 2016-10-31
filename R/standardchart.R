@@ -661,7 +661,7 @@ Chart <-   function(y,
     {
 
         if (any(is.nan(as.matrix(chart.matrix))))
-            warning("Your data contains NaN values which will not appear in the chart.")
+            warning("Your data contains NaN values; data points in gaps will be interpolated.")
 
         chart.type.outputs <- areaChart(chart.matrix = chart.matrix,
                                         transparency = transparency,

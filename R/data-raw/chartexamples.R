@@ -384,7 +384,10 @@ qTab.examples <- list("ex1 - Area - Pick One by Pick One" = list(y = structure(c
                                                                 "B", "C", "D", "E", "F", "G", "H", "I", "J"), c("A", "B"))), transpose = TRUE, type = "Line", subtitle.text = NULL),
                     "ex32 - Data frame passed to Scatter Plot" = list(y = structure(list(A = c(1, 2, 3, 4, 5, 6, 7, NaN, 9, 10), B = c(2,
                                                                 3, NaN, 5, 6, 7, 8, NaN, 10, 11)), .Names = c("A", "B"), row.names = c("A",
-                                                                "B", "C", "D", "E", "F", "G", "H", "I", "J"), class = "data.frame"), transpose = FALSE, type = "Labeled Scatterplot", subtitle.text = NULL))
+                                                                "B", "C", "D", "E", "F", "G", "H", "I", "J"), class = "data.frame"), transpose = FALSE, type = "Labeled Scatterplot", subtitle.text = NULL),
+                    "ex33 - Data with NaN's in Area chart" = list(y = structure(c(1, 2, 3, 4, 5, 6, 7, NaN, 9, 10, 2, 3, NaN, 5, 6,
+                                                                7, 8, NaN, 10, 11), .Dim = c(10L, 2L), .Dimnames = list(c("A",
+                                                                "B", "C", "D", "E", "F", "G", "H", "I", "J"), c("A", "B"))), transpose = TRUE, type = "Area", subtitle.text = NULL))
 
 ## With the introduction of flipData::GetTidyTwoDimensionalArray unnamed matrices et c. get labelled in that function and so the below cases are not
 ## errors any more.
@@ -531,6 +534,7 @@ ex29.1 <- replace_zero_length(ex29.1)
 ex30.1 <- replace_zero_length(ex30.1)
 ex31.1 <- replace_zero_length(ex31.1)
 ex32.1 <- replace_zero_length(ex32.1)
+ex33.1 <- replace_zero_length(ex33.1)
 
 ex1.2 <- replace_zero_length(ex1.2)
 ex2.2 <- replace_zero_length(ex2.2)
@@ -564,6 +568,7 @@ ex29.2 <- replace_zero_length(ex29.2)
 ex30.2 <- replace_zero_length(ex30.2)
 ex31.2 <- replace_zero_length(ex31.2)
 ex32.2 <- replace_zero_length(ex32.2)
+ex33.2 <- replace_zero_length(ex33.2)
 
 ex1.1 <- replace_null(ex1.1)
 ex2.1 <- replace_null(ex2.1)
@@ -597,6 +602,7 @@ ex29.1 <- replace_null(ex29.1)
 ex30.1 <- replace_null(ex30.1)
 ex31.1 <- replace_null(ex31.1)
 ex32.1 <- replace_null(ex32.1)
+ex33.1 <- replace_null(ex33.1)
 
 ex1.2 <- replace_null(ex1.2)
 ex2.2 <- replace_null(ex2.2)
@@ -630,6 +636,7 @@ ex29.2 <- replace_null(ex29.2)
 ex30.2 <- replace_null(ex30.2)
 ex31.2 <- replace_null(ex31.2)
 ex32.2 <- replace_null(ex32.2)
+ex33.2 <- replace_null(ex33.2)
 
 ##### End of repeated code for diffs setting
 
@@ -653,7 +660,7 @@ plotlySymbols <- plotlySymbols <- c(0,100,200,300,1,101,201,301,2,102,202,302,3,
 available.fonts <- c("Arial Black", "Arial", "Comic Sans MS", "Courier New", "Georgia", "Impact", "Lucida Console", "Lucida Sans Unicode", "Marlett", "Symbol", "Tahoma", "Times New Roman", "Trebuchet MS", "Verdana", "Webdings")
 
 devtools::use_data(qTab.examples, qTab.bad.examples, character.matrix, qColors, plotlySymbols, available.fonts, x.data, y.data, var1, var2, var3, var4, var5, alpha.five, logic.vector, logic.vector.named, named.vector.a, named.vector.b, factor.a, factor.b, x.dates, z, good.examples, bad.examples, errorAsChartMatrix.examples, errorIsChartMatrix.examples,
-                   ex1.1, ex2.1, ex3.1, ex4.1, ex5.1, ex6.1, ex7.1, ex8.1, ex9.1, ex10.1, ex11.1, ex12.1, ex13.1, ex14.1, ex15.1, ex16.1, ex17.1, ex18.1, ex19.1, ex20.1, ex21.1, ex22.1, ex23.1, ex24.1, ex25.1, ex26.1, ex27.1, ex28.1, ex29.1, ex30.1, ex31.1, ex32.1,
-                   ex1.2, ex2.2, ex3.2, ex4.2, ex5.2, ex6.2, ex7.2, ex8.2, ex9.2, ex10.2, ex11.2, ex12.2, ex13.2, ex14.2, ex15.2, ex16.2, ex17.2, ex18.2, ex19.2, ex20.2, ex21.2, ex22.2, ex23.2, ex24.2, ex25.2, ex26.2, ex27.2, ex28.2, ex29.2, ex30.2, ex31.2, ex32.2,
+                   ex1.1, ex2.1, ex3.1, ex4.1, ex5.1, ex6.1, ex7.1, ex8.1, ex9.1, ex10.1, ex11.1, ex12.1, ex13.1, ex14.1, ex15.1, ex16.1, ex17.1, ex18.1, ex19.1, ex20.1, ex21.1, ex22.1, ex23.1, ex24.1, ex25.1, ex26.1, ex27.1, ex28.1, ex29.1, ex30.1, ex31.1, ex32.1, ex33.1,
+                   ex1.2, ex2.2, ex3.2, ex4.2, ex5.2, ex6.2, ex7.2, ex8.2, ex9.2, ex10.2, ex11.2, ex12.2, ex13.2, ex14.2, ex15.2, ex16.2, ex17.2, ex18.2, ex19.2, ex20.2, ex21.2, ex22.2, ex23.2, ex24.2, ex25.2, ex26.2, ex27.2, ex28.2, ex29.2, ex30.2, ex31.2, ex32.2, ex33.2,
                    internal = FALSE, overwrite = TRUE)
 devtools::use_data(qColors, plotlySymbols, available.fonts, internal = TRUE, overwrite = TRUE)
