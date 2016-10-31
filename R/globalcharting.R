@@ -15,12 +15,12 @@ cum.data <- function(x, output = "cumulative.percentage") {
         x <- apply(x, 2, function(z) {prop.table(z)})
     }
 
-    if (class(x) != "matrix")
-    {
-        stop("Data must be a matrix")
-        # x <- AsChartMatrix(y = x)
-        # rownames(x) <- rnames
-    }
+    # if (class(x) != "matrix")
+    # {
+    #     stop("Data must be a matrix")
+    #     # x <- AsChartMatrix(y = x)
+    #     # rownames(x) <- rnames
+    # }
 
     return(x)
 }
