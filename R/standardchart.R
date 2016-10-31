@@ -600,6 +600,14 @@ Chart <-   function(y,
 
         if (y.title == "FALSE" || y.title == FALSE)
             y.title <- ""
+
+        if (type %in% c("bar", "Bar", "Stacked Bar", "100% Stacked Bar"))
+        {
+            x.temp <- y.title
+            y.temp <- x.title
+            x.title <- x.temp
+            y.title <- y.temp
+        }
     }
 
     ## Store chart type for later use
@@ -698,7 +706,7 @@ Chart <-   function(y,
     }
 
     ## Settings specific to Scatter Plot Charts
-    if (type == "Scatter Plot")
+    if (type == "Scatterplot")
     {
         if (any(is.nan(as.matrix(chart.matrix))))
         {
@@ -1020,7 +1028,12 @@ Chart <-   function(y,
 
 
     # Specify x.axis as categorical to prevent Plotly from automatically manipulating inputs.
-    x.axis.type = "category"
+    if (type != "bar")
+    {
+        x.axis.type = "category"
+    } else {
+        x.axis.type = "linear"
+    }
 
     # Set subtitle defaults - this should be done in signature, but sutitle function removed due to formatting no longer available in Plotly 10 10 16
     subtitle.text <- NULL
@@ -1442,11 +1455,10 @@ Chart <-   function(y,
     colnames(chart.matrix) <- x.labels
 
     ## Convert type to plotly type
-    if (type %in% c("Bar", "Stacked Bar", "100% Stacked Bar"))
+    if (type %in% c("bar", "Bar", "Stacked Bar", "100% Stacked Bar", "Column", "Stacked Column", "100% Stacked Column"))
         type <- "bar"
     else
         type <- "scatter"
-
 
     ## Add a trace for each row of data in the matrix
     for (a in 1:nrow(chart.matrix))
@@ -1475,7 +1487,7 @@ Chart <-   function(y,
         source.text <- source.matrix[a, ]
 
         ## Add trace components
-        if (regexpr('lines', series.mode) >= 1)
+        if (regexpr('lines', series.mode) >= 1 && !is.null(series.mode))
         {
             lines = list(width = series.line.width,
                          color = plotly::toRGB(series.line.color[a], alpha = series.line.transparency)
@@ -1484,7 +1496,7 @@ Chart <-   function(y,
             lines <- NULL
         }
 
-        if (regexpr('text', series.mode) >= 1)
+        if (regexpr('text', series.mode) >= 1 && !is.null(series.mode))
         {
             textfont <- list(family = series.marker.text.family,
                              color = plotly::toRGB(series.marker.text.color, alpha = 1),
@@ -1494,7 +1506,7 @@ Chart <-   function(y,
             textfont <- NULL
         }
 
-        if (regexpr('marker', series.mode) >= 1)
+        if (regexpr('marker', series.mode) >= 1 && !is.null(series.mode))
         {
             marker = list(size = series.marker.size,
                           color = plotly::toRGB(series.marker.color[a], alpha = series.marker.transparency),
@@ -1508,24 +1520,44 @@ Chart <-   function(y,
              marker <- NULL
         }
 
-        p <- plotly::add_trace(p,
-                               type = type,
-                               x = x,
-                               y = y,
-                               # evaluate = TRUE,
-                               orientation = orientation,
-                               fill = fill.bound,
-                               fillcolor = plotly::toRGB(colors[a], alpha = transparency),
-                               line = lines,
-                               name = y.labels[a],
-                               legendgroup = legend.group,
-                               text = source.text,
-                               textposition = series.marker.text.position,
-                               # MARKERS
-                               mode = series.mode,
-                               marker = marker,
-                               hoverinfo = hoverinfo
-        )
+
+        if (type != "bar")
+        {
+            p <- plotly::add_trace(p,
+                                   type = type,
+                                   x = x,
+                                   y = y,
+                                   # evaluate = TRUE,
+                                   orientation = orientation,
+                                   fill = fill.bound,
+                                   fillcolor = plotly::toRGB(colors[a], alpha = transparency),
+                                   line = lines,
+                                   name = y.labels[a],
+                                   legendgroup = legend.group,
+                                   text = source.text,
+                                   textposition = series.marker.text.position,
+                                   # MARKERS
+                                   mode = series.mode,
+                                   marker = marker,
+                                   hoverinfo = hoverinfo
+            )
+        } else {
+            p <- plotly::add_trace(p,
+                                   type = type,
+                                   x = x,
+                                   y = y,
+                                   # evaluate = TRUE,
+                                   orientation = orientation,
+                                   line = lines,
+                                   name = y.labels[a],
+                                   legendgroup = legend.group,
+                                   text = source.text,
+                                   # MARKERS
+                                   mode = series.mode,
+                                   marker = marker,
+                                   hoverinfo = hoverinfo
+            )
+        }
     }
 
     ## Set plotly layout styles
@@ -1660,7 +1692,7 @@ Chart <-   function(y,
         ),
         annotations = data.annotations,
         bargap = bar.gap,
-        bargroupgap = bar.group.gap,
+        # bargroupgap = bar.group.gap,  ## Apparently deprecated; bargap fills same function.
         barmode = barmode
     )
 
