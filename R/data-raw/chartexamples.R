@@ -393,7 +393,7 @@ qTab.examples <- list("ex1 - Area - Pick One by Pick One" = list(y = structure(c
                                                               "My friends would describe me as cultured, and refined",
                                                               c("Coca Cola", "Coke Zero", "Diet Coke", "Pepsi", "Pepsi Light",
                                                               "Pepsi Max")), name = "Y.Number.by.X.Pick.One.Column.Chart", questions = c("My friends would describe me as cultured, and refined",
-                                                              "Global frequentCola - Categorical")), transpose = TRUE, type = "Column",
+                                                              "Global frequentCola - Categorical")), transpose = FALSE, type = "Column",
                                                                subtitle.text = NULL),
                     "ex35 - Stacked Column - Y Pick One by X Pick One" = list(y = structure(c(0, 26, 17, 13, 20, 12, 6, 19, 14, 7, 0, 8, 10, 6,
                                                                6, 4, 8, 8, 8, 2, 0, 2, 3, 4, 8, 6, 3, 6, 8, 2, 0, 4, 0, 4, 1,
@@ -403,7 +403,7 @@ qTab.examples <- list("ex1 - Area - Pick One by Pick One" = list(y = structure(c
                                                                "40 to 44", "45 to 49", "50 to 54", "55 to 64", "65 or more"
                                                                ), c("Coca Cola", "Coke Zero", "Diet Coke", "Pepsi", "Pepsi Light",
                                                                "Pepsi Max")), name = "Y.Pick.One.by.X.Pick.One.stacked.Column.Chart", questions = c("Q3. Age",
-                                                               "Global frequentCola - Categorical")), transpose = TRUE, type = "Stacked Column",
+                                                               "Global frequentCola - Categorical")), transpose = FALSE, type = "Stacked Column",
                                                                subtitle.text = NULL),
                     "ex36 - 100% Stacked Column - Y Pick One by X Pick One" = list(y = structure(c(0, 26, 17, 13, 20, 12, 6, 19, 14, 7, 0, 8, 10, 6,
                                                                6, 4, 8, 8, 8, 2, 0, 2, 3, 4, 8, 6, 3, 6, 8, 2, 0, 4, 0, 4, 1,
@@ -413,14 +413,14 @@ qTab.examples <- list("ex1 - Area - Pick One by Pick One" = list(y = structure(c
                                                                "40 to 44", "45 to 49", "50 to 54", "55 to 64", "65 or more"
                                                                ), c("Coca Cola", "Coke Zero", "Diet Coke", "Pepsi", "Pepsi Light",
                                                                "Pepsi Max")), name = "Y.Pick.One.by.X.Pick.One.100.stacked.Column.Chart", questions = c("Q3. Age",
-                                                               "Global frequentCola - Categorical")), transpose = TRUE, type = "100% Stacked Column",
+                                                               "Global frequentCola - Categorical")), transpose = FALSE, type = "100% Stacked Column",
                                                                subtitle.text = NULL),
                     "ex37 - Bar - Y Pick One by X Pick One" = list(y = structure(c(2.92537313432836, 3.01666666666667, 3.02380952380952,
                                                               3.08, 3.22222222222222, 2.91666666666667), .Dim = c(1L, 6L), statistic = "Average", .Dimnames = list(
                                                               "My friends would describe me as cultured, and refined",
                                                               c("Coca Cola", "Coke Zero", "Diet Coke", "Pepsi", "Pepsi Light",
                                                               "Pepsi Max")), name = "Y.Number.by.X.Pick.One.Bar.Chart", questions = c("My friends would describe me as cultured, and refined",
-                                                              "Global frequentCola - Categorical")), transpose = TRUE, type = "Bar",
+                                                              "Global frequentCola - Categorical")), transpose = FALSE, type = "Bar",
                                                                subtitle.text = NULL),
                     "ex38 - Stacked Bar - Y Pick One by X Pick One" = list(y = structure(c(0, 26, 17, 13, 20, 12, 6, 19, 14, 7, 0, 8, 10, 6,
                                                                6, 4, 8, 8, 8, 2, 0, 2, 3, 4, 8, 6, 3, 6, 8, 2, 0, 4, 0, 4, 1,
@@ -430,7 +430,7 @@ qTab.examples <- list("ex1 - Area - Pick One by Pick One" = list(y = structure(c
                                                                "40 to 44", "45 to 49", "50 to 54", "55 to 64", "65 or more"
                                                                ), c("Coca Cola", "Coke Zero", "Diet Coke", "Pepsi", "Pepsi Light",
                                                                "Pepsi Max")), name = "Y.Pick.One.by.X.Pick.One.stacked.Bar.Chart", questions = c("Q3. Age",
-                                                               "Global frequentCola - Categorical")), transpose = TRUE, type = "Stacked Column",
+                                                               "Global frequentCola - Categorical")), transpose = FALSE, type = "Stacked Bar",
                                                                subtitle.text = NULL),
                     "ex39 - 100% Stacked Bar - Y Pick One by X Pick One" = list(y = structure(c(0, 26, 17, 13, 20, 12, 6, 19, 14, 7, 0, 8, 10, 6,
                                                                6, 4, 8, 8, 8, 2, 0, 2, 3, 4, 8, 6, 3, 6, 8, 2, 0, 4, 0, 4, 1,
@@ -440,7 +440,7 @@ qTab.examples <- list("ex1 - Area - Pick One by Pick One" = list(y = structure(c
                                                                "40 to 44", "45 to 49", "50 to 54", "55 to 64", "65 or more"
                                                                ), c("Coca Cola", "Coke Zero", "Diet Coke", "Pepsi", "Pepsi Light",
                                                                "Pepsi Max")), name = "Y.Pick.One.by.X.Pick.One.100.stacked.Bar.Chart", questions = c("Q3. Age",
-                                                               "Global frequentCola - Categorical")), transpose = TRUE, type = "100% Stacked Column",
+                                                               "Global frequentCola - Categorical")), transpose = FALSE, type = "100% Stacked Bar",
                                                                subtitle.text = NULL))
 
 ## With the introduction of flipData::GetTidyTwoDimensionalArray unnamed matrices et c. get labelled in that function and so the below cases are not

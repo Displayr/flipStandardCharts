@@ -1032,12 +1032,17 @@ Chart <-   function(y,
 
 
     # Specify x.axis as categorical to prevent Plotly from automatically manipulating inputs.
-    if (type != "bar")
-    {
-        x.axis.type = "category"
-    } else {
+    # if (type != "bar")
+    # {
+    #     x.axis.type = "category"
+    # } else {
+    #     x.axis.type = "linear"
+    # }
+
+    ## This should actually be linear if the x-axis data is numeric, and category if it's not.
+    x.axis.type = "category"
+    if (!any(is.character(colnames(chart.matrix))))
         x.axis.type = "linear"
-    }
 
     # Set subtitle defaults - this should be done in signature, but sutitle function removed due to formatting no longer available in Plotly 10 10 16
     subtitle.text <- NULL
@@ -1364,7 +1369,6 @@ Chart <-   function(y,
                 #
                 # print(x.tickvals)
                 # print(x.ticktext)
-
                 x.dtick <- 1
                 x.tick0 <- 1
             }
@@ -1425,7 +1429,7 @@ Chart <-   function(y,
     if (swap.axes.and.data)
         axis.to.show <- "x"
 
-    #################################### - This bit's broken!
+    ###########################################
     show.series.name <- "+name"
     if (nrow(chart.matrix) == 1)
         show.series.name <- ""
@@ -1487,7 +1491,6 @@ Chart <-   function(y,
             x.categoryarray = NULL
         }
 
-
         source.text <- source.matrix[a, ]
 
         ## Add trace components
@@ -1524,7 +1527,6 @@ Chart <-   function(y,
              marker <- NULL
         }
 
-
         if (type != "bar")
         {
             p <- plotly::add_trace(p,
@@ -1557,8 +1559,8 @@ Chart <-   function(y,
                                    legendgroup = legend.group,
                                    text = source.text,
                                    # MARKERS
-                                   mode = series.mode,
-                                   marker = marker,
+                                   # mode = series.mode,
+                                   # marker = marker,
                                    hoverinfo = hoverinfo
             )
         }
