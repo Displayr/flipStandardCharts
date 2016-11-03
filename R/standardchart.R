@@ -653,20 +653,6 @@ Chart <-   function(y,
     y.tickformat <- NULL
     connectgap <- NULL
 
-    ## Color inheritance
-    if (is.null(series.marker.color))
-        series.marker.color <- colors
-
-    if (is.null(series.marker.border.color))
-        series.marker.border.color <- series.marker.color
-
-    if (is.null(series.line.color))
-        series.line.color <- colors
-
-    if (is.null(pie.groups.colors))
-        pie.groups.colors <- colors
-
-
 
     ## Settings specific to Area Charts
     if (type == "Area" | type == "Stacked Area" | type == "100% Stacked Area")
@@ -743,6 +729,13 @@ Chart <-   function(y,
     ## Settings specific to Column Charts
     if (type == "Column" | type == "Stacked Column" | type == "100% Stacked Column")
     {
+        if (any(is.nan(as.matrix(chart.matrix))))
+        {
+            warning("Your data contains NaN values which will not appear in the chart.")
+            chart.matrix <- chart.matrix[!is.nan(colSums(chart.matrix)), ]
+        }
+
+
         chart.type.outputs <- columnChart(chart.matrix = chart.matrix,
                                         type = type,
                                         y.tick.format.manual = y.tick.format.manual,
@@ -796,6 +789,54 @@ Chart <-   function(y,
         x.tick.format.manual <- chart.type.outputs$x.tick.format.manual
         x.tick.frequency <- chart.type.outputs$x.tick.frequency
     }
+
+
+    ## Waterfall (part of column charts, really...)
+
+    ## Radar/Polar plot
+
+    ## Heat map
+
+    ## ... Any other chart types...
+
+    ## Work out color ranges; n.b. some color ranges worked out in the chart specific functions.
+    if (type %in% c("Column", "Stacked Column", "100% Stacked Column"))
+        number.colors.needed <- ncol(chart.matrix)
+    else
+        number.colors.needed <- nrow(chart.matrix)
+
+    # Color inheritance - first run
+    if (is.null(series.marker.color))
+        series.marker.color <- colors
+
+    if (is.null(series.marker.border.color))
+        series.marker.border.color <- series.marker.color
+
+    if (is.null(series.line.color))
+        series.line.color <- colors
+
+    if (is.null(pie.groups.colors))
+        pie.groups.colors <- colors
+
+    ## Calculate colors
+    colors <- flipChartBasics::ChartColors(number.colors.needed = number.colors.needed, given.colors = colors, reverse = colors.reverse)
+    series.marker.color <- flipChartBasics::ChartColors(number.colors.needed = number.colors.needed, given.colors = series.marker.color, reverse = series.marker.color.reverse)
+    series.marker.border.color <- flipChartBasics::ChartColors(number.colors.needed = number.colors.needed, given.colors = series.marker.border.color, reverse = series.marker.border.color.reverse)
+    series.line.color <- flipChartBasics::ChartColors(number.colors.needed = number.colors.needed, given.colors = series.line.color, reverse = series.line.color.reverse)
+
+    ## Color inheritance - second run
+    if (is.null(series.marker.color))
+        series.marker.color <- colors
+
+    if (is.null(series.marker.border.color))
+        series.marker.border.color <- series.marker.color
+
+    if (is.null(series.line.color))
+        series.line.color <- colors
+
+    if (is.null(pie.groups.colors))
+        pie.groups.colors <- colors
+
 
     # Settings specific to Pie charts
     if (type == "Pie" || type == "Donut")
@@ -961,20 +1002,6 @@ Chart <-   function(y,
                        ))
     }
 
-
-    ## Waterfall (part of column charts, really...)
-
-    ## Radar/Polar plot
-
-    ## Heat map
-
-    ## ... Any other chart types...
-
-    ## Work out color ranges; n.b. some color ranges worked out in the chart specific functions.
-    colors <- flipChartBasics::ChartColors(number.colors.needed = nrow(chart.matrix), given.colors = colors, reverse = colors.reverse)
-    series.marker.color <- flipChartBasics::ChartColors(number.colors.needed = nrow(chart.matrix), given.colors = series.marker.color, reverse = series.marker.color.reverse)
-    series.marker.border.color <- flipChartBasics::ChartColors(number.colors.needed = nrow(chart.matrix), given.colors = series.marker.border.color, reverse = series.marker.border.color.reverse)
-    series.line.color <- flipChartBasics::ChartColors(number.colors.needed = nrow(chart.matrix), given.colors = series.line.color, reverse = series.line.color.reverse)
 
     # Set all fonts to global font override if required
     if (global.font.family.override != "")
@@ -1523,6 +1550,15 @@ Chart <-   function(y,
                               width = series.marker.border.width
                               )
                           )
+        } else if (type == "bar") {
+            marker = list(size = series.marker.size,
+                          color = plotly::toRGB(colors[a], alpha = transparency),
+                          line = list(
+                              color = plotly::toRGB(series.marker.border.color[a], alpha = series.marker.border.transparency),
+                              width = series.marker.border.width
+                              )
+                          )
+
         } else {
              marker <- NULL
         }
@@ -1560,7 +1596,7 @@ Chart <-   function(y,
                                    text = source.text,
                                    # MARKERS
                                    # mode = series.mode,
-                                   # marker = marker,
+                                   marker = marker,
                                    hoverinfo = hoverinfo
             )
         }
