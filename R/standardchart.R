@@ -760,6 +760,7 @@ Chart <-   function(y,
         type <- chart.type.outputs$type
         barmode <- chart.type.outputs$barmode
         bar.group.gap <- chart.type.outputs$bar.group.gap
+        transparency <- 1
     }
 
     ## Settings specific to Bar Charts
@@ -795,6 +796,7 @@ Chart <-   function(y,
         y.nticks <- y.nticks
         x.tick.format.manual <- chart.type.outputs$x.tick.format.manual
         x.tick.frequency <- chart.type.outputs$x.tick.frequency
+        transparency <- 1
     }
 
 
