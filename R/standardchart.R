@@ -657,6 +657,11 @@ Chart <-   function(y,
     ## Settings specific to Area Charts
     if (type == "Area" | type == "Stacked Area" | type == "100% Stacked Area")
     {
+        if (any(rowSums(chart.matrix, na.rm = TRUE) <= 1))
+        {
+            warning("Some of your series contain either no data or only one data point.  These will be removed from the chart.")
+            chart.matrix <- chart.matrix[rowSums(chart.matrix, na.rm = TRUE) >= 2, ]
+        }
 
         if (any(is.nan(as.matrix(chart.matrix))))
             warning("Your data contains NaN values; data points in gaps will be interpolated.")
@@ -731,8 +736,8 @@ Chart <-   function(y,
     {
         if (any(is.nan(as.matrix(chart.matrix))))
         {
-            warning("Your data contains NaN values which will not appear in the chart.")
-            chart.matrix <- chart.matrix[!is.nan(colSums(chart.matrix)), ]
+            warning("Your data contains NaN values which have been set to zero.")
+            chart.matrix[which(is.nan(chart.matrix))] <- 0
         }
 
 
