@@ -657,10 +657,12 @@ Chart <-   function(y,
     ## Settings specific to Area Charts
     if (type == "Area" | type == "Stacked Area" | type == "100% Stacked Area")
     {
-        if (any(rowSums(chart.matrix, na.rm = TRUE) <= 1))
+        no.data.on.row <- rowSums(is.na(chart.matrix)) >= length(chart.matrix[1, ]) - 1
+
+        if (any(no.data.on.row))
         {
             warning("Some of your series contain either no data or only one data point.  These will be removed from the chart.")
-            chart.matrix <- chart.matrix[rowSums(chart.matrix, na.rm = TRUE) >= 2, ]
+            chart.matrix <- chart.matrix[!no.data.on.row, ]
         }
 
         if (any(is.nan(as.matrix(chart.matrix))))
