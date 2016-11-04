@@ -806,32 +806,8 @@ Chart <-   function(y,
 
     ## ... Any other chart types...
 
-    ## Work out color ranges; n.b. some color ranges worked out in the chart specific functions.
-    if (type %in% c("Column", "Stacked Column", "100% Stacked Column"))
-        number.colors.needed <- ncol(chart.matrix)
-    else
-        number.colors.needed <- nrow(chart.matrix)
 
-    # Color inheritance - first run
-    if (is.null(series.marker.color))
-        series.marker.color <- colors
-
-    if (is.null(series.marker.border.color))
-        series.marker.border.color <- series.marker.color
-
-    if (is.null(series.line.color))
-        series.line.color <- colors
-
-    if (is.null(pie.groups.colors))
-        pie.groups.colors <- colors
-
-    ## Calculate colors
-    colors <- flipChartBasics::ChartColors(number.colors.needed = number.colors.needed, given.colors = colors, reverse = colors.reverse)
-    series.marker.color <- flipChartBasics::ChartColors(number.colors.needed = number.colors.needed, given.colors = series.marker.color, reverse = series.marker.color.reverse)
-    series.marker.border.color <- flipChartBasics::ChartColors(number.colors.needed = number.colors.needed, given.colors = series.marker.border.color, reverse = series.marker.border.color.reverse)
-    series.line.color <- flipChartBasics::ChartColors(number.colors.needed = number.colors.needed, given.colors = series.line.color, reverse = series.line.color.reverse)
-
-    ## Color inheritance - second run
+    ## Color inheritance - first run
     if (is.null(series.marker.color))
         series.marker.color <- colors
 
@@ -848,8 +824,6 @@ Chart <-   function(y,
     # Settings specific to Pie charts
     if (type == "Pie" || type == "Donut")
     {
-
-
         # Set any NaN to 0 so that it won't chart.
         chart.matrix <- as.matrix(chart.matrix)
 
@@ -1008,6 +982,30 @@ Chart <-   function(y,
                        title = title
                        ))
     }
+
+
+    ## Work out color ranges; n.b. some color ranges worked out in the chart specific functions.
+    if (type %in% c("Column", "Stacked Column", "100% Stacked Column"))
+        number.colors.needed <- ncol(chart.matrix)
+    else
+        number.colors.needed <- nrow(chart.matrix)
+
+    ## Calculate colors
+    colors <- flipChartBasics::ChartColors(number.colors.needed = number.colors.needed, given.colors = colors, reverse = colors.reverse)
+    series.marker.color <- flipChartBasics::ChartColors(number.colors.needed = number.colors.needed, given.colors = series.marker.color, reverse = series.marker.color.reverse)
+    series.marker.border.color <- flipChartBasics::ChartColors(number.colors.needed = number.colors.needed, given.colors = series.marker.border.color, reverse = series.marker.border.color.reverse)
+    series.line.color <- flipChartBasics::ChartColors(number.colors.needed = number.colors.needed, given.colors = series.line.color, reverse = series.line.color.reverse)
+
+    ## Color inheritance - second run
+    if (is.null(series.marker.color))
+        series.marker.color <- colors
+
+    if (is.null(series.marker.border.color))
+        series.marker.border.color <- series.marker.color
+
+    if (is.null(series.line.color))
+        series.line.color <- colors
+
 
 
     # Set all fonts to global font override if required
