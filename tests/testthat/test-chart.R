@@ -6,17 +6,16 @@ library(testthat)
 
 for (i in 1:length(qTab.examples))
 {
+    # Labeled Scatterplot and Bubbleplot are tested in test-labeledscatterplot.R
+    if (qTab.examples[[i]]$type == "Labeled Scatterplot" || qTab.examples[[i]]$type == "Labeled Bubbleplot")
+        next
+
     image.test <- FALSE
 
     ## Run image and chart output
     print(Chart(y = qTab.examples[[i]]$y, type = qTab.examples[[i]]$type, transpose = qTab.examples[[i]]$transpose, title = attr(qTab.examples[[i]]$y, "name"), y.title = qTab.examples[[i]]$y.title))
 
-    if (qTab.examples[[i]]$type == "Labeled Scatterplot" || qTab.examples[[i]]$type == "Labeled Bubbleplot")
-    {
-        test.1 <- as.list(unlist(Chart(y = qTab.examples[[i]]$y, type = qTab.examples[[i]]$type)))
-        # test.2 <- as.list(c(blank = "empty"))
-    }
-    else if (qTab.examples[[i]]$type == "Pie" || qTab.examples[[i]]$type == "Donut")
+    if (qTab.examples[[i]]$type == "Pie" || qTab.examples[[i]]$type == "Donut")
     {
         test.1 <- as.list(unlist(Chart(y = qTab.examples[[i]]$y, type = qTab.examples[[i]]$type, transpose = qTab.examples[[i]]$transpose, title = attr(qTab.examples[[i]]$y, "name")))[[1]])
         # test.2 <- as.list(unlist(Chart(y = qTab.examples[[i]]$y, type = qTab.examples[[i]]$type, transpose = qTab.examples[[i]]$transpose, title = attr(qTab.examples[[i]]$y, "name"), subtitle.text = qTab.examples[[i]]$subtitle.text))[[2]])
@@ -295,7 +294,50 @@ Chart(a.matrix,
 
 #### 100% Stacked area chart example
 # Read in data
-a.matrix <- as.matrix(read.csv("C:/R/consumerspending.csv", header = TRUE, row.names = 1))
+a.matrix <- structure(c(4304L, 228L, 132L, 1897L, 289L, 451L, 6674L, 1049L,
+                        3290L, 1055L, 303L, 706L, 1319L, 275L, 4587L, 219L, 141L, 2016L,
+                        303L, 529L, 7087L, 1108L, 3477L, 1170L, 321L, 805L, 1420L, 306L,
+                        4842L, 230L, 140L, 2127L, 303L, 522L, 7292L, 1135L, 3448L, 1149L,
+                        314L, 746L, 1346L, 271L, 4600L, 232L, 142L, 2175L, 330L, 562L,
+                        7569L, 1135L, 3664L, 1193L, 337L, 741L, 1446L, 289L, 5093L, 242L,
+                        150L, 2249L, 334L, 578L, 8079L, 1298L, 3748L, 1329L, 342L, 693L,
+                        1489L, 269L, 5187L, 261L, 157L, 2472L, 366L, 643L, 8609L, 1407L,
+                        4152L, 1424L, 367L, 900L, 1582L, 284L, 5120L, 274L, 153L, 2592L,
+                        364L, 842L, 8703L, 1480L, 4296L, 1422L, 406L, 816L, 1618L, 293L,
+                        5151L, 276L, 163L, 2787L, 399L, 860L, 9252L, 1554L, 4271L, 1472L,
+                        447L, 950L, 1735L, 297L, 5228L, 275L, 162L, 2750L, 387L, 765L,
+                        9477L, 1634L, 4723L, 1500L, 426L, 958L, 1710L, 301L, 5453L, 268L,
+                        166L, 2908L, 385L, 715L, 9636L, 1776L, 4399L, 1626L, 455L, 961L,
+                        1676L, 268L, 6044L, 259L, 165L, 2938L, 397L, 749L, 10106L, 1755L,
+                        4411L, 1567L, 460L, 960L, 1644L, 278L, 6014L, 269L, 162L, 2964L,
+                        403L, 766L, 10458L, 1732L, 4505L, 1612L, 471L, 925L, 1704L, 277L,
+                        6382L, 255L, 159L, 3060L, 513L, 855L, 10747L, 1770L, 4698L, 1834L,
+                        524L, 940L, 1752L, 309L, 6457L, 264L, 164L, 3223L, 528L, 847L,
+                        11272L, 1841L, 4801L, 1813L, 571L, 1001L, 1729L, 309L, 6616L,
+                        273L, 161L, 3381L, 401L, 860L, 11713L, 1903L, 4810L, 1746L, 580L,
+                        1109L, 1674L, 309L, 7011L, 300L, 159L, 3436L, 408L, 867L, 12057L,
+                        1959L, 5031L, 1891L, 635L, 1181L, 1743L, 318L, 7417L, 319L, 146L,
+                        3365L, 564L, 776L, 12319L, 2066L, 5158L, 1863L, 632L, 1192L,
+                        1856L, 372L, 7633L, 308L, 141L, 3737L, 485L, 750L, 13011L, 2182L,
+                        5321L, 1953L, 648L, 1258L, 1743L, 349L, 7759L, 320L, 139L, 3899L,
+                        526L, 792L, 13283L, 2350L, 5375L, 2079L, 752L, 1277L, 1749L,
+                        376L, 7781L, 290L, 127L, 4055L, 527L, 606L, 13432L, 2416L, 5340L,
+                        2060L, 783L, 1370L, 1640L, 391L, 7801L, 288L, 130L, 4823L, 581L,
+                        690L, 13918L, 2574L, 5781L, 2218L, 905L, 1408L, 1816L, 459L,
+                        8344L, 319L, 126L, 5204L, 541L, 808L, 15167L, 2664L, 5931L, 2388L,
+                        940L, 1663L, 1886L, 426L, 8508L, 327L, 117L, 5270L, 585L, 846L,
+                        16366L, 2766L, 6111L, 2376L, 888L, 1869L, 1874L, 497L, 8758L,
+                        323L, 118L, 5336L, 588L, 808L, 16920L, 2853L, 6113L, 2698L, 945L,
+                        1821L, 1881L, 457L, 8604L, 317L, 116L, 5605L, 616L, 840L, 17109L,
+                        2976L, 6443L, 2835L, 1046L, 1737L, 1801L, 444L), .Dim = c(14L,
+                                                                                  25L), .Dimnames = list(c("Transportation", "Tobacco Products",
+                                                                                                           "Reading", "Personal Insurance", "Personal Care", "Miscellaneous",
+                                                                                                           "Housing", "Healthcare", "Food", "Entertainment", "Education",
+                                                                                                           "Cash Contributions", "Apparel", "Alcoholic Beverages"), c("X1984",
+                                                                                                                                                                      "X1985", "X1986", "X1987", "X1988", "X1989", "X1990", "X1991",
+                                                                                                                                                                      "X1992", "X1993", "X1994", "X1995", "X1996", "X1997", "X1998",
+                                                                                                                                                                      "X1999", "X2000", "X2001", "X2002", "X2003", "X2004", "X2005",
+                                                                                                                                                                      "X2006", "X2007", "X2008")))
 ## Figure out colours
 col.scheme <- flipChartBasics::ChartColors(ncol(a.matrix), given.colors = c(rgb(112,48,160, max=255), rgb(255,255,255, max=255)))
 

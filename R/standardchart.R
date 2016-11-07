@@ -294,8 +294,9 @@
 #' @param bubble.decimals Numeric; number of decimal points to show for
 #' bubble-size data values.
 #' @param bubble.label.prefix Character; label prefix to bubble values.
-#' @param scatter.group.labels Character vector; overrides any automatically
-#' generated series/group labels.
+#' @param scatter.group.indices Text of comma-separated group indices
+#' corresponding to each row.
+#' @param scatter.group.labels Text of comma-separated group labels.
 #' @param scatter.data.label.show Logical; whether to show labels in the
 #' plot or not.
 #' @param scatter.marker.radius Numeric; the radius of the scatter plot
@@ -484,7 +485,8 @@ Chart <-   function(y,
                         bubble.legend.title = NULL,
                         bubble.decimals = 0,
                         bubble.label.prefix = "",
-                        scatter.group.labels = NULL,
+                        scatter.group.indices = "",
+                        scatter.group.labels = "",
                         scatter.data.label.show = TRUE,
                         scatter.marker.radius = 3,
                         scatter.labels.font.family = "Arial",
@@ -555,13 +557,6 @@ Chart <-   function(y,
         ## Check if the input is labelled
         if (is.null(rownames(chart.matrix)) || is.null(colnames(chart.matrix)))
             stop("The input lacks row and/or column labels")
-
-        ## Issue warning if any rows or columns have been removed
-        if (original.row.count != nrow(chart.matrix))
-            warning(paste("Any rows labelled", rows.to.ignore, "have been removed from the chart."), sep = "")
-
-        if (original.col.count != ncol(chart.matrix))
-            warning(paste("Any columns labelled", cols.to.ignore, "have been removed from the chart."), sep = "")
 
         ## Check if the input is a 2D object
         if (length(dim(chart.matrix)) != 2)
@@ -916,11 +911,11 @@ Chart <-   function(y,
                                                   colors = colors,
                                                   colors.reverse = colors.reverse,
                                                   type = type,
-                                                  group = scatter.group.labels,
+                                                  group.labels.text = scatter.group.labels,
+                                                  group.indices.text = scatter.group.indices,
                                                   grid = draw.grid, # if x and y grid are both 0; else draw grid?
                                                   origin = FALSE, # base on y and x.zero.line.width
                                                   transpose = transpose,
-                                                  qinput = qinput,
                                                   rows.to.ignore = rows.to.ignore,
                                                   cols.to.ignore = cols.to.ignore,
                                                   legend.show = legend.show,
