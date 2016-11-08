@@ -89,6 +89,9 @@ labeledScatterplot <- function(chart.matrix,
     Y <- if (transpose) as.numeric(chart.matrix[, 1]) else as.numeric(chart.matrix[, 2])
     Z <- if (is.bubble) as.numeric(chart.matrix[, 3]) else NULL
 
+    if (is.bubble && any(Z < 0))
+        stop("Negative values are present in the third column. No bubbles are shown for such cases.")
+
     colors <- StripAlphaChannel(ChartColors(number.colors.needed = length(unique(group)),
                                             given.colors = colors,
                                             reverse = colors.reverse))
