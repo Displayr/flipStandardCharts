@@ -582,7 +582,7 @@ Chart <-   function(y,
 
         ## If no x.title or y.title provided, take defaults from data input
         if (x.title == "" || length(x.title) == 0)
-            x.title <- table.axes.labels[2]
+            x.title <- table.axes.labels[1]
 
         if (x.title == "FALSE" || x.title == FALSE)
             x.title <- ""
