@@ -8,10 +8,10 @@
 #' @param transpose Logical; should the final output be transposed?
 #' @param aggregate.period Character; can be "month", "quarter", "year".
 #' Only relevant when x is a vector of mode date.
-#' @param y.labels Character vector, overrides chart matrix row names.
+#' @param y.labels Character vector, overrides chart matrix column names.
 #' @param y.data Integer vector, optiona, for manually specifying the points
 #' along the y-axis where the y.labels should appear.
-#' @param x.labels Character vector, overrides chart matrix column names.
+#' @param x.labels Character vector, overrides chart matrix row names.
 #' @param x.data Integer vector, optional, for manually specifying the points
 #' along the x-axis where the x.labels should appear.
 #' @param title Character; chart title.
@@ -506,9 +506,8 @@ Chart <-   function(y,
             y.tick.decimals <- 2
     }
 
-    ## If the input is 3D, then error
-    if (length(dim(chart.matrix)) > 2 && is.null(attr(chart.matrix, "statistic")))
-        stop("The input consists of more than one table, or has multiple statistics.  Please include only one table and/or statistic.")
+    if (length(dim(chart.matrix)) > 2)
+        stop("The input has more than 2 dimensions.")
 
     ## Is it a Q input?
     qinput <- FALSE
@@ -551,16 +550,16 @@ Chart <-   function(y,
         original.row.count <- nrow(chart.matrix)
         original.col.count <- ncol(chart.matrix)
 
+        ## Convert vectors to matrices
+        if (is.vector(chart.matrix))
+            chart.matrix <- as.matrix(chart.matrix)
+
         ## Ignore rows or columns, using flipData::GetTidyTwoDimensionalArray()
         chart.matrix <- flipData::GetTidyTwoDimensionalArray(chart.matrix, rows.to.ignore, cols.to.ignore)
 
         ## Check if the input is labelled
         if (is.null(rownames(chart.matrix)) || is.null(colnames(chart.matrix)))
             stop("The input lacks row and/or column labels")
-
-        ## Check if the input is a 2D object
-        if (length(dim(chart.matrix)) != 2)
-            stop("The input needs to be a 2 dimensional object (table or matrix)")
 
         ## Make sure it's not a character matrix
         if (is.character(chart.matrix))
@@ -575,13 +574,7 @@ Chart <-   function(y,
             stop("The input needs to be either a matrix, a table, or a data frame consisting entirely of numerics")
 
         ## Transform chart.matrix based on transposition requirements.
-        if (ncol(chart.matrix) == 1)
-        {
-            chart.matrix <- t(chart.matrix)
-            table.axes.labels <- rev(table.axes.labels)
-        }
-
-        if (transpose)
+        if (transpose || nrow(chart.matrix) == 1)
         {
             chart.matrix <- t(chart.matrix)
             table.axes.labels <- rev(table.axes.labels)
@@ -1135,10 +1128,10 @@ Chart <-   function(y,
 
     ## Get axes labels from the matrix labels if none manually specified
     if (is.null(x.labels))
-        x.labels <- colnames(chart.matrix)
+        x.labels <- rownames(chart.matrix)
 
     if (is.null(y.labels))
-        y.labels <- rownames(chart.matrix)
+        y.labels <- colnames(chart.matrix)
 
     ## If no angle set for x.tick.angle and x.labels are > 15 characters,
     tally <- as.numeric(sapply(x.labels, function(x) nchar(x)))
@@ -1381,11 +1374,11 @@ Chart <-   function(y,
         x.tickmode <- "linear"
         if (is.null(x.tick.frequency))
         {
-            # Check if the column headings are numeric, and if so, make the step the diff between item 1 and 2
-            if (length(which(is.na(suppressWarnings(as.numeric(colnames(chart.matrix)))))) == 0)
+            # Check if the row headings are numeric, and if so, make the step the diff between item 1 and 2
+            if (length(which(is.na(suppressWarnings(as.numeric(rownames(chart.matrix)))))) == 0)
             {
-                numeric.cols <- as.numeric(colnames(chart.matrix))
-                tick.gap <- numeric.cols[2] - numeric.cols[1]
+                numeric.rows <- as.numeric(rownames(chart.matrix))
+                tick.gap <- numeric.rows[2] - numeric.rows[1]
                 x.dtick <- tick.gap
                 x.tick0 <- 0
             }
@@ -1460,7 +1453,7 @@ Chart <-   function(y,
 
     ###########################################
     show.series.name <- "+name"
-    if (nrow(chart.matrix) == 1)
+    if (ncol(chart.matrix) == 1)
         show.series.name <- ""
     ###########################################
 
@@ -1476,10 +1469,7 @@ Chart <-   function(y,
     #     data.annotations <- subtitle
 
     ## Hide legend if only one series to plot
-    if ((type != "Bar" & type != "Stacked Bar" & type != "100% Stacked Bar") && nrow(chart.matrix) == 1)
-        legend.show <- FALSE
-
-    if ((type == "Bar" | type == "Stacked Bar" | type == "100% Stacked Bar") && ncol(chart.matrix) == 1)
+    if (ncol(chart.matrix) == 1)
         legend.show <- FALSE
 
     ## Initiate plotly object
@@ -1489,7 +1479,7 @@ Chart <-   function(y,
     p <- plotly::config(p, displayModeBar = show.modebar)
 
     ## Make sure x.labels are actually used
-    colnames(chart.matrix) <- x.labels
+    rownames(chart.matrix) <- x.labels
 
     ## Convert type to plotly type
     if (type %in% c("bar", "Bar", "Stacked Bar", "100% Stacked Bar", "Column", "Stacked Column", "100% Stacked Column"))
@@ -1497,11 +1487,11 @@ Chart <-   function(y,
     else
         type <- "scatter"
 
-    ## Add a trace for each row of data in the matrix
-    for (a in 1:nrow(chart.matrix))
+    ## Add a trace for each col of data in the matrix
+    for (a in 1:ncol(chart.matrix))
     {
-        y <- as.numeric(chart.matrix[a, ])
-        x <- as.character(colnames(chart.matrix))
+        y <- as.numeric(chart.matrix[, a])
+        x <- as.character(rownames(chart.matrix))
 
         if (swap.axes.and.data == TRUE)
         {
@@ -1520,7 +1510,7 @@ Chart <-   function(y,
             x.categoryarray = NULL
         }
 
-        source.text <- source.matrix[a, ]
+        source.text <- source.matrix[, a]
 
         ## Add trace components
         if (regexpr('lines', series.mode) >= 1 && !is.null(series.mode))
