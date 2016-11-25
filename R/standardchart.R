@@ -975,10 +975,7 @@ Chart <-   function(y,
 
 
     ## Work out color ranges; n.b. some color ranges worked out in the chart specific functions.
-    if (type %in% c("Column", "Stacked Column", "100% Stacked Column"))
-        number.colors.needed <- ncol(chart.matrix)
-    else
-        number.colors.needed <- nrow(chart.matrix)
+    number.colors.needed <- ncol(chart.matrix)
 
     ## Calculate colors
     colors <- flipChartBasics::ChartColors(number.colors.needed = number.colors.needed, given.colors = colors, reverse = colors.reverse)
