@@ -616,9 +616,6 @@ Chart <-   function(y,
     # else
     #     chart.matrix <- y
 
-    ## Make sure that the provided data will work with the desired chart type
-    checkDataForChartType(chart.matrix = chart.matrix, type = type)
-
     ## Only allow a single factor variable if it's a pie-chart; chart-specific test not appropriate for AsChartMatrix, so
     ## included here rather than in that function.
     # if (is.factor(y) && is.null(x) && type != "Pie")

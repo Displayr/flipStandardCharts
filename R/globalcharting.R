@@ -78,23 +78,3 @@ stripClassAndCallFromXtabs <- function(chart.matrix)
     else
         return(chart.matrix)
 }
-
-checkDataForChartType <- function(chart.matrix = chart.matrix, type = type)
-{
-    if (type == "Area" || type == "Stacked Area" || type == "100% Stacked Area")
-    {
-        require <- c("named r", "named c", "multiple c", "single r")
-
-        if ("named r" %in% require && is.null(rownames(chart.matrix)))
-            stop("Chart matrix does not have row names")
-
-        if ("named c" %in% require && is.null(colnames(chart.matrix)))
-            stop("Chart matrix does not have column names")
-
-        if ("multiple c" %in% require && ncol(chart.matrix) == 1)
-            stop("Chart matrix requires more than one column")
-
-        if ("single r" %in% require && nrow(chart.matrix) == 0)
-            stop("Chart matrix requires at least one row")
-    }
-}
