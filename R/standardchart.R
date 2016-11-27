@@ -605,8 +605,6 @@ Chart <-   function(y,
     ## Store chart type for later use
     original.type <- type
 
-
-
     # if (y.title == "" && !qinput)
     #     y.title <- table.axes.labels[2]
 
@@ -642,12 +640,13 @@ Chart <-   function(y,
     ## Settings specific to Area Charts
     if (type == "Area" | type == "Stacked Area" | type == "100% Stacked Area")
     {
-        no.data.on.row <- rowSums(is.na(chart.matrix)) >= length(chart.matrix[1, ]) - 1
 
-        if (any(no.data.on.row))
+        # This needs to be generalised for all plot types!
+        no.data.in.series <- colSums(is.na(chart.matrix)) >= length(chart.matrix[, 1]) - 1
+        if (any(no.data.in.series))
         {
             warning("Some of your series contain either no data or only one data point.  These will be removed from the chart.")
-            chart.matrix <- chart.matrix[!no.data.on.row, ]
+            chart.matrix <- chart.matrix[, !no.data.in.series]
         }
 
         if (any(is.nan(as.matrix(chart.matrix))))
