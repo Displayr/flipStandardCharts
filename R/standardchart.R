@@ -540,10 +540,6 @@ Chart <-   function(y,
         ## Ignore rows or columns, using flipData::GetTidyTwoDimensionalArray()
         chart.matrix <- flipData::GetTidyTwoDimensionalArray(chart.matrix, rows.to.ignore, cols.to.ignore)
 
-        ## Check if the input is labelled
-        if (is.null(rownames(chart.matrix)) || is.null(colnames(chart.matrix)))
-            stop("The input lacks row and/or column labels")
-
         ## Make sure it's not a character matrix
         if (is.character(chart.matrix))
             stop("The input must be numeric")
@@ -562,6 +558,12 @@ Chart <-   function(y,
             chart.matrix <- t(chart.matrix)
             table.axes.labels <- rev(table.axes.labels)
         }
+
+        ## Use default row and column labels, if they are missing from the matrix
+        if (is.null(rownames(chart.matrix)))
+            rownames(chart.matrix) <- 1:nrow(chart.matrix)
+        if (is.null(colnames(chart.matrix)))
+            colnames(chart.matrix) <- paste0("Series", 1:ncol(chart.matrix))
 
         ## If no x.title or y.title provided, take defaults from data input
         if (x.title == "" || length(x.title) == 0)
