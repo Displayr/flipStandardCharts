@@ -533,24 +533,13 @@ Chart <-   function(y,
         original.row.count <- nrow(chart.matrix)
         original.col.count <- ncol(chart.matrix)
 
-        ## Convert vectors to matrices
-        if (is.vector(chart.matrix))
-            chart.matrix <- as.matrix(chart.matrix)
-
-        ## Ignore rows or columns, using flipData::GetTidyTwoDimensionalArray()
-        chart.matrix <- flipData::GetTidyTwoDimensionalArray(chart.matrix, rows.to.ignore, cols.to.ignore)
-
         ## Make sure it's not a character matrix
         if (is.character(chart.matrix))
             stop("The input must be numeric")
 
-        ## If it's a data frame with only numerics, make it a matrix
-        if (sum(sapply(chart.matrix, is.numeric)) == ncol(chart.matrix))
+        ## Convert vectors to matrices
+        if (is.vector(chart.matrix))
             chart.matrix <- as.matrix(chart.matrix)
-
-        ## Can only take items of class matrix or table.
-        if (!is.matrix(chart.matrix) && !is.table(chart.matrix))
-            stop("The input needs to be either a matrix, a table, or a data frame consisting entirely of numerics")
 
         ## Transform chart.matrix based on transposition requirements.
         if (transpose || nrow(chart.matrix) == 1)
@@ -564,6 +553,18 @@ Chart <-   function(y,
             rownames(chart.matrix) <- 1:nrow(chart.matrix)
         if (is.null(colnames(chart.matrix)))
             colnames(chart.matrix) <- paste0("Series", 1:ncol(chart.matrix))
+
+        ## Ignore rows or columns, using flipData::GetTidyTwoDimensionalArray()
+        chart.matrix <- flipData::GetTidyTwoDimensionalArray(chart.matrix, rows.to.ignore, cols.to.ignore)
+
+        ## If it's a data frame with only numerics, make it a matrix
+        if (sum(sapply(chart.matrix, is.numeric)) == ncol(chart.matrix))
+            chart.matrix <- as.matrix(chart.matrix)
+
+        ## Can only take items of class matrix or table.
+        if (!is.matrix(chart.matrix) && !is.table(chart.matrix))
+            stop("The input needs to be either a matrix, a table, or a data frame consisting entirely of numerics")
+
 
         ## If no x.title or y.title provided, take defaults from data input
         if (x.title == "" || length(x.title) == 0)
