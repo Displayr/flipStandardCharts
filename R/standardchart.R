@@ -313,186 +313,169 @@
 #' Chart(y = z, type = "Area", transpose = TRUE)
 #' @export
 Chart <-   function(y,
-                        # x = NULL,
-                        # weights = NULL,                                 ## Gets passed to AsChartMatrix <- add to that function first!
-                        # subset = NULL,                                    ## Gets passed to AsChartMatrix <- add to that function first!
-                        type = "Area",
-                        transpose = FALSE,                                ## Should the inputs be transposed; TRUE or FALSE
-                        aggregate.period = "none",
-                        y.labels = NULL,
-                        y.data = NULL,
-                        x.labels = NULL,
-                        x.data = NULL,
-                        title = "",
-                        title.font.family = "Arial",
-                        title.font.color = rgb(44, 44, 44, maxColorValue = 255),
-                        title.font.size = 16,
-                        colors = qColors,
-                        colors.reverse = FALSE,
-                        transparency = 0.4,
-                        chart.fill.color = rgb(255, 255, 255, maxColorValue = 255),
-                        chart.fill.transparency = 1,
-                        plot.fill.color = rgb(255, 255, 255, maxColorValue = 255),
-                        plot.fill.transparency = 1,
-                        legend.show = TRUE,
-                        legend.fill = rgb(255, 255, 255, maxColorValue = 255),
-                        legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
-                        legend.border.line.width = 0,
-                        legend.font.color = rgb(44, 44, 44, maxColorValue = 255),
-                        legend.font.family = "Arial",
-                        legend.font.size = 10,
-                        legend.position = "right",
-                        legend.ascending = TRUE,
-                        margin.top = 80,
-                        margin.bottom = 80,
-                        margin.left = 80,
-                        margin.right = 80,
-                        margin.inner.pad = 0,
-                        y.title = "",
-                        y.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
-                        y.title.font.family = "Arial",
-                        y.title.font.size = 12,
-                        y.line.width = 0,
-                        y.line.color = rgb(0, 0, 0, maxColorValue = 255),
-                        y.tick.marks = "",
-                        y.tick.length = 5,
-                        y.bounds.minimum = NULL,
-                        y.bounds.maximum = NULL,
-                        y.bounds.units.major = NULL,
-                        # y.number.ticks = NULL,
-                        y.zero.line.width = 0,
-                        y.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
-                        y.position = "left",
-                        y.mirror = FALSE,
-                        y.data.reversed = FALSE,                       ## T/F - involves autorange and may be too complicated.
-                        y.grid.width = 1,
-                        y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
-                        y.tick.suffix = "",
-                        y.tick.prefix = "",
-                        y.tick.decimals = NULL,
-                        y.tick.format.manual = "",
-                        # y.hovertext.suffix = NULL,
-                        # y.hovertext.prefix = NULL,
-                        y.hovertext.decimals = 2,
-                        y.hovertext.format.manual = "",
-                        y.tick.angle = 0,
-                        y.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),
-                        y.tick.font.family = "Arial",
-                        y.tick.font.size = 10,
-                        x.title = "",
-                        x.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
-                        x.title.font.family = "Arial",
-                        x.title.font.size = 12,
-                        x.line.width = 0,
-                        x.line.color = rgb(0, 0, 0, maxColorValue = 255),
-                        x.tick.marks = "",
-                        x.tick.length = 5,
-                        x.bounds.minimum = NULL,
-                        x.bounds.maximum = NULL,
-                        x.bounds.units.major = NULL,
-                        x.tick.frequency = NULL,
-                        x.zero.line.width = 0,
-                        x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
-                        x.position = "bottom",
-                        x.mirror = FALSE,
-                        x.data.reversed = FALSE,                       ## T/F - involves autorange and may be too complicated.
-                        x.grid.width = 1,
-                        x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
-                        x.tick.suffix = "",
-                        x.tick.prefix = "",
-                        x.tick.decimals = NULL,
-                        x.tick.format.manual = "",
-                        # x.hovertext.suffix = NULL,
-                        # x.hovertext.prefix = NULL,
-                        x.hovertext.decimals = 5,
-                        x.hovertext.format.manual = "",
-                        x.tick.angle = 0,
-                        x.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),
-                        x.tick.font.family = "Arial",
-                        x.tick.font.size = 10,
-                        x.tick.label.autoformat = TRUE,
-                        x.show.missing.data.markers = TRUE,
-                        series.marker.show = "none",
-                        series.marker.color = NULL,
-                        series.marker.color.reverse = FALSE,
-                        series.marker.transparency = 1,
-                        series.marker.size = 6,
-                        series.marker.border.width = 1,
-                        series.marker.border.color = NULL,
-                        series.marker.border.color.reverse = FALSE,
-                        series.marker.border.transparency = 1,
-                        series.marker.text = FALSE,
-                        series.marker.text.position = "top middle",
-                        series.marker.text.color = rgb(0, 0, 0, maxColorValue = 255),
-                        series.marker.text.family = "Arial",
-                        series.marker.text.size = 10,
-                        series.marker.text.percent = FALSE,
-                        series.line.width = 0,
-                        series.line.color = qColors,
-                        series.line.color.reverse = FALSE,
-                        series.line.transparency = 1,
-                        hover.mode = "closest",
-                        hover.include.source.data = FALSE,
-                        hover.include.source.data.prefix = "",
-                        hover.include.source.data.suffix = "",
-                        hover.include.source.data.percent = FALSE,
-                        show.modebar = FALSE,
-                        # subtitle.text = NULL,
-                        # subtitle.align = "left",
-                        # subtitle.border.width = 0,
-                        # subtitle.border.color = "white",
-                        # subtitle.background.color = "white",
-                        # subtitle.font.family = "Arial",
-                        # subtitle.font.color = rgb(0, 0, 0, maxColorValue=255),
-                        # subtitle.font.size = 10,
-                        global.font.family.override = "",
-                        global.font.color.override = rgb(0, 0, 0, maxColorValue=255),
-                        rows.to.ignore = "Total, NET, SUM",
-                        cols.to.ignore = "Total, NET, SUM",
-                        bar.gap = 0.15,
-                        bar.group.gap = NULL,
-                        bar.data.label.offset = NULL,
-                        bar.data.label.family = "Arial",
-                        bar.data.label.size = 10,
-                        bar.data.label.color = rgb(0, 0, 0, maxColorValue=255),
-                        bar.data.label.decimals = 0,
-                        bar.data.label.as.percent = FALSE,
-                        pie.data.font.family = "Arial",
-                        pie.data.font.size = 10,
-                        pie.data.prefix = "",
-                        pie.data.suffix = "",
-                        pie.data.display.format = "",
-                        pie.data.thres.percent = 0.3,
-                        pie.data.order = "initial",
-                        pie.data.decimals = 0,
-                        pie.labels.font.family = "Arial",
-                        pie.labels.font.size = 10,
-                        pie.labels.font.color = rgb(44, 44, 44, maxColorValue = 255),
-                        pie.labels.minFontSize = 8,
-                        pie.labels.inner = FALSE,
-                        pie.groups.font.family = "Arial",
-                        pie.groups.font.size = 10,
-                        pie.groups.font.color = rgb(44, 44, 44, maxColorValue = 255),
-                        pie.groups.minFontSize = 8,
-                        pie.groups.colors = NULL,
-                        pie.groups.colors.reverse = FALSE,
-                        pie.groups.order = "descending",
-                        pie.groups.radius = 60,
-                        pie.segment.colors.repeat.by.group = TRUE,
-                        pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
-                        pie.segment.color.gradient = FALSE,
-                        donut.hole.radius = 0,
-                        bubble.legend.title = NULL,
-                        bubble.decimals = 0,
-                        bubble.label.prefix = "",
-                        scatter.group.indices = "",
-                        scatter.group.labels = "",
-                        scatter.data.label.show = TRUE,
-                        scatter.marker.radius = 3,
-                        scatter.labels.font.family = "Arial",
-                        scatter.labels.font.size = 10,
-                        scatter.labels.font.color = rgb(44, 44, 44, maxColorValue = 255)
-                    )
+                    type = "Area",
+                    transpose = FALSE,                                ## Should the inputs be transposed; TRUE or FALSE
+                    aggregate.period = "none",
+                    y.labels = NULL,
+                    y.data = NULL,
+                    x.labels = NULL,
+                    x.data = NULL,
+                    title = "",
+                    title.font.family = "Arial",
+                    title.font.color = rgb(44, 44, 44, maxColorValue = 255),
+                    title.font.size = 16,
+                    colors = qColors,
+                    colors.reverse = FALSE,
+                    transparency = 0.4,
+                    chart.fill.color = rgb(255, 255, 255, maxColorValue = 255),
+                    chart.fill.transparency = 1,
+                    plot.fill.color = rgb(255, 255, 255, maxColorValue = 255),
+                    plot.fill.transparency = 1,
+                    legend.show = TRUE,
+                    legend.fill = rgb(255, 255, 255, maxColorValue = 255),
+                    legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
+                    legend.border.line.width = 0,
+                    legend.font.color = rgb(44, 44, 44, maxColorValue = 255),
+                    legend.font.family = "Arial",
+                    legend.font.size = 10,
+                    legend.position = "right",
+                    legend.ascending = TRUE,
+                    margin.top = 80,
+                    margin.bottom = 80,
+                    margin.left = 80,
+                    margin.right = 80,
+                    margin.inner.pad = 0,
+                    y.title = "",
+                    y.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
+                    y.title.font.family = "Arial",
+                    y.title.font.size = 12,
+                    y.line.width = 0,
+                    y.line.color = rgb(0, 0, 0, maxColorValue = 255),
+                    y.tick.marks = "",
+                    y.tick.length = 5,
+                    y.bounds.minimum = NULL,
+                    y.bounds.maximum = NULL,
+                    y.bounds.units.major = NULL,
+                    y.zero.line.width = 0,
+                    y.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
+                    y.position = "left",
+                    y.mirror = FALSE,
+                    y.data.reversed = FALSE,                       ## T/F - involves autorange and may be too complicated.
+                    y.grid.width = 1,
+                    y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+                    y.tick.suffix = "",
+                    y.tick.prefix = "",
+                    y.tick.decimals = NULL,
+                    y.tick.format.manual = "",
+                    y.hovertext.decimals = 2,
+                    y.hovertext.format.manual = "",
+                    y.tick.angle = 0,
+                    y.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),
+                    y.tick.font.family = "Arial",
+                    y.tick.font.size = 10,
+                    x.title = "",
+                    x.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
+                    x.title.font.family = "Arial",
+                    x.title.font.size = 12,
+                    x.line.width = 0,
+                    x.line.color = rgb(0, 0, 0, maxColorValue = 255),
+                    x.tick.marks = "",
+                    x.tick.length = 5,
+                    x.bounds.minimum = NULL,
+                    x.bounds.maximum = NULL,
+                    x.bounds.units.major = NULL,
+                    x.tick.frequency = NULL,
+                    x.zero.line.width = 0,
+                    x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
+                    x.position = "bottom",
+                    x.mirror = FALSE,
+                    x.data.reversed = FALSE,                       ## T/F - involves autorange and may be too complicated.
+                    x.grid.width = 1,
+                    x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+                    x.tick.suffix = "",
+                    x.tick.prefix = "",
+                    x.tick.decimals = NULL,
+                    x.tick.format.manual = "",
+                    x.hovertext.decimals = 5,
+                    x.hovertext.format.manual = "",
+                    x.tick.angle = 0,
+                    x.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),
+                    x.tick.font.family = "Arial",
+                    x.tick.font.size = 10,
+                    x.tick.label.autoformat = TRUE,
+                    x.show.missing.data.markers = TRUE,
+                    series.marker.show = "none",
+                    series.marker.color = NULL,
+                    series.marker.color.reverse = FALSE,
+                    series.marker.transparency = 1,
+                    series.marker.size = 6,
+                    series.marker.border.width = 1,
+                    series.marker.border.color = NULL,
+                    series.marker.border.color.reverse = FALSE,
+                    series.marker.border.transparency = 1,
+                    series.marker.text = FALSE,
+                    series.marker.text.position = "top middle",
+                    series.marker.text.color = rgb(0, 0, 0, maxColorValue = 255),
+                    series.marker.text.family = "Arial",
+                    series.marker.text.size = 10,
+                    series.marker.text.percent = FALSE,
+                    series.line.width = 0,
+                    series.line.color = qColors,
+                    series.line.color.reverse = FALSE,
+                    series.line.transparency = 1,
+                    hover.mode = "closest",
+                    hover.include.source.data = FALSE,
+                    hover.include.source.data.prefix = "",
+                    hover.include.source.data.suffix = "",
+                    hover.include.source.data.percent = FALSE,
+                    show.modebar = FALSE,
+                    global.font.family.override = "",
+                    global.font.color.override = rgb(0, 0, 0, maxColorValue=255),
+                    rows.to.ignore = "Total, NET, SUM",
+                    cols.to.ignore = "Total, NET, SUM",
+                    bar.gap = 0.15,
+                    bar.group.gap = NULL,
+                    bar.data.label.offset = NULL,
+                    bar.data.label.family = "Arial",
+                    bar.data.label.size = 10,
+                    bar.data.label.color = rgb(0, 0, 0, maxColorValue=255),
+                    bar.data.label.decimals = 0,
+                    bar.data.label.as.percent = FALSE,
+                    pie.data.font.family = "Arial",
+                    pie.data.font.size = 10,
+                    pie.data.prefix = "",
+                    pie.data.suffix = "",
+                    pie.data.display.format = "",
+                    pie.data.thres.percent = 0.3,
+                    pie.data.order = "initial",
+                    pie.data.decimals = 0,
+                    pie.labels.font.family = "Arial",
+                    pie.labels.font.size = 10,
+                    pie.labels.font.color = rgb(44, 44, 44, maxColorValue = 255),
+                    pie.labels.minFontSize = 8,
+                    pie.labels.inner = FALSE,
+                    pie.groups.font.family = "Arial",
+                    pie.groups.font.size = 10,
+                    pie.groups.font.color = rgb(44, 44, 44, maxColorValue = 255),
+                    pie.groups.minFontSize = 8,
+                    pie.groups.colors = NULL,
+                    pie.groups.colors.reverse = FALSE,
+                    pie.groups.order = "descending",
+                    pie.groups.radius = 60,
+                    pie.segment.colors.repeat.by.group = TRUE,
+                    pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
+                    pie.segment.color.gradient = FALSE,
+                    donut.hole.radius = 0,
+                    bubble.legend.title = NULL,
+                    bubble.decimals = 0,
+                    bubble.label.prefix = "",
+                    scatter.group.indices = "",
+                    scatter.group.labels = "",
+                    scatter.data.label.show = TRUE,
+                    scatter.marker.radius = 3,
+                    scatter.labels.font.family = "Arial",
+                    scatter.labels.font.size = 10,
+                    scatter.labels.font.color = rgb(44, 44, 44, maxColorValue = 255))
 {
     chart.matrix <- y
 
@@ -604,27 +587,6 @@ Chart <-   function(y,
 
     ## Store chart type for later use
     original.type <- type
-
-    # if (y.title == "" && !qinput)
-    #     y.title <- table.axes.labels[2]
-
-    ## Make a chart matrix
-    # if (type != "Scatter Plot" || (type == "Scatter Plot" && !is.null(x)))
-    #     chart.matrix <- AsChartMatrix(y, x, transpose = transpose, aggregate.period = aggregate.period, subset = subset, weights = weights)
-    # else
-    #     chart.matrix <- y
-
-    ## Only allow a single factor variable if it's a pie-chart; chart-specific test not appropriate for AsChartMatrix, so
-    ## included here rather than in that function.
-    # if (is.factor(y) && is.null(x) && type != "Pie")
-    #     warning(paste("The data selected is not best displayed as an", type, "chart.  Consider changing the chart type. (Old message: Y must be either a vector, matrix, or table.  Currently it is: ", class(y), ")"))
-
-    ## Ignore rows or columns
-    # if ((rows.to.ignore != "" | cols.to.ignore != "") && !(type %in% c("Labeled Scatterplot", "Labeled Bubbleplot")))
-    #     chart.matrix <- removeRowsAndColumns(chart.matrix, rows.to.ignore, cols.to.ignore)
-
-
-
 
     ## Set defaults for chart specific items
     fill.bound <- ""
@@ -783,16 +745,6 @@ Chart <-   function(y,
         transparency <- 1
     }
 
-
-    ## Waterfall (part of column charts, really...)
-
-    ## Radar/Polar plot
-
-    ## Heat map
-
-    ## ... Any other chart types...
-
-
     ## Color inheritance - first run
     if (is.null(series.marker.color))
         series.marker.color <- colors
@@ -939,9 +891,6 @@ Chart <-   function(y,
                        x.title.font.family = y.title.font.family,
                        x.title.font.color = y.title.font.color,
                        x.title.font.size = y.title.font.size,
-                       # x.axis.font.family = x.tick.font.family,
-                       # x.axis.font.color = x.tick.font.color,
-                       # X.axis.font.size = x.tick.font.size,
                        z.title = bubble.legend.title,
                        y.decimals = y.tick.decimals,
                        x.decimals = x.tick.decimals,
@@ -962,9 +911,6 @@ Chart <-   function(y,
                        x.bounds.maximum = x.bounds.maximum,
                        x.bounds.minimum = x.bounds.minimum,
                        x.bounds.units.major = x.bounds.units.major,
-                       # tooltip.font.color = y.tick.font.family,
-                       # tooltip.font.size = y.tick.font.size,
-                       # tooltip.font.family = y.tick.font.family,
                        title = title
                        ))
     }
@@ -1045,15 +991,6 @@ Chart <-   function(y,
     if (original.type == "Stacked Column")
         y.max <- max(apply(chart.matrix, 2, FUN = function(x) sum(x)))
 
-
-    # Specify x.axis as categorical to prevent Plotly from automatically manipulating inputs.
-    # if (type != "bar")
-    # {
-    #     x.axis.type = "category"
-    # } else {
-    #     x.axis.type = "linear"
-    # }
-
     ## This should actually be linear if the x-axis data is numeric, and category if it's not.
     x.axis.type = "category"
     if (!any(is.character(colnames(chart.matrix))))
@@ -1079,9 +1016,6 @@ Chart <-   function(y,
     {
         # Allow some extra margin space
         subtitle.text <- as.vector(subtitle.text)
-
-        # Manually insert line-breaks every 61 characters
-        # subtitle.text <- lineBreakEveryN(subtitle.text, n = 61)
 
         ## Attempt to determine y-position, which varies depending on chart type and chart data.
         if (subtitle.align == "left")
@@ -1231,19 +1165,6 @@ Chart <-   function(y,
         x.tick.length <- 0
     }
 
-    ## Resolve tick prefix and suffixes
-    # if (is.null(y.hovertext.format.prefix))
-    #     y.hovertext.prefix <- y.tick.prefix
-    #
-    # if (is.null(y.hovertext.suffix))
-    #     y.hovertext.suffix <- y.tick.suffix
-    #
-    # if (is.null(x.hovertext.prefix))
-    #     x.hovertext.prefix <- x.tick.prefix
-    #
-    # if (is.null(x.hovertext.suffix))
-    #     x.hovertext.suffix <- x.tick.suffix
-
     ## Set tick and hover formats
 
     if (y.tick.format.manual != "" && y.tick.format.manual != y.tickformat)
@@ -1257,41 +1178,11 @@ Chart <-   function(y,
 
     ifelse(x.hovertext.format.manual == "", x.hoverformat <- paste(".", x.hovertext.decimals, "f", sep=""), x.hoverformat <- x.hovertext.format.manual)
 
-    ## Resolve numeric tick values based on y.bounds.minimum and y.bounds.maximum, and y.bounds.units.major
-    # y.tickmode = "auto"
-    # y.tickvals = integer()
-    # y.ticktext = character()
-    # y.range = integer()
-    # y.autorange = TRUE
-    # y.rangemode = "tozero"
-    #
-    # if (is.null(y.bounds.minimum) | is.null(y.bounds.maximum) | is.null(y.bounds.units.major))
-    #     y.bounds.manual <- FALSE
-    # else
-    # {
-    #     y.bounds.manual <- TRUE
-    #     y.range <- c(y.bounds.minimum, y.bounds.maximum)
-    #     y.autorange = FALSE
-    #     y.tickmode <- "array"
-    #     for (a in seq(y.bounds.minimum, y.bounds.maximum, by = y.bounds.units.major))
-    #     {
-    #         y.tickvals <- c(y.tickvals, a)
-    #     }
-    #
-    #     if (y.tickformat == "%")
-    #         y.ticktext <- sapply(y.tickvals, function(x) paste(round(x * 100, y.tick.decimals), "%", sep = ""))
-    #     else if (y.tickformat == "$")
-    #         y.ticktext <- sapply(y.tickvals, function(x) ifelse(x < 0, paste("-$", -1 * round(x, y.tick.decimals), sep = ""), paste("$", round(x, y.tick.decimals), sep = "")))
-    #     else
-    #         y.ticktext <- sapply(y.tickvals, function(x) paste(round(x, y.tick.decimals)))
-    # }
-
     y.tickmode <- "auto"
     y.tickvals <- integer()
     y.ticktext <- character()
     y.range <- integer()
     y.autorange <- TRUE
-    # y.nticks <- length(y.labels)
     y.rangemode <- "tozero"
 
     if (!is.null(y.bounds.minimum) && !is.null(y.bounds.maximum) && !is.null(y.bounds.units.major))
@@ -1321,8 +1212,6 @@ Chart <-   function(y,
         y.tickvals <- seq(0, y.max, y.max / 5)
         y.ticktext <- seq(0, y.max, y.max / 5)
         y.autorange <- TRUE
-        # if (!is.null(y.number.ticks))
-        #     y.nticks <- y.number.ticks
     } else {
         y.tickmode <- "auto"
         y.autorange <- TRUE
@@ -1357,10 +1246,8 @@ Chart <-   function(y,
     else if (!is.null(x.data) && !is.null(x.labels))
     {
         x.tickmode <- "array"
-        # x.autorange <- TRUE
         x.tickvals <- x.data
         x.ticktext <- x.labels
-        # x.range <- c(x.data[1], x.data[ncol(chart.matrix)])
     }
     else
     {
@@ -1377,20 +1264,13 @@ Chart <-   function(y,
             }
             else
             {
-                # x.tickmode <- "array"
-                # x.autorange <- TRUE
-                # x.tickvals <- 1:length(x.labels)
-                # x.ticktext <- x.labels
-                #
-                # print(x.tickvals)
-                # print(x.ticktext)
                 x.dtick <- 1
                 x.tick0 <- 1
             }
         }
         else
         {
-            x.dtick <- x.tick.frequency # round((length(x.labels) / x.number.ticks), digits = 0)
+            x.dtick <- x.tick.frequency
             x.tick0 <- 1
         }
     }
@@ -1458,8 +1338,6 @@ Chart <-   function(y,
     ## Build annotations list
     if (!is.null(subtitle.text) && length(data.annotations) >= 1)
         data.annotations[[length(data.annotations) + 1]] <- subtitle
-    # else
-    #     data.annotations <- subtitle
 
     ## Hide legend if only one series to plot
     if (ncol(chart.matrix) == 1)
@@ -1719,7 +1597,6 @@ Chart <-   function(y,
         ),
         annotations = data.annotations,
         bargap = bar.gap,
-        # bargroupgap = bar.group.gap,  ## Apparently deprecated; bargap fills same function.
         barmode = barmode
     )
 
