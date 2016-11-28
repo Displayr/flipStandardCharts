@@ -3,26 +3,17 @@
 #' @importFrom stats aggregate xtabs
 #' @importFrom utils stack
 
-## Takes a matrix, and returns a matrix of either a cumulative sum, or a cumulative sum of percentages.
-cum.data <- function(x, output = "cumulative.percentage") {
-    rnames <- rownames(x)
-
-    if (output == "cumulative.sum"){
-        x <- apply(x, 2, function(z) {cumsum(z)})
-    } else if (output == "cumulative.percentage") {
-        x <- apply(x, 2, function(z) {cumsum(prop.table(z))})
-    } else if (output == "column.percentage") {
-        x <- apply(x, 2, function(z) {prop.table(z)})
-    }
-
-    # if (class(x) != "matrix")
-    # {
-    #     stop("Data must be a matrix")
-    #     # x <- AsChartMatrix(y = x)
-    #     # rownames(x) <- rnames
-    # }
-
-    return(x)
+## Takes a matrix, and returns a matrix of either a cumulative sum,
+## or a cumulative sum of percentages, over each row.
+cum.data <- function(x, output = "cumulative.percentage")
+{
+    result <- if (output == "cumulative.sum")
+        apply(x, 1, function(z) cumsum(z))
+    else if (output == "cumulative.percentage")
+        apply(x, 1, function(z) cumsum(prop.table(z)))
+    else if (output == "column.percentage")
+        apply(x, 1, function(z) prop.table(z))
+    t(result)
 }
 
 ## Takes a single string and puts <br> in place of the closest space preceding the n= value character.
