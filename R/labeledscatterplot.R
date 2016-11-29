@@ -17,7 +17,7 @@
 #' @importFrom flipData GetTidyTwoDimensionalArray
 #' @importFrom flipChartBasics StripAlphaChannel ChartColors
 labeledScatterplot <- function(chart.matrix,
-                               colors = qColors,
+                               colors = NULL,
                                colors.reverse = FALSE,
                                type = "Labeled Scatterplot",
                                group.labels.text = "",
@@ -32,6 +32,9 @@ labeledScatterplot <- function(chart.matrix,
                                y.title = "")
 {
     is.bubble <- type == "Labeled Bubbleplot"
+
+    if (is.null(colors))
+        colors <- qColors
 
     # Converts a comma separated string to a vector of strings
     .parseCommaSeparatedText <- function(t)

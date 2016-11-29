@@ -321,7 +321,7 @@ Chart <-   function(y,
                     title.font.family = "Arial",
                     title.font.color = rgb(44, 44, 44, maxColorValue = 255),
                     title.font.size = 16,
-                    colors = qColors,
+                    colors = NULL,
                     colors.reverse = FALSE,
                     transparency = 0.4,
                     chart.fill.color = rgb(255, 255, 255, maxColorValue = 255),
@@ -417,7 +417,7 @@ Chart <-   function(y,
                     series.marker.text.size = 10,
                     series.marker.text.percent = FALSE,
                     series.line.width = 0,
-                    series.line.color = qColors,
+                    series.line.color = NULL,
                     series.line.color.reverse = FALSE,
                     series.line.transparency = 1,
                     hover.mode = "closest",
@@ -475,6 +475,11 @@ Chart <-   function(y,
                     scatter.labels.font.color = rgb(44, 44, 44, maxColorValue = 255))
 {
     chart.matrix <- y
+
+    if (is.null(colors))
+        colors <- qColors
+    if (is.null(series.line.color))
+        series.line.color <- qColors
 
     ## Check decimal input
     if (!(type %in% c("Labeled Scatterplot", "Labeled Bubbleplot")))

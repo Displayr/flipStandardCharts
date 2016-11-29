@@ -4,7 +4,7 @@
 \alias{labeledScatterplot}
 \title{\code{labeledScatterplot}}
 \usage{
-labeledScatterplot(chart.matrix, colors = qColors, colors.reverse = FALSE,
+labeledScatterplot(chart.matrix, colors = NULL, colors.reverse = FALSE,
   type = "Labeled Scatterplot", group.labels.text = "",
   group.indices.text = "", grid = TRUE, origin = FALSE,
   transpose = FALSE, rows.to.ignore = "", cols.to.ignore = "",
