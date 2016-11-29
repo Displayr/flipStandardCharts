@@ -568,6 +568,16 @@ Chart <-   function(y,
         if (!is.matrix(chart.matrix) && !is.table(chart.matrix))
             stop("The input needs to be either a matrix, a table, or a data frame consisting entirely of numerics")
 
+        ## Error if there is only one series when multiple series are required
+        if (ncol(chart.matrix) == 1)
+        {
+            if (type %in% c("Stacked Area", "100% Stacked Area"))
+                stop(paste(type, "requires more than one series. Use Area charts instead for this data."))
+            if (type %in% c("Stacked Bar", "100% Stacked Bar"))
+                stop(paste(type, "requires more than one series. Use Bar charts instead for this data."))
+            if (type %in% c("Stacked Column", "100% Stacked Column"))
+                stop(paste(type, "requires more than one series. Use Column charts instead for this data."))
+        }
 
         ## If no x.title or y.title provided, take defaults from data input
         if (x.title == "" || length(x.title) == 0)

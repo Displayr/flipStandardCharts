@@ -1,7 +1,3 @@
-## Explicity importing below as recommended in Package Checking
-#' @importFrom grDevices rgb
-#' @importFrom stats aggregate xtabs
-#' @importFrom utils stack
 
 ## Takes a matrix, and returns a matrix of either a cumulative sum,
 ## or a cumulative sum of percentages, over each row.
