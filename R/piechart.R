@@ -1,3 +1,4 @@
+#' @importFrom utils stack
 pieChart <- function(y,
                      chart.matrix,
                      type,

@@ -308,6 +308,7 @@
 #' @examples
 #' z <- c(5, 6, 2, 1.5, 9, 2.2)
 #' Chart(y = z, type = "Area")
+#' @importFrom grDevices rgb
 #' @export
 Chart <-   function(y,
                     type = "Area",
