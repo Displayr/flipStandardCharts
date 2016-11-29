@@ -562,10 +562,7 @@ column measured in y-axis units.}
 \code{Chart} generates standard charts from plotly library.
 }
 \examples{
-data("z")
-z <- cbind(z, z[,1])
-colnames(z) <- LETTERS[1:2]
-rownames(z) <- LETTERS[1:5]
-Chart(y = z, type = "Area", transpose = TRUE)
+z <- c(5, 6, 2, 1.5, 9, 2.2)
+Chart(y = z, type = "Area")
 }
 

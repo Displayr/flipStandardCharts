@@ -306,11 +306,8 @@
 #' @param scatter.labels.font.size Numeric; font size for plot labels.
 #' @param scatter.labels.font.color Color for plot labels.
 #' @examples
-#' data("z")
-#' z <- cbind(z, z[,1])
-#' colnames(z) <- LETTERS[1:2]
-#' rownames(z) <- LETTERS[1:5]
-#' Chart(y = z, type = "Area", transpose = TRUE)
+#' z <- c(5, 6, 2, 1.5, 9, 2.2)
+#' Chart(y = z, type = "Area")
 #' @export
 Chart <-   function(y,
                     type = "Area",

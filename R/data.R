@@ -1,14 +1,17 @@
-#' Vector of the 15 standard Q colors
-#'
-#' @format 15 Q colors in rbga format.
-"qColors"
+# Vector of the 15 standard Q colors
+qColors <- c("#5B9BD5FF", "#ED7D31FF", "#A5A5A5FF", "#1EC000FF", "#4472C4FF",
+             "#70AD47FF", "#255E91FF", "#9E480EFF", "#636363FF", "#997300FF",
+             "#264478FF", "#43682BFF", "#000000FF", "#FF2323FF")
 
-#' Vector of all available Plotly symbols
-#'
-#' @format All valid Plotly marker symbols in numeric format.
-"plotlySymbols"
-
-#' Vector of all available fonts in Plotly
-#'
-#' @format All valid Plotly marker symbols in character format.
-"available.fonts"
+# Vector of all available Plotly symbols
+plotlySymbols <- c(0, 100, 200, 300, 1, 101, 201, 301, 2, 102, 202, 302, 3, 103,
+                   203, 303, 4, 104, 204, 304, 5, 105, 205, 305, 6, 106, 206, 306,
+                   7, 107, 207, 307, 8, 108, 208, 308, 9, 109, 209, 309, 10, 110,
+                   210, 310, 11, 111, 211, 311, 12, 112, 212, 312, 13, 113, 213,
+                   313, 14, 114, 214, 314, 15, 115, 215, 315, 16, 116, 216, 316,
+                   17, 117, 217, 317, 18, 118, 218, 318, 19, 119, 219, 319, 20,
+                   120, 220, 320, 21, 121, 221, 321, 22, 122, 222, 322, 23, 123,
+                   223, 323, 24, 124, 224, 324, 25, 125, 26, 126, 27, 127, 28, 128,
+                   29, 129, 30, 130, 31, 131, 32, 132, 33, 133, 34, 134, 35, 135,
+                   36, 136, 37, 137, 38, 138, 39, 139, 40, 140, 41, 141, 42, 142,
+                   43, 143, 44, 144)
