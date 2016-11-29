@@ -100,12 +100,12 @@ or "100\% Stacked Area".}
 \item{aggregate.period}{Character; can be "month", "quarter", "year".
 Only relevant when x is a vector of mode date.}
 
-\item{y.labels}{Character vector, overrides chart matrix row names.}
+\item{y.labels}{Character vector, overrides chart matrix column names.}
 
 \item{y.data}{Integer vector, optiona, for manually specifying the points
 along the y-axis where the y.labels should appear.}
 
-\item{x.labels}{Character vector, overrides chart matrix column names.}
+\item{x.labels}{Character vector, overrides chart matrix row names.}
 
 \item{x.data}{Integer vector, optional, for manually specifying the points
 along the x-axis where the x.labels should appear.}
