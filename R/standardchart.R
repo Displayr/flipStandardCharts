@@ -618,8 +618,6 @@ Chart <-   function(y,
     ## Settings specific to Area Charts
     if (type == "Area" | type == "Stacked Area" | type == "100% Stacked Area")
     {
-
-        # This needs to be generalised for all plot types!
         no.data.in.series <- colSums(is.na(chart.matrix)) >= length(chart.matrix[, 1]) - 1
         if (any(no.data.in.series))
         {
@@ -728,6 +726,12 @@ Chart <-   function(y,
     ## Settings specific to Bar Charts
     if (type == "Bar" | type == "Stacked Bar" | type == "100% Stacked Bar")
     {
+        if (any(is.nan(as.matrix(chart.matrix))))
+        {
+            warning("Your data contains NaN values which have been set to zero.")
+            chart.matrix[which(is.nan(chart.matrix))] <- 0
+        }
+
         chart.type.outputs <- barChart(chart.matrix = chart.matrix,
                                           type = type,
                                           y.tick.format.manual = y.tick.format.manual,
@@ -908,9 +912,9 @@ Chart <-   function(y,
                        x.title.font.color = y.title.font.color,
                        x.title.font.size = y.title.font.size,
                        z.title = bubble.legend.title,
-                       y.decimals = y.tick.decimals,
-                       x.decimals = x.tick.decimals,
-                       z.decimals = bubble.decimals,
+                       y.decimals = if (is.null(y.tick.decimals)) 1 else y.tick.decimals,
+                       x.decimals = if (is.null(x.tick.decimals)) 1 else x.tick.decimals,
+                       z.decimals = if (is.null(bubble.decimals)) 1 else bubble.decimals,
                        x.prefix = x.tick.prefix,
                        y.prefix = y.tick.prefix,
                        z.prefix = bubble.label.prefix,

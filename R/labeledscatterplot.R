@@ -53,6 +53,14 @@ labeledScatterplot <- function(chart.matrix,
                                                row.names.to.remove = rows.to.ignore,
                                                column.names.to.remove = cols.to.ignore)
 
+    # Remove rows with missing values
+    missing.rows <- is.na(rowSums(chart.matrix))
+    if (any(missing.rows))
+    {
+        chart.matrix <- chart.matrix[!missing.rows, ]
+        warning(paste(sum(missing.rows), "row(s) with missing values have been removed."))
+    }
+
     if (is.bubble && ncol(chart.matrix) != 3)
         stop("The number of columns in the input table (after excluding ignored columns) must be 3 for a bubbleplot.")
     if (!is.bubble && ncol(chart.matrix) != 2)

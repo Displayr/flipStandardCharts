@@ -37,6 +37,19 @@ three.cols <- structure(c(13.9097744360902, 3.00751879699248, 7.89473684210526,
                 paste0(rep(c("a", "b", "c"), 9), rep(1:9, each = 3)), c("Colas (e.g., Coca Cola, Pepsi Max)?", "Sparkling mineral water",
                                "Coffee")), name = "BANNER by Q4. Drink categorical", questions = c("BANNER", "Q4. Drink categorical"))
 
+missing <- structure(c(10.625, NA, 8.125, 9.375, 1.25, 7.5, 8.125, 3.75,
+                        5.625, 7.5, 1.875, 6.875, 9.375, 3.75, 8.125, 7.5, 5, 6.875,
+                        9.375, 3.125, 10, 14.375, 5.625, 15, 5, 1.875, 6.875, 11.9760479041916,
+                        1.79640718562874, 6.58682634730539, 11.9760479041916, 1.19760479041916,
+                        7.78443113772455, 7.18562874251497, 2.9940119760479, 3.59281437125748,
+                        11.377245508982, 2.9940119760479, 10.7784431137725, 6.58682634730539,
+                        1.79640718562874, 6.58682634730539, 7.78443113772455, 1.19760479041916,
+                        5.98802395209581, 8.98203592814371, 4.19161676646707, 7.78443113772455,
+                        10.7784431137725, 3.59281437125748, 8.98203592814371, 4.79041916167665,
+                        1.79640718562874, NA), .Dim = c(27L, 2L), statistic = "Column %", .Dimnames = list(
+                            paste0(rep(c("a", "b", "c"), 9), rep(1:9, each = 3)),
+                            c("Male", "Female")), name = "Span in Stub", questions = c("BANNER", "Q2. Gender"))
+
 test_that("Labeled Scatterplot ungrouped",
           expect_error(print(Chart(y = two.cols,
                              type = "Labeled Scatterplot",
@@ -67,3 +80,9 @@ test_that("Labeled Scatterplot transposed",
                                    type = "Labeled Scatterplot",
                                    transpose = TRUE,
                                    title = "Labeled Scatterplot")), NA))
+
+test_that("Labeled Scatterplot missing",
+          expect_warning(print(Chart(y = missing,
+                                         type = "Labeled Scatterplot",
+                                         title = "Labeled Scatterplot")),
+                         "with missing values have been removed"))
