@@ -627,8 +627,8 @@ Chart <-   function(y,
             chart.matrix <- chart.matrix[, !no.data.in.series]
         }
 
-        if (any(is.nan(as.matrix(chart.matrix))))
-            warning("Your data contains NaN values; data points in gaps will be interpolated.")
+        if (any(is.na(as.matrix(chart.matrix))))
+            warning("Your data contains NA values; data points in gaps will be interpolated.")
 
         chart.type.outputs <- areaChart(chart.matrix = chart.matrix,
                                         transparency = transparency,
@@ -667,11 +667,11 @@ Chart <-   function(y,
     ## Settings specific to Scatter Plot Charts
     if (type == "Scatterplot")
     {
-        if (any(is.nan(as.matrix(chart.matrix))))
+        if (any(is.na(as.matrix(chart.matrix))))
         {
-            warning("Your data contains NaN values which will not appear in the chart.")
+            warning("Your data contains NA values which will not appear in the chart.")
 
-            chart.matrix <- chart.matrix[!is.nan(rowSums(chart.matrix)), ]
+            chart.matrix <- chart.matrix[!is.na(rowSums(chart.matrix)), ]
         }
 
         chart.type.outputs <- scatterPlotChart(chart.matrix = chart.matrix,
@@ -698,10 +698,10 @@ Chart <-   function(y,
     ## Settings specific to Column Charts
     if (type == "Column" | type == "Stacked Column" | type == "100% Stacked Column")
     {
-        if (any(is.nan(as.matrix(chart.matrix))))
+        if (any(is.na(as.matrix(chart.matrix))))
         {
-            warning("Your data contains NaN values which have been set to zero.")
-            chart.matrix[which(is.nan(chart.matrix))] <- 0
+            warning("Your data contains NA values which have been set to zero.")
+            chart.matrix[which(is.na(chart.matrix))] <- 0
         }
 
 
@@ -781,10 +781,10 @@ Chart <-   function(y,
         # Set any NaN to 0 so that it won't chart.
         chart.matrix <- as.matrix(chart.matrix)
 
-        if (any(is.nan(chart.matrix)))
-            warning("Your data contains NaN values which will not appear in the chart.")
+        if (any(is.na(chart.matrix)))
+            warning("Your data contains NA values which will not appear in the chart.")
 
-        chart.matrix[is.nan(chart.matrix)] <- 0
+        chart.matrix[is.na(chart.matrix)] <- 0
 
         pie <- pieChart(chart.matrix = chart.matrix,
                 transpose = transpose,
@@ -858,10 +858,10 @@ Chart <-   function(y,
     {
         draw.grid <- (x.grid.width != 0 && y.grid.width != 0)
 
-        if (any(is.nan(as.matrix(chart.matrix))))
+        if (any(is.na(as.matrix(chart.matrix))))
         {
-            warning("Your data contains NaN values which will not appear in the chart.")
-            chart.matrix <- chart.matrix[!is.nan(rowSums(chart.matrix)), ]
+            warning("Your data contains NA values which will not appear in the chart.")
+            chart.matrix <- chart.matrix[!is.na(rowSums(chart.matrix)), ]
         }
 
         labeled.scatterplot <- labeledScatterplot(chart.matrix = chart.matrix,
@@ -908,9 +908,9 @@ Chart <-   function(y,
                        x.title.font.color = y.title.font.color,
                        x.title.font.size = y.title.font.size,
                        z.title = bubble.legend.title,
-                       y.decimals = y.tick.decimals,
-                       x.decimals = x.tick.decimals,
-                       z.decimals = bubble.decimals,
+                       y.decimals = if (is.null(y.tick.decimals)) 1 else y.tick.decimals,
+                       x.decimals = if (is.null(x.tick.decimals)) 1 else x.tick.decimals,
+                       z.decimals = if (is.null(bubble.decimals)) 1 else bubble.decimals,
                        x.prefix = x.tick.prefix,
                        y.prefix = y.tick.prefix,
                        z.prefix = bubble.label.prefix,
