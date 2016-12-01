@@ -54,19 +54,6 @@ barChart <- function(chart.matrix,
     else
         bar.group.gap <- bar.group.gap
 
-    ## If there are no set boundaries, then set some
-    if (is.null(y.bounds.minimum) && is.null(y.bounds.maximum) && is.null(y.bounds.units.major))
-    {
-        ## Check that the colnames are actually numeric, and if so, proceed
-        if (length(which(is.na(suppressWarnings(as.numeric(colnames(chart.matrix)))))) == 0)
-        {
-            y.bounds <- as.numeric(colnames(chart.matrix))
-            y.bounds.units.major <- abs(y.bounds[2]) - abs(y.bounds[1])
-            y.bounds.minimum <- min(y.bounds) - y.bounds.units.major
-            y.bounds.maximum <- max(y.bounds) + y.bounds.units.major
-        }
-    }
-
     return(list(chart.matrix = chart.matrix,
                 legend.group = legend.group,
                 y.tickformat = y.tickformat,
@@ -75,12 +62,6 @@ barChart <- function(chart.matrix,
                 type = "bar",
                 barmode = barmode,
                 bar.group.gap = bar.group.gap,
-                swap.axes.and.data = TRUE,
-                y.bounds.minimum = y.bounds.minimum,
-                y.bounds.maximum = y.bounds.maximum,
-                y.bounds.units.major = y.bounds.units.major,
-                y.nticks = y.nticks,
-                x.tick.format.manual = x.tick.format.manual,
-                x.tick.frequency = x.tick.frequency))
+                swap.axes.and.data = TRUE))
 }
 

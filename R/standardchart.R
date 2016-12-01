@@ -365,7 +365,7 @@ Chart <-   function(y,
                     y.tick.prefix = "",
                     y.tick.decimals = NULL,
                     y.tick.format.manual = "",
-                    y.hovertext.decimals = 2,
+                    y.hovertext.decimals = NULL,
                     y.hovertext.format.manual = "",
                     y.tick.angle = 0,
                     y.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),
@@ -394,7 +394,7 @@ Chart <-   function(y,
                     x.tick.prefix = "",
                     x.tick.decimals = NULL,
                     x.tick.format.manual = "",
-                    x.hovertext.decimals = 5,
+                    x.hovertext.decimals = NULL,
                     x.hovertext.format.manual = "",
                     x.tick.angle = 0,
                     x.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),
@@ -477,20 +477,12 @@ Chart <-   function(y,
 {
     chart.matrix <- y
 
+    is.bar <- type %in% c("Bar", "Stacked Bar", "100% Stacked Bar")
+
     if (is.null(colors))
         colors <- qColors
     if (is.null(series.line.color))
         series.line.color <- qColors
-
-    ## Check decimal input
-    if (!(type %in% c("Labeled Scatterplot", "Labeled Bubbleplot")))
-    {
-        if (is.null(x.tick.decimals))
-            x.tick.decimals <- 0
-
-        if (is.null(y.tick.decimals))
-            y.tick.decimals <- 2
-    }
 
     if (length(dim(chart.matrix)) > 2)
         stop("The input has more than 2 dimensions.")
@@ -618,18 +610,6 @@ Chart <-   function(y,
     ## Settings specific to Area Charts
     if (type == "Area" | type == "Stacked Area" | type == "100% Stacked Area")
     {
-
-        # This needs to be generalised for all plot types!
-        no.data.in.series <- colSums(is.na(chart.matrix)) >= length(chart.matrix[, 1]) - 1
-        if (any(no.data.in.series))
-        {
-            warning("Some of your series contain either no data or only one data point.  These will be removed from the chart.")
-            chart.matrix <- chart.matrix[, !no.data.in.series]
-        }
-
-        if (any(is.na(as.matrix(chart.matrix))))
-            warning("Your data contains NA values; data points in gaps will be interpolated.")
-
         chart.type.outputs <- areaChart(chart.matrix = chart.matrix,
                                         transparency = transparency,
                                         type = type,
@@ -669,7 +649,7 @@ Chart <-   function(y,
     {
         if (any(is.na(as.matrix(chart.matrix))))
         {
-            warning("Your data contains NA values which will not appear in the chart.")
+            warning("Your data contains missing values which will not appear in the chart.")
 
             chart.matrix <- chart.matrix[!is.na(rowSums(chart.matrix)), ]
         }
@@ -700,7 +680,7 @@ Chart <-   function(y,
     {
         if (any(is.na(as.matrix(chart.matrix))))
         {
-            warning("Your data contains NA values which have been set to zero.")
+            warning("Your data contains missing values which have been set to zero.")
             chart.matrix[which(is.na(chart.matrix))] <- 0
         }
 
@@ -728,6 +708,12 @@ Chart <-   function(y,
     ## Settings specific to Bar Charts
     if (type == "Bar" | type == "Stacked Bar" | type == "100% Stacked Bar")
     {
+        if (any(is.na(as.matrix(chart.matrix))))
+        {
+            warning("Your data contains missing values which have been set to zero.")
+            chart.matrix[which(is.na(chart.matrix))] <- 0
+        }
+
         chart.type.outputs <- barChart(chart.matrix = chart.matrix,
                                           type = type,
                                           y.tick.format.manual = y.tick.format.manual,
@@ -752,12 +738,6 @@ Chart <-   function(y,
         barmode <- chart.type.outputs$barmode
         bar.group.gap <- chart.type.outputs$bar.group.gap
         swap.axes.and.data <- chart.type.outputs$swap.axes.and.data
-        y.bounds.minimum <- chart.type.outputs$y.bounds.minimum
-        y.bounds.maximum <- chart.type.outputs$y.bounds.maximum
-        y.bounds.units.major <- chart.type.outputs$y.bounds.units.major
-        y.nticks <- y.nticks
-        x.tick.format.manual <- chart.type.outputs$x.tick.format.manual
-        x.tick.frequency <- chart.type.outputs$x.tick.frequency
         transparency <- 1
     }
 
@@ -778,13 +758,10 @@ Chart <-   function(y,
     # Settings specific to Pie charts
     if (type == "Pie" || type == "Donut")
     {
-        # Set any NaN to 0 so that it won't chart.
         chart.matrix <- as.matrix(chart.matrix)
 
-        if (any(is.na(chart.matrix)))
-            warning("Your data contains NA values which will not appear in the chart.")
-
-        chart.matrix[is.na(chart.matrix)] <- 0
+        if (any(is.na(chart.matrix)) || any(chart.matrix < 0))
+            warning("Your data contains missing or negative values which will not appear in the chart.")
 
         pie <- pieChart(chart.matrix = chart.matrix,
                 transpose = transpose,
@@ -860,7 +837,7 @@ Chart <-   function(y,
 
         if (any(is.na(as.matrix(chart.matrix))))
         {
-            warning("Your data contains NA values which will not appear in the chart.")
+            warning("Your data contains missing values which will not appear in the chart.")
             chart.matrix <- chart.matrix[!is.na(rowSums(chart.matrix)), ]
         }
 
@@ -964,7 +941,6 @@ Chart <-   function(y,
         x.title.font.family <- global.font.family.override
         x.tick.font.family <- global.font.family.override
         series.marker.text.family <- global.font.family.override
-        subtitle.font.family <- global.font.family.override
         bar.data.label.family <- global.font.family.override
 
         title.font.color <- global.font.color.override
@@ -975,7 +951,6 @@ Chart <-   function(y,
         x.title.font.color <- global.font.color.override
         x.tick.font.color <- global.font.color.override
         series.marker.text.color <- global.font.color.override
-        subtitle.font.color <- global.font.color.override
         bar.data.label.color <- global.font.color.override
     }
 
@@ -993,7 +968,7 @@ Chart <-   function(y,
     else
         data.annotations <- list()
 
-    # Find maximum value in chart matrix; needed for subtitle positioning and setting y-axis limits
+    # Find maximum value in chart matrix; needed for setting y-axis limits
     y.max <- max(chart.matrix)
     if (!is.null(y.bounds.maximum))
         y.max <- y.bounds.maximum
@@ -1007,58 +982,13 @@ Chart <-   function(y,
     if (original.type == "Stacked Column")
         y.max <- max(apply(chart.matrix, 2, FUN = function(x) sum(x)))
 
-    ## This should actually be linear if the x-axis data is numeric, and category if it's not.
-    x.axis.type = "category"
-    if (!any(is.character(colnames(chart.matrix))))
+    if (is.bar)
         x.axis.type = "linear"
-
-    # Set subtitle defaults - this should be done in signature, but sutitle function removed due to formatting no longer available in Plotly 10 10 16
-    subtitle.text <- NULL
-    subtitle.align <- "left"
-    subtitle.border.width <- 0
-    subtitle.border.color <- "white"
-    subtitle.background.color <- "white"
-    subtitle.font.family <- "Arial"
-    subtitle.font.color <- rgb(0, 0, 0, maxColorValue=255)
-    subtitle.font.size <- 10
-
-    # Sort out the sub-title
-    subtitle <- list()
-
-    if (!is.null(subtitle.text))
-        warning("Subtitles are currently not formattable and should not be used.")
-
-    if (!is.null(subtitle.text))
+    else
     {
-        # Allow some extra margin space
-        subtitle.text <- as.vector(subtitle.text)
-
-        ## Attempt to determine y-position, which varies depending on chart type and chart data.
-        if (subtitle.align == "left")
-            x.position = 0
-        else if (subtitle.align == "right")
-            x.position = 1
-        else
-            x.position = 0.5
-
-        sfont <- list(color = subtitle.font.color,
-                      size = subtitle.font.size,
-                      family = subtitle.font.family)
-
-        subtitle <- list(y = y.max,
-                         x = x.position,
-                         text = subtitle.text,
-                         xref = "paper",
-                         yref = "y",
-                         showarrow = FALSE,
-                         borderwidth = subtitle.border.width,
-                         bordercolor = subtitle.border.color,
-                         bgcolor = subtitle.background.color,
-                         font = sfont,
-                         borderpad = 10,
-                         yanchor = "bottom",
-                         align = subtitle.align
-        )
+        x.axis.type = "category"
+        if (!any(is.character(colnames(chart.matrix))))
+            x.axis.type = "linear"
     }
 
     # Create text matrix of source data if required for hover
@@ -1131,7 +1061,6 @@ Chart <-   function(y,
     if (y.line.width >= 1 && !is.null(y.line.width))
     {
         y.showline <- TRUE
-        # y.showticklabels <- TRUE
         # Default to outer tick marks if they are to be shown, but have not been specified
         if (y.tick.marks == "")
         {
@@ -1151,7 +1080,6 @@ Chart <-   function(y,
 
     x.showline <- FALSE
     x.showticklabels <- TRUE
-    #x.showticklabels <- FALSE
     x.showticks <- FALSE
 
     ## If no line, then set to NULL to satisfy Plotly
@@ -1222,13 +1150,8 @@ Chart <-   function(y,
         y.tickvals <- y.data
         y.ticktext <- y.labels
     }
-    else if (!is.null(subtitle.text))
+    else
     {
-        y.tickmode <- "array"
-        y.tickvals <- seq(0, y.max, y.max / 5)
-        y.ticktext <- seq(0, y.max, y.max / 5)
-        y.autorange <- TRUE
-    } else {
         y.tickmode <- "auto"
         y.autorange <- TRUE
     }
@@ -1238,7 +1161,7 @@ Chart <-   function(y,
     x.ticktext <- character()
     x.range <- integer()
     x.autorange <- TRUE
-    x.nticks <- length(x.labels)
+    x.nticks <- if (is.bar) NULL else length(x.labels)
     x.dtick <- NULL
     x.tick0 <- NULL
 
@@ -1267,7 +1190,6 @@ Chart <-   function(y,
     }
     else
     {
-        x.tickmode <- "linear"
         if (is.null(x.tick.frequency))
         {
             # Check if the row headings are numeric, and if so, make the step the diff between item 1 and 2
@@ -1291,10 +1213,9 @@ Chart <-   function(y,
         }
     }
 
-    ## Should autorange be = "reverse"?
-    if (y.data.reversed == TRUE)
+    # Reverse order of the axes
+    if (xor(y.data.reversed == TRUE, is.bar))
         y.autorange = "reversed"
-
     if (x.data.reversed == TRUE)
         x.autorange = "reversed"
 
@@ -1350,10 +1271,6 @@ Chart <-   function(y,
         hoverinfo = paste(axis.to.show, show.series.name, "+text", sep = "")
     else
         hoverinfo = paste(axis.to.show, show.series.name, sep = "")
-
-    ## Build annotations list
-    if (!is.null(subtitle.text) && length(data.annotations) >= 1)
-        data.annotations[[length(data.annotations) + 1]] <- subtitle
 
     ## Hide legend if only one series to plot
     if (ncol(chart.matrix) == 1)
@@ -1619,4 +1536,3 @@ Chart <-   function(y,
     ## Return the chart
     return(p)
 }
-
