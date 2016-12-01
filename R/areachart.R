@@ -10,12 +10,19 @@ areaChart <- function(chart.matrix,
     ## Check for negative values in the input table
     if (type == "Stacked Area" || type == "100% Stacked Area")
     {
-        if (any(chart.matrix < 0))
-            stop("Negative values are not compatible with stacked charts.")
-
-        if (any(is.na(chart.matrix)))
-            stop("NaN values are not compatible with stacked charts.")
+        if (any(is.na(chart.matrix)) || any(chart.matrix < 0))
+            stop("Missing or negative values are not compatible with stacked charts.")
     }
+
+    no.data.in.series <- colSums(is.na(chart.matrix)) >= length(chart.matrix[, 1]) - 1
+    if (any(no.data.in.series))
+    {
+        warning("Some of your series contain either no data or only one data point. These have been removed from the chart.")
+        chart.matrix <- chart.matrix[, !no.data.in.series]
+    }
+
+    if (any(is.na(as.matrix(chart.matrix))))
+        warning("Missing values have been interpolated (or omitted if they occur at end points).")
 
     ## Change the matrix data according to requirements of the chart type
     if (type == "Stacked Area")
