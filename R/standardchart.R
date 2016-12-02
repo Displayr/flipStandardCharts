@@ -585,14 +585,6 @@ Chart <-   function(y,
 
         if (y.title == "FALSE" || y.title == FALSE)
             y.title <- ""
-
-        if (type %in% c("bar", "Bar", "Stacked Bar", "100% Stacked Bar"))
-        {
-            x.temp <- y.title
-            y.temp <- x.title
-            x.title <- x.temp
-            y.title <- y.temp
-        }
     }
 
     if (is.stacked && (any(is.na(chart.matrix)) || any(chart.matrix < 0)))
