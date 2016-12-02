@@ -481,9 +481,7 @@ Chart <-   function(y,
                               "Stacked Bar", "100% Stacked Bar",
                               "Stacked Column", "100% Stacked Column")
 
-    swap.axes.and.data <- type %in% c("Stacked Area", "100% Stacked Area",
-                                      "Stacked Bar", "100% Stacked Bar",
-                                      "Stacked Column", "100% Stacked Column")
+    swap.axes.and.data <- type %in% c("Bar", "Stacked Bar", "100% Stacked Bar")
 
     if (is.null(colors))
         colors <- qColors
