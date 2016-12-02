@@ -37,7 +37,6 @@ barChart <- function(chart.matrix,
                 orientation = orientation,
                 type = "bar",
                 barmode = barmode,
-                bar.group.gap = bar.group.gap,
-                swap.axes.and.data = TRUE))
+                bar.group.gap = bar.group.gap))
 }
 

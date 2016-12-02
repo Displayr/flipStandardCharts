@@ -481,6 +481,10 @@ Chart <-   function(y,
                               "Stacked Bar", "100% Stacked Bar",
                               "Stacked Column", "100% Stacked Column")
 
+    swap.axes.and.data <- type %in% c("Stacked Area", "100% Stacked Area",
+                                      "Stacked Bar", "100% Stacked Bar",
+                                      "Stacked Column", "100% Stacked Column")
+
     if (is.null(colors))
         colors <- qColors
     if (is.null(series.line.color))
@@ -575,13 +579,13 @@ Chart <-   function(y,
 
         ## If no x.title or y.title provided, take defaults from data input
         if (x.title == "" || length(x.title) == 0)
-            x.title <- table.axes.labels[1]
+            x.title <- if (swap.axes.and.data) table.statistic else table.axes.labels[1]
 
         if (x.title == "FALSE" || x.title == FALSE)
             x.title <- ""
 
         if (y.title == "" || length(y.title) == 0)
-            y.title <- table.statistic
+            y.title <- if (swap.axes.and.data) table.axes.labels[1] else table.statistic
 
         if (y.title == "FALSE" || y.title == FALSE)
             y.title <- ""
@@ -598,7 +602,6 @@ Chart <-   function(y,
     legend.group <- ""
     barmode <- ""
     orientation <- NULL
-    swap.axes.and.data <- FALSE
     y.nticks <- NULL
     x.tickformat <- NULL
     y.tickformat <- NULL
@@ -720,7 +723,6 @@ Chart <-   function(y,
         type <- chart.type.outputs$type
         barmode <- chart.type.outputs$barmode
         bar.group.gap <- chart.type.outputs$bar.group.gap
-        swap.axes.and.data <- chart.type.outputs$swap.axes.and.data
         transparency <- 1
     }
 
