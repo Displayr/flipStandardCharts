@@ -1,31 +1,14 @@
 barChart <- function(chart.matrix,
-                        transparency,
-                        type,
-                        y.tick.format.manual = "",
-                        y.tick.suffix = "",
-                        y.tick.decimals = 0,
-                        series.marker.border.width,
-                        series.marker.show,
-                        data.label,
-                        bar.group.gap,
-                        y.bounds.minimum,
-                        y.bounds.maximum,
-                        y.bounds.units.major,
-                        y.nticks,
-                        x.tick.format.manual,
-                        x.tick.frequency)
+                     type,
+                     x.tick.format.manual = "",
+                     series.marker.border.width,
+                     bar.group.gap)
 {
-    ## Change the matrix data according to requirements of the chart type
-    # if (type == "Stacked Column")
-    #     chart.matrix <- cum.data(chart.matrix, "cumulative.sum")
     if (type == "100% Stacked Bar")
     {
         chart.matrix <- cum.data(chart.matrix, "column.percentage")
         if (x.tick.format.manual != "%")
             x.tick.format.manual <- "%"
-
-        if (is.null(x.tick.frequency))
-            x.tick.frequency <- 0.2
     }
 
     # Should we stack or should we not?
@@ -42,12 +25,6 @@ barChart <- function(chart.matrix,
     if (type != "Bar")
         legend.group <- "grouped"
 
-    ## If it's a 100% Stacked Column chart, and no options have been specified for y.tick.format, then set to %
-    if (type == "100% Stacked Column" && y.tick.format.manual == "" && y.tick.suffix == "" && y.tick.decimals == 0)
-        y.tickformat <- "%"
-    else
-        y.tickformat <- y.tick.format.manual
-
     ## If it's got a series.line.width > 0 then set the bar.group.gap to that value.
     if (series.marker.border.width > 0 && is.null(bar.group.gap))
         bar.group.gap <- series.marker.border.width * 0.135
@@ -56,8 +33,7 @@ barChart <- function(chart.matrix,
 
     return(list(chart.matrix = chart.matrix,
                 legend.group = legend.group,
-                y.tickformat = y.tickformat,
-                # series.mode = series.mode,
+                x.tickformat = x.tick.format.manual,
                 orientation = orientation,
                 type = "bar",
                 barmode = barmode,

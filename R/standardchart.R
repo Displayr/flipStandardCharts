@@ -365,7 +365,7 @@ Chart <-   function(y,
                     y.tick.prefix = "",
                     y.tick.decimals = NULL,
                     y.tick.format.manual = "",
-                    y.hovertext.decimals = NULL,
+                    y.hovertext.decimals = 4,
                     y.hovertext.format.manual = "",
                     y.tick.angle = 0,
                     y.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),
@@ -394,7 +394,7 @@ Chart <-   function(y,
                     x.tick.prefix = "",
                     x.tick.decimals = NULL,
                     x.tick.format.manual = "",
-                    x.hovertext.decimals = NULL,
+                    x.hovertext.decimals = 4,
                     x.hovertext.format.manual = "",
                     x.tick.angle = 0,
                     x.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),
@@ -478,6 +478,9 @@ Chart <-   function(y,
     chart.matrix <- y
 
     is.bar <- type %in% c("Bar", "Stacked Bar", "100% Stacked Bar")
+    is.stacked <- type %in% c("Stacked Area", "100% Stacked Area",
+                              "Stacked Bar", "100% Stacked Bar",
+                              "Stacked Column", "100% Stacked Column")
 
     if (is.null(colors))
         colors <- qColors
@@ -593,6 +596,9 @@ Chart <-   function(y,
         }
     }
 
+    if (is.stacked && (any(is.na(chart.matrix)) || any(chart.matrix < 0)))
+        stop("Missing or negative values are not compatible with stacked charts.")
+
     ## Store chart type for later use
     original.type <- type
 
@@ -603,9 +609,9 @@ Chart <-   function(y,
     orientation <- NULL
     swap.axes.and.data <- FALSE
     y.nticks <- NULL
+    x.tickformat <- NULL
     y.tickformat <- NULL
     connectgap <- NULL
-
 
     ## Settings specific to Area Charts
     if (type == "Area" | type == "Stacked Area" | type == "100% Stacked Area")
@@ -655,7 +661,6 @@ Chart <-   function(y,
         }
 
         chart.type.outputs <- scatterPlotChart(chart.matrix = chart.matrix,
-                                                transpose = transpose,
                                                 series.marker.text = series.marker.text,
                                                 x.tick.frequency = x.tick.frequency,
                                                 x.tick.decimals = x.tick.decimals,
@@ -684,15 +689,11 @@ Chart <-   function(y,
             chart.matrix[which(is.na(chart.matrix))] <- 0
         }
 
-
         chart.type.outputs <- columnChart(chart.matrix = chart.matrix,
-                                        type = type,
-                                        y.tick.format.manual = y.tick.format.manual,
-                                        y.tick.suffix = y.tick.suffix,
-                                        y.tick.decimals = y.tick.decimals,
-                                        series.marker.border.width = series.marker.border.width,
-                                        bar.group.gap = bar.group.gap
-                                        )
+                                          type = type,
+                                          y.tick.format.manual = y.tick.format.manual,
+                                          series.marker.border.width = series.marker.border.width,
+                                          bar.group.gap = bar.group.gap)
 
         chart.matrix <- chart.type.outputs$chart.matrix
         legend.group <- chart.type.outputs$legend.group
@@ -715,24 +716,15 @@ Chart <-   function(y,
         }
 
         chart.type.outputs <- barChart(chart.matrix = chart.matrix,
-                                          type = type,
-                                          y.tick.format.manual = y.tick.format.manual,
-                                          y.tick.suffix = y.tick.suffix,
-                                          y.tick.decimals = y.tick.decimals,
-                                          series.marker.border.width = series.marker.border.width,
-                                          bar.group.gap = bar.group.gap,
-                                          y.bounds.minimum = y.bounds.minimum,
-                                          y.bounds.maximum = y.bounds.maximum,
-                                          y.bounds.units.major = y.bounds.units.major,
-                                          y.nticks = length(colnames(chart.matrix)),
-                                          x.tick.format.manual = x.tick.format.manual,
-                                          x.tick.frequency = x.tick.frequency
-        )
+                                       type = type,
+                                       x.tick.format.manual = x.tick.format.manual,
+                                       series.marker.border.width = series.marker.border.width,
+                                       bar.group.gap = bar.group.gap)
 
         chart.matrix <- chart.type.outputs$chart.matrix
         legend.group <- chart.type.outputs$legend.group
-        y.tickformat <- chart.type.outputs$y.tickformat
-        series.mode <- chart.type.outputs$series.mode
+        x.tickformat <- chart.type.outputs$x.tickformat
+        series.mode <- ""
         orientation <- chart.type.outputs$orientation
         type <- chart.type.outputs$type
         barmode <- chart.type.outputs$barmode
@@ -1114,9 +1106,9 @@ Chart <-   function(y,
     if (y.tick.format.manual != "" && y.tick.format.manual != y.tickformat)
         y.tickformat <- y.tick.format.manual
 
-    ifelse((y.tick.format.manual == "" && (is.null(y.tickformat) || y.tickformat == "")), y.tickformat <- paste(".", y.tick.decimals, "f", sep=""), FALSE) #y.tickformat <- y.tick.format.manual)
+    ifelse((y.tick.format.manual == "" && (is.null(y.tickformat) || y.tickformat == "")), y.tickformat <- paste(".", y.tick.decimals, "f", sep=""), FALSE)
 
-    ifelse(x.tick.format.manual == "", x.tickformat <- paste(".", x.tick.decimals, "f", sep=""), x.tickformat <- x.tick.format.manual)
+    ifelse((x.tick.format.manual == "" && (is.null(x.tickformat) || x.tickformat == "")), x.tickformat <- paste(".", x.tick.decimals, "f", sep=""), FALSE)
 
     ifelse(y.hovertext.format.manual == "", y.hoverformat <- paste(".", y.hovertext.decimals, "f", sep=""), y.hoverformat <- y.hovertext.format.manual)
 

@@ -18,7 +18,13 @@ named.matrix <- structure(c(1.59, 0.44, 2.52, 0.19, 0.71, 0.18, 0.18, 0.61, 0.08
                             1.07, 1.31, 0.45, 0.17, 2.87, 2.08, 0.53, 2.62, 1.88, 1.73, 0.12),
                           .Dim = c(5L, 4L), .Dimnames = list(c("Row 1", "Row 2", "Row 3", "Row 4", "Row 5"),
                                                              c("Column 1", "Column 2", "Column 3", "Column 4")))
+missing <- structure(c(1.59, -0.44, NA, 0.19, 0.71, 0.18, 0.18, 0.61, 0.08,
+                            1.07, 1.31, 0.45, 0.17, 2.87, NaN, 0.53, 2.62, 1.88, 1.73, 0.12),
+                          .Dim = c(5L, 4L), .Dimnames = list(c("Row 1", "Row 2", "Row 3", "Row 4", "Row 5"),
+                                                             c("Column 1", "Column 2", "Column 3", "Column 4")))
 dat <- data.frame(named.matrix)
+
+# Input types
 
 for (t in types)
 {
@@ -47,4 +53,19 @@ for (t in types)
         expect_error(print(Chart(dat, type = t, transpose = TRUE)), outcome)
     })
 }
+
+# Missing values
+
+test_that("Area - missing", {
+    expect_warning(print(Chart(missing, type = "Area")), "Missing values have been interpolated")
+})
+
+for (t in c("Stacked Area", "100% Stacked Area"))
+{
+    test_that(paste(t, "- missing"), {
+        expect_error(print(Chart(missing, type = t)),
+                     "Missing or negative values are not compatible with stacked charts.")
+    })
+}
+
 
