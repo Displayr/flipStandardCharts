@@ -477,7 +477,6 @@ Chart <-   function(y,
 {
     chart.matrix <- y
 
-    is.bar <- type %in% c("Bar", "Stacked Bar", "100% Stacked Bar")
     is.stacked <- type %in% c("Stacked Area", "100% Stacked Area",
                               "Stacked Bar", "100% Stacked Bar",
                               "Stacked Column", "100% Stacked Column")
@@ -974,7 +973,7 @@ Chart <-   function(y,
     if (original.type == "Stacked Column")
         y.max <- max(apply(chart.matrix, 2, FUN = function(x) sum(x)))
 
-    if (is.bar)
+    if (swap.axes.and.data)
         x.axis.type = "linear"
     else
     {
@@ -1119,7 +1118,7 @@ Chart <-   function(y,
     y.ticktext <- character()
     y.range <- integer()
     y.autorange <- TRUE
-    y.rangemode <- "tozero"
+    y.rangemode <- if (swap.axes.and.data) NULL else "tozero"
 
     if (!is.null(y.bounds.minimum) && !is.null(y.bounds.maximum) && !is.null(y.bounds.units.major))
     {
@@ -1153,7 +1152,7 @@ Chart <-   function(y,
     x.ticktext <- character()
     x.range <- integer()
     x.autorange <- TRUE
-    x.nticks <- if (is.bar) NULL else length(x.labels)
+    x.nticks <- if (swap.axes.and.data) NULL else length(x.labels)
     x.dtick <- NULL
     x.tick0 <- NULL
 
@@ -1206,7 +1205,7 @@ Chart <-   function(y,
     }
 
     # Reverse order of the axes
-    if (xor(y.data.reversed == TRUE, is.bar))
+    if (xor(y.data.reversed == TRUE, swap.axes.and.data))
         y.autorange = "reversed"
     if (x.data.reversed == TRUE)
         x.autorange = "reversed"
