@@ -579,7 +579,7 @@ Chart <-   function(y,
         if (is.stacked && (any(is.na(chart.matrix)) || any(chart.matrix < 0)))
             stop("Stacked charts cannot be produced with missing or negative values.")
         if (is.hundred.percent.stacked && any(rowSums(chart.matrix) == 0))
-            stop("100% stacked charts cannot be produced with rows that are all zero.")
+            stop("100% stacked charts cannot be produced with rows that do not contain positive values.")
 
         ## If no x.title or y.title provided, take defaults from data input
         if (x.title == "" || length(x.title) == 0)

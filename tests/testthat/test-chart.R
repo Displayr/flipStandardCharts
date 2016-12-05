@@ -98,7 +98,7 @@ for (t in hundred.percent.stacked.types)
 {
     test_that(paste(t, "- row sum zero"), {
         expect_error(print(Chart(row.sum.zero, type = t)),
-                     "100% stacked charts cannot be produced with rows that are all zero.")
+                     "100% stacked charts cannot be produced with rows that do not contain positive values.")
     })
 }
 
