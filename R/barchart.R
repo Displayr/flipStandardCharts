@@ -4,6 +4,12 @@ barChart <- function(chart.matrix,
                      series.marker.border.width,
                      bar.group.gap)
 {
+    if (any(is.na(as.matrix(chart.matrix))))
+    {
+        warning("Missing values have been set to zero.")
+        chart.matrix[which(is.na(chart.matrix))] <- 0
+    }
+
     if (type == "100% Stacked Bar")
     {
         chart.matrix <- cum.data(chart.matrix, "column.percentage")
@@ -35,7 +41,6 @@ barChart <- function(chart.matrix,
                 legend.group = legend.group,
                 x.tickformat = x.tick.format.manual,
                 orientation = orientation,
-                type = "bar",
                 barmode = barmode,
                 bar.group.gap = bar.group.gap))
 }

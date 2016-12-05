@@ -481,6 +481,8 @@ Chart <-   function(y,
                               "Stacked Bar", "100% Stacked Bar",
                               "Stacked Column", "100% Stacked Column")
 
+    is.hundred.percent.stacked <- type %in% c("100% Stacked Area", "100% Stacked Bar", "100% Stacked Column")
+
     swap.axes.and.data <- type %in% c("Bar", "Stacked Bar", "100% Stacked Bar")
 
     if (is.null(colors))
@@ -574,6 +576,10 @@ Chart <-   function(y,
             if (type %in% c("Stacked Column", "100% Stacked Column"))
                 stop(paste(type, "requires more than one series. Use Column charts instead for this data."))
         }
+        if (is.stacked && (any(is.na(chart.matrix)) || any(chart.matrix < 0)))
+            stop("Stacked charts cannot be produced with missing or negative values.")
+        if (is.hundred.percent.stacked && any(rowSums(chart.matrix) == 0))
+            stop("100% stacked charts cannot be produced with rows that are all zero.")
 
         ## If no x.title or y.title provided, take defaults from data input
         if (x.title == "" || length(x.title) == 0)
@@ -588,12 +594,6 @@ Chart <-   function(y,
         if (y.title == "FALSE" || y.title == FALSE)
             y.title <- ""
     }
-
-    if (is.stacked && (any(is.na(chart.matrix)) || any(chart.matrix < 0)))
-        stop("Missing or negative values are not compatible with stacked charts.")
-
-    ## Store chart type for later use
-    original.type <- type
 
     ## Set defaults for chart specific items
     fill.bound <- ""
@@ -635,6 +635,7 @@ Chart <-   function(y,
                                         series.marker.show = series.marker.show,
                                         series.marker.text = series.marker.text)
 
+        chart.matrix <- chart.type.outputs$chart.matrix
         series.mode <- chart.type.outputs$series.mode
         series.line.width <- chart.type.outputs$series.line.width
         y.tickformat <- ""
@@ -645,13 +646,6 @@ Chart <-   function(y,
     ## Settings specific to Scatter Plot Charts
     if (type == "Scatterplot")
     {
-        if (any(is.na(as.matrix(chart.matrix))))
-        {
-            warning("Your data contains missing values which will not appear in the chart.")
-
-            chart.matrix <- chart.matrix[!is.na(rowSums(chart.matrix)), ]
-        }
-
         chart.type.outputs <- scatterPlotChart(chart.matrix = chart.matrix,
                                                 series.marker.text = series.marker.text,
                                                 x.tick.frequency = x.tick.frequency,
@@ -675,12 +669,6 @@ Chart <-   function(y,
     ## Settings specific to Column Charts
     if (type == "Column" | type == "Stacked Column" | type == "100% Stacked Column")
     {
-        if (any(is.na(as.matrix(chart.matrix))))
-        {
-            warning("Your data contains missing values which have been set to zero.")
-            chart.matrix[which(is.na(chart.matrix))] <- 0
-        }
-
         chart.type.outputs <- columnChart(chart.matrix = chart.matrix,
                                           type = type,
                                           y.tick.format.manual = y.tick.format.manual,
@@ -692,7 +680,6 @@ Chart <-   function(y,
         y.tickformat <- chart.type.outputs$y.tickformat
         series.mode <- chart.type.outputs$series.mode
         orientation <- chart.type.outputs$orientation
-        type <- chart.type.outputs$type
         barmode <- chart.type.outputs$barmode
         bar.group.gap <- chart.type.outputs$bar.group.gap
         transparency <- 1
@@ -701,12 +688,6 @@ Chart <-   function(y,
     ## Settings specific to Bar Charts
     if (type == "Bar" | type == "Stacked Bar" | type == "100% Stacked Bar")
     {
-        if (any(is.na(as.matrix(chart.matrix))))
-        {
-            warning("Your data contains missing values which have been set to zero.")
-            chart.matrix[which(is.na(chart.matrix))] <- 0
-        }
-
         chart.type.outputs <- barChart(chart.matrix = chart.matrix,
                                        type = type,
                                        x.tick.format.manual = x.tick.format.manual,
@@ -718,7 +699,6 @@ Chart <-   function(y,
         x.tickformat <- chart.type.outputs$x.tickformat
         series.mode <- ""
         orientation <- chart.type.outputs$orientation
-        type <- chart.type.outputs$type
         barmode <- chart.type.outputs$barmode
         bar.group.gap <- chart.type.outputs$bar.group.gap
         transparency <- 1
@@ -744,7 +724,7 @@ Chart <-   function(y,
         chart.matrix <- as.matrix(chart.matrix)
 
         if (any(is.na(chart.matrix)) || any(chart.matrix < 0))
-            warning("Your data contains missing or negative values which will not appear in the chart.")
+            warning("Missing values have been set to zero.")
 
         pie <- pieChart(chart.matrix = chart.matrix,
                 transpose = transpose,
@@ -817,13 +797,6 @@ Chart <-   function(y,
     if (type == "Labeled Scatterplot" || type == "Labeled Bubbleplot")
     {
         draw.grid <- (x.grid.width != 0 && y.grid.width != 0)
-
-        if (any(is.na(as.matrix(chart.matrix))))
-        {
-            warning("Your data contains missing values which will not appear in the chart.")
-            chart.matrix <- chart.matrix[!is.na(rowSums(chart.matrix)), ]
-        }
-
         labeled.scatterplot <- labeledScatterplot(chart.matrix = chart.matrix,
                                                   colors = colors,
                                                   colors.reverse = colors.reverse,
@@ -956,13 +929,13 @@ Chart <-   function(y,
     if (!is.null(y.bounds.maximum))
         y.max <- y.bounds.maximum
 
-    if (original.type == "Bar" || original.type == "Stacked Bar" || original.type == "100% Stacked Bar")
+    if (type == "Bar" || type == "Stacked Bar" || type == "100% Stacked Bar")
         y.max <- ncol(chart.matrix)
 
-    if (original.type == "100% Stacked Column")
+    if (type == "100% Stacked Column")
         y.max <- 1
 
-    if (original.type == "Stacked Column")
+    if (type == "Stacked Column")
         y.max <- max(apply(chart.matrix, 2, FUN = function(x) sum(x)))
 
     if (swap.axes.and.data)
@@ -1269,10 +1242,10 @@ Chart <-   function(y,
     rownames(chart.matrix) <- x.labels
 
     ## Convert type to plotly type
-    if (type %in% c("bar", "Bar", "Stacked Bar", "100% Stacked Bar", "Column", "Stacked Column", "100% Stacked Column"))
-        type <- "bar"
+    plotly.type <- if (type %in% c("Bar", "Stacked Bar", "100% Stacked Bar", "Column", "Stacked Column", "100% Stacked Column"))
+        "bar"
     else
-        type <- "scatter"
+        "scatter"
 
     ## Add a trace for each col of data in the matrix
     for (a in 1:ncol(chart.matrix))
@@ -1329,7 +1302,7 @@ Chart <-   function(y,
                               width = series.marker.border.width
                               )
                           )
-        } else if (type == "bar") {
+        } else if (plotly.type == "bar") {
             marker = list(size = series.marker.size,
                           color = plotly::toRGB(colors[a], alpha = transparency),
                           line = list(
@@ -1342,10 +1315,10 @@ Chart <-   function(y,
              marker <- NULL
         }
 
-        if (type != "bar")
+        if (plotly.type != "bar")
         {
             p <- plotly::add_trace(p,
-                                   type = type,
+                                   type = plotly.type,
                                    x = x,
                                    y = y,
                                    # evaluate = TRUE,
@@ -1364,7 +1337,7 @@ Chart <-   function(y,
             )
         } else {
             p <- plotly::add_trace(p,
-                                   type = type,
+                                   type = plotly.type,
                                    x = x,
                                    y = y,
                                    # evaluate = TRUE,

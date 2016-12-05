@@ -85,5 +85,5 @@ test_that("Labeled Scatterplot missing",
           expect_warning(print(Chart(y = missing,
                                      type = "Labeled Scatterplot",
                                      title = "Labeled Scatterplot")),
-                         "Your data contains missing values which will not appear in the chart."))
+                         "Data points with missing values have been omitted."))
 

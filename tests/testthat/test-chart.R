@@ -5,9 +5,11 @@ types <- c("Area", "Stacked Area", "100% Stacked Area",
            "Column", "Stacked Column", "100% Stacked Column",
            "Line", "Pie", "Donut")
 
-multiple.series.input.types <- c("Stacked Area", "100% Stacked Area",
-                                 "Stacked Bar", "100% Stacked Bar",
-                                 "Stacked Column", "100% Stacked Column")
+stacked.types <- c("Stacked Area", "100% Stacked Area",
+                   "Stacked Bar", "100% Stacked Bar",
+                   "Stacked Column", "100% Stacked Column")
+
+hundred.percent.stacked.types <- c("100% Stacked Area", "100% Stacked Bar", "100% Stacked Column")
 
 unnamed.vector <- c(5, 6, 2, 1.5, 9, 2.2)
 named.vector <- structure(c(5, 6, 2, 1.5, 9, 2.2), .Names = c("A", "B", "C", "D", "E", "F"))
@@ -18,17 +20,22 @@ named.matrix <- structure(c(1.59, 0.44, 2.52, 0.19, 0.71, 0.18, 0.18, 0.61, 0.08
                             1.07, 1.31, 0.45, 0.17, 2.87, 2.08, 0.53, 2.62, 1.88, 1.73, 0.12),
                           .Dim = c(5L, 4L), .Dimnames = list(c("Row 1", "Row 2", "Row 3", "Row 4", "Row 5"),
                                                              c("Column 1", "Column 2", "Column 3", "Column 4")))
-missing <- structure(c(1.59, -0.44, NA, 0.19, 0.71, 0.18, 0.18, 0.61, 0.08,
-                            1.07, 1.31, 0.45, 0.17, 2.87, NaN, 0.53, 2.62, 1.88, 1.73, 0.12),
+missing <- structure(c(NA, NA, NA, NA, 0.71, NA, 0.18, 0.61, 0.08,
+                            1.07, NA, 0.45, 0.17, 2.87, NaN, 0.53, 2.62, 1.88, 1.73, 0.12),
                           .Dim = c(5L, 4L), .Dimnames = list(c("Row 1", "Row 2", "Row 3", "Row 4", "Row 5"),
                                                              c("Column 1", "Column 2", "Column 3", "Column 4")))
+row.sum.zero <- structure(c(0, 0.44, 2.52, 0.19, 0.71, 0, 0.18, 0.61, 0.08,
+                              1.07, 0, 0.45, 0.17, 2.87, 2.08, 0, 2.62, 1.88, 1.73, 0.12),
+                            .Dim = c(5L, 4L))
+
+
 dat <- data.frame(named.matrix)
 
 # Input types
 
 for (t in types)
 {
-    outcome <- if (t %in% multiple.series.input.types) "requires more than one series" else NA
+    outcome <- if (t %in% stacked.types) "requires more than one series" else NA
     test_that(paste(t, "- unnamed vector input"), {
         expect_error(print(Chart(unnamed.vector, type = t)), outcome)
     })
@@ -57,15 +64,45 @@ for (t in types)
 # Missing values
 
 test_that("Area - missing", {
-    expect_warning(print(Chart(missing, type = "Area")), "Missing values have been interpolated")
+    expect_warning(print(Chart(missing, type = "Area")), "Missing values have been interpolated or omitted.")
 })
 
-for (t in c("Stacked Area", "100% Stacked Area"))
+test_that("Bar - missing", {
+    expect_warning(print(Chart(missing, type = "Bar")), "Missing values have been set to zero.")
+})
+
+test_that("Column - missing", {
+    expect_warning(print(Chart(missing, type = "Column")), "Missing values have been set to zero.")
+})
+
+test_that("Line - missing", {
+    expect_warning(print(Chart(missing, type = "Line")), "Missing values have been omitted.")
+})
+
+for (t in stacked.types)
+{
+    test_that(paste(t, "- single series"), {
+        expect_error(print(Chart(named.vector, type = t)), "requires more than one series.")
+    })
+}
+
+for (t in stacked.types)
 {
     test_that(paste(t, "- missing"), {
         expect_error(print(Chart(missing, type = t)),
-                     "Missing or negative values are not compatible with stacked charts.")
+                     "Stacked charts cannot be produced with missing or negative values.")
     })
 }
+
+for (t in hundred.percent.stacked.types)
+{
+    test_that(paste(t, "- row sum zero"), {
+        expect_error(print(Chart(row.sum.zero, type = t)),
+                     "100% stacked charts cannot be produced with rows that are all zero.")
+    })
+}
+
+
+
 
 

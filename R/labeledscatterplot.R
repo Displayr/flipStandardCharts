@@ -31,6 +31,12 @@ labeledScatterplot <- function(chart.matrix,
                                x.title = "",
                                y.title = "")
 {
+    if (any(is.na(as.matrix(chart.matrix))))
+    {
+        warning("Data points with missing values have been omitted.")
+        chart.matrix <- chart.matrix[!is.na(rowSums(chart.matrix)), ]
+    }
+
     is.bubble <- type == "Labeled Bubbleplot"
 
     if (is.null(colors))

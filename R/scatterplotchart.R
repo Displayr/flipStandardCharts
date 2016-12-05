@@ -8,6 +8,11 @@ scatterPlotChart <- function(chart.matrix,
                              x.bounds.maximum,
                              x.bounds.units.major)
 {
+    if (any(is.na(as.matrix(chart.matrix))))
+    {
+        warning("Data points with missing values have been omitted.")
+        chart.matrix <- chart.matrix[!is.na(rowSums(chart.matrix)), ]
+    }
 
     if (!is.matrix(chart.matrix))
         chart.matrix <- as.matrix(chart.matrix)
