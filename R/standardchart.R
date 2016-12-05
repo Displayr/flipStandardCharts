@@ -338,10 +338,10 @@ Chart <-   function(y,
                     legend.font.size = 10,
                     legend.position = "right",
                     legend.ascending = TRUE,
-                    margin.top = NULL,
-                    margin.bottom = NULL,
-                    margin.left = NULL,
-                    margin.right = NULL,
+                    margin.top = 80,
+                    margin.bottom = 80,
+                    margin.left = 80,
+                    margin.right = 80,
                     margin.inner.pad = 0,
                     y.title = "",
                     y.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
@@ -1351,14 +1351,6 @@ Chart <-   function(y,
         }
     }
 
-    # Creating the list this way means that properties are not added if they have NULL values
-    margins <- list()
-    margins$t <- margin.top
-    margins$b <- margin.bottom
-    margins$l <- margin.left
-    margins$r <- margin.right
-    margins$pad <- margin.inner.pad
-
     ## Set plotly layout styles
     p <- plotly::layout(p,
         title = title,
@@ -1474,7 +1466,13 @@ Chart <-   function(y,
             categoryarray = x.categoryarray
         ),
         ## MARGINS
-        margin = margins,
+        margin = list(
+            t = margin.top,
+            b = margin.bottom,
+            l = margin.left,
+            r = margin.right,
+            pad = margin.inner.pad
+        ),
         plot_bgcolor = plotly::toRGB(plot.fill.color, alpha = plot.fill.transparency),
         paper_bgcolor = plotly::toRGB(chart.fill.color, alpha = chart.fill.transparency),
         hovermode = hover.mode,
