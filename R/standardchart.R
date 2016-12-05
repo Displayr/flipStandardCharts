@@ -1233,6 +1233,8 @@ Chart <-   function(y,
     ## Config options
     p <- plotly::config(p, displayModeBar = show.modebar)
 
+    p$sizingPolicy$browser$padding <- 0
+
     ## Make sure x.labels are actually used
     rownames(chart.matrix) <- x.labels
 
