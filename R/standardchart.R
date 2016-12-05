@@ -581,6 +581,10 @@ Chart <-   function(y,
         if (is.hundred.percent.stacked && any(rowSums(chart.matrix) == 0))
             stop("100% stacked charts cannot be produced with rows that do not contain positive values.")
 
+        nms <- row.names(chart.matrix)
+        if (length(nms) > length(unique(nms)))
+            stop("Row names of the input table must be unique.")
+
         ## If no x.title or y.title provided, take defaults from data input
         if (x.title == "" || length(x.title) == 0)
             x.title <- if (swap.axes.and.data) table.statistic else table.axes.labels[1]

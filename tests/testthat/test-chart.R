@@ -27,6 +27,10 @@ missing <- structure(c(NA, NA, NA, NA, 0.71, NA, 0.18, 0.61, 0.08,
 row.sum.zero <- structure(c(0, 0.44, 2.52, 0.19, 0.71, 0, 0.18, 0.61, 0.08,
                               1.07, 0, 0.45, 0.17, 2.87, 2.08, 0, 2.62, 1.88, 1.73, 0.12),
                             .Dim = c(5L, 4L))
+duplicate.rows <- structure(c(1.59, 0.44, 2.52, 0.19, 0.71, 0.18, 0.18, 0.61, 0.08,
+                              1.07, 1.31, 0.45, 0.17, 2.87, 2.08, 0.53, 2.62, 1.88, 1.73, 0.12),
+                          .Dim = c(5L, 4L), .Dimnames = list(c("Row", "Row 2", "Row", "Row 4", "Row 5"),
+                                                             c("Column 1", "Column 2", "Column 3", "Column 4")))
 
 
 dat <- data.frame(named.matrix)
@@ -106,7 +110,11 @@ for (t in hundred.percent.stacked.types)
     })
 }
 
-
-
-
+for (t in types)
+{
+    test_that(paste(t, "- duplicate rows"), {
+        expect_error(print(Chart(duplicate.rows, type = t)),
+                     "Row names of the input table must be unique.")
+    })
+}
 
