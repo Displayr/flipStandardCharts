@@ -33,6 +33,14 @@ pieChart <- function(y,
                      table.statistic,
                      qinput)
 {
+    chart.matrix <- as.matrix(chart.matrix)
+
+    if (any(is.na(chart.matrix)) || any(chart.matrix < 0))
+    {
+        warning("Missing and negative values have been set to zero.")
+        chart.matrix[which(is.na(chart.matrix))] <- 0
+    }
+
     ## Check that the table statistic is appropriate for the chart type
     permitted.statistics <- c("%", "Total %", "n", "Population", "Average", "Sum", "% Share", "% Total Share")
 

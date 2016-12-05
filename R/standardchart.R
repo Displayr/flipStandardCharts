@@ -721,11 +721,6 @@ Chart <-   function(y,
     # Settings specific to Pie charts
     if (type == "Pie" || type == "Donut")
     {
-        chart.matrix <- as.matrix(chart.matrix)
-
-        if (any(is.na(chart.matrix)) || any(chart.matrix < 0))
-            warning("Missing values have been set to zero.")
-
         pie <- pieChart(chart.matrix = chart.matrix,
                 transpose = transpose,
                 type = type,
