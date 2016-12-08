@@ -1244,10 +1244,7 @@ Chart <-   function(y,
     for (a in 1:ncol(chart.matrix))
     {
         y <- as.numeric(chart.matrix[, a])
-        x <- if (is.x.axis.numeric)
-            as.numeric(rownames(chart.matrix))
-        else
-            rownames(chart.matrix)
+        x <- rownames(chart.matrix)
 
         if (swap.axes.and.data == TRUE)
         {
