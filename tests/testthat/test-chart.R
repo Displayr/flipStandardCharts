@@ -11,6 +11,8 @@ stacked.types <- c("Stacked Area", "100% Stacked Area",
 
 hundred.percent.stacked.types <- c("100% Stacked Area", "100% Stacked Bar", "100% Stacked Column")
 
+area.or.line.charts <- c("Area", "Stacked Area", "100% Stacked Area", "Line")
+
 unnamed.vector <- c(5, 6, 2, 1.5, 9, 2.2)
 named.vector <- structure(c(5, 6, 2, 1.5, 9, 2.2), .Names = c("A", "B", "C", "D", "E", "F"))
 unnamed.matrix <- structure(c(1.59, 0.44, 2.52, 0.19, 0.71, 0.18, 0.18, 0.61, 0.08,
@@ -31,7 +33,6 @@ duplicate.rows <- structure(c(1.59, 0.44, 2.52, 0.19, 0.71, 0.18, 0.18, 0.61, 0.
                               1.07, 1.31, 0.45, 0.17, 2.87, 2.08, 0.53, 2.62, 1.88, 1.73, 0.12),
                           .Dim = c(5L, 4L), .Dimnames = list(c("Row", "Row 2", "Row", "Row 4", "Row 5"),
                                                              c("Column 1", "Column 2", "Column 3", "Column 4")))
-
 
 dat <- data.frame(named.matrix)
 
@@ -118,3 +119,9 @@ for (t in types)
     })
 }
 
+for (t in area.or.line.charts)
+{
+    test_that(paste(t, "- numeric labels"), {
+        expect_error(print(Chart(unnamed.matrix, type = t)), NA)
+    })
+}

@@ -159,8 +159,7 @@
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param x.tick.font.family Character; x-axis tick label font family
 #' @param x.tick.font.size Integer; x-axis tick label font size
-#' @param x.tick.label.autoformat Logical; whether to apply built-in auto-
-#' formatting of long (> 15 characters) text labels on the x-axis
+#' @param x.tick.label.autoformat Logical; whether to rotate and wrap long x-axis labels.
 #' @param x.show.missing.data.markers Logical; whether to show markers
 #' on the x axis when there is no corresponding data.
 #' @param series.marker.show Can be "none", "automatic" or a vector referencing
@@ -367,7 +366,7 @@ Chart <-   function(y,
                     y.tick.format.manual = "",
                     y.hovertext.decimals = 4,
                     y.hovertext.format.manual = "",
-                    y.tick.angle = 0,
+                    y.tick.angle = NULL,
                     y.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),
                     y.tick.font.family = "Arial",
                     y.tick.font.size = 10,
@@ -396,7 +395,7 @@ Chart <-   function(y,
                     x.tick.format.manual = "",
                     x.hovertext.decimals = 4,
                     x.hovertext.format.manual = "",
-                    x.tick.angle = 0,
+                    x.tick.angle = NULL,
                     x.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),
                     x.tick.font.family = "Arial",
                     x.tick.font.size = 10,
@@ -475,15 +474,16 @@ Chart <-   function(y,
                     scatter.labels.font.size = 10,
                     scatter.labels.font.color = rgb(44, 44, 44, maxColorValue = 255))
 {
-    chart.matrix <- y
+
 
     is.stacked <- type %in% c("Stacked Area", "100% Stacked Area",
                               "Stacked Bar", "100% Stacked Bar",
                               "Stacked Column", "100% Stacked Column")
-
     is.hundred.percent.stacked <- type %in% c("100% Stacked Area", "100% Stacked Bar", "100% Stacked Column")
-
     swap.axes.and.data <- type %in% c("Bar", "Stacked Bar", "100% Stacked Bar")
+    is.area.or.line.chart <- type %in% c("Area", "Stacked Area", "100% Stacked Area", "Line")
+
+    chart.matrix <- y
 
     if (is.null(colors))
         colors <- qColors
@@ -883,8 +883,6 @@ Chart <-   function(y,
     if (is.null(series.line.color))
         series.line.color <- colors
 
-
-
     # Set all fonts to global font override if required
     if (global.font.family.override != "")
     {
@@ -937,14 +935,11 @@ Chart <-   function(y,
     if (type == "Stacked Column")
         y.max <- max(apply(chart.matrix, 2, FUN = function(x) sum(x)))
 
-    if (swap.axes.and.data)
-        x.axis.type = "linear"
-    else
-    {
-        x.axis.type = "category"
-        if (!any(is.character(colnames(chart.matrix))))
-            x.axis.type = "linear"
-    }
+    is.x.axis.numeric <- swap.axes.and.data ||
+                         (is.area.or.line.chart &&
+                         all(!is.na(suppressWarnings(as.numeric(row.names(chart.matrix))))))
+
+    x.axis.type <- if (is.x.axis.numeric) "linear" else "category"
 
     # Create text matrix of source data if required for hover
     source.matrix <- chart.matrix
@@ -961,18 +956,10 @@ Chart <-   function(y,
     if (is.null(y.labels))
         y.labels <- colnames(chart.matrix)
 
-    ## If no angle set for x.tick.angle and x.labels are > 15 characters,
-    tally <- as.numeric(sapply(x.labels, function(x) nchar(x)))
-
-    if (max(tally) > 15 && x.tick.label.autoformat == TRUE)
-    {
-        x.tick.angle <- 315
+    if (x.tick.label.autoformat)
         x.labels <- autoFormatLongLabels(x.labels)
-        if (margin.bottom == 80)
-            margin.bottom <- 140
-    }
-    else if (sum(tally) > 100 && x.tick.label.autoformat == TRUE)
-        x.tick.angle <- 315
+    else if (is.null(x.tick.angle))
+        x.tick.angle <- 0
 
     ## Position legend
     legend.x.anchor <- "left"
@@ -1116,7 +1103,7 @@ Chart <-   function(y,
     x.ticktext <- character()
     x.range <- integer()
     x.autorange <- TRUE
-    x.nticks <- if (swap.axes.and.data) NULL else length(x.labels)
+    x.nticks <- if (is.x.axis.numeric) NULL else length(x.labels)
     x.dtick <- NULL
     x.tick0 <- NULL
 
@@ -1252,7 +1239,10 @@ Chart <-   function(y,
     for (a in 1:ncol(chart.matrix))
     {
         y <- as.numeric(chart.matrix[, a])
-        x <- as.character(rownames(chart.matrix))
+        x <- if (is.x.axis.numeric)
+            as.numeric(rownames(chart.matrix))
+        else
+            rownames(chart.matrix)
 
         if (swap.axes.and.data == TRUE)
         {
@@ -1277,8 +1267,7 @@ Chart <-   function(y,
         if (regexpr('lines', series.mode) >= 1 && !is.null(series.mode))
         {
             lines = list(width = series.line.width,
-                         color = plotly::toRGB(series.line.color[a], alpha = series.line.transparency)
-                         )
+                         color = plotly::toRGB(series.line.color[a], alpha = series.line.transparency))
         } else {
             lines <- NULL
         }
@@ -1322,7 +1311,6 @@ Chart <-   function(y,
                                    type = plotly.type,
                                    x = x,
                                    y = y,
-                                   # evaluate = TRUE,
                                    orientation = orientation,
                                    fill = fill.bound,
                                    fillcolor = plotly::toRGB(colors[a], alpha = transparency),

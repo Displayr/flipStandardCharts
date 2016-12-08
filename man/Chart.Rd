@@ -29,7 +29,7 @@ Chart(y, type = "Area", transpose = FALSE, aggregate.period = "none",
   y.grid.width = 1, y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
   y.tick.suffix = "", y.tick.prefix = "", y.tick.decimals = NULL,
   y.tick.format.manual = "", y.hovertext.decimals = 4,
-  y.hovertext.format.manual = "", y.tick.angle = 0,
+  y.hovertext.format.manual = "", y.tick.angle = NULL,
   y.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),
   y.tick.font.family = "Arial", y.tick.font.size = 10, x.title = "",
   x.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
@@ -42,7 +42,7 @@ Chart(y, type = "Area", transpose = FALSE, aggregate.period = "none",
   x.grid.width = 1, x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
   x.tick.suffix = "", x.tick.prefix = "", x.tick.decimals = NULL,
   x.tick.format.manual = "", x.hovertext.decimals = 4,
-  x.hovertext.format.manual = "", x.tick.angle = 0,
+  x.hovertext.format.manual = "", x.tick.angle = NULL,
   x.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),
   x.tick.font.family = "Arial", x.tick.font.size = 10,
   x.tick.label.autoformat = TRUE, x.show.missing.data.markers = TRUE,
@@ -337,8 +337,7 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{x.tick.font.size}{Integer; x-axis tick label font size}
 
-\item{x.tick.label.autoformat}{Logical; whether to apply built-in auto-
-formatting of long (> 15 characters) text labels on the x-axis}
+\item{x.tick.label.autoformat}{Logical; whether to rotate and wrap long x-axis labels.}
 
 \item{x.show.missing.data.markers}{Logical; whether to show markers
 on the x axis when there is no corresponding data.}
