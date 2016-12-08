@@ -957,7 +957,12 @@ Chart <-   function(y,
         y.labels <- colnames(chart.matrix)
 
     if (x.tick.label.autoformat)
-        x.labels <- autoFormatLongLabels(x.labels)
+    {
+        new.x.labels <- autoFormatLongLabels(x.labels)
+        if (!all(new.x.labels == x.labels) && margin.bottom == 80)
+            margin.bottom <- 140
+        x.labels <- new.x.labels
+    }
     else if (is.null(x.tick.angle))
         x.tick.angle <- 0
 
