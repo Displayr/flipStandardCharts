@@ -1,12 +1,7 @@
 lineChart <- function(chart.matrix,
-                      transpose,
                       series.line.width,
-                      series.marker.show,
-                      series.marker.text)
+                      series.marker.show)
 {
-    if (any(is.na(as.matrix(chart.matrix))))
-        warning("Missing values have been omitted.")
-
     no.data.in.series <- colSums(is.na(chart.matrix)) >= length(chart.matrix[, 1]) - 1
     if (any(no.data.in.series))
         chart.matrix <- chart.matrix[, !no.data.in.series]
@@ -15,23 +10,13 @@ lineChart <- function(chart.matrix,
     if (series.line.width < 1)
         series.line.width <- 1
 
-    ## if source data only has one column with multiple rows, then transpose
-    if (ncol(chart.matrix) == 1)
-        transpose <- TRUE
-    else
-        transpose <- transpose
-
     ## Showing markers and lines
     series.mode = "lines+markers"  #default = line and marker
 
     if (series.line.width >= 1 && series.marker.show == "none")
         series.mode <- "lines"
 
-    if (series.marker.text)
-        series.mode <- paste(series.mode, "+text", sep = "")
-
     return(list(chart.matrix = chart.matrix,
                 series.mode = series.mode,
-                series.line.width = series.line.width,
-                transpose = transpose))
+                series.line.width = series.line.width))
 }

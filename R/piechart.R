@@ -1,35 +1,32 @@
 #' @importFrom utils stack
-pieChart <- function(y,
-                     chart.matrix,
+#' @importFrom flipChartBasics StripAlphaChannel ChartColors
+pieChart <- function(chart.matrix,
                      type,
-                     transpose,
                      values.color,
                      colors.reverse,
+                     title = title,
+                     title.font.family,
+                     title.font.size,
+                     title.font.color,
                      pie.values.font.family,
                      pie.values.font.size,
                      pie.values.prefix,
                      pie.values.suffix,
-                     pie.values.display.format,
-                     pie.values.thres.percent,
+                     pie.data.threshold,
                      pie.values.order,
                      pie.values.decimals,
                      pie.labels.font.family,
                      pie.labels.font.size,
                      pie.labels.font.color,
-                     pie.labels.minFontSize,
-                     pie.labels.inner,
                      pie.groups.font.family,
                      pie.groups.font.size,
                      pie.groups.font.color,
-                     pie.groups.minFontSize,
-                     pie.groups.colors,
-                     pie.groups.colors.reverse,
+                     pie.subslice.colors,
+                     pie.subslice.colors.reverse,
                      pie.groups.order,
-                     pie.groups.radius,
+                     pie.inner.radius,
                      pie.border.color,
-                     pie.segment.color.gradient,
-                     donut.hole.radius,
-                     pie.segment.colors.repeat.by.group,
+                     pie.subslice.colors.repeat,
                      table.statistic,
                      qinput)
 {
@@ -37,19 +34,18 @@ pieChart <- function(y,
 
     if (any(is.na(chart.matrix)) || any(chart.matrix < 0))
     {
-        warning("Missing and negative values have been set to zero.")
+        warning("Missing and negative values have been omitted.")
         chart.matrix[which(is.na(chart.matrix))] <- 0
     }
+
+    if (is.null(pie.data.threshold))
+        pie.data.threshold <- 0.003
 
     ## Check that the table statistic is appropriate for the chart type
     permitted.statistics <- c("%", "Total %", "n", "Population", "Average", "Sum", "% Share", "% Total Share")
 
     if (!length(permitted.statistics[which(table.statistic == permitted.statistics)]) > 0 && qinput)
         warning("It is recommended that you use one of the following statistics in this chart: %, Total %, n, Population, Average, Sum, % Share, or % Total Share")
-
-    ## If transpose is false and there's only one row in chart.matrix
-    if (nrow(chart.matrix) == 1)
-        chart.matrix <- t(chart.matrix)
 
     ## As some charts get passed in as xtabs objects, rather than pure matrices, we need to unclass, for the stack to work later.
     chart.matrix <- stripClassAndCallFromXtabs(chart.matrix)
@@ -64,20 +60,15 @@ pieChart <- function(y,
     }
     else
     {
-        pie.data <- cbind(suppressWarnings(stack(as.data.frame(chart.matrix[,1:ncol(chart.matrix)]))), labels = rep(rownames(chart.matrix),ncol(chart.matrix))) #cbind(suppressWarnings(stack(chart.matrix)), labels = rep(rownames(chart.matrix), ncol(chart.matrix))) #as.data.frame(chart.matrix[ , 1:ncol(chart.matrix)])
+        pie.data <- cbind(suppressWarnings(stack(as.data.frame(chart.matrix[,1:ncol(chart.matrix)]))), labels = rep(rownames(chart.matrix),ncol(chart.matrix)))
         pie.data <- pie.data[with(pie.data,order(pie.data[,2])),]
     }
 
+    is.data.2d <- length(unique(pie.data[, 3])) > 1
+
     ## Stop if asked for a donut but passed a 2D table
-    if (length(unique(pie.data[, 3])) >= 2 && type == "Donut")
+    if (is.data.2d && type == "Donut")
         stop("The table supplied is two-dimensional and cannot be displayed as a donut chart.  Please change the chart type to 'Pie' and update.")
-
-    ## set inner.radius from donut.hole.radius or pie.groups.radius
-    if (type == "Donut" && donut.hole.radius == 0)
-        inner.radius <- donut.hole.radius <- 70
-
-    if (type == "Pie" && pie.groups.radius == 0)
-        inner.radius <- pie.groups.radius <- 70
 
     ## First column is values, second groups, third is labels.
     d.values <- as.numeric(pie.data[, 1])
@@ -85,77 +76,68 @@ pieChart <- function(y,
     {
         d.labels <- as.character(pie.data[, 2])
         d.groups <- NULL
-        if (type == "Pie")
-            inner.radius <- 0
-        else
-            inner.radius <- donut.hole.radius
     }
     else
     {
         d.labels <- as.character(pie.data[, 3])
         d.groups <- as.character(pie.data[, 2])
-        if (type == "Pie")
-            inner.radius <- pie.groups.radius
-        else
-            inner.radius <- donut.hole.radius
     }
 
     # Resolving colors
     num.colors <- nrow(chart.matrix)
-    if (!pie.segment.colors.repeat.by.group)
+    if (!pie.subslice.colors.repeat)
         num.colors <- nrow(chart.matrix) * ncol(chart.matrix)
 
 
-    values.color <- flipChartBasics::StripAlphaChannel(flipChartBasics::ChartColors(number.colors.needed = num.colors, given.colors = values.color, reverse = colors.reverse))
-    groups.color <- flipChartBasics::StripAlphaChannel(flipChartBasics::ChartColors(number.colors.needed = ncol(chart.matrix), given.colors = pie.groups.colors, reverse = pie.groups.colors.reverse))
-
-    values.color <- rep(values.color, ncol(chart.matrix))
-
-    # Values display
-    if (pie.values.display.format == "%")
+    if (is.data.2d)
     {
-        values.display <- "percentage"
-        if (pie.values.suffix == "")
-            pie.values.suffix <- "%"
+        pie.colors <- if (is.null(pie.subslice.colors))
+            NULL
+        else
+            rep(StripAlphaChannel(ChartColors(number.colors.needed = num.colors,
+                                              given.colors = pie.subslice.colors,
+                                              reverse = pie.subslice.colors.reverse)), ncol(chart.matrix))
+        pie.groups.colors <- StripAlphaChannel(ChartColors(number.colors.needed = ncol(chart.matrix),
+                                                           given.colors = values.color,
+                                                           reverse = colors.reverse))
     }
     else
-        values.display <- "original"
-
-    # If Donut chart, ensure default hole is a hole
-    if (type == "Donut" && donut.hole.radius == 0)
-        inner.radius = 70
+    {
+        pie.colors <- StripAlphaChannel(ChartColors(number.colors.needed = num.colors,
+                                                      given.colors = values.color,
+                                                      reverse = colors.reverse))
+        pie.groups.colors <- NULL
+    }
 
     # Convert pie.inner.radius to character
-    inner.radius <- paste(inner.radius, "%", sep = "")
+    inner.radius <- paste(pie.inner.radius, "%", sep = "")
 
-    output <- list(values.data = d.values,
-                labels = d.labels,
-                groups = d.groups,
-                pie.values.font.family = pie.values.font.family,
-                pie.values.font.size = pie.values.font.size,
-                pie.values.color = values.color,
-                pie.values.prefix = pie.values.prefix,
-                pie.values.suffix = pie.values.suffix,
-                pie.values.display.format = values.display,
-                pie.values.thres.percent = pie.values.thres.percent,
-                pie.values.order = pie.values.order,
-                pie.values.decimals = pie.values.decimals,
-                pie.labels.font.family = pie.labels.font.family,
-                pie.labels.font.size = pie.labels.font.size,
-                pie.labels.font.color = pie.labels.font.color,
-                pie.labels.minFontSize = pie.labels.minFontSize,
-                pie.labels.inner = pie.labels.inner,
-                pie.groups.font.family = pie.groups.font.family,
-                pie.groups.font.size = pie.groups.font.size,
-                pie.groups.font.color = pie.groups.font.color,
-                pie.groups.min.font.size = pie.groups.minFontSize,
-                pie.groups.colors = groups.color,
-                pie.groups.colors.reverse = pie.groups.colors.reverse,
-                pie.groups.order = pie.groups.order,
-                inner.radius = inner.radius,
-                pie.border.color = pie.border.color,
-                pie.segment.color.gradient = pie.segment.color.gradient
-                )
-
-    return(output)
+    rhtmlDonut::Donut(values = d.values,
+                      labels = d.labels,
+                      values.color = pie.colors,
+                      values.order = pie.values.order,
+                      values.font.family = pie.values.font.family,
+                      values.font.size = pie.values.font.size,
+                      values.decimal.places = pie.values.decimals,
+                      values.display.as = "percentage",
+                      values.display.thres = pie.data.threshold * 100,
+                      labels.font.family = pie.labels.font.family,
+                      labels.font.color = pie.labels.font.color,
+                      labels.font.size = pie.labels.font.size,
+                      labels.min.font.size = pie.labels.font.size,
+                      groups = d.groups,
+                      groups.color = pie.groups.colors,
+                      groups.order = pie.groups.order,
+                      groups.font.family = pie.groups.font.family,
+                      groups.font.color = pie.groups.font.color,
+                      groups.font.size = pie.groups.font.size,
+                      groups.min.font.size = pie.groups.font.size,
+                      title = title,
+                      title.font.family = title.font.family,
+                      title.font.size = title.font.size,
+                      title.font.color = title.font.color,
+                      prefix = pie.values.prefix,
+                      suffix = pie.values.suffix,
+                      border.color = pie.border.color,
+                      inner.radius = inner.radius)
 }

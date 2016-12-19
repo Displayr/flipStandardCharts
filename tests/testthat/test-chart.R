@@ -80,12 +80,8 @@ test_that("Column - missing", {
     expect_warning(print(Chart(missing, type = "Column")), "Missing values have been set to zero.")
 })
 
-test_that("Line - missing", {
-    expect_warning(print(Chart(missing, type = "Line")), "Missing values have been omitted.")
-})
-
 test_that("Pie - missing", {
-    expect_warning(print(Chart(missing, type = "Pie")), "Missing and negative values have been set to zero.")
+    expect_warning(print(Chart(missing, type = "Pie")), "Missing and negative values have been omitted.")
 })
 
 for (t in stacked.types)

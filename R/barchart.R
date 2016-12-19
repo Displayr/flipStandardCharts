@@ -1,8 +1,7 @@
 barChart <- function(chart.matrix,
                      type,
                      x.tick.format.manual = "",
-                     series.marker.border.width,
-                     bar.group.gap)
+                     series.marker.border.width)
 {
     if (any(is.na(as.matrix(chart.matrix))))
     {
@@ -31,17 +30,9 @@ barChart <- function(chart.matrix,
     if (type != "Bar")
         legend.group <- "grouped"
 
-    ## If it's got a series.line.width > 0 then set the bar.group.gap to that value.
-    if (series.marker.border.width > 0 && is.null(bar.group.gap))
-        bar.group.gap <- series.marker.border.width * 0.135
-    else
-        bar.group.gap <- bar.group.gap
-
     return(list(chart.matrix = chart.matrix,
                 legend.group = legend.group,
                 x.tickformat = x.tick.format.manual,
                 orientation = orientation,
-                barmode = barmode,
-                bar.group.gap = bar.group.gap))
+                barmode = barmode))
 }
-

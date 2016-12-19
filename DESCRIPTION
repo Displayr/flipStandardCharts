@@ -13,6 +13,7 @@ Imports:
 	plotly,
     flipChartBasics,
     flipData,
+    flipFormat,
 	rhtmlDonut,
 	dplyr,
 	rhtmlLabeledScatter,

@@ -4,90 +4,68 @@
 \alias{Chart}
 \title{Generates an interactive chart based on the plotly library.}
 \usage{
-Chart(y, type = "Area", transpose = FALSE, aggregate.period = "none",
-  y.labels = NULL, y.data = NULL, x.labels = NULL, x.data = NULL,
-  title = "", title.font.family = "Arial", title.font.color = rgb(44, 44,
-  44, maxColorValue = 255), title.font.size = 16, colors = NULL,
-  colors.reverse = FALSE, transparency = 0.4, chart.fill.color = rgb(255,
-  255, 255, maxColorValue = 255), chart.fill.transparency = 1,
-  plot.fill.color = rgb(255, 255, 255, maxColorValue = 255),
-  plot.fill.transparency = 1, legend.show = TRUE, legend.fill = rgb(255,
-  255, 255, maxColorValue = 255), legend.border.color = rgb(44, 44, 44,
-  maxColorValue = 255), legend.border.line.width = 0,
-  legend.font.color = rgb(44, 44, 44, maxColorValue = 255),
-  legend.font.family = "Arial", legend.font.size = 10,
-  legend.position = "right", legend.ascending = TRUE, margin.top = 80,
-  margin.bottom = 80, margin.left = 80, margin.right = 80,
-  margin.inner.pad = 0, y.title = "", y.title.font.color = rgb(44, 44, 44,
-  maxColorValue = 255), y.title.font.family = "Arial",
+Chart(y, type = "Area", transpose = FALSE, title = "",
+  title.font.family = "Arial", title.font.color = rgb(44, 44, 44,
+  maxColorValue = 255), title.font.size = 16, colors = NULL,
+  colors.reverse = FALSE, opacity = 1, background.fill.color = rgb(255,
+  255, 255, maxColorValue = 255), background.fill.opacity = 1,
+  charting.area.fill.color = rgb(255, 255, 255, maxColorValue = 255),
+  charting.area.fill.opacity = 1, legend.show = TRUE,
+  legend.fill = rgb(255, 255, 255, maxColorValue = 255),
+  legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
+  legend.border.line.width = 0, legend.font.color = rgb(44, 44, 44,
+  maxColorValue = 255), legend.font.family = "Arial", legend.font.size = 10,
+  legend.position = "right", legend.ascending = TRUE, margin.top = NULL,
+  margin.bottom = NULL, margin.left = NULL, margin.right = NULL,
+  margin.inner.pad = NULL, y.title = "", y.title.font.color = rgb(44, 44,
+  44, maxColorValue = 255), y.title.font.family = "Arial",
   y.title.font.size = 12, y.line.width = 0, y.line.color = rgb(0, 0, 0,
-  maxColorValue = 255), y.tick.marks = "", y.tick.length = 5,
+  maxColorValue = 255), y.tick.marks = "", y.tick.mark.length = 5,
   y.bounds.minimum = NULL, y.bounds.maximum = NULL,
-  y.bounds.units.major = NULL, y.zero.line.width = 0,
+  y.tick.distance = NULL, y.zero.line.width = 0,
   y.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
-  y.position = "left", y.mirror = FALSE, y.data.reversed = FALSE,
-  y.grid.width = 1, y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+  y.position = "left", y.data.reversed = FALSE, y.grid.width = 1,
+  y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
   y.tick.suffix = "", y.tick.prefix = "", y.tick.decimals = NULL,
-  y.tick.format.manual = "", y.hovertext.decimals = 4,
+  y.tick.format.manual = "", y.hovertext.decimals = NULL,
   y.hovertext.format.manual = "", y.tick.angle = NULL,
   y.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),
   y.tick.font.family = "Arial", y.tick.font.size = 10, x.title = "",
   x.title.font.color = rgb(44, 44, 44, maxColorValue = 255),
   x.title.font.family = "Arial", x.title.font.size = 12, x.line.width = 0,
   x.line.color = rgb(0, 0, 0, maxColorValue = 255), x.tick.marks = "",
-  x.tick.length = 5, x.bounds.minimum = NULL, x.bounds.maximum = NULL,
-  x.bounds.units.major = NULL, x.tick.frequency = NULL,
-  x.zero.line.width = 0, x.zero.line.color = rgb(44, 44, 44, maxColorValue =
-  255), x.position = "bottom", x.mirror = FALSE, x.data.reversed = FALSE,
-  x.grid.width = 1, x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+  x.tick.mark.length = 5, x.bounds.minimum = NULL,
+  x.bounds.maximum = NULL, x.tick.distance = NULL, x.zero.line.width = 0,
+  x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
+  x.position = "bottom", x.data.reversed = FALSE, x.grid.width = 1,
+  x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
   x.tick.suffix = "", x.tick.prefix = "", x.tick.decimals = NULL,
-  x.tick.format.manual = "", x.hovertext.decimals = 4,
+  x.tick.format.manual = "", x.hovertext.decimals = NULL,
   x.hovertext.format.manual = "", x.tick.angle = NULL,
   x.tick.font.color = rgb(0, 0, 0, maxColorValue = 255),
   x.tick.font.family = "Arial", x.tick.font.size = 10,
-  x.tick.label.autoformat = TRUE, x.show.missing.data.markers = TRUE,
-  series.marker.show = "none", series.marker.color = NULL,
-  series.marker.color.reverse = FALSE, series.marker.transparency = 1,
-  series.marker.size = 6, series.marker.border.width = 1,
-  series.marker.border.color = NULL,
-  series.marker.border.color.reverse = FALSE,
-  series.marker.border.transparency = 1, series.marker.text = FALSE,
-  series.marker.text.position = "top middle",
-  series.marker.text.color = rgb(0, 0, 0, maxColorValue = 255),
-  series.marker.text.family = "Arial", series.marker.text.size = 10,
-  series.marker.text.percent = FALSE, series.line.width = 0,
-  series.line.color = NULL, series.line.color.reverse = FALSE,
-  series.line.transparency = 1, hover.mode = "closest",
-  hover.include.source.data = FALSE, hover.include.source.data.prefix = "",
-  hover.include.source.data.suffix = "",
-  hover.include.source.data.percent = FALSE, show.modebar = FALSE,
-  global.font.family.override = "", global.font.color.override = rgb(0, 0,
-  0, maxColorValue = 255), rows.to.ignore = "Total, NET, SUM",
+  x.tick.label.autoformat = TRUE, series.marker.show = "none",
+  series.marker.colors = NULL, series.marker.colors.reverse = FALSE,
+  series.marker.opacity = 1, series.marker.size = 6,
+  series.marker.border.width = 1, series.marker.border.colors = NULL,
+  series.marker.border.colors.reverse = FALSE,
+  series.marker.border.opacity = 1,
+  series.marker.text.position = "top middle", series.line.width = 0,
+  series.line.colors = NULL, series.line.colors.reverse = FALSE,
+  series.line.opacity = 1, tooltip.show = TRUE, modebar.show = FALSE,
+  global.font.family = "", global.font.color = rgb(0, 0, 0, maxColorValue =
+  255), rows.to.ignore = "Total, NET, SUM",
   cols.to.ignore = "Total, NET, SUM", bar.gap = 0.15,
-  bar.group.gap = NULL, bar.data.label.offset = NULL,
-  bar.data.label.family = "Arial", bar.data.label.size = 10,
-  bar.data.label.color = rgb(0, 0, 0, maxColorValue = 255),
-  bar.data.label.decimals = 0, bar.data.label.as.percent = FALSE,
-  pie.data.font.family = "Arial", pie.data.font.size = 10,
-  pie.data.prefix = "", pie.data.suffix = "",
-  pie.data.display.format = "", pie.data.thres.percent = 0.3,
-  pie.data.order = "initial", pie.data.decimals = 0,
-  pie.labels.font.family = "Arial", pie.labels.font.size = 10,
-  pie.labels.font.color = rgb(44, 44, 44, maxColorValue = 255),
-  pie.labels.minFontSize = 8, pie.labels.inner = FALSE,
-  pie.groups.font.family = "Arial", pie.groups.font.size = 10,
-  pie.groups.font.color = rgb(44, 44, 44, maxColorValue = 255),
-  pie.groups.minFontSize = 8, pie.groups.colors = NULL,
-  pie.groups.colors.reverse = FALSE, pie.groups.order = "descending",
-  pie.groups.radius = 60, pie.segment.colors.repeat.by.group = TRUE,
-  pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
-  pie.segment.color.gradient = FALSE, donut.hole.radius = 0,
-  bubble.legend.title = NULL, bubble.decimals = 0,
-  bubble.label.prefix = "", scatter.group.indices = "",
-  scatter.group.labels = "", scatter.data.label.show = TRUE,
-  scatter.marker.radius = 3, scatter.labels.font.family = "Arial",
-  scatter.labels.font.size = 10, scatter.labels.font.color = rgb(44, 44, 44,
-  maxColorValue = 255))
+  data.label.show = NULL, data.label.font.family = "Arial",
+  data.label.font.size = 10, data.label.font.color = rgb(0, 0, 0,
+  maxColorValue = 255), data.label.decimals = 2, data.label.prefix = "",
+  data.label.suffix = "", data.label.threshold = NULL,
+  pie.order = "initial", pie.groups.order = "descending",
+  pie.subslice.colors = NULL, pie.subslice.colors.reverse = FALSE,
+  pie.subslice.colors.repeat = TRUE, pie.border.color = rgb(255, 255, 255,
+  maxColorValue = 255), pie.inner.radius = 70, z.title = "",
+  scatter.group.indices = "", scatter.group.labels = "",
+  scatter.marker.radius = 3)
 }
 \arguments{
 \item{y}{A table or matrix.}
@@ -97,23 +75,10 @@ or "100\% Stacked Area".}
 
 \item{transpose}{Logical; should the final output be transposed?}
 
-\item{aggregate.period}{Character; can be "month", "quarter", "year".
-Only relevant when x is a vector of mode date.}
-
-\item{y.labels}{Character vector, overrides chart matrix column names.}
-
-\item{y.data}{Integer vector, optiona, for manually specifying the points
-along the y-axis where the y.labels should appear.}
-
-\item{x.labels}{Character vector, overrides chart matrix row names.}
-
-\item{x.data}{Integer vector, optional, for manually specifying the points
-along the x-axis where the x.labels should appear.}
-
 \item{title}{Character; chart title.}
 
-\item{title.font.family}{Character; title font family.  Can be "Arial
-Black", "Arial", "Comic Sans MS", "Courier New", "Georgia", "Impact",
+\item{title.font.family}{Character; title font family. Can be "Arial Black",
+"Arial", "Comic Sans MS", "Courier New", "Georgia", "Impact",
 "Lucida Console", "Lucida Sans Unicode", "Marlett", "Symbol", "Tahoma",
 "Times New Roman", "Trebuchet MS", "Verdana", "Webdings"}
 
@@ -128,22 +93,21 @@ named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 
 \item{colors.reverse}{Logical; if the order of the colors should be reversed.}
 
-\item{transparency}{Transparency of area fill colors as an alpha value
+\item{opacity}{Opacity of area fill colors as an alpha value
 (0 to 1).}
 
-\item{chart.fill.color}{Chart (borders around plot) background color as
+\item{background.fill.color}{Background color in character format
+(e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
+
+\item{background.fill.opacity}{Background opacity as an alpha value
+(0 to 1).}
+
+\item{charting.area.fill.color}{Charting area background color as
 a named color in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{chart.fill.transparency}{Chart (borders around plot) background
-transparency as an alpha value (0 to 1).}
-
-\item{plot.fill.color}{Plot (the plot area proper) background color as
-a named color in character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
-
-\item{plot.fill.transparency}{Plot (the plot area proper) background
-transparency as an alpha value (0 to 1).}
+\item{charting.area.fill.opacity}{Charting area background
+opacity as an alpha value (0 to 1).}
 
 \item{legend.show}{Logical; show the legend.}
 
@@ -171,13 +135,13 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 \item{margin.top}{Integer; margin between plot area and the top of the
 graphic in pixels}
 
-\item{margin.bottom}{Integer; margin between plot area and the top of the
+\item{margin.bottom}{Integer; margin between plot area and the bottom of the
 graphic in pixels}
 
-\item{margin.left}{Integer; margin between plot area and the top of the
+\item{margin.left}{Integer; margin between plot area and the left of the
 graphic in pixels}
 
-\item{margin.right}{Integer; margin between plot area and the top of the
+\item{margin.right}{Integer; margin between plot area and the right of the
 graphic in pixels}
 
 \item{margin.inner.pad}{Integer; padding in pixels between plot proper
@@ -186,44 +150,40 @@ and axis lines}
 \item{y.title}{Character, y-axis title; defaults to chart input values;
 to turn off set to "FALSE".}
 
-\item{y.title.font.color}{Y-axis title font color as a named color in
+\item{y.title.font.color}{y-axis title font color as a named color in
 character format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0,
 max = 255)).}
 
-\item{y.title.font.family}{Character; Y-axis title font family}
+\item{y.title.font.family}{Character; y-axis title font family}
 
 \item{y.title.font.size}{Integer; y-axis title font size}
 
 \item{y.line.width}{Integer; y-axis line in pixels, 0 = no line}
 
-\item{y.line.color}{Y-axis line color as a named color in character format
+\item{y.line.color}{y-axis line color as a named color in character format
 (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{y.tick.marks}{Character; whether and where to show tick marks on the
 y axis.  Can be "outside", "inside", "none"}
 
-\item{y.tick.length}{Integer; length of tick marks in pixels.}
+\item{y.tick.mark.length}{Integer; length of tick marks in pixels.}
 
 \item{y.bounds.minimum}{Integer or NULL; set minimum of range for plotting;
 NULL = no manual range set.  Must be less than y.bounds.maximum}
 
-\item{y.bounds.maximum}{= Integer or NULL; set maximum of range for
+\item{y.bounds.maximum}{Integer or NULL; set maximum of range for
 plotting; NULL = no manual range set.  Must be greater than y.bounds.minimum}
 
-\item{y.bounds.units.major}{Ingeger or NULL; set tick mark distance in
-y-axis units between minimum and maximum for plotting; NULL = no manual
-range set.}
+\item{y.tick.distance}{Integer or NULL; set tick mark distance.}
 
 \item{y.zero.line.width}{Width in pixels of zero line; 0 = no zero line
 shown}
 
-\item{y.zero.line.color}{Color of horizontal zero (origo) line as a named
+\item{y.zero.line.color}{Color of horizontal zero line as a named
 color in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{y.position}{Character; set y-axis position; can be "left" or "right"}
-
-\item{y.mirror}{Logical; mirror y-axis on other side?}
 
 \item{y.data.reversed}{Logical; whether to reverse y-axis or not}
 
@@ -232,26 +192,26 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{y.grid.color}{Color of y-grid lines as a named color in character
 format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{y.tick.suffix}{Y-axis tick label suffix}
+\item{y.tick.suffix}{y-axis tick label suffix}
 
-\item{y.tick.prefix}{Y-axis tick label prefix}
+\item{y.tick.prefix}{y-axis tick label prefix}
 
-\item{y.tick.decimals}{Y-axis tick label decimal places}
+\item{y.tick.decimals}{y-axis tick label decimal places}
 
 \item{y.tick.format.manual}{Overrides tick.prefix, suffix and decimals;
 See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 https://docs.python.org/release/3.1.3/library/string.html#formatspec}
 
-\item{y.hovertext.decimals}{Y-axis hover text decimal places}
+\item{y.hovertext.decimals}{y-axis hover text decimal places}
 
-\item{y.hovertext.format.manual}{Overrides hovertext.prefix, suffix and decimals;
+\item{y.hovertext.format.manual}{Overrides hovertext decimals;
 See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 https://docs.python.org/release/3.1.3/library/string.html#formatspec}
 
 \item{y.tick.angle}{Integer, y-axis tick label angle in degrees.
 90 = vertical; 0 = horizontal}
 
-\item{y.tick.font.color}{Y-axis tick label font color as a named color
+\item{y.tick.font.color}{y-axis tick label font color as a named color
 in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
@@ -272,13 +232,13 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{x.line.width}{Integer; x-axis line in pixels, 0 = no line}
 
-\item{x.line.color}{X-axis line color as a named color in character format
+\item{x.line.color}{x-axis line color as a named color in character format
 (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{x.tick.marks}{Character; whether and where to show tick marks on the
-y axis.  Can be "outside", "inside", "none"}
+x-axis.  Can be "outside", "inside", "none"}
 
-\item{x.tick.length}{Integer; length of tick marks in pixels.}
+\item{x.tick.mark.length}{Integer; length of tick marks in pixels.}
 
 \item{x.bounds.minimum}{Integer or NULL; set minimum of range for plotting;
 NULL = no manual range set.  Must be less than x.bounds.maximum}
@@ -286,11 +246,9 @@ NULL = no manual range set.  Must be less than x.bounds.maximum}
 \item{x.bounds.maximum}{= Integer or NULL; set maximum of range for
 plotting; NULL = no manual range set.  Must be greater than x.bounds.minimum}
 
-\item{x.bounds.units.major}{Ingeger or NULL; set tick mark distance in
+\item{x.tick.distance}{Ingeger or NULL; set tick mark distance in
 x-axis units between minimum and maximum for plotting; NULL = no manual
 range set.}
-
-\item{x.tick.frequency}{Integer; number of ticks to show on x-axis.}
 
 \item{x.zero.line.width}{Width in pixels of zero line; 0 = no zero line
 shown}
@@ -299,9 +257,7 @@ shown}
 color in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{x.position}{Character; set x-axis position; can be "left" or "right"}
-
-\item{x.mirror}{Logical; mirror x-axis on other side?}
+\item{x.position}{Character; set x-axis position; can be "top" or "bottom"}
 
 \item{x.data.reversed}{Logical; whether to reverse x-axis or not}
 
@@ -310,11 +266,11 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{x.grid.color}{Color of y-grid lines as a named color in character
 format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{x.tick.suffix}{X.axis tick label suffix}
+\item{x.tick.suffix}{x-axis tick label suffix}
 
-\item{x.tick.prefix}{X.axis tick label prefix}
+\item{x.tick.prefix}{x-axis tick label prefix}
 
-\item{x.tick.decimals}{X.axis tick label decimal places}
+\item{x.tick.decimals}{x-axis tick label decimal places}
 
 \item{x.tick.format.manual}{Overrides tick.prefix, suffix and decimals;
 See https://github.com/mbostock/d3/wiki/Formatting#numbers or
@@ -322,7 +278,7 @@ https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec}
 
 \item{x.hovertext.decimals}{X.axis hover text decimal places}
 
-\item{x.hovertext.format.manual}{Overrides hovertext.prefix, suffix and decimals;
+\item{x.hovertext.format.manual}{Overrides hovertext decimals;
 See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec}
 
@@ -339,94 +295,59 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{x.tick.label.autoformat}{Logical; whether to rotate and wrap long x-axis labels.}
 
-\item{x.show.missing.data.markers}{Logical; whether to show markers
-on the x axis when there is no corresponding data.}
-
 \item{series.marker.show}{Can be "none", "automatic" or a vector referencing
 the plotly symbol dictionary using either numerics or strings.}
 
-\item{series.marker.color}{Character; a vector containing one or more named
+\item{series.marker.colors}{Character; a vector containing one or more named
 colors from grDevices OR one or more specified hex value colors OR a single
 named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 
-\item{series.marker.color.reverse}{Logical; if the order of the colors should
+\item{series.marker.colors.reverse}{Logical; if the order of the colors should
 be reversed.}
 
-\item{series.marker.transparency}{Integer; transparency for series markers
-as an alpha value (0 to 1)}
+\item{series.marker.opacity}{Opacity for series markers as an alpha value (0 to 1).}
 
 \item{series.marker.size}{Integer; size in pixels of marker}
 
 \item{series.marker.border.width}{Integer; width in pixels of border/line
 around series markers; 0 is no line}
 
-\item{series.marker.border.color}{Character; a vector containing one or more named
+\item{series.marker.border.colors}{Character; a vector containing one or more named
 colors from grDevices OR one or more specified hex value colors OR a single
 named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 
-\item{series.marker.border.color.reverse}{Logical; if the order of the colors
+\item{series.marker.border.colors.reverse}{Logical; if the order of the colors
 should be reversed.}
 
-\item{series.marker.border.transparency}{Integer; transparency of
-border/line around series markers as an alpha value (0 to 1)}
-
-\item{series.marker.text}{Logical; whether to include data point with the
-markers on line chart series.}
+\item{series.marker.border.opacity}{Integer; opacity of border/line around
+series markers as an alpha value (0 to 1).}
 
 \item{series.marker.text.position}{Character; where to place the source data
 value in relation to the marker icon.  Can be "top left", "top center", "top
 right", "middle left", "middle center", "middle right", "bottom left",
 "bottom center", "bottom right"}
 
-\item{series.marker.text.color}{Vector of colors in RGB format for source
-data label}
-
-\item{series.marker.text.family}{Character; the font family of the source
-data label}
-
-\item{series.marker.text.size}{Integer; font size of the source data label}
-
-\item{series.marker.text.percent}{Logical; if the source value should be
-multiplied by 100.}
-
 \item{series.line.width}{Integer; thickness, in pixels, of the series line}
 
-\item{series.line.color}{Character; a vector containing one or more named
+\item{series.line.colors}{Character; a vector containing one or more named
 colors from grDevices OR one or more specified hex value colors OR a single
 named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 
-\item{series.line.color.reverse}{Logical; if the order of the colors
+\item{series.line.colors.reverse}{Logical; if the order of the colors
 should be reversed.}
 
-\item{series.line.transparency}{Integer; transparency for series lines as an
+\item{series.line.opacity}{Integer; opacity for series lines as an
 alpha value (0 to 1)}
 
-\item{hover.mode}{Character or logic; can be FALSE for no hover text, "x" to
-show all x-values for the hover point, "y" to show all y-values for the
-hover point, or "closest" to show the single, nearest, value.}
+\item{tooltip.show}{Logical; whether to show a tooltip on hover.}
 
-\item{hover.include.source.data}{Logical; Include source data point value
-in the hover text.}
+\item{modebar.show}{Logical; whether to show the zoom menu buttons or not.}
 
-\item{hover.include.source.data.prefix}{Character; prefix for source data
-point value in hover text.}
+\item{global.font.family}{Character; font family for all occurrences of any
+font attribute for the chart unless specified individually.}
 
-\item{hover.include.source.data.suffix}{Character; suffix for source data
-point value in hover text.}
-
-\item{hover.include.source.data.percent}{Logical; multiplies source data
-point value by 100.}
-
-\item{show.modebar}{Logical; whether to show the zoom menu buttons or not.}
-
-\item{global.font.family.override}{Character; font family to override
-all occurrences of any font attribute for the chart instead of specifying
-font for all font attributes individually}
-
-\item{global.font.color.override}{Global font color as a named color
-in character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).  Will only work if global.font.family.override
-is also set.}
+\item{global.font.color}{Global font color as a named color in character format
+(e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{rows.to.ignore}{Character; comma separated string of row headings to
 exclude from the charting.}
@@ -438,124 +359,61 @@ Bubbleplot, which both need to have the correct columns prior to charting.}
 \item{bar.gap}{Integer; chart proportion between each bar or column if using
 bar or column charts, or between each cluster of bars or columns.}
 
-\item{bar.group.gap}{Integer; chart proportion between each bar or column in
-a cluster.}
+\item{data.label.show}{Logical; whether to show data labels.}
 
-\item{bar.data.label.offset}{Numeric; number of y-axis units to offset the
-data label from the end of the column (use negative numbers for down, positive
-for up)}
+\item{data.label.font.family}{Character; font family for data label.}
 
-\item{bar.data.label.family}{Character; font family for data label.}
+\item{data.label.font.size}{Integer; font size for data label.}
 
-\item{bar.data.label.size}{Integer; font size for data label.}
-
-\item{bar.data.label.color}{Font color as a named color
+\item{data.label.font.color}{Font color as a named color
 in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{bar.data.label.decimals}{Integer; number of decimal places to show in
-bar and column chart data labels.}
+\item{data.label.decimals}{Integer; number of decimal places to show in
+data labels.}
 
-\item{bar.data.label.as.percent}{Logical; whether to treat data labels in
-bar or column charts as percentages or not.}
+\item{data.label.prefix}{Character; prefix for data values.}
 
-\item{pie.data.font.family}{Character; font family for label values.}
+\item{data.label.suffix}{Character; suffix for data values.}
 
-\item{pie.data.font.size}{Numeric; font size of label values.}
+\item{data.label.threshold}{The proportion of the total range below which
+data labels should not be displayed.}
 
-\item{pie.data.prefix}{Character; prefix for label values.}
-
-\item{pie.data.suffix}{Character; suffix for label values.}
-
-\item{pie.data.display.format}{Character; either "\%" or "original";
-yields a percentage or the source values as specified.}
-
-\item{pie.data.thres.percent}{Numeric; 0-1, the percentage value at
-which labels should not be shown.  Default 0.3\%.}
-
-\item{pie.data.order}{Character; "descending", "initial", or
+\item{pie.order}{Character; "descending", "initial", or
 "alphabetical"; default is "descending" sort on values; "alphabetical"
 sorts on labels.}
-
-\item{pie.data.decimals}{Numeric; number of decimal points to show;
-defaults to zero.}
-
-\item{pie.labels.font.family}{Character; font family for label text.}
-
-\item{pie.labels.font.size}{Numeric; font size for label text}
-
-\item{pie.labels.font.color}{A single color for label text.}
-
-\item{pie.labels.minFontSize}{Numeric; minimum font size of label text.}
-
-\item{pie.labels.inner}{Logical; if labels should be on top of (TRUE)
-or next to (FALSE) the chart.}
-
-\item{pie.groups.font.family}{Character; font family for group labels}
-
-\item{pie.groups.font.size}{Numeric; font size of group label text}
-
-\item{pie.groups.font.color}{A single color for group label text.}
-
-\item{pie.groups.minFontSize}{Numeric; minimum font size of group label
-text.}
-
-\item{pie.groups.colors}{Character; a vector containing one or more named
-colors from grDevices OR one or more specified hex value colors OR a single
-named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
-
-\item{pie.groups.colors.reverse}{Logical; if the order of the colors
-should be reversed.}
 
 \item{pie.groups.order}{Character; "descending", "initial", or
 "alphabetical"; default is "descending" sort on values; "alphabetical"
 sorts on labels.}
 
-\item{pie.groups.radius}{Numeric; must be passed as a proportion out of
-100 (e.g. 75); specifies the radius of the groups where the data are 2D;
-only relevant to pit charts; defaults to 70.}
+\item{pie.subslice.colors}{Character; a vector containing one or more named
+colors from grDevices OR one or more specified hex value colors OR a single
+named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 
-\item{pie.segment.colors.repeat.by.group}{Logical; if, when a grouped
-pie chart is displayed, the colors of the segments should repeat
+\item{pie.subslice.colors.reverse}{Logical; if the order of
+pie.subslice.colors should be reversed.}
+
+\item{pie.subslice.colors.repeat}{Logical; if, when a grouped
+pie chart is displayed, the colors of the subslices should repeat
 by group, or be different throughout; defaults to TRUE.}
 
 \item{pie.border.color}{A single color for space around pie and between
 segments.}
 
-\item{pie.segment.color.gradient}{Logical; if no pie.segment.colors are
-specified, a gradient will be generated.}
+\item{pie.inner.radius}{Numeric; the size of the inner radius of pie and
+donut charts as a proportion out of 100. defaults to 70.}
 
-\item{donut.hole.radius}{Numeric; must be passed as a proportion out of
-100 (e.g. 75); specifies the radius of the donut hole; only relevant to
-donut charts; defaults to 70.}
-
-\item{bubble.legend.title}{Character; title of the bubble-size legend.}
-
-\item{bubble.decimals}{Numeric; number of decimal points to show for
-bubble-size data values.}
-
-\item{bubble.label.prefix}{Character; label prefix to bubble values.}
+\item{z.title}{Character; title of the bubble-size legend in labeled
+bubbleplots.}
 
 \item{scatter.group.indices}{Text of comma-separated group indices
 corresponding to each row.}
 
 \item{scatter.group.labels}{Text of comma-separated group labels.}
 
-\item{scatter.data.label.show}{Logical; whether to show labels in the
-plot or not.}
-
 \item{scatter.marker.radius}{Numeric; the radius of the scatter plot
 markers if no bubble size has been provided.}
-
-\item{scatter.labels.font.family}{Character; font to use for labels in
-in plot.}
-
-\item{scatter.labels.font.size}{Numeric; font size for plot labels.}
-
-\item{scatter.labels.font.color}{Color for plot labels.}
-
-\item{bar.data.label}{Integer or Character; the offset from the top end of a
-column measured in y-axis units.}
 }
 \description{
 \code{Chart} generates standard charts from plotly library.

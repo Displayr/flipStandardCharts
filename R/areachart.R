@@ -1,12 +1,14 @@
 areaChart <- function(chart.matrix,
-                      transparency,
+                      opacity,
                       type,
                       y.tick.format.manual = "",
                       y.tick.suffix = "",
-                      y.tick.decimals = 0,
                       series.line.width,
                       series.marker.show)
 {
+    if (is.null(opacity))
+        opacity <- 0.4
+
     if (any(is.na(as.matrix(chart.matrix))))
         warning("Missing values have been interpolated or omitted.")
 
@@ -20,13 +22,9 @@ areaChart <- function(chart.matrix,
     else if (type == "100% Stacked Area")
         chart.matrix <- cum.data(chart.matrix, "cumulative.percentage")
 
-    ## Issue warning if transparency is = 1 and type = "Area"
-    if (transparency == 1 && type == "Area")
+    ## Issue warning if opacity is = 1 and type = "Area"
+    if (opacity == 1 && type == "Area" && ncol(chart.matrix) > 1)
         warning("Displaying this chart without transparent series will make it difficult to read as some data series may be obscured.")
-
-    ## Having transparency on non-overlapping series serves no purpose.
-    if (transparency != 1 && type != "Area")
-        transparency <- 1
 
     ## Determine whether to draw to zero y (overlapping area chart) or to next y (for stacked)
     if (type == "Area")
@@ -60,6 +58,6 @@ areaChart <- function(chart.matrix,
                 legend.group = legend.group,
                 y.tickformat = y.tickformat,
                 series.mode = series.mode,
-                transparency = transparency))
+                opacity = opacity))
 }
 
