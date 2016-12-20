@@ -538,6 +538,18 @@ Chart <-   function(y,
     if (is.null(x.tick.font.color)) x.tick.font.color <- global.font.color
     if (is.null(data.label.font.color)) data.label.font.color <- global.font.color
 
+    # Default margins
+    if (is.null(margin.top))
+        margin.top <- 80
+    if (is.null(margin.bottom))
+        margin.bottom <- 80
+    if (is.null(margin.left))
+        margin.left <- 80
+    if (is.null(margin.right))
+        margin.right <- 80
+    if (is.null(margin.inner.pad))
+        margin.inner.pad <- 0
+
     ## Set defaults for chart specific items
     fill.bound <- ""
     legend.group <- ""
@@ -1017,17 +1029,6 @@ Chart <-   function(y,
         "closest"
     else
         FALSE
-
-    if (is.null(margin.top))
-        margin.top <- 80
-    if (is.null(margin.bottom))
-        margin.bottom <- 80
-    if (is.null(margin.left))
-        margin.left <- 80
-    if (is.null(margin.right))
-        margin.right <- 80
-    if (is.null(margin.inner.pad))
-        margin.inner.pad <- 0
 
     ## Add a trace for each col of data in the matrix
     for (i in 1:ncol(chart.matrix))
