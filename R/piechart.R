@@ -109,6 +109,9 @@ pieChart <- function(chart.matrix,
         pie.groups.colors <- NULL
     }
 
+    if (type == "Pie" && !is.data.2d)
+        inner.radius <- 0
+
     # Convert pie.inner.radius to character
     inner.radius <- paste(pie.inner.radius, "%", sep = "")
 
