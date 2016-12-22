@@ -462,7 +462,9 @@ Chart <-   function(y,
             chart.matrix <- as.matrix(chart.matrix)
 
         ## Transform chart.matrix based on transposition requirements.
-        if (transpose || nrow(chart.matrix) == 1)
+        if (transpose && ncol(chart.matrix) == 1)
+            warning("The input table cannot be transposed as it has only one column.")
+        else if (transpose || (nrow(chart.matrix) == 1 && ncol(chart.matrix) > 1))
         {
             chart.matrix <- t(chart.matrix)
             table.axes.labels <- rev(table.axes.labels)
