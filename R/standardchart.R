@@ -376,7 +376,7 @@ Chart <-   function(y,
          background.fill.opacity != 1 ||
          charting.area.fill.color != default.background.color ||
          charting.area.fill.opacity != 1) &&
-         is.pie.or.donut.chart || is.labeled.scatterplot.or.bubbleplot)
+         (is.pie.or.donut.chart || is.labeled.scatterplot.or.bubbleplot))
         warning("The background and charting area fill colors cannot be changed for
                  pie charts, donut charts, labeled scatterplots or labeled bubbleplots.")
 
@@ -695,13 +695,18 @@ Chart <-   function(y,
     if (type == "Labeled Scatterplot" || type == "Labeled Bubbleplot")
     {
         draw.grid <- (x.grid.width != 0 && y.grid.width != 0)
+        if (xor(x.grid.width != 0, y.grid.width != 0))
+            warning(paste("The x-axis and y-axis grid widths cannot be separately set to zero for",
+                    "Labeled Scatterplots and Labeled Bubbleplots."))
+        if ((x.grid.width != 0 && x.grid.width != 1) || (y.grid.width != 0 && y.grid.width != 1))
+            warning(paste("The x-axis and y-axis grid widths cannot be adjusted for",
+                          "Labeled Scatterplots and Labeled Bubbleplots."))
         labeled.scatterplot <- labeledScatterplot(chart.matrix = chart.matrix,
                                                   colors = colors,
                                                   colors.reverse = colors.reverse,
                                                   type = type,
                                                   group.labels.text = scatter.group.labels,
                                                   group.indices.text = scatter.group.indices,
-                                                  grid = draw.grid, # if x and y grid are both 0; else draw grid?
                                                   origin = FALSE, # base on y and x.zero.line.width
                                                   transpose = transpose,
                                                   rows.to.ignore = rows.to.ignore,
@@ -716,7 +721,7 @@ Chart <-   function(y,
                        label = labeled.scatterplot$label,
                        fixed.aspect = FALSE,
                        group = labeled.scatterplot$group,
-                       grid = labeled.scatterplot$grid,
+                       grid = draw.grid,
                        origin = labeled.scatterplot$origin,
                        origin.align = FALSE,
                        labels.show = data.label.show,
