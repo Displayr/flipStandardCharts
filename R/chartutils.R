@@ -65,3 +65,14 @@ stripClassAndCallFromXtabs <- function(chart.matrix)
     else
         return(chart.matrix)
 }
+
+decimalsToDisplay <- function(x)
+{
+    mx <- max(x, na.rm = TRUE)
+    mn <- min(x, na.rm = TRUE)
+    rng <- max(c(mx - mn, abs(mx), abs(mn)))
+    if (!is.na(rng) && rng > 0)
+        max(-floor(log10(rng / 5)), 0)
+    else
+        NULL
+}

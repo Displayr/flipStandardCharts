@@ -916,10 +916,6 @@ Chart <-   function(y,
         y.hovertext.decimals <- data.label.decimals
     if (y.tick.format.manual != "" && y.tick.format.manual != y.tickformat)
         y.tickformat <- y.tick.format.manual
-    ifelse((y.tick.format.manual == "" && (is.null(y.tickformat) || y.tickformat == "")), y.tickformat <- paste(".", y.tick.decimals, "f", sep=""), FALSE)
-    ifelse((x.tick.format.manual == "" && (is.null(x.tickformat) || x.tickformat == "")), x.tickformat <- paste(".", x.tick.decimals, "f", sep=""), FALSE)
-    ifelse(y.hovertext.format.manual == "", y.hoverformat <- paste(".", y.hovertext.decimals, "f", sep=""), y.hoverformat <- y.hovertext.format.manual)
-    ifelse(x.hovertext.format.manual == "", x.hoverformat <- paste(".", x.hovertext.decimals, "f", sep=""), x.hoverformat <- x.hovertext.format.manual)
 
     if (xor(is.null(x.bounds.minimum), is.null(x.bounds.maximum)))
         stop("Both x.bounds.minimum and x.bounds.maximum need to be supplied in order to specify a display range.")
@@ -927,6 +923,33 @@ Chart <-   function(y,
         stop("Both y.bounds.minimum and y.bounds.maximum need to be supplied in order to specify a display range.")
 
     x.has.bounds <- !is.null(x.bounds.minimum) && !is.null(x.bounds.maximum)
+    y.has.bounds <- !is.null(y.bounds.minimum) && !is.null(y.bounds.maximum)
+
+    # Determine decimal places to show if not provided
+    if (swap.axes.and.data)
+    {
+        if (is.null(x.tick.decimals))
+        {
+            x.tick.decimals <- if (x.has.bounds)
+                decimalsToDisplay(c(x.bounds.minimum, x.bounds.maximum))
+            else
+                decimalsToDisplay(chart.matrix)
+        }
+    }
+    else if (is.null(y.tick.decimals))
+    {
+        y.tick.decimals <- if (y.has.bounds)
+            decimalsToDisplay(c(y.bounds.minimum, y.bounds.maximum))
+        else
+            decimalsToDisplay(chart.matrix)
+    }
+
+    ifelse((y.tick.format.manual == "" && (is.null(y.tickformat) || y.tickformat == "")), y.tickformat <- paste(".", y.tick.decimals, "f", sep=""), FALSE)
+    ifelse((x.tick.format.manual == "" && (is.null(x.tickformat) || x.tickformat == "")), x.tickformat <- paste(".", x.tick.decimals, "f", sep=""), FALSE)
+    ifelse(y.hovertext.format.manual == "", y.hoverformat <- paste(".", y.hovertext.decimals, "f", sep=""), y.hoverformat <- y.hovertext.format.manual)
+    ifelse(x.hovertext.format.manual == "", x.hoverformat <- paste(".", x.hovertext.decimals, "f", sep=""), x.hoverformat <- x.hovertext.format.manual)
+
+
     x.autorange <- if (x.has.bounds || !is.null(x.tick.distance))
     {
         if (!is.x.axis.numeric)
@@ -954,7 +977,6 @@ Chart <-   function(y,
         }
     }
 
-    y.has.bounds <- !is.null(y.bounds.minimum) && !is.null(y.bounds.maximum)
     y.autorange <- if (y.has.bounds || !is.null(y.tick.distance))
     {
         if (y.data.reversed)
