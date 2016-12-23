@@ -932,6 +932,8 @@ Chart <-   function(y,
         {
             x.tick.decimals <- if (x.has.bounds)
                 decimalsToDisplay(c(x.bounds.minimum, x.bounds.maximum))
+            else if (is.stacked && !is.hundred.percent.stacked)
+                decimalsToDisplay(rowSums(chart.matrix, na.rm = TRUE))
             else
                 decimalsToDisplay(chart.matrix)
         }
@@ -940,6 +942,8 @@ Chart <-   function(y,
     {
         y.tick.decimals <- if (y.has.bounds)
             decimalsToDisplay(c(y.bounds.minimum, y.bounds.maximum))
+        else if (is.stacked && !is.hundred.percent.stacked)
+            decimalsToDisplay(rowSums(chart.matrix, na.rm = TRUE))
         else
             decimalsToDisplay(chart.matrix)
     }
