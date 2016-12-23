@@ -395,7 +395,7 @@ Chart <-   function(y,
                 or labeled bubbleplots.")
 
     if (is.null(data.label.show))
-        data.label.show <- is.pie.or.donut.chart
+        data.label.show <- is.pie.or.donut.chart || is.labeled.scatterplot.or.bubbleplot
     else if (!data.label.show && is.pie.or.donut.chart)
         warning("Data labels cannot be hidden for pie and donut charts.")
 
