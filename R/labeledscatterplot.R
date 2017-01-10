@@ -6,7 +6,6 @@
 #' @param type Either "Labeled Scatterplot" or "Labeled Bubbleplot".
 #' @param group.labels.text Text of comma-separated group labels.
 #' @param group.indices.text Text of comma-separated group indices corresponding to each row.
-#' @param grid Whether to display the grid.
 #' @param origin Whether to display the origin.
 #' @param transpose Whether to switch the first and second columns before plotting.
 #' @param rows.to.ignore Text of comma-separated row labels to omit.
@@ -102,7 +101,8 @@ labeledScatterplot <- function(chart.matrix,
 
     colors <- StripAlphaChannel(ChartColors(number.colors.needed = length(unique(group)),
                                             given.colors = colors,
-                                            reverse = colors.reverse))
+                                            reverse = colors.reverse,
+                                            trim.light.colors = TRUE))
 
     # Resolve axes labels if none specified manually
     if (x.title == "" || length(x.title) == 0)

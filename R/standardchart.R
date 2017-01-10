@@ -775,10 +775,22 @@ Chart <-   function(y,
     number.colors.needed <- ncol(chart.matrix)
 
     ## Calculate colors
-    colors <- flipChartBasics::ChartColors(number.colors.needed = number.colors.needed, given.colors = colors, reverse = colors.reverse)
-    series.line.colors <- flipChartBasics::ChartColors(number.colors.needed = number.colors.needed, given.colors = series.line.colors, reverse = series.line.colors.reverse)
-    series.marker.colors <- flipChartBasics::ChartColors(number.colors.needed = number.colors.needed, given.colors = series.marker.colors, reverse = series.marker.colors.reverse)
-    series.marker.border.colors <- flipChartBasics::ChartColors(number.colors.needed = number.colors.needed, given.colors = series.marker.border.colors, reverse = series.marker.border.colors.reverse)
+    colors <- flipChartBasics::ChartColors(number.colors.needed = number.colors.needed,
+                                           given.colors = colors,
+                                           reverse = colors.reverse,
+                                           trim.light.colors = TRUE)
+    series.line.colors <- flipChartBasics::ChartColors(number.colors.needed = number.colors.needed,
+                                                       given.colors = series.line.colors,
+                                                       reverse = series.line.colors.reverse,
+                                                       trim.light.colors = TRUE)
+    series.marker.colors <- flipChartBasics::ChartColors(number.colors.needed = number.colors.needed,
+                                                         given.colors = series.marker.colors,
+                                                         reverse = series.marker.colors.reverse,
+                                                         trim.light.colors = TRUE)
+    series.marker.border.colors <- flipChartBasics::ChartColors(number.colors.needed = number.colors.needed,
+                                                                given.colors = series.marker.border.colors,
+                                                                reverse = series.marker.border.colors.reverse,
+                                                                trim.light.colors = TRUE)
 
     ## Color inheritance - second run
     if (is.null(series.line.colors))

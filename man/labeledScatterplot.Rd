@@ -6,9 +6,9 @@
 \usage{
 labeledScatterplot(chart.matrix, colors = NULL, colors.reverse = FALSE,
   type = "Labeled Scatterplot", group.labels.text = "",
-  group.indices.text = "", grid = TRUE, origin = FALSE,
-  transpose = FALSE, rows.to.ignore = "", cols.to.ignore = "",
-  legend.show = TRUE, x.title = "", y.title = "")
+  group.indices.text = "", origin = FALSE, transpose = FALSE,
+  rows.to.ignore = "", cols.to.ignore = "", legend.show = TRUE,
+  x.title = "", y.title = "")
 }
 \arguments{
 \item{chart.matrix}{Input data with 2 or 3 columns.}
@@ -22,8 +22,6 @@ labeledScatterplot(chart.matrix, colors = NULL, colors.reverse = FALSE,
 \item{group.labels.text}{Text of comma-separated group labels.}
 
 \item{group.indices.text}{Text of comma-separated group indices corresponding to each row.}
-
-\item{grid}{Whether to display the grid.}
 
 \item{origin}{Whether to display the origin.}
 

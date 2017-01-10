@@ -96,16 +96,19 @@ pieChart <- function(chart.matrix,
         else
             rep(StripAlphaChannel(ChartColors(number.colors.needed = num.colors,
                                               given.colors = pie.subslice.colors,
-                                              reverse = pie.subslice.colors.reverse)), ncol(chart.matrix))
+                                              reverse = pie.subslice.colors.reverse,
+                                              trim.light.colors = TRUE)), ncol(chart.matrix))
         pie.groups.colors <- StripAlphaChannel(ChartColors(number.colors.needed = ncol(chart.matrix),
                                                            given.colors = values.color,
-                                                           reverse = colors.reverse))
+                                                           reverse = colors.reverse,
+                                                           trim.light.colors = TRUE))
     }
     else
     {
         pie.colors <- StripAlphaChannel(ChartColors(number.colors.needed = num.colors,
-                                                      given.colors = values.color,
-                                                      reverse = colors.reverse))
+                                                    given.colors = values.color,
+                                                    reverse = colors.reverse,
+                                                    trim.light.colors = TRUE))
         pie.groups.colors <- NULL
     }
 print(is.data.2d)
