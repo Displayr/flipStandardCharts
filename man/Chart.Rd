@@ -49,8 +49,7 @@ Chart(y, type = "Area", transpose = FALSE, title = "",
   series.marker.opacity = 1, series.marker.size = 6,
   series.marker.border.width = 1, series.marker.border.colors = NULL,
   series.marker.border.colors.reverse = FALSE,
-  series.marker.border.opacity = 1,
-  series.marker.text.position = "top middle", series.line.width = 3,
+  series.marker.border.opacity = 1, series.line.width = 3,
   series.line.colors = NULL, series.line.colors.reverse = FALSE,
   series.line.opacity = 1, tooltip.show = TRUE, modebar.show = FALSE,
   global.font.family = "", global.font.color = rgb(0, 0, 0, maxColorValue =
@@ -60,12 +59,12 @@ Chart(y, type = "Area", transpose = FALSE, title = "",
   data.label.font.size = 10, data.label.font.color = rgb(0, 0, 0,
   maxColorValue = 255), data.label.decimals = 2, data.label.prefix = "",
   data.label.suffix = "", data.label.threshold = NULL,
-  pie.order = "initial", pie.groups.order = "initial",
-  pie.subslice.colors = NULL, pie.subslice.colors.reverse = FALSE,
-  pie.subslice.colors.repeat = TRUE, pie.border.color = rgb(255, 255, 255,
-  maxColorValue = 255), pie.inner.radius = 70, z.title = "",
-  scatter.group.indices = "", scatter.group.labels = "",
-  scatter.marker.radius = 3)
+  data.label.position = "top middle", pie.order = "initial",
+  pie.groups.order = "initial", pie.subslice.colors = NULL,
+  pie.subslice.colors.reverse = FALSE, pie.subslice.colors.repeat = TRUE,
+  pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
+  pie.inner.radius = 70, z.title = "", scatter.group.indices = "",
+  scatter.group.labels = "", scatter.marker.radius = 3)
 }
 \arguments{
 \item{y}{A table or matrix.}
@@ -322,11 +321,6 @@ should be reversed.}
 \item{series.marker.border.opacity}{Integer; opacity of border/line around
 series markers as an alpha value (0 to 1).}
 
-\item{series.marker.text.position}{Character; where to place the source data
-value in relation to the marker icon.  Can be "top left", "top center", "top
-right", "middle left", "middle center", "middle right", "bottom left",
-"bottom center", "bottom right"}
-
 \item{series.line.width}{Integer; thickness, in pixels, of the series line}
 
 \item{series.line.colors}{Character; a vector containing one or more named
@@ -378,6 +372,11 @@ data labels.}
 
 \item{data.label.threshold}{The proportion of the total range below which
 data labels should not be displayed.}
+
+\item{data.label.position}{Character; where to place the source data
+value in relation to the marker icon.  Can be "top left", "top center", "top
+right", "middle left", "middle center", "middle right", "bottom left",
+"bottom center", "bottom right". Only applicable for line and area charts.}
 
 \item{pie.order}{Character; "descending", "initial", or
 "alphabetical"; default is "descending" sort on values; "alphabetical"

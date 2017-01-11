@@ -164,10 +164,6 @@
 #' should be reversed.
 #' @param series.marker.border.opacity Integer; opacity of border/line around
 #' series markers as an alpha value (0 to 1).
-#' @param series.marker.text.position Character; where to place the source data
-#' value in relation to the marker icon.  Can be "top left", "top center", "top
-#' right", "middle left", "middle center", "middle right", "bottom left",
-#' "bottom center", "bottom right"
 #' @param series.line.width Integer; thickness, in pixels, of the series line
 #' @param series.line.colors  Character; a vector containing one or more named
 #' colors from grDevices OR one or more specified hex value colors OR a single
@@ -201,6 +197,10 @@
 #' @param data.label.suffix Character; suffix for data values.
 #' @param data.label.threshold The proportion of the total range below which
 #' data labels should not be displayed.
+#' @param data.label.position Character; where to place the source data
+#' value in relation to the marker icon.  Can be "top left", "top center", "top
+#' right", "middle left", "middle center", "middle right", "bottom left",
+#' "bottom center", "bottom right". Only applicable for line and area charts.
 #' @param pie.order Character; "descending", "initial", or
 #' "alphabetical"; default is "descending" sort on values; "alphabetical"
 #' sorts on labels.
@@ -324,7 +324,6 @@ Chart <-   function(y,
                     series.marker.border.colors = NULL,
                     series.marker.border.colors.reverse = FALSE,
                     series.marker.border.opacity = 1,
-                    series.marker.text.position = "top middle",
                     series.line.width = 3,
                     series.line.colors = NULL,
                     series.line.colors.reverse = FALSE,
@@ -344,6 +343,7 @@ Chart <-   function(y,
                     data.label.prefix = "",
                     data.label.suffix = "",
                     data.label.threshold = NULL,
+                    data.label.position = "top middle",
                     pie.order = "initial",
                     pie.groups.order = "initial",
                     pie.subslice.colors = NULL,
@@ -1144,7 +1144,7 @@ Chart <-   function(y,
                                    legendgroup = legend.group,
                                    text = source.text,
                                    textfont = textfont,
-                                   textposition = series.marker.text.position,
+                                   textposition = data.label.position,
                                    # MARKERS
                                    mode = series.mode,
                                    marker = marker
