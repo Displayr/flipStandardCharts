@@ -435,7 +435,7 @@ Chart <-   function(y,
     if (is.array(chart.matrix) && length(names(chart.matrix)) != 0)
         rownames(chart.matrix) <- names(chart.matrix)
 
-    if (!(type %in% c("Labeled Scatterplot", "Labeled Bubbleplot")))
+    if (!is.labeled.scatterplot.or.bubbleplot)
     {
         ## If it's a one column entity, make sure it's a matrix and that it's got a column heading.
         has.statistic <- "statistic" %in% names(attributes(chart.matrix))
@@ -468,6 +468,9 @@ Chart <-   function(y,
         {
             chart.matrix <- t(chart.matrix)
             table.axes.labels <- rev(table.axes.labels)
+            temp <- rows.to.ignore
+            rows.to.ignore <- cols.to.ignore
+            cols.to.ignore <- temp
         }
 
         ## Use default row and column labels, if they are missing from the matrix
