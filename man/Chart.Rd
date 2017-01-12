@@ -60,8 +60,7 @@ Chart(y, type = "Area", transpose = FALSE, title = "",
   pie.subslice.colors = NULL, pie.subslice.colors.reverse = FALSE,
   pie.subslice.colors.repeat = TRUE, pie.border.color = rgb(255, 255, 255,
   maxColorValue = 255), pie.inner.radius = 70, z.title = "",
-  scatter.group.indices = "", scatter.group.labels = "",
-  scatter.marker.radius = 3)
+  scatter.group.indices = "", scatter.group.labels = "")
 }
 \arguments{
 \item{y}{A table or matrix.}
@@ -113,7 +112,7 @@ opacity as an alpha value (0 to 1).}
 \item{legend.border.color}{Legend border color as a named color in character
 format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{legend.border.line.width}{Integer; width in pixels of the border
+\item{legend.border.line.width}{Width in pixels of the border
 around the legend.  0 = no border.}
 
 \item{legend.font.color}{Legend font color as a named color in character
@@ -121,26 +120,26 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{legend.font.family}{Character; legend font family.}
 
-\item{legend.font.size}{Integer; legend font size.}
+\item{legend.font.size}{Legend font size.}
 
 \item{legend.position}{Where the legend will be placed; can be "left" or
 "right" of plot.}
 
 \item{legend.ascending}{Logical; TRUE for ascending, FALSE for descending}
 
-\item{margin.top}{Integer; margin between plot area and the top of the
+\item{margin.top}{Margin between plot area and the top of the
 graphic in pixels}
 
-\item{margin.bottom}{Integer; margin between plot area and the bottom of the
+\item{margin.bottom}{Margin between plot area and the bottom of the
 graphic in pixels}
 
-\item{margin.left}{Integer; margin between plot area and the left of the
+\item{margin.left}{Margin between plot area and the left of the
 graphic in pixels}
 
-\item{margin.right}{Integer; margin between plot area and the right of the
+\item{margin.right}{Margin between plot area and the right of the
 graphic in pixels}
 
-\item{margin.inner.pad}{Integer; padding in pixels between plot proper
+\item{margin.inner.pad}{Padding in pixels between plot proper
 and axis lines}
 
 \item{y.title}{Character, y-axis title; defaults to chart input values;
@@ -152,9 +151,9 @@ max = 255)).}
 
 \item{y.title.font.family}{Character; y-axis title font family}
 
-\item{y.title.font.size}{Integer; y-axis title font size}
+\item{y.title.font.size}{y-axis title font size}
 
-\item{y.line.width}{Integer; y-axis line in pixels, 0 = no line}
+\item{y.line.width}{y-axis line in pixels, 0 = no line}
 
 \item{y.line.color}{y-axis line color as a named color in character format
 (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
@@ -162,15 +161,15 @@ max = 255)).}
 \item{y.tick.marks}{Character; whether and where to show tick marks on the
 y axis.  Can be "outside", "inside", "none"}
 
-\item{y.tick.mark.length}{Integer; length of tick marks in pixels.}
+\item{y.tick.mark.length}{Length of tick marks in pixels.}
 
-\item{y.bounds.minimum}{Integer or NULL; set minimum of range for plotting;
+\item{y.bounds.minimum}{Minimum of range for plotting;
 NULL = no manual range set.  Must be less than y.bounds.maximum}
 
-\item{y.bounds.maximum}{Integer or NULL; set maximum of range for
+\item{y.bounds.maximum}{Maximum of range for
 plotting; NULL = no manual range set.  Must be greater than y.bounds.minimum}
 
-\item{y.tick.distance}{Integer or NULL; set tick mark distance.}
+\item{y.tick.distance}{Tick mark distance.}
 
 \item{y.zero.line.width}{Width in pixels of zero line; 0 = no zero line
 shown}
@@ -183,7 +182,7 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{y.data.reversed}{Logical; whether to reverse y-axis or not}
 
-\item{y.grid.width}{Integer; width of y-grid lines in pixels; 0 = no line}
+\item{y.grid.width}{Width of y-grid lines in pixels; 0 = no line}
 
 \item{y.grid.color}{Color of y-grid lines as a named color in character
 format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
@@ -204,7 +203,7 @@ https://docs.python.org/release/3.1.3/library/string.html#formatspec}
 See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 https://docs.python.org/release/3.1.3/library/string.html#formatspec}
 
-\item{y.tick.angle}{Integer, y-axis tick label angle in degrees.
+\item{y.tick.angle}{y-axis tick label angle in degrees.
 90 = vertical; 0 = horizontal}
 
 \item{y.tick.font.color}{y-axis tick label font color as a named color
@@ -213,7 +212,7 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{y.tick.font.family}{Character; y-axis tick label font family}
 
-\item{y.tick.font.size}{Integer; y-axis tick label font size}
+\item{y.tick.font.size}{y-axis tick label font size}
 
 \item{x.title}{Character, x-axis title; defaults to chart input values;
 to turn off set to "FALSE".}
@@ -224,9 +223,9 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{x.title.font.family}{Character; x-axis title font family}
 
-\item{x.title.font.size}{Integer; x-axis title font size}
+\item{x.title.font.size}{x-axis title font size}
 
-\item{x.line.width}{Integer; x-axis line in pixels, 0 = no line}
+\item{x.line.width}{x-axis line in pixels, 0 = no line}
 
 \item{x.line.color}{x-axis line color as a named color in character format
 (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
@@ -234,15 +233,15 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{x.tick.marks}{Character; whether and where to show tick marks on the
 x-axis.  Can be "outside", "inside", "none"}
 
-\item{x.tick.mark.length}{Integer; length of tick marks in pixels.}
+\item{x.tick.mark.length}{Length of tick marks in pixels.}
 
-\item{x.bounds.minimum}{Integer or NULL; set minimum of range for plotting;
+\item{x.bounds.minimum}{Minimum of range for plotting;
 NULL = no manual range set.  Must be less than x.bounds.maximum}
 
-\item{x.bounds.maximum}{= Integer or NULL; set maximum of range for
+\item{x.bounds.maximum}{Maximum of range for
 plotting; NULL = no manual range set.  Must be greater than x.bounds.minimum}
 
-\item{x.tick.distance}{Ingeger or NULL; set tick mark distance in
+\item{x.tick.distance}{Tick mark distance in
 x-axis units between minimum and maximum for plotting; NULL = no manual
 range set.}
 
@@ -257,7 +256,7 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{x.data.reversed}{Logical; whether to reverse x-axis or not}
 
-\item{x.grid.width}{Integer; width of y-grid lines in pixels; 0 = no line}
+\item{x.grid.width}{Width of y-grid lines in pixels; 0 = no line}
 
 \item{x.grid.color}{Color of y-grid lines as a named color in character
 format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
@@ -278,7 +277,7 @@ https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec}
 See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec}
 
-\item{x.tick.angle}{Integer, x-axis tick label angle in degrees.
+\item{x.tick.angle}{x-axis tick label angle in degrees.
 90 = vertical; 0 = horizontal}
 
 \item{x.tick.font.color}{X-axis tick label font color as a named color in
@@ -287,7 +286,7 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{x.tick.font.family}{Character; x-axis tick label font family}
 
-\item{x.tick.font.size}{Integer; x-axis tick label font size}
+\item{x.tick.font.size}{x-axis tick label font size}
 
 \item{x.tick.label.autoformat}{Logical; whether to rotate and wrap long x-axis labels.}
 
@@ -303,9 +302,9 @@ be reversed.}
 
 \item{series.marker.opacity}{Opacity for series markers as an alpha value (0 to 1).}
 
-\item{series.marker.size}{Integer; size in pixels of marker}
+\item{series.marker.size}{Size in pixels of marker}
 
-\item{series.marker.border.width}{Integer; width in pixels of border/line
+\item{series.marker.border.width}{Width in pixels of border/line
 around series markers; 0 is no line}
 
 \item{series.marker.border.colors}{Character; a vector containing one or more named
@@ -315,10 +314,10 @@ named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 \item{series.marker.border.colors.reverse}{Logical; if the order of the colors
 should be reversed.}
 
-\item{series.marker.border.opacity}{Integer; opacity of border/line around
+\item{series.marker.border.opacity}{Opacity of border/line around
 series markers as an alpha value (0 to 1).}
 
-\item{series.line.width}{Integer; thickness, in pixels, of the series line}
+\item{series.line.width}{Thickness, in pixels, of the series line}
 
 \item{series.line.colors}{Character; a vector containing one or more named
 colors from grDevices OR one or more specified hex value colors OR a single
@@ -327,7 +326,7 @@ named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 \item{series.line.colors.reverse}{Logical; if the order of the colors
 should be reversed.}
 
-\item{series.line.opacity}{Integer; opacity for series lines as an
+\item{series.line.opacity}{Opacity for series lines as an
 alpha value (0 to 1)}
 
 \item{tooltip.show}{Logical; whether to show a tooltip on hover.}
@@ -347,20 +346,20 @@ exclude from the charting.}
 exclude from the charting.  Does not apply to Labeled Scatterplot or Labeled
 Bubbleplot, which both need to have the correct columns prior to charting.}
 
-\item{bar.gap}{Integer; chart proportion between each bar or column if using
+\item{bar.gap}{Chart proportion between each bar or column if using
 bar or column charts, or between each cluster of bars or columns.}
 
 \item{data.label.show}{Logical; whether to show data labels.}
 
 \item{data.label.font.family}{Character; font family for data label.}
 
-\item{data.label.font.size}{Integer; font size for data label.}
+\item{data.label.font.size}{Font size for data label.}
 
 \item{data.label.font.color}{Font color as a named color
 in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{data.label.decimals}{Integer; number of decimal places to show in
+\item{data.label.decimals}{Number of decimal places to show in
 data labels.}
 
 \item{data.label.prefix}{Character; prefix for data values.}
@@ -368,7 +367,8 @@ data labels.}
 \item{data.label.suffix}{Character; suffix for data values.}
 
 \item{data.label.threshold}{The proportion of the total range below which
-data labels should not be displayed.}
+data labels should not be displayed. Only applicable for pie, bar and column
+charts.}
 
 \item{data.label.position}{Character; where to place the source data
 value in relation to the marker icon.  Can be "top left", "top center", "top
@@ -376,12 +376,10 @@ right", "middle left", "middle center", "middle right", "bottom left",
 "bottom center", "bottom right". Only applicable for line and area charts.}
 
 \item{pie.order}{Character; "descending", "initial", or
-"alphabetical"; default is "descending" sort on values; "alphabetical"
-sorts on labels.}
+"alphabetical".}
 
 \item{pie.groups.order}{Character; "descending", "initial", or
-"alphabetical"; default is "descending" sort on values; "alphabetical"
-sorts on labels.}
+"alphabetical".}
 
 \item{pie.subslice.colors}{Character; a vector containing one or more named
 colors from grDevices OR one or more specified hex value colors OR a single
@@ -397,7 +395,7 @@ by group, or be different throughout; defaults to TRUE.}
 \item{pie.border.color}{A single color for space around pie and between
 segments.}
 
-\item{pie.inner.radius}{Numeric; the size of the inner radius of pie and
+\item{pie.inner.radius}{The size of the inner radius of pie and
 donut charts as a proportion out of 100. defaults to 70.}
 
 \item{z.title}{Character; title of the bubble-size legend in labeled
@@ -407,9 +405,6 @@ bubbleplots.}
 corresponding to each row.}
 
 \item{scatter.group.labels}{Text of comma-separated group labels.}
-
-\item{scatter.marker.radius}{Numeric; the radius of the scatter plot
-markers if no bubble size has been provided.}
 }
 \description{
 \code{Chart} generates standard charts from plotly library.

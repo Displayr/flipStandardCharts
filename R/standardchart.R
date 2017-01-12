@@ -34,24 +34,24 @@
 #' (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param legend.border.color Legend border color as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
-#' @param legend.border.line.width Integer; width in pixels of the border
+#' @param legend.border.line.width Width in pixels of the border
 #' around the legend.  0 = no border.
 #' @param legend.font.color Legend font color as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param legend.font.family Character; legend font family.
-#' @param legend.font.size Integer; legend font size.
+#' @param legend.font.size Legend font size.
 #' @param legend.position Where the legend will be placed; can be "left" or
 #' "right" of plot.
 #' @param legend.ascending Logical; TRUE for ascending, FALSE for descending
-#' @param margin.top Integer; margin between plot area and the top of the
+#' @param margin.top Margin between plot area and the top of the
 #' graphic in pixels
-#' @param margin.bottom Integer; margin between plot area and the bottom of the
+#' @param margin.bottom Margin between plot area and the bottom of the
 #' graphic in pixels
-#' @param margin.left Integer; margin between plot area and the left of the
+#' @param margin.left Margin between plot area and the left of the
 #' graphic in pixels
-#' @param margin.right Integer; margin between plot area and the right of the
+#' @param margin.right Margin between plot area and the right of the
 #' graphic in pixels
-#' @param margin.inner.pad Integer; padding in pixels between plot proper
+#' @param margin.inner.pad Padding in pixels between plot proper
 #' and axis lines
 #' @param y.title Character, y-axis title; defaults to chart input values;
 #' to turn off set to "FALSE".
@@ -59,18 +59,18 @@
 #' character format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0,
 #' max = 255)).
 #' @param y.title.font.family Character; y-axis title font family
-#' @param y.title.font.size Integer; y-axis title font size
-#' @param y.line.width Integer; y-axis line in pixels, 0 = no line
+#' @param y.title.font.size y-axis title font size
+#' @param y.line.width y-axis line in pixels, 0 = no line
 #' @param y.line.color y-axis line color as a named color in character format
 #' (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param y.tick.marks Character; whether and where to show tick marks on the
 #' y axis.  Can be "outside", "inside", "none"
-#' @param y.tick.mark.length Integer; length of tick marks in pixels.
-#' @param y.bounds.minimum Integer or NULL; set minimum of range for plotting;
+#' @param y.tick.mark.length Length of tick marks in pixels.
+#' @param y.bounds.minimum Minimum of range for plotting;
 #' NULL = no manual range set.  Must be less than y.bounds.maximum
-#' @param y.bounds.maximum Integer or NULL; set maximum of range for
+#' @param y.bounds.maximum Maximum of range for
 #' plotting; NULL = no manual range set.  Must be greater than y.bounds.minimum
-#' @param y.tick.distance Integer or NULL; set tick mark distance.
+#' @param y.tick.distance Tick mark distance.
 #' @param y.zero.line.width Width in pixels of zero line; 0 = no zero line
 #' shown
 #' @param y.zero.line.color Color of horizontal zero line as a named
@@ -78,7 +78,7 @@
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param y.position Character; set y-axis position; can be "left" or "right"
 #' @param y.data.reversed Logical; whether to reverse y-axis or not
-#' @param y.grid.width Integer; width of y-grid lines in pixels; 0 = no line
+#' @param y.grid.width Width of y-grid lines in pixels; 0 = no line
 #' @param y.grid.color Color of y-grid lines as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param y.tick.suffix y-axis tick label suffix
@@ -91,31 +91,31 @@
 #' @param y.hovertext.format.manual Overrides hovertext decimals;
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 #' https://docs.python.org/release/3.1.3/library/string.html#formatspec
-#' @param y.tick.angle Integer, y-axis tick label angle in degrees.
+#' @param y.tick.angle y-axis tick label angle in degrees.
 #' 90 = vertical; 0 = horizontal
 #' @param y.tick.font.color y-axis tick label font color as a named color
 #' in character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param y.tick.font.family Character; y-axis tick label font family
-#' @param y.tick.font.size Integer; y-axis tick label font size
+#' @param y.tick.font.size y-axis tick label font size
 #' @param x.title Character, x-axis title; defaults to chart input values;
 #' to turn off set to "FALSE".
 #' @param x.title.font.color x-axis title font color as a named color in
 #' character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param x.title.font.family Character; x-axis title font family
-#' @param x.title.font.size Integer; x-axis title font size
-#' @param x.line.width Integer; x-axis line in pixels, 0 = no line
+#' @param x.title.font.size x-axis title font size
+#' @param x.line.width x-axis line in pixels, 0 = no line
 #' @param x.line.color x-axis line color as a named color in character format
 #' (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param x.tick.marks Character; whether and where to show tick marks on the
 #' x-axis.  Can be "outside", "inside", "none"
-#' @param x.tick.mark.length Integer; length of tick marks in pixels.
-#' @param x.bounds.minimum Integer or NULL; set minimum of range for plotting;
+#' @param x.tick.mark.length Length of tick marks in pixels.
+#' @param x.bounds.minimum Minimum of range for plotting;
 #' NULL = no manual range set.  Must be less than x.bounds.maximum
-#' @param x.bounds.maximum = Integer or NULL; set maximum of range for
+#' @param x.bounds.maximum Maximum of range for
 #' plotting; NULL = no manual range set.  Must be greater than x.bounds.minimum
-#' @param x.tick.distance Ingeger or NULL; set tick mark distance in
+#' @param x.tick.distance Tick mark distance in
 #' x-axis units between minimum and maximum for plotting; NULL = no manual
 #' range set.
 #' @param x.zero.line.width Width in pixels of zero line; 0 = no zero line
@@ -125,7 +125,7 @@
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param x.position Character; set x-axis position; can be "top" or "bottom"
 #' @param x.data.reversed Logical; whether to reverse x-axis or not
-#' @param x.grid.width Integer; width of y-grid lines in pixels; 0 = no line
+#' @param x.grid.width Width of y-grid lines in pixels; 0 = no line
 #' @param x.grid.color Color of y-grid lines as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param x.tick.suffix x-axis tick label suffix
@@ -138,13 +138,13 @@
 #' @param x.hovertext.format.manual Overrides hovertext decimals;
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 #' https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec
-#' @param x.tick.angle Integer, x-axis tick label angle in degrees.
+#' @param x.tick.angle x-axis tick label angle in degrees.
 #' 90 = vertical; 0 = horizontal
 #' @param x.tick.font.color X-axis tick label font color as a named color in
 #' character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param x.tick.font.family Character; x-axis tick label font family
-#' @param x.tick.font.size Integer; x-axis tick label font size
+#' @param x.tick.font.size x-axis tick label font size
 #' @param x.tick.label.autoformat Logical; whether to rotate and wrap long x-axis labels.
 #' @param series.marker.show Can be "none", "automatic" or a vector referencing
 #' the plotly symbol dictionary using either numerics or strings.
@@ -154,23 +154,23 @@
 #' @param series.marker.colors.reverse Logical; if the order of the colors should
 #' be reversed.
 #' @param series.marker.opacity Opacity for series markers as an alpha value (0 to 1).
-#' @param series.marker.size Integer; size in pixels of marker
-#' @param series.marker.border.width Integer; width in pixels of border/line
+#' @param series.marker.size Size in pixels of marker
+#' @param series.marker.border.width Width in pixels of border/line
 #' around series markers; 0 is no line
 #' @param series.marker.border.colors Character; a vector containing one or more named
 #' colors from grDevices OR one or more specified hex value colors OR a single
 #' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
 #' @param series.marker.border.colors.reverse Logical; if the order of the colors
 #' should be reversed.
-#' @param series.marker.border.opacity Integer; opacity of border/line around
+#' @param series.marker.border.opacity Opacity of border/line around
 #' series markers as an alpha value (0 to 1).
-#' @param series.line.width Integer; thickness, in pixels, of the series line
+#' @param series.line.width Thickness, in pixels, of the series line
 #' @param series.line.colors  Character; a vector containing one or more named
 #' colors from grDevices OR one or more specified hex value colors OR a single
 #' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
 #' @param series.line.colors.reverse Logical; if the order of the colors
 #' should be reversed.
-#' @param series.line.opacity Integer; opacity for series lines as an
+#' @param series.line.opacity Opacity for series lines as an
 #' alpha value (0 to 1)
 #' @param tooltip.show Logical; whether to show a tooltip on hover.
 #' @param modebar.show Logical; whether to show the zoom menu buttons or not.
@@ -183,30 +183,29 @@
 #' @param cols.to.ignore Character; comma separated string of column headings to
 #' exclude from the charting.  Does not apply to Labeled Scatterplot or Labeled
 #' Bubbleplot, which both need to have the correct columns prior to charting.
-#' @param bar.gap Integer; chart proportion between each bar or column if using
+#' @param bar.gap Chart proportion between each bar or column if using
 #' bar or column charts, or between each cluster of bars or columns.
 #' @param data.label.show Logical; whether to show data labels.
 #' @param data.label.font.family Character; font family for data label.
-#' @param data.label.font.size Integer; font size for data label.
+#' @param data.label.font.size Font size for data label.
 #' @param data.label.font.color Font color as a named color
 #' in character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param data.label.decimals Integer; number of decimal places to show in
+#' @param data.label.decimals Number of decimal places to show in
 #' data labels.
 #' @param data.label.prefix Character; prefix for data values.
 #' @param data.label.suffix Character; suffix for data values.
 #' @param data.label.threshold The proportion of the total range below which
-#' data labels should not be displayed.
+#' data labels should not be displayed. Only applicable for pie, bar and column
+#' charts.
 #' @param data.label.position Character; where to place the source data
 #' value in relation to the marker icon.  Can be "top left", "top center", "top
 #' right", "middle left", "middle center", "middle right", "bottom left",
 #' "bottom center", "bottom right". Only applicable for line and area charts.
 #' @param pie.order Character; "descending", "initial", or
-#' "alphabetical"; default is "descending" sort on values; "alphabetical"
-#' sorts on labels.
+#' "alphabetical".
 #' @param pie.groups.order Character; "descending", "initial", or
-#' "alphabetical"; default is "descending" sort on values; "alphabetical"
-#' sorts on labels.
+#' "alphabetical".
 #' @param pie.subslice.colors Character; a vector containing one or more named
 #' colors from grDevices OR one or more specified hex value colors OR a single
 #' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
@@ -217,15 +216,13 @@
 #' by group, or be different throughout; defaults to TRUE.
 #' @param pie.border.color A single color for space around pie and between
 #' segments.
-#' @param pie.inner.radius Numeric; the size of the inner radius of pie and
+#' @param pie.inner.radius The size of the inner radius of pie and
 #' donut charts as a proportion out of 100. defaults to 70.
 #' @param z.title Character; title of the bubble-size legend in labeled
 #' bubbleplots.
 #' @param scatter.group.indices Text of comma-separated group indices
 #' corresponding to each row.
 #' @param scatter.group.labels Text of comma-separated group labels.
-#' @param scatter.marker.radius Numeric; the radius of the scatter plot
-#' markers if no bubble size has been provided.
 #' @examples
 #' z <- c(5, 6, 2, 1.5, 9, 2.2)
 #' Chart(y = z, type = "Area")
@@ -353,8 +350,7 @@ Chart <-   function(y,
                     pie.inner.radius = 70,
                     z.title = "",
                     scatter.group.indices = "",
-                    scatter.group.labels = "",
-                    scatter.marker.radius = 3)
+                    scatter.group.labels = "")
 {
     is.stacked <- type %in% c("Stacked Area", "100% Stacked Area",
                               "Stacked Bar", "100% Stacked Bar",
@@ -763,7 +759,7 @@ Chart <-   function(y,
                        labels.font.family = data.label.font.family,
                        labels.font.color = data.label.font.color,
                        labels.font.size = data.label.font.size,
-                       point.radius = scatter.marker.radius,
+                       point.radius = 0.5 * series.marker.size,
                        y.bounds.maximum = y.bounds.maximum,
                        y.bounds.minimum = y.bounds.minimum,
                        y.bounds.units.major = y.tick.distance,
