@@ -401,8 +401,6 @@ Chart <-   function(y,
     msg <- paste("The input data is not appropriate.",
                  "A numeric Q table, a numeric R vector, a numeric R matrix",
                  "or a data frame consisting entirely of numerics is required.")
-    if (!is.numeric(chart.matrix) && !is.data.frame(chart.matrix))
-        stop(msg)
     if (is.data.frame(chart.matrix))
     {
         if (sum(sapply(chart.matrix, is.numeric)) == ncol(chart.matrix))
@@ -410,6 +408,8 @@ Chart <-   function(y,
         else
             stop(msg)
     }
+    if (!is.numeric(chart.matrix))
+        stop(msg)
 
     if (is.null(colors))
         colors <- qColors
