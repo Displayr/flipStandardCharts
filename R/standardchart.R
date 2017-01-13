@@ -936,6 +936,28 @@ Chart <-   function(y,
     x.has.bounds <- !is.null(x.bounds.minimum) && !is.null(x.bounds.maximum)
     y.has.bounds <- !is.null(y.bounds.minimum) && !is.null(y.bounds.maximum)
 
+    # Area chart does not display the data labels on the edge correctly, so we add padding
+    if (is.area.chart && data.label.show && !x.has.bounds)
+    {
+        if (is.x.axis.numeric)
+        {
+            x.vals <- as.numeric(row.names(chart.matrix))
+            min.x <- min(x.vals)
+            max.x <- max(x.vals)
+        }
+        else
+        {
+            min.x <- 0
+            max.x <- length(row.names(chart.matrix)) - 1
+        }
+        x.bounds.minimum <- min.x - (max.x - min.x) * 0.05
+        x.bounds.maximum <- max.x + (max.x - min.x) * 0.05
+        x.has.bounds <- TRUE
+        added.bounds.for.area.chart <- TRUE
+    }
+    else
+        added.bounds.for.area.chart <- FALSE
+
     # Determine decimal places to show if not provided
     if (swap.axes.and.data)
     {
@@ -964,10 +986,9 @@ Chart <-   function(y,
     ifelse(y.hovertext.format.manual == "", y.hoverformat <- paste(".", y.hovertext.decimals, "f", sep=""), y.hoverformat <- y.hovertext.format.manual)
     ifelse(x.hovertext.format.manual == "", x.hoverformat <- paste(".", x.hovertext.decimals, "f", sep=""), x.hoverformat <- x.hovertext.format.manual)
 
-
     x.autorange <- if (x.has.bounds || !is.null(x.tick.distance))
     {
-        if (!is.x.axis.numeric)
+        if (!is.x.axis.numeric && !added.bounds.for.area.chart)
             stop("It is not possible to specify tick range or spacing as the x-axis is not numeric.")
         if (x.data.reversed)
             stop("It is not possible to reverse the x-axis whilst specifying tick range or spacing.")
