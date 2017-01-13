@@ -397,6 +397,20 @@ Chart <-   function(y,
 
     chart.matrix <- y
 
+    # Check that chart.matrix is suitable for charting
+    msg <- paste("The input data is not appropriate.",
+                 "A numeric Q table, a numeric R vector, a numeric R matrix",
+                 "or a data frame consisting entirely of numerics is required.")
+    if (!is.numeric(chart.matrix) && !is.data.frame(chart.matrix))
+        stop(msg)
+    if (is.data.frame(chart.matrix))
+    {
+        if (sum(sapply(chart.matrix, is.numeric)) == ncol(chart.matrix))
+            chart.matrix <- as.matrix(chart.matrix)
+        else
+            stop(msg)
+    }
+
     if (is.null(colors))
         colors <- qColors
 
@@ -449,10 +463,6 @@ Chart <-   function(y,
         original.row.count <- nrow(chart.matrix)
         original.col.count <- ncol(chart.matrix)
 
-        ## Make sure it's not a character matrix
-        if (is.character(chart.matrix))
-            stop("The input must be numeric")
-
         ## Convert vectors to matrices
         if (is.vector(chart.matrix))
             chart.matrix <- as.matrix(chart.matrix)
@@ -477,14 +487,6 @@ Chart <-   function(y,
 
         ## Ignore rows or columns, using flipData::GetTidyTwoDimensionalArray()
         chart.matrix <- flipData::GetTidyTwoDimensionalArray(chart.matrix, rows.to.ignore, cols.to.ignore)
-
-        ## If it's a data frame with only numerics, make it a matrix
-        if (sum(sapply(chart.matrix, is.numeric)) == ncol(chart.matrix))
-            chart.matrix <- as.matrix(chart.matrix)
-
-        ## Can only take items of class matrix or table.
-        if (!is.matrix(chart.matrix) && !is.table(chart.matrix))
-            stop("The input needs to be either a matrix, a table, or a data frame consisting entirely of numerics")
 
         ## Error if there is only one series when multiple series are required
         if (ncol(chart.matrix) == 1)
