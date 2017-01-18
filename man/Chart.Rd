@@ -4,9 +4,9 @@
 \alias{Chart}
 \title{Generates an interactive chart based on the plotly library.}
 \usage{
-Chart(y, type = "Area", transpose = FALSE, title = "",
+Chart(y, type = "Column", transpose = FALSE, title = "",
   title.font.family = NULL, title.font.color = NULL, title.font.size = 16,
-  colors = NULL, colors.reverse = FALSE, opacity = 1,
+  colors = NULL, colors.reverse = FALSE, opacity = NULL,
   background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
   background.fill.opacity = 1, charting.area.fill.color = rgb(255, 255, 255,
   maxColorValue = 255), charting.area.fill.opacity = 1, legend.show = TRUE,
@@ -46,7 +46,7 @@ Chart(y, type = "Area", transpose = FALSE, title = "",
   series.marker.size = 6, series.marker.border.width = 1,
   series.marker.border.colors = NULL,
   series.marker.border.colors.reverse = FALSE,
-  series.marker.border.opacity = 1, series.line.width = 3,
+  series.marker.border.opacity = 1, series.line.width = NULL,
   series.line.colors = NULL, series.line.colors.reverse = FALSE,
   series.line.opacity = 1, tooltip.show = TRUE, modebar.show = FALSE,
   global.font.family = "Arial", global.font.color = rgb(44, 44, 44,

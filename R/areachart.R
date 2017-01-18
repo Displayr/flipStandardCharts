@@ -24,7 +24,7 @@ areaChart <- function(chart.matrix,
 
     ## Issue warning if opacity is = 1 and type = "Area"
     if (opacity == 1 && type == "Area" && ncol(chart.matrix) > 1)
-        warning("Displaying this chart without transparent series will make it difficult to read as some data series may be obscured.")
+        warning("Displaying this chart with opacity set to 1 will make it difficult to read as some data series may be obscured.")
 
     ## Determine whether to draw to zero y (overlapping area chart) or to next y (for stacked)
     if (type == "Area")

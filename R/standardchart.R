@@ -230,7 +230,7 @@
 #' @importFrom flipFormat FormatWithDecimals
 #' @export
 Chart <-   function(y,
-                    type = "Area",
+                    type = "Column",
                     transpose = FALSE,
                     title = "",
                     title.font.family = NULL,
@@ -238,7 +238,7 @@ Chart <-   function(y,
                     title.font.size = 16,
                     colors = NULL,
                     colors.reverse = FALSE,
-                    opacity = 1,
+                    opacity = NULL,
                     background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
                     background.fill.opacity = 1,
                     charting.area.fill.color = rgb(255, 255, 255, maxColorValue = 255),
@@ -321,7 +321,7 @@ Chart <-   function(y,
                     series.marker.border.colors = NULL,
                     series.marker.border.colors.reverse = FALSE,
                     series.marker.border.opacity = 1,
-                    series.line.width = 3,
+                    series.line.width = NULL,
                     series.line.colors = NULL,
                     series.line.colors.reverse = FALSE,
                     series.line.opacity = 1,
@@ -364,8 +364,13 @@ Chart <-   function(y,
     is.pie.or.donut.chart <- type %in% c("Pie", "Donut")
     is.labeled.scatterplot.or.bubbleplot <-  type %in% c("Labeled Scatterplot", "Labeled Bubbleplot")
 
-    if (!is.area.chart && !is.bar.or.column.chart && opacity != 1)
+    if (!is.area.chart && !is.bar.or.column.chart && !is.null(opacity))
         warning("The opacity parameter is only valid for area, bar and column charts.")
+    if (is.null(opacity))
+        opacity <- if (type == "Area") 0.4 else 1
+
+    if (is.null(series.line.width))
+        series.line.width <- if (is.area.chart) 0 else 3
 
     default.background.color <- rgb(255, 255, 255, maxColorValue = 255)
     if ((background.fill.color != default.background.color ||
