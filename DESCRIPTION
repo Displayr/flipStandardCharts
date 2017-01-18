@@ -10,14 +10,20 @@ Depends: R (>= 2.10)
 LazyData: TRUE
 Encoding: UTF-8
 Imports:
-	plotly,
+    plotly,
     flipChartBasics,
     flipData,
     flipFormat,
-	rhtmlDonut,
-	dplyr,
-	rhtmlLabeledScatter,
-	stats
+    rhtmlDonut,
+    dplyr,
+    rhtmlLabeledScatter,
+    stats
+Remotes:
+    NumbersInternational/flipChartBasics,
+    NumbersInternational/flipData,
+    NumbersInternational/flipFormat,
+    NumbersInternational/rhtmlDonut,
+    NumbersInternational/rhtmlLabeledScatter
 Suggests:
     testthat
 RoxygenNote: 5.0.1
