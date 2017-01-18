@@ -595,10 +595,10 @@ Chart <-   function(y,
         connectgap <- TRUE
     }
 
-    ## Settings specific to Scatter Plot Charts
+    ## Settings specific to Scatterplots
     if (type == "Scatterplot")
     {
-        chart.type.outputs <- scatterPlotChart(chart.matrix = chart.matrix,
+        chart.type.outputs <- scatterplot(chart.matrix = chart.matrix,
                                                 x.bounds.minimum = x.bounds.minimum,
                                                 x.bounds.maximum = x.bounds.maximum,
                                                 x.tick.distance = x.tick.distance)
