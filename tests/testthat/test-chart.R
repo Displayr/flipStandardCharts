@@ -36,6 +36,14 @@ duplicate.rows <- structure(c(1.59, 0.44, 2.52, 0.19, 0.71, 0.18, 0.18, 0.61, 0.
 
 dat <- data.frame(named.matrix)
 
+three.dimensional <- structure(1:60, .Dim = 3:5)
+
+table.with.statistic <- structure(c(1.59, 0.44, 2.52, 0.19, 0.71, 0.18, 0.18, 0.61, 0.08,
+            1.07, 1.31, 0.45, 0.17, 2.87, 2.08, 0.53, 2.62, 1.88, 1.73, 0.12), .Dim = c(5L, 4L),
+            .Dimnames = list(c("Row 1", "Row 2", "Row 3", "Row 4", "Row 5"),
+                             c("Column 1", "Column 2", "Column 3", "Column 4")),
+            statistic = "%", questions = "Q1")
+
 # Input types
 
 for (t in types)
@@ -121,3 +129,27 @@ for (t in area.or.line.charts)
         expect_error(print(Chart(unnamed.matrix, type = t)), NA)
     })
 }
+
+test_that("Area - opacity", {
+    expect_warning(print(Chart(unnamed.matrix, type = "Area", opacity = 1)),
+        "Displaying this chart with opacity set to 1 will make it difficult to read as some data series may be obscured.")
+})
+
+for (t in c("Line", "Pie", "Donut"))
+{
+    test_that(paste(t, "- opacity"), {
+        expect_warning(print(Chart(named.vector, type = t, opacity = 1)),
+                       "The opacity parameter is only valid for area, bar and column charts.")
+    })
+}
+
+test_that("3D data", {
+    expect_warning(print(Chart(three.dimensional, type = "Column")),
+                   "The input has more than 2 dimensions, only the first 2 have been displayed.")
+})
+
+test_that("Percentage statistics", {
+    expect_warning(print(Chart(table.with.statistic, type = "Pie")),
+        paste("The percentage values in the table have been scaled in the chart as they do not sum to 100%.",
+              "Consider choosing a different statistic for the table."))
+})

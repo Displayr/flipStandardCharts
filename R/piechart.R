@@ -27,8 +27,7 @@ pieChart <- function(chart.matrix,
                      pie.inner.radius,
                      pie.border.color,
                      pie.subslice.colors.repeat,
-                     table.statistic,
-                     qinput)
+                     table.statistic)
 {
     chart.matrix <- as.matrix(chart.matrix)
 
@@ -41,11 +40,10 @@ pieChart <- function(chart.matrix,
     if (is.null(pie.data.threshold))
         pie.data.threshold <- 0.003
 
-    ## Check that the table statistic is appropriate for the chart type
-    permitted.statistics <- c("%", "Total %", "n", "Population", "Average", "Sum", "% Share", "% Total Share")
-
-    if (!length(permitted.statistics[which(table.statistic == permitted.statistics)]) > 0 && qinput)
-        warning("It is recommended that you use one of the following statistics in this chart: %, Total %, n, Population, Average, Sum, % Share, or % Total Share")
+    # If the statistic contains percentages but the total does not sum to 100, show warning
+    if (length(grep("%", table.statistic)) > 0 && round(sum(chart.matrix)) != 100)
+        warning(paste("The percentage values in the table have been scaled in the chart as they do not sum to 100%.",
+                      "Consider choosing a different statistic for the table."))
 
     ## As some charts get passed in as xtabs objects, rather than pure matrices, we need to unclass, for the stack to work later.
     chart.matrix <- stripClassAndCallFromXtabs(chart.matrix)
@@ -111,7 +109,7 @@ pieChart <- function(chart.matrix,
                                                     trim.light.colors = TRUE))
         pie.groups.colors <- NULL
     }
-print(is.data.2d)
+
     if (type == "Pie" && !is.data.2d)
         pie.inner.radius <- 0
 

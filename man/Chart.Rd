@@ -24,27 +24,28 @@ Chart(y, type = "Column", transpose = FALSE, title = "",
   y.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
   y.position = "left", y.data.reversed = FALSE, y.grid.width = 1,
   y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
-  y.tick.suffix = "", y.tick.prefix = "", y.tick.decimals = NULL,
-  y.tick.format.manual = "", y.hovertext.decimals = NULL,
-  y.hovertext.format.manual = "", y.tick.angle = NULL,
-  y.tick.font.color = NULL, y.tick.font.family = NULL,
-  y.tick.font.size = 10, x.title = "", x.title.font.color = NULL,
-  x.title.font.family = NULL, x.title.font.size = 12, x.line.width = 0,
-  x.line.color = rgb(0, 0, 0, maxColorValue = 255), x.tick.marks = "",
-  x.tick.mark.length = 5, x.bounds.minimum = NULL,
-  x.bounds.maximum = NULL, x.tick.distance = NULL, x.zero.line.width = 0,
+  y.tick.show = TRUE, y.tick.suffix = "", y.tick.prefix = "",
+  y.tick.decimals = NULL, y.tick.format.manual = "",
+  y.hovertext.decimals = NULL, y.hovertext.format.manual = "",
+  y.tick.angle = NULL, y.tick.font.color = NULL,
+  y.tick.font.family = NULL, y.tick.font.size = 10, x.title = "",
+  x.title.font.color = NULL, x.title.font.family = NULL,
+  x.title.font.size = 12, x.line.width = 0, x.line.color = rgb(0, 0, 0,
+  maxColorValue = 255), x.tick.marks = "", x.tick.mark.length = 5,
+  x.bounds.minimum = NULL, x.bounds.maximum = NULL,
+  x.tick.distance = NULL, x.zero.line.width = 0,
   x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
   x.position = "bottom", x.data.reversed = FALSE, x.grid.width = 1,
   x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
-  x.tick.suffix = "", x.tick.prefix = "", x.tick.decimals = NULL,
-  x.tick.format.manual = "", x.hovertext.decimals = NULL,
-  x.hovertext.format.manual = "", x.tick.angle = NULL,
-  x.tick.font.color = NULL, x.tick.font.family = NULL,
-  x.tick.font.size = 10, x.tick.label.autoformat = TRUE,
-  series.marker.show = "none", series.marker.colors = NULL,
-  series.marker.colors.reverse = FALSE, series.marker.opacity = 1,
-  series.marker.size = 6, series.marker.border.width = 1,
-  series.marker.border.colors = NULL,
+  x.tick.show = TRUE, x.tick.suffix = "", x.tick.prefix = "",
+  x.tick.decimals = NULL, x.tick.format.manual = "",
+  x.hovertext.decimals = NULL, x.hovertext.format.manual = "",
+  x.tick.angle = NULL, x.tick.font.color = NULL,
+  x.tick.font.family = NULL, x.tick.font.size = 10,
+  x.tick.label.autoformat = TRUE, series.marker.show = "none",
+  series.marker.colors = NULL, series.marker.colors.reverse = FALSE,
+  series.marker.opacity = 1, series.marker.size = 6,
+  series.marker.border.width = 1, series.marker.border.colors = NULL,
   series.marker.border.colors.reverse = FALSE,
   series.marker.border.opacity = 1, series.line.width = NULL,
   series.line.colors = NULL, series.line.colors.reverse = FALSE,
@@ -187,6 +188,8 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{y.grid.color}{Color of y-grid lines as a named color in character
 format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
+\item{y.tick.show}{Whether to display the y-axis tick labels}
+
 \item{y.tick.suffix}{y-axis tick label suffix}
 
 \item{y.tick.prefix}{y-axis tick label prefix}
@@ -260,6 +263,8 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{x.grid.color}{Color of y-grid lines as a named color in character
 format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
+
+\item{x.tick.show}{Whether to display the x-axis tick labels}
 
 \item{x.tick.suffix}{x-axis tick label suffix}
 
