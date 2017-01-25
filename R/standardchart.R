@@ -230,6 +230,7 @@
 #' Chart(y = z, type = "Area")
 #' @importFrom grDevices rgb
 #' @importFrom flipFormat FormatWithDecimals
+#' @importFrom plotly plot_ly config toRGB add_trace layout
 #' @export
 Chart <-   function(y,
                     type = "Column",
@@ -316,7 +317,7 @@ Chart <-   function(y,
                     x.tick.font.family = NULL,
                     x.tick.font.size = 10,
                     x.tick.label.autoformat = TRUE,
-                    series.marker.show = "none",
+                    series.marker.show = NULL,
                     series.marker.colors = NULL,
                     series.marker.colors.reverse = FALSE,
                     series.marker.opacity = 1,
@@ -356,6 +357,11 @@ Chart <-   function(y,
                     scatter.group.indices = "",
                     scatter.group.labels = "")
 {
+    if (!(type %in% c("Area", "Stacked Area", "100% Stacked Area", "Bar", "Stacked Bar", "100% Stacked Bar",
+                "Column", "Stacked Column", "100% Stacked Column", "Line", "Pie", "Donut",
+                "Labeled Scatterplot", "Labeled Bubbleplot")))
+        stop("The input chart type is not supported.")
+
     is.stacked <- type %in% c("Stacked Area", "100% Stacked Area",
                               "Stacked Bar", "100% Stacked Bar",
                               "Stacked Column", "100% Stacked Column")
@@ -367,6 +373,8 @@ Chart <-   function(y,
     is.area.chart <- type %in% c("Area", "Stacked Area", "100% Stacked Area")
     is.pie.or.donut.chart <- type %in% c("Pie", "Donut")
     is.labeled.scatterplot.or.bubbleplot <-  type %in% c("Labeled Scatterplot", "Labeled Bubbleplot")
+    is.scatterplot.or.bubbleplot <-  type %in% c("Scatterplot", "Labeled Scatterplot", "Labeled Bubbleplot")
+    is.scatterplot <- type %in% c("Scatterplot")
 
     if (!is.area.chart && !is.bar.or.column.chart && !is.null(opacity))
         warning("The opacity parameter is only valid for area, bar and column charts.")
@@ -458,7 +466,7 @@ Chart <-   function(y,
     if (is.array(chart.matrix) && length(names(chart.matrix)) != 0)
         rownames(chart.matrix) <- names(chart.matrix)
 
-    if (!is.labeled.scatterplot.or.bubbleplot)
+    if (!is.scatterplot.or.bubbleplot)
     {
         ## If it's a one column entity, make sure it's a matrix and that it's got a column heading.
         has.statistic <- "statistic" %in% names(attributes(chart.matrix))
@@ -611,17 +619,14 @@ Chart <-   function(y,
     ## Settings specific to Scatterplots
     if (type == "Scatterplot")
     {
-        chart.type.outputs <- scatterplot(chart.matrix = chart.matrix,
-                                                x.bounds.minimum = x.bounds.minimum,
-                                                x.bounds.maximum = x.bounds.maximum,
-                                                x.tick.distance = x.tick.distance)
+        scatterplot.data <- scatterplotData(chart.matrix, FALSE, scatter.group.labels, scatter.group.indices, transpose,
+                                rows.to.ignore, cols.to.ignore, x.title, y.title)
+        if (x.title == "")
+            x.title <- scatterplot.data$x.title
+        if (y.title == "")
+            y.title <- scatterplot.data$y.title
 
-        chart.matrix <- chart.type.outputs$chart.matrix
-        series.mode <- chart.type.outputs$series.mode
-        y.tickformat <- ""
-        x.bounds.minimum <- chart.type.outputs$x.bounds.minimum
-        x.bounds.maximum <- chart.type.outputs$x.bounds.maximum
-        x.tick.distance <- chart.type.outputs$x.tick.distance
+        series.mode <- if (is.null(series.marker.show) || series.marker.show != "none") "markers" else "none"
     }
 
     ## Settings specific to Column Charts
@@ -707,7 +712,7 @@ Chart <-   function(y,
                 table.statistic = table.statistic))
 
     ## Settings specific to labelled scatter plots
-    if (type == "Labeled Scatterplot" || type == "Labeled Bubbleplot")
+    if (is.labeled.scatterplot.or.bubbleplot)
     {
         draw.grid <- (x.grid.width != 0 && y.grid.width != 0)
         if (xor(x.grid.width != 0, y.grid.width != 0))
@@ -716,6 +721,12 @@ Chart <-   function(y,
         if ((x.grid.width != 0 && x.grid.width != 1) || (y.grid.width != 0 && y.grid.width != 1))
             warning(paste("The x-axis and y-axis grid widths cannot be adjusted for",
                           "Labeled Scatterplots and Labeled Bubbleplots."))
+
+        point.radius <- if (is.null(series.marker.show) || series.marker.show == "automatic")
+            0.5 * series.marker.size
+        else
+            0
+
         labeled.scatterplot <- labeledScatterplot(chart.matrix = chart.matrix,
                                                   colors = colors,
                                                   colors.reverse = colors.reverse,
@@ -758,8 +769,8 @@ Chart <-   function(y,
                        x.title.font.color = x.title.font.color,
                        x.title.font.size = x.title.font.size,
                        z.title = z.title,
-                       y.decimals = if (is.null(y.hovertext.decimals)) 1 else y.hovertext.decimals,
-                       x.decimals = if (is.null(x.hovertext.decimals)) 1 else x.hovertext.decimals,
+                       y.decimals = if (is.null(y.tick.decimals)) 1 else y.tick.decimals,
+                       x.decimals = if (is.null(x.tick.decimals)) 1 else x.tick.decimals,
                        z.decimals = if (is.null(data.label.decimals)) 1 else data.label.decimals,
                        x.prefix = x.tick.prefix,
                        y.prefix = y.tick.prefix,
@@ -773,7 +784,7 @@ Chart <-   function(y,
                        labels.font.family = data.label.font.family,
                        labels.font.color = data.label.font.color,
                        labels.font.size = data.label.font.size,
-                       point.radius = 0.5 * series.marker.size,
+                       point.radius = point.radius,
                        y.bounds.maximum = y.bounds.maximum,
                        y.bounds.minimum = y.bounds.minimum,
                        y.bounds.units.major = y.tick.distance,
@@ -785,7 +796,7 @@ Chart <-   function(y,
     }
 
     ## Work out color ranges; n.b. some color ranges worked out in the chart specific functions.
-    number.colors.needed <- ncol(chart.matrix)
+    number.colors.needed <- if (is.scatterplot) length(unique(scatterplot.data$group)) else ncol(chart.matrix)
 
     ## Calculate colors
     colors <- flipChartBasics::ChartColors(number.colors.needed = number.colors.needed,
@@ -831,7 +842,7 @@ Chart <-   function(y,
     is.x.axis.numeric <- swap.axes.and.data || (is.area.or.line.chart &&
                          all(!is.na(suppressWarnings(as.numeric(row.names(chart.matrix))))))
 
-    x.axis.type <- if (is.x.axis.numeric) "linear" else "category"
+    x.axis.type <- if (is.x.axis.numeric || is.scatterplot) "linear" else "category"
     y.axis.type <- if (swap.axes.and.data) "category" else "linear"
 
     ## Get axes labels from the matrix labels
@@ -1073,133 +1084,157 @@ Chart <-   function(y,
         x.grid.show <- TRUE
 
     ## Which markers to show?
-    if (series.marker.show == "automatic" || series.marker.show == "none")
-        series.marker.symbols <- plotlySymbols
-    else if (series.marker.show != "none" && series.marker.show != "automatic")
-    {
-        if (length(series.marker.show) < 100)
-            series.marker.symbols <- rep(series.marker.show, 100)
-    }
-
-    ## Show source data points in hover text, or along series markers
-    if (data.label.show)
-        series.mode <- paste(series.mode, "+text", sep = "")
+    series.marker.symbols <- if (is.null(series.marker.show) ||
+                                 series.marker.show == "automatic" ||
+                                 series.marker.show == "none")
+        rep(100, 100) # disc
+    else
+        series.marker.show
 
     ## Hide legend if only one series to plot
     if (ncol(chart.matrix) == 1)
         legend.show <- FALSE
 
-    ## Initiate plotly object
-    p <- plotly::plot_ly(as.data.frame(chart.matrix))
+    hover.mode <- if (tooltip.show) "closest" else FALSE
+
+    ## Convert type to plotly type
+    plotly.type <- if (is.bar.or.column.chart) "bar" else "scatter"
+
+    ## Show source data points in hover text, or along series markers
+    if (data.label.show)
+        series.mode <- if (series.mode == "none") "text" else paste0(series.mode, "+text")
+
+    textfont <- if (!is.null(series.mode) && regexpr('text', series.mode) >= 1)
+        list(family = data.label.font.family,
+             color = toRGB(data.label.font.color, alpha = 1),
+             size = data.label.font.size)
+    else
+        NULL
+
+    if (is.scatterplot)
+    {
+        x.prefix <- if (x.tick.prefix == "") data.label.prefix else x.tick.prefix
+        x.suffix <- if (x.tick.suffix == "") data.label.suffix else x.tick.suffix
+        y.prefix <- if (y.tick.prefix == "") data.label.prefix else y.tick.prefix
+        y.suffix <- if (y.tick.suffix == "") data.label.suffix else y.tick.suffix
+
+        source.text <- paste0("(",
+            x.prefix, FormatWithDecimals(scatterplot.data$x, data.label.decimals), x.suffix, ",",
+            y.prefix, FormatWithDecimals(scatterplot.data$y, data.label.decimals), y.suffix, ")")
+
+        marker <- if (!is.null(series.mode) && regexpr('marker', series.mode) >= 1)
+            list(size = series.marker.size,
+                 line = list(width = series.marker.border.width))
+        else
+            NULL
+
+        p <- plot_ly(x = scatterplot.data$x,
+                     y = scatterplot.data$y,
+                     type = plotly.type,
+                     mode = series.mode,
+                     colors = series.marker.colors,
+                     hoverinfo = "x+y+name",
+                     text = source.text,
+                     textfont = textfont,
+                     textposition = data.label.position,
+                     marker = marker,
+                     symbol = scatterplot.data$group,
+                     symbols = series.marker.symbols)
+    }
+    else
+    {
+        ## Initiate plotly object
+        p <- plot_ly(as.data.frame(chart.matrix))
+
+        ## Add a trace for each col of data in the matrix
+        for (i in 1:ncol(chart.matrix))
+        {
+            y <- as.numeric(chart.matrix[, i])
+            x <- x.labels
+
+            if (swap.axes.and.data == TRUE)
+            {
+                y.swap <- y
+                x.swap <- x
+                y <- x.swap
+                x <- y.swap
+            }
+
+            # Used by line, area and scatter charts
+            source.text <- if (is.area.or.line.chart && data.label.show)
+                paste(data.label.prefix,
+                      FormatWithDecimals(chart.matrix[, i], data.label.decimals),
+                      data.label.suffix, sep = "")
+            else
+                ""
+
+            ## Add trace components
+            if (!is.null(series.mode) && regexpr('lines', series.mode) >= 1)
+            {
+                lines <- list(width = series.line.width,
+                             color = toRGB(series.line.colors[i], alpha = series.line.opacity))
+            } else
+                lines <- NULL
+
+            if (!is.null(series.mode) && regexpr('marker', series.mode) >= 1)
+            {
+                marker <- list(size = series.marker.size,
+                              color = toRGB(series.marker.colors[i], alpha = series.marker.opacity),
+                              symbol = series.marker.symbols[i],
+                              line = list(
+                                  color = toRGB(series.marker.border.colors[i], alpha = series.marker.border.opacity),
+                                  width = series.marker.border.width))
+            } else if (plotly.type == "bar") {
+                marker <- list(size = series.marker.size,
+                              color = toRGB(colors[i], alpha = opacity),
+                              line = list(
+                                  color = toRGB(series.marker.border.colors[i], alpha = series.marker.border.opacity),
+                                  width = series.marker.border.width))
+            } else
+                 marker <- NULL
+
+            if (plotly.type == "bar")
+            {
+                p <- add_trace(p,
+                               type = plotly.type,
+                               x = x,
+                               y = y,
+                               orientation = orientation,
+                               line = lines,
+                               name = y.labels[i],
+                               legendgroup = legend.group)
+            }
+            else
+            {
+                p <- add_trace(p,
+                               type = plotly.type,
+                               x = x,
+                               y = y,
+                               fill = fill.bound,
+                               fillcolor = toRGB(colors[i], alpha = opacity),
+                               line = lines,
+                               name = y.labels[i],
+                               legendgroup = legend.group,
+                               text = source.text,
+                               textfont = textfont,
+                               textposition = data.label.position,
+                               hoverinfo = "x+y+name",
+                               # MARKERS
+                               mode = series.mode,
+                               marker = marker
+                )
+            }
+        }
+    }
 
     ## Config options
-    p <- plotly::config(p, displayModeBar = modebar.show)
+    p <- config(p, displayModeBar = modebar.show)
 
     ## Set htmlwidget padding to zero (defaults to 40px)
     p$sizingPolicy$browser$padding <- 0
 
-    ## Convert type to plotly type
-    plotly.type <- if (is.bar.or.column.chart)
-        "bar"
-    else
-        "scatter"
-
-    hover.mode <- if (tooltip.show)
-        "closest"
-    else
-        FALSE
-
-    ## Add a trace for each col of data in the matrix
-    for (i in 1:ncol(chart.matrix))
-    {
-        y <- as.numeric(chart.matrix[, i])
-        x <- x.labels
-
-        if (swap.axes.and.data == TRUE)
-        {
-            y.swap <- y
-            x.swap <- x
-            y <- x.swap
-            x <- y.swap
-        }
-
-        # Used by line and area charts
-        source.text <- if (is.area.or.line.chart && data.label.show)
-            paste(data.label.prefix,
-                  FormatWithDecimals(chart.matrix[, i], data.label.decimals),
-                  data.label.suffix, sep = "")
-        else
-            ""
-
-        ## Add trace components
-        if (regexpr('lines', series.mode) >= 1 && !is.null(series.mode))
-        {
-            lines = list(width = series.line.width,
-                         color = plotly::toRGB(series.line.colors[i], alpha = series.line.opacity))
-        } else
-            lines <- NULL
-
-        if (regexpr('text', series.mode) >= 1 && !is.null(series.mode))
-        {
-            textfont <- list(family = data.label.font.family,
-                             color = plotly::toRGB(data.label.font.color, alpha = 1),
-                             size = data.label.font.size)
-        } else
-            textfont <- NULL
-
-        if (regexpr('marker', series.mode) >= 1 && !is.null(series.mode))
-        {
-            marker = list(size = series.marker.size,
-                          color = plotly::toRGB(series.marker.colors[i], alpha = series.marker.opacity),
-                          symbol = series.marker.symbols[i],
-                          line = list(
-                              color = plotly::toRGB(series.marker.border.colors[i], alpha = series.marker.border.opacity),
-                              width = series.marker.border.width))
-        } else if (plotly.type == "bar") {
-            marker = list(size = series.marker.size,
-                          color = plotly::toRGB(colors[i], alpha = opacity),
-                          line = list(
-                              color = plotly::toRGB(series.marker.border.colors[i], alpha = series.marker.border.opacity),
-                              width = series.marker.border.width))
-        } else
-             marker <- NULL
-
-        if (plotly.type != "bar")
-        {
-            p <- plotly::add_trace(p,
-                                   type = plotly.type,
-                                   x = x,
-                                   y = y,
-                                   orientation = orientation,
-                                   fill = fill.bound,
-                                   fillcolor = plotly::toRGB(colors[i], alpha = opacity),
-                                   line = lines,
-                                   name = y.labels[i],
-                                   legendgroup = legend.group,
-                                   text = source.text,
-                                   textfont = textfont,
-                                   textposition = data.label.position,
-                                   # MARKERS
-                                   mode = series.mode,
-                                   marker = marker
-            )
-        } else {
-            p <- plotly::add_trace(p,
-                                   type = plotly.type,
-                                   x = x,
-                                   y = y,
-                                   orientation = orientation,
-                                   line = lines,
-                                   name = y.labels[i],
-                                   legendgroup = legend.group,
-                                   # MARKERS
-                                   text = source.text,
-                                   marker = marker)
-        }
-    }
-
     ## Set plotly layout styles
-    p <- plotly::layout(p,
+    p <- layout(p,
         title = title,
         ## LEGEND
         showlegend = legend.show,
@@ -1313,8 +1348,8 @@ Chart <-   function(y,
             r = margin.right,
             pad = margin.inner.pad
         ),
-        plot_bgcolor = plotly::toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
-        paper_bgcolor = plotly::toRGB(background.fill.color, alpha = background.fill.opacity),
+        plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
+        paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
         hovermode = hover.mode,
         titlefont = list(
             family = title.font.family,

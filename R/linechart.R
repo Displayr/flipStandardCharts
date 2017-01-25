@@ -13,6 +13,9 @@ lineChart <- function(chart.matrix,
     ## Showing markers and lines
     series.mode = "lines+markers"  #default = line and marker
 
+    if (is.null(series.marker.show))
+        series.marker.show <- "none"
+
     if (series.line.width >= 1 && series.marker.show == "none")
         series.mode <- "lines"
 

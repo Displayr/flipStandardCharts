@@ -153,3 +153,7 @@ test_that("Percentage statistics", {
         paste("The percentage values in the table have been scaled in the chart as they do not sum to 100%.",
               "Consider choosing a different statistic for the table."))
 })
+
+test_that("Chart type check", {
+    expect_error(print(Chart(unnamed.matrix, type = "invalid type")), "The input chart type is not supported.")
+})
