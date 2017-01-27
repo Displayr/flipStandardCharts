@@ -220,6 +220,8 @@
 #' segments.
 #' @param pie.inner.radius The size of the inner radius of pie and
 #' donut charts as a proportion out of 100. defaults to 70.
+#' @param pie.show.percentages Whether to show percentages in pie and donut
+#' charts instead of original values.
 #' @param z.title Character; title of the bubble-size legend in labeled
 #' bubbleplots.
 #' @param scatter.group.indices Text of comma-separated group indices
@@ -353,6 +355,7 @@ Chart <-   function(y,
                     pie.subslice.colors.repeat = TRUE,
                     pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
                     pie.inner.radius = 70,
+                    pie.show.percentages = FALSE,
                     z.title = "",
                     scatter.group.indices = "",
                     scatter.group.labels = "")
@@ -640,7 +643,7 @@ Chart <-   function(y,
         chart.matrix <- chart.type.outputs$chart.matrix
         legend.group <- chart.type.outputs$legend.group
         y.tickformat <- chart.type.outputs$y.tickformat
-        series.mode <- chart.type.outputs$series.mode
+        series.mode <- ""
         orientation <- chart.type.outputs$orientation
         barmode <- chart.type.outputs$barmode
     }
@@ -709,6 +712,7 @@ Chart <-   function(y,
                 pie.inner.radius = pie.inner.radius,
                 pie.subslice.colors.repeat = pie.subslice.colors.repeat,
                 pie.border.color = pie.border.color,
+                pie.show.percentages = pie.show.percentages,
                 table.statistic = table.statistic))
 
     ## Settings specific to labelled scatter plots
@@ -1202,7 +1206,8 @@ Chart <-   function(y,
                                orientation = orientation,
                                line = lines,
                                name = y.labels[i],
-                               legendgroup = legend.group)
+                               legendgroup = legend.group,
+                               marker = marker)
             }
             else
             {

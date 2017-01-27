@@ -150,7 +150,7 @@ test_that("3D data", {
 
 test_that("Percentage statistics", {
     expect_warning(print(Chart(table.with.statistic, type = "Pie")),
-        paste("The percentage values in the table have been scaled in the chart as they do not sum to 100%.",
+        paste("The percentage values in the table do not sum to 100%.",
               "Consider choosing a different statistic for the table."))
 })
 

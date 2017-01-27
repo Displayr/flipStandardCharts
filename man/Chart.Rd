@@ -60,8 +60,8 @@ Chart(y, type = "Column", transpose = FALSE, title = "",
   pie.order = "initial", pie.groups.order = "initial",
   pie.subslice.colors = NULL, pie.subslice.colors.reverse = FALSE,
   pie.subslice.colors.repeat = TRUE, pie.border.color = rgb(255, 255, 255,
-  maxColorValue = 255), pie.inner.radius = 70, z.title = "",
-  scatter.group.indices = "", scatter.group.labels = "")
+  maxColorValue = 255), pie.inner.radius = 70, pie.show.percentages = FALSE,
+  z.title = "", scatter.group.indices = "", scatter.group.labels = "")
 }
 \arguments{
 \item{y}{A table or matrix.}
@@ -402,6 +402,9 @@ segments.}
 
 \item{pie.inner.radius}{The size of the inner radius of pie and
 donut charts as a proportion out of 100. defaults to 70.}
+
+\item{pie.show.percentages}{Whether to show percentages in pie and donut
+charts instead of original values.}
 
 \item{z.title}{Character; title of the bubble-size legend in labeled
 bubbleplots.}

@@ -27,6 +27,7 @@ pieChart <- function(chart.matrix,
                      pie.inner.radius,
                      pie.border.color,
                      pie.subslice.colors.repeat,
+                     pie.show.percentages,
                      table.statistic)
 {
     chart.matrix <- as.matrix(chart.matrix)
@@ -42,7 +43,7 @@ pieChart <- function(chart.matrix,
 
     # If the statistic contains percentages but the total does not sum to 100, show warning
     if (length(grep("%", table.statistic)) > 0 && round(sum(chart.matrix)) != 100)
-        warning(paste("The percentage values in the table have been scaled in the chart as they do not sum to 100%.",
+        warning(paste("The percentage values in the table do not sum to 100%.",
                       "Consider choosing a different statistic for the table."))
 
     ## As some charts get passed in as xtabs objects, rather than pure matrices, we need to unclass, for the stack to work later.
@@ -116,6 +117,13 @@ pieChart <- function(chart.matrix,
     # Convert pie.inner.radius to character
     inner.radius <- paste(pie.inner.radius, "%", sep = "")
 
+    values.display.as <- if (pie.show.percentages) "percentage" else "original"
+    if (pie.show.percentages)
+    {
+        pie.values.prefix <- ""
+        pie.values.suffix <- "%"
+    }
+
     rhtmlDonut::Donut(values = d.values,
                       labels = d.labels,
                       values.color = pie.colors,
@@ -123,7 +131,7 @@ pieChart <- function(chart.matrix,
                       values.font.family = pie.values.font.family,
                       values.font.size = pie.values.font.size,
                       values.decimal.places = pie.values.decimals,
-                      values.display.as = "percentage",
+                      values.display.as = values.display.as,
                       values.display.thres = pie.data.threshold * 100,
                       labels.font.family = pie.labels.font.family,
                       labels.font.color = pie.labels.font.color,
