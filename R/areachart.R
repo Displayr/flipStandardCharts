@@ -46,14 +46,11 @@ areaChart <- function(chart.matrix,
     series.mode = "lines+markers"  #default = line and marker
 
     if (is.null(series.marker.show))
-        series.marker.show <- "lines"
-
-    if (series.line.width == 0 && series.marker.show != "none")
+        series.mode <- "lines"
+    else if (series.line.width == 0 && series.marker.show != "none")
         series.mode <- "markers"
-
     else if (series.line.width >= 1 && series.marker.show == "none")
         series.mode <- "lines"
-
     else if (series.line.width == 0 && series.marker.show == "none")
         series.mode <- "lines"
 

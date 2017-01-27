@@ -11,13 +11,10 @@ lineChart <- function(chart.matrix,
         series.line.width <- 1
 
     ## Showing markers and lines
-    series.mode = "lines+markers"  #default = line and marker
-
-    if (is.null(series.marker.show))
-        series.marker.show <- "none"
-
-    if (series.line.width >= 1 && series.marker.show == "none")
-        series.mode <- "lines"
+    series.mode <- if (series.line.width >= 1 && (is.null(series.marker.show) || series.marker.show == "none"))
+        "lines"
+    else
+        "lines+markers"
 
     return(list(chart.matrix = chart.matrix,
                 series.mode = series.mode,
