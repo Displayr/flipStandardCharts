@@ -966,7 +966,7 @@ Chart <-   function(y,
     y.has.bounds <- !is.null(y.bounds.minimum) && !is.null(y.bounds.maximum)
 
     # Area chart does not display the data labels on the edge correctly, so we add padding
-    if (is.area.chart && data.label.show && !x.has.bounds)
+    if (is.area.or.line.chart && data.label.show && !x.has.bounds)
     {
         if (is.x.axis.numeric)
         {
