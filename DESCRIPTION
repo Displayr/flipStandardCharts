@@ -14,6 +14,7 @@ Imports:
     flipChartBasics,
     flipData,
     flipFormat,
+    flipTime,
     rhtmlDonut,
     dplyr,
     rhtmlLabeledScatter,

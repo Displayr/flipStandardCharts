@@ -232,6 +232,7 @@
 #' Chart(y = z, type = "Area")
 #' @importFrom grDevices rgb
 #' @importFrom flipFormat FormatWithDecimals
+#' @importFrom flipTime PeriodNameToDate
 #' @importFrom plotly plot_ly config toRGB add_trace layout
 #' @export
 Chart <-   function(y,
@@ -830,19 +831,6 @@ Chart <-   function(y,
     if (is.null(series.marker.border.colors))
         series.marker.border.colors <- series.marker.colors
 
-    # Bar and column chart data label annotations
-    data.annotations <- if (data.label.show && is.bar.or.column.chart)
-        dataLabelAnnotation(chart.matrix = original.chart.matrix,
-                            bar.decimals = data.label.decimals,
-                            bar.prefix = data.label.prefix,
-                            bar.suffix = data.label.suffix,
-                            barmode = barmode,
-                            swap.axes.and.data = swap.axes.and.data,
-                            bar.gap = bar.gap,
-                            display.threshold = data.label.threshold)
-    else
-        list()
-
     is.x.axis.numeric <- swap.axes.and.data || (is.area.or.line.chart &&
                          all(!is.na(suppressWarnings(as.numeric(row.names(chart.matrix))))))
 
@@ -853,7 +841,16 @@ Chart <-   function(y,
     x.labels <- rownames(chart.matrix)
     y.labels <- colnames(chart.matrix)
 
-    if (x.tick.label.autoformat)
+    ymd <- PeriodNameToDate(x.labels)
+    if (!any(is.na(ymd)))
+    {
+        x.labels <- ymd
+        if (swap.axes.and.data)
+            y.axis.type <- "date"
+        else
+            x.axis.type <- "date"
+    }
+    else if (x.tick.label.autoformat)
     {
         new.x.labels <- autoFormatLongLabels(x.labels)
         if (!all(new.x.labels == x.labels) && margin.bottom == 80)
@@ -862,6 +859,20 @@ Chart <-   function(y,
     }
     else if (is.null(x.tick.angle))
         x.tick.angle <- 0
+
+    # Bar and column chart data label annotations
+    data.annotations <- if (data.label.show && is.bar.or.column.chart)
+        dataLabelAnnotation(chart.matrix = original.chart.matrix,
+                            bar.decimals = data.label.decimals,
+                            bar.prefix = data.label.prefix,
+                            bar.suffix = data.label.suffix,
+                            barmode = barmode,
+                            swap.axes.and.data = swap.axes.and.data,
+                            bar.gap = bar.gap,
+                            display.threshold = data.label.threshold,
+                            dates = ymd)
+    else
+        list()
 
     ## Position legend
     legend.x.anchor <- "left"
@@ -974,6 +985,12 @@ Chart <-   function(y,
             min.x <- min(x.vals)
             max.x <- max(x.vals)
         }
+        else if (x.axis.type == "date")
+        {
+            x.vals <- as.numeric(x.labels) * 1000
+            min.x <- min(x.vals)
+            max.x <- max(x.vals)
+        }
         else
         {
             min.x <- 0
@@ -1010,10 +1027,25 @@ Chart <-   function(y,
             decimalsToDisplay(chart.matrix)
     }
 
-    ifelse((y.tick.format.manual == "" && (is.null(y.tickformat) || y.tickformat == "")), y.tickformat <- paste(".", y.tick.decimals, "f", sep=""), FALSE)
-    ifelse((x.tick.format.manual == "" && (is.null(x.tickformat) || x.tickformat == "")), x.tickformat <- paste(".", x.tick.decimals, "f", sep=""), FALSE)
-    ifelse(y.hovertext.format.manual == "", y.hoverformat <- paste(".", y.hovertext.decimals, "f", sep=""), y.hoverformat <- y.hovertext.format.manual)
-    ifelse(x.hovertext.format.manual == "", x.hoverformat <- paste(".", x.hovertext.decimals, "f", sep=""), x.hoverformat <- x.hovertext.format.manual)
+    # Tick formats
+    if ((x.tick.format.manual == "" && (is.null(x.tickformat) || x.tickformat == "") && x.axis.type != "date"))
+        x.tickformat <- paste(".", x.tick.decimals, "f", sep="")
+    if ((y.tick.format.manual == "" && (is.null(y.tickformat) || y.tickformat == "") && y.axis.type != "date"))
+        y.tickformat <- paste(".", y.tick.decimals, "f", sep="")
+
+    # Hover formats
+    x.hoverformat <- if (x.hovertext.format.manual != "")
+        x.hoverformat <- x.hovertext.format.manual
+    else if (x.axis.type == "date")
+        ""
+    else
+        paste(".", x.hovertext.decimals, "f", sep = "")
+    y.hoverformat <- if (y.hovertext.format.manual != "")
+        y.hoverformat <- y.hovertext.format.manual
+    else if (y.axis.type == "date")
+        ""
+    else
+        paste(".", y.hovertext.decimals, "f", sep = "")
 
     x.autorange <- if (x.has.bounds || !is.null(x.tick.distance))
     {

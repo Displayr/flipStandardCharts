@@ -5,7 +5,8 @@ dataLabelAnnotation <- function(chart.matrix,
                                 barmode = "",
                                 swap.axes.and.data = FALSE,
                                 bar.gap = 0,
-                                display.threshold = NULL)
+                                display.threshold = NULL,
+                                dates)
 {
     text <- paste(bar.prefix, FormatWithDecimals(chart.matrix, bar.decimals), bar.suffix, sep = "")
 
@@ -30,7 +31,14 @@ dataLabelAnnotation <- function(chart.matrix,
         series.positions <- ((0:(series.count - 1) + 0.5) / series.count - 0.5) * (1 - bar.gap)
         y.positions <- chart.matrix
     }
-    x.positions <- 0:(nrow(chart.matrix) - 1) + rep(series.positions, each = nrow(chart.matrix))
+
+    x.positions <- if (!any(is.na(dates)))
+    {
+        date.vals <- as.numeric(dates) * 1000
+        x.positions <- date.vals + rep(series.positions, each = nrow(chart.matrix)) * (date.vals[2] - date.vals[1])
+    }
+    else
+        0:(nrow(chart.matrix) - 1) + rep(series.positions, each = nrow(chart.matrix))
 
     data.annotations <- if (swap.axes.and.data)
     {
@@ -58,6 +66,5 @@ dataLabelAnnotation <- function(chart.matrix,
              showarrow = FALSE,
              yanchor = yanchor)
     }
-
     data.annotations
 }

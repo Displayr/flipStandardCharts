@@ -44,6 +44,21 @@ table.with.statistic <- structure(c(1.59, 0.44, 2.52, 0.19, 0.71, 0.18, 0.18, 0.
                              c("Column 1", "Column 2", "Column 3", "Column 4")),
             statistic = "%", questions = "Q1")
 
+monthly <- structure(c(7.34177215189873, 9.36708860759494, 9.36708860759494,
+                      7.84810126582278, 8.60759493670886, 8.86075949367089, 10.6329113924051,
+                      5.31645569620253, 8.35443037974684, 7.84810126582278, 9.11392405063291,
+                      7.34177215189873, 7.40740740740741, 6.91358024691358, 9.62962962962963,
+                      10.8641975308642, 6.41975308641975, 7.40740740740741, 8.64197530864197,
+                      8.39506172839506, 8.64197530864197, 8.88888888888889, 8.64197530864197,
+                      8.14814814814815, 7.375, 8.125, 9.5, 9.375, 7.5, 8.125, 9.625,
+                      6.875, 8.5, 8.375, 8.875, 7.75), .Dim = c(12L, 3L),
+                    statistic = "Column %", .Dimnames = list(
+                          c("January 2012", "February 2012", "March 2012", "April 2012",
+                            "May 2012", "June 2012", "July 2012", "August 2012", "September 2012",
+                            "October 2012", "November 2012", "December 2012"), c("Male", "Female", "NET")),
+                    name = "Interview Date by Gender",
+                    questions = c("Interview Date", "Gender [Cola Tracking - January to December.sav]"))
+
 # Input types
 
 for (t in types)
@@ -157,3 +172,10 @@ test_that("Percentage statistics", {
 test_that("Chart type check", {
     expect_error(print(Chart(unnamed.matrix, type = "invalid type")), "The input chart type is not supported.")
 })
+
+for (t in c("Line", "Bar", "Column"))
+{
+    test_that(paste(t, "- dates"), {
+        expect_error(print(Chart(monthly, t)), NA)
+    })
+}
