@@ -23,6 +23,7 @@ Remotes:
     NumbersInternational/flipChartBasics,
     NumbersInternational/flipData,
     NumbersInternational/flipFormat,
+    NumbersInternational/flipTime,
     NumbersInternational/rhtmlDonut,
     NumbersInternational/rhtmlLabeledScatter
 Suggests:
