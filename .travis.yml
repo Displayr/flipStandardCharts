@@ -29,6 +29,7 @@ notifications:
     on_failure: always
 
 after_success: >-
-  if [ $TRAVIS_EVENT_TYPE == "push" ] ; then
+  if [ $TRAVIS_EVENT_TYPE == 'push' ] ; then Rscript -e 'require(devtools); install_github("NumbersInternational/travisCI"); UpdateUpstream(use.local=T)'; fi
+  if [ $TRAVIS_EVENT_TYPE == 'push' ] ; then
     curl -s -X POST -H "Content-Type: application/json" -H "Accept: application/json" -H "Travis-API-Version: 3" -H "Authorization: token $ACCESS_TOKEN" -d '{"request":{"message":"Build triggered by flipStandardCharts", "branch":"master"}}' "https://api.travis-ci.org/repo/NumbersInternational%2FflipStartup/requests";
   fi
