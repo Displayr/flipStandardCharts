@@ -1403,6 +1403,13 @@ Chart <-   function(y,
         barmode = barmode
     )
 
-    ## Return the chart
-    return(p)
+    result <- list(plotly.plot = p)
+    class(result) <- "StandardChart"
+    result
+}
+
+#' @export
+print.StandardChart <- function(x, ...)
+{
+    return(x$plotly.plot)
 }
