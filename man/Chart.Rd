@@ -61,7 +61,8 @@ Chart(y, type = "Column", transpose = FALSE, title = "",
   pie.subslice.colors = NULL, pie.subslice.colors.reverse = FALSE,
   pie.subslice.colors.repeat = TRUE, pie.border.color = rgb(255, 255, 255,
   maxColorValue = 255), pie.inner.radius = 70, pie.show.percentages = FALSE,
-  z.title = "", scatter.group.indices = "", scatter.group.labels = "")
+  z.title = "", scatter.group.indices = "", scatter.group.labels = "",
+  us.date.format = NULL)
 }
 \arguments{
 \item{y}{A table or matrix.}
@@ -413,6 +414,8 @@ bubbleplots.}
 corresponding to each row.}
 
 \item{scatter.group.labels}{Text of comma-separated group labels.}
+
+\item{us.date.format}{Whether to apply the US convention when parsing dates.}
 }
 \description{
 \code{Chart} generates standard charts from plotly library.

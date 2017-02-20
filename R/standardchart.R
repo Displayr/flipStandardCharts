@@ -227,6 +227,7 @@
 #' @param scatter.group.indices Text of comma-separated group indices
 #' corresponding to each row.
 #' @param scatter.group.labels Text of comma-separated group labels.
+#' @param us.date.format Whether to apply the US convention when parsing dates.
 #' @examples
 #' z <- c(5, 6, 2, 1.5, 9, 2.2)
 #' Chart(y = z, type = "Area")
@@ -359,7 +360,8 @@ Chart <-   function(y,
                     pie.show.percentages = FALSE,
                     z.title = "",
                     scatter.group.indices = "",
-                    scatter.group.labels = "")
+                    scatter.group.labels = "",
+                    us.date.format = NULL)
 {
     if (!(type %in% c("Area", "Stacked Area", "100% Stacked Area", "Bar", "Stacked Bar", "100% Stacked Bar",
                 "Column", "Stacked Column", "100% Stacked Column", "Line", "Pie", "Donut",
@@ -841,7 +843,7 @@ Chart <-   function(y,
     x.labels <- rownames(chart.matrix)
     y.labels <- colnames(chart.matrix)
 
-    ymd <- PeriodNameToDate(x.labels)
+    ymd <- PeriodNameToDate(x.labels, us.format = us.date.format)
     if (!any(is.na(ymd)))
     {
         x.labels <- ymd
