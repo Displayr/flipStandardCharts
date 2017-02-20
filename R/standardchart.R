@@ -978,8 +978,11 @@ Chart <-   function(y,
     x.has.bounds <- !is.null(x.bounds.minimum) && !is.null(x.bounds.maximum)
     y.has.bounds <- !is.null(y.bounds.minimum) && !is.null(y.bounds.maximum)
 
-    # Area chart does not display the data labels on the edge correctly, so we add padding
-    if (is.area.or.line.chart && data.label.show && !x.has.bounds)
+    # Area chart does not display the data labels on the edge correctly, so we add padding.
+    # Line chart does add padding automatically, but the amount of padding seems to change
+    # between regression tests, so we add padding manually.
+    if (is.area.or.line.chart && !x.has.bounds &&
+        (data.label.show || (!is.null(series.marker.show) && series.marker.show != "none")))
     {
         if (is.x.axis.numeric)
         {
