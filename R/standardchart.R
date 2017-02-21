@@ -474,22 +474,6 @@ Chart <-   function(y,
 
     if (!is.scatterplot.or.bubbleplot)
     {
-        ## If it's a one column entity, make sure it's a matrix and that it's got a column heading.
-        has.statistic <- "statistic" %in% names(attributes(chart.matrix))
-        if (is.array(chart.matrix))
-        {
-            chart.matrix <- as.matrix(chart.matrix)
-            if (ncol(chart.matrix) == 1 && has.statistic)
-            {
-                colnames(chart.matrix) <- table.statistic
-            } else if (ncol(chart.matrix) == 1 && !has.statistic) {
-                colnames(chart.matrix) <- c("n")
-            }
-        }
-
-        original.row.count <- nrow(chart.matrix)
-        original.col.count <- ncol(chart.matrix)
-
         ## Convert vectors to matrices
         if (is.vector(chart.matrix))
             chart.matrix <- as.matrix(chart.matrix)
@@ -536,15 +520,22 @@ Chart <-   function(y,
 
         original.chart.matrix <- chart.matrix
 
+        value.title <- if (table.statistic != "")
+            table.statistic
+        else if (length(colnames(chart.matrix)) == 1)
+            colnames(chart.matrix)
+        else
+            ""
+
         ## If no x.title or y.title provided, take defaults from data input
         if (x.title == "" || length(x.title) == 0)
-            x.title <- if (swap.axes.and.data) table.statistic else table.axes.labels[1]
+            x.title <- if (swap.axes.and.data) value.title else table.axes.labels[1]
 
         if (x.title == "FALSE" || x.title == FALSE)
             x.title <- ""
 
         if (y.title == "" || length(y.title) == 0)
-            y.title <- if (swap.axes.and.data) table.axes.labels[1] else table.statistic
+            y.title <- if (swap.axes.and.data) table.axes.labels[1] else value.title
 
         if (y.title == "FALSE" || y.title == FALSE)
             y.title <- ""
