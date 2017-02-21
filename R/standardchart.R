@@ -474,6 +474,10 @@ Chart <-   function(y,
 
     if (!is.scatterplot.or.bubbleplot)
     {
+        ## Convert arrays to matrices
+        if (is.array(chart.matrix))
+            chart.matrix <- as.matrix(chart.matrix)
+
         ## Convert vectors to matrices
         if (is.vector(chart.matrix))
             chart.matrix <- as.matrix(chart.matrix)
@@ -493,7 +497,7 @@ Chart <-   function(y,
         ## Use default row and column labels, if they are missing from the matrix
         if (is.null(rownames(chart.matrix)))
             rownames(chart.matrix) <- 1:nrow(chart.matrix)
-        if (is.null(colnames(chart.matrix)))
+        if (is.null(colnames(chart.matrix)) && ncol(chart.matrix) > 1)
             colnames(chart.matrix) <- paste0("Series", 1:ncol(chart.matrix))
 
         ## Ignore rows or columns, using flipData::GetTidyTwoDimensionalArray()

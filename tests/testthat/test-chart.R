@@ -59,6 +59,13 @@ monthly <- structure(c(7.34177215189873, 9.36708860759494, 9.36708860759494,
                     name = "Interview Date by Gender",
                     questions = c("Interview Date", "Gender [Cola Tracking - January to December.sav]"))
 
+arr <- structure(c(13.4556574923547, 11.9266055045872, 10.0917431192661,
+                     11.0091743119266, 10.7033639143731, 8.25688073394496, 12.2324159021407,
+                     15.5963302752294, 6.72782874617737, 100), .Dim = 10L, statistic = "%", .Dimnames = list(
+                     c("18 to 24", "25 to 29", "30 to 34", "35 to 39", "40 to 44",
+                     "45 to 49", "50 to 54", "55 to 64", "65 or more", "NET")),
+                       name = "Q3. Age", questions = c("Q3. Age", "SUMMARY"))
+
 # Input types
 
 for (t in types)
@@ -179,3 +186,7 @@ for (t in c("Line", "Bar", "Column"))
         expect_error(print(Chart(monthly, t)), NA)
     })
 }
+
+test_that("Array", {
+    expect_error(Chart(y = arr, type = "Area"), NA)
+})
