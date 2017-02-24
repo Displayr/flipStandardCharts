@@ -564,10 +564,11 @@ Chart <-   function(y,
     if (is.null(data.label.font.color)) data.label.font.color <- global.font.color
 
     # Default margins
+    is.default.margin.bottom <- is.null(margin.bottom)
     if (is.null(margin.top))
-        margin.top <- 80
+        margin.top <- 40
     if (is.null(margin.bottom))
-        margin.bottom <- 80
+        margin.bottom <- 70
     if (is.null(margin.left))
         margin.left <- 80
     if (is.null(margin.right))
@@ -850,8 +851,8 @@ Chart <-   function(y,
     else if (x.tick.label.autoformat)
     {
         new.x.labels <- autoFormatLongLabels(x.labels)
-        if (!all(new.x.labels == x.labels) && margin.bottom == 80)
-            margin.bottom <- 140
+        if (!all(new.x.labels == x.labels) && length(x.labels) > 12 && is.default.margin.bottom)
+            margin.bottom <- 120
         x.labels <- new.x.labels
     }
     else if (is.null(x.tick.angle))
