@@ -566,7 +566,7 @@ Chart <-   function(y,
     # Default margins
     is.default.margin.bottom <- is.null(margin.bottom)
     if (is.null(margin.top))
-        margin.top <- 40
+        margin.top <- if (is.null(title) || title == "") 20 else 40
     if (is.null(margin.bottom))
         margin.bottom <- 70
     if (is.null(margin.left))
