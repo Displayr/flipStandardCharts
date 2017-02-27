@@ -381,6 +381,7 @@ Chart <-   function(y,
     is.labeled.scatterplot.or.bubbleplot <-  type %in% c("Labeled Scatterplot", "Labeled Bubbleplot")
     is.scatterplot.or.bubbleplot <-  type %in% c("Scatterplot", "Labeled Scatterplot", "Labeled Bubbleplot")
     is.scatterplot <- type %in% c("Scatterplot")
+    is.bar.chart <- type %in% c("Bar", "Stacked Bar", "100% Stacked Bar")
 
     if (!is.area.chart && !is.bar.or.column.chart && !is.null(opacity))
         warning("The opacity parameter is only valid for area, bar and column charts.")
@@ -565,6 +566,8 @@ Chart <-   function(y,
 
     # Default margins
     is.default.margin.bottom <- is.null(margin.bottom)
+    is.default.margin.left <- is.null(margin.left)
+    is.default.margin.right <- is.null(margin.right)
     if (is.null(margin.top))
         margin.top <- if (is.null(title) || title == "") 20 else 40
     if (is.null(margin.bottom))
@@ -851,8 +854,13 @@ Chart <-   function(y,
     else if (x.tick.label.autoformat)
     {
         new.x.labels <- autoFormatLongLabels(x.labels)
-        if (!all(new.x.labels == x.labels) && length(x.labels) > 3 && is.default.margin.bottom)
-            margin.bottom <- 120
+        if (!all(new.x.labels == x.labels))
+        {
+            if (is.bar.chart && is.default.margin.left)
+                margin.left <- 170
+            else if (length(x.labels) > 3 && is.default.margin.bottom)
+                margin.bottom <- 120
+        }
         x.labels <- new.x.labels
     }
     else if (is.null(x.tick.angle))
@@ -1131,6 +1139,9 @@ Chart <-   function(y,
     ## Hide legend if only one series to plot
     if (ncol(chart.matrix) == 1)
         legend.show <- FALSE
+
+    if (is.bar.chart && !legend.show && is.default.margin.right)
+        margin.right <- 0
 
     hover.mode <- if (tooltip.show) "closest" else FALSE
 
