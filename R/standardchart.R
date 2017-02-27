@@ -571,7 +571,7 @@ Chart <-   function(y,
     if (is.null(margin.top))
         margin.top <- if (is.null(title) || title == "") 20 else 40
     if (is.null(margin.bottom))
-        margin.bottom <- 70
+        margin.bottom <- if (x.title == "") 50 else 70
     if (is.null(margin.left))
         margin.left <- 80
     if (is.null(margin.right))
@@ -859,7 +859,7 @@ Chart <-   function(y,
             if (is.bar.chart && is.default.margin.left)
                 margin.left <- 170
             else if (length(x.labels) > 3 && is.default.margin.bottom)
-                margin.bottom <- 120
+                margin.bottom <- if (x.title == "") 100 else 120
         }
         x.labels <- new.x.labels
     }
