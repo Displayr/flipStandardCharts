@@ -851,7 +851,7 @@ Chart <-   function(y,
     else if (x.tick.label.autoformat)
     {
         new.x.labels <- autoFormatLongLabels(x.labels)
-        if (!all(new.x.labels == x.labels) && length(x.labels) > 12 && is.default.margin.bottom)
+        if (!all(new.x.labels == x.labels) && length(x.labels) > 3 && is.default.margin.bottom)
             margin.bottom <- 120
         x.labels <- new.x.labels
     }
