@@ -2,7 +2,7 @@
 #'
 #' \code{Chart} generates standard charts from plotly library.
 #'
-#' @param y A table or matrix.
+#' @param y A table, matrix, vector or data frame.
 #' @param type Character; type of chart. Can be "Area", "Stacked Area",
 #' or "100\% Stacked Area".
 #' @param transpose Logical; should the final output be transposed?
@@ -71,6 +71,7 @@
 #' @param y.bounds.maximum Maximum of range for
 #' plotting; NULL = no manual range set.  Must be greater than y.bounds.minimum
 #' @param y.tick.distance Tick mark distance.
+#' @param y.zero Whether the y-axis should include zero.
 #' @param y.zero.line.width Width in pixels of zero line; 0 = no zero line
 #' shown
 #' @param y.zero.line.color Color of horizontal zero line as a named
@@ -275,6 +276,7 @@ Chart <-   function(y,
                     y.bounds.minimum = NULL,
                     y.bounds.maximum = NULL,
                     y.tick.distance = NULL,
+                    y.zero = FALSE,
                     y.zero.line.width = 0,
                     y.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
                     y.position = "left",
@@ -480,7 +482,7 @@ Chart <-   function(y,
             chart.matrix <- as.matrix(chart.matrix)
 
         ## Convert vectors to matrices
-        if (is.vector(chart.matrix))
+        if ("numeric" %in% class(chart.matrix))
             chart.matrix <- as.matrix(chart.matrix)
 
         ## Transform chart.matrix based on transposition requirements.
@@ -1282,6 +1284,8 @@ Chart <-   function(y,
     ## Set htmlwidget padding to zero (defaults to 40px)
     p$sizingPolicy$browser$padding <- 0
 
+    y.range.mode <- if (y.zero) "tozero" else "normal"
+
     ## Set plotly layout styles
     p <- layout(p,
         title = title,
@@ -1323,7 +1327,7 @@ Chart <-   function(y,
             tickvals = y.tickvals,
             ticktext = y.ticktext,
             range = y.range,
-            rangemode = "tozero",
+            rangemode = y.range.mode,
             ticks = y.tick.marks,
             tickangle = y.tick.angle,
             ticklen = y.tick.mark.length,

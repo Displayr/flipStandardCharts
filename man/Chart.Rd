@@ -20,9 +20,9 @@ Chart(y, type = "Column", transpose = FALSE, title = "",
   y.title.font.family = NULL, y.title.font.size = 12, y.line.width = 0,
   y.line.color = rgb(0, 0, 0, maxColorValue = 255), y.tick.marks = "",
   y.tick.mark.length = 5, y.bounds.minimum = NULL,
-  y.bounds.maximum = NULL, y.tick.distance = NULL, y.zero.line.width = 0,
-  y.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
-  y.position = "left", y.data.reversed = FALSE, y.grid.width = 1,
+  y.bounds.maximum = NULL, y.tick.distance = NULL, y.zero = FALSE,
+  y.zero.line.width = 0, y.zero.line.color = rgb(44, 44, 44, maxColorValue =
+  255), y.position = "left", y.data.reversed = FALSE, y.grid.width = 1,
   y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
   y.tick.show = TRUE, y.tick.suffix = "", y.tick.prefix = "",
   y.tick.decimals = NULL, y.tick.format.manual = "",
@@ -65,7 +65,7 @@ Chart(y, type = "Column", transpose = FALSE, title = "",
   us.date.format = NULL)
 }
 \arguments{
-\item{y}{A table or matrix.}
+\item{y}{A table, matrix, vector or data frame.}
 
 \item{type}{Character; type of chart. Can be "Area", "Stacked Area",
 or "100\% Stacked Area".}
@@ -172,6 +172,8 @@ NULL = no manual range set.  Must be less than y.bounds.maximum}
 plotting; NULL = no manual range set.  Must be greater than y.bounds.minimum}
 
 \item{y.tick.distance}{Tick mark distance.}
+
+\item{y.zero}{Whether the y-axis should include zero.}
 
 \item{y.zero.line.width}{Width in pixels of zero line; 0 = no zero line
 shown}
