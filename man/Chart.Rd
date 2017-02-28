@@ -20,7 +20,7 @@ Chart(y, type = "Column", transpose = FALSE, title = "",
   y.title.font.family = NULL, y.title.font.size = 12, y.line.width = 0,
   y.line.color = rgb(0, 0, 0, maxColorValue = 255), y.tick.marks = "",
   y.tick.mark.length = 5, y.bounds.minimum = NULL,
-  y.bounds.maximum = NULL, y.tick.distance = NULL, y.zero = FALSE,
+  y.bounds.maximum = NULL, y.tick.distance = NULL, y.zero = TRUE,
   y.zero.line.width = 0, y.zero.line.color = rgb(44, 44, 44, maxColorValue =
   255), y.position = "left", y.data.reversed = FALSE, y.grid.width = 1,
   y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
