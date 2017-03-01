@@ -482,7 +482,7 @@ Chart <-   function(y,
             chart.matrix <- as.matrix(chart.matrix)
 
         ## Convert vectors to matrices
-        if ("numeric" %in% class(chart.matrix))
+        if (any(c("numeric", "integer") %in% class(chart.matrix)))
             chart.matrix <- as.matrix(chart.matrix)
 
         ## Transform chart.matrix based on transposition requirements.
@@ -567,6 +567,7 @@ Chart <-   function(y,
     if (is.null(data.label.font.color)) data.label.font.color <- global.font.color
 
     # Default margins
+    is.default.margin.top <- is.null(margin.top)
     is.default.margin.bottom <- is.null(margin.bottom)
     is.default.margin.left <- is.null(margin.left)
     is.default.margin.right <- is.null(margin.right)
@@ -858,9 +859,17 @@ Chart <-   function(y,
         new.x.labels <- autoFormatLongLabels(x.labels)
         if (!all(new.x.labels == x.labels))
         {
-            if (is.bar.chart && is.default.margin.left)
-                margin.left <- 170
-            else if (length(x.labels) > 3 && is.default.margin.bottom)
+            if (is.bar.chart)
+            {
+                if (y.position == "right")
+                {
+                    if (is.default.margin.right)
+                        margin.right <- 170
+                }
+                else if (is.default.margin.left)
+                    margin.left <- 170
+            }
+            else if (length(x.labels) > 9 && is.default.margin.bottom)
                 margin.bottom <- if (x.title == "") 100 else 120
         }
         x.labels <- new.x.labels
@@ -1142,8 +1151,17 @@ Chart <-   function(y,
     if (ncol(chart.matrix) == 1)
         legend.show <- FALSE
 
-    if (is.bar.chart && !legend.show && is.default.margin.right)
-        margin.right <- 0
+    if (is.bar.chart && !legend.show && is.default.margin.right && y.position != "right")
+        margin.right <- 20
+    if (y.position == "right" && is.default.margin.left)
+        margin.left <- 20
+    if (x.position == "top")
+    {
+        if (is.default.margin.top)
+            margin.top <- if (is.null(title) || title == "") 50 else 70
+        if (is.default.margin.bottom)
+            margin.bottom <- 20
+    }
 
     hover.mode <- if (tooltip.show) "closest" else FALSE
 
