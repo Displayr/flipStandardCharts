@@ -578,7 +578,7 @@ Chart <-   function(y,
     if (is.null(margin.left))
         margin.left <- 80
     if (is.null(margin.right))
-        margin.right <- 80
+        margin.right <- 60
     if (is.null(margin.inner.pad))
         margin.inner.pad <- 0
 
@@ -1275,6 +1275,11 @@ Chart <-   function(y,
             }
             else
             {
+                # Substitute dollar signs with unicode equivalent as plotly
+                # is treating the text inside as LaTeX
+                y.label <- gsub("\\$", "\UFF04", y.labels[i])
+                Encoding(y.label) <- "UTF-8"
+
                 p <- add_trace(p,
                                type = plotly.type,
                                x = x,
@@ -1282,7 +1287,7 @@ Chart <-   function(y,
                                fill = fill.bound,
                                fillcolor = toRGB(colors[i], alpha = opacity),
                                line = lines,
-                               name = y.labels[i],
+                               name = y.label,
                                legendgroup = legend.group,
                                text = source.text,
                                textfont = textfont,
