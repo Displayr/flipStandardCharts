@@ -846,7 +846,7 @@ Chart <-   function(y,
     y.labels <- colnames(chart.matrix)
 
     ymd <- PeriodNameToDate(x.labels, us.format = us.date.format)
-    if (!any(is.na(ymd)))
+    if (!any(is.na(ymd)) && (is.area.or.line.chart || length(x.labels) > 6))
     {
         x.labels <- ymd
         if (swap.axes.and.data)
