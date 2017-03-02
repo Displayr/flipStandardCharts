@@ -384,6 +384,7 @@ Chart <-   function(y,
     is.scatterplot.or.bubbleplot <-  type %in% c("Scatterplot", "Labeled Scatterplot", "Labeled Bubbleplot")
     is.scatterplot <- type %in% c("Scatterplot")
     is.bar.chart <- type %in% c("Bar", "Stacked Bar", "100% Stacked Bar")
+    is.column.chart <- type %in% c("Column", "Stacked Column", "100% Stacked Column")
 
     if (!is.area.chart && !is.bar.or.column.chart && !is.null(opacity))
         warning("The opacity parameter is only valid for area, bar and column charts.")
@@ -846,7 +847,9 @@ Chart <-   function(y,
     y.labels <- colnames(chart.matrix)
 
     ymd <- PeriodNameToDate(x.labels, us.format = us.date.format)
-    if (!any(is.na(ymd)) && (is.area.or.line.chart || length(x.labels) > 6))
+    if (!any(is.na(ymd)) && (is.area.or.line.chart ||
+         (is.bar.chart && length(x.labels) > 10) ||
+         (is.column.chart && length(x.labels) > 6)))
     {
         x.labels <- ymd
         if (swap.axes.and.data)
