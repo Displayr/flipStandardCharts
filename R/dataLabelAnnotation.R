@@ -32,7 +32,7 @@ dataLabelAnnotation <- function(chart.matrix,
         y.positions <- chart.matrix
     }
 
-    x.positions <- if (!any(is.na(dates)))
+    x.positions <- if (!is.null(dates))
     {
         date.vals <- as.numeric(dates) * 1000
         x.positions <- date.vals + rep(series.positions, each = nrow(chart.matrix)) * (date.vals[2] - date.vals[1])

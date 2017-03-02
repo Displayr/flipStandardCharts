@@ -851,34 +851,39 @@ Chart <-   function(y,
          (is.bar.chart && length(x.labels) > 10) ||
          (is.column.chart && length(x.labels) > 6)))
     {
+        use.dates <- TRUE
         x.labels <- ymd
         if (swap.axes.and.data)
             y.axis.type <- "date"
         else
             x.axis.type <- "date"
     }
-    else if (x.tick.label.autoformat)
+    else
     {
-        new.x.labels <- autoFormatLongLabels(x.labels)
-        if (!all(new.x.labels == x.labels))
+        ymd <- NULL
+        if (x.tick.label.autoformat)
         {
-            if (is.bar.chart)
+            new.x.labels <- autoFormatLongLabels(x.labels)
+            if (!all(new.x.labels == x.labels))
             {
-                if (y.position == "right")
+                if (is.bar.chart)
                 {
-                    if (is.default.margin.right)
-                        margin.right <- 170
+                    if (y.position == "right")
+                    {
+                        if (is.default.margin.right)
+                            margin.right <- 170
+                    }
+                    else if (is.default.margin.left)
+                        margin.left <- 170
                 }
-                else if (is.default.margin.left)
-                    margin.left <- 170
+                else if (length(x.labels) > 9 && is.default.margin.bottom)
+                    margin.bottom <- if (x.title == "") 100 else 120
             }
-            else if (length(x.labels) > 9 && is.default.margin.bottom)
-                margin.bottom <- if (x.title == "") 100 else 120
+            x.labels <- new.x.labels
         }
-        x.labels <- new.x.labels
+        else if (is.null(x.tick.angle))
+            x.tick.angle <- 0
     }
-    else if (is.null(x.tick.angle))
-        x.tick.angle <- 0
 
     # Bar and column chart data label annotations
     data.annotations <- if (data.label.show && is.bar.or.column.chart)
