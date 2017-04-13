@@ -370,7 +370,7 @@ Chart <-   function(y,
     series.marker.show <- "none"
     if (type == "Donut")
         transpose <- FALSE
-    if (type != "Donut" || is.null(pie.subslice.colors) || pie.subslice.colors != "Group colors")
+    if (type != "Pie" || is.null(pie.subslice.colors) || pie.subslice.colors != "Group colors")
          pie.subslice.colors <- NULL
     if (type != "Labeled Bubbleplot")
         z.title <- ""
@@ -379,11 +379,11 @@ Chart <-   function(y,
         scatter.group.indices <- NULL
         scatter.group.labels <- NULL
         series.marker.show <- "automatic"
+    } else
+    {
         data.label.decimals <- 2
         data.label.show <- TRUE
     }
-
-
     if (type == "Bar")
     {
         y.tick.prefix <- ""
@@ -394,7 +394,6 @@ Chart <-   function(y,
         x.tick.suffix <- ""
         x.tick.prefix <- ""
     }
-
     if (pie.show.percentages || type %in% c("100% Stacked Area", "100% Stacked Bar", "100% Stacked Column"))
     {
         x.tick.prefix <- ""
@@ -415,8 +414,8 @@ Chart <-   function(y,
     } else
     {
         pie.show.percentages <- FALSE
+        pie.inner.radius <- NULL
     }
-
     if (!data.label.show)
     {
         data.label.decimals <- 2
