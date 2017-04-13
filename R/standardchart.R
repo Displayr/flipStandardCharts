@@ -378,11 +378,11 @@ Chart <-   function(y,
     {
         scatter.group.indices <- NULL
         scatter.group.labels <- NULL
-        series.marker.show <- "automatic"
     } else
     {
         data.label.decimals <- 2
         data.label.show <- TRUE
+        series.marker.show <- "automatic"
     }
     if (type == "Bar")
     {
