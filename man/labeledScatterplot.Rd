@@ -40,4 +40,3 @@ labeledScatterplot(chart.matrix, colors = NULL, colors.reverse = FALSE,
 \description{
 \code{labeledScatterplot}
 }
-

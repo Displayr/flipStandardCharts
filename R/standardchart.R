@@ -323,7 +323,7 @@ Chart <-   function(y,
                     x.tick.font.family = NULL,
                     x.tick.font.size = 10,
                     x.tick.label.autoformat = TRUE,
-                    series.marker.show = NULL,
+                    series.marker.show = "none", # ignored
                     series.marker.colors = NULL,
                     series.marker.colors.reverse = FALSE,
                     series.marker.opacity = 1,
@@ -343,11 +343,11 @@ Chart <-   function(y,
                     rows.to.ignore = "Total, NET, SUM",
                     cols.to.ignore = "Total, NET, SUM",
                     bar.gap = 0.15,
-                    data.label.show = NULL,
+                    data.label.show = FALSE,
                     data.label.font.family = NULL,
                     data.label.font.size = 10,
                     data.label.font.color = NULL,
-                    data.label.decimals = 2,
+                    data.label.decimals = 2, # Ignored in Labeled Bubble and Scatterplots
                     data.label.prefix = "",
                     data.label.suffix = "",
                     data.label.threshold = NULL,
@@ -365,6 +365,65 @@ Chart <-   function(y,
                     scatter.group.labels = "",
                     us.date.format = NULL)
 {
+    # Set undefined variables to defaults
+    # This is for compatibility with R GUI controls
+    series.marker.show <- "none"
+    if (type == "Donut")
+        transpose <- FALSE
+    if (type != "Donut" || is.null(pie.subslice.colors) || pie.subslice.colors != "Group colors")
+         pie.subslice.colors <- NULL
+    if (type != "Labeled Bubbleplot")
+        z.title <- ""
+    if (!type %in% c("Labeled Scatterplot", "Labeled Bubbleplot"))
+    {
+        scatter.group.indices <- NULL
+        scatter.group.labels <- NULL
+        series.marker.show <- "automatic"
+        data.label.decimals <- 2
+        data.label.show <- TRUE
+    }
+
+
+    if (type == "Bar")
+    {
+        y.tick.prefix <- ""
+        y.tick.suffix <- ""
+    }
+    if (!type %in% c("Bar", "Labeled Scatterplot", "Labeled Bubbleplot"))
+    {
+        x.tick.suffix <- ""
+        x.tick.prefix <- ""
+    }
+
+    if (pie.show.percentages || type %in% c("100% Stacked Area", "100% Stacked Bar", "100% Stacked Column"))
+    {
+        x.tick.prefix <- ""
+        x.tick.suffix <- ""
+        y.tick.prefix <- ""
+        y.tick.suffix <- ""
+        data.label.prefix <- ""
+        data.label.suffix <- ""
+    }
+    if (type %in% c("Pie", "Donut"))
+    {
+        x.title <- ""
+        y.title <- ""
+        data.label.show <- TRUE
+        if (pie.show.percentages)
+            data.label.suffix <- "%"
+
+    } else
+    {
+        pie.show.percentages <- FALSE
+    }
+
+    if (!data.label.show)
+    {
+        data.label.decimals <- 2
+    }
+
+
+
     if (!(type %in% c("Area", "Stacked Area", "100% Stacked Area", "Bar", "Stacked Bar", "100% Stacked Bar",
                 "Column", "Stacked Column", "100% Stacked Column", "Line", "Pie", "Donut",
                 "Labeled Scatterplot", "Labeled Bubbleplot")))

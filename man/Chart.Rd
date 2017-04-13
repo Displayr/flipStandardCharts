@@ -42,7 +42,7 @@ Chart(y, type = "Column", transpose = FALSE, title = "",
   x.hovertext.decimals = NULL, x.hovertext.format.manual = "",
   x.tick.angle = NULL, x.tick.font.color = NULL,
   x.tick.font.family = NULL, x.tick.font.size = 10,
-  x.tick.label.autoformat = TRUE, series.marker.show = NULL,
+  x.tick.label.autoformat = TRUE, series.marker.show = "none",
   series.marker.colors = NULL, series.marker.colors.reverse = FALSE,
   series.marker.opacity = 1, series.marker.size = 6,
   series.marker.border.width = 1, series.marker.border.colors = NULL,
@@ -53,7 +53,7 @@ Chart(y, type = "Column", transpose = FALSE, title = "",
   global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
   maxColorValue = 255), rows.to.ignore = "Total, NET, SUM",
   cols.to.ignore = "Total, NET, SUM", bar.gap = 0.15,
-  data.label.show = NULL, data.label.font.family = NULL,
+  data.label.show = FALSE, data.label.font.family = NULL,
   data.label.font.size = 10, data.label.font.color = NULL,
   data.label.decimals = 2, data.label.prefix = "", data.label.suffix = "",
   data.label.threshold = NULL, data.label.position = "top middle",
@@ -426,4 +426,3 @@ corresponding to each row.}
 z <- c(5, 6, 2, 1.5, 9, 2.2)
 Chart(y = z, type = "Area")
 }
-
