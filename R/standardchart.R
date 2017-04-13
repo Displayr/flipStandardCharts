@@ -370,7 +370,7 @@ Chart <-   function(y,
     series.marker.show <- "none"
     if (type == "Donut")
         transpose <- FALSE
-    if (type != "Pie" || is.null(pie.subslice.colors) || pie.subslice.colors != "Group colors")
+    if (type != "Pie" || is.null(pie.subslice.colors) || pie.subslice.colors == "Group colors")
          pie.subslice.colors <- NULL
     if (type != "Labeled Bubbleplot")
         z.title <- ""
