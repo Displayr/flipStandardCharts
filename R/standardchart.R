@@ -370,6 +370,14 @@ Chart <-   function(y,
     series.marker.show <- "none"
     if (type == "Donut")
         transpose <- FALSE
+    if (type %in% c("Area", "Stacked", "100% Stacked Area"))
+        series.line.width <- 0
+    if (type %in% c("Pie", "Donut", "Area", "Stacked Area", "100% Stacked Area",
+                    "Column", "Stacked Column", "100% Stacked Column", "Line"))
+        x.grid.width <- 0
+    if (type %in% c("Pie", "Donut", "Bar", "Stacked Bar", "100% Stacked Bar",
+                    "Labeled Scatterplot", "Labeled Bubbleplot"))
+        y.grid.width <- 0
     if (type != "Pie" || is.null(pie.subslice.colors) || pie.subslice.colors == "Group colors")
          pie.subslice.colors <- NULL
     if (type != "Labeled Bubbleplot")
