@@ -34,7 +34,8 @@ dataLabelAnnotation <- function(chart.matrix,
 
     x.positions <- if (!is.null(dates))
     {
-        date.vals <- as.numeric(dates) * 1000
+        date.vals <- as.numeric(dates) * 1000           # convert to milliseconds
+        date.vals <- date.vals - 40000000               # middle of day
         x.positions <- date.vals + rep(series.positions, each = nrow(chart.matrix)) * (date.vals[2] - date.vals[1])
     }
     else

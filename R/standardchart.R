@@ -907,7 +907,7 @@ Chart <-   function(y,
 
     ymd <- PeriodNameToDate(x.labels, us.format = us.date.format)
     if (!any(is.na(ymd)) && (is.area.or.line.chart ||
-         (is.bar.chart && length(x.labels) > 10) ||
+         (is.bar.chart && length(x.labels) > 6) ||
          (is.column.chart && length(x.labels) > 6)))
     {
         use.dates <- TRUE
