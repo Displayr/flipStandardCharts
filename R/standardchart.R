@@ -498,7 +498,7 @@ Chart <-   function(y,
         stop(msg)
 
     if (is.null(colors))
-        colors <- qColors
+        colors <- "Default colors"
 
     if (is.null(charting.area.fill.color))
         charting.area.fill.color <- background.fill.color
