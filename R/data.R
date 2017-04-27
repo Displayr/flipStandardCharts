@@ -1,8 +1,3 @@
-# Vector of the 15 standard Q colors
-qColors <- c("#5B9BD5FF", "#ED7D31FF", "#A5A5A5FF", "#1EC000FF", "#4472C4FF",
-             "#70AD47FF", "#255E91FF", "#9E480EFF", "#636363FF", "#997300FF",
-             "#264478FF", "#43682BFF", "#000000FF", "#FF2323FF")
-
 # Vector of all available Plotly symbols
 plotlySymbols <- c(0, 100, 200, 300, 1, 101, 201, 301, 2, 102, 202, 302, 3, 103,
                    203, 303, 4, 104, 204, 304, 5, 105, 205, 305, 6, 106, 206, 306,
