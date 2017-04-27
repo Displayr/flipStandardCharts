@@ -58,10 +58,7 @@ pieChart <- function(chart.matrix,
         pie.data <- chart.matrix
     }
     else
-    {
         pie.data <- cbind(suppressWarnings(stack(as.data.frame(chart.matrix[,1:ncol(chart.matrix)]))), labels = rep(rownames(chart.matrix),ncol(chart.matrix)))
-        pie.data <- pie.data[with(pie.data,order(pie.data[,2])),]
-    }
 
     is.data.2d <- length(unique(pie.data[, 3])) > 1
 
