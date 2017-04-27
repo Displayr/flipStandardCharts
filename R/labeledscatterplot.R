@@ -42,7 +42,7 @@ labeledScatterplot <- function(chart.matrix,
                             y.title)
 
     if (is.null(colors))
-        colors <- qColors
+        colors <- "Default colors"
 
     colors <- StripAlphaChannel(ChartColors(number.colors.needed = length(unique(data$group)),
                                             given.colors = colors,
