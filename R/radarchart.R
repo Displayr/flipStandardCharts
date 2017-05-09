@@ -64,6 +64,15 @@ radarChart <- function(chart.matrix,
     n <- nrow(chart.matrix)
     m <- ncol(chart.matrix)
 
+    if (is.null(n) || n == 1 || m == 1)
+    {
+        # only 1 series
+        chart.matrix <- data.frame(x=chart.matrix)
+        n <- nrow(chart.matrix)
+        m <- ncol(chart.matrix)
+        legend.show <- FALSE
+    }
+
     tick.vals <- NULL
     if (is.null(y.tick.distance))
         y.tick.distance <- 10^round(log10(30)-1)
@@ -79,7 +88,7 @@ radarChart <- function(chart.matrix,
     if (is.null(y.hovertext.decimals))
         y.hovertext.decimals <- y.tick.decimals
 
-    
+
     # Convert data (polar) into x, y coordinates
     pos <- do.call(rbind, lapply(as.data.frame(chart.matrix), getPolarCoord))
     pos <- data.frame(pos, Name=rep(rownames(chart.matrix)[c(1:n,1)], m),
@@ -103,9 +112,9 @@ radarChart <- function(chart.matrix,
                     line=list(width=x.grid.width, color=x.grid.color)))})
     # Circular grid
     # for (tt in tick.vals)
-    #    grid[[length(grid)+1]] <- list(type="circle", x0=-tt, x1=tt, y0=-tt, y1=tt, 
+    #    grid[[length(grid)+1]] <- list(type="circle", x0=-tt, x1=tt, y0=-tt, y1=tt,
     #     line=list(width=1, dash="dot", color=rgb(225,225,225,maxColorValue = 255)))
-    
+
     # Hexagonal grid
     for (tt in tick.vals)
     {
@@ -137,7 +146,7 @@ radarChart <- function(chart.matrix,
              font=list(family=x.title.font.family, color=x.title.font.color, size=x.title.font.size),
              xshift=outer[1:n,1]/r.max * 5, xanchor=xanch))
 
-    if (y.tick.show && !is.null(tick.vals))
+    if (y.grid.width > 0 && y.tick.show && !is.null(tick.vals))
         p <- add_annotations(p, x=rep(0, length(tick.vals)), y=tick.vals, showarrow=F, xanchor="right", xshift=-5,
                 text=paste0(y.tick.prefix, FormatWithDecimals(tick.vals, y.tick.decimals), y.tick.suffix),
                 font=list(family=y.tick.font.family, color=y.tick.font.color, size=y.tick.font.size))
