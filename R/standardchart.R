@@ -4,7 +4,9 @@
 #'
 #' @param y A table, matrix, vector or data frame.
 #' @param type Character; type of chart. Can be "Area", "Stacked Area",
-#' or "100\% Stacked Area".
+#'  "100\% Stacked Area", "Bar", "Stacked Bar", "100% Stacked Bar", 
+#'  "Column", "Stacked Column", "100% Stacked Column", "Line", "Donut",
+#'  "Pie", "Labeled Scatterplot", "Labeled Bubbleplot", "Radar".
 #' @param transpose Logical; should the final output be transposed?
 #' @param title Character; chart title.
 #' @param title.font.family Character; title font family. Can be "Arial Black",
@@ -235,6 +237,7 @@
 #' @importFrom grDevices rgb
 #' @importFrom flipFormat FormatWithDecimals
 #' @importFrom flipTime PeriodNameToDate
+#' @importFrom flipChartBasics ChartColors
 #' @importFrom plotly plot_ly config toRGB add_trace layout
 #' @export
 Chart <-   function(y,
@@ -426,7 +429,7 @@ Chart <-   function(y,
 
     if (!(type %in% c("Area", "Stacked Area", "100% Stacked Area", "Bar", "Stacked Bar", "100% Stacked Bar",
                 "Column", "Stacked Column", "100% Stacked Column", "Line", "Pie", "Donut",
-                "Labeled Scatterplot", "Labeled Bubbleplot")))
+                "Labeled Scatterplot", "Labeled Bubbleplot", "Radar")))
         stop("The input chart type is not supported.")
 
     is.stacked <- type %in% c("Stacked Area", "100% Stacked Area",
@@ -868,19 +871,19 @@ Chart <-   function(y,
     number.colors.needed <- if (is.scatterplot) length(unique(scatterplot.data$group)) else ncol(chart.matrix)
 
     ## Calculate colors
-    colors <- flipChartBasics::ChartColors(number.colors.needed = number.colors.needed,
+    colors <- ChartColors(number.colors.needed = number.colors.needed,
                                            given.colors = colors,
                                            reverse = colors.reverse,
                                            trim.light.colors = TRUE)
-    series.line.colors <- flipChartBasics::ChartColors(number.colors.needed = number.colors.needed,
+    series.line.colors <- ChartColors(number.colors.needed = number.colors.needed,
                                                        given.colors = series.line.colors,
                                                        reverse = series.line.colors.reverse,
                                                        trim.light.colors = TRUE)
-    series.marker.colors <- flipChartBasics::ChartColors(number.colors.needed = number.colors.needed,
+    series.marker.colors <- ChartColors(number.colors.needed = number.colors.needed,
                                                          given.colors = series.marker.colors,
                                                          reverse = series.marker.colors.reverse,
                                                          trim.light.colors = TRUE)
-    series.marker.border.colors <- flipChartBasics::ChartColors(number.colors.needed = number.colors.needed,
+    series.marker.border.colors <- ChartColors(number.colors.needed = number.colors.needed,
                                                                 given.colors = series.marker.border.colors,
                                                                 reverse = series.marker.border.colors.reverse,
                                                                 trim.light.colors = TRUE)
@@ -985,6 +988,66 @@ Chart <-   function(y,
         legend.x <- -.15
         margin.r <- 80
     }
+
+    if (type == "Radar")
+        return(radarChart(chart.matrix, 
+                    title,
+                    title.font.family,
+                    title.font.color,
+                    title.font.size,
+                    colors,
+                    background.fill.color,
+                    background.fill.opacity,
+                    charting.area.fill.color,
+                    charting.area.fill.opacity,
+                    legend.show,
+                    legend.fill,
+                    legend.border.color,
+                    legend.border.line.width,
+                    legend.font.color,
+                    legend.font.family,
+                    legend.font.size,
+                    legend.x.anchor,
+                    legend.y.anchor,
+                    legend.y,
+                    legend.x,
+                    legend.sort.order,
+                    margin.top,
+                    margin.bottom,
+                    margin.left,
+                    margin.right,
+                    margin.inner.pad,
+                    series.marker.colors,
+                    series.marker.size,
+                    series.line.width,
+                    tooltip.show,
+                    modebar.show,
+                    x.title.font.color,
+                    x.title.font.family,
+                    x.title.font.size,
+                    x.grid.width,
+                    x.grid.color,
+                    y.bounds.minimum,
+                    y.bounds.maximum,
+                    y.tick.distance,
+                    y.grid.width,
+                    y.grid.color,
+                    y.tick.show,
+                    y.tick.suffix, # take from data.suffix
+                    y.tick.prefix,
+                    y.tick.decimals,
+                    y.hovertext.decimals,
+                    y.tick.font.color,
+                    y.tick.font.family,
+                    y.tick.font.size,
+                    data.label.show,
+                    data.label.font.family,
+                    data.label.font.size,
+                    data.label.font.color,
+                    data.label.decimals, # Ignored in Labeled Bubble and Scatterplots
+                    data.label.prefix,
+                    data.label.suffix))
+
 
     ## If line thickness is zero, then we shouldn't show a line; ticks only shown if there's a line (same as Excel)
     ## Tick labels only shown if there's a line.

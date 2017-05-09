@@ -68,7 +68,9 @@ Chart(y, type = "Column", transpose = FALSE, title = "",
 \item{y}{A table, matrix, vector or data frame.}
 
 \item{type}{Character; type of chart. Can be "Area", "Stacked Area",
-or "100\% Stacked Area".}
+"100\% Stacked Area", "Bar", "Stacked Bar", "100% Stacked Bar", 
+"Column", "Stacked Column", "100% Stacked Column", "Line", "Donut",
+"Pie", "Labeled Scatterplot", "Labeled Bubbleplot", "Radar".}
 
 \item{transpose}{Logical; should the final output be transposed?}
 
