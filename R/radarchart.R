@@ -71,6 +71,9 @@ radarChart <- function(chart.matrix,
         n <- nrow(chart.matrix)
         m <- ncol(chart.matrix)
         legend.show <- FALSE
+    } else if (n == 2)
+    {
+        warning("Radar chart only has two spokes. It may be more appropriate to use another chart type.")
     }
 
     tick.vals <- NULL
@@ -79,7 +82,12 @@ radarChart <- function(chart.matrix,
     if (is.null(y.bounds.minimum))
         y.bounds.minimum <- 0
     if (is.null(y.bounds.maximum))
-        y.bounds.maximum <- max(chart.matrix)
+    {
+        offset <- 1.0
+        if (data.label.show)
+            offset <- 1 + data.label.font.size/100
+        y.bounds.maximum <- offset * max(chart.matrix)
+    }
     tick.vals <- seq(from=y.bounds.minimum, to=y.bounds.maximum, by=y.tick.distance)
     r.max <- y.bounds.maximum
 
