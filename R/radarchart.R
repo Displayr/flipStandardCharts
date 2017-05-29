@@ -87,7 +87,11 @@ radarChart <- function(chart.matrix,
         y.bounds.maximum <- offset * max(chart.matrix)
     }
     if (is.null(y.tick.distance))
-        y.tick.distance <- 10^round(log10(y.bounds.maximum)-1)
+    {
+        base <- 10^round(log10(y.bounds.maximum) - 1)
+        mult <- floor((y.bounds.maximum/base)/5)
+        y.tick.distance <- base * mult
+    }
     tick.vals <- seq(from=y.bounds.minimum, to=y.bounds.maximum, by=y.tick.distance)
     r.max <- y.bounds.maximum
 
