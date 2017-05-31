@@ -104,7 +104,7 @@ radarChart <- function(chart.matrix,
     # Convert data (polar) into x, y coordinates
     pos <- do.call(rbind, lapply(as.data.frame(chart.matrix), getPolarCoord))
     pos <- data.frame(pos, Name=rep(rownames(chart.matrix)[c(1:n,1)], m),
-                      Group=rep(colnames(chart.matrix),each=n+1), stringsAsFactors = F)
+                      Group=rep(colnames(chart.matrix),each=n+1), stringsAsFactors = T, check.names=F)
     chart.matrix <- rbind(chart.matrix, chart.matrix[1,])
     pos <- cbind(pos, HoverText=sprintf("%s: %s%s%s", pos$Group, y.tick.prefix,
             FormatWithDecimals(unlist(chart.matrix), y.hovertext.decimals), y.tick.suffix),
@@ -112,27 +112,29 @@ radarChart <- function(chart.matrix,
             FormatWithDecimals(unlist(chart.matrix), data.label.decimals), data.label.suffix))
 
 
-    p <- plot_ly(data=pos, x=~x, y=~y, type="scatter", mode="lines+markers",
-                 fill="toself", color=~Group, colors=series.marker.colors,
-                 marker=list(size=series.marker.size), line=list(width=series.line.width),
-                 hoverinfo="text", text=~HoverText)
+    p <- plot_ly(data=pos, x=~x, y=~y, type="scatter", mode="lines", showlegend=TRUE,
+                 fill="toself", color=~Group, colors=series.marker.colors, hoverinfo="skip",
+                 line=list(width=series.line.width))
 
-    # Grid lines
+    # Markers are added as a separate trace to enable overlapping hoverinfo
+    p <- add_trace(p, data=pos, x=~x, y=~y, type="scatter", mode="markers+lines",
+                 fill="none", color=~Group, colors=series.marker.colors,
+                 marker=list(size=series.marker.size), line=list(width=0),
+                 hoverinfo="text", text=~HoverText, showlegend=FALSE)
+
+    # Radial grid lines
     outer <- getPolarCoord(rep(r.max, n))
     grid <- apply(outer, 1, function(zz){
-        return(list(type="line", x0=0, y0=0, x1=zz[1], y1=zz[2],
+        return(list(type="line", x0=0, y0=0, x1=zz[1], y1=zz[2], layer="below",
                     line=list(width=x.grid.width, color=x.grid.color)))})
-    # Circular grid
-    # for (tt in tick.vals)
-    #    grid[[length(grid)+1]] <- list(type="circle", x0=-tt, x1=tt, y0=-tt, y1=tt,
-    #     line=list(width=1, dash="dot", color=rgb(225,225,225,maxColorValue = 255)))
 
     # Hexagonal grid
     for (tt in tick.vals)
     {
         gpos <- getPolarCoord(rep(tt, n))
         for (i in 1:n)
-            grid[[length(grid)+1]] <- list(type="line", x0=gpos[i,1], x1=gpos[i+1,1], y0=gpos[i,2], y1=gpos[i+1,2],
+            grid[[length(grid)+1]] <- list(type="line", layer="below",
+                 x0=gpos[i,1], x1=gpos[i+1,1], y0=gpos[i,2], y1=gpos[i+1,2],
                  line=list(width=y.grid.width, dash="dot", color=y.grid.color))
     }
 
@@ -146,7 +148,7 @@ radarChart <- function(chart.matrix,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
         hovermode = if (tooltip.show) "closest" else FALSE,
-        xaxis=list(title="", showgrid=F, zeroline=F, showticklabels=F),
+        xaxis=list(title="", showgrid=F, zeroline=F, showticklabels=F, categoryorder="array", categoryarray=unique(pos$Group)),
         yaxis=list(title="", showgrid=F, zeroline=F, showticklabels=F),
         legend=list(bgcolor=legend.fill, bordercolor=legend.border.color, borderwidth=legend.border.line.width,
             font=list(color=legend.font.color, family=legend.font.family, size=legend.font.size),

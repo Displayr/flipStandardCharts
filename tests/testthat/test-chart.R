@@ -3,7 +3,7 @@ library(testthat)
 types <- c("Area", "Stacked Area", "100% Stacked Area",
            "Bar", "Stacked Bar", "100% Stacked Bar",
            "Column", "Stacked Column", "100% Stacked Column",
-           "Line", "Pie", "Donut")
+           "Line", "Pie", "Donut", "Radar")
 
 stacked.types <- c("Stacked Area", "100% Stacked Area",
                    "Stacked Bar", "100% Stacked Bar",
