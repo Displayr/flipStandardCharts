@@ -111,16 +111,25 @@ radarChart <- function(chart.matrix,
             DataLabels=sprintf("%s%s%s", data.label.prefix,
             FormatWithDecimals(unlist(chart.matrix), data.label.decimals), data.label.suffix))
 
+    # Initialise plot
+    p <- plot_ly(pos)
+    g.list <- unique(pos$Group)
+    for (ggi in 1:length(g.list))
+    {
+        ind <- which(pos$Group == g.list[ggi])
+        p <- add_trace(p, x=pos$x[ind], y=pos$y[ind], type="scatter", mode="lines", fill="toself",
+                    name=g.list[ggi], showlegend=TRUE, hoverinfo="skip", #evaluation=TRUE,
+                    line=list(width=series.line.width, color=toRGB(series.marker.colors[ggi])))
+    }
 
-    p <- plot_ly(data=pos, x=~x, y=~y, type="scatter", mode="lines", showlegend=TRUE,
-                 fill="toself", color=~Group, colors=series.marker.colors, hoverinfo="skip",
-                 line=list(width=series.line.width))
-
-    # Markers are added as a separate trace to enable overlapping hoverinfo
-    p <- add_trace(p, data=pos, x=~x, y=~y, type="scatter", mode="markers+lines",
-                 fill="none", color=~Group, colors=series.marker.colors,
-                 marker=list(size=series.marker.size), line=list(width=0),
-                 hoverinfo="text", text=~HoverText, showlegend=FALSE)
+    # Markers are added as a separate trace to allow overlapping hoverinfo
+    for (ggi in 1:length(g.list))
+    {
+        ind <- which(pos$Group == g.list[ggi])
+        p <- add_trace(p, x=pos$x[ind], y=pos$y[ind], type="scatter", mode="markers+lines", fill="none",
+                    name=g.list[ggi], showlegend=FALSE, hoverinfo="text", text=pos$HoverText[ind],
+                    marker=list(size=1, color=toRGB(series.marker.colors[ggi])), line=list(width=0))
+    }
 
     # Radial grid lines
     outer <- getPolarCoord(rep(r.max, n))
