@@ -394,7 +394,7 @@ Chart <-   function(y,
         y.tick.prefix <- ""
         y.tick.suffix <- ""
     }
-    if (!type %in% c("Bar", "Labeled Scatterplot", "Labeled Bubbleplot"))
+    if (!type %in% c("Bar", "Scatterplot", "Labeled Scatterplot", "Labeled Bubbleplot"))
     {
         x.tick.suffix <- ""
         x.tick.prefix <- ""
@@ -658,7 +658,7 @@ Chart <-   function(y,
     x.tickformat <- NULL
     y.tickformat <- NULL
     connectgap <- NULL
-    
+
     ## Settings specific to Area Charts
     if (type == "Area" | type == "Stacked Area" | type == "100% Stacked Area")
     {
