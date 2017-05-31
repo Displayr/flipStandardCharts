@@ -4,7 +4,7 @@
 #'
 #' @param y A table, matrix, vector or data frame.
 #' @param type Character; type of chart. Can be "Area", "Stacked Area",
-#'  "100\% Stacked Area", "Bar", "Stacked Bar", "100% Stacked Bar", 
+#'  "100\% Stacked Area", "Bar", "Stacked Bar", "100% Stacked Bar",
 #'  "Column", "Stacked Column", "100% Stacked Column", "Line", "Donut",
 #'  "Pie", "Labeled Scatterplot", "Labeled Bubbleplot", "Radar".
 #' @param transpose Logical; should the final output be transposed?
@@ -238,7 +238,7 @@
 #' @importFrom flipFormat FormatWithDecimals
 #' @importFrom flipTime PeriodNameToDate
 #' @importFrom flipChartBasics ChartColors
-#' @importFrom plotly plot_ly config toRGB add_trace layout
+#' @importFrom plotly plot_ly config toRGB add_trace layout hide_colorbar
 #' @export
 Chart <-   function(y,
                     type = "Column",
@@ -378,11 +378,12 @@ Chart <-   function(y,
          pie.subslice.colors <- NULL
     if (type != "Labeled Bubbleplot")
         z.title <- ""
-    if (!type %in% c("Labeled Scatterplot", "Labeled Bubbleplot"))
+    if (!type %in% c("Scatterplot", "Labeled Scatterplot", "Labeled Bubbleplot"))
     {
         scatter.group.indices <- NULL
         scatter.group.labels <- NULL
-    } else
+    }
+    if (type %in% c("Labeled Scatterplot", "Labeled Bubbleplot"))
     {
         data.label.decimals <- 2
         data.label.show <- TRUE
@@ -407,6 +408,10 @@ Chart <-   function(y,
         data.label.prefix <- ""
         data.label.suffix <- ""
     }
+    if (type == "Scatterplot")
+    {
+        series.mode <- "markers"
+    }
     if (type %in% c("Pie", "Donut"))
     {
         x.title <- ""
@@ -428,7 +433,7 @@ Chart <-   function(y,
 
 
     if (!(type %in% c("Area", "Stacked Area", "100% Stacked Area", "Bar", "Stacked Bar", "100% Stacked Bar",
-                "Column", "Stacked Column", "100% Stacked Column", "Line", "Pie", "Donut",
+                "Column", "Stacked Column", "100% Stacked Column", "Line", "Pie", "Donut", "Scatterplot",
                 "Labeled Scatterplot", "Labeled Bubbleplot", "Radar")))
         stop("The input chart type is not supported.")
 
@@ -653,7 +658,7 @@ Chart <-   function(y,
     x.tickformat <- NULL
     y.tickformat <- NULL
     connectgap <- NULL
-
+    
     ## Settings specific to Area Charts
     if (type == "Area" | type == "Stacked Area" | type == "100% Stacked Area")
     {
@@ -696,8 +701,6 @@ Chart <-   function(y,
             x.title <- scatterplot.data$x.title
         if (y.title == "")
             y.title <- scatterplot.data$y.title
-
-        series.mode <- if (is.null(series.marker.show) || series.marker.show != "none") "markers" else "none"
     }
 
     ## Settings specific to Column Charts
@@ -990,7 +993,7 @@ Chart <-   function(y,
     }
 
     if (type == "Radar")
-        return(radarChart(chart.matrix, 
+        return(radarChart(chart.matrix,
                     title,
                     title.font.family,
                     title.font.color,
@@ -1321,23 +1324,26 @@ Chart <-   function(y,
             y.prefix, FormatWithDecimals(scatterplot.data$y, data.label.decimals), y.suffix, ")")
 
         marker <- if (!is.null(series.mode) && regexpr('marker', series.mode) >= 1)
-            list(size = series.marker.size,
+            list(size = series.marker.size, showscale = FALSE,
                  line = list(width = series.marker.border.width))
         else
             NULL
 
         p <- plot_ly(x = scatterplot.data$x,
                      y = scatterplot.data$y,
+                     color = scatterplot.data$group,
+                     colors = series.marker.colors,
                      type = plotly.type,
                      mode = series.mode,
-                     colors = series.marker.colors,
                      hoverinfo = "x+y+name",
                      text = source.text,
                      textfont = textfont,
                      textposition = data.label.position,
                      marker = marker,
-                     symbol = scatterplot.data$group,
+                     #symbol = scatterplot.data$group,
                      symbols = series.marker.symbols)
+       p <- hide_colorbar(p)
+       p$x$.hideLegend <- (length(unique(scatterplot.data$group)) <= 1)
     }
     else
     {

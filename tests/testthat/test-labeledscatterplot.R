@@ -87,3 +87,21 @@ test_that("Labeled Scatterplot missing",
                                      title = "Labeled Scatterplot")),
                          "Data points with missing values have been omitted."))
 
+test_that("Scatterplot",
+    {
+          expect_error(print(Chart(y = two.cols,
+                             type = "Scatterplot",
+                             title = "Unlabeled Scatterplot")), NA)
+
+          expect_error(print(Chart(y = two.cols,
+                             type = "Scatterplot",
+                             title = "Unlabeled Scatterplot",
+                             scatter.group.indices = "1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3",
+                             scatter.group.labels = "colas, water, coffee")), NA)
+
+          expect_error(print(Chart(y = two.cols,
+                             type = "Scatterplot",
+                             transpose = TRUE,
+                             title = "Unlabeled Scatterplot")), NA)
+        })
+
