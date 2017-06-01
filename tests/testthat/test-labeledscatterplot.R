@@ -110,7 +110,7 @@ test_that("Group ordering",
                 xx <- data.frame(Age=1:9, Weight=c(12,14,15,12,13,14,16,18,12))
                 rownames(xx) <- 1:9
                 expect_error(print(Chart(xx, type="Labeled Scatterplot", colors="Reds, dark to light",
-                                         scatter.group.indices = "2,2,1,4,4,3,2,4,2", scatter.group.labels = "A,B,C,D")), NA)
+                                         scatter.group.indices = "2,2,1,4,4,3,2,4,2", scatter.group.labels = "D,B,C,A")), NA)
                 expect_error(print(Chart(xx, type="Scatterplot", colors="Reds, dark to light",
-                                         scatter.group.indices = "2,2,1,4,4,3,2,4,2", scatter.group.labels = "A,B,C,D")), NA)
+                                         scatter.group.indices = "2,2,1,4,4,3,2,4,2", scatter.group.labels = "D,B,C,A")), NA)
           })

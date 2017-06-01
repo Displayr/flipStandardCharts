@@ -1323,27 +1323,19 @@ Chart <-   function(y,
             x.prefix, FormatWithDecimals(scatterplot.data$x, data.label.decimals), x.suffix, ",",
             y.prefix, FormatWithDecimals(scatterplot.data$y, data.label.decimals), y.suffix, ")")
 
-        marker <- if (!is.null(series.mode) && regexpr('marker', series.mode) >= 1)
-            list(size = series.marker.size, showscale = FALSE,
-                 line = list(width = series.marker.border.width))
-        else
-            NULL
-
-        p <- plot_ly(x = scatterplot.data$x,
-                     y = scatterplot.data$y,
-                     color = scatterplot.data$group,
-                     colors = series.marker.colors,
-                     type = plotly.type,
-                     mode = series.mode,
-                     hoverinfo = "x+y+name",
-                     text = source.text,
-                     textfont = textfont,
-                     textposition = data.label.position,
-                     marker = marker,
-                     #symbol = scatterplot.data$group,
-                     symbols = series.marker.symbols)
-       p <- hide_colorbar(p)
-       p$x$.hideLegend <- (length(unique(scatterplot.data$group)) <= 1)
+        # Iteratively add each group so the order is the same as the dataframe
+        g.list <- unique(scatterplot.data$group)
+        p <- plot_ly(as.data.frame(x=scatterplot.data$x, y=scatterplot.data$y))
+        for (ggi in 1:length(g.list))
+        {
+            ind <- which(scatterplot.data$group == g.list[ggi])
+            p <- add_trace(p, x=scatterplot.data$x[ind], y=scatterplot.data$y[ind],
+                    name=g.list[ggi], showlegend=(length(g.list) > 1),
+                    text=source.text[ind], textfont=textfont, textposition=data.label.position,
+                    marker=list(size=series.marker.size, color=series.marker.colors[ggi],
+                    line=list(width=series.marker.border.width)),
+                    type=plotly.type, mode=series.mode, hoverinfo="x+y+name", symbols=series.marker.symbols)
+        }
     }
     else
     {
