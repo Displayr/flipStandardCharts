@@ -410,7 +410,8 @@ Chart <-   function(y,
     }
     if (type == "Scatterplot")
     {
-        series.mode <- "markers"
+        series.mode <- if (is.null(series.line.width) || series.line.width == 0) "markers"
+                       else "markers+lines"
     }
     if (type %in% c("Pie", "Donut"))
     {
@@ -459,7 +460,7 @@ Chart <-   function(y,
         opacity <- if (type == "Area") 0.4 else 1
 
     if (is.null(series.line.width))
-        series.line.width <- if (is.area.chart) 0 else 3
+        series.line.width <- if (is.area.chart || is.scatterplot) 0 else 3
 
     default.background.color <- rgb(255, 255, 255, maxColorValue = 255)
     if ((background.fill.color != default.background.color ||
@@ -1329,11 +1330,14 @@ Chart <-   function(y,
         for (ggi in 1:length(g.list))
         {
             ind <- which(scatterplot.data$group == g.list[ggi])
+            line.obj <- if (is.null(series.line.width) || series.line.width == 0) NULL
+                        else list(width=series.line.width, color=series.marker.colors[ggi])
+
             p <- add_trace(p, x=scatterplot.data$x[ind], y=scatterplot.data$y[ind],
                     name=g.list[ggi], showlegend=(length(g.list) > 1),
                     text=source.text[ind], textfont=textfont, textposition=data.label.position,
                     marker=list(size=series.marker.size, color=series.marker.colors[ggi],
-                    line=list(width=series.marker.border.width)),
+                    line=list(width=series.marker.border.width)), line=line.obj,
                     type=plotly.type, mode=series.mode, hoverinfo="x+y+name", symbols=series.marker.symbols)
         }
     }
