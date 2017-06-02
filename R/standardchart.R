@@ -603,6 +603,10 @@ Chart <-   function(y,
         else
             ""
 
+        # Replace $ with html entity number otherwise plotly will treat it as LaTeX
+        rownames(chart.matrix) <- gsub("\\$", "&#36;", rownames(chart.matrix))
+        colnames(chart.matrix) <- gsub("\\$", "&#36;", colnames(chart.matrix))
+
         ## If no x.title or y.title provided, take defaults from data input
         if (x.title == "" || length(x.title) == 0)
             x.title <- if (swap.axes.and.data) value.title else table.axes.labels[1]
@@ -1407,11 +1411,7 @@ Chart <-   function(y,
             }
             else
             {
-                # Substitute dollar signs with unicode equivalent as plotly
-                # is treating the text inside as LaTeX
-                y.label <- gsub("\\$", "\UFF04", y.labels[i])
-                Encoding(y.label) <- "UTF-8"
-
+                y.label <- y.labels[i]
                 p <- add_trace(p,
                                type = plotly.type,
                                x = x,
