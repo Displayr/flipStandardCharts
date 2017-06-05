@@ -544,6 +544,7 @@ Chart <-   function(y,
     if (is.array(chart.matrix) && length(names(chart.matrix)) != 0)
         rownames(chart.matrix) <- names(chart.matrix)
 
+
     if (!is.scatterplot.or.bubbleplot)
     {
         ## Convert arrays to matrices
@@ -574,6 +575,20 @@ Chart <-   function(y,
 
         ## Ignore rows or columns, using flipData::GetTidyTwoDimensionalArray()
         chart.matrix <- flipData::GetTidyTwoDimensionalArray(chart.matrix, rows.to.ignore, cols.to.ignore)
+
+        # Remove columns which does not have a run of at least 2 non-NA points
+        # This stops plotly from creating blank output
+        if (is.area.or.line.chart)
+        {
+            seqNNA <- apply(chart.matrix, 2, function(x){ind <- which(is.finite(x));
+                                                         if (length(ind) == 0) return(0);
+                                                         res <- rle(diff(ind)==1);
+                                                         return(sum(res$lengths[res$values==TRUE]))})
+            if (sum(seqNNA > 1) == 0)
+                stop("Too many NAs for ", type, " chart.")
+            if (sum(seqNNA <= 1) > 0)
+                chart.matrix <- chart.matrix[,seqNNA > 1]
+        }
 
         ## Error if there is only one series when multiple series are required
         if (ncol(chart.matrix) == 1)
