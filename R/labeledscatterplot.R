@@ -157,8 +157,8 @@ scatterplotData <- function(chart.matrix, is.bubble, group.labels.text, group.in
     if (y.title == "FALSE" || y.title == FALSE)
         y.title <- ""
 
-    result$x.title <- x.title
-    result$y.title <- y.title
+    result$x.title <- if (transpose) y.title else x.title
+    result$y.title <- if (transpose) x.title else y.title
 
     result
 }
