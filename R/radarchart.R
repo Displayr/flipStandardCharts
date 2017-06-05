@@ -89,7 +89,7 @@ radarChart <- function(chart.matrix,
     if (is.null(y.tick.distance))
     {
         base <- 10^round(log10(y.bounds.maximum) - 1)
-        mult <- floor((y.bounds.maximum/base)/5)
+        mult <- max(1, floor((y.bounds.maximum/base)/5))
         y.tick.distance <- base * mult
     }
     tick.vals <- seq(from=y.bounds.minimum, to=y.bounds.maximum, by=y.tick.distance)
@@ -180,6 +180,7 @@ radarChart <- function(chart.matrix,
                 color=data.label.font.color), xshift=pos$x/r.max*15, yshift=pos$y/r.max*10)
 
     p <- config(p, displayModeBar=modebar.show)
+    p$sizingPolicy$browser$padding <- 0
     return(p)
 }
 
