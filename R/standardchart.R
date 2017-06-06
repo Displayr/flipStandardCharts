@@ -1345,7 +1345,7 @@ Chart <-   function(y,
         y.prefix <- if (y.tick.prefix == "") data.label.prefix else y.tick.prefix
         y.suffix <- if (y.tick.suffix == "") data.label.suffix else y.tick.suffix
 
-        source.text <- paste0("(",
+        source.text <- paste0(scatterplot.data$row.names, " (",
             x.prefix, FormatWithDecimals(scatterplot.data$x, data.label.decimals), x.suffix, ",",
             y.prefix, FormatWithDecimals(scatterplot.data$y, data.label.decimals), y.suffix, ")")
 
@@ -1363,7 +1363,7 @@ Chart <-   function(y,
                     text=source.text[ind], textfont=textfont, textposition=data.label.position,
                     marker=list(size=series.marker.size, color=series.marker.colors[ggi],
                     line=list(width=series.marker.border.width)), line=line.obj,
-                    type=plotly.type, mode=series.mode, hoverinfo="x+y+name", symbols=series.marker.symbols)
+                    type=plotly.type, mode=series.mode, hoverinfo="name+text", symbols=series.marker.symbols)
         }
     }
     else
