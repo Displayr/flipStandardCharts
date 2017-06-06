@@ -662,9 +662,15 @@ Chart <-   function(y,
     if (is.null(margin.top))
         margin.top <- if (is.null(title) || title == "") 20 else 40
     if (is.null(margin.bottom))
-        margin.bottom <- if (x.title == "") 50 else 70
+    {
+        margin.bottom <- if (x.title == "") 70
+        if (x.title == "")
+            margin.bottom <- 50
+        if (type == "Radar")
+            margin.bottom <- 20
+    }
     if (is.null(margin.left))
-        margin.left <- 80
+        margin.left <- if (type == "Radar") 60 else 80
     if (is.null(margin.right))
         margin.right <- 60
     if (is.null(margin.inner.pad))

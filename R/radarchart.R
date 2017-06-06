@@ -58,6 +58,8 @@ radarChart <- function(chart.matrix,
                     data.label.suffix = "")
 
 {
+    if (any(!is.finite(chart.matrix)))
+        stop("Missing charts cannot contain missing or non-finite values.\n")
     if (any(chart.matrix < 0))
         stop("Radar charts cannot have negative values.\n")
 

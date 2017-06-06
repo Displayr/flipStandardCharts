@@ -149,12 +149,12 @@ scatterplotData <- function(chart.matrix, is.bubble, group.labels.text, group.in
     # Resolve axes labels if none specified manually
     if (x.title == "" || length(x.title) == 0)
         x.title <- colnames(chart.matrix)[1]
-    if (x.title == "FALSE" || x.title == FALSE)
+    if (is.null(x.title) || x.title == "FALSE" || x.title == FALSE)
         x.title <- ""
 
     if (y.title == "" || length(y.title) == 0)
         y.title <- colnames(chart.matrix)[2]
-    if (y.title == "FALSE" || y.title == FALSE)
+    if (is.null(y.title) || y.title == "FALSE" || y.title == FALSE)
         y.title <- ""
 
     result$x.title <- if (transpose) y.title else x.title
