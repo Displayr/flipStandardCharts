@@ -584,7 +584,7 @@ Chart <-   function(y,
                                                          if (length(ind) == 0) return(FALSE);
                                                          res <- rle(diff(ind)==1);
                                                          resT <- res$lengths[res$values==TRUE];
-                                                         return(length(resT)==1 && resT > 1)})
+                                                         return(length(resT)==1 && resT >= 1)})
             if (sum(is.cont) == 0)
                 stop(type, " charts can only contain NAs at the beginning or end of the series.")
             if (sum(!is.cont) > 0)
