@@ -580,14 +580,15 @@ Chart <-   function(y,
         # This stops plotly from creating blank output
         if (is.area.or.line.chart)
         {
-            seqNNA <- apply(chart.matrix, 2, function(x){ind <- which(is.finite(x));
-                                                         if (length(ind) == 0) return(0);
+            is.cont <- apply(chart.matrix, 2, function(x){ind <- which(is.finite(x));
+                                                         if (length(ind) == 0) return(FALSE);
                                                          res <- rle(diff(ind)==1);
-                                                         return(sum(res$lengths[res$values==TRUE]))})
-            if (sum(seqNNA > 1) == 0)
-                stop("Too many NAs for ", type, " chart.")
-            if (sum(seqNNA <= 1) > 0)
-                chart.matrix <- chart.matrix[,seqNNA > 1]
+                                                         resT <- res$lengths[res$values==TRUE];
+                                                         return(length(resT)==1 && resT > 1)})
+            if (sum(is.cont) == 0)
+                stop(type, " charts can only contain NAs at the beginning or end of the series.")
+            if (sum(!is.cont) > 0)
+                chart.matrix <- chart.matrix[,which(is.cont)]
         }
 
         ## Error if there is only one series when multiple series are required
@@ -900,6 +901,8 @@ Chart <-   function(y,
     number.colors.needed <- if (is.scatterplot) length(unique(scatterplot.data$group)) else ncol(chart.matrix)
 
     ## Calculate colors
+    if (length(number.colors.needed) == 0 || number.colors.needed == 0)
+        stop("Chart matrix is empty.")
     colors <- ChartColors(number.colors.needed = number.colors.needed,
                                            given.colors = colors,
                                            reverse = colors.reverse,
