@@ -124,8 +124,8 @@ for (t in stacked.types)
 for (t in stacked.types)
 {
     test_that(paste(t, "- missing"), {
-        expect_error(print(Chart(missing, type = t)),
-                     "Stacked charts cannot be produced with missing or negative values.")
+        expect_error(print(suppressWarnings(Chart(missing, type = t)),
+                     "Stacked charts cannot be produced with missing or negative values."))
     })
 }
 

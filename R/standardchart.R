@@ -576,7 +576,7 @@ Chart <-   function(y,
         ## Ignore rows or columns, using flipData::GetTidyTwoDimensionalArray()
         chart.matrix <- flipData::GetTidyTwoDimensionalArray(chart.matrix, rows.to.ignore, cols.to.ignore)
 
-        # Remove columns which does not have a run of at least 2 non-NA points
+        # Remove columns which do not consist of ONE contiguous sequence of non-NA values (> length 2)
         # This stops plotly from creating blank output
         if (is.area.or.line.chart)
         {
@@ -588,7 +588,11 @@ Chart <-   function(y,
             if (sum(is.cont) == 0)
                 stop(type, " charts can only contain NAs at the beginning or end of the series.")
             if (sum(!is.cont) > 0)
+            {
+                warning("Non-contiguous series have been removed from the the ", type, " chart: '",
+                        paste(colnames(chart.matrix)[!is.cont], collapse="', '"))
                 chart.matrix <- chart.matrix[,which(is.cont)]
+            }
         }
 
         ## Error if there is only one series when multiple series are required
