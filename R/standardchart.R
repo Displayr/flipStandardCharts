@@ -668,7 +668,7 @@ Chart <-   function(y,
         margin.top <- if (is.null(title) || title == "") 20 else 40
     if (is.null(margin.bottom))
     {
-        margin.bottom <- if (x.title == "") 70
+        margin.bottom <- 70
         if (x.title == "")
             margin.bottom <- 50
         if (type == "Radar")
