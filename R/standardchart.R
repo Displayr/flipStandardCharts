@@ -965,7 +965,19 @@ Chart <-   function(y,
             lab.len <- max(nchar(gsub("<br>.*","",new.x.labels)))
             if (lab.len > 20)
             {
-                new.margin <- 0.52 * x.tick.font.size * lab.len
+                font.asp <- switch(tolower(x.tick.font.family),
+                                  'arial'= 0.54,
+                                  'arial black' = 0.63,
+                                  'century gothic' = 0.61,
+                                  'courier new' = 0.63,
+                                  'impact' = 0.48,
+                                  'open sans' = 0.45,
+                                  'times new roman' = 0.45,
+                                  'tahoma' = 0.52,
+                                  'trebuchet' = 0.48,
+                                  'verdana' = 0.63,
+                                  0.54)
+                new.margin <- font.asp * x.tick.font.size * lab.len
                 if (is.bar.chart)
                 {
                     if (y.position == "right")
