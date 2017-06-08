@@ -40,13 +40,14 @@ lineBreakEveryN <- function(x, n = 21)
     final
 }
 
-autoFormatLongLabels <- function(x, n = 21)
+autoFormatLongLabels <- function(x, wordwrap = FALSE, n = 21)
 {
     # Anything 60 characters or over gets an ellipsis from char 57 to char 60 and then nothing
     output.text <- sapply(x, function(x) {ifelse(nchar(x) > 60, paste(substr(x, 1, 57),"...", sep = ""), x)})
 
     # Anything over n characters gets <br> inserted in the closest space below n characters, e.g. at 20, 40, and 60 characters
-    output.text <- sapply(output.text, function(x) lineBreakEveryN(x, n))
+    if (wordwrap)
+        output.text <- sapply(output.text, function(x) lineBreakEveryN(x, n))
 
     # Don't need any attributes (names)
     attributes(output.text) <- NULL

@@ -961,21 +961,23 @@ Chart <-   function(y,
         ymd <- NULL
         if (x.tick.label.autoformat)
         {
-            new.x.labels <- autoFormatLongLabels(x.labels)
-            if (!all(new.x.labels == x.labels))
+            new.x.labels <- autoFormatLongLabels(x.labels, wordwrap=!is.bar.chart && length(x.labels) <= 9)
+            lab.len <- max(nchar(gsub("<br>.*","",new.x.labels)))
+            if (lab.len > 20)
             {
+                new.margin <- 0.52 * x.tick.font.size * lab.len
                 if (is.bar.chart)
                 {
                     if (y.position == "right")
                     {
                         if (is.default.margin.right)
-                            margin.right <- 170
+                            margin.right <- new.margin
                     }
                     else if (is.default.margin.left)
-                        margin.left <- 170
+                        margin.left <- new.margin
                 }
                 else if (length(x.labels) > 9 && is.default.margin.bottom)
-                    margin.bottom <- if (x.title == "") 100 else 120
+                    margin.bottom <- new.margin + 20 * (x.title == "")
             }
             x.labels <- new.x.labels
         }
