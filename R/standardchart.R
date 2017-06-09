@@ -963,7 +963,8 @@ Chart <-   function(y,
         {
             new.x.labels <- autoFormatLongLabels(x.labels, wordwrap=!is.bar.chart && length(x.labels) <= 9)
             lab.len <- max(nchar(gsub("<br>.*","",new.x.labels)))
-            if (lab.len > 20)
+            lab.nline <- length(gregexpr("<br>", new.x.labels)[[1]])
+            if (lab.len > 20 || lab.nline > 0)
             {
                 font.asp <- switch(tolower(x.tick.font.family),
                                   'arial'= 0.54,
@@ -988,8 +989,19 @@ Chart <-   function(y,
                     else if (is.default.margin.left)
                         margin.left <- new.margin
                 }
-                else if (length(x.labels) > 9 && is.default.margin.bottom)
-                    margin.bottom <- new.margin + 20 * (x.title == "")
+                else if (is.default.margin.bottom)
+                {
+                    if (length(x.labels) > 9)
+                    {
+                        if (is.null(x.tick.angle))
+                            x.tick.angle <- 90
+                        margin.bottom <- new.margin + 20*(x.title != "")
+
+                    } else
+                    {
+                        margin.bottom <- 50 + 70*lab.nline + 20*(x.title != "")
+                    }
+                }
             }
             x.labels <- new.x.labels
         }
