@@ -963,7 +963,7 @@ Chart <-   function(y,
         {
             new.x.labels <- autoFormatLongLabels(x.labels, wordwrap=!is.bar.chart && length(x.labels) <= 9)
             lab.len <- max(nchar(gsub("<br>.*","",new.x.labels)))
-            lab.nline <- length(gregexpr("<br>", new.x.labels)[[1]])
+            lab.nline <- max(sapply(gregexpr("<br>", new.x.labels), function(x){sum(x > -1)}))
             if (lab.len > 20 || lab.nline > 0)
             {
                 font.asp <- switch(tolower(x.tick.font.family),
@@ -999,7 +999,7 @@ Chart <-   function(y,
 
                     } else
                     {
-                        margin.bottom <- 50 + 70*lab.nline + 20*(x.title != "")
+                        margin.bottom <- 50 + 30*lab.nline + 20*(x.title != "")
                     }
                 }
             }
