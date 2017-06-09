@@ -962,9 +962,9 @@ Chart <-   function(y,
         if (x.tick.label.autoformat)
         {
             new.x.labels <- autoFormatLongLabels(x.labels, wordwrap=!is.bar.chart && length(x.labels) <= 9)
-            lab.len <- max(nchar(gsub("<br>.*","",new.x.labels)))
-            lab.nline <- max(sapply(gregexpr("<br>", new.x.labels), function(x){sum(x > -1)}))
-            if (lab.len > 20 || lab.nline > 0)
+            lab.len <- if (is.character(new.x.labels)) max(nchar(gsub("<br>.*","",new.x.labels)))
+            lab.nline <- if (is.character(new.x.labels)) max(sapply(gregexpr("<br>", new.x.labels), function(x){sum(x > -1)}))
+            if (!is.null(lab.nline) && (lab.len > 20 || lab.nline > 0))
             {
                 font.asp <- switch(tolower(x.tick.font.family),
                                   'arial'= 0.54,
