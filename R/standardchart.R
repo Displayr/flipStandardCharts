@@ -962,7 +962,7 @@ Chart <-   function(y,
     else
     {
         ymd <- NULL
-        if (x.tick.label.autoformat)
+        if (x.tick.label.autoformat && type != "Radar")
         {
             new.x.labels <- autoFormatLongLabels(x.labels, wordwrap=!is.bar.chart && length(x.labels) <= 9)
             lab.len <- if (is.character(new.x.labels)) max(nchar(gsub("<br>.*","",new.x.labels)))
