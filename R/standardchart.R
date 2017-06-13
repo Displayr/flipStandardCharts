@@ -412,6 +412,9 @@ Chart <-   function(y,
     {
         series.mode <- if (is.null(series.line.width) || series.line.width == 0) "markers"
                        else "markers+lines"
+
+        # Tick label formatting not required because it is always numeric
+        x.tick.label.autoformat <- FALSE
     }
     if (type %in% c("Pie", "Donut"))
     {
@@ -999,7 +1002,7 @@ Chart <-   function(y,
 
                     } else
                     {
-                        margin.bottom <- 50 + 30*lab.nline + 20*(x.title != "")
+                        margin.bottom <- 50 + 0*lab.nline + 20*(x.title != "")
                     }
                 }
             }
