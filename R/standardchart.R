@@ -1002,7 +1002,7 @@ Chart <-   function(y,
 
                     } else
                     {
-                        margin.bottom <- 50 + 0*lab.nline + 20*(x.title != "")
+                        margin.bottom <- 50 + 20*floor(lab.nline/2) + 20*(x.title != "")
                     }
                 }
             }
