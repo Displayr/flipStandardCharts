@@ -965,11 +965,8 @@ Chart <-   function(y,
         if (x.tick.label.autoformat && type != "Radar")
         {
             new.x.labels <- autoFormatLongLabels(x.labels, wordwrap=!is.bar.chart && length(x.labels) <= 9)
-            lab.len <- if (is.character(new.x.labels)) max(nchar(gsub("<br>.*","",new.x.labels)))
-            lab.nline <- if (is.character(new.x.labels)) max(sapply(gregexpr("<br>", new.x.labels), function(x){sum(x > -1)}))
-            if (!is.null(lab.nline) && (lab.len > 20 || lab.nline > 0))
-            {
-                font.asp <- switch(tolower(x.tick.font.family),
+            lab.nchar <- if (is.character(new.x.labels)) max(nchar(gsub("<br>.*","",new.x.labels)))
+            font.asp <- switch(tolower(x.tick.font.family),
                                   'arial'= 0.54,
                                   'arial black' = 0.63,
                                   'century gothic' = 0.61,
@@ -981,7 +978,11 @@ Chart <-   function(y,
                                   'trebuchet' = 0.48,
                                   'verdana' = 0.63,
                                   0.54)
-                new.margin <- font.asp * x.tick.font.size * lab.len
+            lab.len <- font.asp * x.tick.font.size * lab.nchar
+            lab.nline <- if (is.character(new.x.labels)) max(sapply(gregexpr("<br>", new.x.labels), function(x){sum(x > -1)}))
+            if (!is.null(lab.nline) && (margin.bottom - lab.len < 20 || lab.nline > 0))
+            {
+                new.margin <- lab.len + 5
                 if (is.bar.chart)
                 {
                     if (y.position == "right")
