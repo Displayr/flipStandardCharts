@@ -964,7 +964,7 @@ Chart <-   function(y,
         ymd <- NULL
         if (x.tick.label.autoformat && type != "Radar")
         {
-            new.x.labels <- autoFormatLongLabels(x.labels, wordwrap=!is.bar.chart && length(x.labels) <= 9)
+            new.x.labels <- autoFormatLongLabels(x.labels, wordwrap=!is.bar.chart && length(x.labels) <= 10)
             lab.nchar <- if (is.character(new.x.labels)) max(nchar(gsub("<br>.*","",new.x.labels)))
             font.asp <- switch(tolower(x.tick.font.family),
                                   'arial'= 0.54,
@@ -980,9 +980,9 @@ Chart <-   function(y,
                                   0.54)
             lab.len <- font.asp * x.tick.font.size * lab.nchar
             lab.nline <- if (is.character(new.x.labels)) max(sapply(gregexpr("<br>", new.x.labels), function(x){sum(x > -1)}))
-            if (!is.null(lab.nline) && (margin.bottom - lab.len < 20 || lab.nline > 0))
+            if (!is.null(lab.nline) && (margin.bottom - lab.len < 10 || lab.nline > 0))
             {
-                new.margin <- lab.len + 5
+                new.margin <- lab.len
                 if (is.bar.chart)
                 {
                     if (y.position == "right")
@@ -995,11 +995,11 @@ Chart <-   function(y,
                 }
                 else if (is.default.margin.bottom)
                 {
-                    if (length(x.labels) > 9)
+                    if (length(x.labels) > 10)
                     {
                         if (is.null(x.tick.angle))
                             x.tick.angle <- 90
-                        margin.bottom <- new.margin + 20*(x.title != "")
+                        margin.bottom <- new.margin +  5 + 20*(x.title != "")
 
                     } else
                     {
