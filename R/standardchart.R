@@ -581,7 +581,7 @@ Chart <-   function(y,
 
         # Remove columns which do not consist of ONE contiguous sequence of non-NA values (> length 2)
         # This stops plotly from creating blank output
-        if (is.area.or.line.chart)
+        if (FALSE && is.area.or.line.chart)
         {
             is.cont <- apply(chart.matrix, 2, function(x){ind <- which(is.finite(x));
                                                          if (length(ind) == 0) return(FALSE);
@@ -1470,6 +1470,8 @@ Chart <-   function(y,
             else
             {
                 y.label <- y.labels[i]
+                text.pos <- if (is.area.or.line.chart) NULL
+                            else  data.label.position
                 p <- add_trace(p,
                                type = plotly.type,
                                x = x,
@@ -1481,7 +1483,7 @@ Chart <-   function(y,
                                legendgroup = legend.group,
                                text = source.text,
                                textfont = textfont,
-                               textposition = data.label.position,
+                               textposition = text.pos,
                                hoverinfo = "x+y+name",
                                # MARKERS
                                mode = series.mode,
