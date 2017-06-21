@@ -579,25 +579,6 @@ Chart <-   function(y,
         ## Ignore rows or columns, using flipData::GetTidyTwoDimensionalArray()
         chart.matrix <- flipData::GetTidyTwoDimensionalArray(chart.matrix, rows.to.ignore, cols.to.ignore)
 
-        # Remove columns which do not consist of ONE contiguous sequence of non-NA values (> length 2)
-        # This stops plotly from creating blank output
-        if (is.area.or.line.chart)
-        {
-            is.cont <- apply(chart.matrix, 2, function(x){ind <- which(is.finite(x));
-                                                         if (length(ind) == 0) return(FALSE);
-                                                         res <- rle(diff(ind)==1);
-                                                         resT <- res$lengths[res$values==TRUE];
-                                                         return(length(resT)==1 && resT >= 1)})
-            if (sum(is.cont) == 0)
-                stop(type, " charts can only contain NAs at the beginning or end of the series.")
-            if (sum(!is.cont) > 0)
-            {
-                warning("Non-contiguous series have been removed from the the ", type, " chart: '",
-                        paste(colnames(chart.matrix)[!is.cont], collapse="', '"))
-                chart.matrix <- chart.matrix[,which(is.cont)]
-            }
-        }
-
         ## Error if there is only one series when multiple series are required
         if (ncol(chart.matrix) == 1)
         {
@@ -711,7 +692,7 @@ Chart <-   function(y,
         series.mode <- chart.type.outputs$series.mode
         opacity <- chart.type.outputs$opacity
     }
-
+    
     ## Settings specific to Line Charts
     if (type == "Line")
     {
@@ -736,7 +717,7 @@ Chart <-   function(y,
         if (y.title == "")
             y.title <- scatterplot.data$y.title
     }
-
+    
     ## Settings specific to Column Charts
     if (type == "Column" | type == "Stacked Column" | type == "100% Stacked Column")
     {
@@ -1467,9 +1448,43 @@ Chart <-   function(y,
                                legendgroup = legend.group,
                                marker = marker)
             }
-            else
+            else if (is.area.or.line.chart)
             {
                 y.label <- y.labels[i]
+
+                tmp.group <- if (legend.group == "") paste("group", i) else legend.group
+                p <- add_trace(p,
+                               type = plotly.type,
+                               x = x,
+                               y = y,
+                               fill = fill.bound,
+                               fillcolor = toRGB(colors[i], alpha = opacity),
+                               line = lines,
+                               name = y.label,
+                               legendgroup = tmp.group,
+                               mode = series.mode)
+                
+                # markers and text plotted separately so that even
+                # single points (no lines) can be shown
+                p <- add_trace(p, 
+                               type = "scatter", 
+                               mode = if (data.label.show) "markers+text" else "markers",
+                               x = x,
+                               y = y,
+                               legendgroup = tmp.group,
+                               name = y.label,
+                               text = source.text,
+                               textfont = textfont,
+                               textposition = data.label.position,
+                               marker = list(color=toRGB(colors[i], alpha=opacity),
+                                             size=if(type != "Line") 2 else series.line.width),
+                               hoverinfo = "x+y+name",
+                               showlegend = FALSE,
+                               hoverinfo = "none")
+
+            }
+            else
+            {
                 p <- add_trace(p,
                                type = plotly.type,
                                x = x,

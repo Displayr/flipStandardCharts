@@ -12,7 +12,7 @@ areaChart <- function(chart.matrix,
     if (any(is.na(as.matrix(chart.matrix))))
         warning("Missing values have been interpolated or omitted.")
 
-    no.data.in.series <- colSums(is.na(chart.matrix)) >= length(chart.matrix[, 1]) - 1
+    no.data.in.series <- colSums(is.na(chart.matrix)) >= length(chart.matrix[, 1])
     if (any(no.data.in.series))
         chart.matrix <- chart.matrix[, !no.data.in.series]
 
