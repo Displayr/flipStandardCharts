@@ -1173,28 +1173,32 @@ Chart <-   function(y,
     # Area chart does not display the data labels on the edge correctly, so we add padding.
     # Line chart does add padding automatically, but the amount of padding seems to change
     # between regression tests, so we add padding manually.
-    if (is.area.or.line.chart && !x.has.bounds &&
-        (data.label.show || (!is.null(series.marker.show) && series.marker.show != "none")))
+    if (is.area.or.line.chart && !x.has.bounds)
     {
+        not.na <- which(apply(chart.matrix, 1, function(x){any(!is.na(x))}))
         if (is.x.axis.numeric)
         {
-            x.vals <- as.numeric(row.names(chart.matrix))
+            x.vals <- as.numeric(row.names(chart.matrix)[not.na])
             min.x <- min(x.vals)
             max.x <- max(x.vals)
         }
         else if (x.axis.type == "date")
         {
-            x.vals <- as.numeric(x.labels) * 1000
+            x.vals <- as.numeric(x.labels[not.na]) * 1000
             min.x <- min(x.vals)
             max.x <- max(x.vals)
         }
         else
         {
             min.x <- 0
-            max.x <- length(row.names(chart.matrix)) - 1
+            max.x <- not.na - 1
         }
-        x.bounds.minimum <- min.x - (max.x - min.x) * 0.05
-        x.bounds.maximum <- max.x + (max.x - min.x) * 0.05
+        padding <- 0
+        if (data.label.show || (!is.null(series.marker.show) && series.marker.show != "none"))
+            padding <- (max.x - min.x) * 0.05
+
+        x.bounds.minimum <- min.x - padding
+        x.bounds.maximum <- max.x + padding
         x.has.bounds <- TRUE
         added.bounds.for.area.chart <- TRUE
     }
@@ -1451,19 +1455,20 @@ Chart <-   function(y,
             else if (is.area.or.line.chart)
             {
                 y.label <- y.labels[i]
-
                 tmp.group <- if (legend.group == "") paste("group", i) else legend.group
+
                 p <- add_trace(p,
                                type = plotly.type,
                                x = x,
                                y = y,
                                fill = fill.bound,
                                fillcolor = toRGB(colors[i], alpha = opacity),
+                               connectgaps = FALSE,
                                line = lines,
                                name = y.label,
                                legendgroup = tmp.group,
                                mode = series.mode)
-                
+ 
                 # markers and text plotted separately so that even
                 # single points (no lines) can be shown
                 p <- add_trace(p, 
