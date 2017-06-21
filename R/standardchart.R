@@ -1452,7 +1452,7 @@ Chart <-   function(y,
                                legendgroup = legend.group,
                                marker = marker)
             }
-            else if (is.area.or.line.chart)
+            else if (is.area.or.line.chart && !is.stacked)
             {
                 y.label <- y.labels[i]
                 tmp.group <- if (legend.group == "") paste("group", i) else legend.group
@@ -1490,6 +1490,7 @@ Chart <-   function(y,
             }
             else
             {
+                y.label <- y.labels[i]
                 p <- add_trace(p,
                                type = plotly.type,
                                x = x,
