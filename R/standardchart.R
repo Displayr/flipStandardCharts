@@ -1191,7 +1191,7 @@ Chart <-   function(y,
         else
         {
             min.x <- 0
-            max.x <- not.na - 1
+            max.x <- max(not.na) - 1
         }
         padding <- 0
         if (data.label.show || (!is.null(series.marker.show) && series.marker.show != "none"))
