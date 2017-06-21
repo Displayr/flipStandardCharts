@@ -1248,8 +1248,10 @@ Chart <-   function(y,
     else
         paste(".", y.hovertext.decimals, "f", sep = "")
 
-    x.autorange <- if (x.has.bounds || !is.null(x.tick.distance))
+    #x.autorange <- if (x.has.bounds || !is.null(x.tick.distance))
+    x.autorange <- if (!is.null(x.tick.distance))
     {
+        cat("line 1253:", x.has.bounds, x.tick.distance, "\n")
         if (!is.x.axis.numeric && !added.bounds.for.area.chart)
             stop("It is not possible to specify tick range or spacing as the x-axis is not numeric.")
         if (x.data.reversed)
@@ -1467,13 +1469,34 @@ Chart <-   function(y,
                                line = lines,
                                name = y.label,
                                legendgroup = tmp.group,
+                               hoverinfo = "x+y+name",
+                               marker = marker,
                                mode = series.mode)
+
+                # single points (no lines) need to be added separately
+                # turn off if series present?
+                not.na <- is.finite(y)
+                is.single <- not.na & c(TRUE, !not.na[-nrow(chart.matrix)]) & c(!not.na[-1], TRUE)
+                if (any(is.single))
+                {
+                    p <- add_trace(p, 
+                               type = "scatter",
+                               mode = "markers",
+                               x = x[is.single],
+                               y = y[is.single],
+                               legendgroup = tmp.group,
+                               name = y.label,
+                               marker = if (!is.null(marker)) marker 
+                                        else list(color = toRGB(colors[i], alpha=opacity),
+                                             size = series.line.width),
+                               hoverinfo = "x+y+name",
+                               showlegend = FALSE)
+                }
  
-                # markers and text plotted separately so that even
-                # single points (no lines) can be shown
-                p <- add_trace(p, 
-                               type = "scatter", 
-                               mode = if (data.label.show) "markers+text" else "markers",
+                if (data.label.show)
+                    p <- add_trace(p, 
+                               type = "scatter",
+                               mode = "text",
                                x = x,
                                y = y,
                                legendgroup = tmp.group,
@@ -1481,11 +1504,7 @@ Chart <-   function(y,
                                text = source.text,
                                textfont = textfont,
                                textposition = data.label.position,
-                               marker = list(color=toRGB(colors[i], alpha=opacity),
-                                             size=if(type != "Line") 2 else series.line.width),
-                               hoverinfo = "x+y+name",
-                               showlegend = FALSE,
-                               hoverinfo = "none")
+                               showlegend = FALSE)
 
             }
             else
