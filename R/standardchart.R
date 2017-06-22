@@ -32,6 +32,7 @@
 #' @param charting.area.fill.opacity Charting area background
 #' opacity as an alpha value (0 to 1).
 #' @param legend.show Logical; show the legend.
+#' @param legend.fill Same as \code{legend.fill.color}. Retained for backwards compatibility.
 #' @param legend.fill.color Legend fill color as a named color in character format
 #' (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param legend.fill.opacity Legend fill opacity as an alpha value
@@ -258,7 +259,8 @@ Chart <-   function(y,
                     charting.area.fill.color = rgb(255, 255, 255, maxColorValue = 255),
                     charting.area.fill.opacity = 1,
                     legend.show = TRUE,
-                    legend.fill.color = rgb(255, 255, 255, maxColorValue = 255),
+                    legend.fill = rgb(255, 255, 255, maxColorValue = 255), # retained for backwards compatibility
+                    legend.fill.color = legend.fill,
                     legend.fill.opacity = 1,
                     legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
                     legend.border.line.width = 0,
