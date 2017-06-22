@@ -135,7 +135,7 @@ radarChart <- function(chart.matrix,
                     marker=list(size=1, color=toRGB(series.marker.colors[ggi])), line=list(width=0))
     
         if (data.label.show)
-            p <- add_trace(p, x=pos$x[ind]*(1+0.12), y=pos$y[ind]*(1+0.08),
+            p <- add_trace(p, x=pos$x[ind]*1.12, y=pos$y[ind]*1.06,
                     type="scatter", mode="text", legendgroup=g.list[ggi],
                     showlegend=FALSE, hoverinfo="none", text=pos$DataLabels[ind],
                     textfont=list(family=data.label.font.family, size=data.label.font.size,
@@ -186,11 +186,6 @@ radarChart <- function(chart.matrix,
         p <- add_annotations(p, x=rep(0, length(tick.vals)), y=tick.vals, showarrow=F, xanchor="right", xshift=-5,
                 text=paste0(y.tick.prefix, FormatWithDecimals(tick.vals, y.tick.decimals), y.tick.suffix),
                 font=list(family=y.tick.font.family, color=y.tick.font.color, size=y.tick.font.size))
-
-    #if (data.label.show)
-    #    p <- add_annotations(p, x=pos$x, y=pos$y, showarrow=F,
-    #            text=pos$DataLabels, font=list(family=data.label.font.family, size=data.label.font.size,
-    #            color=data.label.font.color), xshift=pos$x/r.max*15, yshift=pos$y/r.max*10)
 
     p <- config(p, displayModeBar=modebar.show)
     p$sizingPolicy$browser$padding <- 0
