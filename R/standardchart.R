@@ -32,8 +32,11 @@
 #' @param charting.area.fill.opacity Charting area background
 #' opacity as an alpha value (0 to 1).
 #' @param legend.show Logical; show the legend.
-#' @param legend.fill Legend fill color as a named color in character format
+#' @param legend.fill.color Legend fill color as a named color in character format
 #' (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
+#' @param legend.fill.opacity Legend fill opacity as an alpha value
+#' (0 to 1).
+#' @param charting.area.fill.color Charting area background color as
 #' @param legend.border.color Legend border color as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param legend.border.line.width Width in pixels of the border
@@ -255,7 +258,8 @@ Chart <-   function(y,
                     charting.area.fill.color = rgb(255, 255, 255, maxColorValue = 255),
                     charting.area.fill.opacity = 1,
                     legend.show = TRUE,
-                    legend.fill = rgb(255, 255, 255, maxColorValue = 255),
+                    legend.fill.color = rgb(255, 255, 255, maxColorValue = 255),
+                    legend.fill.opacity = 1,
                     legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
                     legend.border.line.width = 0,
                     legend.font.color = NULL,
@@ -1048,7 +1052,8 @@ Chart <-   function(y,
                     charting.area.fill.color,
                     charting.area.fill.opacity,
                     legend.show,
-                    legend.fill,
+                    legend.fill.color,
+                    legend.fill.opacity,
                     legend.border.color,
                     legend.border.line.width,
                     legend.font.color,
@@ -1545,7 +1550,7 @@ Chart <-   function(y,
         ## LEGEND
         showlegend = legend.show,
         legend = list(
-            bgcolor = legend.fill,
+            bgcolor = toRGB(legend.fill.color, alpha=legend.fill.opacity),
             bordercolor = legend.border.color,
             borderwidth = legend.border.line.width,
             font = list(

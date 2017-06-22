@@ -10,19 +10,20 @@ Chart(y, type = "Column", transpose = FALSE, title = "",
   background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
   background.fill.opacity = 1, charting.area.fill.color = rgb(255, 255, 255,
   maxColorValue = 255), charting.area.fill.opacity = 1, legend.show = TRUE,
-  legend.fill = rgb(255, 255, 255, maxColorValue = 255),
-  legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
-  legend.border.line.width = 0, legend.font.color = NULL,
-  legend.font.family = NULL, legend.font.size = 10,
-  legend.position = "right", legend.ascending = TRUE, margin.top = NULL,
-  margin.bottom = NULL, margin.left = NULL, margin.right = NULL,
-  margin.inner.pad = NULL, y.title = "", y.title.font.color = NULL,
-  y.title.font.family = NULL, y.title.font.size = 12, y.line.width = 0,
-  y.line.color = rgb(0, 0, 0, maxColorValue = 255), y.tick.marks = "",
-  y.tick.mark.length = 5, y.bounds.minimum = NULL,
-  y.bounds.maximum = NULL, y.tick.distance = NULL, y.zero = TRUE,
-  y.zero.line.width = 0, y.zero.line.color = rgb(44, 44, 44, maxColorValue =
-  255), y.position = "left", y.data.reversed = FALSE, y.grid.width = 1,
+  legend.fill.color = rgb(255, 255, 255, maxColorValue = 255),
+  legend.fill.opacity = 1, legend.border.color = rgb(44, 44, 44,
+  maxColorValue = 255), legend.border.line.width = 0,
+  legend.font.color = NULL, legend.font.family = NULL,
+  legend.font.size = 10, legend.position = "right",
+  legend.ascending = TRUE, margin.top = NULL, margin.bottom = NULL,
+  margin.left = NULL, margin.right = NULL, margin.inner.pad = NULL,
+  y.title = "", y.title.font.color = NULL, y.title.font.family = NULL,
+  y.title.font.size = 12, y.line.width = 0, y.line.color = rgb(0, 0, 0,
+  maxColorValue = 255), y.tick.marks = "", y.tick.mark.length = 5,
+  y.bounds.minimum = NULL, y.bounds.maximum = NULL,
+  y.tick.distance = NULL, y.zero = TRUE, y.zero.line.width = 0,
+  y.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
+  y.position = "left", y.data.reversed = FALSE, y.grid.width = 1,
   y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
   y.tick.show = TRUE, y.tick.suffix = "", y.tick.prefix = "",
   y.tick.decimals = NULL, y.tick.format.manual = "",
@@ -110,8 +111,11 @@ opacity as an alpha value (0 to 1).}
 
 \item{legend.show}{Logical; show the legend.}
 
-\item{legend.fill}{Legend fill color as a named color in character format
+\item{legend.fill.color}{Legend fill color as a named color in character format
 (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
+
+\item{legend.fill.opacity}{Legend fill opacity as an alpha value
+(0 to 1).}
 
 \item{legend.border.color}{Legend border color as a named color in character
 format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
@@ -420,6 +424,8 @@ corresponding to each row.}
 \item{scatter.group.labels}{Vector or text of comma-separated group labels.}
 
 \item{us.date.format}{Whether to apply the US convention when parsing dates.}
+
+\item{charting.area.fill.color}{Charting area background color as}
 }
 \description{
 \code{Chart} generates standard charts from plotly library.

@@ -75,12 +75,6 @@ scatterplotData <- function(chart.matrix, is.bubble, group.labels.text, group.in
     }
 
     # Remove rows and columns to ignore
-    rows.to.ignore <- TextAsVector(rows.to.ignore)
-    cols.to.ignore <- TextAsVector(cols.to.ignore)
-    if (length(rows.to.ignore[[1]]) == 0)
-        rows.to.ignore <- NULL
-    if (length(cols.to.ignore[[1]]) == 0)
-        cols.to.ignore <- NULL
     chart.matrix <- GetTidyTwoDimensionalArray(chart.matrix,
                                                row.names.to.remove = rows.to.ignore,
                                                column.names.to.remove = cols.to.ignore)
