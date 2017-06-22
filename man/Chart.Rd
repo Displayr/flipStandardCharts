@@ -43,10 +43,11 @@ Chart(y, type = "Column", transpose = FALSE, title = "",
   x.hovertext.decimals = NULL, x.hovertext.format.manual = "",
   x.tick.angle = NULL, x.tick.font.color = NULL,
   x.tick.font.family = NULL, x.tick.font.size = 10,
-  x.tick.label.autoformat = TRUE, series.marker.show = "none",
-  series.marker.colors = NULL, series.marker.colors.reverse = FALSE,
-  series.marker.opacity = 1, series.marker.size = 6,
-  series.marker.border.width = 1, series.marker.border.colors = NULL,
+  x.tick.label.autoformat = TRUE, x.tick.label.wordwrap = TRUE,
+  series.marker.show = "none", series.marker.colors = NULL,
+  series.marker.colors.reverse = FALSE, series.marker.opacity = 1,
+  series.marker.size = 6, series.marker.border.width = 1,
+  series.marker.border.colors = NULL,
   series.marker.border.colors.reverse = FALSE,
   series.marker.border.opacity = 1, series.line.width = NULL,
   series.line.colors = NULL, series.line.colors.reverse = FALSE,
@@ -426,8 +427,6 @@ corresponding to each row.}
 \item{scatter.group.labels}{Vector or text of comma-separated group labels.}
 
 \item{us.date.format}{Whether to apply the US convention when parsing dates.}
-
-\item{charting.area.fill.color}{Charting area background color as}
 }
 \description{
 \code{Chart} generates standard charts from plotly library.

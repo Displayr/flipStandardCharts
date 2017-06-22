@@ -37,7 +37,6 @@
 #' (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param legend.fill.opacity Legend fill opacity as an alpha value
 #' (0 to 1).
-#' @param charting.area.fill.color Charting area background color as
 #' @param legend.border.color Legend border color as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param legend.border.line.width Width in pixels of the border
@@ -155,6 +154,7 @@
 #' @param x.tick.font.family Character; x-axis tick label font family
 #' @param x.tick.font.size x-axis tick label font size
 #' @param x.tick.label.autoformat Logical; whether to rotate and wrap long x-axis labels.
+#' @param x.tick.label.wordwrap Logical; whether to wrap long x-axis labels.
 #' @param series.marker.show Can be "none", "automatic" or a vector referencing
 #' the plotly symbol dictionary using either numerics or strings.
 #' @param series.marker.colors Character; a vector containing one or more named
@@ -332,6 +332,7 @@ Chart <-   function(y,
                     x.tick.font.family = NULL,
                     x.tick.font.size = 10,
                     x.tick.label.autoformat = TRUE,
+                    x.tick.label.wordwrap = TRUE,
                     series.marker.show = "none", # ignored
                     series.marker.colors = NULL,
                     series.marker.colors.reverse = FALSE,
@@ -951,7 +952,8 @@ Chart <-   function(y,
         ymd <- NULL
         if (x.tick.label.autoformat && type != "Radar")
         {
-            new.x.labels <- autoFormatLongLabels(x.labels, wordwrap=!is.bar.chart && length(x.labels) <= 9)
+            #new.x.labels <- autoFormatLongLabels(x.labels, wordwrap=!is.bar.chart && length(x.labels) <= 9)
+            new.x.labels <- autoFormatLongLabels(x.labels, wordwrap=x.tick.label.wordwrap)
             lab.nchar <- if (is.character(new.x.labels)) max(nchar(gsub("<br>.*","",new.x.labels)))
             font.asp <- switch(tolower(x.tick.font.family),
                                   'arial'= 0.54,
@@ -975,14 +977,15 @@ Chart <-   function(y,
                     if (y.position == "right")
                     {
                         if (is.default.margin.right)
-                            margin.right <- new.margin
+                            margin.right <- new.margin + 5 + 20*(y.title != "")
                     }
                     else if (is.default.margin.left)
-                        margin.left <- new.margin
+                        margin.left <- new.margin + 5 + 20*(y.title != "")
                 }
                 else if (is.default.margin.bottom)
                 {
-                    if (length(x.labels) > 9)
+                    #if (length(x.labels) > 9)
+                    if (!x.tick.label.wordwrap)
                     {
                         if (is.null(x.tick.angle))
                             x.tick.angle <- 90
@@ -1094,6 +1097,7 @@ Chart <-   function(y,
                     y.tick.font.color,
                     y.tick.font.family,
                     y.tick.font.size,
+                    x.tick.label.wordwrap,
                     data.label.show,
                     data.label.font.family,
                     data.label.font.size,
