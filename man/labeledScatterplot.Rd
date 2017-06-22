@@ -19,9 +19,9 @@ labeledScatterplot(chart.matrix, colors = NULL, colors.reverse = FALSE,
 
 \item{type}{Either "Labeled Scatterplot" or "Labeled Bubbleplot".}
 
-\item{group.labels.text}{Text of comma-separated group labels.}
+\item{group.labels.text}{Vector or text of comma-separated group labels.}
 
-\item{group.indices.text}{Text of comma-separated group indices corresponding to each row.}
+\item{group.indices.text}{Vector or text of comma-separated group indices corresponding to each row.}
 
 \item{origin}{Whether to display the origin.}
 

@@ -4,8 +4,8 @@
 #' @param colors Group colors.
 #' @param colors.reverse Whether to reverse the colors.
 #' @param type Either "Labeled Scatterplot" or "Labeled Bubbleplot".
-#' @param group.labels.text Text of comma-separated group labels.
-#' @param group.indices.text Text of comma-separated group indices corresponding to each row.
+#' @param group.labels.text Vector or text of comma-separated group labels.
+#' @param group.indices.text Vector or text of comma-separated group indices corresponding to each row.
 #' @param origin Whether to display the origin.
 #' @param transpose Whether to switch the first and second columns before plotting.
 #' @param rows.to.ignore Text of comma-separated row labels to omit.
@@ -64,6 +64,7 @@ labeledScatterplot <- function(chart.matrix,
     return(output)
 }
 
+#' @importFrom flipTransformations TextAsVector
 scatterplotData <- function(chart.matrix, is.bubble, group.labels.text, group.indices.text, transpose,
                             rows.to.ignore, cols.to.ignore, x.title, y.title)
 {
@@ -73,15 +74,9 @@ scatterplotData <- function(chart.matrix, is.bubble, group.labels.text, group.in
         chart.matrix <- chart.matrix[!is.na(rowSums(chart.matrix)), ]
     }
 
-    # Converts a comma separated string to a vector of strings
-    .parseCommaSeparatedText <- function(t)
-    {
-        as.vector(sapply(strsplit(t, ","), function(x) gsub("^\\s+|\\s+$", "", x)))
-    }
-
     # Remove rows and columns to ignore
-    rows.to.ignore <- .parseCommaSeparatedText(rows.to.ignore)
-    cols.to.ignore <- .parseCommaSeparatedText(cols.to.ignore)
+    rows.to.ignore <- TextAsVector(rows.to.ignore)
+    cols.to.ignore <- TextAsVector(cols.to.ignore)
     if (length(rows.to.ignore[[1]]) == 0)
         rows.to.ignore <- NULL
     if (length(cols.to.ignore[[1]]) == 0)
@@ -96,12 +91,13 @@ scatterplotData <- function(chart.matrix, is.bubble, group.labels.text, group.in
         stop("The number of columns in the input table (after excluding ignored columns) must be 2 for a scatterplot.")
 
     pt.ord <- NULL
-    if (group.labels.text != "")
+    if (!is.null(group.labels.text) && group.labels.text[1] != "")
     {
-        if (group.indices.text != "")
+        if (!is.null(group.indices.text) && any(group.indices.text != ""))
         {
-            group.labels <- .parseCommaSeparatedText(group.labels.text)
-            group.indices <- as.numeric(.parseCommaSeparatedText(group.indices.text))
+            group.labels <- TextAsVector(group.labels.text)
+            group.indices <- if (is.numeric(group.indices.text)) group.indices.text
+                             else as.numeric(TextAsVector(group.indices.text))
 
             if (length(group.labels) == 1)
                 stop(paste0("Only one group has been specified: ", group.labels[1]))
@@ -121,7 +117,7 @@ scatterplotData <- function(chart.matrix, is.bubble, group.labels.text, group.in
     }
     else
     {
-        if (group.indices.text != "")
+        if (!is.null(group.indices.text) && any(group.indices.text != ""))
             stop("Group indices were provided but group labels are missing.")
         else
             group <- rep("Group", nrow(chart.matrix))

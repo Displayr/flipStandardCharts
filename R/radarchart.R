@@ -120,7 +120,8 @@ radarChart <- function(chart.matrix,
     {
         ind <- which(pos$Group == g.list[ggi])
         p <- add_trace(p, x=pos$x[ind], y=pos$y[ind], type="scatter", mode="lines", fill="toself",
-                    name=g.list[ggi], showlegend=TRUE, hoverinfo="skip", #evaluation=TRUE,
+                    name=g.list[ggi], legendgroup=g.list[ggi],
+                    showlegend=TRUE, hoverinfo="skip", #evaluation=TRUE,
                     line=list(width=series.line.width, color=toRGB(series.marker.colors[ggi])))
     }
 
@@ -129,8 +130,18 @@ radarChart <- function(chart.matrix,
     {
         ind <- which(pos$Group == g.list[ggi])
         p <- add_trace(p, x=pos$x[ind], y=pos$y[ind], type="scatter", mode="markers+lines", fill="none",
-                    name=g.list[ggi], showlegend=FALSE, hoverinfo="text", text=pos$HoverText[ind],
+                    name=g.list[ggi], legendgroup=g.list[ggi],
+                    showlegend=FALSE, hoverinfo="text", text=pos$HoverText[ind],
                     marker=list(size=1, color=toRGB(series.marker.colors[ggi])), line=list(width=0))
+    
+        if (data.label.show)
+            p <- add_trace(p, x=pos$x[ind]*(1+0.12), y=pos$y[ind]*(1+0.08),
+                    type="scatter", mode="text", legendgroup=g.list[ggi],
+                    showlegend=FALSE, hoverinfo="none", text=pos$DataLabels[ind],
+                    textfont=list(family=data.label.font.family, size=data.label.font.size,
+                        color=data.label.font.color))
+                    
+        
     }
 
     # Radial grid lines
@@ -176,10 +187,10 @@ radarChart <- function(chart.matrix,
                 text=paste0(y.tick.prefix, FormatWithDecimals(tick.vals, y.tick.decimals), y.tick.suffix),
                 font=list(family=y.tick.font.family, color=y.tick.font.color, size=y.tick.font.size))
 
-    if (data.label.show)
-        p <- add_annotations(p, x=pos$x, y=pos$y, showarrow=F,
-                text=pos$DataLabels, font=list(family=data.label.font.family, size=data.label.font.size,
-                color=data.label.font.color), xshift=pos$x/r.max*15, yshift=pos$y/r.max*10)
+    #if (data.label.show)
+    #    p <- add_annotations(p, x=pos$x, y=pos$y, showarrow=F,
+    #            text=pos$DataLabels, font=list(family=data.label.font.family, size=data.label.font.size,
+    #            color=data.label.font.color), xshift=pos$x/r.max*15, yshift=pos$y/r.max*10)
 
     p <- config(p, displayModeBar=modebar.show)
     p$sizingPolicy$browser$padding <- 0

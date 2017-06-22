@@ -414,10 +414,10 @@ charts instead of original values.}
 \item{z.title}{Character; title of the bubble-size legend in labeled
 bubbleplots.}
 
-\item{scatter.group.indices}{Text of comma-separated group indices
+\item{scatter.group.indices}{Vector or text of comma-separated group indices
 corresponding to each row.}
 
-\item{scatter.group.labels}{Text of comma-separated group labels.}
+\item{scatter.group.labels}{Vector or text of comma-separated group labels.}
 
 \item{us.date.format}{Whether to apply the US convention when parsing dates.}
 }

@@ -227,9 +227,9 @@
 #' charts instead of original values.
 #' @param z.title Character; title of the bubble-size legend in labeled
 #' bubbleplots.
-#' @param scatter.group.indices Text of comma-separated group indices
+#' @param scatter.group.indices Vector or text of comma-separated group indices
 #' corresponding to each row.
-#' @param scatter.group.labels Text of comma-separated group labels.
+#' @param scatter.group.labels Vector or text of comma-separated group labels.
 #' @param us.date.format Whether to apply the US convention when parsing dates.
 #' @examples
 #' z <- c(5, 6, 2, 1.5, 9, 2.2)
