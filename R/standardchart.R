@@ -699,7 +699,7 @@ Chart <-   function(y,
         series.mode <- chart.type.outputs$series.mode
         opacity <- chart.type.outputs$opacity
     }
-    
+
     ## Settings specific to Line Charts
     if (type == "Line")
     {
@@ -724,7 +724,7 @@ Chart <-   function(y,
         if (y.title == "")
             y.title <- scatterplot.data$y.title
     }
-    
+
     ## Settings specific to Column Charts
     if (type == "Column" | type == "Stacked Column" | type == "100% Stacked Column")
     {
@@ -888,6 +888,7 @@ Chart <-   function(y,
                        x.bounds.maximum = x.bounds.maximum,
                        x.bounds.minimum = x.bounds.minimum,
                        x.bounds.units.major = x.tick.distance,
+                       plot.border.show = FALSE,
                        title = title
                        ))
     }
@@ -956,13 +957,7 @@ Chart <-   function(y,
     # Adjust tick label orientation and margins
     if (x.tick.label.autoformat && type != "Radar")
     {
-        if (is.null(x.tick.angle))
-        {
-            x.tick.angle <- if (length(x.labels) > 9 && x.tick.label.autoformat) 90
-                            else 0
-        }
-
-        lab.nchar <- max(nchar(gsub("<br>.*", "" , as.character(x.labels))))
+        lab.nchar <- max(nchar(strsplit(split="<br>", as.character(x.labels))[[1]]))
         font.asp <- switch(tolower(x.tick.font.family),
                               'arial'= 0.54,
                               'arial black' = 0.63,
@@ -978,6 +973,15 @@ Chart <-   function(y,
         lab.len <- font.asp * x.tick.font.size * lab.nchar
         lab.nline <- if (is.character(x.labels)) max(sapply(gregexpr("<br>", x.labels),
                          function(x){sum(x > -1)}))
+
+        if (is.null(x.tick.angle))
+        {
+            x.tick.angle <- if (length(x.labels) > 9 && lab.nchar > 5 &&
+                                x.tick.label.autoformat && !is.bar.chart) 90
+                            else 0
+        }
+
+
         if (lab.len > 50 || (!is.null(lab.nline) && lab.nline > 0))
         {
             new.margin <- lab.len
@@ -1487,22 +1491,22 @@ Chart <-   function(y,
                 is.single <- not.na & c(TRUE, !not.na[-nrow(chart.matrix)]) & c(!not.na[-1], TRUE)
                 if (any(is.single))
                 {
-                    p <- add_trace(p, 
+                    p <- add_trace(p,
                                type = "scatter",
                                mode = "markers",
                                x = x[is.single],
                                y = y[is.single],
                                legendgroup = tmp.group,
                                name = y.label,
-                               marker = if (!is.null(marker)) marker 
+                               marker = if (!is.null(marker)) marker
                                         else list(color = toRGB(colors[i], alpha=opacity),
                                              size = series.line.width),
                                hoverinfo = "x+y+name",
                                showlegend = FALSE)
                 }
- 
+
                 if (data.label.show)
-                    p <- add_trace(p, 
+                    p <- add_trace(p,
                                type = "scatter",
                                mode = "text",
                                x = x,
