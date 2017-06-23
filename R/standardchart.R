@@ -950,57 +950,55 @@ Chart <-   function(y,
     else
     {
         ymd <- NULL
-        if (x.tick.label.autoformat && type != "Radar")
-        {
-            #new.x.labels <- autoFormatLongLabels(x.labels, wordwrap=!is.bar.chart && length(x.labels) <= 9)
-            new.x.labels <- autoFormatLongLabels(x.labels, wordwrap=x.tick.label.wordwrap)
-            lab.nchar <- if (is.character(new.x.labels)) max(nchar(gsub("<br>.*","",new.x.labels)))
-            font.asp <- switch(tolower(x.tick.font.family),
-                                  'arial'= 0.54,
-                                  'arial black' = 0.63,
-                                  'century gothic' = 0.61,
-                                  'courier new' = 0.63,
-                                  'impact' = 0.48,
-                                  'open sans' = 0.45,
-                                  'times new roman' = 0.45,
-                                  'tahoma' = 0.52,
-                                  'trebuchet' = 0.48,
-                                  'verdana' = 0.63,
-                                  0.54)
-            lab.len <- font.asp * x.tick.font.size * lab.nchar
-            lab.nline <- if (is.character(new.x.labels)) max(sapply(gregexpr("<br>", new.x.labels), function(x){sum(x > -1)}))
-            if (!is.null(lab.nline) && (lab.len > 65 || lab.nline > 0))
-            {
-                new.margin <- lab.len
-                if (is.bar.chart)
-                {
-                    if (y.position == "right")
-                    {
-                        if (is.default.margin.right)
-                            margin.right <- new.margin + 5 + 20*(y.title != "")
-                    }
-                    else if (is.default.margin.left)
-                        margin.left <- new.margin + 5 + 20*(y.title != "")
-                }
-                else if (is.default.margin.bottom)
-                {
-                    #if (length(x.labels) > 9)
-                    if (!x.tick.label.wordwrap)
-                    {
-                        if (is.null(x.tick.angle))
-                            x.tick.angle <- 90
-                        margin.bottom <- new.margin +  5 + 20*(x.title != "")
+        x.labels <- autoFormatLongLabels(x.labels, wordwrap = x.tick.label.wordwrap)
+    }
 
-                    } else
-                    {
-                        margin.bottom <- 50 + 20*floor(lab.nline/2) + 20*(x.title != "")
-                    }
-                }
-            }
-            x.labels <- new.x.labels
+    # Adjust tick label orientation and margins
+    if (x.tick.label.autoformat && type != "Radar")
+    {
+        if (is.null(x.tick.angle))
+        {
+            x.tick.angle <- if (length(x.labels) > 9 && x.tick.label.autoformat) 90
+                            else 0
         }
-        else if (is.null(x.tick.angle))
-            x.tick.angle <- 0
+
+        lab.nchar <- max(nchar(gsub("<br>.*", "" , as.character(x.labels))))
+        font.asp <- switch(tolower(x.tick.font.family),
+                              'arial'= 0.54,
+                              'arial black' = 0.63,
+                              'century gothic' = 0.61,
+                              'courier new' = 0.63,
+                              'impact' = 0.48,
+                              'open sans' = 0.45,
+                              'times new roman' = 0.45,
+                              'tahoma' = 0.52,
+                              'trebuchet' = 0.48,
+                              'verdana' = 0.63,
+                              0.54)
+        lab.len <- font.asp * x.tick.font.size * lab.nchar
+        lab.nline <- if (is.character(x.labels)) max(sapply(gregexpr("<br>", x.labels),
+                         function(x){sum(x > -1)}))
+        if (lab.len > 50 || (!is.null(lab.nline) && lab.nline > 0))
+        {
+            new.margin <- lab.len
+            if (is.bar.chart)
+            {
+                if (y.position == "right")
+                {
+                    if (is.default.margin.right)
+                        margin.right <- new.margin + 5 + 20*(y.title != "")
+                }
+                else if (is.default.margin.left)
+                    margin.left <- new.margin + 5 + 20*(y.title != "")
+            }
+            else if (is.default.margin.bottom)
+            {
+                if (x.tick.angle != 0)
+                    margin.bottom <- new.margin +  5 + 20*(x.title != "")
+                else
+                    margin.bottom <- 50 + 20*floor(lab.nline/2) + 20*(x.title != "")
+            }
+        }
     }
 
     # Bar and column chart data label annotations
@@ -1262,7 +1260,6 @@ Chart <-   function(y,
     #x.autorange <- if (x.has.bounds || !is.null(x.tick.distance))
     x.autorange <- if (!is.null(x.tick.distance))
     {
-        cat("line 1253:", x.has.bounds, x.tick.distance, "\n")
         if (!is.x.axis.numeric && !added.bounds.for.area.chart)
             stop("It is not possible to specify tick range or spacing as the x-axis is not numeric.")
         if (x.data.reversed)

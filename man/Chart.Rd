@@ -307,6 +307,8 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{x.tick.label.autoformat}{Logical; whether to rotate and wrap long x-axis labels.}
 
+\item{x.tick.label.wordwrap}{Logical; whether to wrap long x-axis labels.}
+
 \item{series.marker.show}{Can be "none", "automatic" or a vector referencing
 the plotly symbol dictionary using either numerics or strings.}
 
