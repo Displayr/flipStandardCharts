@@ -956,12 +956,6 @@ Chart <-   function(y,
     # Adjust tick label orientation and margins
     if (x.tick.label.autoformat && type != "Radar")
     {
-        if (is.null(x.tick.angle))
-        {
-            x.tick.angle <- if (length(x.labels) > 9 && x.tick.label.autoformat) 90
-                            else 0
-        }
-
         lab.nchar <- max(nchar(gsub("<br>.*", "" , as.character(x.labels))))
         font.asp <- switch(tolower(x.tick.font.family),
                               'arial'= 0.54,
@@ -978,6 +972,15 @@ Chart <-   function(y,
         lab.len <- font.asp * x.tick.font.size * lab.nchar
         lab.nline <- if (is.character(x.labels)) max(sapply(gregexpr("<br>", x.labels),
                          function(x){sum(x > -1)}))
+
+        if (is.null(x.tick.angle))
+        {
+            x.tick.angle <- if (length(x.labels) > 9 && lab.nchar > 5 &&
+                                x.tick.label.autoformat && !is.bar.chart) 90
+                            else 0
+        }
+
+
         if (lab.len > 50 || (!is.null(lab.nline) && lab.nline > 0))
         {
             new.margin <- lab.len
