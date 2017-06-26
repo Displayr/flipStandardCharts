@@ -473,10 +473,10 @@ Chart <-   function(y,
         series.line.width <- if (is.area.chart || is.scatterplot) 0 else 3
 
     default.background.color <- rgb(255, 255, 255, maxColorValue = 255)
-    if ((background.fill.color != default.background.color ||
-         background.fill.opacity != 0 ||
-         charting.area.fill.color != default.background.color ||
-         charting.area.fill.opacity != 0) &&
+    if (((background.fill.color != default.background.color &&
+         background.fill.opacity != 0) ||
+         (charting.area.fill.color != default.background.color &&
+         charting.area.fill.opacity != 0)) &&
          (is.pie.or.donut.chart || is.labeled.scatterplot.or.bubbleplot))
         warning("The background and charting area fill colors cannot be changed for
                  pie charts, donut charts, labeled scatterplots or labeled bubbleplots.")
