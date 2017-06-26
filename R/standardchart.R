@@ -957,7 +957,7 @@ Chart <-   function(y,
     # Adjust tick label orientation and margins
     if (x.tick.label.autoformat && type != "Radar")
     {
-        lab.nchar <- max(nchar(strsplit(split="<br>", as.character(x.labels))[[1]]))
+        lab.nchar <- max(nchar(gsub("<br>.*", "" , as.character(x.labels))))
         font.asp <- switch(tolower(x.tick.font.family),
                               'arial'= 0.54,
                               'arial black' = 0.63,
