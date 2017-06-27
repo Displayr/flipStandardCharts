@@ -1006,8 +1006,15 @@ Chart <-   function(y,
     }
 
     # Bar and column chart data label annotations
+    data.label.mult <- 1
+    if (is.hundred.percent.stacked)
+    {
+        data.label.suffix <- paste0(data.label.suffix, "%")
+        data.label.mult <- 100
+    }
     data.annotations <- if (data.label.show && is.bar.or.column.chart)
-        dataLabelAnnotation(chart.matrix = original.chart.matrix,
+        dataLabelAnnotation(chart.matrix = chart.matrix,
+                            data.label.mult = data.label.mult,
                             bar.decimals = data.label.decimals,
                             bar.prefix = data.label.prefix,
                             bar.suffix = data.label.suffix,
@@ -1261,8 +1268,7 @@ Chart <-   function(y,
     else
         paste(".", y.hovertext.decimals, "f", sep = "")
 
-    #x.autorange <- if (x.has.bounds || !is.null(x.tick.distance))
-    x.autorange <- if (!is.null(x.tick.distance))
+    x.autorange <- if (x.has.bounds || !is.null(x.tick.distance))
     {
         if (!is.x.axis.numeric && !added.bounds.for.area.chart)
             stop("It is not possible to specify tick range or spacing as the x-axis is not numeric.")
@@ -1424,7 +1430,7 @@ Chart <-   function(y,
             # Used by line, area and scatter charts
             source.text <- if (is.area.or.line.chart && data.label.show)
                 paste(data.label.prefix,
-                      FormatWithDecimals(chart.matrix[, i], data.label.decimals),
+                      FormatWithDecimals(chart.matrix[, i] * data.label.mult, data.label.decimals),
                       data.label.suffix, sep = "")
             else
                 ""

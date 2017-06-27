@@ -1,4 +1,5 @@
 dataLabelAnnotation <- function(chart.matrix,
+                                data.label.mult = 1,
                                 bar.decimals = 0,
                                 bar.prefix = "",
                                 bar.suffix = "",
@@ -8,7 +9,7 @@ dataLabelAnnotation <- function(chart.matrix,
                                 display.threshold = NULL,
                                 dates)
 {
-    text <- paste(bar.prefix, FormatWithDecimals(chart.matrix, bar.decimals), bar.suffix, sep = "")
+    text <- paste(bar.prefix, FormatWithDecimals(chart.matrix * data.label.mult, bar.decimals), bar.suffix, sep = "")
 
     chart.matrix[which(is.na(chart.matrix))] <- 0
 
