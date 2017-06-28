@@ -190,3 +190,15 @@ for (t in c("Line", "Bar", "Column"))
 test_that("Array", {
     expect_error(Chart(y = arr, type = "Area"), NA)
 })
+
+
+tab6 <- structure(c(14, 51, 46, 34, 62, 45, 21, 96, 61, 45, 85, 60, 46,
+62, 66, 101, 89, 81, 137, 75, 80, 120, 40, 78, 108, 40, 58, 25,
+17, 50, 1, 3, 16, 2, 34, 13, 327, 327, 327, 327, 327, 327), .Dim = 6:7, statistic = "n", .Dimnames = list(
+    c("Coca Cola", "Diet Coke", "Coke Zero", "Pepsi", "Pepsi Light",
+    "Pepsi Max"), c("Hate", "Dislike", "Neither like nor dislike",
+    "Like", "Love", "Don t Know", "NET")), name = "Q6. Brand Attitude", questions = c("Q6. Brand Attitude",
+"SUMMARY"))
+test_that("X-axis reversed", {
+    expect_error(Chart(tab6, type="Line", x.data.reversed = T), NA)
+})

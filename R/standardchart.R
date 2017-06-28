@@ -1272,8 +1272,8 @@ Chart <-   function(y,
     {
         if (!is.x.axis.numeric && !added.bounds.for.area.chart)
             stop("It is not possible to specify tick range or spacing as the x-axis is not numeric.")
-        if (x.data.reversed)
-            stop("It is not possible to reverse the x-axis whilst specifying tick range or spacing.")
+        #if (x.data.reversed)
+        #    stop("It is not possible to reverse the x-axis whilst specifying tick range or spacing.")
         FALSE
     }
     else if (x.data.reversed)
