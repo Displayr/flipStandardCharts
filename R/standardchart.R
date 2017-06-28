@@ -970,7 +970,8 @@ Chart <-   function(y,
                               'trebuchet' = 0.48,
                               'verdana' = 0.63,
                               0.54)
-        lab.len <- font.asp * x.tick.font.size * lab.nchar
+        lab.len <- if (is.bar.chart) font.asp * y.tick.font.size * lab.nchar
+                   else font.asp * x.tick.font.size * lab.nchar
         lab.nline <- if (is.character(x.labels)) max(sapply(gregexpr("<br>", x.labels),
                          function(x){sum(x > -1)}))
 
