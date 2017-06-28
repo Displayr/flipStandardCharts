@@ -396,12 +396,12 @@ Chart <-   function(y,
         data.label.show <- TRUE
         series.marker.show <- "automatic"
     }
-    if (type == "Bar")
+    if (type == "Bar" || type == "Stacked Bar")
     {
         y.tick.prefix <- ""
         y.tick.suffix <- ""
     }
-    if (!type %in% c("Bar", "Scatterplot", "Labeled Scatterplot", "Labeled Bubbleplot"))
+    if (!type %in% c("Bar", "Stacked Bar", "Scatterplot", "Labeled Scatterplot", "Labeled Bubbleplot"))
     {
         x.tick.suffix <- ""
         x.tick.prefix <- ""
