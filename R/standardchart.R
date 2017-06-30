@@ -1269,7 +1269,11 @@ Chart <-   function(y,
     else
         paste(".", y.hovertext.decimals, "f", sep = "")
 
-    x.autorange <- if (x.has.bounds || !is.null(x.tick.distance))
+    x.autorange <- if (x.data.reversed)
+    {
+        "reversed"
+    }
+    else if (x.has.bounds || !is.null(x.tick.distance))
     {
         if (!is.x.axis.numeric && !added.bounds.for.area.chart)
             stop("It is not possible to specify tick range or spacing as the x-axis is not numeric.")
@@ -1277,8 +1281,6 @@ Chart <-   function(y,
         #    stop("It is not possible to reverse the x-axis whilst specifying tick range or spacing.")
         FALSE
     }
-    else if (x.data.reversed)
-        "reversed"
     else
         TRUE
 
@@ -1296,7 +1298,11 @@ Chart <-   function(y,
         }
     }
 
-    y.autorange <- if (y.has.bounds || !is.null(y.tick.distance))
+    y.autorange <- if (xor(y.data.reversed, swap.axes.and.data))
+    {
+        "reversed"
+    } 
+    else if (y.has.bounds || !is.null(y.tick.distance))
     {
         if (y.data.reversed)
             stop("It is not possible to reverse the y-axis whilst specifying tick range or spacing.")
@@ -1304,8 +1310,6 @@ Chart <-   function(y,
             stop("It is not possible to specify the tick range or spacing for this chart type.")
         FALSE
     }
-    else if (xor(y.data.reversed, swap.axes.and.data))
-        "reversed"
     else
         TRUE
 
