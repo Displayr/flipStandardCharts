@@ -843,7 +843,7 @@ Chart <-   function(y,
                        Z = labeled.scatterplot$Z,
                        label = labeled.scatterplot$label,
                        fixed.aspect = FALSE,
-                       group = labeled.scatterplot$group,
+                       group = if (length(unique(labeled.scatterplot$group)) == 1) NULL else labeled.scatterplot$group,
                        grid = draw.grid,
                        origin = labeled.scatterplot$origin,
                        origin.align = FALSE,
@@ -1408,7 +1408,8 @@ Chart <-   function(y,
                     text=source.text[ind], textfont=textfont, textposition=data.label.position,
                     marker=list(size=series.marker.size, color=series.marker.colors[ggi],
                     line=list(width=series.marker.border.width)), line=line.obj,
-                    type=plotly.type, mode=series.mode, hoverinfo="name+text", symbols=series.marker.symbols)
+                    type=plotly.type, mode=series.mode, symbols=series.marker.symbols,
+                    hoverinfo=if(length(g.list) > 1) "name+text" else "text")
         }
     }
     else
@@ -1562,7 +1563,7 @@ Chart <-   function(y,
                                line = lines,
                                name = y.label,
                                legendgroup = tmp.group,
-                               hoverinfo = "x+y+name",
+                               hoverinfo = if(ncol(chart.matrix) > 1) "x+y+name" else "x+y",
                                marker = marker,
                                mode = series.mode)
 
@@ -1582,7 +1583,7 @@ Chart <-   function(y,
                                marker = if (!is.null(marker)) marker
                                         else list(color = toRGB(colors[i], alpha=opacity),
                                              size = series.line.width),
-                               hoverinfo = "x+y+name",
+                               hoverinfo = if(ncol(chart.matrix) > 1) "x+y+name" else "x+y",
                                showlegend = FALSE)
                 }
 
@@ -1615,7 +1616,7 @@ Chart <-   function(y,
                                text = source.text,
                                textfont = textfont,
                                textposition = data.label.position,
-                               hoverinfo = "x+y+name",
+                               hoverinfo = if (ncol(chart.matrix) > 1) "x+y+name" else "x+y",
                                # MARKERS
                                mode = series.mode,
                                marker = marker

@@ -107,13 +107,19 @@ radarChart <- function(chart.matrix,
 
     # Convert data (polar) into x, y coordinates
     pos <- do.call(rbind, lapply(as.data.frame(chart.matrix), getPolarCoord))
-    pos <- data.frame(pos, Name=rep(rownames(chart.matrix)[c(1:n,1)], m),
-                      Group=rep(colnames(chart.matrix),each=n+1), stringsAsFactors = T, check.names=F)
+    pos <- data.frame(pos, 
+                      Name=rep(rownames(chart.matrix)[c(1:n,1)], m),
+                      Group=rep(colnames(chart.matrix),each=n+1), 
+                      stringsAsFactors = T, check.names=F)
     chart.matrix <- rbind(chart.matrix, chart.matrix[1,])
-    pos <- cbind(pos, HoverText=sprintf("%s: %s%s%s", pos$Group, y.tick.prefix,
-            FormatWithDecimals(unlist(chart.matrix), y.hovertext.decimals), y.tick.suffix),
+    tmp.group <- if (ncol(chart.matrix) == 1) ""
+                 else paste0(pos$Group, ":", " ")
+    
+    pos <- cbind(pos, 
+            HoverText=sprintf("%s%s: %s%s%s", tmp.group, pos$Name, y.tick.prefix,
+                FormatWithDecimals(unlist(chart.matrix), y.hovertext.decimals), y.tick.suffix),
             DataLabels=sprintf("%s%s%s", data.label.prefix,
-            FormatWithDecimals(unlist(chart.matrix), data.label.decimals), data.label.suffix))
+                FormatWithDecimals(unlist(chart.matrix), data.label.decimals), data.label.suffix))
 
     # Initialise plot
     p <- plot_ly(pos)
