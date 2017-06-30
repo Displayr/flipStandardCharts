@@ -1225,7 +1225,7 @@ Chart <-   function(y,
         if (data.label.show)
             lab.len <- nchar(data.label.prefix) + nchar(data.label.suffix) + data.label.decimals
         if (data.label.show || (!is.null(series.marker.show) && series.marker.show != "none"))
-            padding <- (max.x - min.x) * (0.01 * lab.len + (0.05 * (type == "Bar")))
+            padding <- (max.x - min.x) * (0.01 * lab.len + (0.1 * (type == "Bar")))
 
         x.bounds.minimum <- min.x - (padding * (type != "Bar"))
         x.bounds.maximum <- max.x + padding
