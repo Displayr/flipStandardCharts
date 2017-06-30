@@ -991,17 +991,18 @@ Chart <-   function(y,
                 if (y.position == "right")
                 {
                     if (is.default.margin.right)
-                        margin.right <- new.margin + 5 + 20*(y.title != "")
+                        margin.right <- new.margin + 5 + y.title.font.size*(y.title != "")*1.25
                 }
                 else if (is.default.margin.left)
-                    margin.left <- new.margin + 5 + 20*(y.title != "")
+                    margin.left <- new.margin + 5 + y.title.font.size*(y.title != "")*1.25
             }
             else if (is.default.margin.bottom)
             {
                 if (x.tick.angle != 0)
-                    margin.bottom <- new.margin +  5 + 20*(x.title != "")
+                    margin.bottom <- new.margin + 10 + x.title.font.size * (x.title != "") * 1.25
                 else
-                    margin.bottom <- 50 + 20*floor(lab.nline/2) + 20*(x.title != "")
+                    margin.bottom <- 50 + 1.25 * (x.tick.font.size*floor(lab.nline/2) + 
+                                                  x.title.font.size*(x.title != ""))
             }
         }
     }
@@ -1194,10 +1195,15 @@ Chart <-   function(y,
     # Area chart does not display the data labels on the edge correctly, so we add padding.
     # Line chart does add padding automatically, but the amount of padding seems to change
     # between regression tests, so we add padding manually.
-    if (is.area.or.line.chart && !x.has.bounds)
+    if (!x.has.bounds && (is.area.or.line.chart || (type == "Bar" && data.label.show)))
     {
         not.na <- which(apply(chart.matrix, 1, function(x){any(!is.na(x))}))
-        if (is.x.axis.numeric)
+        if (type == "Bar")
+        {
+            min.x <- min(0, min(chart.matrix))
+            max.x <- max(chart.matrix)
+        }
+        else if (is.x.axis.numeric)
         {
             x.vals <- as.numeric(row.names(chart.matrix)[not.na])
             min.x <- min(x.vals)
@@ -1215,10 +1221,13 @@ Chart <-   function(y,
             max.x <- max(not.na) - 1
         }
         padding <- 0
+        lab.len <- 1
+        if (data.label.show)
+            lab.len <- nchar(data.label.prefix) + nchar(data.label.suffix) + data.label.decimals
         if (data.label.show || (!is.null(series.marker.show) && series.marker.show != "none"))
-            padding <- (max.x - min.x) * 0.05
+            padding <- (max.x - min.x) * (0.01 * lab.len + (0.05 * (type == "Bar")))
 
-        x.bounds.minimum <- min.x - padding
+        x.bounds.minimum <- min.x - (padding * (type != "Bar"))
         x.bounds.maximum <- max.x + padding
         x.has.bounds <- TRUE
         added.bounds.for.area.chart <- TRUE
