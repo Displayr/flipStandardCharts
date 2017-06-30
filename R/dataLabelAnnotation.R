@@ -41,6 +41,13 @@ dataLabelAnnotation <- function(chart.matrix,
     }
     else
         0:(nrow(chart.matrix) - 1) + rep(series.positions, each = nrow(chart.matrix))
+    
+    if (barmode != "stack")
+    {
+        text <- matrix(text, ncol=ncol(chart.matrix))
+        x.positions <- matrix(x.positions, ncol=ncol(chart.matrix))
+        y.positions <- matrix(y.positions, ncol=ncol(chart.matrix))
+    }
 
     data.annotations <- if (swap.axes.and.data)
     {

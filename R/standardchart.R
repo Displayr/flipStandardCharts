@@ -242,7 +242,7 @@
 #' @importFrom flipFormat FormatWithDecimals
 #' @importFrom flipTime PeriodNameToDate
 #' @importFrom flipChartBasics ChartColors
-#' @importFrom plotly plot_ly config toRGB add_trace layout hide_colorbar
+#' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @export
 Chart <-   function(y,
                     type = "Column",
@@ -1380,7 +1380,9 @@ Chart <-   function(y,
              size = data.label.font.size)
     else
         NULL
-
+    xaxis2 <- NULL
+    yaxis2 <- NULL
+    
     if (is.scatterplot)
     {
         x.prefix <- if (x.tick.prefix == "") data.label.prefix else x.tick.prefix
@@ -1463,15 +1465,87 @@ Chart <-   function(y,
 
             if (plotly.type == "bar")
             {
-                p <- add_trace(p,
+                tmp.group <- if (legend.group == "") paste("group", i) else legend.group
+                p <- add_trace(p, 
                                type = plotly.type,
                                x = x,
                                y = y,
                                orientation = orientation,
                                line = lines,
                                name = y.labels[i],
-                               legendgroup = legend.group,
+                               legendgroup = tmp.group,
                                marker = marker)
+
+                if (type == "Column" && data.label.show && !is.stacked)
+                {
+                    if (is.null(x.range))
+                    {
+                        if (is.numeric(x) || !is.null(ymd))
+                            x.range <- range(data.annotations$x)
+                        else
+                            x.range <- c(0, length(x))
+
+                        if (!is.null(ymd))
+                        {
+                            #tmpd <- diff(data.annotations$x[,i])[1] * 6/24
+                            tmpd <- diff(sort(data.annotations$x))[1] * 0.5
+                            x.range <- x.range + c(-tmpd, tmpd)
+                        }
+                        if (x.autorange == "reversed")
+                            x.range <- rev(x.range)
+                    }
+                    xaxis2 <- list(overlaying = "x",
+                                   visible = FALSE,
+                                   range = x.range)
+
+                    p <- add_text(p,
+                              xaxis = "x2",
+                              x = data.annotations$x[,i] + 0.5,
+                              y = data.annotations$y[,i],
+                              text = data.annotations$text[,i],
+                              textposition = "top center",
+                              textfont = textfont,
+                              legendgroup = tmp.group,
+                              hoverinfo = "none",
+                              showlegend = FALSE)
+                }
+                if (type == "Bar" && data.label.show)
+                {
+                    if (is.null(y.range))
+                    {
+                        if (is.numeric(y) || !is.null(ymd))
+                            y.range <- range(data.annotations$y)
+                        else
+                            y.range <- c(0, length(y)) - 0.5
+
+                        if (!is.null(ymd))
+                        {
+                            tmpd <- diff(sort(data.annotations$y))[1] * 0.5
+                            y.range <- y.range + c(-tmpd, tmpd)
+                            y.range <- rev(y.range)
+                            # plotly does not reverse dates on the y-axis
+                            if (y.autorange == "reversed")
+                                y.range <- rev(y.range)
+                        }
+                        if (y.autorange == "reversed")
+                            y.range <- rev(y.range)
+                    }
+                    yaxis2 <- list(overlaying = "y",
+                                   visible = FALSE,
+                                   range = y.range)
+                    x.diff <- diff(range(data.annotations$x))/100
+                    p <- add_text(p,
+                              yaxis = "y2",
+                              x = data.annotations$x[,i] + x.diff,
+                              y = data.annotations$y[,i],
+                              text = data.annotations$text[,i],
+                              textposition = "middle right",
+                              textfont = textfont,
+                              legendgroup = tmp.group,
+                              hoverinfo = "none",
+                              showlegend = FALSE)
+                }
+
             }
             else if (is.area.or.line.chart && !is.stacked)
             {
@@ -1623,8 +1697,10 @@ Chart <-   function(y,
             showticklabels = y.tick.show
         ),
         ## X-AXIS
+        xaxis2 = xaxis2,
+        yaxis2 = yaxis2, 
         xaxis = list(
-            title = x.title,
+            title = x.title, 
             type = x.axis.type,
             titlefont = list(
                 color = x.title.font.color,
@@ -1686,7 +1762,7 @@ Chart <-   function(y,
             color = data.label.font.color,
             size = data.label.font.size
         ),
-        annotations = data.annotations,
+        annotations = if (plotly.type == "bar" && is.stacked) data.annotations else NULL,
         bargap = bar.gap,
         barmode = barmode
     )
