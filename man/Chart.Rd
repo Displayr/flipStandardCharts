@@ -59,11 +59,12 @@ Chart(y, type = "Column", transpose = FALSE, title = "",
   data.label.font.size = 10, data.label.font.color = NULL,
   data.label.decimals = 2, data.label.prefix = "", data.label.suffix = "",
   data.label.threshold = NULL, data.label.position = "top middle",
-  pie.order = "initial", pie.groups.order = "initial",
-  pie.subslice.colors = NULL, pie.subslice.colors.reverse = FALSE,
-  pie.subslice.colors.repeat = TRUE, pie.border.color = rgb(255, 255, 255,
-  maxColorValue = 255), pie.inner.radius = 70, pie.show.percentages = FALSE,
-  z.title = "", scatter.group.indices = "", scatter.group.labels = "",
+  data.label.max.plot = NA, pie.order = "initial",
+  pie.groups.order = "initial", pie.subslice.colors = NULL,
+  pie.subslice.colors.reverse = FALSE, pie.subslice.colors.repeat = TRUE,
+  pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
+  pie.inner.radius = 70, pie.show.percentages = FALSE, z.title = "",
+  scatter.group.indices = "", scatter.group.labels = "",
   us.date.format = NULL)
 }
 \arguments{
@@ -393,6 +394,8 @@ charts.}
 value in relation to the marker icon.  Can be "top left", "top center", "top
 right", "middle left", "middle center", "middle right", "bottom left",
 "bottom center", "bottom right". Only applicable for line and area charts.}
+
+\item{data.label.max.plot}{Integer; the maximum number of labels to show on a Labeled Scatterplot.}
 
 \item{pie.order}{Character; "descending", "initial", or
 "alphabetical".}

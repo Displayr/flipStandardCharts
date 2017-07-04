@@ -211,6 +211,7 @@
 #' value in relation to the marker icon.  Can be "top left", "top center", "top
 #' right", "middle left", "middle center", "middle right", "bottom left",
 #' "bottom center", "bottom right". Only applicable for line and area charts.
+#' @param data.label.max.plot Integer; the maximum number of labels to show on a Labeled Scatterplot.
 #' @param pie.order Character; "descending", "initial", or
 #' "alphabetical".
 #' @param pie.groups.order Character; "descending", "initial", or
@@ -362,6 +363,7 @@ Chart <-   function(y,
                     data.label.suffix = "",
                     data.label.threshold = NULL,
                     data.label.position = "top middle",
+                    data.label.max.plot = NA,
                     pie.order = "initial",
                     pie.groups.order = "initial",
                     pie.subslice.colors = NULL,
@@ -838,10 +840,18 @@ Chart <-   function(y,
                                                   x.title = x.title,
                                                   y.title = y.title)
 
+        label.plot <- labeled.scatterplot$label
+        n.lab <- length(label.plot)
+        if (is.finite(data.label.max.plot) && data.label.max.plot < 0)
+            data.label.max.plot <- NA
+        if (is.finite(data.label.max.plot) && data.label.max.plot < n.lab)
+            label.plot[(data.label.max.plot + 1):n.lab] <- ""
+
         return(rhtmlLabeledScatter::LabeledScatter(X = labeled.scatterplot$X,
                        Y = labeled.scatterplot$Y,
                        Z = labeled.scatterplot$Z,
-                       label = labeled.scatterplot$label,
+                       label = label.plot,
+                       label.alt = labeled.scatterplot$label,
                        fixed.aspect = FALSE,
                        group = if (length(unique(labeled.scatterplot$group)) == 1) NULL else labeled.scatterplot$group,
                        grid = draw.grid,
