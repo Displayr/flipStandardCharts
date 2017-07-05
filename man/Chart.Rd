@@ -6,7 +6,9 @@
 \usage{
 Chart(y, type = "Column", transpose = FALSE, title = "",
   title.font.family = NULL, title.font.color = NULL, title.font.size = 16,
-  colors = NULL, colors.reverse = FALSE, opacity = NULL,
+  colors = NULL, colors.reverse = FALSE, colors.custom.color = NA,
+  colors.custom.gradient.start = NA, colors.custom.gradient.end = NA,
+  colors.custom.palette = NA, opacity = NULL,
   background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
   background.fill.opacity = 1, charting.area.fill.color = rgb(255, 255, 255,
   maxColorValue = 255), charting.area.fill.opacity = 1, legend.show = TRUE,
@@ -94,6 +96,14 @@ colors from grDevices OR one or more specified hex value colors OR a single
 named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 
 \item{colors.reverse}{Logical; if the order of the colors should be reversed.}
+
+\item{colors.custom.color}{Character; a single color which is used if \code{colors} is set to \code{"Custom color"}.}
+
+\item{colors.custom.gradient.start}{Character; starting color of gradient if \code{colors} is set to \code{"Custom gradient"}.}
+
+\item{colors.custom.gradient.end}{Character; last color of gradient if \code{colors} is set to \code{"Custom gradient"}.}
+
+\item{colors.custom.palette}{Character; comma separated list of colors to be used if \code{colors} is set to \code{"Custom palette"}.}
 
 \item{opacity}{Opacity of area fill colors as an alpha value
 (0 to 1).}

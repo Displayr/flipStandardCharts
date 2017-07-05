@@ -20,6 +20,10 @@
 #' colors from grDevices OR one or more specified hex value colors OR a single
 #' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
 #' @param colors.reverse Logical; if the order of the colors should be reversed.
+#' @param colors.custom.color Character; a single color which is used if \code{colors} is set to \code{"Custom color"}.
+#' @param colors.custom.gradient.start Character; starting color of gradient if \code{colors} is set to \code{"Custom gradient"}.
+#' @param colors.custom.gradient.end Character; last color of gradient if \code{colors} is set to \code{"Custom gradient"}.
+#' @param colors.custom.palette Character; comma separated list of colors to be used if \code{colors} is set to \code{"Custom palette"}.
 #' @param opacity Opacity of area fill colors as an alpha value
 #' (0 to 1).
 #' @param background.fill.color Background color in character format
@@ -255,6 +259,10 @@ Chart <-   function(y,
                     title.font.size = 16,
                     colors = NULL,
                     colors.reverse = FALSE,
+                    colors.custom.color = NA,
+                    colors.custom.gradient.start = NA,
+                    colors.custom.gradient.end = NA,
+                    colors.custom.palette = NA,
                     opacity = NULL,
                     background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
                     background.fill.opacity = 1,
@@ -780,6 +788,45 @@ Chart <-   function(y,
         series.marker.border.colors.reverse <- series.marker.colors.reverse
     }
 
+    ## Work out color ranges; n.b. some color ranges worked out in the chart specific functions.
+    number.colors.needed <- if (is.scatterplot) length(unique(scatterplot.data$group)) else ncol(chart.matrix)
+
+    ## Calculate colors
+    if (length(number.colors.needed) == 0 || number.colors.needed == 0)
+        stop("Chart matrix is empty.")
+    colors <- ChartColors(number.colors.needed = number.colors.needed,
+                                           given.colors = colors,
+                                           custom.color = colors.custom.color,
+                                           custom.gradient.start = colors.custom.gradient.start,
+                                           custom.gradient.end = colors.custom.gradient.end,
+                                           custom.palette = colors.custom.palette,
+                                           reverse = colors.reverse,
+                                           trim.light.colors = TRUE)
+    series.line.colors <- ChartColors(number.colors.needed = number.colors.needed,
+                                           given.colors = series.line.colors,
+                                           custom.color = colors.custom.color,
+                                           custom.gradient.start = colors.custom.gradient.start,
+                                           custom.gradient.end = colors.custom.gradient.end,
+                                           custom.palette = colors.custom.palette,
+                                           reverse = series.line.colors.reverse,
+                                           trim.light.colors = TRUE)
+    series.marker.colors <- ChartColors(number.colors.needed = number.colors.needed,
+                                           given.colors = series.marker.colors,
+                                           custom.color = colors.custom.color,
+                                           custom.gradient.start = colors.custom.gradient.start,
+                                           custom.gradient.end = colors.custom.gradient.end,
+                                           custom.palette = colors.custom.palette,
+                                           reverse = series.marker.colors.reverse,
+                                           trim.light.colors = TRUE)
+    series.marker.border.colors <- ChartColors(number.colors.needed = number.colors.needed,
+                                           given.colors = series.marker.border.colors,
+                                           custom.color = colors.custom.color,
+                                           custom.gradient.start = colors.custom.gradient.start,
+                                           custom.gradient.end = colors.custom.gradient.end,
+                                           custom.palette = colors.custom.palette,
+                                           reverse = series.marker.border.colors.reverse,
+                                           trim.light.colors = TRUE)
+
     if (type == "Pie" || type == "Donut")
         return(pieChart(
                 chart.matrix = chart.matrix,
@@ -905,28 +952,6 @@ Chart <-   function(y,
                        ))
     }
 
-    ## Work out color ranges; n.b. some color ranges worked out in the chart specific functions.
-    number.colors.needed <- if (is.scatterplot) length(unique(scatterplot.data$group)) else ncol(chart.matrix)
-
-    ## Calculate colors
-    if (length(number.colors.needed) == 0 || number.colors.needed == 0)
-        stop("Chart matrix is empty.")
-    colors <- ChartColors(number.colors.needed = number.colors.needed,
-                                           given.colors = colors,
-                                           reverse = colors.reverse,
-                                           trim.light.colors = TRUE)
-    series.line.colors <- ChartColors(number.colors.needed = number.colors.needed,
-                                           given.colors = series.line.colors,
-                                           reverse = series.line.colors.reverse,
-                                           trim.light.colors = TRUE)
-    series.marker.colors <- ChartColors(number.colors.needed = number.colors.needed,
-                                           given.colors = series.marker.colors,
-                                           reverse = series.marker.colors.reverse,
-                                           trim.light.colors = TRUE)
-    series.marker.border.colors <- ChartColors(number.colors.needed = number.colors.needed,
-                                           given.colors = series.marker.border.colors,
-                                           reverse = series.marker.border.colors.reverse,
-                                           trim.light.colors = TRUE)
 
     ## Color inheritance - second run
     if (is.null(series.line.colors))
@@ -1013,7 +1038,7 @@ Chart <-   function(y,
                 if (x.tick.angle != 0)
                     margin.bottom <- new.margin + 10 + x.title.font.size * (x.title != "") * 1.25
                 else
-                    margin.bottom <- 50 + 1.25 * (x.tick.font.size*floor(lab.nline/2) + 
+                    margin.bottom <- 50 + 1.25 * (x.tick.font.size*floor(lab.nline/2) +
                                                   x.title.font.size*(x.title != ""))
             }
         }
@@ -1322,7 +1347,7 @@ Chart <-   function(y,
     y.autorange <- if (xor(y.data.reversed, swap.axes.and.data))
     {
         "reversed"
-    } 
+    }
     else if (y.has.bounds || !is.null(y.tick.distance))
     {
         if (y.data.reversed)
@@ -1407,7 +1432,7 @@ Chart <-   function(y,
         NULL
     xaxis2 <- NULL
     yaxis2 <- NULL
-    
+
     if (is.scatterplot)
     {
         x.prefix <- if (x.tick.prefix == "") data.label.prefix else x.tick.prefix
@@ -1492,7 +1517,7 @@ Chart <-   function(y,
             if (plotly.type == "bar")
             {
                 tmp.group <- if (legend.group == "") paste("group", i) else legend.group
-                p <- add_trace(p, 
+                p <- add_trace(p,
                                type = plotly.type,
                                x = x,
                                y = y,
@@ -1724,9 +1749,9 @@ Chart <-   function(y,
         ),
         ## X-AXIS
         xaxis2 = xaxis2,
-        yaxis2 = yaxis2, 
+        yaxis2 = yaxis2,
         xaxis = list(
-            title = x.title, 
+            title = x.title,
             type = x.axis.type,
             titlefont = list(
                 color = x.title.font.color,
