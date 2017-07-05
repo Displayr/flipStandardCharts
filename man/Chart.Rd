@@ -44,10 +44,10 @@ Chart(y, type = "Column", transpose = FALSE, title = "",
   x.tick.angle = NULL, x.tick.font.color = NULL,
   x.tick.font.family = NULL, x.tick.font.size = 10,
   x.tick.label.autoformat = TRUE, x.tick.label.wordwrap = TRUE,
-  series.marker.show = "none", series.marker.colors = NULL,
-  series.marker.colors.reverse = FALSE, series.marker.opacity = 1,
-  series.marker.size = 6, series.marker.border.width = 1,
-  series.marker.border.colors = NULL,
+  wordwrap.nchar = 21, series.marker.show = "none",
+  series.marker.colors = NULL, series.marker.colors.reverse = FALSE,
+  series.marker.opacity = 1, series.marker.size = 6,
+  series.marker.border.width = 1, series.marker.border.colors = NULL,
   series.marker.border.colors.reverse = FALSE,
   series.marker.border.opacity = 1, series.line.width = NULL,
   series.line.colors = NULL, series.line.colors.reverse = FALSE,
@@ -309,6 +309,8 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{x.tick.label.autoformat}{Logical; whether to rotate and wrap long x-axis labels.}
 
 \item{x.tick.label.wordwrap}{Logical; whether to wrap long x-axis labels.}
+
+\item{wordwrap.nchar}{Integer; number of characters in each line when \code{x.tick.label.wordwrap} is \code{TRUE}.}
 
 \item{series.marker.show}{Can be "none", "automatic" or a vector referencing
 the plotly symbol dictionary using either numerics or strings.}

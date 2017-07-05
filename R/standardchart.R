@@ -157,6 +157,7 @@
 #' @param x.tick.label.wordwrap Logical; whether to wrap long x-axis labels.
 #' @param series.marker.show Can be "none", "automatic" or a vector referencing
 #' the plotly symbol dictionary using either numerics or strings.
+#' @param wordwrap.nchar Integer; number of characters in each line when \code{x.tick.label.wordwrap} is \code{TRUE}.
 #' @param series.marker.colors Character; a vector containing one or more named
 #' colors from grDevices OR one or more specified hex value colors OR a single
 #' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
@@ -334,6 +335,7 @@ Chart <-   function(y,
                     x.tick.font.size = 10,
                     x.tick.label.autoformat = TRUE,
                     x.tick.label.wordwrap = TRUE,
+                    wordwrap.nchar = 21,
                     series.marker.show = "none", # ignored
                     series.marker.colors = NULL,
                     series.marker.colors.reverse = FALSE,
@@ -914,17 +916,17 @@ Chart <-   function(y,
                                            reverse = colors.reverse,
                                            trim.light.colors = TRUE)
     series.line.colors <- ChartColors(number.colors.needed = number.colors.needed,
-                                                       given.colors = series.line.colors,
-                                                       reverse = series.line.colors.reverse,
-                                                       trim.light.colors = TRUE)
+                                           given.colors = series.line.colors,
+                                           reverse = series.line.colors.reverse,
+                                           trim.light.colors = TRUE)
     series.marker.colors <- ChartColors(number.colors.needed = number.colors.needed,
-                                                         given.colors = series.marker.colors,
-                                                         reverse = series.marker.colors.reverse,
-                                                         trim.light.colors = TRUE)
+                                           given.colors = series.marker.colors,
+                                           reverse = series.marker.colors.reverse,
+                                           trim.light.colors = TRUE)
     series.marker.border.colors <- ChartColors(number.colors.needed = number.colors.needed,
-                                                                given.colors = series.marker.border.colors,
-                                                                reverse = series.marker.border.colors.reverse,
-                                                                trim.light.colors = TRUE)
+                                           given.colors = series.marker.border.colors,
+                                           reverse = series.marker.border.colors.reverse,
+                                           trim.light.colors = TRUE)
 
     ## Color inheritance - second run
     if (is.null(series.line.colors))
@@ -961,7 +963,7 @@ Chart <-   function(y,
     else
     {
         ymd <- NULL
-        x.labels <- autoFormatLongLabels(x.labels, wordwrap = x.tick.label.wordwrap)
+        x.labels <- autoFormatLongLabels(x.labels, wordwrap = x.tick.label.wordwrap, n = wordwrap.nchar)
     }
 
     # Adjust tick label orientation and margins
