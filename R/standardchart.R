@@ -168,6 +168,10 @@
 #' @param series.marker.colors.reverse Logical; if the order of the colors should
 #' be reversed.
 #' @param series.marker.opacity Opacity for series markers as an alpha value (0 to 1).
+#' @param series.marker.colors.custom.color Character; a single color which is used if \code{series.marker.colors} is set to \code{"Custom color"}.
+#' @param series.marker.colors.custom.gradient.start Character; starting color of gradient if \code{series.marker.colors} is set to \code{"Custom gradient"}.
+#' @param series.marker.colors.custom.gradient.end Character; last color of gradient if \code{series.marker.colors} is set to \code{"Custom gradient"}.
+#' @param series.marker.colors.custom.palette Character; comma separated list of series.marker.colors to be used if \code{series.marker.colors} is set to \code{"Custom palette"}.
 #' @param series.marker.size Size in pixels of marker
 #' @param series.marker.border.width Width in pixels of border/line
 #' around series markers; 0 is no line
@@ -176,6 +180,10 @@
 #' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
 #' @param series.marker.border.colors.reverse Logical; if the order of the colors
 #' should be reversed.
+#' @param series.marker.border.colors.custom.color Character; a single color which is used if \code{series.marker.border.colors} is set to \code{"Custom color"}.
+#' @param series.marker.border.colors.custom.gradient.start Character; starting color of gradient if \code{series.marker.border.colors} is set to \code{"Custom gradient"}.
+#' @param series.marker.border.colors.custom.gradient.end Character; last color of gradient if \code{series.marker.border.colors} is set to \code{"Custom gradient"}.
+#' @param series.marker.border.colors.custom.palette Character; comma separated list of series.marker.border.colors to be used if \code{series.marker.border.colors} is set to \code{"Custom palette"}.
 #' @param series.marker.border.opacity Opacity of border/line around
 #' series markers as an alpha value (0 to 1).
 #' @param series.line.width Thickness, in pixels, of the series line
@@ -184,6 +192,10 @@
 #' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
 #' @param series.line.colors.reverse Logical; if the order of the colors
 #' should be reversed.
+#' @param series.line.colors.custom.color Character; a single color which is used if \code{series.line.colors} is set to \code{"Custom color"}.
+#' @param series.line.colors.custom.gradient.start Character; starting color of gradient if \code{series.line.colors} is set to \code{"Custom gradient"}.
+#' @param series.line.colors.custom.gradient.end Character; last color of gradient if \code{series.line.colors} is set to \code{"Custom gradient"}.
+#' @param series.line.colors.custom.palette Character; comma separated list of series.line.colors to be used if \code{series.line.colors} is set to \code{"Custom palette"}.
 #' @param series.line.opacity Opacity for series lines as an
 #' alpha value (0 to 1)
 #' @param tooltip.show Logical; whether to show a tooltip on hover.
@@ -347,15 +359,27 @@ Chart <-   function(y,
                     series.marker.show = "none", # ignored
                     series.marker.colors = NULL,
                     series.marker.colors.reverse = FALSE,
+                    series.marker.colors.custom.color = NA,
+                    series.marker.colors.custom.gradient.start = NA,
+                    series.marker.colors.custom.gradient.end = NA,
+                    series.marker.colors.custom.palette = NA,
                     series.marker.opacity = 1,
                     series.marker.size = 6,
                     series.marker.border.width = 1,
                     series.marker.border.colors = NULL,
+                    series.marker.border.colors.custom.color = NA,
+                    series.marker.border.colors.custom.gradient.start = NA,
+                    series.marker.border.colors.custom.gradient.end = NA,
+                    series.marker.border.colors.custom.palette = NA,
                     series.marker.border.colors.reverse = FALSE,
                     series.marker.border.opacity = 1,
                     series.line.width = NULL,
                     series.line.colors = NULL,
                     series.line.colors.reverse = FALSE,
+                    series.line.colors.custom.color = NULL,
+                    series.line.colors.custom.gradient.start = NA,
+                    series.line.colors.custom.gradient.end = NA,
+                    series.line.colors.custom.palette = NA,
                     series.line.opacity = 1,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
@@ -774,58 +798,29 @@ Chart <-   function(y,
     {
         series.line.colors <- colors
         series.line.colors.reverse <- colors.reverse
+        series.line.colors.custom.color <- colors.custom.color
+        series.line.colors.custom.gradient.start <- colors.custom.gradient.start
+        series.line.colors.custom.gradient.end <- colors.custom.gradient.end
+        series.line.colors.custom.palette <- colors.custom.palette 
     }
 
     if (is.null(series.marker.colors))
     {
         series.marker.colors <- series.line.colors
         series.marker.colors.reverse <- series.line.colors.reverse
+        series.marker.colors.custom.gradient.start <- series.line.colors.custom.gradient.start
+        series.marker.colors.custom.gradient.end <- series.line.colors.custom.gradient.end
+        series.marker.colors.custom.palette <- series.line.colors.custom.palette 
     }
 
     if (is.null(series.marker.border.colors))
     {
         series.marker.border.colors <- series.marker.colors
         series.marker.border.colors.reverse <- series.marker.colors.reverse
+        series.marker.border.colors.custom.gradient.start <- series.marker.colors.custom.gradient.start
+        series.marker.border.colors.custom.gradient.end <- series.marker.colors.custom.gradient.end
+        series.marker.border.colors.custom.palette <- series.marker.colors.custom.palette 
     }
-
-    ## Work out color ranges; n.b. some color ranges worked out in the chart specific functions.
-    number.colors.needed <- if (is.scatterplot) length(unique(scatterplot.data$group)) else ncol(chart.matrix)
-
-    ## Calculate colors
-    if (length(number.colors.needed) == 0 || number.colors.needed == 0)
-        stop("Chart matrix is empty.")
-    colors <- ChartColors(number.colors.needed = number.colors.needed,
-                                           given.colors = colors,
-                                           custom.color = colors.custom.color,
-                                           custom.gradient.start = colors.custom.gradient.start,
-                                           custom.gradient.end = colors.custom.gradient.end,
-                                           custom.palette = colors.custom.palette,
-                                           reverse = colors.reverse,
-                                           trim.light.colors = TRUE)
-    series.line.colors <- ChartColors(number.colors.needed = number.colors.needed,
-                                           given.colors = series.line.colors,
-                                           custom.color = colors.custom.color,
-                                           custom.gradient.start = colors.custom.gradient.start,
-                                           custom.gradient.end = colors.custom.gradient.end,
-                                           custom.palette = colors.custom.palette,
-                                           reverse = series.line.colors.reverse,
-                                           trim.light.colors = TRUE)
-    series.marker.colors <- ChartColors(number.colors.needed = number.colors.needed,
-                                           given.colors = series.marker.colors,
-                                           custom.color = colors.custom.color,
-                                           custom.gradient.start = colors.custom.gradient.start,
-                                           custom.gradient.end = colors.custom.gradient.end,
-                                           custom.palette = colors.custom.palette,
-                                           reverse = series.marker.colors.reverse,
-                                           trim.light.colors = TRUE)
-    series.marker.border.colors <- ChartColors(number.colors.needed = number.colors.needed,
-                                           given.colors = series.marker.border.colors,
-                                           custom.color = colors.custom.color,
-                                           custom.gradient.start = colors.custom.gradient.start,
-                                           custom.gradient.end = colors.custom.gradient.end,
-                                           custom.palette = colors.custom.palette,
-                                           reverse = series.marker.border.colors.reverse,
-                                           trim.light.colors = TRUE)
 
     if (type == "Pie" || type == "Donut")
         return(pieChart(
@@ -833,6 +828,10 @@ Chart <-   function(y,
                 type = type,
                 values.color = colors,
                 colors.reverse = colors.reverse,
+                colors.custom.color = colors.custom.color,
+                colors.custom.gradient.start = colors.custom.gradient.start,
+                colors.custom.gradient.end = colors.custom.gradient.end,
+                colors.custom.palette = colors.custom.palette,
                 title = title,
                 title.font.family = title.font.family,
                 title.font.size = title.font.size,
@@ -859,6 +858,7 @@ Chart <-   function(y,
                 pie.show.percentages = pie.show.percentages,
                 table.statistic = table.statistic))
 
+    
     ## Settings specific to labelled scatter plots
     if (is.labeled.scatterplot.or.bubbleplot)
     {
@@ -878,6 +878,10 @@ Chart <-   function(y,
         labeled.scatterplot <- labeledScatterplot(chart.matrix = chart.matrix,
                                                   colors = colors,
                                                   colors.reverse = colors.reverse,
+                                                  colors.custom.color = colors.custom.color,
+                                                  colors.custom.gradient.start = colors.custom.gradient.start,
+                                                  colors.custom.gradient.end = colors.custom.gradient.end,
+                                                  colors.custom.palette = colors.custom.palette,
                                                   type = type,
                                                   group.labels.text = scatter.group.labels,
                                                   group.indices.text = scatter.group.indices,
@@ -894,7 +898,10 @@ Chart <-   function(y,
         if (is.finite(data.label.max.plot) && data.label.max.plot < 0)
             data.label.max.plot <- NA
         if (is.finite(data.label.max.plot) && data.label.max.plot < n.lab)
+        {
+            warning("Some labels have been hidden. Adjust 'Maximum data labels to plot' to show more labels.") 
             label.plot[(data.label.max.plot + 1):n.lab] <- ""
+        }
 
         return(rhtmlLabeledScatter::LabeledScatter(X = labeled.scatterplot$X,
                        Y = labeled.scatterplot$Y,
@@ -951,6 +958,48 @@ Chart <-   function(y,
                        title = title
                        ))
     }
+
+    ## Work out color ranges; n.b. some color ranges worked out in the chart specific functions.
+    ## This must occur after pie/donut charts are plotted because they use a different number of colors 
+    ## Labeled scatter/bubblecharts also handle groups separately
+    number.colors.needed <- if (is.scatterplot) length(unique(scatterplot.data$group)) else ncol(chart.matrix)
+
+    ## Calculate colors
+    if (length(number.colors.needed) == 0 || number.colors.needed == 0)
+        stop("Chart matrix is empty.")
+
+    colors <- ChartColors(number.colors.needed = number.colors.needed,
+                                           given.colors = colors,
+                                           custom.color = colors.custom.color,
+                                           custom.gradient.start = colors.custom.gradient.start,
+                                           custom.gradient.end = colors.custom.gradient.end,
+                                           custom.palette = colors.custom.palette,
+                                           reverse = colors.reverse,
+                                           trim.light.colors = TRUE)
+    series.line.colors <- ChartColors(number.colors.needed = number.colors.needed,
+                                           given.colors = series.line.colors,
+                                           custom.color = series.line.colors.custom.color,
+                                           custom.gradient.start = series.line.colors.custom.gradient.start,
+                                           custom.gradient.end = series.line.colors.custom.gradient.end,
+                                           custom.palette = series.line.colors.custom.palette,
+                                           reverse = series.line.colors.reverse,
+                                           trim.light.colors = TRUE)
+    series.marker.colors <- ChartColors(number.colors.needed = number.colors.needed,
+                                           given.colors = series.marker.colors,
+                                           custom.color = series.marker.colors.custom.color,
+                                           custom.gradient.start = series.marker.colors.custom.gradient.start,
+                                           custom.gradient.end = series.marker.colors.custom.gradient.end,
+                                           custom.palette = series.marker.colors.custom.palette,
+                                           reverse = series.marker.colors.reverse,
+                                           trim.light.colors = TRUE)
+    series.marker.border.colors <- ChartColors(number.colors.needed = number.colors.needed,
+                                           given.colors = series.marker.border.colors,
+                                           custom.color = series.marker.border.colors.custom.color,
+                                           custom.gradient.start = series.marker.border.colors.custom.gradient.start,
+                                           custom.gradient.end = series.marker.border.colors.custom.gradient.end,
+                                           custom.palette = series.marker.border.colors.custom.palette,
+                                           reverse = series.marker.border.colors.reverse,
+                                           trim.light.colors = TRUE)
 
 
     ## Color inheritance - second run

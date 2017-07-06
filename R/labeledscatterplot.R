@@ -3,6 +3,10 @@
 #' @param chart.matrix Input data with 2 or 3 columns.
 #' @param colors Group colors.
 #' @param colors.reverse Whether to reverse the colors.
+#' @param colors.custom.color Character; a single color which is used if \code{colors} is set to \code{"Custom color"}.
+#' @param colors.custom.gradient.start Character; starting color of gradient if \code{colors} is set to \code{"Custom gradient"}.
+#' @param colors.custom.gradient.end Character; last color of gradient if \code{colors} is set to \code{"Custom gradient"}.
+#' @param colors.custom.palette Character; comma separated list of colors to be used if \code{colors} is set to \code{"Custom palette"}.
 #' @param type Either "Labeled Scatterplot" or "Labeled Bubbleplot".
 #' @param group.labels.text Vector or text of comma-separated group labels.
 #' @param group.indices.text Vector or text of comma-separated group indices corresponding to each row.
@@ -18,6 +22,10 @@
 labeledScatterplot <- function(chart.matrix,
                                colors = NULL,
                                colors.reverse = FALSE,
+                               colors.custom.color = NA,
+                               colors.custom.gradient.start = NA,
+                               colors.custom.gradient.end = NA,
+                               colors.custom.palette = NA,
                                type = "Labeled Scatterplot",
                                group.labels.text = "",
                                group.indices.text = "",
@@ -46,6 +54,10 @@ labeledScatterplot <- function(chart.matrix,
 
     colors <- StripAlphaChannel(ChartColors(number.colors.needed = length(unique(data$group)),
                                             given.colors = colors,
+                                            custom.color = colors.custom.color,
+                                            custom.gradient.start = colors.custom.gradient.start,
+                                            custom.gradient.end = colors.custom.gradient.end,
+                                            custom.palette = colors.custom.palette,
                                             reverse = colors.reverse,
                                             trim.light.colors = TRUE))
 

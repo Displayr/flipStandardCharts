@@ -48,16 +48,27 @@ Chart(y, type = "Column", transpose = FALSE, title = "",
   x.tick.label.autoformat = TRUE, x.tick.label.wordwrap = TRUE,
   wordwrap.nchar = 21, series.marker.show = "none",
   series.marker.colors = NULL, series.marker.colors.reverse = FALSE,
-  series.marker.opacity = 1, series.marker.size = 6,
-  series.marker.border.width = 1, series.marker.border.colors = NULL,
+  series.marker.colors.custom.color = NA,
+  series.marker.colors.custom.gradient.start = NA,
+  series.marker.colors.custom.gradient.end = NA,
+  series.marker.colors.custom.palette = NA, series.marker.opacity = 1,
+  series.marker.size = 6, series.marker.border.width = 1,
+  series.marker.border.colors = NULL,
+  series.marker.border.colors.custom.color = NA,
+  series.marker.border.colors.custom.gradient.start = NA,
+  series.marker.border.colors.custom.gradient.end = NA,
+  series.marker.border.colors.custom.palette = NA,
   series.marker.border.colors.reverse = FALSE,
   series.marker.border.opacity = 1, series.line.width = NULL,
   series.line.colors = NULL, series.line.colors.reverse = FALSE,
-  series.line.opacity = 1, tooltip.show = TRUE, modebar.show = FALSE,
-  global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
-  maxColorValue = 255), rows.to.ignore = "Total, NET, SUM",
-  cols.to.ignore = "Total, NET, SUM", bar.gap = 0.15,
-  data.label.show = FALSE, data.label.font.family = NULL,
+  series.line.colors.custom.color = NULL,
+  series.line.colors.custom.gradient.start = NA,
+  series.line.colors.custom.gradient.end = NA,
+  series.line.colors.custom.palette = NA, series.line.opacity = 1,
+  tooltip.show = TRUE, modebar.show = FALSE, global.font.family = "Arial",
+  global.font.color = rgb(44, 44, 44, maxColorValue = 255),
+  rows.to.ignore = "Total, NET, SUM", cols.to.ignore = "Total, NET, SUM",
+  bar.gap = 0.15, data.label.show = FALSE, data.label.font.family = NULL,
   data.label.font.size = 10, data.label.font.color = NULL,
   data.label.decimals = 2, data.label.prefix = "", data.label.suffix = "",
   data.label.threshold = NULL, data.label.position = "top middle",
@@ -332,6 +343,14 @@ named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 \item{series.marker.colors.reverse}{Logical; if the order of the colors should
 be reversed.}
 
+\item{series.marker.colors.custom.color}{Character; a single color which is used if \code{series.marker.colors} is set to \code{"Custom color"}.}
+
+\item{series.marker.colors.custom.gradient.start}{Character; starting color of gradient if \code{series.marker.colors} is set to \code{"Custom gradient"}.}
+
+\item{series.marker.colors.custom.gradient.end}{Character; last color of gradient if \code{series.marker.colors} is set to \code{"Custom gradient"}.}
+
+\item{series.marker.colors.custom.palette}{Character; comma separated list of series.marker.colors to be used if \code{series.marker.colors} is set to \code{"Custom palette"}.}
+
 \item{series.marker.opacity}{Opacity for series markers as an alpha value (0 to 1).}
 
 \item{series.marker.size}{Size in pixels of marker}
@@ -342,6 +361,14 @@ around series markers; 0 is no line}
 \item{series.marker.border.colors}{Character; a vector containing one or more named
 colors from grDevices OR one or more specified hex value colors OR a single
 named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
+
+\item{series.marker.border.colors.custom.color}{Character; a single color which is used if \code{series.marker.border.colors} is set to \code{"Custom color"}.}
+
+\item{series.marker.border.colors.custom.gradient.start}{Character; starting color of gradient if \code{series.marker.border.colors} is set to \code{"Custom gradient"}.}
+
+\item{series.marker.border.colors.custom.gradient.end}{Character; last color of gradient if \code{series.marker.border.colors} is set to \code{"Custom gradient"}.}
+
+\item{series.marker.border.colors.custom.palette}{Character; comma separated list of series.marker.border.colors to be used if \code{series.marker.border.colors} is set to \code{"Custom palette"}.}
 
 \item{series.marker.border.colors.reverse}{Logical; if the order of the colors
 should be reversed.}
@@ -357,6 +384,14 @@ named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 
 \item{series.line.colors.reverse}{Logical; if the order of the colors
 should be reversed.}
+
+\item{series.line.colors.custom.color}{Character; a single color which is used if \code{series.line.colors} is set to \code{"Custom color"}.}
+
+\item{series.line.colors.custom.gradient.start}{Character; starting color of gradient if \code{series.line.colors} is set to \code{"Custom gradient"}.}
+
+\item{series.line.colors.custom.gradient.end}{Character; last color of gradient if \code{series.line.colors} is set to \code{"Custom gradient"}.}
+
+\item{series.line.colors.custom.palette}{Character; comma separated list of series.line.colors to be used if \code{series.line.colors} is set to \code{"Custom palette"}.}
 
 \item{series.line.opacity}{Opacity for series lines as an
 alpha value (0 to 1)}

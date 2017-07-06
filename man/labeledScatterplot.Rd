@@ -5,6 +5,8 @@
 \title{\code{labeledScatterplot}}
 \usage{
 labeledScatterplot(chart.matrix, colors = NULL, colors.reverse = FALSE,
+  colors.custom.color = NA, colors.custom.gradient.start = NA,
+  colors.custom.gradient.end = NA, colors.custom.palette = NA,
   type = "Labeled Scatterplot", group.labels.text = "",
   group.indices.text = "", origin = FALSE, transpose = FALSE,
   rows.to.ignore = "", cols.to.ignore = "", legend.show = TRUE,
@@ -16,6 +18,14 @@ labeledScatterplot(chart.matrix, colors = NULL, colors.reverse = FALSE,
 \item{colors}{Group colors.}
 
 \item{colors.reverse}{Whether to reverse the colors.}
+
+\item{colors.custom.color}{Character; a single color which is used if \code{colors} is set to \code{"Custom color"}.}
+
+\item{colors.custom.gradient.start}{Character; starting color of gradient if \code{colors} is set to \code{"Custom gradient"}.}
+
+\item{colors.custom.gradient.end}{Character; last color of gradient if \code{colors} is set to \code{"Custom gradient"}.}
+
+\item{colors.custom.palette}{Character; comma separated list of colors to be used if \code{colors} is set to \code{"Custom palette"}.}
 
 \item{type}{Either "Labeled Scatterplot" or "Labeled Bubbleplot".}
 
