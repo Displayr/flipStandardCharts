@@ -816,6 +816,7 @@ Chart <-   function(y,
     {
         series.marker.colors <- series.line.colors
         series.marker.colors.reverse <- series.line.colors.reverse
+        series.marker.colors.custom.color <- series.line.colors.custom.color
         series.marker.colors.custom.gradient.start <- series.line.colors.custom.gradient.start
         series.marker.colors.custom.gradient.end <- series.line.colors.custom.gradient.end
         series.marker.colors.custom.palette <- series.line.colors.custom.palette 
@@ -825,6 +826,7 @@ Chart <-   function(y,
     {
         series.marker.border.colors <- series.marker.colors
         series.marker.border.colors.reverse <- series.marker.colors.reverse
+        series.marker.border.colors.custom.color <- series.marker.colors.custom.color
         series.marker.border.colors.custom.gradient.start <- series.marker.colors.custom.gradient.start
         series.marker.border.colors.custom.gradient.end <- series.marker.colors.custom.gradient.end
         series.marker.border.colors.custom.palette <- series.marker.colors.custom.palette 
