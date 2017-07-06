@@ -51,6 +51,7 @@ radarChart <- function(chart.matrix,
                     y.tick.font.family = NULL,
                     y.tick.font.size = 10,
                     x.tick.label.wordwrap = TRUE,
+                    wordwrap.nchar = 21,
                     data.label.show = FALSE,
                     data.label.font.family = NULL,
                     data.label.font.size = 10,
@@ -172,13 +173,29 @@ radarChart <- function(chart.matrix,
     xanch <- rep("center", n)
     xanch[which(abs(outer[,2]) < r.max/100 & sign(outer[,1]) < 0)] <- "right"
     xanch[which(abs(outer[,2]) < r.max/100 & sign(outer[,1]) > 0)] <- "left"
+     
+    xlab <- autoFormatLongLabels(rownames(chart.matrix)[1:n], x.tick.label.wordwrap, wordwrap.nchar)
+    font.asp <- switch(tolower(x.title.font.family),
+                              'arial'= 0.54,
+                              'arial black' = 0.63,
+                              'century gothic' = 0.61,
+                              'courier new' = 0.63,
+                              'impact' = 0.48,
+                              'open sans' = 0.45,
+                              'times new roman' = 0.45,
+                              'tahoma' = 0.52,
+                              'trebuchet' = 0.48,
+                              'verdana' = 0.63,
+                              0.54)
 
+    xlab.width <- font.asp * x.title.font.size * max(nchar(unlist(strsplit(split="<br>", as.character(xlab)))))
     p <- layout(p, title=title, titlefont=list(family=title.font.family,color=title.font.color,size=title.font.size),
         margin = list(t=margin.top, b=margin.bottom, l = margin.left, r = margin.right, pad = margin.inner.pad),
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
         hovermode = if (tooltip.show) "closest" else FALSE,
-        xaxis=list(title="", showgrid=F, zeroline=F, showticklabels=F, categoryorder="array", categoryarray=unique(pos$Group)),
+        xaxis=list(title="", showgrid=F, zeroline=F, showticklabels=F,
+            categoryorder="array", categoryarray=unique(pos$Group)),
         yaxis=list(title="", showgrid=F, zeroline=F, showticklabels=F),
         legend=list(bgcolor=toRGB(legend.fill.color, alpha=legend.fill.opacity),
             bordercolor=legend.border.color, borderwidth=legend.border.line.width,
@@ -186,8 +203,7 @@ radarChart <- function(chart.matrix,
             xanchor=legend.x.anchor, yanchor=legend.y.anchor, y=legend.y, x=legend.x,
             traceorder=legend.sort.order), showlegend=legend.show,
         shapes=grid,
-        annotations=list(x=outer[,1], y=outer[,2], 
-             text=autoFormatLongLabels(rownames(chart.matrix)[1:n], x.tick.label.wordwrap),
+        annotations=list(x=outer[,1], y=outer[,2], text=xlab, width=xlab.width, 
              showarrow=F, yshift=outer[1:n,2]/r.max * 15,
              font=list(family=x.title.font.family, color=x.title.font.color, size=x.title.font.size),
              xshift=outer[1:n,1]/r.max * 5, xanchor=xanch))
