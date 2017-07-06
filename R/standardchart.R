@@ -1296,7 +1296,7 @@ Chart <-   function(y,
     # Area chart does not display the data labels on the edge correctly, so we add padding.
     # Line chart does add padding automatically, but the amount of padding seems to change
     # between regression tests, so we add padding manually.
-    if (!x.has.bounds && (is.area.or.line.chart || (type == "Bar" && data.label.show) || type == "Scatterplot"))
+    if (!x.has.bounds && (is.area.or.line.chart || (type == "Bar" && data.label.show)))
     {
         not.na <- which(apply(chart.matrix, 1, function(x){any(!is.na(x))}))
         if (type == "Bar")
