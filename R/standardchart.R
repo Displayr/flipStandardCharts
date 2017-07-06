@@ -238,6 +238,10 @@
 #' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
 #' @param pie.subslice.colors.reverse Logical; if the order of
 #' pie.subslice.colors should be reversed.
+#' @param pie.subslice.colors.custom.color Character; a single color which is used if \code{pie.subslice.colors} is set to \code{"Custom color"}.
+#' @param pie.subslice.colors.custom.gradient.start Character; starting color of gradient if \code{pie.subslice.colors} is set to \code{"Custom gradient"}.
+#' @param pie.subslice.colors.custom.gradient.end Character; last color of gradient if \code{pie.subslice.colors} is set to \code{"Custom gradient"}.
+#' @param pie.subslice.colors.custom.palette Character; comma separated list of pie.subslice.colors to be used if \code{pie.subslice.colors} is set to \code{"Custom palette"}.
 #' @param pie.subslice.colors.repeat Logical; if, when a grouped
 #' pie chart is displayed, the colors of the subslices should repeat
 #' by group, or be different throughout; defaults to TRUE.
@@ -402,6 +406,10 @@ Chart <-   function(y,
                     pie.groups.order = "initial",
                     pie.subslice.colors = NULL,
                     pie.subslice.colors.reverse = FALSE,
+                    pie.subslice.colors.custom.color = NA,
+                    pie.subslice.colors.custom.gradient.start = NA,
+                    pie.subslice.colors.custom.gradient.end = NA,
+                    pie.subslice.colors.custom.palette = NA,
                     pie.subslice.colors.repeat = TRUE,
                     pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
                     pie.inner.radius = 70,
@@ -850,6 +858,10 @@ Chart <-   function(y,
                 pie.groups.font.size = data.label.font.size,
                 pie.groups.font.color = data.label.font.color,
                 pie.subslice.colors = pie.subslice.colors,
+                pie.subslice.colors.custom.color = pie.subslice.colors.custom.color,
+                pie.subslice.colors.custom.gradient.start = pie.subslice.colors.custom.gradient.start,
+                pie.subslice.colors.custom.gradient.end = pie.subslice.colors.custom.gradient.end,
+                pie.subslice.colors.custom.palette = pie.subslice.colors.custom.palette,
                 pie.subslice.colors.reverse = pie.subslice.colors.reverse,
                 pie.groups.order = pie.groups.order,
                 pie.inner.radius = pie.inner.radius,

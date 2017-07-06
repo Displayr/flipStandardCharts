@@ -74,10 +74,14 @@ Chart(y, type = "Column", transpose = FALSE, title = "",
   data.label.threshold = NULL, data.label.position = "top middle",
   data.label.max.plot = NA, pie.order = "initial",
   pie.groups.order = "initial", pie.subslice.colors = NULL,
-  pie.subslice.colors.reverse = FALSE, pie.subslice.colors.repeat = TRUE,
-  pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
-  pie.inner.radius = 70, pie.show.percentages = FALSE, z.title = "",
-  scatter.group.indices = "", scatter.group.labels = "",
+  pie.subslice.colors.reverse = FALSE,
+  pie.subslice.colors.custom.color = NA,
+  pie.subslice.colors.custom.gradient.start = NA,
+  pie.subslice.colors.custom.gradient.end = NA,
+  pie.subslice.colors.custom.palette = NA,
+  pie.subslice.colors.repeat = TRUE, pie.border.color = rgb(255, 255, 255,
+  maxColorValue = 255), pie.inner.radius = 70, pie.show.percentages = FALSE,
+  z.title = "", scatter.group.indices = "", scatter.group.labels = "",
   us.date.format = NULL)
 }
 \arguments{
@@ -456,6 +460,14 @@ named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 
 \item{pie.subslice.colors.reverse}{Logical; if the order of
 pie.subslice.colors should be reversed.}
+
+\item{pie.subslice.colors.custom.color}{Character; a single color which is used if \code{pie.subslice.colors} is set to \code{"Custom color"}.}
+
+\item{pie.subslice.colors.custom.gradient.start}{Character; starting color of gradient if \code{pie.subslice.colors} is set to \code{"Custom gradient"}.}
+
+\item{pie.subslice.colors.custom.gradient.end}{Character; last color of gradient if \code{pie.subslice.colors} is set to \code{"Custom gradient"}.}
+
+\item{pie.subslice.colors.custom.palette}{Character; comma separated list of pie.subslice.colors to be used if \code{pie.subslice.colors} is set to \code{"Custom palette"}.}
 
 \item{pie.subslice.colors.repeat}{Logical; if, when a grouped
 pie chart is displayed, the colors of the subslices should repeat
