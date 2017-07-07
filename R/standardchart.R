@@ -759,6 +759,7 @@ Chart <-   function(y,
     }
 
     ## Settings specific to Scatterplots
+    ## This step needs to happen before chart colors is determined
     if (type == "Scatterplot")
     {
         scatterplot.data <- scatterplotData(chart.matrix, FALSE, scatter.group.labels, scatter.group.indices, transpose,
@@ -1326,7 +1327,7 @@ Chart <-   function(y,
         if (data.label.show)
             lab.len <- nchar(data.label.prefix) + nchar(data.label.suffix) + data.label.decimals
         if (data.label.show || (!is.null(series.marker.show) && series.marker.show != "none"))
-            padding <- (max.x - min.x) * (0.01 * lab.len + (0.1 * (type == "Bar")))
+            padding <- (max.x - min.x) * (0.05 * lab.len + (0.1 * (type == "Bar")))
 
         x.bounds.minimum <- min.x - (padding * (type != "Bar"))
         x.bounds.maximum <- max.x + padding
@@ -1499,6 +1500,22 @@ Chart <-   function(y,
 
     if (is.scatterplot)
     {
+        if (type == "Scatterplot")
+        {
+            if (x.autorange != "reversed")
+                x.autorange <- FALSE
+            
+            # Fix x-axis to prevent changing chart width
+            # Scatterplot data can be assumed to be always numeric
+            x.range <- range(scatterplot.data$x)
+            tmp.width <- diff(x.range)
+            lab.len <- 1
+            if (data.label.show)
+                lab.len <- nchar(data.label.prefix) + nchar(data.label.suffix) + data.label.decimals
+            padding <- diff(x.range) * (0.05 * lab.len)
+            x.range <- x.range + c(-padding, padding)
+        }
+        
         x.prefix <- if (x.tick.prefix == "") data.label.prefix else x.tick.prefix
         x.suffix <- if (x.tick.suffix == "") data.label.suffix else x.tick.suffix
         y.prefix <- if (y.tick.prefix == "") data.label.prefix else y.tick.prefix

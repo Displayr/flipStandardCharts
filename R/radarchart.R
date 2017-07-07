@@ -189,7 +189,7 @@ radarChart <- function(chart.matrix,
                               0.54)
 
     # X-axis label widths are fixed to avoid the chart width changing in regression tests. 
-    # We avoided the x-axis range because autorange handles variation in the xaxis labels quite well
+    # We avoided fixing the x-axis range because autorange handles variation in the xaxis labels quite well
     xlab.width <- font.asp * x.title.font.size * max(nchar(unlist(strsplit(split="<br>", as.character(xlab))))) + 50
     p <- layout(p, title=title, titlefont=list(family=title.font.family,color=title.font.color,size=title.font.size),
         margin = list(t=margin.top, b=margin.bottom, l = margin.left, r = margin.right, pad = margin.inner.pad),
