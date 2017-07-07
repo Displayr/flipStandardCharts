@@ -1325,9 +1325,10 @@ Chart <-   function(y,
         padding <- 0
         lab.len <- 1
         if (data.label.show)
-            lab.len <- nchar(data.label.prefix) + nchar(data.label.suffix) + data.label.decimals
+            lab.len <- (nchar(data.label.prefix) + nchar(data.label.suffix) + data.label.decimals) *
+                        data.label.font.size/10
         if (data.label.show || (!is.null(series.marker.show) && series.marker.show != "none"))
-            padding <- (max.x - min.x) * (0.05 * lab.len + (0.1 * (type == "Bar")))
+            padding <- (max.x - min.x) * (0.05 * lab.len/2 + (0.1 * (type == "Bar")))
 
         x.bounds.minimum <- min.x - (padding * (type != "Bar"))
         x.bounds.maximum <- max.x + padding
@@ -1511,8 +1512,9 @@ Chart <-   function(y,
             tmp.width <- diff(x.range)
             lab.len <- 1
             if (data.label.show)
-                lab.len <- nchar(data.label.prefix) + nchar(data.label.suffix) + data.label.decimals
-            padding <- diff(x.range) * (0.05 * lab.len)
+                lab.len <- (nchar(data.label.prefix) + nchar(data.label.suffix) + data.label.decimals) *
+                            data.label.font.size/10
+            padding <- diff(x.range) * (0.05 * lab.len/2)
             x.range <- x.range + c(-padding, padding)
         }
         
