@@ -1514,7 +1514,7 @@ Chart <-   function(y,
             if (data.label.show)
                 lab.len <- (nchar(data.label.prefix) + nchar(data.label.suffix) + data.label.decimals) *
                             data.label.font.size/10
-            padding <- diff(x.range) * (0.05 * lab.len/2)
+            padding <- diff(x.range) * (0.05 * lab.len)
             x.range <- x.range + c(-padding, padding)
         }
         
