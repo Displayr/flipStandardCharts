@@ -969,6 +969,8 @@ Chart <-   function(y,
                        x.bounds.maximum = x.bounds.maximum,
                        x.bounds.minimum = x.bounds.minimum,
                        x.bounds.units.major = x.tick.distance,
+                       y.axis.show = y.tick.show,
+                       x.axis.show = x.tick.show,
                        plot.border.show = FALSE,
                        title = title
                        ))

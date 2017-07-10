@@ -96,7 +96,6 @@ scatterplotData <- function(chart.matrix, is.bubble, group.labels.text, group.in
     if (!is.bubble && ncol(chart.matrix) != 2)
         stop("The number of columns in the input table (after excluding ignored columns) must be 2 for a scatterplot.")
 
-    pt.ord <- NULL
     if (!is.null(group.labels.text) && group.labels.text[1] != "")
     {
         if (!is.null(group.indices.text) && any(group.indices.text != ""))
@@ -116,7 +115,6 @@ scatterplotData <- function(chart.matrix, is.bubble, group.labels.text, group.in
                 stop(paste0("The group indices are not in the correct format."))
 
             group <- group.labels[group.indices]
-            pt.ord <- order(group.indices)
         }
         else
             stop("Group labels were provided but group indices are missing.")
@@ -130,14 +128,6 @@ scatterplotData <- function(chart.matrix, is.bubble, group.labels.text, group.in
     }
 
     result <- list()
-
-    # order data points so that the color of groups are ordered
-    if (!is.null(pt.ord))
-    {
-        chart.matrix <- chart.matrix[pt.ord,]
-        group <- group[pt.ord]
-    }
-
     result$x <- if (transpose) as.numeric(chart.matrix[, 2]) else as.numeric(chart.matrix[, 1])
     result$y <- if (transpose) as.numeric(chart.matrix[, 1]) else as.numeric(chart.matrix[, 2])
     result$z <- if (is.bubble) as.numeric(chart.matrix[, 3]) else NULL
