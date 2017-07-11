@@ -96,9 +96,9 @@ scatterplotData <- function(chart.matrix, is.bubble, group.labels.text, group.in
     if (!is.bubble && ncol(chart.matrix) != 2)
         stop("The number of columns in the input table (after excluding ignored columns) must be 2 for a scatterplot.")
 
+    pt.ord <- NULL
     if (!is.null(group.labels.text) && group.labels.text[1] != "")
     {
-        pt.ord <- NULL
         if (!is.null(group.indices.text) && any(group.indices.text != ""))
         {
             group.labels <- TextAsVector(group.labels.text)
