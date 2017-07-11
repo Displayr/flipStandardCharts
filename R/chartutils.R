@@ -73,7 +73,7 @@ decimalsToDisplay <- function(x)
     mn <- min(x, na.rm = TRUE)
     rng <- max(c(mx - mn, abs(mx), abs(mn)))
     if (!is.na(rng) && rng > 0)
-        max(-round(log10(rng / 5)) + 1, 0)
+        max(-floor(log10(rng)) + 1, 0)
     else
         NULL
 }
