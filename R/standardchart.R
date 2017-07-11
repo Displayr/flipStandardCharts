@@ -1341,19 +1341,16 @@ Chart <-   function(y,
         added.bounds.for.area.chart <- FALSE
 
     # Determine decimal places to show if not provided
-    if (swap.axes.and.data)
+    if (x.axis.type == "linear" && is.null(x.tick.decimals))
     {
-        if (is.null(x.tick.decimals))
-        {
             x.tick.decimals <- if (x.has.bounds)
                 decimalsToDisplay(c(x.bounds.minimum, x.bounds.maximum))
             else if (is.stacked && !is.hundred.percent.stacked)
                 decimalsToDisplay(rowSums(chart.matrix, na.rm = TRUE))
             else
                 decimalsToDisplay(chart.matrix)
-        }
     }
-    else if (is.null(y.tick.decimals))
+    if (y.axis.type == "linear" && is.null(y.tick.decimals))
     {
         y.tick.decimals <- if (y.has.bounds)
             decimalsToDisplay(c(y.bounds.minimum, y.bounds.maximum))
