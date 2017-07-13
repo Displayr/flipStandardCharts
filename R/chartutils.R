@@ -16,34 +16,34 @@ cum.data <- function(x, output = "cumulative.percentage")
 ## E.g. if n= 20 then count 20 characters.  The space preceding character 20 is replaced by "<br>".
 lineBreakEveryN <- function(x, n = 21)
 {
-    start <- 1
-    final <- NULL
-    last.space <- 0
+    if (n <= 0)
+        stop("Wrap line length cannot be smaller than 1")
 
-    for (i in 1:nchar(x[1]))
+    w.list <- strsplit(x, " ")[[1]]
+    final <- w.list[1]
+    c.len <- nchar(final)
+    for (ww in w.list[-1])
     {
-        my.character <- substr(x, i, i)
-        if (my.character == " ")
-            last.space <- i
-
-        if (i %% n == 0 && last.space > 0)
+        new.len <- c.len + nchar(ww) + 1
+        if (new.len > n)
         {
-            temp <- paste(substr(x, start, last.space - 1),"<br>",substr(x, last.space + 1, i), sep = "")
-            final <- paste(final, temp, sep = "")
-            start <- start + n
+            final <- paste0(final, "<br>", ww)
+            c.len <- nchar(ww)
+        } else
+        {
+            final <- paste0(final, " ", ww)
+            c.len <- new.len
         }
-
-        if (i == nchar(x[1]))
-            final <- paste(final, substr(x, start, nchar(x[1])), sep = "")
     }
-
     final
 }
 
-autoFormatLongLabels <- function(x, wordwrap = FALSE, n = 21)
+autoFormatLongLabels <- function(x, wordwrap = FALSE, n = 21, truncate = TRUE)
 {
     # Anything 60 characters or over gets an ellipsis from char 57 to char 60 and then nothing
-    output.text <- sapply(x, function(x) {ifelse(nchar(x) > 60, paste(substr(x, 1, 57),"...", sep = ""), x)})
+    output.text <- if (truncate) output.text <- sapply(x, function(x)
+                        {ifelse(nchar(x) > 60, paste(substr(x, 1, 57),"...", sep = ""), x)})
+                   else x
 
     # Anything over n characters gets <br> inserted in the closest space below n characters, e.g. at 20, 40, and 60 characters
     if (wordwrap)
