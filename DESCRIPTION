@@ -9,23 +9,27 @@ License: GPL-3
 Depends: R (>= 2.10)
 LazyData: TRUE
 Imports:
+    dplyr,
     plotly,
     flipChartBasics,
     flipData,
     flipFormat,
+    flipTables,
     flipTime,
     flipTransformations,
     rhtmlDonut,
-    dplyr,
+    rhtmlHeatmap,
     rhtmlLabeledScatter,
     stats
 Remotes:
     Displayr/flipChartBasics,
     Displayr/flipData,
     Displayr/flipFormat,
+    Displayr/flipTables,
     Displayr/flipTime,
     Displayr/flipTransformations,
     Displayr/rhtmlDonut,
+    Displayr/rhtmlHeatmap,
     Displayr/rhtmlLabeledScatter
 Suggests:
     testthat
