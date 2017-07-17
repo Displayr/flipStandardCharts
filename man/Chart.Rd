@@ -6,7 +6,10 @@
 \usage{
 Chart(y, type = "Column", transpose = FALSE, title = "",
   title.font.family = NULL, title.font.color = NULL, title.font.size = 16,
-  colors = NULL, colors.reverse = FALSE, colors.custom.color = NA,
+  subtitle = "", subtitle.font.family = NULL, subtitle.font.color = NULL,
+  subtitle.font.size = 12, footer = "", footer.font.family = NULL,
+  footer.font.color = NULL, footer.font.size = 8, colors = NULL,
+  colors.reverse = FALSE, colors.custom.color = NA,
   colors.custom.gradient.start = NA, colors.custom.gradient.end = NA,
   colors.custom.palette = NA, opacity = NULL,
   background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
@@ -105,6 +108,26 @@ Chart(y, type = "Column", transpose = FALSE, title = "",
 format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{title.font.size}{Title font size; default = 10.}
+
+\item{subtitle}{Character}
+
+\item{subtitle.font.family}{Character; subtitle font family}
+
+\item{subtitle.font.color}{subtitle font color as a named color in
+character format (e.g. "black") or an rgb value (e.g.
+rgb(0, 0, 0, maxColorValue = 255)).}
+
+\item{subtitle.font.size}{subtitle font size}
+
+\item{footer}{Character}
+
+\item{footer.font.family}{Character; footer font family}
+
+\item{footer.font.color}{footer font color as a named color in
+character format (e.g. "black") or an rgb value (e.g.
+rgb(0, 0, 0, maxColorValue = 255)).}
+
+\item{footer.font.size}{footer font size}
 
 \item{colors}{Character; a vector containing one or more named
 colors from grDevices OR one or more specified hex value colors OR a single
