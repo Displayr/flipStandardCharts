@@ -16,6 +16,18 @@
 #' @param title.font.color Title font color as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param title.font.size Title font size; default = 10.
+#' @param subtitle Character
+#' @param subtitle.font.color subtitle font color as a named color in
+#' character format (e.g. "black") or an rgb value (e.g.
+#' rgb(0, 0, 0, maxColorValue = 255)).
+#' @param subtitle.font.family Character; subtitle font family
+#' @param subtitle.font.size subtitle font size
+#' @param footer Character
+#' @param footer.font.color footer font color as a named color in
+#' character format (e.g. "black") or an rgb value (e.g.
+#' rgb(0, 0, 0, maxColorValue = 255)).
+#' @param footer.font.family Character; footer font family
+#' @param footer.font.size footer font size
 #' @param colors Character; a vector containing one or more named
 #' colors from grDevices OR one or more specified hex value colors OR a single
 #' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
@@ -273,6 +285,14 @@ Chart <-   function(y,
                     title.font.family = NULL,
                     title.font.color = NULL,
                     title.font.size = 16,
+                    subtitle = "",
+                    subtitle.font.family = NULL,
+                    subtitle.font.color = NULL,
+                    subtitle.font.size = 12,
+                    footer = "",
+                    footer.font.family = NULL,
+                    footer.font.color = NULL,
+                    footer.font.size = 8,
                     colors = NULL,
                     colors.reverse = FALSE,
                     colors.custom.color = NA,
@@ -679,6 +699,7 @@ Chart <-   function(y,
     # Use global fonts if necessary
     if (is.null(title.font.family) || title.font.family == "") title.font.family <- global.font.family
     if (is.null(legend.font.family) || legend.font.family == "") legend.font.family <- global.font.family
+    if (is.null(footer.font.family) || footer.font.family == "") footer.font.family <- global.font.family
     if (is.null(y.title.font.family) || y.title.font.family == "") y.title.font.family <- global.font.family
     if (is.null(y.tick.font.family) || y.tick.font.family == "") y.tick.font.family <- global.font.family
     if (is.null(x.title.font.family) || x.title.font.family == "") x.title.font.family <- global.font.family
@@ -688,6 +709,7 @@ Chart <-   function(y,
     # Use global colours if necessary
     if (is.null(title.font.color)) title.font.color <- global.font.color
     if (is.null(legend.font.color)) legend.font.color <- global.font.color
+    if (is.null(footer.font.color)) footer.font.color <- global.font.color
     if (is.null(y.title.font.color)) y.title.font.color <- global.font.color
     if (is.null(y.tick.font.color)) y.tick.font.color <- global.font.color
     if (is.null(x.title.font.color)) x.title.font.color <- global.font.color
@@ -700,14 +722,37 @@ Chart <-   function(y,
     is.default.margin.left <- is.null(margin.left)
     is.default.margin.right <- is.null(margin.right)
     if (is.null(margin.top))
-        margin.top <- if (is.null(title) || title == "") 20 else 40
+    {
+        margin.top <- 20
+        title.nline <- 0
+        if (nchar(title) > 0)
+        {
+            title.nline <- sum(gregexpr("<br>", title)[[1]] > -1) + 1
+            margin.top <- margin.top + (title.font.size * title.nline * 1.25)
+        }
+        if (nchar(subtitle) > 0)
+        {
+            subtitle.nline <- sum(gregexpr("<br>", subtitle)[[1]] > -1) + 1.5
+            margin.top <- margin.top + (subtitle.font.size * subtitle.nline * 1.25)
+            subtitle.npad <- max(0, round(title.nline * subtitle.font.size/title.font.size * 0.9))
+            subtitle <- paste0(paste(rep("<br>", subtitle.npad), collapse=""), subtitle)
+        }
+    }
     if (is.null(margin.bottom))
     {
-        margin.bottom <- 70
-        if (x.title == "")
-            margin.bottom <- 50
-        if (type == "Radar")
-            margin.bottom <- 20
+        margin.bottom <- if (type != "Radar") 50
+                         else 20
+        if (nchar(x.title) > 0 && type != "Radar")
+        {
+            x.title.nline <- sum(gregexpr("<br>", x.title)[[1]] > -1) + 1
+            margin.bottom <- margin.bottom + (x.title.font.size * x.title.nline * 1.25)
+        }
+        if (nchar(footer) > 0)
+        {
+            footer.nline <- sum(gregexpr("<br>", footer)[[1]] > -1) + 2
+            margin.bottom <- margin.bottom + (footer.font.size * footer.nline * 1.25)
+            # footer position cannot be determined until after x-axis labels have been formatted
+        }
     }
     if (is.null(margin.left))
         margin.left <- if (type == "Radar") 60 else 80
@@ -1102,13 +1147,34 @@ Chart <-   function(y,
             else if (is.default.margin.bottom)
             {
                 if (x.tick.angle != 0)
-                    margin.bottom <- new.margin + 10 + x.title.font.size * (x.title != "") * 1.25
+                    margin.bottom <- margin.bottom + new.margin - 40
                 else
-                    margin.bottom <- 50 + 1.25 * (x.tick.font.size*floor(lab.nline/2) +
-                                                  x.title.font.size*(x.title != ""))
+                    margin.bottom <- margin.bottom + 1.25*x.tick.font.size*floor(lab.nline)
             }
         }
     }
+
+    # Finalize footer and subtitle
+    # This should be done before radarchart is called
+    footer.axis <- NULL
+    subtitle.axis <- NULL
+    if (nchar(footer) > 0)
+    {
+        footer.nline <- sum(gregexpr("<br>", footer)[[1]] > -1) + 1
+        footer.npad <- max(0, ceiling(margin.bottom/footer.font.size/1.25) - footer.nline - 1)
+        footer <- paste0(paste(rep("<br>", footer.npad), collapse=""), footer)
+        footer.axis <- list(overlaying="x", side = "bottom", anchor="free", position=0,
+             visible=T, showline=F, zeroline=F, showgrid=F,
+             tickfont=list(family=footer.font.family, size=footer.font.size, color=footer.font.color),
+             range=c(0,1), tickvals=c(0.5), ticktext=c(footer), tickangle=0)
+    }
+    if (nchar(subtitle) > 0)
+    {
+        subtitle.axis <- list(overlaying="x", side="top", anchor="free", position=1,
+             showline=F, zeroline=F, showgrid=F, showticklabels=F, title=subtitle,
+             titlefont=list(family=subtitle.font.family, size=subtitle.font.size, color=subtitle.font.color))
+    }
+
 
     # Bar and column chart data label annotations
     data.label.mult <- 1
@@ -1219,7 +1285,9 @@ Chart <-   function(y,
                     data.label.font.color,
                     data.label.decimals, # Ignored in Labeled Bubble and Scatterplots
                     data.label.prefix,
-                    data.label.suffix))
+                    data.label.suffix,
+                    subtitle.axis,
+                    footer.axis))
 
 
     ## If line thickness is zero, then we shouldn't show a line; ticks only shown if there's a line (same as Excel)
@@ -1475,7 +1543,7 @@ Chart <-   function(y,
     if (x.position == "top")
     {
         if (is.default.margin.top)
-            margin.top <- if (is.null(title) || title == "") 50 else 70
+            margin.top <- margin.bottom
         if (is.default.margin.bottom)
             margin.bottom <- 20
     }
@@ -1500,22 +1568,19 @@ Chart <-   function(y,
 
     if (is.scatterplot)
     {
-        if (type == "Scatterplot")
-        {
-            if (x.autorange != "reversed")
-                x.autorange <- FALSE
-            
-            # Fix x-axis to prevent changing chart width
-            # Scatterplot data can be assumed to be always numeric
-            x.range <- range(scatterplot.data$x)
-            tmp.width <- diff(x.range)
-            lab.len <- 1
-            if (data.label.show)
-                lab.len <- (nchar(data.label.prefix) + nchar(data.label.suffix) + data.label.decimals) *
-                            data.label.font.size/10
-            padding <- diff(x.range) * (0.05 * lab.len)
-            x.range <- x.range + c(-padding, padding)
-        }
+        if (x.autorange != "reversed")
+            x.autorange <- FALSE
+        
+        # Fix x-axis to prevent changing chart width
+        # Scatterplot data can be assumed to be always numeric
+        x.range <- range(scatterplot.data$x)
+        tmp.width <- diff(x.range)
+        lab.len <- 1
+        if (data.label.show)
+            lab.len <- (nchar(data.label.prefix) + nchar(data.label.suffix) + data.label.decimals) *
+                        data.label.font.size/10
+        padding <- diff(x.range) * (0.05 * lab.len)
+        x.range <- x.range + c(-padding, padding)
         
         x.prefix <- if (x.tick.prefix == "") data.label.prefix else x.tick.prefix
         x.suffix <- if (x.tick.suffix == "") data.label.suffix else x.tick.suffix
@@ -1830,6 +1895,8 @@ Chart <-   function(y,
             showticklabels = y.tick.show
         ),
         ## X-AXIS
+        xaxis4 = footer.axis,
+        xaxis3 = subtitle.axis,
         xaxis2 = xaxis2,
         yaxis2 = yaxis2,
         xaxis = list(

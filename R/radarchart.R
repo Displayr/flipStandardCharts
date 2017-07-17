@@ -58,7 +58,9 @@ radarChart <- function(chart.matrix,
                     data.label.font.color = NULL,
                     data.label.decimals = 2,
                     data.label.prefix = "",
-                    data.label.suffix = "")
+                    data.label.suffix = "",
+                    subtitle.axis = NULL,
+                    footer.axis = NULL)
 
 {
     if (any(!is.finite(chart.matrix)))
@@ -196,6 +198,8 @@ radarChart <- function(chart.matrix,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
         hovermode = if (tooltip.show) "closest" else FALSE,
+        xaxis2=footer.axis,
+        xaxis3=subtitle.axis,
         xaxis=list(title="", showgrid=F, zeroline=F, showticklabels=F,
             categoryorder="array", categoryarray=unique(pos$Group)),
         yaxis=list(title="", showgrid=F, zeroline=F, showticklabels=F),

@@ -2,7 +2,8 @@
 % Please edit documentation in R/heatmap.R
 \name{HeatMap}
 \alias{HeatMap}
-\title{\code{HeatMap} generates a heatmap from a table of data.}
+\title{\code{HeatMap} generates a heatmap from a table of data. This function wraps the Heatmap function
+in the rhtmlHeatmap package and performs additional data preparation.}
 \usage{
 HeatMap(table, data.type = "Use an existing table",
   ignore.rows = "NET, Total, SUM", ignore.columns = "NET, Total, SUM",
@@ -43,5 +44,6 @@ Options are \code{"Use an existing table"} or \code{"Type or paste data"}.}
 \item{show.column.labels}{Whether to label the columns. \code{"Yes"} or \code{"No"}.}
 }
 \description{
-\code{HeatMap} generates a heatmap from a table of data.
+\code{HeatMap} generates a heatmap from a table of data. This function wraps the Heatmap function
+in the rhtmlHeatmap package and performs additional data preparation.
 }
