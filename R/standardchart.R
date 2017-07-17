@@ -421,7 +421,7 @@ Chart <-   function(y,
                     data.label.suffix = "",
                     data.label.threshold = NULL,
                     data.label.position = "top middle",
-                    data.label.max.plot = NA,
+                    data.label.max.plot = 50,
                     pie.order = "initial",
                     pie.groups.order = "initial",
                     pie.subslice.colors = NULL,
@@ -959,7 +959,10 @@ Chart <-   function(y,
             data.label.max.plot <- NA
         if (is.finite(data.label.max.plot) && data.label.max.plot < n.lab)
         {
-            warning("Some labels have been hidden. Adjust 'Maximum data labels to plot' to show more labels.") 
+            if (data.label.max.plot == 50)
+                warning("By default, only the first 50 labels are shown to avoid long running times. Adjust 'Maximum data labels to plot' to show more labels. Alternatively, to show a large number of points, change 'Chart type' to 'Scatterplot'.")
+            else
+                warning("Some labels have been hidden. Adjust 'Maximum data labels to plot' to show more labels.") 
             label.plot[(data.label.max.plot + 1):n.lab] <- ""
         }
 

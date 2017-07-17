@@ -80,10 +80,10 @@ test_that("Axis and data labels placement", {
     print(Chart(dat.longlabels[1:5], type="Column", x.title="Kilometers per hour", title="Chart", subtitle="The quick brown fox jumped over the lazy dog<br>And the cat ran away with the spoon"))
 
     # with legend
-     print(Chart(df, title="Chart", subtitle="Comparing different random numbers", x.title="Random number", footer="This chart contains no real data and should not be considered meaningful at all."))
+     expect_warning(print(Chart(df, title="Chart", subtitle="Comparing different random numbers", x.title="Random number", footer="This chart contains no real data and should not be considered meaningful at all.")))
 
      # scatterplot
-     print(Chart(df, type= "Scatterplot", title="Chart", subtitle="Comparing different random numbers", x.title="Random number", footer="This chart contains no real data and should not be considered meaningful at all."))
+     expect_warning(print(Chart(df, type= "Scatterplot", title="Chart", subtitle="Comparing different random numbers", x.title="Random number", footer="This chart contains no real data and should not be considered meaningful at all.")))
 
      # radar chart
      print(Chart(table13, type="Radar", title="Chart"))
@@ -94,6 +94,6 @@ test_that("Axis and data labels placement", {
 
 
      # miscellaneous errors
-     print(Chart(x.dates, x.tick.angle=0))
+     expect_warning(print(Chart(x.dates, x.tick.angle=0)))
     })
 
