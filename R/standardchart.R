@@ -1122,6 +1122,7 @@ Chart <-   function(y,
                    else font.asp * x.tick.font.size * lab.nchar
         lab.nline <- if (is.character(x.labels)) max(sapply(gregexpr("<br>", x.labels),
                          function(x){sum(x > -1)}))
+                     else 0
 
         if (is.null(x.tick.angle))
         {

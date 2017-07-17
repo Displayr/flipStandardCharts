@@ -66,6 +66,9 @@ test_that("Axis and data labels placement", {
     colnames(x) <- c("A", "B")
     rownames(x) <- stri_rand_strings(nrow(x), 5)
 
+    x.dates <- 1:10
+    names(x.dates) <- sprintf("%02d/01/2017", x.dates)
+
     # subtitle
     print(Chart(dat.longlabels[c(33:35, 31:32)], type="Column", title="Chart", subtitle="The quick brown fox jumped over the lazy dog"))
     print(Chart(dat.longlabels[c(33:35, 31:32)], type="Column", footer="Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.<br>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.", title="Chart", subtitle="The quick brown fox jumped over the lazy dog"))
@@ -89,5 +92,8 @@ test_that("Axis and data labels placement", {
      print(Chart(abs(x[1:10,1:2]), type="Radar", title="Chart", subtitle="Comparing different random numbers<br>", x.title="Random number", footer="This chart contains no real data and should not be considered meaningful at all."))
      print(Chart(abs(x[1:10,1:2]), type="Radar", title="Chart", subtitle="Comparing different random numbers<br>", x.title="Random number", footer="This chart contains no real data and should not be considered meaningful at all.", title.font.size=40))
 
+
+     # miscellaneous errors
+     print(Chart(x.dates, x.tick.angle=0))
     })
 
