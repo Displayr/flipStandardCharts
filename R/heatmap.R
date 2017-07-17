@@ -17,8 +17,20 @@
 #' \code{"Standardize rows"} and \code{"Standardize columns"}.
 #' @param show.cell.values Whether to show values in cells. Options are \code{"Yes"}, \code{"No"} or
 #' \code{"Automatic"} (<= 20 rows and <= 10 columns).
+#' @param cell.decimals The number of decimal points to use for formatting cell values.
 #' @param show.row.labels Whether to label the rows. \code{"Yes"} or \code{"No"}.
 #' @param show.column.labels Whether to label the columns. \code{"Yes"} or \code{"No"}.
+#' @param chart.title Title of the chart.
+#' @param x.axis.title Title of the x-axis.
+#' @param y.axis.title Title of the y-axis.
+#' @param font.family Font family to be used for all titles, axes, labels and values.
+#' @param font.color Font color to be used for all titles, axes and labels.
+#' @param title.font.size Font size of the title.
+#' @param xaxis.title.font.size Font size of the x-axis title.
+#' @param yaxis.title.font.size Font size of the y-axis title.
+#' @param value.legend.font.size Font size of the cell values, tooltips and legend.
+#' @param axis.label.font.size Font size of the axis labels.
+
 #' @importFrom flipData GetTidyTwoDimensionalArray
 #' @importFrom flipFormat FormatWithDecimals
 #' @importFrom flipTables Reorder
@@ -35,8 +47,19 @@ HeatMap <- function(table,
                     color = "Blues",
                     standardization = "None",
                     show.cell.values = "Automatic",
+                    cell.decimals = 2,
                     show.row.labels = "Yes",
-                    show.column.labels = "Yes") {
+                    show.column.labels = "Yes",
+                    chart.title = "",
+                    x.axis.title = "",
+                    y.axis.title = "",
+                    font.family = "sans-serif",
+                    font.color = "#000000",
+                    title.font.size = 24,
+                    xaxis.title.font.size = 14,
+                    yaxis.title.font.size = 14,
+                    value.legend.font.size = 11,
+                    axis.label.font.size = 11) {
 
     t <- if (data.type == "Use an existing table") {
         table
@@ -86,7 +109,7 @@ HeatMap <- function(table,
     cellnote <- matrix("", n.row, n.col)
     for (i in 1:n.row)
         for (j in 1:n.col)
-            cellnote[i, j] <- FormatWithDecimals(mat[i, j], 2)
+            cellnote[i, j] <- FormatWithDecimals(mat[i, j], cell.decimals)
     show.cellnote.in.cell <- (n.row <= 20 && n.col <= 10 && show.cell.values != "No") || show.cell.values == "Yes"
     show.x.axes.labels <- show.column.labels == "Yes"
     show.y.axes.labels <- show.row.labels == "Yes"
@@ -119,5 +142,46 @@ HeatMap <- function(table,
                        cellnote = cellnote,
                        show_cellnote_in_cell = show.cellnote.in.cell,
                        xaxis_hidden = !show.x.axes.labels,
-                       yaxis_hidden = !show.y.axes.labels)
+                       yaxis_hidden = !show.y.axes.labels,
+                       title = chart.title,
+                       xaxis_title = x.axis.title,
+                       yaxis_title = y.axis.title,
+                       cell_font_family = font.family,
+                       tip_font_family = font.family,
+                       legend_font_family = font.family,
+                       title_font_family = font.family,
+                       subtitle_font_family = font.family,
+                       footer_font_family = font.family,
+                       xaxis_font_family = font.family,
+                       xaxis_title_font_family = font.family,
+                       yaxis_font_family = font.family,
+                       yaxis_title_font_family = font.family,
+                       left_columns_font_family = font.family,
+                       left_columns_subtitles_font_family = font.family,
+                       left_columns_title_font_family = font.family,
+                       right_columns_font_family = font.family,
+                       right_columns_subtitles_font_family = font.family,
+                       right_columns_title_font_family = font.family,
+                       legend_font_color = font.color,
+                       title_font_color = font.color,
+                       subtitle_font_color = font.color,
+                       footer_font_color = font.color,
+                       xaxis_font_color = font.color,
+                       xaxis_title_font_color = font.color,
+                       yaxis_font_color = font.color,
+                       yaxis_title_font_color = font.color,
+                       left_columns_font_color = font.color,
+                       left_columns_subtitles_font_color = font.color,
+                       left_columns_title_font_color = font.color,
+                       right_columns_font_color = font.color,
+                       right_columns_subtitles_font_color = font.color,
+                       right_columns_title_font_color = font.color,
+                       cell_font_size = value.legend.font.size,
+                       tip_font_size = value.legend.font.size,
+                       legend_font_size = value.legend.font.size,
+                       title_font_size = title.font.size,
+                       xaxis_font_size = axis.label.font.size,
+                       xaxis_title_font_size = xaxis.title.font.size,
+                       yaxis_font_size = axis.label.font.size,
+                       yaxis_title_font_size = yaxis.title.font.size)
 }

@@ -2,14 +2,19 @@
 % Please edit documentation in R/heatmap.R
 \name{HeatMap}
 \alias{HeatMap}
-\title{\code{HeatMap} generates a heatmap from a table of data.}
+\title{\code{HeatMap} generates a heatmap from a table of data. This function wraps the Heatmap function
+in the rhtmlHeatmap package and performs additional data preparation.}
 \usage{
 HeatMap(table, data.type = "Use an existing table",
   ignore.rows = "NET, Total, SUM", ignore.columns = "NET, Total, SUM",
   transpose = FALSE, sort.rows = "None", sort.columns = "None",
   color = "Blues", standardization = "None",
-  show.cell.values = "Automatic", show.row.labels = "Yes",
-  show.column.labels = "Yes")
+  show.cell.values = "Automatic", cell.decimals = 2,
+  show.row.labels = "Yes", show.column.labels = "Yes", chart.title = "",
+  x.axis.title = "", y.axis.title = "", font.family = "sans-serif",
+  font.color = "#000000", title.font.size = 24,
+  xaxis.title.font.size = 14, yaxis.title.font.size = 14,
+  value.legend.font.size = 11, axis.label.font.size = 11)
 }
 \arguments{
 \item{table}{A matrix of data to be displayed.}
@@ -38,10 +43,33 @@ Options are \code{"Use an existing table"} or \code{"Type or paste data"}.}
 \item{show.cell.values}{Whether to show values in cells. Options are \code{"Yes"}, \code{"No"} or
 \code{"Automatic"} (<= 20 rows and <= 10 columns).}
 
+\item{cell.decimals}{The number of decimal points to use for formatting cell values.}
+
 \item{show.row.labels}{Whether to label the rows. \code{"Yes"} or \code{"No"}.}
 
 \item{show.column.labels}{Whether to label the columns. \code{"Yes"} or \code{"No"}.}
+
+\item{chart.title}{Title of the chart.}
+
+\item{x.axis.title}{Title of the x-axis.}
+
+\item{y.axis.title}{Title of the y-axis.}
+
+\item{font.family}{Font family to be used for all titles, axes, labels and values.}
+
+\item{font.color}{Font color to be used for all titles, axes and labels.}
+
+\item{title.font.size}{Font size of the title.}
+
+\item{xaxis.title.font.size}{Font size of the x-axis title.}
+
+\item{yaxis.title.font.size}{Font size of the y-axis title.}
+
+\item{value.legend.font.size}{Font size of the cell values, tooltips and legend.}
+
+\item{axis.label.font.size}{Font size of the axis labels.}
 }
 \description{
-\code{HeatMap} generates a heatmap from a table of data.
+\code{HeatMap} generates a heatmap from a table of data. This function wraps the Heatmap function
+in the rhtmlHeatmap package and performs additional data preparation.
 }
