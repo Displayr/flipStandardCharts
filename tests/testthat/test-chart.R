@@ -202,3 +202,11 @@ tab6 <- structure(c(14, 51, 46, 34, 62, 45, 21, 96, 61, 45, 85, 60, 46,
 test_that("X-axis reversed", {
     expect_error(Chart(tab6, type="Line", x.data.reversed = T), NA)
 })
+
+
+test_that("Color palette warnings", {
+    expect_warning(Chart(named.vector, colors="Reds"), "Only the first color of the palette used")
+    expect_warning(Chart(named.vector, type="Pie", colors="Custom color",
+                         colors.custom.color = "red"), "Only a single color specified")
+    expect_warning(Chart(named.vector[1:4], type="Pie", colors="Custom palette", colors.custom.palette = "red,orange,abc,blue"), "Invalid color 'abc' replaced with '#000000'")
+})

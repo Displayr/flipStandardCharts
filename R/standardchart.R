@@ -1041,30 +1041,30 @@ Chart <-   function(y,
                                            custom.palette = colors.custom.palette,
                                            reverse = colors.reverse,
                                            trim.light.colors = TRUE)
-    series.line.colors <- ChartColors(number.colors.needed = number.colors.needed,
+    series.line.colors <- suppressWarnings(ChartColors(number.colors.needed = number.colors.needed,
                                            given.colors = series.line.colors,
                                            custom.color = series.line.colors.custom.color,
                                            custom.gradient.start = series.line.colors.custom.gradient.start,
                                            custom.gradient.end = series.line.colors.custom.gradient.end,
                                            custom.palette = series.line.colors.custom.palette,
                                            reverse = series.line.colors.reverse,
-                                           trim.light.colors = TRUE)
-    series.marker.colors <- ChartColors(number.colors.needed = number.colors.needed,
+                                           trim.light.colors = TRUE))
+    series.marker.colors <- suppressWarnings(ChartColors(number.colors.needed = number.colors.needed,
                                            given.colors = series.marker.colors,
                                            custom.color = series.marker.colors.custom.color,
                                            custom.gradient.start = series.marker.colors.custom.gradient.start,
                                            custom.gradient.end = series.marker.colors.custom.gradient.end,
                                            custom.palette = series.marker.colors.custom.palette,
                                            reverse = series.marker.colors.reverse,
-                                           trim.light.colors = TRUE)
-    series.marker.border.colors <- ChartColors(number.colors.needed = number.colors.needed,
+                                           trim.light.colors = TRUE))
+    series.marker.border.colors <- suppressWarnings(ChartColors(number.colors.needed = number.colors.needed,
                                            given.colors = series.marker.border.colors,
                                            custom.color = series.marker.border.colors.custom.color,
                                            custom.gradient.start = series.marker.border.colors.custom.gradient.start,
                                            custom.gradient.end = series.marker.border.colors.custom.gradient.end,
                                            custom.palette = series.marker.border.colors.custom.palette,
                                            reverse = series.marker.border.colors.reverse,
-                                           trim.light.colors = TRUE)
+                                           trim.light.colors = TRUE))
 
 
     ## Color inheritance - second run
