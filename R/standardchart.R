@@ -28,6 +28,8 @@
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param footer.font.family Character; footer font family
 #' @param footer.font.size footer font size
+#' @param footer.wordwrap Logical; whether the footer text should be wrapped.
+#' @param footer.wordwrap.nchar Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} i \code{TRUE}.
 #' @param colors Character; a vector containing one or more named
 #' colors from grDevices OR one or more specified hex value colors OR a single
 #' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
@@ -293,6 +295,8 @@ Chart <-   function(y,
                     footer.font.family = NULL,
                     footer.font.color = NULL,
                     footer.font.size = 8,
+                    footer.wordwrap = TRUE,
+                    footer.wordwrap.nchar = 150,
                     colors = NULL,
                     colors.reverse = FALSE,
                     colors.custom.color = NA,
@@ -749,7 +753,7 @@ Chart <-   function(y,
         }
         if (nchar(footer) > 0)
         {
-            footer.nline <- sum(gregexpr("<br>", footer)[[1]] > -1) + 2
+            footer.nline <- sum(gregexpr("<br>", footer)[[1]] > -1) + 2 + (type == "Radar")
             margin.bottom <- margin.bottom + (footer.font.size * footer.nline * 1.25)
             # footer position cannot be determined until after x-axis labels have been formatted
         }
@@ -1164,6 +1168,7 @@ Chart <-   function(y,
     subtitle.axis <- NULL
     if (nchar(footer) > 0)
     {
+        footer <- autoFormatLongLabels(footer, wordwrap=footer.wordwrap, n=footer.wordwrap.nchar, truncate=FALSE) 
         footer.nline <- sum(gregexpr("<br>", footer)[[1]] > -1) + 1
         footer.npad <- max(0, ceiling(margin.bottom/footer.font.size/1.25) - footer.nline - 1)
         footer <- paste0(paste(rep("<br>", footer.npad), collapse=""), footer)

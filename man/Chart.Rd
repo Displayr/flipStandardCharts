@@ -8,14 +8,14 @@ Chart(y, type = "Column", transpose = FALSE, title = "",
   title.font.family = NULL, title.font.color = NULL, title.font.size = 16,
   subtitle = "", subtitle.font.family = NULL, subtitle.font.color = NULL,
   subtitle.font.size = 12, footer = "", footer.font.family = NULL,
-  footer.font.color = NULL, footer.font.size = 8, colors = NULL,
-  colors.reverse = FALSE, colors.custom.color = NA,
-  colors.custom.gradient.start = NA, colors.custom.gradient.end = NA,
-  colors.custom.palette = NA, opacity = NULL,
-  background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
-  background.fill.opacity = 1, charting.area.fill.color = rgb(255, 255, 255,
-  maxColorValue = 255), charting.area.fill.opacity = 1, legend.show = TRUE,
-  legend.fill = rgb(255, 255, 255, maxColorValue = 255),
+  footer.font.color = NULL, footer.font.size = 8, footer.wordwrap = TRUE,
+  footer.wordwrap.nchar = 150, colors = NULL, colors.reverse = FALSE,
+  colors.custom.color = NA, colors.custom.gradient.start = NA,
+  colors.custom.gradient.end = NA, colors.custom.palette = NA,
+  opacity = NULL, background.fill.color = rgb(255, 255, 255, maxColorValue =
+  255), background.fill.opacity = 1, charting.area.fill.color = rgb(255,
+  255, 255, maxColorValue = 255), charting.area.fill.opacity = 1,
+  legend.show = TRUE, legend.fill = rgb(255, 255, 255, maxColorValue = 255),
   legend.fill.color = legend.fill, legend.fill.opacity = 1,
   legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
   legend.border.line.width = 0, legend.font.color = NULL,
@@ -128,6 +128,10 @@ character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{footer.font.size}{footer font size}
+
+\item{footer.wordwrap}{Logical; whether the footer text should be wrapped.}
+
+\item{footer.wordwrap.nchar}{Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} i \code{TRUE}.}
 
 \item{colors}{Character; a vector containing one or more named
 colors from grDevices OR one or more specified hex value colors OR a single
