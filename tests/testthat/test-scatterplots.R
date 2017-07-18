@@ -103,11 +103,11 @@ test_that("Scatterplot",
                              type = "Scatterplot",
                              transpose = TRUE,
                              title = "Unlabeled Scatterplot")), NA)
-         expect_error(print(Chart(y = two.cols,
-                             type = "Scatterplot",
+         expect_warning(print(Chart(y = two.cols,
+                             type = "Labeled Scatterplot",
                              transpose = TRUE,
                              data.label.max.plot = 4,
-                             title = "Unlabeled Scatterplot")), NA)
+                             title = "Unlabeled Scatterplot")))
          })
 
 test_that("Group ordering",
