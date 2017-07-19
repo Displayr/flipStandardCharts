@@ -20,7 +20,7 @@ Chart(y, type = "Column", transpose = FALSE, title = "",
   legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
   legend.border.line.width = 0, legend.font.color = NULL,
   legend.font.family = NULL, legend.font.size = 10,
-  legend.position = "right", legend.ascending = FALSE, margin.top = NULL,
+  legend.position = "right", legend.ascending = NA, margin.top = NULL,
   margin.bottom = NULL, margin.left = NULL, margin.right = NULL,
   margin.inner.pad = NULL, y.title = "", y.title.font.color = NULL,
   y.title.font.family = NULL, y.title.font.size = 12, y.line.width = 0,
@@ -189,7 +189,8 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 \item{legend.position}{Where the legend will be placed; can be "left" or
 "right" of plot.}
 
-\item{legend.ascending}{Logical; TRUE for ascending, FALSE for descending}
+\item{legend.ascending}{Logical; TRUE for ascending, FALSE for descending.
+By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.}
 
 \item{margin.top}{Margin between plot area and the top of the
 graphic in pixels}

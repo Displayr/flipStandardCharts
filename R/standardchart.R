@@ -65,7 +65,8 @@
 #' @param legend.font.size Legend font size.
 #' @param legend.position Where the legend will be placed; can be "left" or
 #' "right" of plot.
-#' @param legend.ascending Logical; TRUE for ascending, FALSE for descending
+#' @param legend.ascending Logical; TRUE for ascending, FALSE for descending.
+#' By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.
 #' @param margin.top Margin between plot area and the top of the
 #' graphic in pixels
 #' @param margin.bottom Margin between plot area and the bottom of the
@@ -318,7 +319,7 @@ Chart <-   function(y,
                     legend.font.family = NULL,
                     legend.font.size = 10,
                     legend.position = "right",
-                    legend.ascending = FALSE,
+                    legend.ascending = NA,
                     margin.top = NULL,
                     margin.bottom = NULL,
                     margin.left = NULL,
@@ -520,6 +521,9 @@ Chart <-   function(y,
                               "Stacked Bar", "100% Stacked Bar",
                               "Stacked Column", "100% Stacked Column")
     is.hundred.percent.stacked <- type %in% c("100% Stacked Area", "100% Stacked Bar", "100% Stacked Column")
+    if (is.na(legend.ascending))
+        legend.ascending <- type %in% c("Stacked Bar", "100% Stacked Bar") || !is.stacked
+
     swap.axes.and.data <- type %in% c("Bar", "Stacked Bar", "100% Stacked Bar")
     is.area.or.line.chart <- type %in% c("Area", "Stacked Area", "100% Stacked Area", "Line")
     is.bar.or.column.chart <- type %in% c("Bar", "Stacked Bar", "100% Stacked Bar",
