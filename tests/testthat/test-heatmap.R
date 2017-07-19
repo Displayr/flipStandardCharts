@@ -37,3 +37,15 @@ test_that("HeatMap",
             expect_error(print(HeatMap(table = three.cols, show.cell.values = "No",
                                        show.row.labels = "No", show.column.labels = "No")), NA)
         })
+
+test_that("HeatMap Fonts",
+          {
+            expect_error(print(HeatMap(table = three.cols, show.cell.values = "Yes", cell.decimals = 0)), NA)
+            expect_error(print(HeatMap(table = three.cols, show.cell.values = "Yes", cell.decimals = 6)), NA)
+            expect_error(print(HeatMap(table = three.cols, show.cell.values = "Yes", chart.title = "Title",
+                                       x.axis.title = "X-axis", y.axis.title = "Y-axis", font.family = "Courier",
+                                       font.color = "red", title.font.size = 8, xaxis.title.font.size = 8,
+                                       yaxis.title.font.size = 8, value.legend.font.size = 8,
+                                       axis.label.font.size = 8)), NA)
+        })
+
