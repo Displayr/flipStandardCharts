@@ -712,6 +712,7 @@ Chart <-   function(y,
 
     # Use global colours if necessary
     if (is.null(title.font.color)) title.font.color <- global.font.color
+    if (is.null(subtitle.font.color)) subtitle.font.color <- global.font.color
     if (is.null(legend.font.color)) legend.font.color <- global.font.color
     if (is.null(footer.font.color)) footer.font.color <- global.font.color
     if (is.null(y.title.font.color)) y.title.font.color <- global.font.color
@@ -859,7 +860,7 @@ Chart <-   function(y,
         series.line.colors.custom.color <- colors.custom.color
         series.line.colors.custom.gradient.start <- colors.custom.gradient.start
         series.line.colors.custom.gradient.end <- colors.custom.gradient.end
-        series.line.colors.custom.palette <- colors.custom.palette 
+        series.line.colors.custom.palette <- colors.custom.palette
     }
 
     if (is.null(series.marker.colors))
@@ -869,7 +870,7 @@ Chart <-   function(y,
         series.marker.colors.custom.color <- series.line.colors.custom.color
         series.marker.colors.custom.gradient.start <- series.line.colors.custom.gradient.start
         series.marker.colors.custom.gradient.end <- series.line.colors.custom.gradient.end
-        series.marker.colors.custom.palette <- series.line.colors.custom.palette 
+        series.marker.colors.custom.palette <- series.line.colors.custom.palette
     }
 
     if (is.null(series.marker.border.colors))
@@ -879,7 +880,7 @@ Chart <-   function(y,
         series.marker.border.colors.custom.color <- series.marker.colors.custom.color
         series.marker.border.colors.custom.gradient.start <- series.marker.colors.custom.gradient.start
         series.marker.border.colors.custom.gradient.end <- series.marker.colors.custom.gradient.end
-        series.marker.border.colors.custom.palette <- series.marker.colors.custom.palette 
+        series.marker.border.colors.custom.palette <- series.marker.colors.custom.palette
     }
 
     if (type == "Pie" || type == "Donut")
@@ -922,7 +923,7 @@ Chart <-   function(y,
                 pie.show.percentages = pie.show.percentages,
                 table.statistic = table.statistic))
 
-    
+
     ## Settings specific to labelled scatter plots
     if (is.labeled.scatterplot.or.bubbleplot)
     {
@@ -966,7 +967,7 @@ Chart <-   function(y,
             if (data.label.max.plot == 50)
                 warning("By default, only the first 50 labels are shown to avoid long running times. Adjust 'Maximum data labels to plot' to show more labels. Alternatively, to show a large number of points, change 'Chart type' to 'Scatterplot'.")
             else
-                warning("Some labels have been hidden. Adjust 'Maximum data labels to plot' to show more labels.") 
+                warning("Some labels have been hidden. Adjust 'Maximum data labels to plot' to show more labels.")
             label.plot[(data.label.max.plot + 1):n.lab] <- ""
         }
 
@@ -1029,7 +1030,7 @@ Chart <-   function(y,
     }
 
     ## Work out color ranges; n.b. some color ranges worked out in the chart specific functions.
-    ## This must occur after pie/donut charts are plotted because they use a different number of colors 
+    ## This must occur after pie/donut charts are plotted because they use a different number of colors
     ## Labeled scatter/bubblecharts also handle groups separately
     number.colors.needed <- if (is.scatterplot) length(unique(scatterplot.data$group)) else ncol(chart.matrix)
 
@@ -1168,7 +1169,7 @@ Chart <-   function(y,
     subtitle.axis <- NULL
     if (nchar(footer) > 0)
     {
-        footer <- autoFormatLongLabels(footer, wordwrap=footer.wordwrap, n=footer.wordwrap.nchar, truncate=FALSE) 
+        footer <- autoFormatLongLabels(footer, wordwrap=footer.wordwrap, n=footer.wordwrap.nchar, truncate=FALSE)
         footer.nline <- sum(gregexpr("<br>", footer)[[1]] > -1) + 1
         footer.npad <- max(0, ceiling(margin.bottom/footer.font.size/1.25) - footer.nline - 1)
         footer <- paste0(paste(rep("<br>", footer.npad), collapse=""), footer)
@@ -1579,7 +1580,7 @@ Chart <-   function(y,
     {
         if (x.autorange != "reversed")
             x.autorange <- FALSE
-        
+
         # Fix x-axis to prevent changing chart width
         # Scatterplot data can be assumed to be always numeric
         x.range <- range(scatterplot.data$x)
@@ -1590,7 +1591,7 @@ Chart <-   function(y,
                         data.label.font.size/10
         padding <- diff(x.range) * (0.05 * lab.len)
         x.range <- x.range + c(-padding, padding)
-        
+
         x.prefix <- if (x.tick.prefix == "") data.label.prefix else x.tick.prefix
         x.suffix <- if (x.tick.suffix == "") data.label.suffix else x.tick.suffix
         y.prefix <- if (y.tick.prefix == "") data.label.prefix else y.tick.prefix
