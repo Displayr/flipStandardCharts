@@ -742,7 +742,7 @@ Chart <-   function(y,
         if (nchar(subtitle) > 0)
         {
             subtitle.nline <- sum(gregexpr("<br>", subtitle)[[1]] > -1) + 1.5
-            margin.top <- margin.top + (subtitle.font.size * subtitle.nline * 1.25)
+            margin.top <- margin.top + (subtitle.font.size * subtitle.nline * 1.25) 
             subtitle.npad <- max(0, round(title.nline * subtitle.font.size/title.font.size * 0.9))
             subtitle <- paste0(paste(rep("<br>", subtitle.npad), collapse=""), subtitle)
         }
@@ -758,6 +758,7 @@ Chart <-   function(y,
         }
         if (nchar(footer) > 0)
         {
+            footer <- autoFormatLongLabels(footer, wordwrap=footer.wordwrap, n=footer.wordwrap.nchar, truncate=FALSE)
             footer.nline <- sum(gregexpr("<br>", footer)[[1]] > -1) + 2 + (type == "Radar")
             margin.bottom <- margin.bottom + (footer.font.size * footer.nline * 1.25)
             # footer position cannot be determined until after x-axis labels have been formatted
@@ -1173,9 +1174,8 @@ Chart <-   function(y,
     subtitle.axis <- NULL
     if (nchar(footer) > 0)
     {
-        footer <- autoFormatLongLabels(footer, wordwrap=footer.wordwrap, n=footer.wordwrap.nchar, truncate=FALSE)
         footer.nline <- sum(gregexpr("<br>", footer)[[1]] > -1) + 1
-        footer.npad <- max(0, ceiling(margin.bottom/footer.font.size/1.25) - footer.nline - 1)
+        footer.npad <- max(0, ceiling(margin.bottom/footer.font.size/1.25) - footer.nline - 2)
         footer <- paste0(paste(rep("<br>", footer.npad), collapse=""), footer)
         footer.axis <- list(overlaying="x", side = "bottom", anchor="free", position=0,
              visible=T, showline=F, zeroline=F, showgrid=F,
