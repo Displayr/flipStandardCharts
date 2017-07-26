@@ -84,7 +84,7 @@ scatterplotData <- function(chart.matrix,
 
     if (is.null(colors))
         colors <- "Default colors"
-    
+
     num.colors <- if (!is.null(colorscale.variable)) 2
                   else                               length(unique(group))
     colors <- StripAlphaChannel(ChartColors(number.colors.needed = num.colors,
