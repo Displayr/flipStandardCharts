@@ -11,6 +11,18 @@ table13 <- structure(c(0, 22, 18, 15, 16, 19, 13, 18, 27, 12, 0, 22, 21,
     ), c("Male", "Female")), name = "Q3. Age by Q2. Gender", questions = c("Q3. Age",
 "Q2. Gender"))
 
+tab3 <- structure(c(2.98165137614679, 4.11009174311927, 3.07339449541284,
+2.63302752293578, 3.34862385321101, 2.45565749235474, 3.40366972477064,
+3.52905198776758, 4.02752293577982, 2.28440366972477), .Dim = 10L, statistic = "Average", .Dimnames = list(
+    c("My friends would describe me as cultured, and refined",
+    "I think it is important to be honest when giving complements",
+    "I can be a little naïve at times", "I am the life of the party",
+    "I am relaxed most of the time and not easily worried", "Living in a big city is important to me",
+    "I think it is important to follow and maintain traditions",
+    "I enjoy being attractive to the opposite sex", "I am young at heart",
+    "I follow all the latest fashions")), name = "Q25. Respondent image (number multi)", questions = c("Q25. Respondent image (number multi)",
+"SUMMARY"))
+
 df <- structure(list(A = c(1, 2, 3, 4, 5, 6, 7, NaN, 9, 10),
 B = c(2,3, NaN, 5, 6, 7, 8, NaN, 10, 11)), .Names = c("A", "B"), row.names = c("A",
 "B", "C", "D", "E", "F", "G", "H", "I", "J"), class = "data.frame")

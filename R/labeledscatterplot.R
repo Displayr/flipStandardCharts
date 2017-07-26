@@ -1,100 +1,45 @@
-#' \code{labeledScatterplot}
-#'
-#' @param chart.matrix Input data with 2 or 3 columns.
-#' @param colors Group colors.
-#' @param colors.reverse Whether to reverse the colors.
-#' @param colors.custom.color Character; a single color which is used if \code{colors} is set to \code{"Custom color"}.
-#' @param colors.custom.gradient.start Character; starting color of gradient if \code{colors} is set to \code{"Custom gradient"}.
-#' @param colors.custom.gradient.end Character; last color of gradient if \code{colors} is set to \code{"Custom gradient"}.
-#' @param colors.custom.palette Character; comma separated list of colors to be used if \code{colors} is set to \code{"Custom palette"}.
-#' @param type Either "Labeled Scatterplot" or "Labeled Bubbleplot".
-#' @param group.labels.text Vector or text of comma-separated group labels.
-#' @param group.indices.text Vector or text of comma-separated group indices corresponding to each row.
-#' @param origin Whether to display the origin.
-#' @param transpose Whether to switch the first and second columns before plotting.
-#' @param rows.to.ignore Text of comma-separated row labels to omit.
-#' @param cols.to.ignore Text of comma-separated column labels to omit.
-#' @param legend.show Whether to show the legend, if there is more than one group.
-#' @param x.title If this is text, this overrides the x-axis title. If this is FALSE, the title is hidden.
-#' @param y.title If this is text, this overrides the y-axis title. If this is FALSE, the title is hidden.
-#' @importFrom flipData GetTidyTwoDimensionalArray
-#' @importFrom flipChartBasics StripAlphaChannel ChartColors
-labeledScatterplot <- function(chart.matrix,
-                               colors = NULL,
-                               colors.reverse = FALSE,
-                               colors.custom.color = NA,
-                               colors.custom.gradient.start = NA,
-                               colors.custom.gradient.end = NA,
-                               colors.custom.palette = NA,
-                               type = "Labeled Scatterplot",
-                               group.labels.text = "",
-                               group.indices.text = "",
-                               origin = FALSE,
-                               transpose = FALSE,
-                               rows.to.ignore = "",
-                               cols.to.ignore = "",
-                               legend.show = TRUE,
-                               x.title = "",
-                               y.title = "")
+#' @importFrom flipTransformations TextAsVector
+#' @importFrom grDevices colorRamp
+scatterplotData <- function(chart.matrix,
+                            type,
+                            colors = NULL,
+                            colors.reverse = FALSE,
+                            colors.custom.color = NA,
+                            colors.custom.gradient.start = NA,
+                            colors.custom.gradient.end = NA,
+                            colors.custom.palette = NA,
+                            group.labels.text = "",
+                            group.indices.text = "",
+                            origin = FALSE,
+                            transpose = FALSE,
+                            rows.to.ignore = "",
+                            cols.to.ignore = "",
+                            legend.show = TRUE,
+                            x.title = "",
+                            y.title = "",
+                            colorscale.variable = NULL)
 {
     is.bubble <- type == "Labeled Bubbleplot"
-
-    data <- scatterplotData(chart.matrix,
-                            is.bubble,
-                            group.labels.text,
-                            group.indices.text,
-                            transpose,
-                            rows.to.ignore,
-                            cols.to.ignore,
-                            x.title,
-                            y.title)
-
-    if (is.null(colors))
-        colors <- "Default colors"
-
-    colors <- StripAlphaChannel(ChartColors(number.colors.needed = length(unique(data$group)),
-                                            given.colors = colors,
-                                            custom.color = colors.custom.color,
-                                            custom.gradient.start = colors.custom.gradient.start,
-                                            custom.gradient.end = colors.custom.gradient.end,
-                                            custom.palette = colors.custom.palette,
-                                            reverse = colors.reverse,
-                                            trim.light.colors = TRUE))
-
-    output <- list(X = data$x,
-                   Y = data$y,
-                   Z = data$z,
-                   colors = colors,
-                   label = data$row.names,
-                   group = data$group,
-                   origin = origin,
-                   legend.show = length(unique(data$group)) > 1 && legend.show,
-                   legend.bubbles.show = is.bubble,
-                   x.title = data$x.title,
-                   y.title = data$y.title)
-
-    return(output)
-}
-
-#' @importFrom flipTransformations TextAsVector
-scatterplotData <- function(chart.matrix, is.bubble, group.labels.text, group.indices.text, transpose,
-                            rows.to.ignore, cols.to.ignore, x.title, y.title)
-{
     if (any(is.na(as.matrix(chart.matrix))))
     {
         warning("Data points with missing values have been omitted.")
         chart.matrix <- chart.matrix[!is.na(rowSums(chart.matrix)), ]
     }
-
+    if (!is.null(group.labels.text) && group.labels.text[1] != "" && !is.null(colorscale.variable))
+    {
+        colorscale.variable <- NULL
+        warning("Color-scale variable ignored when groups are provided\n")
+    }
+    
     # Remove rows and columns to ignore
     chart.matrix <- GetTidyTwoDimensionalArray(chart.matrix,
                                                row.names.to.remove = rows.to.ignore,
                                                column.names.to.remove = cols.to.ignore)
 
-    if (is.bubble && ncol(chart.matrix) != 3)
-        stop("The number of columns in the input table (after excluding ignored columns) must be 3 for a bubbleplot.")
-    if (!is.bubble && ncol(chart.matrix) != 2)
-        stop("The number of columns in the input table (after excluding ignored columns) must be 2 for a scatterplot.")
+    #if (is.bubble && ncol(chart.matrix) != 3)
+    #    stop("The number of columns in the input table (after excluding ignored columns) must be 3 for a bubbleplot.")
+    #if (!is.bubble && ncol(chart.matrix) != 2)
+    #    stop("The number of columns in the input table (after excluding ignored columns) must be 2 for a scatterplot.")
 
     pt.ord <- NULL
     if (!is.null(group.labels.text) && group.labels.text[1] != "")
@@ -129,24 +74,48 @@ scatterplotData <- function(chart.matrix, is.bubble, group.labels.text, group.in
             group <- rep("Group", nrow(chart.matrix))
     }
 
-    result <- list()
-
     # order data points so that the color of groups are ordered
     if (!is.null(pt.ord))
     {
         chart.matrix <- chart.matrix[pt.ord,]
         group <- group[pt.ord]
+        # colorscale.variable not compatible with groups
     }
 
+    if (is.null(colors))
+        colors <- "Default colors"
+    
+    num.colors <- if (!is.null(colorscale.variable)) 2
+                  else                               length(unique(group))
+    colors <- StripAlphaChannel(ChartColors(number.colors.needed = num.colors,
+                                            given.colors = colors,
+                                            custom.color = colors.custom.color,
+                                            custom.gradient.start = colors.custom.gradient.start,
+                                            custom.gradient.end = colors.custom.gradient.end,
+                                            custom.palette = colors.custom.palette,
+                                            reverse = colors.reverse,
+                                            trim.light.colors = TRUE))
+    if (!is.null(colorscale.variable))
+    {
+        col.fun <- colorRamp(colors)
+        group <- 1:length(colorscale.variable)
+        sc.vals <- (colorscale.variable - min(colorscale.variable, na.rm=T))/diff(range(colorscale.variable, na.rm=T))
+        colors <- rgb(col.fun(sc.vals), maxColorValue=255)
+    }
+    result <- list()
     result$x <- if (transpose) as.numeric(chart.matrix[, 2]) else as.numeric(chart.matrix[, 1])
     result$y <- if (transpose) as.numeric(chart.matrix[, 1]) else as.numeric(chart.matrix[, 2])
     result$z <- if (is.bubble) as.numeric(chart.matrix[, 3]) else NULL
+    result$colors <- colors
 
     if (is.bubble && any(result$z < 0))
         stop("Negative values are present in the third column. No bubbles are shown for such cases.")
 
-    result$row.names <- rownames(chart.matrix)
+    result$label <- rownames(chart.matrix)
     result$group <- group
+    result$origin <- origin
+    result$legend.show <- is.null(colorscale.variable) && length(unique(result$group)) > 1 && legend.show
+    result$legend.bubbles.show <- is.bubble
 
     # Resolve axes labels if none specified manually
     if (x.title == "" || length(x.title) == 0)
