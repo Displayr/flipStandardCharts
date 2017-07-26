@@ -271,6 +271,13 @@
 #' @param scatter.group.indices Vector or text of comma-separated group indices
 #' corresponding to each row.
 #' @param scatter.group.labels Vector or text of comma-separated group labels.
+#' @param scatter.var.from.matrix Indicates whether additional chart properties for scatter of bubbleplots should by read from the \code{y} matrix.
+#' @param scatter.x.var The index of the column of \code{y} (if \code{scatter.var.from.matrix} is \code{true}) or a numeric vector containing the x-coordinates of the scatterplot.
+#' @param scatter.y.var The index of the column of \code{y} (if \code{scatter.var.from.matrix} is \code{true}) or a numeric vector containing the y-coordinates of the scatterplot.
+#' @param scatter.label.var The index of the column of \code{y} (if \code{scatter.var.from.matrix} is \code{true}) or a character vector containing the labels of the scatterplot.
+#' @param scatter.group.var The index of the column of \code{y} (if \code{scatter.var.from.matrix} is \code{true}) or a character/factor vector containing the group of each point in the scatterplot.
+#' @param scatter.size.var The index of the column of \code{y} (if \code{scatter.var.from.matrix} is \code{true}) or a  numeric vector. The absolute value will be used to determine the size of the points.
+#' @param scatter.color.var The index of the column of \code{y} (if \code{scatter.var.from.matrix} is \code{true}) or a  numeric vector. These shading of the points will be determined based on the value in this vector.
 #' @param us.date.format Whether to apply the US convention when parsing dates.
 #' @examples
 #' z <- c(5, 6, 2, 1.5, 9, 2.2)
@@ -442,8 +449,16 @@ Chart <-   function(y,
                     z.title = "",
                     scatter.group.indices = "",
                     scatter.group.labels = "",
+                    scatter.var.from.matrix = TRUE,
+                    scatter.x.var = NULL,
+                    scatter.y.var = NULL,
+                    scatter.label.var = NULL,
+                    scatter.group.var = NULL,
+                    scatter.size.var = NULL,
+                    scatter.color.var = NULL,
                     us.date.format = NULL)
 {
+
     # Set undefined variables to defaults
     # This is for compatibility with R GUI controls
     if (type == "Donut")
@@ -572,7 +587,51 @@ Chart <-   function(y,
     else if (!data.label.show && is.pie.or.donut.chart)
         warning("Data labels cannot be hidden for pie and donut charts.")
 
-    chart.matrix <- y
+    # Format input data
+    if (is.scatterplot.or.bubbleplot)
+    {
+        if (scatter.var.from.matrix)
+        {
+            if (!is.null(scatter.x.var))
+                scatter.x.var <- y[,scatter.x.var]
+            if (!is.null(scatter.y.var))
+                scatter.y.var <- y[,scatter.y.var]
+            if (!is.null(scatter.group.var))
+                scatter.group.var <- y[,scatter.group.var]
+            if (!is.null(scatter.label.var))
+                scatter.label.var <- y[,scatter.label.var]
+            if (!is.null(scatter.size.var))
+                scatter.size.var <- y[,scatter.size.var]
+            if (!is.null(scatter.color.var))
+                scatter.color.var <- y[,scatter.color.var]
+        }
+        chart.matrix <- if (is.null(scatter.x.var) || is.null(scatter.y.var)) y
+                        else cbind(X=scatter.x.var, Y=scatter.y.var)
+        if (!is.null(scatter.size.var))
+        {
+            if (ncol(chart.matrix) >= 3)
+                chart.matrix[,3] <- scatter.size.var # data already copied in lines 590-607
+            else
+            {
+                chart.matrix <- if (ncol(chart.matrix) == 2) cbind(chart.matrix, scatter.size.var) 
+                                else cbind(X=chart.matrix, Y=0, Z=scatter.size.var)
+            }
+        }
+        if (!is.null(scatter.label.var))
+            rownames(chart.matrix) <- scatter.label.var
+
+        if (!is.null(scatter.group.var))
+        {
+            tmp.factor <- factor(scatter.group.var)
+            scatter.group.labels <- levels(tmp.factor)
+            scatter.group.indices <- as.numeric(tmp.factor)
+        }
+        # need to work out what to do with scatter.color.var??
+    }
+    else
+    {
+        chart.matrix <- y
+    }
 
     # Check that chart.matrix is suitable for charting
     msg <- paste("The input data is not appropriate.",
@@ -606,10 +665,7 @@ Chart <-   function(y,
     }
 
     ## Is it a Q input?
-    qinput <- FALSE
-    if (!is.null(attr(chart.matrix, "statistic")))
-        qinput <- TRUE
-
+    qinput <- (!is.null(attr(chart.matrix, "statistic")))
     table.axes.labels <- c("", "")
 
     if (qinput)
@@ -817,8 +873,23 @@ Chart <-   function(y,
     ## This step needs to happen before chart colors is determined
     if (type == "Scatterplot")
     {
-        scatterplot.data <- scatterplotData(chart.matrix, FALSE, scatter.group.labels, scatter.group.indices, transpose,
-                                rows.to.ignore, cols.to.ignore, x.title, y.title)
+        scatterplot.data <- scatterplotData(chart.matrix,
+                                            type = type,
+                                            colors = colors,
+                                            colors.reverse = colors.reverse,
+                                            colors.custom.color = colors.custom.color,
+                                            colors.custom.gradient.start = colors.custom.gradient.start,
+                                            colors.custom.gradient.end = colors.custom.gradient.end,
+                                            colors.custom.palette = colors.custom.palette,
+                                            group.labels.text = scatter.group.labels,
+                                            group.indices.text = scatter.group.indices,
+                                            origin = FALSE, # base on y and x.zero.line.width
+                                            transpose = transpose,
+                                            rows.to.ignore = rows.to.ignore,
+                                            cols.to.ignore = cols.to.ignore,
+                                            legend.show = legend.show,
+                                            x.title = x.title,
+                                            y.title = y.title)
         if (x.title == "")
             x.title <- scatterplot.data$x.title
         if (y.title == "")
@@ -945,23 +1016,23 @@ Chart <-   function(y,
         else
             0
 
-        labeled.scatterplot <- labeledScatterplot(chart.matrix = chart.matrix,
-                                                  colors = colors,
-                                                  colors.reverse = colors.reverse,
-                                                  colors.custom.color = colors.custom.color,
-                                                  colors.custom.gradient.start = colors.custom.gradient.start,
-                                                  colors.custom.gradient.end = colors.custom.gradient.end,
-                                                  colors.custom.palette = colors.custom.palette,
-                                                  type = type,
-                                                  group.labels.text = scatter.group.labels,
-                                                  group.indices.text = scatter.group.indices,
-                                                  origin = FALSE, # base on y and x.zero.line.width
-                                                  transpose = transpose,
-                                                  rows.to.ignore = rows.to.ignore,
-                                                  cols.to.ignore = cols.to.ignore,
-                                                  legend.show = legend.show,
-                                                  x.title = x.title,
-                                                  y.title = y.title)
+        labeled.scatterplot <- scatterplotData(chart.matrix,
+                                               type = type,
+                                               colors = colors,
+                                               colors.reverse = colors.reverse,
+                                               colors.custom.color = colors.custom.color,
+                                               colors.custom.gradient.start = colors.custom.gradient.start,
+                                               colors.custom.gradient.end = colors.custom.gradient.end,
+                                               colors.custom.palette = colors.custom.palette,
+                                               group.labels.text = scatter.group.labels,
+                                               group.indices.text = scatter.group.indices,
+                                               origin = FALSE, # base on y and x.zero.line.width
+                                               transpose = transpose,
+                                               rows.to.ignore = rows.to.ignore,
+                                               cols.to.ignore = cols.to.ignore,
+                                               legend.show = legend.show,
+                                               x.title = x.title,
+                                               y.title = y.title)
 
         label.plot <- labeled.scatterplot$label
         n.lab <- length(label.plot)
@@ -976,9 +1047,9 @@ Chart <-   function(y,
             label.plot[(data.label.max.plot + 1):n.lab] <- ""
         }
 
-        return(rhtmlLabeledScatter::LabeledScatter(X = labeled.scatterplot$X,
-                       Y = labeled.scatterplot$Y,
-                       Z = labeled.scatterplot$Z,
+        return(rhtmlLabeledScatter::LabeledScatter(X = labeled.scatterplot$x,
+                       Y = labeled.scatterplot$y,
+                       Z = labeled.scatterplot$z,
                        label = label.plot,
                        label.alt = labeled.scatterplot$label,
                        fixed.aspect = FALSE,
@@ -1601,7 +1672,7 @@ Chart <-   function(y,
         y.prefix <- if (y.tick.prefix == "") data.label.prefix else y.tick.prefix
         y.suffix <- if (y.tick.suffix == "") data.label.suffix else y.tick.suffix
 
-        source.text <- paste0(scatterplot.data$row.names, " (",
+        source.text <- paste0(scatterplot.data$label, " (",
             x.prefix, FormatWithDecimals(scatterplot.data$x, data.label.decimals), x.suffix, ",",
             y.prefix, FormatWithDecimals(scatterplot.data$y, data.label.decimals), y.suffix, ")")
 
@@ -1612,12 +1683,12 @@ Chart <-   function(y,
         {
             ind <- which(scatterplot.data$group == g.list[ggi])
             line.obj <- if (is.null(series.line.width) || series.line.width == 0) NULL
-                        else list(width=series.line.width, color=series.marker.colors[ggi])
+                        else list(width=series.line.width, color=scatterplot.data$colors[ggi])
 
             p <- add_trace(p, x=scatterplot.data$x[ind], y=scatterplot.data$y[ind],
                     name=g.list[ggi], showlegend=(length(g.list) > 1),
                     text=source.text[ind], textfont=textfont, textposition=data.label.position,
-                    marker=list(size=series.marker.size, color=series.marker.colors[ggi],
+                    marker=list(size=series.marker.size, color=scatterplot.data$colors[ggi],
                     line=list(width=series.marker.border.width)), line=line.obj,
                     type=plotly.type, mode=series.mode, symbols=series.marker.symbols,
                     hoverinfo=if(length(g.list) > 1) "name+text" else "text")

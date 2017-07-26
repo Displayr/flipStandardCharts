@@ -85,7 +85,10 @@ Chart(y, type = "Column", transpose = FALSE, title = "",
   pie.subslice.colors.repeat = TRUE, pie.border.color = rgb(255, 255, 255,
   maxColorValue = 255), pie.inner.radius = 70, pie.show.percentages = FALSE,
   z.title = "", scatter.group.indices = "", scatter.group.labels = "",
-  us.date.format = NULL)
+  scatter.var.from.matrix = TRUE, scatter.x.var = NULL,
+  scatter.y.var = NULL, scatter.label.var = NULL,
+  scatter.group.var = NULL, scatter.size.var = NULL,
+  scatter.color.var = NULL, us.date.format = NULL)
 }
 \arguments{
 \item{y}{A table, matrix, vector or data frame.}
@@ -517,6 +520,20 @@ bubbleplots.}
 corresponding to each row.}
 
 \item{scatter.group.labels}{Vector or text of comma-separated group labels.}
+
+\item{scatter.var.from.matrix}{Indicates whether additional chart properties for scatter of bubbleplots should by read from the \code{y} matrix.}
+
+\item{scatter.x.var}{The index of the column of \code{y} (if \code{scatter.var.from.matrix} is \code{true}) or a numeric vector containing the x-coordinates of the scatterplot.}
+
+\item{scatter.y.var}{The index of the column of \code{y} (if \code{scatter.var.from.matrix} is \code{true}) or a numeric vector containing the y-coordinates of the scatterplot.}
+
+\item{scatter.label.var}{The index of the column of \code{y} (if \code{scatter.var.from.matrix} is \code{true}) or a character vector containing the labels of the scatterplot.}
+
+\item{scatter.group.var}{The index of the column of \code{y} (if \code{scatter.var.from.matrix} is \code{true}) or a character/factor vector containing the group of each point in the scatterplot.}
+
+\item{scatter.size.var}{The index of the column of \code{y} (if \code{scatter.var.from.matrix} is \code{true}) or a  numeric vector. The absolute value will be used to determine the size of the points.}
+
+\item{scatter.color.var}{The index of the column of \code{y} (if \code{scatter.var.from.matrix} is \code{true}) or a  numeric vector. These shading of the points will be determined based on the value in this vector.}
 
 \item{us.date.format}{Whether to apply the US convention when parsing dates.}
 }

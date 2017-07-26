@@ -119,3 +119,10 @@ test_that("Group ordering",
                 expect_error(print(Chart(xx, type="Scatterplot", colors="Reds, dark to light",
                                          scatter.group.indices = "2,2,1,4,4,3,2,4,2", scatter.group.labels = "D,B,C,A")), NA)
           })
+
+test_that("Alternative arguments", {
+    expect_error(print(Chart(NULL, scatter.var.from.matrix=F, type="Scatterplot", scatter.x.var=1:10, scatter.y.var=10:1, scatter.group.var = rep(c('X','Y'),5))), NA)
+    expect_error(print(Chart(NULL, scatter.var.from.matrix=F, type="Labeled Bubbleplot", scatter.x.var=1:10, scatter.y.var=10:1, scatter.group.var=rep(c('X','Y'),5), scatter.label.var = letters[1:10], scatter.size.var=1:10)), NA)
+
+    # Y = NULL
+})
