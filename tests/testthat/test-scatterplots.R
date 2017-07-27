@@ -121,8 +121,19 @@ test_that("Group ordering",
           })
 
 test_that("Alternative arguments", {
-    expect_error(print(Chart(NULL, scatter.var.from.matrix=F, type="Scatterplot", scatter.x.var=1:10, scatter.y.var=10:1, scatter.group.var = rep(c('X','Y'),5))), NA)
-    expect_error(print(Chart(NULL, scatter.var.from.matrix=F, type="Labeled Bubbleplot", scatter.x.var=1:10, scatter.y.var=10:1, scatter.group.var=rep(c('X','Y'),5), scatter.label.var = letters[1:10], scatter.size.var=1:10)), NA)
+    expect_error(print(Chart(scatter.var.from.matrix=F, type="Scatterplot", colors="Heat colors (red, yellow, white)", scatter.x.var=1:10, scatter.y.var=10:1, scatter.colors.var = rep(c(1, 2),5))), NA)
+    expect_error(print(Chart(scatter.var.from.matrix=F, type="Scatterplot", colors="Heat colors (red, yellow, white)", scatter.x.var=1:10, scatter.y.var=10:1, scatter.colors.var = c(1:5, rep(3,5)))), NA)
 
-    # Y = NULL
+
+    z <- 1:10
+    print(Chart(scatter.var.from.matrix=F, type="Scatterplot", colors="Heat colors (red, yellow, white)", scatter.x.var=1:10, scatter.y.var=10:1, scatter.colors.var = 1:10))
+    print(Chart(scatter.var.from.matrix=F, type="Scatterplot", colors="Terrain colors (green, beige, grey)", scatter.x.var=z, scatter.y.var=z, scatter.colors.var = z, x.title="X", y.title="Y"))
+    print(Chart(scatter.var.from.matrix=F, type="Scatterplot", colors="Terrain colors (green, beige, grey)", scatter.x.var=z, scatter.colors.var = z, x.title="X", y.title="Y"))
+    print(Chart(scatter.var.from.matrix=F, type="Scatterplot", colors="Reds, dark to light", scatter.x.var=1:10, scatter.y.var=10:1, scatter.colors.var = c(1:5, rep(3,5))))
+    print(Chart(scatter.var.from.matrix=F, type="Scatterplot", colors="Strong colors", scatter.x.var=z, scatter.y.var=z, scatter.colors.var = rep(c('a','b'), each=5), scatter.colors.as.group = T, x.title="X", y.title="Y"))
+
+
+    print(Chart(scatter.var.from.matrix=F, type="Labeled Scatterplot", colors="Reds, dark to light", scatter.x.var=1:10, scatter.y.var=10:1, scatter.colors.var = 1:10, scatter.labels.var=LETTERS[1:10], scatter.sizes.var=1:10))
+    print(Chart(scatter.var.from.matrix=F, type="Labeled Bubbleplot", colors="Reds, dark to light", scatter.x.var=1:10, scatter.y.var=10:1, scatter.colors.var = 1:10, scatter.labels.var=LETTERS[1:10], scatter.sizes.var=1:10))
+
 })

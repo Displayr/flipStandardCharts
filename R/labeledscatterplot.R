@@ -25,21 +25,19 @@ scatterplotData <- function(chart.matrix,
         warning("Data points with missing values have been omitted.")
         chart.matrix <- chart.matrix[!is.na(rowSums(chart.matrix)), ]
     }
-    if (!is.null(group.labels.text) && group.labels.text[1] != "" && !is.null(colorscale.variable))
+    if (!is.null(group.indices.text) && group.indices.text[1] != "" && !is.null(colorscale.variable))
     {
         colorscale.variable <- NULL
         warning("Color-scale variable ignored when groups are provided\n")
     }
     
     # Remove rows and columns to ignore
+    no.dimnames <- is.null(dimnames(chart.matrix))
     chart.matrix <- GetTidyTwoDimensionalArray(chart.matrix,
                                                row.names.to.remove = rows.to.ignore,
                                                column.names.to.remove = cols.to.ignore)
-
-    #if (is.bubble && ncol(chart.matrix) != 3)
-    #    stop("The number of columns in the input table (after excluding ignored columns) must be 3 for a bubbleplot.")
-    #if (!is.bubble && ncol(chart.matrix) != 2)
-    #    stop("The number of columns in the input table (after excluding ignored columns) must be 2 for a scatterplot.")
+    if (no.dimnames)
+        dimnames(chart.matrix) <- NULL
 
     pt.ord <- NULL
     if (!is.null(group.labels.text) && group.labels.text[1] != "")
@@ -85,7 +83,7 @@ scatterplotData <- function(chart.matrix,
     if (is.null(colors))
         colors <- "Default colors"
 
-    num.colors <- if (!is.null(colorscale.variable)) 2
+    num.colors <- if (!is.null(colorscale.variable)) 3
                   else                               length(unique(group))
     colors <- StripAlphaChannel(ChartColors(number.colors.needed = num.colors,
                                             given.colors = colors,
@@ -105,11 +103,11 @@ scatterplotData <- function(chart.matrix,
     result <- list()
     result$x <- if (transpose) as.numeric(chart.matrix[, 2]) else as.numeric(chart.matrix[, 1])
     result$y <- if (transpose) as.numeric(chart.matrix[, 1]) else as.numeric(chart.matrix[, 2])
-    result$z <- if (is.bubble) as.numeric(chart.matrix[, 3]) else NULL
+    result$z <- if (ncol(chart.matrix) >= 3) as.numeric(abs(chart.matrix[, 3])) else NULL
     result$colors <- colors
 
-    if (is.bubble && any(result$z < 0))
-        stop("Negative values are present in the third column. No bubbles are shown for such cases.")
+    #if (is.bubble && any(result$z < 0))
+    #    stop("Negative values are present in the third column. No bubbles are shown for such cases.")
 
     result$label <- rownames(chart.matrix)
     result$group <- group
