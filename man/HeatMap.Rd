@@ -14,7 +14,8 @@ HeatMap(table, data.type = "Use an existing table",
   x.axis.title = "", y.axis.title = "", font.family = "sans-serif",
   font.color = "#000000", title.font.size = 24,
   xaxis.title.font.size = 14, yaxis.title.font.size = 14,
-  value.legend.font.size = 11, axis.label.font.size = 11)
+  value.legend.font.size = 11, axis.label.font.size = 11,
+  left.columns = NULL, right.columns = NULL)
 }
 \arguments{
 \item{table}{A matrix of data to be displayed.}
@@ -68,6 +69,12 @@ Options are \code{"Use an existing table"} or \code{"Type or paste data"}.}
 \item{value.legend.font.size}{Font size of the cell values, tooltips and legend.}
 
 \item{axis.label.font.size}{Font size of the axis labels.}
+
+\item{left.columns}{An optional list of vectors or matrices to be appended to the left
+of the heatmap.}
+
+\item{right.columns}{An optional list of vectors or matrices to be appended to the right
+of the heatmap.}
 }
 \description{
 \code{HeatMap} generates a heatmap from a table of data. This function wraps the Heatmap function

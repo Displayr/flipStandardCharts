@@ -49,3 +49,27 @@ test_that("HeatMap Fonts",
                                        axis.label.font.size = 8)), NA)
         })
 
+
+v1 <- seq(1:10)
+v2 <- head(letters, 20)
+t1 <- matrix(seq(100), nrow = 20, ncol = 10)
+rownames(t1) <- rownames(three.cols)[1:20]
+colnames(t1) <- LETTERS[1:10]
+t2 <- matrix(seq(501:600), nrow = 25, ncol = 4)
+rownames(t2) <- rownames(three.cols[2:26])
+colnames(t2) <- c("W", "X", "Y", "Z")
+t3 <- matrix(seq(901:990), nrow = 45, ncol = 2)
+
+test_that("HeatMap Extra Columns",
+          {
+          expect_error(print(HeatMap(table = three.cols, left.columns = list(t1))), NA)
+          expect_warning(print(HeatMap(table = three.cols, left.columns = list(v1))), "There are no matching row.")
+          expect_warning(print(HeatMap(table = three.cols, left.columns = list(v2))), "There are no matching row.")
+          expect_warning(print(HeatMap(table = three.cols, left.columns = list(v1, t1))), "There are no matching row.")
+          expect_warning(print(HeatMap(table = three.cols, left.columns = list(t2))), "There are no matching row.")
+          expect_warning(print(HeatMap(table = three.cols, left.columns = list(v1, v2, t1, t2, t3))), "There are no matching row.")
+          expect_warning(print(HeatMap(table = three.cols, right.columns = list(v1, t3))), "There are no matching row.")
+          expect_warning(print(HeatMap(table = three.cols, right.columns = list(v1, v2))), "There are no matching row.")
+          expect_warning(print(HeatMap(table = three.cols, left.columns = list(t2, t3), right.columns = list(v1, t1))), "There are no matching row.")
+          expect_warning(print(HeatMap(table = three.cols, left.columns = list(v2, t1, t3), right.columns = list(v2, t1, t3))), "There are no matching row.")
+})

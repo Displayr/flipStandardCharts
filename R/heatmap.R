@@ -30,10 +30,14 @@
 #' @param yaxis.title.font.size Font size of the y-axis title.
 #' @param value.legend.font.size Font size of the cell values, tooltips and legend.
 #' @param axis.label.font.size Font size of the axis labels.
+#' @param left.columns An optional list of vectors or matrices to be appended to the left
+#' of the heatmap.
+#' @param right.columns An optional list of vectors or matrices to be appended to the right
+#' of the heatmap.
 
 #' @importFrom flipData GetTidyTwoDimensionalArray
 #' @importFrom flipFormat FormatWithDecimals
-#' @importFrom flipTables Reorder
+#' @importFrom flipTables Reorder Cbind
 #' @importFrom flipTransformations ParseEnteredData
 #' @export
 #'
@@ -59,7 +63,9 @@ HeatMap <- function(table,
                     xaxis.title.font.size = 14,
                     yaxis.title.font.size = 14,
                     value.legend.font.size = 11,
-                    axis.label.font.size = 11) {
+                    axis.label.font.size = 11,
+                    left.columns = NULL,
+                    right.columns = NULL) {
 
     t <- if (data.type == "Use an existing table") {
         table
@@ -129,6 +135,29 @@ HeatMap <- function(table,
     } else
         "none"
 
+    if (!is.null(left.columns) || !is.null(right.columns)) {
+        show.y.axes.labels <- FALSE
+        row.order <- if (is.null(rownames(mat)))
+            seq(nrow(mat))
+        else
+            rownames(mat)
+    }
+
+    if (!is.null(left.columns)) {
+        n <- length(left.columns)
+        mats <- rep(list(mat), n)
+        cbinds <- mapply(Cbind, mats, left.columns, SIMPLIFY = FALSE)
+        cbinds <- lapply(cbinds, '[', row.order, -seq(1:ncol(mat)), drop = FALSE)
+        left.columns <- do.call(cbind, cbinds)
+    }
+    if (!is.null(right.columns)) {
+        n <- length(right.columns)
+        mats <- rep(list(mat), n)
+        cbinds <- mapply(Cbind, mats, right.columns, SIMPLIFY = FALSE)
+        cbinds <- lapply(cbinds, '[', row.order, -seq(1:ncol(mat)), drop = FALSE)
+        right.columns <- do.call(cbind, cbinds)
+    }
+
     heatmap <- rhtmlHeatmap::Heatmap(mat,
                        Rowv = rowv,
                        Colv = colv,
@@ -166,5 +195,7 @@ HeatMap <- function(table,
                        xaxis_font_size = axis.label.font.size,
                        xaxis_title_font_size = xaxis.title.font.size,
                        yaxis_font_size = axis.label.font.size,
-                       yaxis_title_font_size = yaxis.title.font.size)
+                       yaxis_title_font_size = yaxis.title.font.size,
+                       left_columns = left.columns,
+                       right_columns = right.columns)
 }
