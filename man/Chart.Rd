@@ -4,7 +4,7 @@
 \alias{Chart}
 \title{Generates an interactive chart based on the plotly library.}
 \usage{
-Chart(y, type = "Column", transpose = FALSE, title = "",
+Chart(y = NULL, type = "Column", transpose = FALSE, title = "",
   title.font.family = NULL, title.font.color = NULL, title.font.size = 16,
   subtitle = "", subtitle.font.family = NULL, subtitle.font.color = NULL,
   subtitle.font.size = 12, footer = "", footer.font.family = NULL,
@@ -85,6 +85,9 @@ Chart(y, type = "Column", transpose = FALSE, title = "",
   pie.subslice.colors.repeat = TRUE, pie.border.color = rgb(255, 255, 255,
   maxColorValue = 255), pie.inner.radius = 70, pie.show.percentages = FALSE,
   z.title = "", scatter.group.indices = "", scatter.group.labels = "",
+  scatter.var.from.matrix = TRUE, scatter.colors.as.group = FALSE,
+  scatter.x.var = NULL, scatter.y.var = NULL, scatter.labels.var = NULL,
+  scatter.sizes.var = NULL, scatter.colors.var = NULL,
   us.date.format = NULL)
 }
 \arguments{
@@ -517,6 +520,20 @@ bubbleplots.}
 corresponding to each row.}
 
 \item{scatter.group.labels}{Vector or text of comma-separated group labels.}
+
+\item{scatter.var.from.matrix}{Indicates whether additional chart properties for Scatterplot, Labeled Scatterplot or Labeled Bubbleplot should by read from the \code{y} matrix.}
+
+\item{scatter.colors.as.group}{Boolean indicating whether \code{scatter.colors.var} should be treated as a grouping variable (i.e. categorical). If true, the legend will be shown and group labels will be ordered alphabetically or in the order given by \code{scatter.group.labels}.}
+
+\item{scatter.x.var}{The index of the column of \code{y} (if \code{scatter.var.from.matrix} is \code{true}) or a numeric vector containing the x-coordinates of the scatterplot.}
+
+\item{scatter.y.var}{The index of the column of \code{y} (if \code{scatter.var.from.matrix} is \code{true}) or a numeric vector containing the y-coordinates of the scatterplot.}
+
+\item{scatter.labels.var}{The index of the column of \code{y} (if \code{scatter.var.from.matrix} is \code{true}) or a character vector containing the labels of the scatterplot.}
+
+\item{scatter.sizes.var}{The index of the column of \code{y} (if \code{scatter.var.from.matrix} is \code{true}) or a  numeric vector. The absolute value will be used to determine the size of the points.}
+
+\item{scatter.colors.var}{The index of the column of \code{y} (if \code{scatter.var.from.matrix} is \code{true}) or a  numeric vector. These shading of the points will be determined based on the value in this vector.}
 
 \item{us.date.format}{Whether to apply the US convention when parsing dates.}
 }
