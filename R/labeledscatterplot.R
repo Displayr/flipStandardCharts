@@ -1,4 +1,4 @@
-#' @importFrom flipTransformations TextAsVector
+#' @importFrom flipTransformations TextAsVector AsNumeric
 #' @importFrom grDevices colorRamp
 scatterplotData <- function(chart.matrix,
                             type,
@@ -82,7 +82,8 @@ scatterplotData <- function(chart.matrix,
 
     if (is.null(colors))
         colors <- "Default colors"
-
+    if (!is.null(colorscale.variable))
+        colorscale.variable <- AsNumeric(colorscale.variable, binary=F)
     num.colors <- if (!is.null(colorscale.variable)) 3
                   else                               length(unique(group))
     colors <- StripAlphaChannel(ChartColors(number.colors.needed = num.colors,

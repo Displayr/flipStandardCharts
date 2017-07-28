@@ -286,6 +286,7 @@
 #' @importFrom flipFormat FormatWithDecimals
 #' @importFrom flipTime PeriodNameToDate
 #' @importFrom flipChartBasics ChartColors
+#' @importFrom flipTransformations Factor AsNumeric
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @export
 Chart <-   function(y = NULL,
@@ -694,7 +695,7 @@ Chart <-   function(y = NULL,
         if (!is.null(scatter.sizes.var))
         {
             if (ncol(chart.matrix) >= 3)
-                chart.matrix[,3] <- scatter.sizes.var
+                chart.matrix[,3] <- AsNumeric(scatter.sizes.var)
             else
             {
                 chart.matrix <- if (ncol(chart.matrix) == 2) cbind(chart.matrix, scatter.sizes.var) 
@@ -715,9 +716,13 @@ Chart <-   function(y = NULL,
             rownames(chart.matrix) <- scatter.labels.var
         if (!is.null(scatter.colors.var) && scatter.colors.as.group)
         {
-            tmp.factor <- factor(scatter.colors.var)
-            if (is.null(scatter.group.labels) || scatter.group.labels == "")
-                scatter.group.labels <- sort(levels(tmp.factor))
+            tmp.factor <- Factor(scatter.colors.var)
+            if (all(nchar(scatter.group.labels)==0))
+            {
+                scatter.group.labels <- levels(tmp.factor)
+                if (!is.ordered(tmp.factor))
+                    scatter.group.labels <- sort(scatter.group.labels)
+            }
             scatter.group.indices <- as.numeric(tmp.factor)
             scatter.colors.var <- NULL
         }
