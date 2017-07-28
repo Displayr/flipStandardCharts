@@ -596,6 +596,20 @@ Chart <-   function(y = NULL,
         # Get variables and variable names
         if (!scatter.var.from.matrix)
         {
+            scatter.x.name <- ""
+            scatter.y.name <- ""
+            if (!is.null(scatter.x.var))
+            {
+                scatter.x.name <- deparse(substitute(scatter.x.var))
+                if (!is.null(attr(scatter.x.var, "label")))
+                    scatter.x.name <- attr(scatter.x.var, "label")
+            }
+            if (!is.null(scatter.y.var))
+            {
+                scatter.y.name <- deparse(substitute(scatter.y.var))
+                if (!is.null(attr(scatter.y.var, "label")))
+                    scatter.y.name <- attr(scatter.y.var, "label")
+            }
             if (!is.null(scatter.labels.var))
             {
                 scatter.labels.name <- deparse(substitute(scatter.labels.var))
@@ -674,6 +688,9 @@ Chart <-   function(y = NULL,
         chart.matrix <- if (is.null(scatter.x.var) && is.null(scatter.y.var)) y
                         else cbind(if (is.null(scatter.x.var)) 0 else scatter.x.var, 
                                    if (is.null(scatter.y.var)) 1 else scatter.y.var)
+        if (!is.null(scatter.x.var) || !is.null(scatter.y.var))
+            colnames(chart.matrix)[1:2] <- c(scatter.x.name, scatter.y.name)
+
         if (!is.null(scatter.sizes.var))
         {
             if (ncol(chart.matrix) >= 3)
@@ -1757,7 +1774,7 @@ Chart <-   function(y = NULL,
             p <- add_trace(p, x=scatterplot.data$x[ind], y=scatterplot.data$y[ind],
                     name=g.list[ggi], showlegend=(length(g.list) > 1),
                     text=source.text[ind], textfont=textfont, textposition=data.label.position,
-                    marker=list(size=sizes, color=scatterplot.data$colors[ggi],
+                    marker=list(size=sizes, sizemode="area", color=scatterplot.data$colors[ggi],
                     line=list(width=series.marker.border.width)), line=line.obj,
                     type=plotly.type, mode=series.mode, symbols=series.marker.symbols,
                     hoverinfo=if(length(g.list) > 1) "name+text" else "text")
