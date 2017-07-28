@@ -688,7 +688,7 @@ Chart <-   function(y = NULL,
         }
         chart.matrix <- if (is.null(scatter.x.var) && is.null(scatter.y.var)) y
                         else cbind(if (is.null(scatter.x.var)) 0 else scatter.x.var, 
-                                   if (is.null(scatter.y.var)) 1 else scatter.y.var)
+                                   if (is.null(scatter.y.var)) 0 else scatter.y.var)
         if (!is.null(scatter.x.var) || !is.null(scatter.y.var))
             colnames(chart.matrix)[1:2] <- c(scatter.x.name, scatter.y.name)
 
@@ -750,7 +750,8 @@ Chart <-   function(y = NULL,
             x.title <- scatterplot.data$x.title
         if (y.title == "")
             y.title <- scatterplot.data$y.title
-
+        if (any(range(scatterplot.data$y) == 0))
+            y.zero <- FALSE
     }
     else
     {
