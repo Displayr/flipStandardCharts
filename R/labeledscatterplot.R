@@ -60,6 +60,8 @@ scatterplotData <- function(chart.matrix,
             if (any(is.na(group.indices)) || !all(group.indices %in% permitted.indices))
                 stop(paste0("The group indices are not in the correct format."))
 
+            if (type == "Scatterplot")
+                group.labels <- gsub("\\$", "&#36;", group.labels)
             group <- group.labels[group.indices]
             pt.ord <- order(group.indices)
         }

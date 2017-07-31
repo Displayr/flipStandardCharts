@@ -732,9 +732,9 @@ Chart <-   function(y = NULL,
                     scatter.group.labels <- sort(scatter.group.labels)
                 if (length(ind.na) > 0)
                 {
-                    scatter.colors.var[ind.na] <- "NA"
-                    tmp.factor <- Factor(scatter.colors.var)
                     scatter.group.labels <- c(scatter.group.labels, "NA")
+                    levels(tmp.factor) <- scatter.group.labels
+                    tmp.factor[ind.na] <- "NA"
                 }
             }
             tmp.factor <- factor(tmp.factor, levels=scatter.group.labels)
