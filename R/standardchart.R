@@ -694,12 +694,18 @@ Chart <-   function(y = NULL,
 
         if (!is.null(scatter.sizes.var))
         {
+            sc <- AsNumeric(scatter.sizes.var, binary=F)
+        
+            # scaling for plotly scatterplots
+            # marker of size 1 is invisible
+            if (type == "Scatterplot" && diff(range(sc, na.rm=T)) != 0) 
+                sc <- ((sc - min(sc, na.rm=T))/diff(range(sc, na.rm=T)) * 100) + 1
             if (ncol(chart.matrix) >= 3)
-                chart.matrix[,3] <- AsNumeric(scatter.sizes.var)
+                chart.matrix[,3] <- sc
             else
             {
-                chart.matrix <- if (ncol(chart.matrix) == 2) cbind(chart.matrix, scatter.sizes.var) 
-                                else cbind(chart.matrix, 0, AsNumeric(scatter.sizes.var, binary=F))
+                chart.matrix <- if (ncol(chart.matrix) == 2) cbind(chart.matrix, sc) 
+                                else cbind(chart.matrix, 0, sc) 
             }
         } else if (type != "Labeled Bubbleplot")
         {
