@@ -47,6 +47,11 @@ dataLabelAnnotation <- function(chart.matrix,
         text <- matrix(text, ncol=ncol(chart.matrix))
         x.positions <- matrix(x.positions, ncol=ncol(chart.matrix))
         y.positions <- matrix(y.positions, ncol=ncol(chart.matrix))
+    } else
+    {
+        # Plotly v4.7.1 handles unnamed matrices differently for some reason
+        if (all(rownames(chart.matrix) == as.character(1:nrow(chart.matrix))))
+            x.positions <- x.positions + 1
     }
 
     data.annotations <- if (swap.axes.and.data)
