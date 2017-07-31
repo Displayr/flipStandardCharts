@@ -45,7 +45,8 @@ scatterplotData <- function(chart.matrix,
         if (!is.null(group.indices.text) && any(group.indices.text != ""))
         {
             group.labels.text[group.labels.text == ""] <- "Undefined"
-            group.labels <- TextAsVector(group.labels.text)
+            group.labels <- if (length(group.labels.text) > 1) group.labels.text
+                            else TextAsVector(group.labels.text)
             group.indices <- if (is.numeric(group.indices.text)) group.indices.text
                              else as.numeric(TextAsVector(group.indices.text))
 
