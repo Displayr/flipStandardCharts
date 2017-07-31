@@ -724,7 +724,8 @@ Chart <-   function(y = NULL,
         {
             ind.na <- which(is.na(scatter.colors.var))
             tmp.factor <- Factor(scatter.colors.var)
-            tmp.ordered <- is.numeric(scatter.colors.var) || is.ordered(tmp.factor)
+            tmp.ordered <- is.numeric(scatter.colors.var) || is.ordered(tmp.factor) || 
+                           is.factor(scatter.colors.var)
             if (all(nchar(scatter.group.labels)==0))
             {
                 scatter.group.labels <- levels(tmp.factor)
