@@ -750,7 +750,8 @@ Chart <-   function(y = NULL,
             x.title <- scatterplot.data$x.title
         if (y.title == "")
             y.title <- scatterplot.data$y.title
-        if (any(range(scatterplot.data$y) == 0))
+        y.abs.max <- max(abs(range(scatterplot.data$y)))
+        if (any(abs(range(scatterplot.data$y))/y.abs.max < 1e-2))
             y.zero <- FALSE
     }
     else
