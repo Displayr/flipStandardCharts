@@ -699,7 +699,7 @@ Chart <-   function(y = NULL,
             else
             {
                 chart.matrix <- if (ncol(chart.matrix) == 2) cbind(chart.matrix, scatter.sizes.var) 
-                                else cbind(chart.matrix, 0, scatter.sizes.var)
+                                else cbind(chart.matrix, 0, AsNumeric(scatter.sizes.var, binary=F))
             }
         } else if (type != "Labeled Bubbleplot")
         {
@@ -750,8 +750,9 @@ Chart <-   function(y = NULL,
             x.title <- scatterplot.data$x.title
         if (y.title == "")
             y.title <- scatterplot.data$y.title
-        y.abs.max <- max(abs(range(scatterplot.data$y)))
-        if (any(abs(range(scatterplot.data$y))/y.abs.max < 1e-2))
+
+        y.abs.max <- max(abs(range(scatterplot.data$y, na.rm=T)), na.rm=T)
+        if (y.abs.max == 0 || any(abs(range(scatterplot.data$y, na.rm=T))/y.abs.max < 1e-2))
             y.zero <- FALSE
     }
     else
