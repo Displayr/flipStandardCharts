@@ -722,13 +722,19 @@ Chart <-   function(y = NULL,
             rownames(chart.matrix) <- scatter.labels.var
         if (!is.null(scatter.colors.var) && scatter.colors.as.group)
         {
+            ind.na <- which(is.na(scatter.colors.var))
+            if (length(ind.na) > 0)
+                scatter.colors.var[ind.na] <- "NA"
             tmp.factor <- Factor(scatter.colors.var)
             if (all(nchar(scatter.group.labels)==0))
             {
                 scatter.group.labels <- levels(tmp.factor)
                 if (!is.ordered(tmp.factor))
                     scatter.group.labels <- sort(scatter.group.labels)
+                if (length(ind.na) > 0)
+                    scatter.group.labels <- c(setdiff(scatter.group.labels, "NA"), "NA")
             }
+            tmp.factor <- factor(tmp.factor, levels=scatter.group.labels)
             scatter.group.indices <- as.numeric(tmp.factor)
             scatter.colors.var <- NULL
         }

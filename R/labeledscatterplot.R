@@ -48,7 +48,7 @@ scatterplotData <- function(chart.matrix,
             group.indices <- if (is.numeric(group.indices.text)) group.indices.text
                              else as.numeric(TextAsVector(group.indices.text))
 
-            if (length(group.labels) == 1)
+            if (length(group.labels) == 1 && length(unique(group.indices)) > 1)
                 stop(paste0("Only one group has been specified: ", group.labels[1]))
 
             if (length(group.indices) != nrow(chart.matrix))
@@ -99,7 +99,9 @@ scatterplotData <- function(chart.matrix,
         col.fun <- colorRamp(colors)
         group <- 1:length(colorscale.variable)
         sc.vals <- (colorscale.variable - min(colorscale.variable, na.rm=T))/diff(range(colorscale.variable, na.rm=T))
-        colors <- rgb(col.fun(sc.vals), maxColorValue=255)
+        sc.tmp <- col.fun(sc.vals)
+        sc.tmp[is.na(sc.tmp)] <- 204    # NAs turn grey
+        colors <- rgb(sc.tmp, maxColorValue=255)
     }
     result <- list()
     result$x <- if (transpose) as.numeric(chart.matrix[, 2]) else as.numeric(chart.matrix[, 1])
