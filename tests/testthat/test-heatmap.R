@@ -32,6 +32,7 @@ test_that("HeatMap",
                 expect_error(print(HeatMap(table = three.cols, sort.rows = sort)), NA)
                 expect_error(print(HeatMap(table = three.cols, sort.columns = sort)), NA)
             }
+            expect_error(print(HeatMap(table = three.cols, show.legend = FALSE)), NA)
             expect_error(print(HeatMap(table = three.cols, standardization = "Standardize rows")), NA)
             expect_error(print(HeatMap(table = three.cols, standardization = "Standardize columns")), NA)
             expect_error(print(HeatMap(table = three.cols, show.cell.values = "No",
@@ -45,7 +46,7 @@ test_that("HeatMap Fonts",
             expect_error(print(HeatMap(table = three.cols, show.cell.values = "Yes", chart.title = "Title",
                                        x.axis.title = "X-axis", y.axis.title = "Y-axis", font.family = "Courier",
                                        font.color = "red", title.font.size = 8, xaxis.title.font.size = 8,
-                                       yaxis.title.font.size = 8, value.legend.font.size = 8,
+                                       yaxis.title.font.size = 8, legend.font.size = 8, value.font.size = 8,
                                        axis.label.font.size = 8)), NA)
         })
 

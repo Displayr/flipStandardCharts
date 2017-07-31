@@ -20,6 +20,7 @@
 #' @param cell.decimals The number of decimal points to use for formatting cell values.
 #' @param show.row.labels Whether to label the rows. \code{"Yes"} or \code{"No"}.
 #' @param show.column.labels Whether to label the columns. \code{"Yes"} or \code{"No"}.
+#' @param show.legend Whether to show the legend.
 #' @param chart.title Title of the chart.
 #' @param x.axis.title Title of the x-axis.
 #' @param y.axis.title Title of the y-axis.
@@ -28,7 +29,8 @@
 #' @param title.font.size Font size of the title.
 #' @param xaxis.title.font.size Font size of the x-axis title.
 #' @param yaxis.title.font.size Font size of the y-axis title.
-#' @param value.legend.font.size Font size of the cell values, tooltips and legend.
+#' @param legend.font.size Font size of the legend.
+#' @param value.font.size Font size of the cell values and tooltips.
 #' @param axis.label.font.size Font size of the axis labels.
 #' @param left.columns An optional list of vectors or matrices to be appended to the left
 #' of the heatmap.
@@ -54,6 +56,7 @@ HeatMap <- function(table,
                     cell.decimals = 2,
                     show.row.labels = "Yes",
                     show.column.labels = "Yes",
+                    show.legend = TRUE,
                     chart.title = "",
                     x.axis.title = "",
                     y.axis.title = "",
@@ -62,7 +65,8 @@ HeatMap <- function(table,
                     title.font.size = 24,
                     xaxis.title.font.size = 14,
                     yaxis.title.font.size = 14,
-                    value.legend.font.size = 11,
+                    legend.font.size = 11,
+                    value.font.size = 11,
                     axis.label.font.size = 11,
                     left.columns = NULL,
                     right.columns = NULL) {
@@ -172,6 +176,7 @@ HeatMap <- function(table,
                        show_cellnote_in_cell = show.cellnote.in.cell,
                        xaxis_hidden = !show.x.axes.labels,
                        yaxis_hidden = !show.y.axes.labels,
+                       show_legend =show.legend,
                        title = chart.title,
                        xaxis_title = x.axis.title,
                        yaxis_title = y.axis.title,
@@ -189,9 +194,9 @@ HeatMap <- function(table,
                        xaxis_title_font_color = font.color,
                        yaxis_font_color = font.color,
                        yaxis_title_font_color = font.color,
-                       cell_font_size = value.legend.font.size,
-                       tip_font_size = value.legend.font.size,
-                       legend_font_size = value.legend.font.size,
+                       cell_font_size = value.font.size,
+                       tip_font_size = value.font.size,
+                       legend_font_size = legend.font.size,
                        title_font_size = title.font.size,
                        xaxis_font_size = axis.label.font.size,
                        xaxis_title_font_size = xaxis.title.font.size,

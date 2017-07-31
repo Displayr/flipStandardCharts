@@ -10,12 +10,12 @@ HeatMap(table, data.type = "Use an existing table",
   transpose = FALSE, sort.rows = "None", sort.columns = "None",
   color = "Blues", standardization = "None",
   show.cell.values = "Automatic", cell.decimals = 2,
-  show.row.labels = "Yes", show.column.labels = "Yes", chart.title = "",
-  x.axis.title = "", y.axis.title = "", font.family = "sans-serif",
-  font.color = "#000000", title.font.size = 24,
-  xaxis.title.font.size = 14, yaxis.title.font.size = 14,
-  value.legend.font.size = 11, axis.label.font.size = 11,
-  left.columns = NULL, right.columns = NULL)
+  show.row.labels = "Yes", show.column.labels = "Yes", show.legend = TRUE,
+  chart.title = "", x.axis.title = "", y.axis.title = "",
+  font.family = "sans-serif", font.color = "#000000",
+  title.font.size = 24, xaxis.title.font.size = 14,
+  yaxis.title.font.size = 14, legend.font.size = 11, value.font.size = 11,
+  axis.label.font.size = 11, left.columns = NULL, right.columns = NULL)
 }
 \arguments{
 \item{table}{A matrix of data to be displayed.}
@@ -50,6 +50,8 @@ Options are \code{"Use an existing table"} or \code{"Type or paste data"}.}
 
 \item{show.column.labels}{Whether to label the columns. \code{"Yes"} or \code{"No"}.}
 
+\item{show.legend}{Whether to show the legend.}
+
 \item{chart.title}{Title of the chart.}
 
 \item{x.axis.title}{Title of the x-axis.}
@@ -66,7 +68,9 @@ Options are \code{"Use an existing table"} or \code{"Type or paste data"}.}
 
 \item{yaxis.title.font.size}{Font size of the y-axis title.}
 
-\item{value.legend.font.size}{Font size of the cell values, tooltips and legend.}
+\item{legend.font.size}{Font size of the legend.}
+
+\item{value.font.size}{Font size of the cell values and tooltips.}
 
 \item{axis.label.font.size}{Font size of the axis labels.}
 
