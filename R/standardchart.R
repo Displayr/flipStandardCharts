@@ -723,16 +723,19 @@ Chart <-   function(y = NULL,
         if (!is.null(scatter.colors.var) && scatter.colors.as.group)
         {
             ind.na <- which(is.na(scatter.colors.var))
-            if (length(ind.na) > 0)
-                scatter.colors.var[ind.na] <- "NA"
             tmp.factor <- Factor(scatter.colors.var)
+            tmp.ordered <- is.numeric(scatter.colors.var) || is.ordered(tmp.factor)
             if (all(nchar(scatter.group.labels)==0))
             {
                 scatter.group.labels <- levels(tmp.factor)
-                if (!is.ordered(tmp.factor))
+                if (!tmp.ordered)
                     scatter.group.labels <- sort(scatter.group.labels)
                 if (length(ind.na) > 0)
-                    scatter.group.labels <- c(setdiff(scatter.group.labels, "NA"), "NA")
+                {
+                    scatter.colors.var[ind.na] <- "NA"
+                    tmp.factor <- Factor(scatter.colors.var)
+                    scatter.group.labels <- c(scatter.group.labels, "NA")
+                }
             }
             tmp.factor <- factor(tmp.factor, levels=scatter.group.labels)
             scatter.group.indices <- as.numeric(tmp.factor)
