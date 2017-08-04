@@ -694,12 +694,13 @@ Chart <-   function(y = NULL,
 
         if (!is.null(scatter.sizes.var))
         {
-            sc <- AsNumeric(scatter.sizes.var, binary=F)
-        
-            # scaling for plotly scatterplots
-            # marker of size 1 is invisible
-            if (type == "Scatterplot" && diff(range(sc, na.rm=T)) != 0) 
-                sc <- ((sc - min(sc, na.rm=T))/diff(range(sc, na.rm=T)) * 100) + 1
+            sc <- abs(AsNumeric(scatter.sizes.var, binary=F))
+            if (type == "Scatterplot")
+            {
+                # scaling for plotly scatterplots - sizemode="area" does not work
+                sc <- sqrt(sc)
+                sc <- sc/max(sc, na.rm=T) * 50
+            }
             if (ncol(chart.matrix) >= 3)
                 chart.matrix[,3] <- sc
             else
@@ -742,7 +743,9 @@ Chart <-   function(y = NULL,
             scatter.group.indices <- as.numeric(tmp.factor)
             scatter.colors.var <- NULL
         }
-    
+        if (anyDuplicated(chart.matrix, margin=1))
+            warning("Chart contain overlapping points in the same position.")   
+ 
         # this must be determined before the margin sizes are calculated
         scatterplot.data <- scatterplotData(chart.matrix,
                                             type = type,
@@ -1794,7 +1797,7 @@ Chart <-   function(y = NULL,
             p <- add_trace(p, x=scatterplot.data$x[ind], y=scatterplot.data$y[ind],
                     name=g.list[ggi], showlegend=(length(g.list) > 1),
                     text=source.text[ind], textfont=textfont, textposition=data.label.position,
-                    marker=list(size=sizes, sizemode="area", color=scatterplot.data$colors[ggi],
+                    marker=list(size=sizes, sizemode="diameter", color=scatterplot.data$colors[ggi],
                     line=list(width=series.marker.border.width)), line=line.obj,
                     type=plotly.type, mode=series.mode, symbols=series.marker.symbols,
                     hoverinfo=if(length(g.list) > 1) "name+text" else "text")
