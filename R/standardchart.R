@@ -8,6 +8,8 @@
 #'  "Column", "Stacked Column", "100% Stacked Column", "Line", "Donut",
 #'  "Pie", "Labeled Scatterplot", "Labeled Bubbleplot", "Radar".
 #' @param transpose Logical; should the final output be transposed?
+#' @param subset An optional vector specifying a subset of observations to be plotted. Only used when \code{scatter.var.from.matrix} is true and \code{type} is one of \code{Scatterplot, Labeled Scatterplot} or \code{Labeled Bubbleplot}.
+#' @param weights Not implemented. An optional vector of sampling weights. Only used when \code{scatter.var.from.matrix} is true and \code{type} is one of \code{Scatterplot, Labeled Scatterplot} or \code{Labeled Bubbleplot}.
 #' @param title Character; chart title.
 #' @param title.font.family Character; title font family. Can be "Arial Black",
 #' "Arial", "Comic Sans MS", "Courier New", "Georgia", "Impact",
@@ -292,6 +294,8 @@
 Chart <-   function(y = NULL,
                     type = "Column",
                     transpose = FALSE,
+                    subset = NULL,
+                    weights = NULL,
                     title = "",
                     title.font.family = NULL,
                     title.font.color = NULL,
@@ -459,6 +463,12 @@ Chart <-   function(y = NULL,
                     scatter.colors.var = NULL,
                     us.date.format = NULL)
 {
+    if (!is.null(weights))
+        warning("Weights are currently not used.")
+    if (!is.null(subset) && (scatter.var.from.matrix || 
+        !type %in% c("Scatterplot", "Labeled Scatterplot", "Labeled Bubbleplot")))
+        warning("Filters are only used when 'Data source' is set to 'Variables'.")
+
     # Set undefined variables to defaults
     # This is for compatibility with R GUI controls
     if (type == "Donut")
@@ -744,8 +754,13 @@ Chart <-   function(y = NULL,
             scatter.colors.var <- NULL
         }
         if (anyDuplicated(chart.matrix, margin=1))
-            warning("Chart contain overlapping points in the same position.")   
- 
+            warning("Chart contains overlapping points in the same position.")
+        if (!is.null(subset) && !scatter.var.from.matrix) 
+        { 
+            chart.matrix <- chart.matrix[subset,]
+            scatter.group.indices <- scatter.group.indices[subset]
+        }
+
         # this must be determined before the margin sizes are calculated
         scatterplot.data <- scatterplotData(chart.matrix,
                                             type = type,

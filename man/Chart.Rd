@@ -4,9 +4,10 @@
 \alias{Chart}
 \title{Generates an interactive chart based on the plotly library.}
 \usage{
-Chart(y = NULL, type = "Column", transpose = FALSE, title = "",
-  title.font.family = NULL, title.font.color = NULL, title.font.size = 16,
-  subtitle = "", subtitle.font.family = NULL, subtitle.font.color = NULL,
+Chart(y = NULL, type = "Column", transpose = FALSE, subset = NULL,
+  weights = NULL, title = "", title.font.family = NULL,
+  title.font.color = NULL, title.font.size = 16, subtitle = "",
+  subtitle.font.family = NULL, subtitle.font.color = NULL,
   subtitle.font.size = 12, footer = "", footer.font.family = NULL,
   footer.font.color = NULL, footer.font.size = 8, footer.wordwrap = TRUE,
   footer.wordwrap.nchar = 150, colors = NULL, colors.reverse = FALSE,
@@ -99,6 +100,10 @@ Chart(y = NULL, type = "Column", transpose = FALSE, title = "",
 "Pie", "Labeled Scatterplot", "Labeled Bubbleplot", "Radar".}
 
 \item{transpose}{Logical; should the final output be transposed?}
+
+\item{subset}{An optional vector specifying a subset of observations to be plotted. Only used when \code{scatter.var.from.matrix} is true and \code{type} is one of \code{Scatterplot, Labeled Scatterplot} or \code{Labeled Bubbleplot}.}
+
+\item{weights}{Not implemented. An optional vector of sampling weights. Only used when \code{scatter.var.from.matrix} is true and \code{type} is one of \code{Scatterplot, Labeled Scatterplot} or \code{Labeled Bubbleplot}.}
 
 \item{title}{Character; chart title.}
 

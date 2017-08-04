@@ -51,9 +51,9 @@ missing <- structure(c(10.625, NA, 8.125, 9.375, 1.25, 7.5, 8.125, 3.75,
                            c("Male", "Female")), name = "Span in Stub", questions = c("BANNER", "Q2. Gender"))
 
 test_that("Labeled Scatterplot ungrouped",
-          expect_error(print(Chart(y = two.cols,
+          expect_warning(print(Chart(y = two.cols,
                              type = "Labeled Scatterplot",
-                             title = "Labeled Scatterplot")), NA))
+                             title = "Labeled Scatterplot"))))
 
 test_that("Labeled Bubbleplot ungrouped",
           expect_error(print(Chart(y = three.cols,
@@ -61,12 +61,12 @@ test_that("Labeled Bubbleplot ungrouped",
                              title = "Labeled Bubbleplot")), NA))
 
 test_that("Labeled Scatterplot grouped",
-          expect_error(print(Chart(y = two.cols,
+          expect_warning(print(Chart(y = two.cols,
                                    type = "Labeled Scatterplot",
                                    title = "Labeled Scatterplot",
                                    scatter.group.indices = "1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3",
                                    scatter.group.labels = "colas, water, coffee",
-                                   legend.show = TRUE)), NA))
+                                   legend.show = TRUE))))
 
 test_that("Labeled Bubbleplot grouped",
           expect_error(print(Chart(y = three.cols,
@@ -76,10 +76,10 @@ test_that("Labeled Bubbleplot grouped",
                                    scatter.group.labels = "colas, water, coffee")), NA))
 
 test_that("Labeled Scatterplot transposed",
-          expect_error(print(Chart(y = two.cols,
+          expect_warning(print(Chart(y = two.cols,
                                    type = "Labeled Scatterplot",
                                    transpose = TRUE,
-                                   title = "Labeled Scatterplot")), NA))
+                                   title = "Labeled Scatterplot"))))
 
 test_that("Labeled Scatterplot missing",
           expect_warning(print(Chart(y = missing,
@@ -89,20 +89,23 @@ test_that("Labeled Scatterplot missing",
 
 test_that("Scatterplot",
     {
-          expect_error(print(Chart(y = two.cols,
+          expect_warning(print(Chart(y = two.cols,
                              type = "Scatterplot",
-                             title = "Unlabeled Scatterplot")), NA)
+                             title = "Unlabeled Scatterplot")), "Chart contains overlapping points in the same position.")
 
-          expect_error(print(Chart(y = two.cols,
+          expect_warning(print(Chart(y = two.cols,
                              type = "Scatterplot",
                              title = "Unlabeled Scatterplot",
                              scatter.group.indices = "1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3",
-                             scatter.group.labels = "colas, water, coffee")), NA)
+                             scatter.group.labels = "colas, water, coffee")),
+                         "Chart contains overlapping points in the same position.")
 
-          expect_error(print(Chart(y = two.cols,
+          expect_warning(print(Chart(y = two.cols,
                              type = "Scatterplot",
                              transpose = TRUE,
-                             title = "Unlabeled Scatterplot")), NA)
+                             title = "Unlabeled Scatterplot")),
+                        "Chart contains overlapping points in the same position.")
+
          expect_warning(print(Chart(y = two.cols,
                              type = "Labeled Scatterplot",
                              transpose = TRUE,
