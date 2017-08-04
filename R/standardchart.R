@@ -705,6 +705,9 @@ Chart <-   function(y = NULL,
         if (!is.null(scatter.sizes.var))
         {
             sc <- abs(AsNumeric(scatter.sizes.var, binary=F))
+            if (inherits(scatter.sizes.var, "Date") || inherits(scatter.sizes.var, "POSIXct") ||
+                inherits(scatter.sizes.var, "POSIXt"))
+                sc <- sc - min(sc, na.rm=T)
             if (type == "Scatterplot")
             {
                 # scaling for plotly scatterplots - sizemode="area" does not work
