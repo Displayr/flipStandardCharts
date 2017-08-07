@@ -1208,7 +1208,7 @@ Chart <-   function(y = NULL,
         if (is.null(scatterplot.data$label))
             warning("No labels were provided for a Labeled Scatterplot. Consider trying Scatterplot instead.")
 
-        if (!is.null(logos)) {
+        if (!is.null(logos) && nchar(logos) != 0) {
 
             logo.urls <- try(TextAsVector(logos)) # This function gives warnings if it doesn't work
             if (!is.null(logo.urls) && !inherits(logo.urls, "try-error"))
@@ -1216,7 +1216,7 @@ Chart <-   function(y = NULL,
                 logo.required.length <- if (num.tables > 1) n1 else length(scatterplot.data$x)
                 if (length(logo.urls) != logo.required.length)
                     stop(sprintf("Number of URLs supplied in logos must be equal to the number of %s in the table (%d)\n",
-                                 ifelse(x$transpose, "columns", "rows"), logo.required.length))
+                                 ifelse(transpose, "columns", "rows"), logo.required.length))
                 if (any(nchar(logo.urls) == 0))
                     stop("Logos cannot be an empty string\n")
                 if (num.tables > 1)
