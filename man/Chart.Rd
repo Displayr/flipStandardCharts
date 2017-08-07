@@ -85,9 +85,10 @@ Chart(y = NULL, type = "Column", transpose = FALSE, subset = NULL,
   pie.subslice.colors.custom.palette = NA,
   pie.subslice.colors.repeat = TRUE, pie.border.color = rgb(255, 255, 255,
   maxColorValue = 255), pie.inner.radius = 70, pie.show.percentages = FALSE,
-  z.title = "", scatter.group.indices = "", scatter.group.labels = "",
-  scatter.var.from.matrix = TRUE, scatter.colors.as.group = FALSE,
-  scatter.x.var = NULL, scatter.y.var = NULL, scatter.labels.var = NULL,
+  z.title = "", trend.lines = FALSE, scatter.group.indices = "",
+  scatter.group.labels = "", scatter.var.from.matrix = TRUE,
+  scatter.colors.as.group = FALSE, scatter.x.var = NULL,
+  scatter.y.var = NULL, scatter.labels.var = NULL,
   scatter.sizes.var = NULL, scatter.colors.var = NULL,
   us.date.format = NULL)
 }
@@ -520,6 +521,8 @@ charts instead of original values.}
 
 \item{z.title}{Character; title of the bubble-size legend in labeled
 bubbleplots.}
+
+\item{trend.lines}{Boolean indicating whether to plot trend lines for multiple tables.}
 
 \item{scatter.group.indices}{Vector or text of comma-separated group indices
 corresponding to each row.}

@@ -270,6 +270,7 @@
 #' charts instead of original values.
 #' @param z.title Character; title of the bubble-size legend in labeled
 #' bubbleplots.
+#' @param trend.lines Boolean indicating whether to plot trend lines for multiple tables.
 #' @param scatter.group.indices Vector or text of comma-separated group indices
 #' corresponding to each row.
 #' @param scatter.group.labels Vector or text of comma-separated group labels.
@@ -452,6 +453,7 @@ Chart <-   function(y = NULL,
                     pie.inner.radius = 70,
                     pie.show.percentages = FALSE,
                     z.title = "",
+                    trend.lines = FALSE,
                     scatter.group.indices = "",
                     scatter.group.labels = "",
                     scatter.var.from.matrix = TRUE,
@@ -600,6 +602,57 @@ Chart <-   function(y = NULL,
         data.label.show <- is.pie.or.donut.chart || is.labeled.scatterplot.or.bubbleplot
     else if (!data.label.show && is.pie.or.donut.chart)
         warning("Data labels cannot be hidden for pie and donut charts.")
+
+    # Handle multiple tables
+    if (!is.null(dim(y[[1]])) && length(y) > 1) {
+        if (type != "Labeled Scatterplot")
+            stop("Multiple tables can only be used with Labeled Scatterplot.")
+
+        # Get table names
+        num.tables <- length(y)
+        y.names <- rep("", num.tables)
+        unnamed.tables <- FALSE
+        used.names <- c()
+        for (i in 1:num.tables)
+        {
+            if (is.null(attr(y[[i]], "name")))
+            {
+                unnamed.tables <- TRUE
+                attr(y[[i]], "name") <- as.character(i)
+                used.names <- c(used.names, i)
+            }
+            y.names[i] <- attr(y[[i]], "name")[1]
+        }
+        if (unnamed.tables & !trend.lines)
+            warning(sprintf("Tables have been automatically assigned names '%s'. You can name tables using R code: 'attr(table.name, \"name\") <- \"Description\"'", paste(used.names, collapse="', '")))
+
+        # Check tables match - order of rows will match first table
+        y[[1]] <- if (transpose) GetTidyTwoDimensionalArray(t(y[[1]]), rows.to.ignore, cols.to.ignore)
+        else GetTidyTwoDimensionalArray(y[[1]], rows.to.ignore, cols.to.ignore)
+        r.names <- rownames(y[[1]])
+        c.names <- colnames(y[[1]])
+        for (i in 2:num.tables)
+        {
+            y[[i]] <- if (transpose) GetTidyTwoDimensionalArray(t(y[[i]]))
+            else GetTidyTwoDimensionalArray(y[[i]])
+            r.tmp <- match(r.names, rownames(y[[i]]))
+            c.tmp <- match(c.names, colnames(y[[i]]))
+
+            if (any(is.na(r.tmp)))
+                stop(sprintf("Tables do not match. Table '%s' missing row '%s'.",
+                             y.names[i], r.names[which(is.na(r.tmp))[1]]))
+            if (any(is.na(c.tmp)))
+                stop(sprintf("Tables do not match. Table '%s' missing column '%s'.",
+                             y.names[i], c.names[which(is.na(c.tmp))[1]]))
+
+            y[[i]] <- y[[i]][r.names,c.names]
+        }
+        y <- do.call(rbind, y)
+        rownames(y) <- sprintf("%s: %s", rep(y.names, each=length(r.names)), rownames(y))
+
+        n1 <- nrow(y)/num.tables
+        multiple.table.groups <- rep(paste0("group", 1:n1), num.tables)
+    }
 
     # Format input data
     if (is.scatterplot.or.bubbleplot)
@@ -1155,13 +1208,21 @@ Chart <-   function(y = NULL,
         if (is.null(scatterplot.data$label))
             warning("No labels were provided for a Labeled Scatterplot. Consider trying Scatterplot instead.")
 
+        group <- if (multiple.table.groups) {
+            multiple.table.groups
+        } else if (length(unique(scatterplot.data$group)) == 1) {
+            NULL
+        } else {
+            scatterplot.data$group
+        }
+
         return(rhtmlLabeledScatter::LabeledScatter(X = scatterplot.data$x,
                        Y = scatterplot.data$y,
                        Z = scatterplot.data$z,
                        label = label.plot,
                        label.alt = scatterplot.data$label,
                        fixed.aspect = FALSE,
-                       group = if (length(unique(scatterplot.data$group)) == 1) NULL else scatterplot.data$group,
+                       group = group,
                        grid = draw.grid,
                        origin = scatterplot.data$origin,
                        origin.align = FALSE,
@@ -1215,7 +1276,8 @@ Chart <-   function(y = NULL,
                        y.axis.show = y.tick.show,
                        x.axis.show = x.tick.show,
                        plot.border.show = FALSE,
-                       title = title
+                       title = title,
+                       trend.lines.show = trend.lines
                        ))
     }
 
