@@ -17,7 +17,8 @@ scatterplotData <- function(chart.matrix,
                             legend.show = TRUE,
                             x.title = "",
                             y.title = "",
-                            colorscale.variable = NULL)
+                            colorscale.variable = NULL,
+                            logos = NULL)
 {
     if (any(is.na(as.matrix(chart.matrix))))
     {
@@ -77,6 +78,7 @@ scatterplotData <- function(chart.matrix,
     if (!is.null(pt.ord))
     {
         chart.matrix <- chart.matrix[pt.ord,]
+        logos <- logos[pt.ord]
         group <- group[pt.ord]
         # colorscale.variable not compatible with groups
     }
@@ -121,7 +123,8 @@ scatterplotData <- function(chart.matrix,
     result$z <- if (ncol(chart.matrix) >= 3) as.numeric(abs(chart.matrix[, 3])) else NULL
     result$colors <- colors
 
-    result$label <- rownames(chart.matrix)
+    result$label <- if (!is.null(logos)) logos else rownames(chart.matrix)
+    result$label.alt <- rownames(chart.matrix)
     result$group <- group
     result$origin <- origin
     result$legend.show <- is.null(colorscale.variable) && length(unique(result$group)) > 1 && legend.show

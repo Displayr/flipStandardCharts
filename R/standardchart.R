@@ -659,6 +659,28 @@ Chart <-   function(y = NULL,
         scatter.group.labels <- r.names
     }
 
+    # Identify logos
+    logo.urls <- NULL
+    if (!is.null(logos) && nchar(logos) != 0) {
+
+        logo.urls <- try(TextAsVector(logos)) # This function gives warnings if it doesn't work
+        if (!is.null(logo.urls) && !inherits(logo.urls, "try-error"))
+        {
+            logo.required.length <- if (num.tables > 1) n1 else length(y)
+            if (length(logo.urls) != logo.required.length)
+                stop(sprintf("Number of URLs supplied in logos must be equal to the number of %s in the table (%d)\n",
+                             ifelse(transpose, "columns", "rows"), logo.required.length))
+            if (any(nchar(logo.urls) == 0))
+                stop("Logos cannot be an empty string\n")
+            if (num.tables > 1)
+                logo.urls <- rep(logo.urls, num.tables)
+            logo.size <- rep(logo.size, length(y))
+        }
+    } else {
+        if (num.tables > 1)
+            legend.show <- FALSE
+    }
+
     # Format input data
     if (is.scatterplot.or.bubbleplot)
     {
@@ -825,7 +847,8 @@ Chart <-   function(y = NULL,
                                             cols.to.ignore = cols.to.ignore,
                                             legend.show = legend.show,
                                             x.title = x.title,
-                                            y.title = y.title)
+                                            y.title = y.title,
+                                            logos = logo.urls)
         if (x.title == "")
             x.title <- scatterplot.data$x.title
         if (y.title == "")
@@ -1207,29 +1230,11 @@ Chart <-   function(y = NULL,
         if (is.null(scatterplot.data$label))
             warning("No labels were provided for a Labeled Scatterplot. Consider trying Scatterplot instead.")
 
-        if (!is.null(logos) && nchar(logos) != 0) {
-
-            logo.urls <- try(TextAsVector(logos)) # This function gives warnings if it doesn't work
-            if (!is.null(logo.urls) && !inherits(logo.urls, "try-error"))
-            {
-                logo.required.length <- if (num.tables > 1) n1 else length(scatterplot.data$x)
-                if (length(logo.urls) != logo.required.length)
-                    stop(sprintf("Number of URLs supplied in logos must be equal to the number of %s in the table (%d)\n",
-                                 ifelse(transpose, "columns", "rows"), logo.required.length))
-                if (any(nchar(logo.urls) == 0))
-                    stop("Logos cannot be an empty string\n")
-                if (num.tables > 1)
-                    logo.urls <- rep(logo.urls, num.tables)
-                label.plot[1:length(scatterplot.data$x)] <- logo.urls
-                logo.size <- rep(logo.size, length(label.plot))
-            }
-        }
-
         return(rhtmlLabeledScatter::LabeledScatter(X = scatterplot.data$x,
                        Y = scatterplot.data$y,
                        Z = scatterplot.data$z,
                        label = label.plot,
-                       label.alt = scatterplot.data$label,
+                       label.alt = scatterplot.data$label.alt,
                        fixed.aspect = FALSE,
                        group = if (length(unique(scatterplot.data$group)) == 1) NULL else scatterplot.data$group,
                        grid = draw.grid,
