@@ -761,12 +761,6 @@ Chart <-   function(y = NULL,
             if (inherits(scatter.sizes.var, "Date") || inherits(scatter.sizes.var, "POSIXct") ||
                 inherits(scatter.sizes.var, "POSIXt"))
                 sc <- sc - min(sc, na.rm=T)
-            if (type == "Scatterplot")
-            {
-                # scaling for plotly scatterplots - sizemode="area" does not work
-                sc <- sqrt(sc)
-                sc <- sc/max(sc, na.rm=T) * 50
-            }
             if (ncol(chart.matrix) >= 3)
                 chart.matrix[,3] <- sc
             else
@@ -1200,7 +1194,7 @@ Chart <-   function(y = NULL,
         if (is.finite(data.label.max.plot) && data.label.max.plot < n.lab)
         {
             if (data.label.max.plot == 50)
-                warning("By default, only the first 50 labels are shown to avoid long running times. Adjust 'Maximum data labels to plot' to show more labels. Alternatively, to show a large number of points, change 'Chart type' to 'Scatterplot'.")
+                warning("By default, only the first 50 labels are shown to avoid long running times. Adjust 'Maximum data labels to plot' to show more labels. Alternatively, to show a large number of points, show as 'Hovertext' instead.")
             else
                 warning("Some labels have been hidden. Adjust 'Maximum data labels to plot' to show more labels.")
             label.plot[(data.label.max.plot + 1):n.lab] <- ""
