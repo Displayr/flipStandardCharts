@@ -90,7 +90,7 @@ Chart(y = NULL, type = "Column", transpose = FALSE, subset = NULL,
   scatter.colors.as.group = FALSE, scatter.x.var = NULL,
   scatter.y.var = NULL, scatter.labels.var = NULL,
   scatter.sizes.var = NULL, scatter.colors.var = NULL,
-  us.date.format = NULL)
+  us.date.format = NULL, logos = NULL, logo.size = 0.5)
 }
 \arguments{
 \item{y}{A table, matrix, vector or data frame.}
@@ -544,6 +544,10 @@ corresponding to each row.}
 \item{scatter.colors.var}{The index of the column of \code{y} (if \code{scatter.var.from.matrix} is \code{true}) or a  numeric vector. These shading of the points will be determined based on the value in this vector.}
 
 \item{us.date.format}{Whether to apply the US convention when parsing dates.}
+
+\item{logos}{Optional list of images to be used to label scatterplot instead of the row names. It should be inputted as a comma-seperated list of URLs.}
+
+\item{logo.size}{Numeric controlling the size of the logos.}
 }
 \description{
 \code{Chart} generates standard charts from plotly library.

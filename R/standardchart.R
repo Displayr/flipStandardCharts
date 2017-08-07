@@ -282,6 +282,8 @@
 #' @param scatter.colors.var The index of the column of \code{y} (if \code{scatter.var.from.matrix} is \code{true}) or a  numeric vector. These shading of the points will be determined based on the value in this vector.
 #' @param scatter.colors.as.group Boolean indicating whether \code{scatter.colors.var} should be treated as a grouping variable (i.e. categorical). If true, the legend will be shown and group labels will be ordered alphabetically or in the order given by \code{scatter.group.labels}.
 #' @param us.date.format Whether to apply the US convention when parsing dates.
+#' @param logos Optional list of images to be used to label scatterplot instead of the row names. It should be inputted as a comma-seperated list of URLs.
+#' @param logo.size Numeric controlling the size of the logos.
 #' @examples
 #' z <- c(5, 6, 2, 1.5, 9, 2.2)
 #' Chart(y = z, type = "Area")
@@ -289,7 +291,7 @@
 #' @importFrom flipFormat FormatWithDecimals
 #' @importFrom flipTime PeriodNameToDate
 #' @importFrom flipChartBasics ChartColors
-#' @importFrom flipTransformations Factor AsNumeric
+#' @importFrom flipTransformations Factor AsNumeric TextAsVector
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @export
 Chart <-   function(y = NULL,
@@ -463,7 +465,9 @@ Chart <-   function(y = NULL,
                     scatter.labels.var = NULL,
                     scatter.sizes.var = NULL,
                     scatter.colors.var = NULL,
-                    us.date.format = NULL)
+                    us.date.format = NULL,
+                    logos = NULL,
+                    logo.size = 0.5)
 {
     if (!is.null(weights))
         warning("Weights are currently not used.")
@@ -605,6 +609,7 @@ Chart <-   function(y = NULL,
 
     # Handle multiple tables
     multiple.table.groups <- NULL
+    num.tables <- 1
     if (!is.null(dim(y[[1]])) && length(y) > 1) {
         if (type != "Labeled Scatterplot")
             stop("Multiple tables can only be used with Labeled Scatterplot.")
@@ -649,7 +654,7 @@ Chart <-   function(y = NULL,
             y[[i]] <- y[[i]][r.names,c.names]
         }
         y <- do.call(rbind, y)
-        rownames(y) <- sprintf("%s: %s", rep(y.names, each=length(r.names)), rownames(y))
+        #rownames(y) <- sprintf("%s: %s", rep(y.names, each=length(r.names)), rownames(y))
 
         n1 <- nrow(y)/num.tables
         multiple.table.groups <- rep(paste0("group", 1:n1), num.tables)
@@ -1203,6 +1208,24 @@ Chart <-   function(y = NULL,
         if (is.null(scatterplot.data$label))
             warning("No labels were provided for a Labeled Scatterplot. Consider trying Scatterplot instead.")
 
+        if (!is.null(logos)) {
+
+            logo.urls <- try(TextAsVector(logos)) # This function gives warnings if it doesn't work
+            if (!is.null(logo.urls) && !inherits(logo.urls, "try-error"))
+            {
+                logo.required.length <- if (num.tables > 1) n1 else length(scatterplot.data$x)
+                if (length(logo.urls) != logo.required.length)
+                    stop(sprintf("Number of URLs supplied in logos must be equal to the number of %s in the table (%d)\n",
+                                 ifelse(x$transpose, "columns", "rows"), logo.required.length))
+                if (any(nchar(logo.urls) == 0))
+                    stop("Logos cannot be an empty string\n")
+                if (num.tables > 1)
+                    logo.urls <- rep(logo.urls, num.tables)
+                label.plot[1:length(scatterplot.data$x)] <- logo.urls
+                logo.size <- rep(logo.size, length(label.plot))
+            }
+        }
+
         group <- if (!is.null(multiple.table.groups)) {
             multiple.table.groups
         } else if (length(unique(scatterplot.data$group)) == 1) {
@@ -1272,7 +1295,8 @@ Chart <-   function(y = NULL,
                        x.axis.show = x.tick.show,
                        plot.border.show = FALSE,
                        title = title,
-                       trend.lines.show = trend.lines
+                       trend.lines.show = trend.lines,
+                       labels.logo.scale = logo.size
                        ))
     }
 
