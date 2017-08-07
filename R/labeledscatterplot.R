@@ -19,7 +19,6 @@ scatterplotData <- function(chart.matrix,
                             y.title = "",
                             colorscale.variable = NULL)
 {
-    is.bubble <- type == "Labeled Bubbleplot"
     if (any(is.na(as.matrix(chart.matrix))))
     {
         warning("Data points with missing values have been omitted.")
@@ -30,7 +29,7 @@ scatterplotData <- function(chart.matrix,
         colorscale.variable <- NULL
         warning("Color-scale variable ignored when groups are provided\n")
     }
-    
+
     # Remove rows and columns to ignore
     no.dimnames <- is.null(dimnames(chart.matrix))
     chart.matrix <- GetTidyTwoDimensionalArray(chart.matrix,
@@ -111,14 +110,11 @@ scatterplotData <- function(chart.matrix,
     result$z <- if (ncol(chart.matrix) >= 3) as.numeric(abs(chart.matrix[, 3])) else NULL
     result$colors <- colors
 
-    #if (is.bubble && any(result$z < 0))
-    #    stop("Negative values are present in the third column. No bubbles are shown for such cases.")
-
     result$label <- rownames(chart.matrix)
     result$group <- group
     result$origin <- origin
     result$legend.show <- is.null(colorscale.variable) && length(unique(result$group)) > 1 && legend.show
-    result$legend.bubbles.show <- is.bubble
+    result$legend.bubbles.show <- ncol(chart.matrix) > 2
 
     # Resolve axes labels if none specified manually
     if (x.title == "" || length(x.title) == 0)

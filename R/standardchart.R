@@ -272,7 +272,7 @@
 #' bubbleplots.
 #' @param scatter.group.indices Vector or text of comma-separated group indices
 #' corresponding to each row.
-#' @param scatter.group.labels Vector or text of comma-separated group labels. 
+#' @param scatter.group.labels Vector or text of comma-separated group labels.
 #' @param scatter.var.from.matrix Indicates whether additional chart properties for Scatterplot, Labeled Scatterplot or Labeled Bubbleplot should by read from the \code{y} matrix.
 #' @param scatter.x.var The index of the column of \code{y} (if \code{scatter.var.from.matrix} is \code{true}) or a numeric vector containing the x-coordinates of the scatterplot.
 #' @param scatter.y.var The index of the column of \code{y} (if \code{scatter.var.from.matrix} is \code{true}) or a numeric vector containing the y-coordinates of the scatterplot.
@@ -465,7 +465,7 @@ Chart <-   function(y = NULL,
 {
     if (!is.null(weights))
         warning("Weights are currently not used.")
-    if (!is.null(subset) && (scatter.var.from.matrix || 
+    if (!is.null(subset) && (scatter.var.from.matrix ||
         !type %in% c("Scatterplot", "Labeled Scatterplot", "Labeled Bubbleplot")))
         warning("Filters are only used when 'Data source' is set to 'Variables'.")
 
@@ -656,33 +656,33 @@ Chart <-   function(y = NULL,
             if (!is.null(scatter.x.var))
             {
                 if (scatter.x.var < 1 || scatter.x.var > ncol(y))
-                    stop("The variable for 'X-coordinates' must be an integer between 1 and ", ncol(y)) 
+                    stop("The variable for 'X-coordinates' must be an integer between 1 and ", ncol(y))
                 scatter.x.var <- y[,scatter.x.var]
             }
             if (!is.null(scatter.y.var))
             {
                 if (scatter.y.var < 1 || scatter.y.var > ncol(y))
-                    stop("The variable for 'Y-coordinates' must be an integer between 1 and ", ncol(y)) 
+                    stop("The variable for 'Y-coordinates' must be an integer between 1 and ", ncol(y))
                 scatter.y.var <- y[,scatter.y.var]
             }
             if (!is.null(scatter.labels.var))
             {
                 if (scatter.labels.var < 1 || scatter.labels.var > ncol(y))
-                    stop("The variable for 'Labels' must be an integer between 1 and ", ncol(y)) 
+                    stop("The variable for 'Labels' must be an integer between 1 and ", ncol(y))
                 scatter.labels.name <- colnames(y)[scatter.labels.var]
                 scatter.labels.var <- y[,scatter.labels.var]
             }
             if (!is.null(scatter.sizes.var))
             {
                 if (scatter.sizes.var < 1 || scatter.sizes.var > ncol(y))
-                    stop("The variable for 'Sizes' must be an integer between 1 and ", ncol(y)) 
+                    stop("The variable for 'Sizes' must be an integer between 1 and ", ncol(y))
                 scatter.sizes.name <- colnames(y)[scatter.sizes.var]
                 scatter.sizes.var <- y[,scatter.sizes.var]
             }
             if (!is.null(scatter.colors.var))
             {
                 if (scatter.colors.var < 1 || scatter.colors.var > ncol(y))
-                    stop("The variable 'Colors' must be an integer between 1 and ", ncol(y)) 
+                    stop("The variable 'Colors' must be an integer between 1 and ", ncol(y))
                 scatter.colors.name <- colnames(y)[scatter.colors.var]
                 scatter.colors.var <- y[,scatter.colors.var]
             }
@@ -690,14 +690,14 @@ Chart <-   function(y = NULL,
         if (nchar(footer) == 0)
         {
             if (!is.null(scatter.labels.var))
-                footer <- sprintf("%sPoints labeled by '%s'; ", footer, scatter.labels.name) 
+                footer <- sprintf("%sPoints labeled by '%s'; ", footer, scatter.labels.name)
             if (!is.null(scatter.colors.var))
-                footer <- sprintf("%sPoints colored according to '%s'; ", footer, scatter.colors.name) 
+                footer <- sprintf("%sPoints colored according to '%s'; ", footer, scatter.colors.name)
             if (!is.null(scatter.sizes.var))
-                footer <- sprintf("%sPoints sizes are proportional to absolute value of '%s'; ", footer, scatter.sizes.name) 
+                footer <- sprintf("%sPoints sizes are proportional to absolute value of '%s'; ", footer, scatter.sizes.name)
         }
         chart.matrix <- if (is.null(scatter.x.var) && is.null(scatter.y.var)) y
-                        else cbind(if (is.null(scatter.x.var)) 0 else scatter.x.var, 
+                        else cbind(if (is.null(scatter.x.var)) 0 else scatter.x.var,
                                    if (is.null(scatter.y.var)) 0 else scatter.y.var)
         if (!is.null(scatter.x.var) || !is.null(scatter.y.var))
             colnames(chart.matrix)[1:2] <- c(scatter.x.name, scatter.y.name)
@@ -718,17 +718,8 @@ Chart <-   function(y = NULL,
                 chart.matrix[,3] <- sc
             else
             {
-                chart.matrix <- if (ncol(chart.matrix) == 2) cbind(chart.matrix, sc) 
-                                else cbind(chart.matrix, 0, sc) 
-            }
-        } else if (type != "Labeled Bubbleplot")
-        {
-            # for backwards compatibility remove column 3 if type != bubble
-            # or point sizes are explicitly set using scatter.sizes.var
-            if (ncol(chart.matrix) > 2)
-            {
-                chart.matrix <- chart.matrix[,1:2]
-                warning("Only the first two columns of the input data are used in a scatterplot.")
+                chart.matrix <- if (ncol(chart.matrix) == 2) cbind(chart.matrix, sc)
+                                else cbind(chart.matrix, 0, sc)
             }
         }
 
@@ -738,7 +729,7 @@ Chart <-   function(y = NULL,
         {
             ind.na <- which(is.na(scatter.colors.var))
             tmp.factor <- Factor(scatter.colors.var)
-            tmp.ordered <- is.numeric(scatter.colors.var) || is.ordered(tmp.factor) || 
+            tmp.ordered <- is.numeric(scatter.colors.var) || is.ordered(tmp.factor) ||
                            is.factor(scatter.colors.var)
             if (all(nchar(scatter.group.labels)==0))
             {
@@ -758,8 +749,8 @@ Chart <-   function(y = NULL,
         }
         if (anyDuplicated(chart.matrix, margin=1))
             warning("Chart contains overlapping points in the same position.")
-        if (!is.null(subset) && !scatter.var.from.matrix) 
-        { 
+        if (!is.null(subset) && !scatter.var.from.matrix)
+        {
             chart.matrix <- chart.matrix[subset,]
             scatter.group.indices <- scatter.group.indices[subset]
         }
@@ -958,7 +949,7 @@ Chart <-   function(y = NULL,
         if (nchar(subtitle) > 0)
         {
             subtitle.nline <- sum(gregexpr("<br>", subtitle)[[1]] > -1) + 1.5
-            margin.top <- margin.top + (subtitle.font.size * subtitle.nline * 1.25) 
+            margin.top <- margin.top + (subtitle.font.size * subtitle.nline * 1.25)
             subtitle.npad <- max(0, round(title.nline * subtitle.font.size/title.font.size * 0.9))
             subtitle <- paste0(paste(rep("<br>", subtitle.npad), collapse=""), subtitle)
         }
@@ -1233,7 +1224,7 @@ Chart <-   function(y = NULL,
         ## Work out color ranges; n.b. some color ranges worked out in the chart specific functions.
         ## This must occur after pie/donut charts are plotted because they use a different number of colors
         ## Scatterplots, labeled scatterplots and bubblecharts also handle groups separately
-        
+
         number.colors.needed <- ncol(chart.matrix)
         if (length(number.colors.needed) == 0 || number.colors.needed == 0)
             stop("Chart matrix is empty.")
