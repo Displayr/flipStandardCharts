@@ -81,6 +81,15 @@ scatterplotData <- function(chart.matrix,
         # colorscale.variable not compatible with groups
     }
 
+    # scale point sizes if needed
+    if (type == "Scatterplot" && ncol(chart.matrix) > 2)
+    {
+        # scaling for plotly scatterplots - sizemode="area" does not work
+        sc <- sqrt(sc)
+        sc <- sc/max(sc, na.rm=T) * 50
+    }
+
+
     if (is.null(colors))
         colors <- "Default colors"
     if (!is.null(colorscale.variable))
