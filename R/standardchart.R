@@ -604,6 +604,7 @@ Chart <-   function(y = NULL,
         warning("Data labels cannot be hidden for pie and donut charts.")
 
     # Handle multiple tables
+    multiple.table.groups <- NULL
     if (!is.null(dim(y[[1]])) && length(y) > 1) {
         if (type != "Labeled Scatterplot")
             stop("Multiple tables can only be used with Labeled Scatterplot.")
@@ -1202,7 +1203,7 @@ Chart <-   function(y = NULL,
         if (is.null(scatterplot.data$label))
             warning("No labels were provided for a Labeled Scatterplot. Consider trying Scatterplot instead.")
 
-        group <- if (multiple.table.groups) {
+        group <- if (!is.null(multiple.table.groups)) {
             multiple.table.groups
         } else if (length(unique(scatterplot.data$group)) == 1) {
             NULL
