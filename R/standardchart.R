@@ -608,7 +608,6 @@ Chart <-   function(y = NULL,
         warning("Data labels cannot be hidden for pie and donut charts.")
 
     # Handle multiple tables
-    multiple.table.groups <- NULL
     num.tables <- 1
     if (!is.null(dim(y[[1]])) && length(y) > 1) {
         if (type != "Labeled Scatterplot")
@@ -654,10 +653,10 @@ Chart <-   function(y = NULL,
             y[[i]] <- y[[i]][r.names,c.names]
         }
         y <- do.call(rbind, y)
-        #rownames(y) <- sprintf("%s: %s", rep(y.names, each=length(r.names)), rownames(y))
 
         n1 <- nrow(y)/num.tables
-        multiple.table.groups <- rep(paste0("group", 1:n1), num.tables)
+        scatter.group.indices <- rep(seq(n1), num.tables)
+        scatter.group.labels <- r.names
     }
 
     # Format input data
@@ -1226,21 +1225,13 @@ Chart <-   function(y = NULL,
             }
         }
 
-        group <- if (!is.null(multiple.table.groups)) {
-            multiple.table.groups
-        } else if (length(unique(scatterplot.data$group)) == 1) {
-            NULL
-        } else {
-            scatterplot.data$group
-        }
-
         return(rhtmlLabeledScatter::LabeledScatter(X = scatterplot.data$x,
                        Y = scatterplot.data$y,
                        Z = scatterplot.data$z,
                        label = label.plot,
                        label.alt = scatterplot.data$label,
                        fixed.aspect = FALSE,
-                       group = group,
+                       group = if (length(unique(scatterplot.data$group)) == 1) NULL else scatterplot.data$group,
                        grid = draw.grid,
                        origin = scatterplot.data$origin,
                        origin.align = FALSE,
