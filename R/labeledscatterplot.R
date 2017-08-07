@@ -85,8 +85,10 @@ scatterplotData <- function(chart.matrix,
     if (type == "Scatterplot" && ncol(chart.matrix) > 2)
     {
         # scaling for plotly scatterplots - sizemode="area" does not work
+        sc <- chart.matrix[,3]
         sc <- sqrt(sc)
         sc <- sc/max(sc, na.rm=T) * 50
+        chart.matrix[,3] <- sc
     }
 
 
