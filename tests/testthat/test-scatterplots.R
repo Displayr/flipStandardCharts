@@ -139,3 +139,59 @@ test_that("Alternative arguments", {
     print(Chart(scatter.var.from.matrix=F, type="Labeled Bubbleplot", colors="Reds, dark to light", scatter.x.var=1:10, scatter.y.var=10:1, scatter.colors.var = 1:10, scatter.labels.var=LETTERS[1:10], scatter.sizes.var=1:10))
 
 })
+
+
+t1 <- structure(c(42.7848101265823, 8.60759493670886, 14.9367088607595,
+                  11.3924050632911, 1.77215189873418, 17.9746835443038, 0.759493670886076,
+                  1.77215189873418, 100, 42.4691358024691, 13.5802469135802, 20.7407407407407,
+                  6.66666666666667, 3.20987654320988, 11.8518518518519, 0.740740740740741,
+                  0.740740740740741, 100, 42.625, 11.125, 17.875, 9, 2.5, 14.875,
+                  0.75, 1.25, 100), .Dim = c(9L, 3L), statistic = "Column %", .Dimnames = list(
+                      c("Coca-Cola", "Diet Coke", "Coke Zero", "Pepsi ", "Diet Pepsi",
+                        "Pepsi Max", "Dislike all cola", "Don't care", "NET"), c("Male",
+                                                                                 "Female", "NET")), name = "Preferred cola by Gender", questions = c("Preferred cola",
+                                                                                                                                                     "Gender"))
+
+t2 <- structure(c(52.7848101265823, 18.6075949367089, 24.9367088607595,
+                  21.3924050632911, 11.7721518987342, 27.9746835443038, 10.7594936708861,
+                  11.7721518987342, 110, 42.4691358024691, 13.5802469135802, 20.7407407407407,
+                  6.66666666666667, 3.20987654320988, 11.8518518518519, 0.740740740740741,
+                  0.740740740740741, 100, 42.625, 11.125, 17.875, 9, 2.5, 14.875,
+                  0.75, 1.25, 100), .Dim = c(9L, 3L), statistic = "Column %", .Dimnames = list(
+                      c("Coca-Cola", "Diet Coke", "Coke Zero", "Pepsi ", "Diet Pepsi",
+                        "Pepsi Max", "Dislike all cola", "Don't care", "NET"), c("Male",
+                                                                                 "Female", "NET")), name = "Preferred cola by Gender", questions = c("Preferred cola",
+                                                                                                                                                     "Gender"))
+
+t3 <- structure(c(52.7848101265823, 18.6075949367089, 24.9367088607595,
+                  21.3924050632911, 11.7721518987342, 27.9746835443038, 10.7594936708861,
+                  11.7721518987342, 110, 62.4691358024691, 33.5802469135802, 40.7407407407407,
+                  26.6666666666667, 23.2098765432099, 31.8518518518519, 20.7407407407407,
+                  20.7407407407407, 120, 42.625, 11.125, 17.875, 9, 2.5, 14.875,
+                  0.75, 1.25, 100), .Dim = c(9L, 3L), statistic = "Column %", .Dimnames = list(
+                      c("Coca-Cola", "Diet Coke", "Coke Zero", "Pepsi ", "Diet Pepsi",
+                        "Pepsi Max", "Dislike all cola", "Don't care", "NET"), c("Male",
+                                                                                 "Female", "NET")), name = "Preferred cola by Gender", questions = c("Preferred cola",
+                                                                                                                                                     "Gender"))
+
+test_that("Multiple tables", {
+    for (trend.lines in c(TRUE, FALSE)) {
+        expect_error(print(Chart(t1, type = "Labeled Scatterplot", trend.lines = trend.lines)), NA)
+        expect_error(print(Chart(list(t1), type = "Labeled Scatterplot", trend.lines = trend.lines)), NA)
+        expect_error(print(Chart(list(t1, t2), type = "Labeled Scatterplot", trend.lines = trend.lines)), NA)
+        expect_error(print(Chart(list(t1, t2, t3), type = "Labeled Scatterplot", trend.lines = trend.lines)), NA)
+        expect_error(print(Chart(list(t1, t2, t3), type = "Bar", trend.lines = trend.lines)), "Multiple tables can only be used with Labeled Scatterplot.")
+    }
+})
+
+
+logo.8string <- "https://dl.dropboxusercontent.com/u/539177224/bread_grey.svg, https://dl.dropboxusercontent.com/u/539177224/car_grey.svg, https://dl.dropboxusercontent.com/u/539177224/elephant_grey.svg, https://dl.dropboxusercontent.com/u/539177224/baby_grey.svg, https://dl.dropboxusercontent.com/u/539177224/apple_grey.svg, https://dl.dropboxusercontent.com/u/539177224/chicken_grey.svg, https://dl.dropboxusercontent.com/u/539177224/cow_grey.svg, https://dl.dropboxusercontent.com/u/539177224/thumbsup_grey.svg"
+test_that("Logos", {
+    expect_error(print(Chart(t1, type = "Labeled Scatterplot", trend.lines = TRUE, logos = logo.8string)), NA)
+    expect_error(print(Chart(t1, type = "Labeled Scatterplot", trend.lines = FALSE, logos = logo.8string)), NA)
+    expect_error(print(Chart(list(t1, t2, t3), type = "Labeled Scatterplot", trend.lines = TRUE, logos = logo.8string)), NA)
+    expect_error(print(Chart(list(t1, t2, t3), type = "Labeled Scatterplot", trend.lines = FALSE, logos = logo.8string)), NA)
+    expect_error(print(Chart(t1[1:5, ], type = "Labeled Scatterplot", trend.lines = FALSE, logos = logo.8string)), "Number of URLs supplied in logos must be equal to the number of rows in the table.")
+})
+
+

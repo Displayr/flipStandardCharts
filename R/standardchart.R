@@ -609,7 +609,7 @@ Chart <-   function(y = NULL,
 
     # Handle multiple tables
     num.tables <- 1
-    if (!is.null(dim(y[[1]])) && length(y) > 1) {
+    if (!is.null(dim(y[[1]]))) {
         if (type != "Labeled Scatterplot")
             stop("Multiple tables can only be used with Labeled Scatterplot.")
 
@@ -636,27 +636,31 @@ Chart <-   function(y = NULL,
         else GetTidyTwoDimensionalArray(y[[1]], rows.to.ignore, cols.to.ignore)
         r.names <- rownames(y[[1]])
         c.names <- colnames(y[[1]])
-        for (i in 2:num.tables)
-        {
-            y[[i]] <- if (transpose) GetTidyTwoDimensionalArray(t(y[[i]]))
-            else GetTidyTwoDimensionalArray(y[[i]])
-            r.tmp <- match(r.names, rownames(y[[i]]))
-            c.tmp <- match(c.names, colnames(y[[i]]))
+        if (num.tables > 1) {
+            for (i in 2:num.tables)
+            {
+                y[[i]] <- if (transpose) GetTidyTwoDimensionalArray(t(y[[i]]))
+                else GetTidyTwoDimensionalArray(y[[i]])
+                r.tmp <- match(r.names, rownames(y[[i]]))
+                c.tmp <- match(c.names, colnames(y[[i]]))
 
-            if (any(is.na(r.tmp)))
-                stop(sprintf("Tables do not match. Table '%s' missing row '%s'.",
-                             y.names[i], r.names[which(is.na(r.tmp))[1]]))
-            if (any(is.na(c.tmp)))
-                stop(sprintf("Tables do not match. Table '%s' missing column '%s'.",
-                             y.names[i], c.names[which(is.na(c.tmp))[1]]))
+                if (any(is.na(r.tmp)))
+                    stop(sprintf("Tables do not match. Table '%s' missing row '%s'.",
+                                 y.names[i], r.names[which(is.na(r.tmp))[1]]))
+                if (any(is.na(c.tmp)))
+                    stop(sprintf("Tables do not match. Table '%s' missing column '%s'.",
+                                 y.names[i], c.names[which(is.na(c.tmp))[1]]))
 
-            y[[i]] <- y[[i]][r.names,c.names]
+                y[[i]] <- y[[i]][r.names,c.names]
+            }
         }
         y <- do.call(rbind, y)
 
         n1 <- nrow(y)/num.tables
         scatter.group.indices <- rep(seq(n1), num.tables)
         scatter.group.labels <- r.names
+        if (transpose)     # already transposed when matching tables so do not do so later
+            transpose <- FALSE
     }
 
     # Identify logos
@@ -666,7 +670,11 @@ Chart <-   function(y = NULL,
         logo.urls <- try(TextAsVector(logos)) # This function gives warnings if it doesn't work
         if (!is.null(logo.urls) && !inherits(logo.urls, "try-error"))
         {
-            logo.required.length <- if (num.tables > 1) n1 else length(y)
+            logo.required.length <- if (num.tables > 1) n1 else {
+                temp <- if (transpose) GetTidyTwoDimensionalArray(t(y), rows.to.ignore, cols.to.ignore)
+                        else GetTidyTwoDimensionalArray(y, rows.to.ignore, cols.to.ignore)
+                nrow(temp)
+            }
             if (length(logo.urls) != logo.required.length)
                 stop(sprintf("Number of URLs supplied in logos must be equal to the number of %s in the table (%d)\n",
                              ifelse(transpose, "columns", "rows"), logo.required.length))
