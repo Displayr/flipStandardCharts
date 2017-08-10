@@ -7,6 +7,11 @@
 #'  "100\% Stacked Area", "Bar", "Stacked Bar", "100% Stacked Bar",
 #'  "Column", "Stacked Column", "100% Stacked Column", "Line", "Donut",
 #'  "Pie", "Labeled Scatterplot", "Labeled Bubbleplot", "Radar".
+#' @param fit.type Character; type of line of best fit. Can be one of "None", "Linear" or "Smooth" (loess local polynomial fitting).
+#' @param fit.ignore.last Boolean; whether to ignore the last data point in the fit.
+#' @param fit.line.type Character; One of "solid", "dot", "dash, "dotdash", or length of dash "2px", "5px".
+#' @param fit.line.width Numeric; Line width of line of best fit.
+#' @param fit.line.name Character; Name of the line of best fit, which will appear in the hovertext.
 #' @param transpose Logical; should the final output be transposed?
 #' @param subset An optional vector specifying a subset of observations to be plotted. Only used when \code{scatter.var.from.matrix} is true and \code{type} is one of \code{Scatterplot, Labeled Scatterplot} or \code{Labeled Bubbleplot}.
 #' @param weights Not implemented. An optional vector of sampling weights. Only used when \code{scatter.var.from.matrix} is true and \code{type} is one of \code{Scatterplot, Labeled Scatterplot} or \code{Labeled Bubbleplot}.
@@ -40,6 +45,14 @@
 #' @param colors.custom.gradient.start Character; starting color of gradient if \code{colors} is set to \code{"Custom gradient"}.
 #' @param colors.custom.gradient.end Character; last color of gradient if \code{colors} is set to \code{"Custom gradient"}.
 #' @param colors.custom.palette Character; comma separated list of colors to be used if \code{colors} is set to \code{"Custom palette"}.
+#' @param fit.line.colors Character; a vector containing one or more named
+#' colors from grDevices OR one or more specified hex value colors OR a single
+#' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
+#' @param fit.line.colors.reverse Logical; if the order of the colors should be reversed.
+#' @param fit.line.colors.custom.color Character; a single color which is used if \code{fit.line.colors} is set to \code{"Custom color"}.
+#' @param fit.line.colors.custom.gradient.start Character; starting color of gradient if \code{fit.line.colors} is set to \code{"Custom gradient"}.
+#' @param fit.line.colors.custom.gradient.end Character; last color of gradient if \code{fit.line.colors} is set to \code{"Custom gradient"}.
+#' @param fit.line.colors.custom.palette Character; comma separated list of colors to be used if \code{fit.line.colors} is set to \code{"Custom palette"}.
 #' @param opacity Opacity of area fill colors as an alpha value
 #' (0 to 1).
 #' @param background.fill.color Background color in character format
@@ -293,9 +306,15 @@
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom flipTransformations Factor AsNumeric TextAsVector
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
+#' @importFrom stats loess lm predict
 #' @export
 Chart <-   function(y = NULL,
                     type = "Column",
+                    fit.type = "None", # can be "Smooth" or anything else
+                    fit.ignore.last = FALSE,
+                    fit.line.type = "dot",
+                    fit.line.width = 1,
+                    fit.line.name = "Fitted",
                     transpose = FALSE,
                     subset = NULL,
                     weights = NULL,
@@ -319,6 +338,12 @@ Chart <-   function(y = NULL,
                     colors.custom.gradient.start = NA,
                     colors.custom.gradient.end = NA,
                     colors.custom.palette = NA,
+                    fit.line.colors = NULL,
+                    fit.line.colors.reverse = FALSE,
+                    fit.line.colors.custom.color = NA,
+                    fit.line.colors.custom.gradient.start = NA,
+                    fit.line.colors.custom.gradient.end = NA,
+                    fit.line.colors.custom.palette = NA,
                     opacity = NULL,
                     background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
                     background.fill.opacity = 1,
@@ -857,6 +882,7 @@ Chart <-   function(y = NULL,
                                             x.title = x.title,
                                             y.title = y.title,
                                             logos = logo.urls)
+
         if (x.title == "")
             x.title <- scatterplot.data$x.title
         if (y.title == "")
@@ -1145,6 +1171,16 @@ Chart <-   function(y = NULL,
         series.line.colors.custom.gradient.end <- colors.custom.gradient.end
         series.line.colors.custom.palette <- colors.custom.palette
     }
+    
+    if (fit.type != "None" && is.null(fit.line.colors))
+    {
+        fit.line.colors <- colors
+        fit.line.colors.reverse <- colors.reverse
+        fit.line.colors.custom.color <- colors.custom.color
+        fit.line.colors.custom.gradient.start <- colors.custom.gradient.start
+        fit.line.colors.custom.gradient.end <- colors.custom.gradient.end
+        fit.line.colors.custom.palette <- colors.custom.palette
+    }
 
     if (is.null(series.marker.colors))
     {
@@ -1322,6 +1358,16 @@ Chart <-   function(y = NULL,
                                                custom.palette = colors.custom.palette,
                                                reverse = colors.reverse,
                                                trim.light.colors = TRUE)
+        if (fit.type != "None")
+            fit.line.colors <- ChartColors(number.colors.needed = number.colors.needed,
+                                               given.colors = fit.line.colors,
+                                               custom.color = fit.line.colors.custom.color,
+                                               custom.gradient.start = fit.line.colors.custom.gradient.start,
+                                               custom.gradient.end = fit.line.colors.custom.gradient.end,
+                                               custom.palette = fit.line.colors.custom.palette,
+                                               reverse = fit.line.colors.reverse,
+                                               trim.light.colors = TRUE)
+
         series.line.colors <- suppressWarnings(ChartColors(number.colors.needed = number.colors.needed,
                                                given.colors = series.line.colors,
                                                custom.color = series.line.colors.custom.color,
@@ -1885,8 +1931,28 @@ Chart <-   function(y = NULL,
             x.prefix, FormatWithDecimals(scatterplot.data$x, data.label.decimals), x.suffix, ",",
             y.prefix, FormatWithDecimals(scatterplot.data$y, data.label.decimals), y.suffix, ")")
 
+        if (fit.type != "None")
+        {
+            fit.line.colors <- if (is.null(fit.line.colors)) scatterplot.data$colors
+                               else ChartColors(number.colors.needed = length(scatterplot.data$colors),
+                                                given.colors = fit.line.colors,
+                                                custom.color = fit.line.colors.custom.color,
+                                                custom.gradient.start = fit.line.colors.custom.gradient.start,
+                                                custom.gradient.end = fit.line.colors.custom.gradient.end,
+                                                custom.palette = fit.line.colors.custom.palette,
+                                                reverse = fit.line.colors.reverse,
+                                                trim.light.colors = TRUE)
+        }
+
         # Iteratively add each group so the order is the same as the dataframe
         g.list <- unique(scatterplot.data$group)
+        if (fit.type == "None")
+            num.fit <- 0
+        else if (length(g.list) == length(scatterplot.data$group))
+            num.fit <- 1
+        else
+            num.fit <- length(g.list)
+
         p <- plot_ly(as.data.frame(x=scatterplot.data$x, y=scatterplot.data$y))
         for (ggi in 1:length(g.list))
         {
@@ -1902,6 +1968,43 @@ Chart <-   function(y = NULL,
                     line=list(width=series.marker.border.width)), line=line.obj,
                     type=plotly.type, mode=series.mode, symbols=series.marker.symbols,
                     hoverinfo=if(length(g.list) > 1) "name+text" else "text")
+
+            if (num.fit > 1)
+            {
+                indF <- ind[order(scatterplot.data$x[ind])]
+                if (fit.ignore.last)
+                    indF <- indF[-which.max(scatterplot.data$x[indF])]
+            
+                # Does not handle dates - because scatterplot does not handle dates 
+                tmp.dat <- data.frame(x=scatterplot.data$x[indF], y=scatterplot.data$y[indF]) 
+                tmp.fit <- if (fit.type == "Smooth") loess(y~x, data=tmp.dat)
+                           else                      lm(y~x, data=tmp.dat)
+                                            
+                x.fit <- seq(from=min(tmp.dat$x), to=max(tmp.dat), length=100)
+                y.fit <- predict(tmp.fit, data.frame(x=x.fit))
+                tmp.fname <- if (length(g.list) == 1)  fit.line.name 
+                             else sprintf("%s: %s", fit.line.name, g.list[ggi])
+
+                p <- add_trace(p, x=x.fit, y=y.fit, type='scatter', mode="lines",
+                          name=tmp.fname, legendgroup=ggi, showlegend=F,
+                          line=list(dash=fit.line.type, width=fit.line.width, color=fit.line.colors[ggi]))
+            }
+        }
+        if (num.fit == 1)
+        {
+            indF <- 1:length(scatterplot.data$x)
+            if (fit.ignore.last)
+                indF <- indF[-which.max(scatterplot.data$x[indF])]
+         
+            tmp.dat <- data.frame(x=scatterplot.data$x[indF], y=scatterplot.data$y[indF]) 
+            tmp.fit <- if (fit.type == "Smooth") loess(y~x, data=tmp.dat)
+                       else                      lm(y~x, data=tmp.dat)
+                                        
+            x.fit <- seq(from=min(tmp.dat$x), to=max(tmp.dat), length=100)
+            y.fit <- predict(tmp.fit, data.frame(x=x.fit))
+            p <- add_trace(p, x=x.fit, y=y.fit, type='scatter', mode="lines",
+                      name=fit.line.name, showlegend=F,
+                      line=list(dash=fit.line.type, width=fit.line.width, color=fit.line.colors[1]))
         }
     }
     else
@@ -1969,6 +2072,31 @@ Chart <-   function(y = NULL,
                                legendgroup = tmp.group,
                                marker = marker)
 
+                if (type == "Column" && fit.type != "None" && !is.stacked)
+                {
+                    tmp.is.factor <- x.axis.type != "linear" && x.axis.type != "date"
+                    x0 <- if (!tmp.is.factor) x else 1:length(x) 
+                    tmp.dat <- data.frame(x=x0, y=y)
+                    if (fit.ignore.last)
+                        tmp.dat <- tmp.dat[-which.max(tmp.dat$x),]
+ 
+                    tmp.fit <- if (fit.type == "Smooth") loess(y~I(as.numeric(x)), data=tmp.dat)
+                               else                      lm(y~x, data=tmp.dat)
+                    
+                    x.fit <- if (tmp.is.factor) x0
+                             else seq(from=min(x), to=max(x), length=100)
+                    y.fit <- predict(tmp.fit, data.frame(x=x.fit))
+                    tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name 
+                                 else sprintf("%s: %s", fit.line.name, y.labels[i])
+
+                    if (tmp.is.factor)
+                        x.fit <- x
+                    p <- add_trace(p, x=x.fit, y=y.fit, type='scatter', mode="lines",
+                              name=tmp.fname, legendgroup=tmp.group, showlegend=F,
+                              line=list(dash=fit.line.type, width=fit.line.width, 
+                              color=fit.line.colors[i]))
+                }
+
                 if (type == "Column" && data.label.show && !is.stacked)
                 {
                     if (is.null(x.range))
@@ -2001,6 +2129,32 @@ Chart <-   function(y = NULL,
                               legendgroup = tmp.group,
                               hoverinfo = "none",
                               showlegend = FALSE)
+                }
+                if (type == "Bar" && fit.type != "None" && !is.stacked)
+                {
+                    tmp.is.factor <- y.axis.type != "linear" && y.axis.type != "date"
+                    y0 <- if (!tmp.is.factor) y else 1:length(y) 
+                    tmp.dat <- data.frame(x=x, y=y0)
+                    if (fit.ignore.last)
+                        tmp.dat <- tmp.dat[-which.max(tmp.dat$y),]
+ 
+                    tmp.fit <- if (fit.type == "Smooth") loess(x~I(as.numeric(y)), data=tmp.dat)
+                               else                      lm(x~y, data=tmp.dat)
+                    
+                    y.fit <- if (tmp.is.factor) y0
+                             else seq(from=min(y), to=max(y), length=100)
+                    x.fit <- predict(tmp.fit, data.frame(y=y.fit))
+                    tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name 
+                                 else sprintf("%s: %s", fit.line.name, y.labels[i])
+
+                    if (tmp.is.factor)
+                        y.fit <- y
+                    p <- add_trace(p, x=x.fit, y=y.fit, type='scatter', mode="lines",
+                              name=tmp.fname, legendgroup=tmp.group, showlegend=F,
+                              line=list(dash=fit.line.type, width=fit.line.width, 
+                              color=fit.line.colors[i]))
+
+
                 }
                 if (type == "Bar" && data.label.show)
                 {
@@ -2091,6 +2245,31 @@ Chart <-   function(y = NULL,
                                textfont = textfont,
                                textposition = data.label.position,
                                showlegend = FALSE)
+                
+                if (fit.type != "None")
+                {
+                    tmp.is.factor <- x.axis.type != "linear" && x.axis.type != "date"
+                    x0 <- if (!tmp.is.factor) x else 1:length(x) # what happens with dates?
+                    tmp.dat <- data.frame(x=x0, y=y)
+                    if (fit.ignore.last)
+                        tmp.dat <- tmp.dat[-which.max(tmp.dat$x),]
+ 
+                    tmp.fit <- if (fit.type == "Smooth") loess(y~I(as.numeric(x)), data=tmp.dat)
+                               else                      lm(y~x, data=tmp.dat)
+                    
+                    x.fit <- if (tmp.is.factor) x0
+                             else seq(from=min(x), to=max(x), length=100)
+                    y.fit <- predict(tmp.fit, data.frame(x=x.fit))
+                    tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name 
+                                 else sprintf("%s: %s", fit.line.name, y.labels[i])
+
+                    if (tmp.is.factor)
+                        x.fit <- x
+                    p <- add_trace(p, x=x.fit, y=y.fit, type='scatter', mode="lines",
+                              name=tmp.fname, legendgroup=tmp.group, showlegend=F,
+                              line=list(dash=fit.line.type, width=fit.line.width, 
+                              color=fit.line.colors[i]))
+                }
 
             }
             else

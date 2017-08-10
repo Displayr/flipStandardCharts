@@ -4,7 +4,9 @@
 \alias{Chart}
 \title{Generates an interactive chart based on the plotly library.}
 \usage{
-Chart(y = NULL, type = "Column", transpose = FALSE, subset = NULL,
+Chart(y = NULL, type = "Column", fit.type = "None",
+  fit.ignore.last = FALSE, fit.line.type = "dot", fit.line.width = 1,
+  fit.line.name = "Fitted", transpose = FALSE, subset = NULL,
   weights = NULL, title = "", title.font.family = NULL,
   title.font.color = NULL, title.font.size = 16, subtitle = "",
   subtitle.font.family = NULL, subtitle.font.color = NULL,
@@ -13,10 +15,15 @@ Chart(y = NULL, type = "Column", transpose = FALSE, subset = NULL,
   footer.wordwrap.nchar = 150, colors = NULL, colors.reverse = FALSE,
   colors.custom.color = NA, colors.custom.gradient.start = NA,
   colors.custom.gradient.end = NA, colors.custom.palette = NA,
-  opacity = NULL, background.fill.color = rgb(255, 255, 255, maxColorValue =
-  255), background.fill.opacity = 1, charting.area.fill.color = rgb(255,
-  255, 255, maxColorValue = 255), charting.area.fill.opacity = 1,
-  legend.show = TRUE, legend.fill = rgb(255, 255, 255, maxColorValue = 255),
+  fit.line.colors = NULL, fit.line.colors.reverse = FALSE,
+  fit.line.colors.custom.color = NA,
+  fit.line.colors.custom.gradient.start = NA,
+  fit.line.colors.custom.gradient.end = NA,
+  fit.line.colors.custom.palette = NA, opacity = NULL,
+  background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
+  background.fill.opacity = 1, charting.area.fill.color = rgb(255, 255, 255,
+  maxColorValue = 255), charting.area.fill.opacity = 1, legend.show = TRUE,
+  legend.fill = rgb(255, 255, 255, maxColorValue = 255),
   legend.fill.color = legend.fill, legend.fill.opacity = 1,
   legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
   legend.border.line.width = 0, legend.font.color = NULL,
@@ -100,6 +107,16 @@ Chart(y = NULL, type = "Column", transpose = FALSE, subset = NULL,
 "Column", "Stacked Column", "100% Stacked Column", "Line", "Donut",
 "Pie", "Labeled Scatterplot", "Labeled Bubbleplot", "Radar".}
 
+\item{fit.type}{Character; type of line of best fit. Can be one of "None", "Linear" or "Smooth" (loess local polynomial fitting).}
+
+\item{fit.ignore.last}{Boolean; whether to ignore the last data point in the fit.}
+
+\item{fit.line.type}{Character; One of "solid", "dot", "dash, "dotdash", or length of dash "2px", "5px".}
+
+\item{fit.line.width}{Numeric; Line width of line of best fit.}
+
+\item{fit.line.name}{Character; Name of the line of best fit, which will appear in the hovertext.}
+
 \item{transpose}{Logical; should the final output be transposed?}
 
 \item{subset}{An optional vector specifying a subset of observations to be plotted. Only used when \code{scatter.var.from.matrix} is true and \code{type} is one of \code{Scatterplot, Labeled Scatterplot} or \code{Labeled Bubbleplot}.}
@@ -155,6 +172,20 @@ named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 \item{colors.custom.gradient.end}{Character; last color of gradient if \code{colors} is set to \code{"Custom gradient"}.}
 
 \item{colors.custom.palette}{Character; comma separated list of colors to be used if \code{colors} is set to \code{"Custom palette"}.}
+
+\item{fit.line.colors}{Character; a vector containing one or more named
+colors from grDevices OR one or more specified hex value colors OR a single
+named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
+
+\item{fit.line.colors.reverse}{Logical; if the order of the colors should be reversed.}
+
+\item{fit.line.colors.custom.color}{Character; a single color which is used if \code{fit.line.colors} is set to \code{"Custom color"}.}
+
+\item{fit.line.colors.custom.gradient.start}{Character; starting color of gradient if \code{fit.line.colors} is set to \code{"Custom gradient"}.}
+
+\item{fit.line.colors.custom.gradient.end}{Character; last color of gradient if \code{fit.line.colors} is set to \code{"Custom gradient"}.}
+
+\item{fit.line.colors.custom.palette}{Character; comma separated list of colors to be used if \code{fit.line.colors} is set to \code{"Custom palette"}.}
 
 \item{opacity}{Opacity of area fill colors as an alpha value
 (0 to 1).}
