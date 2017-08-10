@@ -1273,8 +1273,8 @@ Chart <-   function(y = NULL,
                        x.title.font.color = x.title.font.color,
                        x.title.font.size = x.title.font.size,
                        z.title = z.title,
-                       y.decimals = if (is.null(y.tick.decimals)) 1 else y.tick.decimals,
-                       x.decimals = if (is.null(x.tick.decimals)) 1 else x.tick.decimals,
+                       x.decimals = if (is.null(x.tick.decimals)) decimalsToDisplay(scatterplot.data$x) else x.tick.decimals,
+                       y.decimals = if (is.null(y.tick.decimals)) decimalsToDisplay(scatterplot.data$y) else y.tick.decimals,
                        z.decimals = if (is.null(data.label.decimals)) 1 else data.label.decimals,
                        x.prefix = x.tick.prefix,
                        y.prefix = y.tick.prefix,
@@ -1704,7 +1704,7 @@ Chart <-   function(y = NULL,
             else
                 decimalsToDisplay(chart.matrix)
     }
-    if (y.axis.type == "linear" && is.null(y.tick.decimals))
+    if (!is.scatterplot.or.bubbleplot && y.axis.type == "linear" && is.null(y.tick.decimals))
     {
         y.tick.decimals <- if (y.has.bounds)
             decimalsToDisplay(c(y.bounds.minimum, y.bounds.maximum))
@@ -1873,6 +1873,13 @@ Chart <-   function(y = NULL,
         x.suffix <- if (x.tick.suffix == "") data.label.suffix else x.tick.suffix
         y.prefix <- if (y.tick.prefix == "") data.label.prefix else y.tick.prefix
         y.suffix <- if (y.tick.suffix == "") data.label.suffix else y.tick.suffix
+
+        if (is.null(y.tick.decimals)) 
+            y.tick.decimals <- decimalsToDisplay(scatterplot.data$y)
+        y.tickformat <- paste(".", y.tick.decimals, "f", sep="")
+        if (is.null(x.tick.decimals)) 
+            x.tick.decimals <- decimalsToDisplay(scatterplot.data$x)
+        x.tickformat <- paste(".", x.tick.decimals, "f", sep="")
 
         source.text <- paste0(scatterplot.data$label, " (",
             x.prefix, FormatWithDecimals(scatterplot.data$x, data.label.decimals), x.suffix, ",",
