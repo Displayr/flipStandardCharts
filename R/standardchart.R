@@ -641,48 +641,47 @@ Chart <-   function(y = NULL,
         # Get table names
         num.tables <- length(y)
         y.names <- rep("", num.tables)
-        unnamed.tables <- FALSE
         used.names <- c()
         for (i in 1:num.tables)
         {
             if (is.null(attr(y[[i]], "name")))
             {
-                unnamed.tables <- TRUE
                 attr(y[[i]], "name") <- as.character(i)
                 used.names <- c(used.names, i)
             }
             y.names[i] <- attr(y[[i]], "name")[1]
         }
-        if (unnamed.tables & !trend.lines)
-            warning(sprintf("Tables have been automatically assigned names '%s'. You can name tables using R code: 'attr(table.name, \"name\") <- \"Description\"'", paste(used.names, collapse="', '")))
 
         # Check tables match - order of rows will match first table
         y[[1]] <- if (transpose) GetTidyTwoDimensionalArray(t(y[[1]]), rows.to.ignore, cols.to.ignore)
         else GetTidyTwoDimensionalArray(y[[1]], rows.to.ignore, cols.to.ignore)
         r.names <- rownames(y[[1]])
         c.names <- colnames(y[[1]])
+        if (!is.null(r.names) && any(duplicated(r.names)) && trend.lines)
+            stop("Row names of tables must be unique or NULL for trend lines to be plotted but are duplicated.")
+
         if (num.tables > 1) {
             for (i in 2:num.tables)
             {
-                y[[i]] <- if (transpose) GetTidyTwoDimensionalArray(t(y[[i]]))
-                else GetTidyTwoDimensionalArray(y[[i]])
-                r.tmp <- match(r.names, rownames(y[[i]]))
-                c.tmp <- match(c.names, colnames(y[[i]]))
+                y[[i]] <- if (transpose) GetTidyTwoDimensionalArray(t(y[[i]]), rows.to.ignore, cols.to.ignore)
+                            else GetTidyTwoDimensionalArray(y[[i]], rows.to.ignore, cols.to.ignore)
 
-                if (any(is.na(r.tmp)))
-                    stop(sprintf("Tables do not match. Table '%s' missing row '%s'.",
-                                 y.names[i], r.names[which(is.na(r.tmp))[1]]))
-                if (any(is.na(c.tmp)))
-                    stop(sprintf("Tables do not match. Table '%s' missing column '%s'.",
-                                 y.names[i], c.names[which(is.na(c.tmp))[1]]))
-
-                y[[i]] <- y[[i]][r.names,c.names]
+                if (!identical(r.names, rownames(y[[i]])))
+                    stop(sprintf("Tables should have identical row names but table '%s' differs from table '%s'.",
+                                 y.names[i], y.names[1]))
+                if (!identical(c.names, colnames(y[[i]])))
+                    stop(sprintf("Tables should have identical column names but table '%s' differs from table '%s'.",
+                                 y.names[i], y.names[1]))
             }
         }
         y <- do.call(rbind, y)
 
         n1 <- nrow(y)/num.tables
         scatter.group.indices <- rep(seq(n1), num.tables)
+        if (is.null(r.names)) {
+            r.names <- paste("Row", seq(n1))
+            rownames(y) <- rep(r.names, num.tables)
+        }
         scatter.group.labels <- r.names
         if (transpose)     # already transposed when matching tables so do not do so later
             transpose <- FALSE
@@ -701,8 +700,8 @@ Chart <-   function(y = NULL,
                 nrow(temp)
             }
             if (length(logo.urls) != logo.required.length)
-                stop(sprintf("Number of URLs supplied in logos must be equal to the number of %s in the table (%d)\n",
-                             ifelse(transpose, "columns", "rows"), logo.required.length))
+                stop(sprintf("Number of URLs supplied in logos is %d but must be equal to the number of %s in the table (%d)\n",
+                             length(logo.urls), ifelse(transpose, "columns", "rows"), logo.required.length))
             if (any(nchar(logo.urls) == 0))
                 stop("Logos cannot be an empty string\n")
             if (num.tables > 1)
@@ -1171,7 +1170,7 @@ Chart <-   function(y = NULL,
         series.line.colors.custom.gradient.end <- colors.custom.gradient.end
         series.line.colors.custom.palette <- colors.custom.palette
     }
-    
+
     if (fit.type != "None" && is.null(fit.line.colors))
     {
         fit.line.colors <- colors
@@ -1243,7 +1242,7 @@ Chart <-   function(y = NULL,
                 table.statistic = table.statistic))
 
 
-    ## Settings specific to labelled scatter plots
+    ## Settings specific to labeled scatter plots
     if (is.labeled.scatterplot.or.bubbleplot)
     {
         draw.grid <- (x.grid.width != 0 && y.grid.width != 0)
@@ -1920,10 +1919,10 @@ Chart <-   function(y = NULL,
         y.prefix <- if (y.tick.prefix == "") data.label.prefix else y.tick.prefix
         y.suffix <- if (y.tick.suffix == "") data.label.suffix else y.tick.suffix
 
-        if (is.null(y.tick.decimals)) 
+        if (is.null(y.tick.decimals))
             y.tick.decimals <- decimalsToDisplay(scatterplot.data$y)
         y.tickformat <- paste(".", y.tick.decimals, "f", sep="")
-        if (is.null(x.tick.decimals)) 
+        if (is.null(x.tick.decimals))
             x.tick.decimals <- decimalsToDisplay(scatterplot.data$x)
         x.tickformat <- paste(".", x.tick.decimals, "f", sep="")
 
@@ -1974,15 +1973,15 @@ Chart <-   function(y = NULL,
                 indF <- ind[order(scatterplot.data$x[ind])]
                 if (fit.ignore.last)
                     indF <- indF[-which.max(scatterplot.data$x[indF])]
-            
-                # Does not handle dates - because scatterplot does not handle dates 
-                tmp.dat <- data.frame(x=scatterplot.data$x[indF], y=scatterplot.data$y[indF]) 
+
+                # Does not handle dates - because scatterplot does not handle dates
+                tmp.dat <- data.frame(x=scatterplot.data$x[indF], y=scatterplot.data$y[indF])
                 tmp.fit <- if (fit.type == "Smooth") loess(y~x, data=tmp.dat)
                            else                      lm(y~x, data=tmp.dat)
-                                            
+
                 x.fit <- seq(from=min(tmp.dat$x), to=max(tmp.dat), length=100)
                 y.fit <- predict(tmp.fit, data.frame(x=x.fit))
-                tmp.fname <- if (length(g.list) == 1)  fit.line.name 
+                tmp.fname <- if (length(g.list) == 1)  fit.line.name
                              else sprintf("%s: %s", fit.line.name, g.list[ggi])
 
                 p <- add_trace(p, x=x.fit, y=y.fit, type='scatter', mode="lines",
@@ -1995,11 +1994,11 @@ Chart <-   function(y = NULL,
             indF <- 1:length(scatterplot.data$x)
             if (fit.ignore.last)
                 indF <- indF[-which.max(scatterplot.data$x[indF])]
-         
-            tmp.dat <- data.frame(x=scatterplot.data$x[indF], y=scatterplot.data$y[indF]) 
+
+            tmp.dat <- data.frame(x=scatterplot.data$x[indF], y=scatterplot.data$y[indF])
             tmp.fit <- if (fit.type == "Smooth") loess(y~x, data=tmp.dat)
                        else                      lm(y~x, data=tmp.dat)
-                                        
+
             x.fit <- seq(from=min(tmp.dat$x), to=max(tmp.dat), length=100)
             y.fit <- predict(tmp.fit, data.frame(x=x.fit))
             p <- add_trace(p, x=x.fit, y=y.fit, type='scatter', mode="lines",
@@ -2075,25 +2074,25 @@ Chart <-   function(y = NULL,
                 if (type == "Column" && fit.type != "None" && !is.stacked)
                 {
                     tmp.is.factor <- x.axis.type != "linear" && x.axis.type != "date"
-                    x0 <- if (!tmp.is.factor) x else 1:length(x) 
+                    x0 <- if (!tmp.is.factor) x else 1:length(x)
                     tmp.dat <- data.frame(x=x0, y=y)
                     if (fit.ignore.last)
                         tmp.dat <- tmp.dat[-which.max(tmp.dat$x),]
- 
+
                     tmp.fit <- if (fit.type == "Smooth") loess(y~I(as.numeric(x)), data=tmp.dat)
                                else                      lm(y~x, data=tmp.dat)
-                    
+
                     x.fit <- if (tmp.is.factor) x0
                              else seq(from=min(x), to=max(x), length=100)
                     y.fit <- predict(tmp.fit, data.frame(x=x.fit))
-                    tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name 
+                    tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                                  else sprintf("%s: %s", fit.line.name, y.labels[i])
 
                     if (tmp.is.factor)
                         x.fit <- x
                     p <- add_trace(p, x=x.fit, y=y.fit, type='scatter', mode="lines",
                               name=tmp.fname, legendgroup=tmp.group, showlegend=F,
-                              line=list(dash=fit.line.type, width=fit.line.width, 
+                              line=list(dash=fit.line.type, width=fit.line.width,
                               color=fit.line.colors[i]))
                 }
 
@@ -2133,25 +2132,25 @@ Chart <-   function(y = NULL,
                 if (type == "Bar" && fit.type != "None" && !is.stacked)
                 {
                     tmp.is.factor <- y.axis.type != "linear" && y.axis.type != "date"
-                    y0 <- if (!tmp.is.factor) y else 1:length(y) 
+                    y0 <- if (!tmp.is.factor) y else 1:length(y)
                     tmp.dat <- data.frame(x=x, y=y0)
                     if (fit.ignore.last)
                         tmp.dat <- tmp.dat[-which.max(tmp.dat$y),]
- 
+
                     tmp.fit <- if (fit.type == "Smooth") loess(x~I(as.numeric(y)), data=tmp.dat)
                                else                      lm(x~y, data=tmp.dat)
-                    
+
                     y.fit <- if (tmp.is.factor) y0
                              else seq(from=min(y), to=max(y), length=100)
                     x.fit <- predict(tmp.fit, data.frame(y=y.fit))
-                    tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name 
+                    tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                                  else sprintf("%s: %s", fit.line.name, y.labels[i])
 
                     if (tmp.is.factor)
                         y.fit <- y
                     p <- add_trace(p, x=x.fit, y=y.fit, type='scatter', mode="lines",
                               name=tmp.fname, legendgroup=tmp.group, showlegend=F,
-                              line=list(dash=fit.line.type, width=fit.line.width, 
+                              line=list(dash=fit.line.type, width=fit.line.width,
                               color=fit.line.colors[i]))
 
 
@@ -2245,7 +2244,7 @@ Chart <-   function(y = NULL,
                                textfont = textfont,
                                textposition = data.label.position,
                                showlegend = FALSE)
-                
+
                 if (fit.type != "None")
                 {
                     tmp.is.factor <- x.axis.type != "linear" && x.axis.type != "date"
@@ -2253,21 +2252,21 @@ Chart <-   function(y = NULL,
                     tmp.dat <- data.frame(x=x0, y=y)
                     if (fit.ignore.last)
                         tmp.dat <- tmp.dat[-which.max(tmp.dat$x),]
- 
+
                     tmp.fit <- if (fit.type == "Smooth") loess(y~I(as.numeric(x)), data=tmp.dat)
                                else                      lm(y~x, data=tmp.dat)
-                    
+
                     x.fit <- if (tmp.is.factor) x0
                              else seq(from=min(x), to=max(x), length=100)
                     y.fit <- predict(tmp.fit, data.frame(x=x.fit))
-                    tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name 
+                    tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                                  else sprintf("%s: %s", fit.line.name, y.labels[i])
 
                     if (tmp.is.factor)
                         x.fit <- x
                     p <- add_trace(p, x=x.fit, y=y.fit, type='scatter', mode="lines",
                               name=tmp.fname, legendgroup=tmp.group, showlegend=F,
-                              line=list(dash=fit.line.type, width=fit.line.width, 
+                              line=list(dash=fit.line.type, width=fit.line.width,
                               color=fit.line.colors[i]))
                 }
 
