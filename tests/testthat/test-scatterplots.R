@@ -137,7 +137,7 @@ test_that("Alternative arguments", {
     suppressWarnings(print(Chart(scatter.var.from.matrix=F, type="Scatterplot", colors="Strong colors", scatter.x.var=z, scatter.y.var=z, scatter.colors.var = rep(c('a','b'), each=5), scatter.colors.as.group = F, x.title="X", y.title="Y")))
     print(Chart(scatter.var.from.matrix=F, type="Labeled Scatterplot", colors="Reds, dark to light", scatter.x.var=1:10, scatter.y.var=10:1, scatter.colors.var = 1:10, scatter.labels.var=LETTERS[1:10], scatter.sizes.var=1:10))
     print(Chart(scatter.var.from.matrix=F, type="Labeled Bubbleplot", colors="Reds, dark to light", scatter.x.var=1:10, scatter.y.var=10:1, scatter.colors.var = 1:10, scatter.labels.var=LETTERS[1:10], scatter.sizes.var=1:10))
-    print(Chart(type="Scatterplot", scatter.var.from.matrix = F, scatter.x.var = 1:10, scatter.y.var=letters[1:10]))
+    suppressWarnings(print(Chart(type="Scatterplot", scatter.var.from.matrix = F, scatter.x.var = 1:10, scatter.y.var=letters[1:10])))
 
 })
 
