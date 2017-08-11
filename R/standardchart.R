@@ -496,7 +496,7 @@ Chart <-   function(y = NULL,
 {
     if (!is.null(weights))
         warning("Weights are currently not used.")
-    if (!is.null(subset) && (scatter.var.from.matrix ||
+    if (length(subset) > 1 && (scatter.var.from.matrix ||
         !type %in% c("Scatterplot", "Labeled Scatterplot", "Labeled Bubbleplot")))
         warning("Filters are only used when 'Data source' is set to 'Variables'.")
 
@@ -856,7 +856,7 @@ Chart <-   function(y = NULL,
         }
         if (anyDuplicated(chart.matrix, margin=1))
             warning("Chart contains overlapping points in the same position.")
-        if (!is.null(subset) && !scatter.var.from.matrix)
+        if (length(subset) > 1 && !scatter.var.from.matrix)
         {
             chart.matrix <- chart.matrix[subset,]
             scatter.group.indices <- scatter.group.indices[subset]
