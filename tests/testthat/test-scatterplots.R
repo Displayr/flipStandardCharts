@@ -161,7 +161,7 @@ t2 <- structure(c(52.7848101265823, 18.6075949367089, 24.9367088607595,
                   0.75, 1.25, 100), .Dim = c(9L, 3L), statistic = "Column %", .Dimnames = list(
                       c("Coca-Cola", "Diet Coke", "Coke Zero", "Pepsi ", "Diet Pepsi",
                         "Pepsi Max", "Dislike all cola", "Don't care", "NET"), c("Male",
-                                                                                 "Female", "NET")), name = "Preferred cola by Gender", questions = c("Preferred cola",
+                                                                                 "Female", "NET")), name = "Preferred cola by Gender2", questions = c("Preferred cola",
                                                                                                                                                      "Gender"))
 
 t3 <- structure(c(52.7848101265823, 18.6075949367089, 24.9367088607595,
@@ -172,7 +172,7 @@ t3 <- structure(c(52.7848101265823, 18.6075949367089, 24.9367088607595,
                   0.75, 1.25, 100), .Dim = c(9L, 3L), statistic = "Column %", .Dimnames = list(
                       c("Coca-Cola", "Diet Coke", "Coke Zero", "Pepsi ", "Diet Pepsi",
                         "Pepsi Max", "Dislike all cola", "Don't care", "NET"), c("Male",
-                                                                                 "Female", "NET")), name = "Preferred cola by Gender", questions = c("Preferred cola",
+                                                                                 "Female", "NET")), name = "Preferred cola by Gender3", questions = c("Preferred cola",
                                                                                                                                                      "Gender"))
 
 test_that("Multiple tables", {
@@ -192,7 +192,7 @@ test_that("Logos", {
     expect_error(print(Chart(t1, type = "Labeled Scatterplot", trend.lines = FALSE, logos = logo.8string)), NA)
     expect_error(print(Chart(list(t1, t2, t3), type = "Labeled Scatterplot", trend.lines = TRUE, logos = logo.8string)), NA)
     expect_error(print(Chart(list(t1, t2, t3), type = "Labeled Scatterplot", trend.lines = FALSE, logos = logo.8string)), NA)
-    expect_error(print(Chart(t1[1:5, ], type = "Labeled Scatterplot", trend.lines = FALSE, logos = logo.8string)), "Number of URLs supplied in logos must be equal to the number of rows in the table.")
+    expect_error(print(Chart(t1[1:5, ], type = "Labeled Scatterplot", trend.lines = FALSE, logos = logo.8string)), "Number of URLs supplied in logos is 8 but must be equal to the number of rows in the table.")
 })
 
 
