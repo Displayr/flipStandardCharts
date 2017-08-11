@@ -2068,6 +2068,7 @@ Chart <-   function(y = NULL,
                                line = lines,
                                name = y.labels[i],
                                legendgroup = tmp.group,
+                               hoverinfo = if(ncol(chart.matrix) > 1) "x+y+name" else "x+y",
                                marker = marker)
 
                 if (type == "Column" && fit.type != "None" && !is.stacked)
