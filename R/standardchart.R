@@ -809,8 +809,8 @@ Chart <-   function(y = NULL,
                 footer <- sprintf("%sPoints sizes are proportional to absolute value of '%s'; ", footer, scatter.sizes.name)
         }
         chart.matrix <- if (is.null(scatter.x.var) && is.null(scatter.y.var)) y
-                        else cbind(if (is.null(scatter.x.var)) 0 else scatter.x.var,
-                                   if (is.null(scatter.y.var)) 0 else scatter.y.var)
+                        else cbind(if (is.null(scatter.x.var)) 0 else AsNumeric(scatter.x.var, binary=F),
+                                   if (is.null(scatter.y.var)) 0 else AsNumeric(scatter.y.var, binary=F))
         if (!is.null(scatter.x.var) || !is.null(scatter.y.var))
             colnames(chart.matrix)[1:2] <- c(scatter.x.name, scatter.y.name)
 
@@ -888,7 +888,7 @@ Chart <-   function(y = NULL,
             y.title <- scatterplot.data$y.title
 
         y.abs.max <- max(abs(range(scatterplot.data$y, na.rm=T)), na.rm=T)
-        if (y.abs.max == 0 || any(abs(range(scatterplot.data$y, na.rm=T))/y.abs.max < 1e-2))
+        if (!is.finite(y.abs.max) || y.abs.max == 0 || any(abs(range(scatterplot.data$y, na.rm=T))/y.abs.max < 1e-2))
             y.zero <- FALSE
     }
     else
@@ -907,7 +907,7 @@ Chart <-   function(y = NULL,
         else
             stop(msg)
     }
-    if (!is.numeric(chart.matrix))
+    if (scatter.var.from.matrix && !is.numeric(chart.matrix))
         stop(msg)
 
     if (is.null(colors))
@@ -1740,7 +1740,7 @@ Chart <-   function(y = NULL,
         added.bounds.for.area.chart <- FALSE
 
     # Determine decimal places to show if not provided
-    if (x.axis.type == "linear" && is.null(x.tick.decimals))
+    if (!is.scatterplot.or.bubbleplot && x.axis.type == "linear" && is.null(x.tick.decimals))
     {
             x.tick.decimals <- if (x.has.bounds)
                 decimalsToDisplay(c(x.bounds.minimum, x.bounds.maximum))
