@@ -634,6 +634,9 @@ Chart <-   function(y = NULL,
 
     # Handle multiple tables
     num.tables <- 1
+    if (!is.null(logos) && nchar(logos) != 0 && is.null(dim(y[[1]])))
+        y <- list(y)   # ensure rows are groups, so legend is plotted with labels
+
     if (!is.null(dim(y[[1]]))) {
         if (type != "Labeled Scatterplot")
             stop("Multiple tables can only be used with Labeled Scatterplot.")
@@ -685,6 +688,8 @@ Chart <-   function(y = NULL,
         scatter.group.labels <- r.names
         if (transpose)     # already transposed when matching tables so do not do so later
             transpose <- FALSE
+        if (is.null(logos) || nchar(logos) == 0)
+            legend.show <- FALSE
     }
 
     # Identify logos
@@ -708,8 +713,6 @@ Chart <-   function(y = NULL,
                 logo.urls <- rep(logo.urls, num.tables)
             logo.size <- rep(logo.size, length(y))
         }
-    } else {
-        legend.show <- FALSE
     }
 
     # Format input data
