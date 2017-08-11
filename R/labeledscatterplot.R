@@ -118,9 +118,9 @@ scatterplotData <- function(chart.matrix,
         colors <- rgb(sc.tmp, maxColorValue=255)
     }
     result <- list()
-    result$x <- if (transpose) as.numeric(chart.matrix[, 2]) else as.numeric(chart.matrix[, 1])
-    result$y <- if (transpose) as.numeric(chart.matrix[, 1]) else as.numeric(chart.matrix[, 2])
-    result$z <- if (ncol(chart.matrix) >= 3) as.numeric(abs(chart.matrix[, 3])) else NULL
+    result$x <- if (transpose) AsNumeric(chart.matrix[, 2], binary=F) else AsNumeric(chart.matrix[, 1], binary=F)
+    result$y <- if (transpose) AsNumeric(chart.matrix[, 1], binary=F) else AsNumeric(chart.matrix[, 2], binary=F)
+    result$z <- if (ncol(chart.matrix) >= 3) AsNumeric(abs(chart.matrix[, 3]), binary=F) else NULL
     result$colors <- colors
 
     result$label <- if (!is.null(logos)) logos else rownames(chart.matrix)
