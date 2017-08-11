@@ -709,8 +709,7 @@ Chart <-   function(y = NULL,
             logo.size <- rep(logo.size, length(y))
         }
     } else {
-        if (num.tables > 1)
-            legend.show <- FALSE
+        legend.show <- FALSE
     }
 
     # Format input data
