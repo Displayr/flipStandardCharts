@@ -301,7 +301,7 @@
 #' z <- c(5, 6, 2, 1.5, 9, 2.2)
 #' Chart(y = z, type = "Area")
 #' @importFrom grDevices rgb
-#' @importFrom flipFormat FormatWithDecimals
+#' @importFrom flipFormat FormatAsReal
 #' @importFrom flipTime PeriodNameToDate
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom flipTransformations Factor AsNumeric TextAsVector
@@ -1929,8 +1929,8 @@ Chart <-   function(y = NULL,
         x.tickformat <- paste(".", x.tick.decimals, "f", sep="")
 
         source.text <- paste0(scatterplot.data$label, " (",
-            x.prefix, FormatWithDecimals(scatterplot.data$x, data.label.decimals), x.suffix, ",",
-            y.prefix, FormatWithDecimals(scatterplot.data$y, data.label.decimals), y.suffix, ")")
+            x.prefix, FormatAsReal(scatterplot.data$x, decimals = data.label.decimals), x.suffix, ",",
+            y.prefix, FormatAsReal(scatterplot.data$y, decimals = data.label.decimals), y.suffix, ")")
 
         if (fit.type != "None")
         {
@@ -2030,7 +2030,7 @@ Chart <-   function(y = NULL,
             # Used by line, area and scatter charts
             source.text <- if (is.area.or.line.chart && data.label.show)
                 paste(data.label.prefix,
-                      FormatWithDecimals(chart.matrix[, i] * data.label.mult, data.label.decimals),
+                      FormatAsReal(chart.matrix[, i] * data.label.mult, decimals = data.label.decimals),
                       data.label.suffix, sep = "")
             else
                 ""

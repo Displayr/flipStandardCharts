@@ -38,7 +38,7 @@
 #' of the heatmap.
 
 #' @importFrom flipData GetTidyTwoDimensionalArray
-#' @importFrom flipFormat FormatWithDecimals
+#' @importFrom flipFormat FormatAsReal
 #' @importFrom flipTables Reorder Cbind
 #' @importFrom flipTransformations ParseEnteredData
 #' @export
@@ -119,7 +119,7 @@ HeatMap <- function(table,
     cellnote <- matrix("", n.row, n.col)
     for (i in 1:n.row)
         for (j in 1:n.col)
-            cellnote[i, j] <- FormatWithDecimals(mat[i, j], cell.decimals)
+            cellnote[i, j] <- FormatAsReal(mat[i, j], decimals = cell.decimals)
     show.cellnote.in.cell <- (n.row <= 20 && n.col <= 10 && show.cell.values != "No") || show.cell.values == "Yes"
     show.x.axes.labels <- show.column.labels == "Yes"
     show.y.axes.labels <- show.row.labels == "Yes"

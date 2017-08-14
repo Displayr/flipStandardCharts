@@ -1,4 +1,5 @@
 #' @importFrom plotly plot_ly layout config add_annotations
+#' @importFrom flipFormat FormatAsReal
 radarChart <- function(chart.matrix,
                     title = "",
                     title.font.family = NULL,
@@ -110,19 +111,20 @@ radarChart <- function(chart.matrix,
 
     # Convert data (polar) into x, y coordinates
     pos <- do.call(rbind, lapply(as.data.frame(chart.matrix), getPolarCoord))
-    pos <- data.frame(pos, 
+    pos <- data.frame(pos,
                       Name=rep(rownames(chart.matrix)[c(1:n,1)], m),
-                      Group=rep(colnames(chart.matrix),each=n+1), 
+                      Group=rep(colnames(chart.matrix),each=n+1),
                       stringsAsFactors = T, check.names=F)
     chart.matrix <- rbind(chart.matrix, chart.matrix[1,])
     tmp.group <- if (ncol(chart.matrix) == 1) ""
                  else paste0(pos$Group, ":", " ")
-    
-    pos <- cbind(pos, 
+
+    pos <- cbind(pos,
             HoverText=sprintf("%s%s: %s%s%s", tmp.group, pos$Name, y.tick.prefix,
-                FormatWithDecimals(unlist(chart.matrix), y.hovertext.decimals), y.tick.suffix),
+                FormatAsReal(unlist(chart.matrix), decimals = y.hovertext.decimals), y.tick.suffix),
             DataLabels=sprintf("%s%s%s", data.label.prefix,
-                FormatWithDecimals(unlist(chart.matrix), data.label.decimals), data.label.suffix))
+                FormatAsReal(unlist(chart.matrix), decimals = data.label.decimals),
+                data.label.suffix))
 
     # Initialise plot
     p <- plot_ly(pos)
@@ -144,15 +146,15 @@ radarChart <- function(chart.matrix,
                     name=g.list[ggi], legendgroup=g.list[ggi],
                     showlegend=FALSE, hoverinfo="text", text=pos$HoverText[ind],
                     marker=list(size=1, color=toRGB(series.marker.colors[ggi])), line=list(width=0))
-    
+
         if (data.label.show)
             p <- add_trace(p, x=pos$x[ind]*1.12, y=pos$y[ind]*1.06,
                     type="scatter", mode="text", legendgroup=g.list[ggi],
                     showlegend=FALSE, hoverinfo="none", text=pos$DataLabels[ind],
                     textfont=list(family=data.label.font.family, size=data.label.font.size,
                         color=data.label.font.color))
-                    
-        
+
+
     }
 
     # Radial grid lines
@@ -175,7 +177,7 @@ radarChart <- function(chart.matrix,
     xanch <- rep("center", n)
     xanch[which(abs(outer[,2]) < r.max/100 & sign(outer[,1]) < 0)] <- "right"
     xanch[which(abs(outer[,2]) < r.max/100 & sign(outer[,1]) > 0)] <- "left"
-     
+
     xlab <- autoFormatLongLabels(rownames(chart.matrix)[1:n], x.tick.label.wordwrap, wordwrap.nchar)
     font.asp <- switch(tolower(x.title.font.family),
                               'arial'= 0.54,
@@ -190,7 +192,7 @@ radarChart <- function(chart.matrix,
                               'verdana' = 0.63,
                               0.54)
 
-    # X-axis label widths are fixed to avoid the chart width changing in regression tests. 
+    # X-axis label widths are fixed to avoid the chart width changing in regression tests.
     # We avoided fixing the x-axis range because autorange handles variation in the xaxis labels quite well
     xlab.width <- font.asp * x.title.font.size * max(nchar(unlist(strsplit(split="<br>", as.character(xlab))))) + 50
     p <- layout(p, title=title, titlefont=list(family=title.font.family,color=title.font.color,size=title.font.size),
@@ -210,14 +212,14 @@ radarChart <- function(chart.matrix,
             xanchor=legend.x.anchor, yanchor=legend.y.anchor, y=legend.y, x=legend.x,
             traceorder=legend.sort.order), showlegend=legend.show,
         shapes=grid,
-        annotations=list(x=outer[,1], y=outer[,2], text=xlab, width=xlab.width, 
+        annotations=list(x=outer[,1], y=outer[,2], text=xlab, width=xlab.width,
              showarrow=F, yshift=outer[1:n,2]/r.max * 15,
              font=list(family=x.title.font.family, color=x.title.font.color, size=x.title.font.size),
              xshift=outer[1:n,1]/r.max * 5, xanchor=xanch))
 
     if (y.grid.width > 0 && y.tick.show && !is.null(tick.vals))
         p <- add_annotations(p, x=rep(0, length(tick.vals)), y=tick.vals, showarrow=F, xanchor="right", xshift=-5,
-                text=paste0(y.tick.prefix, FormatWithDecimals(tick.vals, y.tick.decimals), y.tick.suffix),
+                text=paste0(y.tick.prefix, FormatAsReal(tick.vals, decimals = y.tick.decimals), y.tick.suffix),
                 font=list(family=y.tick.font.family, color=y.tick.font.color, size=y.tick.font.size))
 
     p <- config(p, displayModeBar=modebar.show)

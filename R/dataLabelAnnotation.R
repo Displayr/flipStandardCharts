@@ -1,3 +1,4 @@
+#' @importFrom flipFormat FormatAsReal
 dataLabelAnnotation <- function(chart.matrix,
                                 data.label.mult = 1,
                                 bar.decimals = 0,
@@ -9,7 +10,9 @@ dataLabelAnnotation <- function(chart.matrix,
                                 display.threshold = NULL,
                                 dates)
 {
-    text <- paste(bar.prefix, FormatWithDecimals(chart.matrix * data.label.mult, bar.decimals), bar.suffix, sep = "")
+    text <- paste(bar.prefix,
+                  FormatWithReal(chart.matrix * data.label.mult, decimals = bar.decimals),
+                  bar.suffix, sep = "")
 
     chart.matrix[which(is.na(chart.matrix))] <- 0
 
@@ -41,7 +44,7 @@ dataLabelAnnotation <- function(chart.matrix,
     }
     else
         0:(nrow(chart.matrix) - 1) + rep(series.positions, each = nrow(chart.matrix))
-    
+
     if (barmode != "stack")
     {
         text <- matrix(text, ncol=ncol(chart.matrix))
