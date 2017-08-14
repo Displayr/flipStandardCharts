@@ -11,7 +11,7 @@ dataLabelAnnotation <- function(chart.matrix,
                                 dates)
 {
     text <- paste(bar.prefix,
-                  FormatWithReal(chart.matrix * data.label.mult, decimals = bar.decimals),
+                  FormatAsReal(chart.matrix * data.label.mult, decimals = bar.decimals),
                   bar.suffix, sep = "")
 
     chart.matrix[which(is.na(chart.matrix))] <- 0
