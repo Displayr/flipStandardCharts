@@ -1,5 +1,6 @@
 #' @importFrom flipFormat FormatAsReal
 dataLabelAnnotation <- function(chart.matrix,
+                                annotations = NULL,
                                 data.label.mult = 1,
                                 bar.decimals = 0,
                                 bar.prefix = "",
@@ -10,7 +11,8 @@ dataLabelAnnotation <- function(chart.matrix,
                                 display.threshold = NULL,
                                 dates)
 {
-    text <- paste(bar.prefix,
+    text <- if (!is.null(annotations)) annotations
+            else paste(bar.prefix,
                   FormatAsReal(chart.matrix * data.label.mult, decimals = bar.decimals),
                   bar.suffix, sep = "")
 

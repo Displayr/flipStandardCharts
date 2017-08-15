@@ -7,6 +7,7 @@
 #'  "100\% Stacked Area", "Bar", "Stacked Bar", "100% Stacked Bar",
 #'  "Column", "Stacked Column", "100% Stacked Column", "Line", "Donut",
 #'  "Pie", "Labeled Scatterplot", "Labeled Bubbleplot", "Radar".
+#' @param annotations Optional character matrix which contains annotations to be included on chart. The matrix should be the same dimension as the input matrix \code{y}. \code{NA}s will be treated as empty strings.
 #' @param fit.type Character; type of line of best fit. Can be one of "None", "Linear" or "Smooth" (loess local polynomial fitting).
 #' @param fit.ignore.last Boolean; whether to ignore the last data point in the fit.
 #' @param fit.line.type Character; One of "solid", "dot", "dash, "dotdash", or length of dash "2px", "5px".
@@ -310,6 +311,7 @@
 #' @export
 Chart <-   function(y = NULL,
                     type = "Column",
+                    annotations = NULL,
                     fit.type = "None", # can be "Smooth" or anything else
                     fit.ignore.last = FALSE,
                     fit.line.type = "dot",
@@ -1021,6 +1023,23 @@ Chart <-   function(y = NULL,
             y.title <- ""
     }
 
+    if (!is.null(annotations))
+    {
+        if (!(is.area.or.line.chart || is.bar.or.column.chart))
+            stop("Annotations are not supported for charts of type '", type, "'.")
+        if (data.label.show)
+            warning("Data labels use annotations instead of data values.")
+        data.label.show <- TRUE
+        annotations <- as.matrix(annotations)
+        if (transpose)
+            annotations <- t(annotations)
+        annotations[is.na(annotations)] <- ""
+        if (any(dim(annotations) != dim(chart.matrix)))
+            stop("Annotations should be a character matrix of the same dimensions as the input data (",
+                paste(if (transpose) rev(dim(chart.matrix)) else dim(chart.matrix), collapse=" x "), ").")
+    }
+
+
     # Use global fonts if necessary
     if (is.null(title.font.family) || title.font.family == "") title.font.family <- global.font.family
     if (is.null(legend.font.family) || legend.font.family == "") legend.font.family <- global.font.family
@@ -1273,7 +1292,7 @@ Chart <-   function(y = NULL,
             label.plot[(data.label.max.plot + 1):n.lab] <- ""
         }
         if (is.null(scatterplot.data$label))
-            warning("No labels were provided for a Labeled Scatterplot. Consider trying Scatterplot instead.")
+            stop("Data contains no labels but 'Show labels' was checked.")
 
         return(rhtmlLabeledScatter::LabeledScatter(X = scatterplot.data$x,
                        Y = scatterplot.data$y,
@@ -1518,6 +1537,7 @@ Chart <-   function(y = NULL,
     }
     data.annotations <- if (data.label.show && is.bar.or.column.chart)
         dataLabelAnnotation(chart.matrix = chart.matrix,
+                            annotations = annotations,
                             data.label.mult = data.label.mult,
                             bar.decimals = data.label.decimals,
                             bar.prefix = data.label.prefix,
@@ -2028,12 +2048,13 @@ Chart <-   function(y = NULL,
             }
 
             # Used by line, area and scatter charts
-            source.text <- if (is.area.or.line.chart && data.label.show)
-                paste(data.label.prefix,
+            source.text <- ""
+            if (!is.null(annotations))
+                source.text <- annotations[,i]
+            else if (is.area.or.line.chart && data.label.show)
+                source.text <- paste(data.label.prefix,
                       FormatAsReal(chart.matrix[, i] * data.label.mult, decimals = data.label.decimals),
                       data.label.suffix, sep = "")
-            else
-                ""
 
             ## Add trace components
             if (!is.null(series.mode) && regexpr('lines', series.mode) >= 1)

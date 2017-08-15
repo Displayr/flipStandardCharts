@@ -221,3 +221,18 @@ test_that("Color palette warnings", {
                          colors.custom.color = "red"), "Only a single color specified")
     expect_warning(Chart(named.vector[1:4], type="Pie", colors="Custom palette", colors.custom.palette = "red,orange,abc,blue"), "Invalid color 'abc' replaced with '#000000'")
 })
+
+test_that("Annotations", {
+    a1 <- letters[1:length(named.vector)]
+    a2 <- matrix(NA, nrow(named.matrix), ncol(named.matrix))
+    a2[1,1] <- "first entry"
+    a2[2,3] <- "random"
+    a2[1,4] <- "etc"
+
+    for (type in c("Line", "Area", "Bar", "Column"))
+    {
+        expect_error(Chart(named.vector, type=type, annotations=a1), NA)
+        expect_error(Chart(named.matrix, type=type, annotations=a2), NA)
+        expect_error(Chart(named.matrix, type=type, annotations=t(a2)))
+    }
+})

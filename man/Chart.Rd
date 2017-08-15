@@ -4,7 +4,7 @@
 \alias{Chart}
 \title{Generates an interactive chart based on the plotly library.}
 \usage{
-Chart(y = NULL, type = "Column", fit.type = "None",
+Chart(y = NULL, type = "Column", annotations = NULL, fit.type = "None",
   fit.ignore.last = FALSE, fit.line.type = "dot", fit.line.width = 1,
   fit.line.name = "Fitted", transpose = FALSE, subset = NULL,
   weights = NULL, title = "", title.font.family = NULL,
@@ -106,6 +106,8 @@ Chart(y = NULL, type = "Column", fit.type = "None",
 "100\% Stacked Area", "Bar", "Stacked Bar", "100% Stacked Bar",
 "Column", "Stacked Column", "100% Stacked Column", "Line", "Donut",
 "Pie", "Labeled Scatterplot", "Labeled Bubbleplot", "Radar".}
+
+\item{annotations}{Optional character matrix which contains annotations to be included on chart. The matrix should be the same dimension as the input matrix \code{y}. \code{NA}s will be treated as empty strings.}
 
 \item{fit.type}{Character; type of line of best fit. Can be one of "None", "Linear" or "Smooth" (loess local polynomial fitting).}
 
