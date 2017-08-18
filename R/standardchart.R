@@ -713,7 +713,7 @@ Chart <-   function(y = NULL,
                 stop("Logos cannot be an empty string\n")
             if (num.tables > 1)
                 logo.urls <- rep(logo.urls, num.tables)
-            logo.size <- rep(logo.size, length(y))
+            logo.size <- rep(logo.size, length(logo.urls))
         }
     }
 
