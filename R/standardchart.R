@@ -2018,8 +2018,8 @@ Chart <-   function(y = NULL,
                 indF <- indF[-which.max(scatterplot.data$x[indF])]
 
             tmp.dat <- data.frame(x=scatterplot.data$x[indF], y=scatterplot.data$y[indF])
-            tmp.fit <- if (fit.type == "Smooth") loess(y~x, data=tmp.dat)
-                       else                      lm(y~x, data=tmp.dat)
+            tmp.fit <- if (fit.type == "Smooth" && length(indF) > 7) loess(y~x, data=tmp.dat)
+                       else lm(y~x, data=tmp.dat)
 
             x.fit <- seq(from=min(tmp.dat$x), to=max(tmp.dat), length=100)
             y.fit <- predict(tmp.fit, data.frame(x=x.fit))
@@ -2103,8 +2103,8 @@ Chart <-   function(y = NULL,
                     if (fit.ignore.last)
                         tmp.dat <- tmp.dat[-which.max(tmp.dat$x),]
 
-                    tmp.fit <- if (fit.type == "Smooth") loess(y~I(as.numeric(x)), data=tmp.dat)
-                               else                      lm(y~x, data=tmp.dat)
+                    tmp.fit <- if (fit.type == "Smooth" && nrow(tmp.dat) > 7) loess(y~I(as.numeric(x)), data=tmp.dat)
+                               else lm(y~x, data=tmp.dat)
 
                     x.fit <- if (tmp.is.factor) x0
                              else seq(from=min(x), to=max(x), length=100)
@@ -2161,8 +2161,8 @@ Chart <-   function(y = NULL,
                     if (fit.ignore.last)
                         tmp.dat <- tmp.dat[-which.max(tmp.dat$y),]
 
-                    tmp.fit <- if (fit.type == "Smooth") loess(x~I(as.numeric(y)), data=tmp.dat)
-                               else                      lm(x~y, data=tmp.dat)
+                    tmp.fit <- if (fit.type == "Smooth" && nrow(tmp.dat) > 7) loess(x~I(as.numeric(y)), data=tmp.dat)
+                               else lm(x~y, data=tmp.dat)
 
                     y.fit <- if (tmp.is.factor) y0
                              else seq(from=min(y), to=max(y), length=100)
@@ -2277,8 +2277,8 @@ Chart <-   function(y = NULL,
                     if (fit.ignore.last)
                         tmp.dat <- tmp.dat[-which.max(tmp.dat$x),]
 
-                    tmp.fit <- if (fit.type == "Smooth") loess(y~I(as.numeric(x)), data=tmp.dat)
-                               else                      lm(y~x, data=tmp.dat)
+                    tmp.fit <- if (fit.type == "Smooth" && nrow(tmp.dat) > 7) loess(y~I(as.numeric(x)), data=tmp.dat)
+                               else lm(y~x, data=tmp.dat)
 
                     x.fit <- if (tmp.is.factor) x0
                              else seq(from=min(x), to=max(x), length=100)
