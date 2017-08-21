@@ -1966,9 +1966,9 @@ Chart <-   function(y = NULL,
             x.prefix, FormatAsReal(scatterplot.data$x, decimals = data.label.decimals), x.suffix, ",",
             y.prefix, FormatAsReal(scatterplot.data$y, decimals = data.label.decimals), y.suffix, ")")
         if (!is.null(scatterplot.data$color.values))
-            source.text <- paste0(source.text, "<br>", scatter.colors.name, ": ", FormatAsReal(scatterplot.data$color.values, decimals=2))
+            source.text <- paste0(source.text, "<br>", scatter.colors.name, ": ", scatterplot.data$color.strings)
         if (!is.null(scatterplot.data$z))
-            source.text <- paste0(source.text, "<br>", scatter.sizes.name, ": ", FormatAsReal(scatterplot.data$z, decimals=2))
+            source.text <- paste0(source.text, "<br>", scatter.sizes.name, ": ", FormatAsReal(scatterplot.data$z.unscaled, decimals=2))
 
         if (fit.type != "None")
         {

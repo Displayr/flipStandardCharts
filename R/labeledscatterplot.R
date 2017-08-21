@@ -84,9 +84,11 @@ scatterplotData <- function(chart.matrix,
     }
 
     # scale point sizes if needed
+    z.unscaled <- NULL
     if (type == "Scatterplot" && ncol(chart.matrix) > 2)
     {
         # scaling for plotly scatterplots - sizemode="area" does not work
+        z.unscaled <- chart.matrix[,3]
         sc <- chart.matrix[,3]
         sc <- sqrt(sc)
         sc <- sc/max(sc, na.rm=T) * 50
@@ -96,8 +98,13 @@ scatterplotData <- function(chart.matrix,
 
     if (is.null(colors))
         colors <- "Default colors"
+    color.string <- NULL
     if (!is.null(colorscale.variable))
+    {
+        color.string <- if (is.numeric(colorscale.variable)) FormatAsReal(as.numeric(colorscale.variable), 2)
+                        else as.character(colorscale.variable)
         colorscale.variable <- AsNumeric(colorscale.variable, binary=F)
+    }
     num.colors <- if (!is.null(colorscale.variable)) 3
                   else                               length(unique(group))
     colors <- StripAlphaChannel(ChartColors(number.colors.needed = num.colors,
@@ -125,9 +132,11 @@ scatterplotData <- function(chart.matrix,
     result$x <- if (transpose) AsNumeric(chart.matrix[, 2], binary=F) else AsNumeric(chart.matrix[, 1], binary=F)
     result$y <- if (transpose) AsNumeric(chart.matrix[, 1], binary=F) else AsNumeric(chart.matrix[, 2], binary=F)
     result$z <- if (ncol(chart.matrix) >= 3) AsNumeric(abs(chart.matrix[, 3]), binary=F) else NULL
+    result$z.unscaled <- z.unscaled
     result$colors <- colors
     result$color.scale <- color.scale
     result$color.values <- color.values
+    result$color.string <- color.string
 
     result$label <- if (!is.null(logos)) logos else rownames(chart.matrix)
     result$label.alt <- rownames(chart.matrix)
