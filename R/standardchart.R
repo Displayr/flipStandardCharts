@@ -512,7 +512,7 @@ Chart <-   function(y = NULL,
         series.line.width <- 0
     if (type != "Pie" || is.null(pie.subslice.colors) || pie.subslice.colors == "Group colors")
          pie.subslice.colors <- NULL
-    if (type != "Labeled Bubbleplot")
+    if (!type %in% c("Scatterplot", "Labeled Scatterplot", "Labeled Bubbleplot"))
         z.title <- ""
     if (!type %in% c("Scatterplot", "Labeled Scatterplot", "Labeled Bubbleplot"))
     {
@@ -805,23 +805,7 @@ Chart <-   function(y = NULL,
                 scatter.colors.var <- y[,scatter.colors.var]
             }
         }
-        if (nchar(footer) == 0)
-        {
-            if (!is.null(scatter.labels.var))
-                footer <- sprintf("%sPoints labeled by '%s'; ", footer, scatter.labels.name)
-            if (!is.null(scatter.colors.var))
-            {
-                footer <- sprintf("%sPoints colored according to '%s'; ", footer, scatter.colors.name)
-                if (nchar(colorbar.title) == 0)
-                    colorbar.title <- scatter.colors.name
-            }
-            if (!is.null(scatter.sizes.var))
-            {
-                footer <- sprintf("%sPoints sizes are proportional to absolute value of '%s'; ", footer, scatter.sizes.name)
-                if (nchar(z.title) == 0)
-                    z.title <- scatter.sizes.name
-            }
-        }
+
         chart.matrix <- if (is.null(scatter.x.var) && is.null(scatter.y.var)) y
                         else cbind(if (is.null(scatter.x.var)) 0 else AsNumeric(scatter.x.var, binary=F),
                                    if (is.null(scatter.y.var)) 0 else AsNumeric(scatter.y.var, binary=F))
@@ -840,6 +824,26 @@ Chart <-   function(y = NULL,
             {
                 chart.matrix <- if (ncol(chart.matrix) == 2) cbind(chart.matrix, sc)
                                 else cbind(chart.matrix, 0, sc)
+            }
+        }
+
+        if (nchar(footer) == 0)
+        {
+            if (!is.null(scatter.labels.var))
+                footer <- sprintf("%sPoints labeled by '%s'; ", footer, scatter.labels.name)
+            if (!is.null(scatter.colors.var))
+            {
+                footer <- sprintf("%sPoints colored according to '%s'; ", footer, scatter.colors.name)
+                if (nchar(colorbar.title) == 0)
+                    colorbar.title <- scatter.colors.name
+            }
+            if (!is.null(scatter.sizes.var) || ncol(chart.matrix) >= 3)
+            {
+                if (!exists("scatter.sizes.name"))
+                    scatter.sizes.name <- colnames(chart.matrix)[3]
+                footer <- sprintf("%sPoints sizes are proportional to absolute value of '%s'; ", footer, scatter.sizes.name)
+                if (nchar(z.title) == 0)
+                    z.title <- scatter.sizes.name
             }
         }
 
@@ -865,7 +869,7 @@ Chart <-   function(y = NULL,
             }
             tmp.factor <- factor(tmp.factor, levels=scatter.group.labels)
             scatter.group.indices <- as.numeric(tmp.factor)
-            scatter.colors.var <- NULL
+            scatter.colors.var <- NULL # must do this AFTER footer info is put in
         }
         if (anyDuplicated(chart.matrix, margin=1))
             warning("Chart contains overlapping points in the same position.")
@@ -1962,9 +1966,9 @@ Chart <-   function(y = NULL,
             x.prefix, FormatAsReal(scatterplot.data$x, decimals = data.label.decimals), x.suffix, ",",
             y.prefix, FormatAsReal(scatterplot.data$y, decimals = data.label.decimals), y.suffix, ")")
         if (!is.null(scatterplot.data$color.values))
-            source.text <- paste0(source.text, "<br>", colorbar.title, ": ", FormatAsReal(scatterplot.data$color.values, decimals=2))
+            source.text <- paste0(source.text, "<br>", scatter.colors.name, ": ", FormatAsReal(scatterplot.data$color.values, decimals=2))
         if (!is.null(scatterplot.data$z))
-            source.text <- paste0(source.text, "<br>", z.title, ": ", FormatAsReal(scatterplot.data$z, decimals=2))
+            source.text <- paste0(source.text, "<br>", scatter.sizes.name, ": ", FormatAsReal(scatterplot.data$z, decimals=2))
 
         if (fit.type != "None")
         {
@@ -2009,7 +2013,7 @@ Chart <-   function(y = NULL,
 
             p <- add_trace(p, x=scatterplot.data$x[ind], y=scatterplot.data$y[ind],
                     name=g.list[ggi], showlegend=(length(g.list) > 1),
-                    opacity=if(is.null(scatterplot.data$z)) 1 else 0.8,
+                    opacity=if(is.null(scatterplot.data$z)) 1 else 0.4,
                     text=source.text[ind], textfont=textfont, textposition=data.label.position,
                     marker=marker.obj, line=line.obj,
                     type=plotly.type, mode=series.mode, symbols=series.marker.symbols,
