@@ -512,7 +512,7 @@ Chart <-   function(y = NULL,
         series.line.width <- 0
     if (type != "Pie" || is.null(pie.subslice.colors) || pie.subslice.colors == "Group colors")
          pie.subslice.colors <- NULL
-    if (!type %in% c("Scatterplot", "Labeled Scatterplot", "Labeled Bubbleplot"))
+    if (type != "Labeled Bubbleplot")
         z.title <- ""
     if (!type %in% c("Scatterplot", "Labeled Scatterplot", "Labeled Bubbleplot"))
     {
