@@ -141,7 +141,6 @@ HeatMap <- function(table,
 
     if (!is.null(left.columns) || !is.null(right.columns)) {
         show.y.axes.labels <- FALSE
-        #rownames(mat) <- rownames(table)
         row.order <- if (is.null(rownames(mat)))
             seq(nrow(mat))
         else
