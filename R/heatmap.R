@@ -41,6 +41,7 @@
 #' @importFrom flipFormat FormatAsReal
 #' @importFrom flipTables Reorder Cbind
 #' @importFrom flipTransformations ParseEnteredData
+#' @importFrom stringr str_trim
 #' @export
 #'
 HeatMap <- function(table,
@@ -144,7 +145,7 @@ HeatMap <- function(table,
         row.order <- if (is.null(rownames(mat)))
             seq(nrow(mat))
         else
-            rownames(mat)
+            str_trim(rownames(mat))
     }
 
     if (!is.null(left.columns)) {
