@@ -92,10 +92,10 @@ Chart(y = NULL, type = "Column", annotations = NULL, fit.type = "None",
   pie.subslice.colors.custom.palette = NA,
   pie.subslice.colors.repeat = TRUE, pie.border.color = rgb(255, 255, 255,
   maxColorValue = 255), pie.inner.radius = 70, pie.show.percentages = FALSE,
-  z.title = "", trend.lines = FALSE, scatter.group.indices = "",
-  scatter.group.labels = "", scatter.var.from.matrix = TRUE,
-  scatter.colors.as.group = FALSE, scatter.x.var = NULL,
-  scatter.y.var = NULL, scatter.labels.var = NULL,
+  z.title = "", colorbar.title = "", trend.lines = FALSE,
+  scatter.group.indices = "", scatter.group.labels = "",
+  scatter.var.from.matrix = TRUE, scatter.colors.as.group = FALSE,
+  scatter.x.var = NULL, scatter.y.var = NULL, scatter.labels.var = NULL,
   scatter.sizes.var = NULL, scatter.colors.var = NULL,
   us.date.format = NULL, logos = NULL, logo.size = 0.5)
 }
@@ -554,6 +554,8 @@ charts instead of original values.}
 
 \item{z.title}{Character; title of the bubble-size legend in labeled
 bubbleplots.}
+
+\item{colorbar.title}{Character; title of the colorscale bar, which is present in Scatterplots when \code{scatter.colors.var} is used and \code{scatter.colors.as.group} is \code{FALSE}.}
 
 \item{trend.lines}{Boolean indicating whether to plot trend lines for multiple tables.}
 
