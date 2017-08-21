@@ -108,20 +108,26 @@ scatterplotData <- function(chart.matrix,
                                             custom.palette = colors.custom.palette,
                                             reverse = colors.reverse,
                                             trim.light.colors = TRUE))
+
+    color.scale <- NULL
+    color.values <- NULL
     if (!is.null(colorscale.variable))
     {
         col.fun <- colorRamp(colors)
-        group <- 1:length(colorscale.variable)
-        sc.vals <- (colorscale.variable - min(colorscale.variable, na.rm=T))/diff(range(colorscale.variable, na.rm=T))
-        sc.tmp <- col.fun(sc.vals)
-        sc.tmp[is.na(sc.tmp)] <- 204    # NAs turn grey
-        colors <- rgb(sc.tmp, maxColorValue=255)
+        group <- rep("Group", nrow(chart.matrix))
+        c.tmp <- rgb(col.fun((0:5)/5), maxColorValue=255)
+        v.tmp <- seq(from=0, to=1, length=length(c.tmp))
+        color.scale <- mapply(function(a,b)c(a,b), a=v.tmp, b=c.tmp, SIMPLIFY=F)
+        color.values <- colorscale.variable
+        colors <- NULL
     }
     result <- list()
     result$x <- if (transpose) AsNumeric(chart.matrix[, 2], binary=F) else AsNumeric(chart.matrix[, 1], binary=F)
     result$y <- if (transpose) AsNumeric(chart.matrix[, 1], binary=F) else AsNumeric(chart.matrix[, 2], binary=F)
     result$z <- if (ncol(chart.matrix) >= 3) AsNumeric(abs(chart.matrix[, 3]), binary=F) else NULL
     result$colors <- colors
+    result$color.scale <- color.scale
+    result$color.values <- color.values
 
     result$label <- if (!is.null(logos)) logos else rownames(chart.matrix)
     result$label.alt <- rownames(chart.matrix)

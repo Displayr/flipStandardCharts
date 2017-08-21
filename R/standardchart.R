@@ -284,6 +284,7 @@
 #' charts instead of original values.
 #' @param z.title Character; title of the bubble-size legend in labeled
 #' bubbleplots.
+#' @param colorbar.title Character; title of the colorscale bar, which is present in Scatterplots when \code{scatter.colors.var} is used and \code{scatter.colors.as.group} is \code{FALSE}.
 #' @param trend.lines Boolean indicating whether to plot trend lines for multiple tables.
 #' @param scatter.group.indices Vector or text of comma-separated group indices
 #' corresponding to each row.
@@ -482,6 +483,7 @@ Chart <-   function(y = NULL,
                     pie.inner.radius = 70,
                     pie.show.percentages = FALSE,
                     z.title = "",
+                    colorbar.title = "",
                     trend.lines = FALSE,
                     scatter.group.indices = "",
                     scatter.group.labels = "",
@@ -808,9 +810,17 @@ Chart <-   function(y = NULL,
             if (!is.null(scatter.labels.var))
                 footer <- sprintf("%sPoints labeled by '%s'; ", footer, scatter.labels.name)
             if (!is.null(scatter.colors.var))
+            {
                 footer <- sprintf("%sPoints colored according to '%s'; ", footer, scatter.colors.name)
+                if (nchar(colorbar.title) == 0)
+                    colorbar.title <- scatter.colors.name
+            }
             if (!is.null(scatter.sizes.var))
+            {
                 footer <- sprintf("%sPoints sizes are proportional to absolute value of '%s'; ", footer, scatter.sizes.name)
+                if (nchar(z.title) == 0)
+                    z.title <- scatter.sizes.name
+            }
         }
         chart.matrix <- if (is.null(scatter.x.var) && is.null(scatter.y.var)) y
                         else cbind(if (is.null(scatter.x.var)) 0 else AsNumeric(scatter.x.var, binary=F),
@@ -1951,6 +1961,10 @@ Chart <-   function(y = NULL,
         source.text <- paste0(scatterplot.data$label, " (",
             x.prefix, FormatAsReal(scatterplot.data$x, decimals = data.label.decimals), x.suffix, ",",
             y.prefix, FormatAsReal(scatterplot.data$y, decimals = data.label.decimals), y.suffix, ")")
+        if (!is.null(scatterplot.data$color.values))
+            source.text <- paste0(source.text, "<br>", colorbar.title, ": ", FormatAsReal(scatterplot.data$color.values, decimals=2))
+        if (!is.null(scatterplot.data$z))
+            source.text <- paste0(source.text, "<br>", z.title, ": ", FormatAsReal(scatterplot.data$z, decimals=2))
 
         if (fit.type != "None")
         {
@@ -1978,15 +1992,26 @@ Chart <-   function(y = NULL,
         for (ggi in 1:length(g.list))
         {
             ind <- which(scatterplot.data$group == g.list[ggi])
-            line.obj <- if (is.null(series.line.width) || series.line.width == 0) NULL
-                        else list(width=series.line.width, color=scatterplot.data$colors[ggi])
             sizes <- if (!is.null(scatterplot.data$z)) scatterplot.data$z[ind]
                      else series.marker.size
+
+            line.obj <- if (is.null(series.line.width) || series.line.width == 0) NULL
+                        else list(width=series.line.width, color=scatterplot.data$colors[ggi])
+            marker.obj <- NULL
+            if (ggi == 1 && !is.null(scatterplot.data$color.scale))
+                marker.obj <- list(size=sizes, sizemode="diameter", line=list(width=series.marker.border.width),
+                                color=scatterplot.data$color.values, 
+                                showscale = T, colorscale=scatterplot.data$color.scale,
+                                colorbar = list(title=colorbar.title, outlinewidth=0))
+            else
+                marker.obj <- list(size=sizes, sizemode="diameter", line=list(width=series.marker.border.width),
+                                color=scatterplot.data$colors[ggi])
+
             p <- add_trace(p, x=scatterplot.data$x[ind], y=scatterplot.data$y[ind],
                     name=g.list[ggi], showlegend=(length(g.list) > 1),
+                    opacity=if(is.null(scatterplot.data$z)) 1 else 0.8,
                     text=source.text[ind], textfont=textfont, textposition=data.label.position,
-                    marker=list(size=sizes, sizemode="diameter", color=scatterplot.data$colors[ggi],
-                    line=list(width=series.marker.border.width)), line=line.obj,
+                    marker=marker.obj, line=line.obj,
                     type=plotly.type, mode=series.mode, symbols=series.marker.symbols,
                     hoverinfo=if(length(g.list) > 1) "name+text" else "text")
 
