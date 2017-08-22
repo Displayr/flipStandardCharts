@@ -2268,10 +2268,15 @@ Chart <-   function(y = NULL,
                 y.label <- y.labels[i]
                 tmp.group <- if (legend.group == "") paste("group", i) else legend.group
 
+                # Avoid weird thing plotly does in area charts with NAs                
+                show.pts <- 1:length(y)
+                if (type == "Area")
+                    show.pts <- which(is.finite(y))
+
                 p <- add_trace(p,
                                type = plotly.type,
-                               x = x,
-                               y = y,
+                               x = x[show.pts],
+                               y = y[show.pts],
                                fill = fill.bound,
                                fillcolor = toRGB(colors[i], alpha = opacity),
                                connectgaps = FALSE,
@@ -2286,7 +2291,7 @@ Chart <-   function(y = NULL,
                 # turn off if series present?
                 not.na <- is.finite(y)
                 is.single <- not.na & c(TRUE, !not.na[-nrow(chart.matrix)]) & c(!not.na[-1], TRUE)
-                if (any(is.single))
+                if (any(is.single) && type == "Line")
                 {
                     p <- add_trace(p,
                                type = "scatter",

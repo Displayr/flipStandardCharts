@@ -3,12 +3,9 @@ barChart <- function(chart.matrix,
                      x.tick.format.manual = "",
                      series.marker.border.width)
 {
-    if (type %in% c("100% Stacked Bar", "Stacked Bar") &&
-        any(is.na(as.matrix(chart.matrix))))
-    {
+    # Data is not changed, but NAs look like zeros on the chart
+    if (any(is.na(as.matrix(chart.matrix))))
         warning("Missing values have been set to zero.")
-        chart.matrix[which(is.na(chart.matrix))] <- 0
-    }
 
     if (type == "100% Stacked Bar")
     {
