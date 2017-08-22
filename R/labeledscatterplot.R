@@ -98,10 +98,10 @@ scatterplotData <- function(chart.matrix,
 
     if (is.null(colors))
         colors <- "Default colors"
-    color.string <- NULL
+    color.strings <- NULL
     if (!is.null(colorscale.variable))
     {
-        color.string <- if (is.numeric(colorscale.variable)) FormatAsReal(as.numeric(colorscale.variable), 2)
+        color.strings <- if (is.numeric(colorscale.variable)) FormatAsReal(as.numeric(colorscale.variable), 2)
                         else as.character(colorscale.variable)
         colorscale.variable <- AsNumeric(colorscale.variable, binary=F)
     }
@@ -118,7 +118,7 @@ scatterplotData <- function(chart.matrix,
 
     color.scale <- NULL
     color.values <- NULL
-    if (!is.null(colorscale.variable))
+    if (!is.null(colorscale.variable) && type == "Scatterplot")
     {
         col.fun <- colorRamp(colors)
         group <- rep("Group", nrow(chart.matrix))
@@ -128,6 +128,16 @@ scatterplotData <- function(chart.matrix,
         color.values <- colorscale.variable
         colors <- NULL
     }
+    if (!is.null(colorscale.variable) && type != "Scatterplot")
+    {
+         col.fun <- colorRamp(colors)
+         group <- 1:length(colorscale.variable)
+         sc.vals <- (colorscale.variable - min(colorscale.variable, na.rm=T))/diff(range(colorscale.variable, na.rm=T))
+         sc.tmp <- col.fun(sc.vals)
+         sc.tmp[is.na(sc.tmp)] <- 204    # NAs turn grey
+         colors <- rgb(sc.tmp, maxColorValue=255)
+    }
+
     result <- list()
     result$x <- if (transpose) AsNumeric(chart.matrix[, 2], binary=F) else AsNumeric(chart.matrix[, 1], binary=F)
     result$y <- if (transpose) AsNumeric(chart.matrix[, 1], binary=F) else AsNumeric(chart.matrix[, 2], binary=F)
@@ -136,7 +146,7 @@ scatterplotData <- function(chart.matrix,
     result$colors <- colors
     result$color.scale <- color.scale
     result$color.values <- color.values
-    result$color.string <- color.string
+    result$color.strings <- color.strings
 
     result$label <- if (!is.null(logos)) logos else rownames(chart.matrix)
     result$label.alt <- rownames(chart.matrix)

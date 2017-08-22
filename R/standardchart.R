@@ -831,25 +831,6 @@ Chart <-   function(y = NULL,
             }
         }
 
-        if (nchar(footer) == 0)
-        {
-            if (!is.null(scatter.labels.var))
-                footer <- sprintf("%sPoints labeled by '%s'; ", footer, scatter.labels.name)
-            if (!is.null(scatter.colors.var))
-            {
-                footer <- sprintf("%sPoints colored according to '%s'; ", footer, scatter.colors.name)
-                if (nchar(colorbar.title) == 0)
-                    colorbar.title <- scatter.colors.name
-            }
-            if (!is.null(scatter.sizes.var) || ncol(chart.matrix) >= 3)
-            {
-                if (!exists("scatter.sizes.name"))
-                    scatter.sizes.name <- colnames(chart.matrix)[3]
-                footer <- sprintf("%sPoints sizes are proportional to absolute value of '%s'; ", footer, scatter.sizes.name)
-                if (nchar(z.title) == 0)
-                    z.title <- scatter.sizes.name
-            }
-        }
 
         if (!is.null(scatter.labels.var))
             rownames(chart.matrix) <- scatter.labels.var
@@ -912,6 +893,27 @@ Chart <-   function(y = NULL,
         y.abs.max <- max(abs(range(scatterplot.data$y, na.rm=T)), na.rm=T)
         if (!is.finite(y.abs.max) || y.abs.max == 0 || any(abs(range(scatterplot.data$y, na.rm=T))/y.abs.max < 1e-2))
             y.zero <- FALSE
+
+        if (nchar(footer) == 0)
+        {
+            if (!is.null(scatter.labels.var))
+                footer <- sprintf("%sPoints labeled by '%s'; ", footer, scatter.labels.name)
+            if (!is.null(scatter.colors.var))
+            {
+                footer <- sprintf("%sPoints colored according to '%s'; ", footer, scatter.colors.name)
+                if (nchar(colorbar.title) == 0)
+                    colorbar.title <- scatter.colors.name
+            }
+            if (!is.null(scatterplot.data$z))
+            {
+                if (!exists("scatter.sizes.name"))
+                    scatter.sizes.name <- colnames(chart.matrix)[3]
+                footer <- sprintf("%sPoints sizes are proportional to absolute value of '%s'; ", footer, scatter.sizes.name)
+                if (nchar(z.title) == 0)
+                    z.title <- scatter.sizes.name
+            }
+        }
+
     }
     else
     {
@@ -2010,7 +2012,7 @@ Chart <-   function(y = NULL,
                 marker.obj <- list(size=sizes, sizemode="diameter", line=list(width=series.marker.border.width),
                                 color=scatterplot.data$color.values,
                                 showscale = T, colorscale=scatterplot.data$color.scale,
-                                colorbar = list(title=colorbar.title, outlinewidth=0))
+                                colorbar = list(title=colorbar.title, outlinewidth=0, opacity=0.4))
             else
                 marker.obj <- list(size=sizes, sizemode="diameter", line=list(width=series.marker.border.width),
                                 color=scatterplot.data$colors[ggi])
@@ -2273,6 +2275,7 @@ Chart <-   function(y = NULL,
                 if (type == "Area")
                     show.pts <- which(is.finite(y))
 
+                # Need to add data labels first otherwise it will override hovertext in area chart
                 if (data.label.show)
                     p <- add_trace(p,
                                type = "scatter",
