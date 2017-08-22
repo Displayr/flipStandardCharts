@@ -664,7 +664,7 @@ Chart <-   function(y = NULL,
         else GetTidyTwoDimensionalArray(y[[1]], rows.to.ignore, cols.to.ignore)
         r.names <- rownames(y[[1]])
         c.names <- colnames(y[[1]])
-        if (!is.null(r.names) && any(duplicated(r.names)))
+        if (!is.null(r.names) && any(duplicated(r.names)) && length(y) > 1)
             stop("Row names of tables must be unique or NULL for multiple tables to be plotted but are duplicated.")
 
         if (num.tables > 1) {
