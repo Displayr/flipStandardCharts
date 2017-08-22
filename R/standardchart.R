@@ -2114,7 +2114,7 @@ Chart <-   function(y = NULL,
             } else
                  marker <- NULL
 
-            if (i == 1)
+            if (!is.stacked && i == 1)
             {
                 # add invisible line to force all categorical labels to be shown
                 if (!swap.axes.and.data)
@@ -2273,6 +2273,20 @@ Chart <-   function(y = NULL,
                 if (type == "Area")
                     show.pts <- which(is.finite(y))
 
+                if (data.label.show)
+                    p <- add_trace(p,
+                               type = "scatter",
+                               mode = "text",
+                               x = x,
+                               y = y,
+                               legendgroup = tmp.group,
+                               name = y.label,
+                               text = source.text,
+                               textfont = textfont,
+                               textposition = data.label.position,
+                               hoverinfo = "none",
+                               showlegend = FALSE)
+
                 p <- add_trace(p,
                                type = plotly.type,
                                x = x[show.pts],
@@ -2307,18 +2321,6 @@ Chart <-   function(y = NULL,
                                showlegend = FALSE)
                 }
 
-                if (data.label.show)
-                    p <- add_trace(p,
-                               type = "scatter",
-                               mode = "text",
-                               x = x,
-                               y = y,
-                               legendgroup = tmp.group,
-                               name = y.label,
-                               text = source.text,
-                               textfont = textfont,
-                               textposition = data.label.position,
-                               showlegend = FALSE)
 
                 if (fit.type != "None")
                 {
