@@ -2110,6 +2110,19 @@ Chart <-   function(y = NULL,
             } else
                  marker <- NULL
 
+            if (i == 1)
+            {
+                # add invisible line to force all categorical labels to be shown
+                if (!swap.axes.and.data)
+                    p <- add_trace(p, x=x, y=rep(min(y,na.rm=T), length(x)), 
+                               type="scatter", mode="markers",
+                               hoverinfo="none", showlegend=F, opacity=0)
+                else
+                    p <- add_trace(p, x=rep(min(x,na.rm=T), length(y)), y=y, 
+                               type="scatter", mode="markers",
+                               hoverinfo="none", showlegend=F, opacity=0)
+            }
+
             if (plotly.type == "bar")
             {
                 tmp.group <- if (legend.group == "") paste("group", i) else legend.group
@@ -2300,6 +2313,8 @@ Chart <-   function(y = NULL,
 
                 if (fit.type != "None")
                 {
+                    if (x.axis.type == "linear")
+                        x <- as.numeric(x)
                     tmp.is.factor <- x.axis.type != "linear" && x.axis.type != "date"
                     x0 <- if (!tmp.is.factor) x else 1:length(x) # what happens with dates?
                     tmp.dat <- data.frame(x=x0, y=y)
@@ -2307,7 +2322,7 @@ Chart <-   function(y = NULL,
                         tmp.dat <- tmp.dat[-which.max(tmp.dat$x),]
 
                     tmp.fit <- if (fit.type == "Smooth" && nrow(tmp.dat) > 7) loess(y~I(as.numeric(x)), data=tmp.dat)
-                               else lm(y~x, data=tmp.dat)
+                               else lm(y~I(as.numeric(x)), data=tmp.dat)
 
                     x.fit <- if (tmp.is.factor) x0
                              else seq(from=min(x), to=max(x), length=100)
@@ -2322,7 +2337,6 @@ Chart <-   function(y = NULL,
                               line=list(dash=fit.line.type, width=fit.line.width,
                               color=fit.line.colors[i]))
                 }
-
             }
             else
             {

@@ -3,7 +3,8 @@ columnChart <- function(chart.matrix,
                         y.tick.format.manual = "",
                         series.marker.border.width)
 {
-    if (any(is.na(as.matrix(chart.matrix))))
+    if (type %in% c("100% Stacked Column", "Stacked Column") &&
+        any(is.na(as.matrix(chart.matrix))))
     {
         warning("Missing values have been set to zero.")
         chart.matrix[which(is.na(chart.matrix))] <- 0
