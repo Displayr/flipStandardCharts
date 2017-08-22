@@ -183,13 +183,12 @@ test_that("Multiple tables", {
         expect_error(print(Chart(list(t1, t2, t3), type = "Labeled Scatterplot", trend.lines = trend.lines)), NA)
         expect_error(print(Chart(list(t1, t2, t3), type = "Bar", trend.lines = trend.lines)), "Multiple tables can only be used with Labeled Scatterplot.")
     }
-    rownames(t1)[2] <- "Coca-Cola"
-    expect_error(print(Chart(list(t1, t2, t3), type = "Labeled Scatterplot", trend.lines = TRUE)), "Row names of tables must be unique or NULL for trend lines.")
-    expect_error(print(Chart(list(t1, t2, t3), type = "Labeled Scatterplot", trend.lines = FALSE)), "Tables should have identical row names.")
-    rownames(t2)[2] <- "Coca-Cola"
-    rownames(t3)[2] <- "Coca-Cola"
-    expect_error(print(Chart(list(t1, t2, t3), type = "Labeled Scatterplot", trend.lines = TRUE)), "Row names of tables must be unique or NULL for trend lines.")
-    expect_error(print(Chart(list(t1, t2, t3), type = "Labeled Scatterplot", trend.lines = FALSE)), NA)
+    rev.rows <- t2
+    rownames(rev.rows) <- rev(rownames(rev.rows))
+    expect_error(print(Chart(list(t1, rev.rows, t3), type = "Labeled Scatterplot", trend.lines = TRUE)), NA)
+    rownames(rev.rows)[2] <- "Coca-Cola"
+    expect_error(print(Chart(list(rev.rows, t3), type = "Labeled Scatterplot", trend.lines = TRUE)), "Row names of tables must be unique or NULL for multiple tables.")
+    expect_error(print(Chart(list(t1, rev.rows, t3), type = "Labeled Scatterplot", trend.lines = TRUE)), "Tables should have identical row names but table.")
 })
 
 
