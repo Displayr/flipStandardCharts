@@ -664,8 +664,8 @@ Chart <-   function(y = NULL,
         else GetTidyTwoDimensionalArray(y[[1]], rows.to.ignore, cols.to.ignore)
         r.names <- rownames(y[[1]])
         c.names <- colnames(y[[1]])
-        if (!is.null(r.names) && any(duplicated(r.names)) && trend.lines)
-            stop("Row names of tables must be unique or NULL for trend lines to be plotted but are duplicated.")
+        if (!is.null(r.names) && any(duplicated(r.names)) && length(y) > 1)
+            stop("Row names of tables must be unique or NULL for multiple tables to be plotted but are duplicated.")
 
         if (num.tables > 1) {
             for (i in 2:num.tables)
@@ -673,12 +673,16 @@ Chart <-   function(y = NULL,
                 y[[i]] <- if (transpose) GetTidyTwoDimensionalArray(t(y[[i]]), rows.to.ignore, cols.to.ignore)
                             else GetTidyTwoDimensionalArray(y[[i]], rows.to.ignore, cols.to.ignore)
 
-                if (!identical(r.names, rownames(y[[i]])))
+                if (!setequal(r.names, rownames(y[[i]])))
                     stop(sprintf("Tables should have identical row names but table '%s' differs from table '%s'.",
                                  y.names[i], y.names[1]))
-                if (!identical(c.names, colnames(y[[i]])))
+                if (!setequal(c.names, colnames(y[[i]])))
                     stop(sprintf("Tables should have identical column names but table '%s' differs from table '%s'.",
                                  y.names[i], y.names[1]))
+                if (!is.null(r.names))
+                    y[[i]] <- y[[i]][r.names, ]
+                if (!is.null(c.names))
+                    y[[i]] <- y[[i]][, c.names]
             }
         }
         y <- do.call(rbind, y)
@@ -2004,7 +2008,7 @@ Chart <-   function(y = NULL,
             marker.obj <- NULL
             if (ggi == 1 && !is.null(scatterplot.data$color.scale))
                 marker.obj <- list(size=sizes, sizemode="diameter", line=list(width=series.marker.border.width),
-                                color=scatterplot.data$color.values, 
+                                color=scatterplot.data$color.values,
                                 showscale = T, colorscale=scatterplot.data$color.scale,
                                 colorbar = list(title=colorbar.title, outlinewidth=0))
             else

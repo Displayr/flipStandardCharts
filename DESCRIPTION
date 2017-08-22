@@ -18,7 +18,8 @@ Imports:
     flipTransformations,
     rhtmlDonut,
     rhtmlHeatmap,
-    rhtmlLabeledScatter
+    rhtmlLabeledScatter,
+    stringr
 Remotes:
     Displayr/flipChartBasics,
     Displayr/flipData,
