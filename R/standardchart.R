@@ -898,8 +898,10 @@ Chart <-   function(y = NULL,
         {
             if (!is.null(scatter.labels.var))
                 footer <- sprintf("%sPoints labeled by '%s'; ", footer, scatter.labels.name)
-            if (!is.null(scatter.colors.var))
+            if ((!is.null(scatterplot.data$colors) || !is.null(scatterplot.data$color.values)) &&
+                exists("scatter.colors.name"))
             {
+                # scatter.colors.name will not be defined if table + group.indices is used
                 footer <- sprintf("%sPoints colored according to '%s'; ", footer, scatter.colors.name)
                 if (nchar(colorbar.title) == 0)
                     colorbar.title <- scatter.colors.name

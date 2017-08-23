@@ -10,6 +10,7 @@ Depends: R (>= 2.10)
 LazyData: TRUE
 Imports:
     plotly,
+    flipU,
     flipChartBasics,
     flipData,
     flipFormat,
@@ -21,6 +22,7 @@ Imports:
     rhtmlLabeledScatter,
     stringr
 Remotes:
+    Displayr/flipU,
     Displayr/flipChartBasics,
     Displayr/flipData,
     Displayr/flipFormat,
