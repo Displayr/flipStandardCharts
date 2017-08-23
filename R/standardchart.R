@@ -1,6 +1,6 @@
-#' Generates an interactive chart based on the plotly library.
+#' Generates an interactive chart.
 #'
-#' \code{Chart} generates standard charts from plotly library.
+#' \code{Chart} generates standard charts
 #'
 #' @param y A table, matrix, vector or data frame.
 #' @param type Character; type of chart. Can be "Area", "Stacked Area",
