@@ -2,7 +2,7 @@
 % Please edit documentation in R/standardchart.R
 \name{Chart}
 \alias{Chart}
-\title{Generates an interactive chart based on the plotly library.}
+\title{Generates an interactive chart.}
 \usage{
 Chart(y = NULL, type = "Column", annotations = NULL, fit.type = "None",
   fit.ignore.last = FALSE, fit.line.type = "dot", fit.line.width = 1,
@@ -585,7 +585,7 @@ corresponding to each row.}
 \item{logo.size}{Numeric controlling the size of the logos.}
 }
 \description{
-\code{Chart} generates standard charts from plotly library.
+\code{Chart} generates standard charts
 }
 \examples{
 z <- c(5, 6, 2, 1.5, 9, 2.2)
