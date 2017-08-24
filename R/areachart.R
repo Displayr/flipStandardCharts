@@ -16,6 +16,18 @@ areaChart <- function(chart.matrix,
     if (any(no.data.in.series))
         chart.matrix <- chart.matrix[, !no.data.in.series]
 
+    # Find gaps which are NOT at the ends of the series
+    has.gap <- FALSE
+    for (i in 1:ncol(chart.matrix))
+    {
+        na.seq <- rle(!is.finite(chart.matrix[,i]))
+        n <- length(na.seq$values)
+        if (any(na.seq$values[-c(1,n)]))
+            has.gap <- TRUE
+    }
+    if (is.null(series.line.width))
+        series.line.width <- if (!has.gap || type %in% c("Stacked Area", "100% Stacked Area")) 0 else 3 
+
     ## Change the matrix data according to requirements of the chart type
     if (type == "Stacked Area")
         chart.matrix <- cum.data(chart.matrix, "cumulative.sum")
@@ -59,6 +71,8 @@ areaChart <- function(chart.matrix,
                 legend.group = legend.group,
                 y.tickformat = y.tickformat,
                 series.mode = series.mode,
+                has.gap = has.gap,
+                line.width = series.line.width,
                 opacity = opacity))
 }
 

@@ -91,6 +91,8 @@ search.share <- structure(c(1.47058823529412, 14.2857142857143, 22.2222222222222
                                 "31 n:0", "32 n:0", "33 n:0", "34 n:0", "35 n:0", "36 n:0", "37 n:0",
                                 "38 n:0", "39 n:0", "40 n:0"))
 
+missing2 <- cbind(A=search.share, B=1:length(search.share))
+
 # Input types
 
 for (t in types)

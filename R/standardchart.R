@@ -508,8 +508,6 @@ Chart <-   function(y = NULL,
     # This is for compatibility with R GUI controls
     if (type == "Donut")
         transpose <- FALSE
-    if (type %in% c("Area", "Stacked", "100% Stacked Area"))
-        series.line.width <- 0
     if (type != "Pie" || is.null(pie.subslice.colors) || pie.subslice.colors == "Group colors")
          pie.subslice.colors <- NULL
     if (type != "Labeled Bubbleplot")
@@ -607,7 +605,13 @@ Chart <-   function(y = NULL,
         opacity <- if (type == "Area") 0.4 else 1
 
     if (is.null(series.line.width))
-        series.line.width <- if (is.area.chart || is.scatterplot) 0 else 3
+    {
+        series.line.width <- 3
+        if (is.area.chart)
+            series.line.width <- NULL
+        if (is.scatterplot)
+            series.line.width <- 0
+    }
 
     default.background.color <- rgb(255, 255, 255, maxColorValue = 255)
     if (((background.fill.color != default.background.color &&
@@ -1138,6 +1142,7 @@ Chart <-   function(y = NULL,
     y.tickformat <- NULL
     connectgap <- NULL
 
+    area.has.gap <- FALSE
     ## Settings specific to Area Charts
     if (type == "Area" | type == "Stacked Area" | type == "100% Stacked Area")
     {
@@ -1155,8 +1160,10 @@ Chart <-   function(y = NULL,
         y.tickformat <- chart.type.outputs$y.tickformat
         series.mode <- chart.type.outputs$series.mode
         opacity <- chart.type.outputs$opacity
+        series.line.width <- chart.type.outputs$line.width
+        area.has.gap <- chart.type.outputs$has.gap
     }
-
+    
     ## Settings specific to Line Charts
     if (type == "Line")
     {
@@ -1763,7 +1770,7 @@ Chart <-   function(y = NULL,
             max.x <- max(x.vals)
         }
         else
-        {
+        {   
             min.x <- 0
             max.x <- max(not.na) - 1
         }
@@ -2123,11 +2130,11 @@ Chart <-   function(y = NULL,
                 # add invisible line to force all categorical labels to be shown
                 if (!swap.axes.and.data)
                     p <- add_trace(p, x=x, y=rep(min(y,na.rm=T), length(x)), 
-                               type="scatter", mode="markers",
+                               type="scatter", mode="lines",
                                hoverinfo="none", showlegend=F, opacity=0)
                 else
                     p <- add_trace(p, x=rep(min(x,na.rm=T), length(y)), y=y, 
-                               type="scatter", mode="markers",
+                               type="scatter", mode="lines",
                                hoverinfo="none", showlegend=F, opacity=0)
             }
 
@@ -2177,11 +2184,10 @@ Chart <-   function(y = NULL,
                         if (is.numeric(x) || !is.null(ymd))
                             x.range <- range(data.annotations$x)
                         else
-                            x.range <- c(0, length(x))
+                            x.range <- c(-0.5, length(x)-0.5)
 
                         if (!is.null(ymd))
                         {
-                            #tmpd <- diff(data.annotations$x[,i])[1] * 6/24
                             tmpd <- diff(sort(data.annotations$x))[1] * 0.5
                             x.range <- x.range + c(-tmpd, tmpd)
                         }
@@ -2191,10 +2197,9 @@ Chart <-   function(y = NULL,
                     xaxis2 <- list(overlaying = "x",
                                    visible = FALSE,
                                    range = x.range)
-
                     p <- add_text(p,
                               xaxis = "x2",
-                              x = data.annotations$x[,i] + 0.5,
+                              x = data.annotations$x[,i],
                               y = data.annotations$y[,i],
                               text = data.annotations$text[,i],
                               textposition = "top center",
@@ -2292,22 +2297,40 @@ Chart <-   function(y = NULL,
                                hoverinfo = "none",
                                showlegend = FALSE)
 
-                p <- add_trace(p,
+                # Area chart (with no line)
+                # We need to do this separately because connectgaps = FALSE 
+                # has strange behaviour with single points
+                if (is.area.chart)
+                     p <- add_trace(p,
                                type = plotly.type,
-                               x = x[show.pts],
-                               y = y[show.pts],
+                               x = x,
+                               y = y,
                                fill = fill.bound,
                                fillcolor = toRGB(colors[i], alpha = opacity),
+                               connectgaps = TRUE,
+                               line = list(width = 0),
+                               name = y.label,
+                               legendgroup = tmp.group,
+                               hoverinfo = if(ncol(chart.matrix) > 1) "x+y+name" else "x+y",
+                               marker = marker,
+                               mode = series.mode)
+                
+               # draw line
+               if (type == "Line" || area.has.gap || series.line.width > 0)
+                    p <- add_trace(p,
+                               type = plotly.type,
+                               x = x,
+                               y = y,
                                connectgaps = FALSE,
                                line = lines,
                                name = y.label,
+                               showlegend = (type == "Line"), 
                                legendgroup = tmp.group,
                                hoverinfo = if(ncol(chart.matrix) > 1) "x+y+name" else "x+y",
                                marker = marker,
                                mode = series.mode)
 
                 # single points (no lines) need to be added separately
-                # turn off if series present?
                 not.na <- is.finite(y)
                 is.single <- not.na & c(TRUE, !not.na[-nrow(chart.matrix)]) & c(!not.na[-1], TRUE)
                 if (any(is.single) && type == "Line")
@@ -2320,8 +2343,8 @@ Chart <-   function(y = NULL,
                                legendgroup = tmp.group,
                                name = y.label,
                                marker = if (!is.null(marker)) marker
-                                        else list(color = toRGB(colors[i], alpha=opacity),
-                                             size = series.line.width),
+                                        else list(color = toRGB(colors[i]),
+                                             size = series.marker.size),
                                hoverinfo = if(ncol(chart.matrix) > 1) "x+y+name" else "x+y",
                                showlegend = FALSE)
                 }
