@@ -2241,11 +2241,11 @@ Chart <-   function(y = NULL,
                         if (is.numeric(y) || !is.null(ymd))
                             y.range <- range(data.annotations$y)
                         else
-                            y.range <- c(0, length(y)) - 0.5
+                            y.range <- c(-0.7, length(y)-1+0.7)
 
                         if (!is.null(ymd))
                         {
-                            tmpd <- diff(sort(data.annotations$y))[1] * 0.5
+                            tmpd <- diff(sort(data.annotations$y))[1] * 1
                             y.range <- y.range + c(-tmpd, tmpd)
                             y.range <- rev(y.range)
                             # plotly does not reverse dates on the y-axis
