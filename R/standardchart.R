@@ -2239,14 +2239,19 @@ Chart <-   function(y = NULL,
                     if (is.null(y.range))
                     {
                         if (is.numeric(y) || !is.null(ymd))
+                        {
+                            tmpd <- diff(sort(data.annotations$y))[1] * 0.5 * ncol(chart.matrix)
                             y.range <- range(data.annotations$y)
+                        }
                         else
-                            y.range <- c(-0.7, length(y)-1+0.7)
-
+                        {
+                            tmpd <- ncol(chart.matrix)/(ncol(chart.matrix)+1)
+                            y.range <- c(0, length(y)-1)
+                        }
+                        y.range <- y.range + c(-tmpd, tmpd)
+                         
                         if (!is.null(ymd))
                         {
-                            tmpd <- diff(sort(data.annotations$y))[1] * 1
-                            y.range <- y.range + c(-tmpd, tmpd)
                             y.range <- rev(y.range)
                             # plotly does not reverse dates on the y-axis
                             if (y.autorange == "reversed")
