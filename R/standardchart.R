@@ -2245,7 +2245,7 @@ Chart <-   function(y = NULL,
                         }
                         else
                         {
-                            tmpd <- ncol(chart.matrix)/(ncol(chart.matrix)+1)
+                            tmpd <- 0.5
                             y.range <- c(0, length(y)-1)
                         }
                         y.range <- y.range + c(-tmpd, tmpd)
