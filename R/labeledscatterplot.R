@@ -20,10 +20,14 @@ scatterplotData <- function(chart.matrix,
                             colorscale.variable = NULL,
                             logos = NULL)
 {
+    not.na <- NULL
     if (any(is.na(as.matrix(chart.matrix))))
     {
         warning("Data points with missing values have been omitted.")
-        chart.matrix <- chart.matrix[!is.na(rowSums(chart.matrix)), ]
+        not.na <- which(!is.na(rowSums(chart.matrix)))
+        chart.matrix <- chart.matrix[not.na, ]
+        if (!is.null(logos))
+            logos <- logos[not.na]
     }
     if (!is.null(group.indices.text) && group.indices.text[1] != "" && !is.null(colorscale.variable))
     {
@@ -57,6 +61,8 @@ scatterplotData <- function(chart.matrix,
                             else TextAsVector(group.labels.text)
             group.indices <- if (is.numeric(group.indices.text)) group.indices.text
                              else as.numeric(TextAsVector(group.indices.text))
+            if (!is.null(not.na))
+                group.indices <- group.indices[not.na]
 
             if (length(group.labels) == 1 && length(unique(group.indices)) > 1)
                 stop(paste0("Only one group has been specified: ", group.labels[1]))

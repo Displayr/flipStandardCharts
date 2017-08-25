@@ -116,11 +116,16 @@ test_that("Scatterplot",
 test_that("Group ordering",
           {
                 xx <- data.frame(Age=1:9, Weight=c(12,14,15,12,13,14,16,18,12))
+                x2 <- xx
+                x2[4,1] <- NA
                 rownames(xx) <- 1:9
                 expect_error(print(Chart(xx, type="Labeled Scatterplot", colors="Reds, dark to light",
                                          scatter.group.indices = "2,2,1,4,4,3,2,4,2", scatter.group.labels = "D,B,C,A")), NA)
                 expect_error(print(Chart(xx, type="Scatterplot", colors="Reds, dark to light",
                                          scatter.group.indices = "2,2,1,4,4,3,2,4,2", scatter.group.labels = "D,B,C,A")), NA)
+                expect_warning(print(Chart(x2, type="Scatterplot", colors="Reds, dark to light",
+                                         scatter.group.indices = "2,2,1,4,4,3,2,4,2", scatter.group.labels = "D,B,C,A")))
+
           })
 
 test_that("Alternative arguments", {
@@ -129,13 +134,16 @@ test_that("Alternative arguments", {
 
 
     z <- 1:10
+    zNA <- c(1:4, NA, 6:10)
     print(Chart(scatter.var.from.matrix=F, type="Scatterplot", colors="Heat colors (red, yellow, white)", scatter.x.var=1:10, scatter.y.var=10:1, scatter.colors.var = 1:10))
+    expect_warning(print(Chart(scatter.var.from.matrix=F, type="Scatterplot", colors="Heat colors (red, yellow, white)", scatter.x.var=z, scatter.y.var=zNA, scatter.colors.var = z)))
     print(Chart(scatter.var.from.matrix=F, type="Scatterplot", colors="Terrain colors (green, beige, grey)", scatter.x.var=z, scatter.y.var=z, scatter.colors.var = z, x.title="X", y.title="Y"))
     print(Chart(scatter.var.from.matrix=F, type="Scatterplot", colors="Terrain colors (green, beige, grey)", scatter.x.var=z, scatter.colors.var = z, x.title="X", y.title="Y"))
     print(Chart(scatter.var.from.matrix=F, type="Scatterplot", colors="Reds, dark to light", scatter.x.var=1:10, scatter.y.var=10:1, scatter.colors.var = c(1:5, rep(3,5))))
     print(Chart(scatter.var.from.matrix=F, type="Scatterplot", colors="Strong colors", scatter.x.var=z, scatter.y.var=z, scatter.colors.var = rep(c('a','b'), each=5), scatter.colors.as.group = T, x.title="X", y.title="Y"))
     suppressWarnings(print(Chart(scatter.var.from.matrix=F, type="Scatterplot", colors="Strong colors", scatter.x.var=z, scatter.y.var=z, scatter.colors.var = rep(c('a','b'), each=5), scatter.colors.as.group = F, x.title="X", y.title="Y")))
     print(Chart(scatter.var.from.matrix=F, type="Labeled Scatterplot", colors="Reds, dark to light", scatter.x.var=1:10, scatter.y.var=10:1, scatter.colors.var = 1:10, scatter.labels.var=LETTERS[1:10], scatter.sizes.var=1:10))
+    expect_warning(print(Chart(scatter.var.from.matrix=F, type="Scatterplot", colors="Reds, dark to light", scatter.x.var=zNA, scatter.y.var=z, scatter.colors.var = 1:10, scatter.labels.var=LETTERS[1:10], scatter.sizes.var=z)))
     print(Chart(scatter.var.from.matrix=F, type="Labeled Bubbleplot", colors="Reds, dark to light", scatter.x.var=1:10, scatter.y.var=10:1, scatter.colors.var = 1:10, scatter.labels.var=LETTERS[1:10], scatter.sizes.var=1:10))
     suppressWarnings(print(Chart(type="Scatterplot", scatter.var.from.matrix = F, scatter.x.var = 1:10, scatter.y.var=letters[1:10])))
 
@@ -194,6 +202,10 @@ test_that("Multiple tables", {
 
 logo.8string <- "https://dl.dropboxusercontent.com/u/539177224/bread_grey.svg, https://dl.dropboxusercontent.com/u/539177224/car_grey.svg, https://dl.dropboxusercontent.com/u/539177224/elephant_grey.svg, https://dl.dropboxusercontent.com/u/539177224/baby_grey.svg, https://dl.dropboxusercontent.com/u/539177224/apple_grey.svg, https://dl.dropboxusercontent.com/u/539177224/chicken_grey.svg, https://dl.dropboxusercontent.com/u/539177224/cow_grey.svg, https://dl.dropboxusercontent.com/u/539177224/thumbsup_grey.svg"
 test_that("Logos", {
+
+    tNA <- t1
+    tNA[3,1] <- NA
+    expect_warning(print(Chart(tNA, type = "Labeled Scatterplot", trend.lines = TRUE, logos = logo.8string)))
     expect_error(print(Chart(t1, type = "Labeled Scatterplot", trend.lines = TRUE, logos = logo.8string)), NA)
     expect_error(print(Chart(t1, type = "Labeled Scatterplot", trend.lines = FALSE, logos = logo.8string)), NA)
     expect_error(print(Chart(list(t1, t2, t3), type = "Labeled Scatterplot", trend.lines = TRUE, logos = logo.8string)), NA)
