@@ -1915,7 +1915,7 @@ Chart <-   function(y = NULL,
         series.marker.show
 
     ## Hide legend if only one series to plot
-    if (ncol(chart.matrix) == 1)
+    if (is.null(dim(chart.matrix)) || ncol(chart.matrix) == 1)
         legend.show <- FALSE
 
     if (is.bar.chart && !legend.show && is.default.margin.right && y.position != "right")

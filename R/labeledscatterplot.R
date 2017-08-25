@@ -33,9 +33,17 @@ scatterplotData <- function(chart.matrix,
 
     # Remove rows and columns to ignore
     no.dimnames <- is.null(dimnames(chart.matrix))
+    if (is.null(dim(chart.matrix)) || ncol(chart.matrix) == 1)
+    {
+        chart.matrix <- cbind(chart.matrix, rep(0, length(chart.matrix)))
+        print(colnames(chart.matrix))
+        if (colnames(chart.matrix)[1] == "chart.matrix")
+            no.dimnames <- TRUE
+    }
     chart.matrix <- GetTidyTwoDimensionalArray(chart.matrix,
                                                row.names.to.remove = rows.to.ignore,
                                                column.names.to.remove = cols.to.ignore)
+
     if (no.dimnames)
         dimnames(chart.matrix) <- NULL
 
