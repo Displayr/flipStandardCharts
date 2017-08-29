@@ -150,17 +150,21 @@ HeatMap <- function(table,
 
     if (!is.null(left.columns)) {
         n <- length(left.columns)
+        left.columns <- lapply(left.columns, oneDimensionalArrayToMatrix)
         mats <- rep(list(mat), n)
         cbinds <- mapply(Cbind, mats, left.columns, SIMPLIFY = FALSE)
         cbinds <- lapply(cbinds, '[', row.order, -seq(1:ncol(mat)), drop = FALSE)
         left.columns <- do.call(cbind, cbinds)
+        left.column.subtitles <- colnames(left.columns)
     }
     if (!is.null(right.columns)) {
         n <- length(right.columns)
+        right.columns <- lapply(right.columns, oneDimensionalArrayToMatrix)
         mats <- rep(list(mat), n)
         cbinds <- mapply(Cbind, mats, right.columns, SIMPLIFY = FALSE)
         cbinds <- lapply(cbinds, '[', row.order, -seq(1:ncol(mat)), drop = FALSE)
         right.columns <- do.call(cbind, cbinds)
+        right.column.subtitles <- colnames(right.columns)
     }
 
     heatmap <- rhtmlHeatmap::Heatmap(mat,
@@ -176,7 +180,7 @@ HeatMap <- function(table,
                        show_cellnote_in_cell = show.cellnote.in.cell,
                        xaxis_hidden = !show.x.axes.labels,
                        yaxis_hidden = !show.y.axes.labels,
-                       show_legend =show.legend,
+                       show_legend = show.legend,
                        title = chart.title,
                        xaxis_title = x.axis.title,
                        yaxis_title = y.axis.title,
@@ -203,5 +207,21 @@ HeatMap <- function(table,
                        yaxis_font_size = axis.label.font.size,
                        yaxis_title_font_size = yaxis.title.font.size,
                        left_columns = left.columns,
-                       right_columns = right.columns)
+                       left_columns_subtitles = left.column.subtitles,
+                       right_columns = right.columns,
+                       right_columns_subtitles = right.column.subtitles)
+}
+
+
+# Converts array with 1 dimension to a matrix, preserving names.
+# Else returns object unchanged
+oneDimensionalArrayToMatrix <- function(x) {
+    if (!is.array(x) || length(dim(x)) > 1)
+        return(x)
+    original.names <- names(x)
+    object.name <- attr(x, "name", exact = TRUE)
+    x <- matrix(x, ncol = 1)
+    rownames(x) <- original.names
+    colnames(x) <- object.name
+    return(x)
 }

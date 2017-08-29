@@ -1915,7 +1915,7 @@ Chart <-   function(y = NULL,
         series.marker.show
 
     ## Hide legend if only one series to plot
-    if (ncol(chart.matrix) == 1)
+    if (is.null(dim(chart.matrix)) || ncol(chart.matrix) == 1)
         legend.show <- FALSE
 
     if (is.bar.chart && !legend.show && is.default.margin.right && y.position != "right")
@@ -1988,7 +1988,7 @@ Chart <-   function(y = NULL,
         if (fit.type != "None")
         {
             fit.line.colors <- if (is.null(fit.line.colors)) scatterplot.data$colors
-                               else ChartColors(number.colors.needed = length(scatterplot.data$colors),
+                               else ChartColors(number.colors.needed = max(1,length(scatterplot.data$colors)),
                                                 given.colors = fit.line.colors,
                                                 custom.color = fit.line.colors.custom.color,
                                                 custom.gradient.start = fit.line.colors.custom.gradient.start,
@@ -2239,14 +2239,19 @@ Chart <-   function(y = NULL,
                     if (is.null(y.range))
                     {
                         if (is.numeric(y) || !is.null(ymd))
+                        {
+                            tmpd <- diff(sort(data.annotations$y))[1] * 0.5 * ncol(chart.matrix)
                             y.range <- range(data.annotations$y)
+                        }
                         else
-                            y.range <- c(0, length(y)) - 0.5
-
+                        {
+                            tmpd <- 0.5
+                            y.range <- c(0, length(y)-1)
+                        }
+                        y.range <- y.range + c(-tmpd, tmpd)
+                         
                         if (!is.null(ymd))
                         {
-                            tmpd <- diff(sort(data.annotations$y))[1] * 0.5
-                            y.range <- y.range + c(-tmpd, tmpd)
                             y.range <- rev(y.range)
                             # plotly does not reverse dates on the y-axis
                             if (y.autorange == "reversed")
