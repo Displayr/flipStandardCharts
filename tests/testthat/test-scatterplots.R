@@ -146,7 +146,7 @@ test_that("Alternative arguments", {
     expect_warning(print(Chart(scatter.var.from.matrix=F, type="Scatterplot", colors="Reds, dark to light", scatter.x.var=zNA, scatter.y.var=z, scatter.colors.var = 1:10, scatter.labels.var=LETTERS[1:10], scatter.sizes.var=z)))
     print(Chart(scatter.var.from.matrix=F, type="Labeled Bubbleplot", colors="Reds, dark to light", scatter.x.var=1:10, scatter.y.var=10:1, scatter.colors.var = 1:10, scatter.labels.var=LETTERS[1:10], scatter.sizes.var=1:10))
     suppressWarnings(print(Chart(type="Scatterplot", scatter.var.from.matrix = F, scatter.x.var = 1:10, scatter.y.var=letters[1:10])))
-
+    print(Chart(scatter.var.from.matrix=F, type="Scatterplot", colors="Primary colors", scatter.x.var=1:10, scatter.y.var=10:1, scatter.labels.var=LETTERS[1:10], scatter.colors.var=1:10, fit.type="Linear", fit.line.colors="Primary colors"))
 })
 
 

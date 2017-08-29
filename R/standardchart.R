@@ -1988,7 +1988,7 @@ Chart <-   function(y = NULL,
         if (fit.type != "None")
         {
             fit.line.colors <- if (is.null(fit.line.colors)) scatterplot.data$colors
-                               else ChartColors(number.colors.needed = length(scatterplot.data$colors),
+                               else ChartColors(number.colors.needed = max(1,length(scatterplot.data$colors)),
                                                 given.colors = fit.line.colors,
                                                 custom.color = fit.line.colors.custom.color,
                                                 custom.gradient.start = fit.line.colors.custom.gradient.start,
