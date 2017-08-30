@@ -662,6 +662,10 @@ Chart <-   function(y = NULL,
             }
             y.names[i] <- attr(y[[i]], "name")[1]
         }
+        if (any(y.names == "") & !trend.lines)
+            warning(sprintf("Tables have been automatically assigned names '%s'. You can name tables using R code: 'attr(table.name, \"name\") <- \"Description\"'", paste(used.names, collapse="', '")))
+        if (any(duplicated(y.names)) & !trend.lines)
+            warning(sprintf("Tables have duplicate names: '%s'. Points from duplicated tables cannot be distinguised.", paste(y.names[duplicated(y.names)], collapse = "', '")))
 
         # Check tables match - order of rows will match first table
         y[[1]] <- if (transpose) GetTidyTwoDimensionalArray(t(y[[1]]), rows.to.ignore, cols.to.ignore)
@@ -690,6 +694,7 @@ Chart <-   function(y = NULL,
             }
         }
         y <- do.call(rbind, y)
+        rownames(y) <- sprintf("%s: %s", rep(y.names, each = length(r.names)), rownames(y))
 
         n1 <- nrow(y)/num.tables
         scatter.group.indices <- rep(seq(n1), num.tables)
@@ -1163,7 +1168,7 @@ Chart <-   function(y = NULL,
         series.line.width <- chart.type.outputs$line.width
         area.has.gap <- chart.type.outputs$has.gap
     }
-    
+
     ## Settings specific to Line Charts
     if (type == "Line")
     {
@@ -1770,7 +1775,7 @@ Chart <-   function(y = NULL,
             max.x <- max(x.vals)
         }
         else
-        {   
+        {
             min.x <- 0
             max.x <- max(not.na) - 1
         }
@@ -2129,11 +2134,11 @@ Chart <-   function(y = NULL,
             {
                 # add invisible line to force all categorical labels to be shown
                 if (!swap.axes.and.data)
-                    p <- add_trace(p, x=x, y=rep(min(y,na.rm=T), length(x)), 
+                    p <- add_trace(p, x=x, y=rep(min(y,na.rm=T), length(x)),
                                type="scatter", mode="lines",
                                hoverinfo="none", showlegend=F, opacity=0)
                 else
-                    p <- add_trace(p, x=rep(min(x,na.rm=T), length(y)), y=y, 
+                    p <- add_trace(p, x=rep(min(x,na.rm=T), length(y)), y=y,
                                type="scatter", mode="lines",
                                hoverinfo="none", showlegend=F, opacity=0)
             }
@@ -2249,7 +2254,7 @@ Chart <-   function(y = NULL,
                             y.range <- c(0, length(y)-1)
                         }
                         y.range <- y.range + c(-tmpd, tmpd)
-                         
+
                         if (!is.null(ymd))
                         {
                             y.range <- rev(y.range)
@@ -2282,7 +2287,7 @@ Chart <-   function(y = NULL,
                 y.label <- y.labels[i]
                 tmp.group <- if (legend.group == "") paste("group", i) else legend.group
 
-                # Avoid weird thing plotly does in area charts with NAs                
+                # Avoid weird thing plotly does in area charts with NAs
                 show.pts <- 1:length(y)
                 if (type == "Area")
                     show.pts <- which(is.finite(y))
@@ -2303,7 +2308,7 @@ Chart <-   function(y = NULL,
                                showlegend = FALSE)
 
                 # Area chart (with no line)
-                # We need to do this separately because connectgaps = FALSE 
+                # We need to do this separately because connectgaps = FALSE
                 # has strange behaviour with single points
                 if (is.area.chart)
                      p <- add_trace(p,
@@ -2319,7 +2324,7 @@ Chart <-   function(y = NULL,
                                hoverinfo = if(ncol(chart.matrix) > 1) "x+y+name" else "x+y",
                                marker = marker,
                                mode = series.mode)
-                
+
                # draw line
                if (type == "Line" || area.has.gap || series.line.width > 0)
                     p <- add_trace(p,
@@ -2329,7 +2334,7 @@ Chart <-   function(y = NULL,
                                connectgaps = FALSE,
                                line = lines,
                                name = y.label,
-                               showlegend = (type == "Line"), 
+                               showlegend = (type == "Line"),
                                legendgroup = tmp.group,
                                hoverinfo = if(ncol(chart.matrix) > 1) "x+y+name" else "x+y",
                                marker = marker,
