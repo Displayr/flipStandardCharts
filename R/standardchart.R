@@ -1390,7 +1390,8 @@ Chart <-   function(y = NULL,
                        plot.border.show = FALSE,
                        title = title,
                        trend.lines.show = trend.lines,
-                       labels.logo.scale = logo.size
+                       labels.logo.scale = logo.size,
+                       debug.mode = grepl("DEBUG_MODE_ON", title)
                        ))
     }
 
