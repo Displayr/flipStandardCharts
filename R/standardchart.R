@@ -1127,9 +1127,9 @@ Chart <-   function(y = NULL,
         }
     }
     if (is.null(margin.left))
-        margin.left <- if (type == "Radar") 60 else 80
+        margin.left <- if (type == "Radar") 0 else 80
     if (is.null(margin.right))
-        margin.right <- 60
+        margin.right <- if (type == "Radar") 0 else 60
     if (is.null(margin.inner.pad))
         margin.inner.pad <- 0
 
