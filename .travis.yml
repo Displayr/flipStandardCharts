@@ -1,10 +1,9 @@
-language: R
+language: r
+r:
+  - release
 dist: trusty  # ubuntu 14.04 has additional libraries available
 sudo: required
-cache: packages
-before_cache:
-  - sudo rm -rf $HOME/R/Library/flip*
-  - sudo rm -rf $HOME/R/Library/rhtml*
+cache: false
 warnings_are_errors: false
 
 # install debian libraries to match R-servers
@@ -20,11 +19,9 @@ r_packages:
 r_github_packages:
   - Displayr/travisCI
 
-r_build_args: '--no-manual --no-build-vignettes --no-resave-data'
-
-r_check_args: '--as-cran --no-manual --no-build-vignettes --no-tests'
-
 script:
+  - R CMD build --no-manual --no-build-vignettes --no-resave-data .
+  - R CMD check --as-cran --no-manual --no-build-vignettes --no-tests *.tar.gz
   - if [ -d tests/testthat ]; then Rscript --default-packages='datasets,utils,grDevices,graphics,stats,methods' -e 'res<-devtools::test(); df <- as.data.frame(res); pass <- sum(df$failed)==0 && all(!df$error); write.csv(df, file="test_results.csv"); quit(status=1-pass, save="no")'; fi
 
 notifications:
@@ -40,5 +37,4 @@ notifications:
 # by calling R functions so they can be updated in this package without
 # committing a new change to .travis.yml in each repository
 after_success: 
-  - Rscript -e "travisCI::NotifyWarnings(); travisCI::TriggerDownstreamBuilds()"
-  - Rscript -e "devtools::install_github('Displayr/flipStandardCharts'); covr::coveralls(type = 'all')"
+  - travis_wait Rscript -e "require(travisCI); NotifyWarnings(); TriggerDownstreamBuilds(); CheckCoverage()"
