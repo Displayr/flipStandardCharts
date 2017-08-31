@@ -2012,6 +2012,10 @@ Chart <-   function(y = NULL,
         else
             num.fit <- length(g.list)
 
+        scatter.opacity <- 1
+        if (is.null(scatterplot.data$color.scale) && !is.null(scatterplot.data$z))
+            scatter.opacity <- 0.4    
+
         p <- plot_ly(as.data.frame(x=scatterplot.data$x, y=scatterplot.data$y))
         for (ggi in 1:length(g.list))
         {
@@ -2024,16 +2028,15 @@ Chart <-   function(y = NULL,
             marker.obj <- NULL
             if (ggi == 1 && !is.null(scatterplot.data$color.scale))
                 marker.obj <- list(size=sizes, sizemode="diameter", line=list(width=series.marker.border.width),
-                                color=scatterplot.data$color.values,
+                                color=scatterplot.data$color.values, opacity=scatter.opacity,
                                 showscale = T, colorscale=scatterplot.data$color.scale,
-                                colorbar = list(title=colorbar.title, outlinewidth=0, opacity=0.4))
+                                colorbar = list(title=colorbar.title, outlinewidth=0))
             else
                 marker.obj <- list(size=sizes, sizemode="diameter", line=list(width=series.marker.border.width),
-                                color=scatterplot.data$colors[ggi])
+                                color=scatterplot.data$colors[ggi], opacity=scatter.opacity)
 
             p <- add_trace(p, x=scatterplot.data$x[ind], y=scatterplot.data$y[ind],
                     name=g.list[ggi], showlegend=(length(g.list) > 1),
-                    opacity=if(is.null(scatterplot.data$z)) 1 else 0.4,
                     text=source.text[ind], textfont=textfont, textposition=data.label.position,
                     marker=marker.obj, line=line.obj,
                     type=plotly.type, mode=series.mode, symbols=series.marker.symbols,
