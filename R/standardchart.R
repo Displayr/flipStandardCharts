@@ -2177,6 +2177,8 @@ Chart <-   function(y = NULL,
 
                     x.fit <- if (tmp.is.factor) x0
                              else seq(from=min(x), to=max(tmp.dat$x), length=100)
+                    if (!tmp.is.factor && max(x.fit) < max(tmp.dat$x))
+                        x.fit <- c(x.fit, max(tmp.dat$x))
                     y.fit <- predict(tmp.fit, data.frame(x=x.fit))
                     tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                                  else sprintf("%s: %s", fit.line.name, y.labels[i])
@@ -2231,11 +2233,10 @@ Chart <-   function(y = NULL,
 
                     tmp.fit <- if (fit.type == "Smooth" && nrow(tmp.dat) > 7) loess(x~I(as.numeric(y)), data=tmp.dat)
                                else lm(x~y, data=tmp.dat)
-
                     y.fit <- if (tmp.is.factor) y0
-                             else seq(from=min(y), to=max(y), length=100)
-                    if (!tmp.is.factor && max(y.fit) < max(y))
-                        y.fit <- c(y.fit, max(y))
+                             else seq(from=min(tmp.dat$y), to=max(tmp.dat$y), length=100)
+                    if (!tmp.is.factor && max(y.fit) < max(tmp.dat$y))
+                        y.fit <- c(y.fit, max(tmp.dat$y))
                     x.fit <- predict(tmp.fit, data.frame(y=y.fit))
                     tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                                  else sprintf("%s: %s", fit.line.name, y.labels[i])
@@ -2384,9 +2385,9 @@ Chart <-   function(y = NULL,
                                else lm(y~I(as.numeric(x)), data=tmp.dat)
 
                     x.fit <- if (tmp.is.factor) x0
-                             else seq(from=min(x), to=max(x), length=100)
-                    if (!tmp.is.factor && max(x.fit) < max(x))
-                        x.fit <- c(x.fit, max(x))
+                             else seq(from=min(tmp.dat$x), to=max(tmp.dat$x), length=100)
+                    if (!tmp.is.factor && max(x.fit) < max(tmp.dat$x))
+                        x.fit <- c(x.fit, max(tmp.dat$x))
                     y.fit <- predict(tmp.fit, data.frame(x=x.fit))
                     tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                                  else sprintf("%s: %s", fit.line.name, y.labels[i])
