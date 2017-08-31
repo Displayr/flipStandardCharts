@@ -145,13 +145,14 @@ HeatMap <- function(table,
             str_trim(rownames(mat))
     }
 
+    left.columns.append <- NULL
     if (!is.null(left.columns)) {
         n <- length(left.columns)
         left.columns <- lapply(left.columns, oneDimensionalArrayToMatrix)
         mats <- rep(list(mat), n)
         cbinds <- mapply(Cbind, mats, left.columns, SIMPLIFY = FALSE)
         cbinds <- lapply(cbinds, '[', row.order, -seq(1:ncol(mat)), drop = FALSE)
-        left.columns <- do.call(cbind, cbinds)
+        left.columns.append <- do.call(cbind, cbinds)
         left.column.subtitles <- character(0)
         # label with colnames if set or else ""
         for (i in seq(n)) {
@@ -166,13 +167,14 @@ HeatMap <- function(table,
         }
     }
 
+    right.columns.append <- NULL
     if (!is.null(right.columns)) {
         n <- length(right.columns)
         right.columns <- lapply(right.columns, oneDimensionalArrayToMatrix)
         mats <- rep(list(mat), n)
         cbinds <- mapply(Cbind, mats, right.columns, SIMPLIFY = FALSE)
         cbinds <- lapply(cbinds, '[', row.order, -seq(1:ncol(mat)), drop = FALSE)
-        right.columns <- do.call(cbind, cbinds)
+        right.columns.append <- do.call(cbind, cbinds)
         right.column.subtitles <- character(0)
         for (i in seq(n)) {
             if (is.null(colnames(right.columns[[i]]))) {
@@ -225,9 +227,9 @@ HeatMap <- function(table,
                        xaxis_title_font_size = xaxis.title.font.size,
                        yaxis_font_size = axis.label.font.size,
                        yaxis_title_font_size = yaxis.title.font.size,
-                       left_columns = left.columns,
+                       left_columns = left.columns.append,
                        left_columns_subtitles = left.column.subtitles,
-                       right_columns = right.columns,
+                       right_columns = right.columns.append,
                        right_columns_subtitles = right.column.subtitles)
 }
 
