@@ -151,28 +151,39 @@ HeatMap <- function(table,
         mats <- rep(list(mat), n)
         cbinds <- mapply(Cbind, mats, left.columns, SIMPLIFY = FALSE)
         cbinds <- lapply(cbinds, '[', row.order, -seq(1:ncol(mat)), drop = FALSE)
-        # colnames have been set to integers if not present so overwrite with ""
+        left.columns <- do.call(cbind, cbinds)
+        left.column.subtitles <- character(0)
+        # label with colnames if set or else ""
         for (i in seq(n)) {
             if (is.null(colnames(left.columns[[i]]))) {
-                colnames(cbinds[[i]]) <- rep("", ncol(cbinds[[i]]))
+                if (is.null(ncol(left.columns[[i]])))
+                    left.column.subtitles <- c(left.column.subtitles, "")
+                else
+                    left.column.subtitles <- c(left.column.subtitles, rep("", ncol(left.columns[[i]])))
+            } else {
+                left.column.subtitles <- c(left.column.subtitles, colnames(left.columns[[i]]))
             }
         }
-        left.columns <- do.call(cbind, cbinds)
-        left.column.subtitles <- colnames(left.columns)
     }
+
     if (!is.null(right.columns)) {
         n <- length(right.columns)
         right.columns <- lapply(right.columns, oneDimensionalArrayToMatrix)
         mats <- rep(list(mat), n)
         cbinds <- mapply(Cbind, mats, right.columns, SIMPLIFY = FALSE)
         cbinds <- lapply(cbinds, '[', row.order, -seq(1:ncol(mat)), drop = FALSE)
+        right.columns <- do.call(cbind, cbinds)
+        right.column.subtitles <- character(0)
         for (i in seq(n)) {
             if (is.null(colnames(right.columns[[i]]))) {
-                colnames(cbinds[[i]]) <- rep("", ncol(cbinds[[i]]))
+                if (is.null(ncol(right.columns[[i]])))
+                    right.column.subtitles <- c(right.column.subtitles, "")
+                else
+                    right.column.subtitles <- c(right.column.subtitles, rep("", ncol(right.columns[[i]])))
+            } else {
+                right.column.subtitles <- c(right.column.subtitles, colnames(right.columns[[i]]))
             }
         }
-        right.columns <- do.call(cbind, cbinds)
-        right.column.subtitles <- colnames(right.columns)
     }
 
     heatmap <- rhtmlHeatmap::Heatmap(mat,
