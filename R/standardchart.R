@@ -2051,10 +2051,12 @@ Chart <-   function(y = NULL,
 
                 # Does not handle dates - because scatterplot does not handle dates
                 tmp.dat <- data.frame(x=scatterplot.data$x[indF], y=scatterplot.data$y[indF])
-                tmp.fit <- if (fit.type == "Smooth" && nrow(tmp.dat) > 7) loess(y~x, data=tmp.dat, control=loess.control(surface="direct"))
+                tmp.fit <- if (fit.type == "Smooth" && nrow(tmp.dat) > 7) loess(y~x, data=tmp.dat)
                            else                      lm(y~x, data=tmp.dat)
 
-                x.fit <- seq(from=min(tmp.dat$x), to=max(tmp.dat), length=100)
+                x.fit <- seq(from=min(tmp.dat$x), to=max(tmp.dat$x), length=100)
+                if (x.fit[100] < max(tmp.dat$x))
+                    x.fit <- c(tmp.fit, max(tmp.dat$x))
                 y.fit <- predict(tmp.fit, data.frame(x=x.fit))
                 tmp.fname <- if (length(g.list) == 1)  fit.line.name
                              else sprintf("%s: %s", fit.line.name, g.list[ggi])
@@ -2071,10 +2073,12 @@ Chart <-   function(y = NULL,
                 indF <- indF[-which.max(scatterplot.data$x[indF])]
 
             tmp.dat <- data.frame(x=scatterplot.data$x[indF], y=scatterplot.data$y[indF])
-            tmp.fit <- if (fit.type == "Smooth" && length(indF) > 7) loess(y~x, data=tmp.dat, control=loess.control(surface="direct"))
+            tmp.fit <- if (fit.type == "Smooth" && length(indF) > 7) loess(y~x, data=tmp.dat)
                        else lm(y~x, data=tmp.dat)
 
-            x.fit <- seq(from=min(tmp.dat$x), to=max(tmp.dat), length=100)
+            x.fit <- seq(from=min(tmp.dat$x), to=max(tmp.dat$x), length=100)
+            if (x.fit[100] < max(tmp.dat$x))
+                x.fit <- c(tmp.fit, max(tmp.dat$x))
             y.fit <- predict(tmp.fit, data.frame(x=x.fit))
             p <- add_trace(p, x=x.fit, y=y.fit, type='scatter', mode="lines",
                       name=fit.line.name, showlegend=F,
@@ -2168,17 +2172,18 @@ Chart <-   function(y = NULL,
                     tmp.dat <- data.frame(x=x0, y=y)
                     if (fit.ignore.last)
                         tmp.dat <- tmp.dat[-which.max(tmp.dat$x),]
-                    tmp.fit <- if (fit.type == "Smooth" && nrow(tmp.dat) > 7) loess(y~I(as.numeric(x)), data=tmp.dat, control=loess.control(surface="direct"))
+                    tmp.fit <- if (fit.type == "Smooth" && nrow(tmp.dat) > 7) loess(y~I(as.numeric(x)), data=tmp.dat)
                                else lm(y~x, data=tmp.dat)
 
                     x.fit <- if (tmp.is.factor) x0
-                             else seq(from=min(x), to=max(x), length=100)
+                             else seq(from=min(x), to=max(tmp.dat$x), length=100)
                     y.fit <- predict(tmp.fit, data.frame(x=x.fit))
                     tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                                  else sprintf("%s: %s", fit.line.name, y.labels[i])
 
                     if (tmp.is.factor)
                         x.fit <- x
+
                     p <- add_trace(p, x=x.fit, y=y.fit, type='scatter', mode="lines",
                               name=tmp.fname, legendgroup=tmp.group, showlegend=F,
                               line=list(dash=fit.line.type, width=fit.line.width,
@@ -2224,11 +2229,13 @@ Chart <-   function(y = NULL,
                     if (fit.ignore.last)
                         tmp.dat <- tmp.dat[-which.max(tmp.dat$y),]
 
-                    tmp.fit <- if (fit.type == "Smooth" && nrow(tmp.dat) > 7) loess(x~I(as.numeric(y)), data=tmp.dat, control=loess.control(surface="direct"))
+                    tmp.fit <- if (fit.type == "Smooth" && nrow(tmp.dat) > 7) loess(x~I(as.numeric(y)), data=tmp.dat)
                                else lm(x~y, data=tmp.dat)
 
                     y.fit <- if (tmp.is.factor) y0
                              else seq(from=min(y), to=max(y), length=100)
+                    if (!tmp.is.factor && max(y.fit) < max(y))
+                        y.fit <- c(y.fit, max(y))
                     x.fit <- predict(tmp.fit, data.frame(y=y.fit))
                     tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                                  else sprintf("%s: %s", fit.line.name, y.labels[i])
@@ -2373,11 +2380,13 @@ Chart <-   function(y = NULL,
                     if (fit.ignore.last)
                         tmp.dat <- tmp.dat[-which.max(tmp.dat$x),]
 
-                    tmp.fit <- if (fit.type == "Smooth" && nrow(tmp.dat) > 7) loess(y~I(as.numeric(x)), data=tmp.dat, control=loess.control(surface="direct"))
+                    tmp.fit <- if (fit.type == "Smooth" && nrow(tmp.dat) > 7) loess(y~I(as.numeric(x)), data=tmp.dat)
                                else lm(y~I(as.numeric(x)), data=tmp.dat)
 
                     x.fit <- if (tmp.is.factor) x0
                              else seq(from=min(x), to=max(x), length=100)
+                    if (!tmp.is.factor && max(x.fit) < max(x))
+                        x.fit <- c(x.fit, max(x))
                     y.fit <- predict(tmp.fit, data.frame(x=x.fit))
                     tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                                  else sprintf("%s: %s", fit.line.name, y.labels[i])
