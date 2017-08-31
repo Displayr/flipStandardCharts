@@ -117,10 +117,7 @@ HeatMap <- function(table,
 
     n.row <- nrow(mat)
     n.col <- ncol(mat)
-    cellnote <- matrix("", n.row, n.col)
-    for (i in 1:n.row)
-        for (j in 1:n.col)
-            cellnote[i, j] <- FormatAsReal(mat[i, j], decimals = cell.decimals)
+    cellnote <- apply(mat, c(1, 2), FormatAsReal, decimals = cell.decimals)
     show.cellnote.in.cell <- (n.row <= 20 && n.col <= 10 && show.cell.values != "No") || show.cell.values == "Yes"
     show.x.axes.labels <- show.column.labels == "Yes"
     show.y.axes.labels <- show.row.labels == "Yes"
