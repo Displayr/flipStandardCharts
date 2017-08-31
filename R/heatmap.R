@@ -151,6 +151,12 @@ HeatMap <- function(table,
         mats <- rep(list(mat), n)
         cbinds <- mapply(Cbind, mats, left.columns, SIMPLIFY = FALSE)
         cbinds <- lapply(cbinds, '[', row.order, -seq(1:ncol(mat)), drop = FALSE)
+        # colnames have been set to integers if not present so overwrite with ""
+        for (i in seq(n)) {
+            if (is.null(colnames(left.columns[[i]]))) {
+                colnames(cbinds[[i]]) <- rep("", ncol(cbinds[[i]]))
+            }
+        }
         left.columns <- do.call(cbind, cbinds)
         left.column.subtitles <- colnames(left.columns)
     }
@@ -160,6 +166,11 @@ HeatMap <- function(table,
         mats <- rep(list(mat), n)
         cbinds <- mapply(Cbind, mats, right.columns, SIMPLIFY = FALSE)
         cbinds <- lapply(cbinds, '[', row.order, -seq(1:ncol(mat)), drop = FALSE)
+        for (i in seq(n)) {
+            if (is.null(colnames(right.columns[[i]]))) {
+                colnames(cbinds[[i]]) <- rep("", ncol(cbinds[[i]]))
+            }
+        }
         right.columns <- do.call(cbind, cbinds)
         right.column.subtitles <- colnames(right.columns)
     }
