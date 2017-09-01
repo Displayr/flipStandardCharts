@@ -903,8 +903,21 @@ Chart <-   function(y = NULL,
         if (!is.finite(y.abs.max) || y.abs.max == 0 || any(abs(range(scatterplot.data$y, na.rm=T))/y.abs.max < 1e-2))
             y.zero <- FALSE
 
-        if (nchar(footer) == 0)
+        # Sizes for scatterplots can be provided either using a matrix or as a separate variable
+        if (!is.null(scatterplot.data$z))
         {
+            if (!exists("scatter.sizes.name"))
+                scatter.sizes.name <- colnames(chart.matrix)[3]
+            if (length(scatter.sizes.name) == 0)
+                scatter.sizes.name <- ""
+            if (nchar(z.title) == 0)
+                z.title <- scatter.sizes.name
+        }
+
+        # But colors for scatterplots are always given as a separate variable
+        if (length(footer) == 0 || nchar(footer) == 0)
+        {
+            footer <- ""
             if (!is.null(scatter.labels.var))
                 footer <- sprintf("%sPoints labeled by '%s'; ", footer, scatter.labels.name)
             if ((!is.null(scatterplot.data$colors) || !is.null(scatterplot.data$color.values)) &&
@@ -916,13 +929,7 @@ Chart <-   function(y = NULL,
                     colorbar.title <- scatter.colors.name
             }
             if (!is.null(scatterplot.data$z))
-            {
-                if (!exists("scatter.sizes.name"))
-                    scatter.sizes.name <- colnames(chart.matrix)[3]
                 footer <- sprintf("%sPoints sizes are proportional to absolute value of '%s'; ", footer, scatter.sizes.name)
-                if (nchar(z.title) == 0)
-                    z.title <- scatter.sizes.name
-            }
         }
 
     }
