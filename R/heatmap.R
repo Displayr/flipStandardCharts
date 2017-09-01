@@ -138,6 +138,10 @@ HeatMap <- function(table,
         "none"
 
     if (!is.null(left.columns) || !is.null(right.columns)) {
+        if (!is.null(left.columns) && any(sapply(sapply(left.columns, ncol), is.null)))
+            stop("Left columns must be matrices and not vectors.")
+        if (!is.null(right.columns) && any(sapply(sapply(right.columns, ncol), is.null)))
+            stop("Right columns must be matrices and not vectors.")
         show.y.axes.labels <- FALSE
         row.order <- if (is.null(rownames(mat)))
             seq(nrow(mat))
@@ -148,7 +152,6 @@ HeatMap <- function(table,
     left.columns.append <- NULL
     if (!is.null(left.columns)) {
         n <- length(left.columns)
-        left.columns <- lapply(left.columns, oneDimensionalArrayToMatrix)
         mats <- rep(list(mat), n)
         cbinds <- mapply(Cbind, mats, left.columns, SIMPLIFY = FALSE)
         cbinds <- lapply(cbinds, '[', row.order, -seq(1:ncol(mat)), drop = FALSE)
@@ -157,10 +160,7 @@ HeatMap <- function(table,
         # label with colnames if set or else ""
         for (i in seq(n)) {
             if (is.null(colnames(left.columns[[i]]))) {
-                if (is.null(ncol(left.columns[[i]])))
-                    left.column.subtitles <- c(left.column.subtitles, "")
-                else
-                    left.column.subtitles <- c(left.column.subtitles, rep("", ncol(left.columns[[i]])))
+                left.column.subtitles <- c(left.column.subtitles, rep("", ncol(left.columns[[i]])))
             } else {
                 left.column.subtitles <- c(left.column.subtitles, colnames(left.columns[[i]]))
             }
@@ -170,7 +170,6 @@ HeatMap <- function(table,
     right.columns.append <- NULL
     if (!is.null(right.columns)) {
         n <- length(right.columns)
-        right.columns <- lapply(right.columns, oneDimensionalArrayToMatrix)
         mats <- rep(list(mat), n)
         cbinds <- mapply(Cbind, mats, right.columns, SIMPLIFY = FALSE)
         cbinds <- lapply(cbinds, '[', row.order, -seq(1:ncol(mat)), drop = FALSE)
@@ -178,10 +177,7 @@ HeatMap <- function(table,
         right.column.subtitles <- character(0)
         for (i in seq(n)) {
             if (is.null(colnames(right.columns[[i]]))) {
-                if (is.null(ncol(right.columns[[i]])))
-                    right.column.subtitles <- c(right.column.subtitles, "")
-                else
-                    right.column.subtitles <- c(right.column.subtitles, rep("", ncol(right.columns[[i]])))
+                right.column.subtitles <- c(right.column.subtitles, rep("", ncol(right.columns[[i]])))
             } else {
                 right.column.subtitles <- c(right.column.subtitles, colnames(right.columns[[i]]))
             }
@@ -230,19 +226,17 @@ HeatMap <- function(table,
                        left_columns = left.columns.append,
                        left_columns_subtitles = left.column.subtitles,
                        right_columns = right.columns.append,
-                       right_columns_subtitles = right.column.subtitles)
+                       right_columns_subtitles = right.column.subtitles,
+                       left_columns_font_size = value.font.size,
+                       left_columns_font_family = font.family,
+                       left_columns_subtitles_font_size = axis.label.font.size,
+                       left_columns_subtitles_font_family = font.family,
+                       left_columns_subtitles_font_color = font.color,
+                       right_columns_font_size = value.font.size,
+                       right_columns_font_family = font.family,
+                       right_columns_subtitles_font_size = axis.label.font.size,
+                       right_columns_subtitles_font_family = font.family,
+                       right_columns_subtitles_font_color = font.color)
 }
 
 
-# Converts array with 1 dimension to a matrix, preserving names.
-# Else returns object unchanged
-oneDimensionalArrayToMatrix <- function(x) {
-    if (!is.array(x) || length(dim(x)) > 1)
-        return(x)
-    original.names <- names(x)
-    object.name <- attr(x, "name", exact = TRUE)
-    x <- matrix(x, ncol = 1)
-    rownames(x) <- original.names
-    colnames(x) <- object.name
-    return(x)
-}
