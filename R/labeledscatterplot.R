@@ -121,14 +121,13 @@ scatterplotData <- function(chart.matrix,
     }
     num.colors <- if (!is.null(colorscale.variable)) 3
                   else                               length(unique(group))
-    colors <- StripAlphaChannel(ChartColors(number.colors.needed = num.colors,
+    colors <- ChartColors(number.colors.needed = num.colors,
                                             given.colors = colors,
                                             custom.color = colors.custom.color,
                                             custom.gradient.start = colors.custom.gradient.start,
                                             custom.gradient.end = colors.custom.gradient.end,
                                             custom.palette = colors.custom.palette,
-                                            reverse = colors.reverse,
-                                            trim.light.colors = TRUE))
+                                            reverse = colors.reverse)
 
     color.scale <- NULL
     color.values <- NULL

@@ -1,5 +1,5 @@
 #' @importFrom utils stack
-#' @importFrom flipChartBasics StripAlphaChannel ChartColors
+#' @importFrom flipChartBasics ChartColors
 pieChart <- function(chart.matrix,
                      type,
                      values.color,
@@ -98,33 +98,30 @@ pieChart <- function(chart.matrix,
         pie.colors <- if (is.null(pie.subslice.colors))
             NULL
         else
-            rep(StripAlphaChannel(ChartColors(number.colors.needed = num.colors,
+            rep(ChartColors(number.colors.needed = num.colors,
                                               given.colors = pie.subslice.colors,
                                               custom.color = pie.subslice.colors.custom.color,
                                               custom.gradient.start = pie.subslice.colors.custom.gradient.start,
                                               custom.gradient.end = pie.subslice.colors.custom.gradient.end,
                                               custom.palette = pie.subslice.colors.custom.palette,
-                                              reverse = pie.subslice.colors.reverse,
-                                              trim.light.colors = TRUE)), ncol(chart.matrix))
-        pie.groups.colors <- StripAlphaChannel(ChartColors(number.colors.needed = ncol(chart.matrix),
+                                              reverse = pie.subslice.colors.reverse), ncol(chart.matrix))
+        pie.groups.colors <- ChartColors(number.colors.needed = ncol(chart.matrix),
                                                            given.colors = values.color,
                                                            custom.color = colors.custom.color,
                                                            custom.gradient.start = colors.custom.gradient.start,
                                                            custom.gradient.end = colors.custom.gradient.end,
                                                            custom.palette = colors.custom.palette,
-                                                           reverse = colors.reverse,
-                                                           trim.light.colors = TRUE))
+                                                           reverse = colors.reverse)
     }
     else
     {
-        pie.colors <- StripAlphaChannel(ChartColors(number.colors.needed = num.colors,
+        pie.colors <- ChartColors(number.colors.needed = num.colors,
                                                     given.colors = values.color,
                                                     custom.color = colors.custom.color,
                                                     custom.gradient.start = colors.custom.gradient.start,
                                                     custom.gradient.end = colors.custom.gradient.end,
                                                     custom.palette = colors.custom.palette,
-                                                    reverse = colors.reverse,
-                                                    trim.light.colors = TRUE))
+                                                    reverse = colors.reverse)
         pie.groups.colors <- NULL
     }
 
