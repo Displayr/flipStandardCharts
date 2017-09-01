@@ -2022,7 +2022,7 @@ Chart <-   function(y = NULL,
 
         scatter.opacity <- 1
         if (is.null(scatterplot.data$color.scale) && !is.null(scatterplot.data$z))
-            scatter.opacity <- 0.4    
+            scatter.opacity <- 0.4
 
         p <- plot_ly(as.data.frame(x=scatterplot.data$x, y=scatterplot.data$y))
         for (ggi in 1:length(g.list))
@@ -2584,5 +2584,5 @@ Chart <-   function(y = NULL,
 #' @export
 print.StandardChart <- function(x, ...)
 {
-    return(x$plotly.plot)
+    return(print(x$plotly.plot))
 }
