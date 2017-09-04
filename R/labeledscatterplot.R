@@ -36,21 +36,20 @@ scatterplotData <- function(chart.matrix,
     }
 
     # Remove rows and columns to ignore
-    no.dimnames <- is.null(dimnames(chart.matrix))
+    no.dimnames <- is.null(colnames(chart.matrix)) || colnames(chart.matrix)[1] == "chart.matrix"
     if (is.null(dim(chart.matrix)) || ncol(chart.matrix) == 1)
     {
         chart.matrix <- cbind(chart.matrix, rep(0, length(chart.matrix)))
         print(colnames(chart.matrix))
-        if (colnames(chart.matrix)[1] == "chart.matrix")
+        if (is.null(colnames(chart.matrix)) || colnames(chart.matrix)[1] == "chart.matrix")
             no.dimnames <- TRUE
     }
     chart.matrix <- GetTidyTwoDimensionalArray(chart.matrix,
                                                row.names.to.remove = rows.to.ignore,
                                                column.names.to.remove = cols.to.ignore)
-
     if (no.dimnames)
-        dimnames(chart.matrix) <- NULL
-
+        colnames(chart.matrix) <- NULL
+    
     pt.ord <- NULL
     if (!is.null(group.labels.text) && any(group.labels.text != ""))
     {
@@ -85,7 +84,7 @@ scatterplotData <- function(chart.matrix,
         if (!is.null(group.indices.text) && any(group.indices.text != ""))
             stop("Group indices were provided but group labels are missing.")
         else
-            group <- rep("Group", nrow(chart.matrix))
+            group <- rep(" ", nrow(chart.matrix))
     }
 
     # order data points so that the color of groups are ordered
@@ -134,7 +133,7 @@ scatterplotData <- function(chart.matrix,
     if (!is.null(colorscale.variable) && type == "Scatterplot")
     {
         col.fun <- colorRamp(colors)
-        group <- rep("Group", nrow(chart.matrix))
+        group <- rep(" ", nrow(chart.matrix))
         c.tmp <- rgb(col.fun((0:5)/5), maxColorValue=255)
         v.tmp <- seq(from=0, to=1, length=length(c.tmp))
         color.scale <- mapply(function(a,b)c(a,b), a=v.tmp, b=c.tmp, SIMPLIFY=F)

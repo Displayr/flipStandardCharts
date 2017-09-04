@@ -159,7 +159,7 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{footer.wordwrap}{Logical; whether the footer text should be wrapped.}
 
-\item{footer.wordwrap.nchar}{Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} i \code{TRUE}.}
+\item{footer.wordwrap.nchar}{Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.}
 
 \item{colors}{Character; a vector containing one or more named
 colors from grDevices OR one or more specified hex value colors OR a single

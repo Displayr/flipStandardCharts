@@ -37,7 +37,7 @@
 #' @param footer.font.family Character; footer font family
 #' @param footer.font.size footer font size
 #' @param footer.wordwrap Logical; whether the footer text should be wrapped.
-#' @param footer.wordwrap.nchar Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} i \code{TRUE}.
+#' @param footer.wordwrap.nchar Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.
 #' @param colors Character; a vector containing one or more named
 #' colors from grDevices OR one or more specified hex value colors OR a single
 #' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
@@ -2042,7 +2042,7 @@ Chart <-   function(y = NULL,
                     text=source.text[ind], textfont=textfont, textposition=data.label.position,
                     marker=marker.obj, line=line.obj,
                     type=plotly.type, mode=series.mode, symbols=series.marker.symbols,
-                    hoverinfo=if(length(g.list) > 1) "name+text" else "text")
+                    hoverinfo="name+text")
 
             if (num.fit > 1)
             {
