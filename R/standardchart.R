@@ -1418,8 +1418,7 @@ Chart <-   function(y = NULL,
                                                custom.gradient.start = colors.custom.gradient.start,
                                                custom.gradient.end = colors.custom.gradient.end,
                                                custom.palette = colors.custom.palette,
-                                               reverse = colors.reverse,
-                                               trim.light.colors = TRUE)
+                                               reverse = colors.reverse)
         if (fit.type != "None")
             fit.line.colors <- ChartColors(number.colors.needed = number.colors.needed,
                                                given.colors = fit.line.colors,
@@ -1427,8 +1426,7 @@ Chart <-   function(y = NULL,
                                                custom.gradient.start = fit.line.colors.custom.gradient.start,
                                                custom.gradient.end = fit.line.colors.custom.gradient.end,
                                                custom.palette = fit.line.colors.custom.palette,
-                                               reverse = fit.line.colors.reverse,
-                                               trim.light.colors = TRUE)
+                                               reverse = fit.line.colors.reverse)
 
         series.line.colors <- suppressWarnings(ChartColors(number.colors.needed = number.colors.needed,
                                                given.colors = series.line.colors,
@@ -1436,24 +1434,21 @@ Chart <-   function(y = NULL,
                                                custom.gradient.start = series.line.colors.custom.gradient.start,
                                                custom.gradient.end = series.line.colors.custom.gradient.end,
                                                custom.palette = series.line.colors.custom.palette,
-                                               reverse = series.line.colors.reverse,
-                                               trim.light.colors = TRUE))
+                                               reverse = series.line.colors.reverse))
         series.marker.colors <- suppressWarnings(ChartColors(number.colors.needed = number.colors.needed,
                                                given.colors = series.marker.colors,
                                                custom.color = series.marker.colors.custom.color,
                                                custom.gradient.start = series.marker.colors.custom.gradient.start,
                                                custom.gradient.end = series.marker.colors.custom.gradient.end,
                                                custom.palette = series.marker.colors.custom.palette,
-                                               reverse = series.marker.colors.reverse,
-                                               trim.light.colors = TRUE))
+                                               reverse = series.marker.colors.reverse))
         series.marker.border.colors <- suppressWarnings(ChartColors(number.colors.needed = number.colors.needed,
                                                given.colors = series.marker.border.colors,
                                                custom.color = series.marker.border.colors.custom.color,
                                                custom.gradient.start = series.marker.border.colors.custom.gradient.start,
                                                custom.gradient.end = series.marker.border.colors.custom.gradient.end,
                                                custom.palette = series.marker.border.colors.custom.palette,
-                                               reverse = series.marker.border.colors.reverse,
-                                               trim.light.colors = TRUE))
+                                               reverse = series.marker.border.colors.reverse))
 
 
         ## Color inheritance - second run
@@ -2007,8 +2002,7 @@ Chart <-   function(y = NULL,
                                                 custom.gradient.start = fit.line.colors.custom.gradient.start,
                                                 custom.gradient.end = fit.line.colors.custom.gradient.end,
                                                 custom.palette = fit.line.colors.custom.palette,
-                                                reverse = fit.line.colors.reverse,
-                                                trim.light.colors = TRUE)
+                                                reverse = fit.line.colors.reverse)
         }
 
         # Iteratively add each group so the order is the same as the dataframe
