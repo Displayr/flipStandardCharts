@@ -694,7 +694,8 @@ Chart <-   function(y = NULL,
             }
         }
         y <- do.call(rbind, y)
-        rownames(y) <- sprintf("%s: %s", rep(y.names, each = length(r.names)), rownames(y))
+        if (!trend.lines)
+            rownames(y) <- sprintf("%s: %s", rep(y.names, each = length(r.names)), rownames(y))
 
         n1 <- nrow(y)/num.tables
         scatter.group.indices <- rep(seq(n1), num.tables)
