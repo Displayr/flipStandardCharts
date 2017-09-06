@@ -2,7 +2,9 @@
 
 S3method(print,StandardChart)
 export(Chart)
+export(ColumnChart)
 export(HeatMap)
+export(RadarChart)
 importFrom(flipChartBasics,ChartColors)
 importFrom(flipData,GetTidyTwoDimensionalArray)
 importFrom(flipFormat,FormatAsReal)
