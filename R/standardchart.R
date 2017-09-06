@@ -1972,6 +1972,8 @@ Chart <-   function(y = NULL,
             lab.len <- (nchar(data.label.prefix) + nchar(data.label.suffix) + data.label.decimals) *
                         data.label.font.size/10
         padding <- diff(x.range) * (0.05 * lab.len)
+        if (padding == 0)
+            padding <- 1
         x.range <- x.range + c(-padding, padding)
 
         x.prefix <- if (x.tick.prefix == "") data.label.prefix else x.tick.prefix
