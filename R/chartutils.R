@@ -1,3 +1,23 @@
+getRange <- function(x, positions, axis, axisFormat)
+{
+    range <- axis$range
+    if (is.null(range))
+    {
+        range <- if (is.numeric(x) || !is.null(axisFormat$ymd)) range(positions)
+                 else c(-0.5, length(x)-0.5)
+
+        if (!is.null(axisFormat$ymd))
+        {
+            tmpd <- diff(sort(positions))[1] * 0.5
+            range <- range + c(-tmpd, tmpd)
+        }
+        ignored <- axis$side %in% c("left", "right") && !is.null(axisFormat$ymd)
+        if (axis$autorange == "reversed" && !ignored)
+            range <- rev(range) 
+    }
+    range
+}
+
 fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
 {
     tmp.is.factor <- axis.type != "linear" && axis.type != "date"
@@ -21,7 +41,7 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
 setLegend <- function(type, font, ascending, fill.color, fill.opacity, border.color, border.line.width)
 {
     if (is.na(ascending))
-        ascending <- !grepl("Stacked", type)
+        ascending <- !grepl("Stacked", type) || type %in% c("Stacked Bar", "100% Stacked Bar")
     order <- if (!ascending) "reversed" else "normal"
     return(list(bgcolor = toRGB(fill.color, alpha=fill.opacity),
             bordercolor = border.color,
@@ -46,7 +66,7 @@ formatAxis <- function(chart.matrix, type, label.wrap, label.wrap.nchar, us.date
     x.axis.type <- "linear"
     if (!is.bar && any(is.na(suppressWarnings(as.numeric(x.labels)))))
         x.axis.type <- "category"
-    if (is.bar && any(is.na(suppressWarnings(as.numeric(y.labels)))))
+    if (is.bar && any(is.na(suppressWarnings(as.numeric(x.labels)))))
         y.axis.type <- "category"
     
     # labels are only processed for independent x-axis (or y-axis in bar charts)
@@ -112,6 +132,7 @@ setAxis <- function(title, side, axisLabels, titlefont, linecolor, linewidth, gr
 
 fontAspectRatio <- function(font)
 {
+    font <- as.character(font)
     font.asp <- switch(tolower(font),
                           'arial'= 0.54,
                           'arial black' = 0.63,
@@ -154,9 +175,9 @@ setMarginsForAxis <- function(margins, axisLabels, axis)
     title.pad <- axis$titlefont$size * title.nline * 1.25
 
     if (axis$side == "right")
-        margins$r <- new.margin + 5 + title.pad 
+        margins$r <- margins$r + new.margin #+ title.pad 
     else if (axis$side == "left")
-        margins$l <- new.margin + 5 + title.pad 
+        margins$l <- margins$l + new.margin #+ title.pad 
     else if (axis$side == "bottom")
     {
         if (axis$tickangle != 0)
@@ -230,7 +251,8 @@ setFooterAxis <- function(footer, footer.font, margins)
     res
 }
 
-setTicks <- function(minimum, maximum, distance, reversed = FALSE)
+setTicks <- function(minimum, maximum, distance, reversed = FALSE, 
+                data = NULL, labels = NULL, type="scatter", label.font.size = 10)
 {
     # starting values
     mode <- "auto"
@@ -241,6 +263,25 @@ setTicks <- function(minimum, maximum, distance, reversed = FALSE)
 
     if (reversed)
         autorange <- "reversed"
+
+    if (!is.null(data))
+    {
+        if (is.null(minimum))
+            minimum <- min(0, min(data))
+        if (is.null(maximum))
+            maximum <- max(data)
+
+        pad <- 0
+        lab.len <- 1
+        if (!is.null(labels))
+        {
+            lab.len <- max(nchar(as.character(unlist(labels)))) * label.font.size/10
+            pad <- (maximum - minimum) * (0.05 * lab.len/4 + (0.1 * (type=="Bar")))
+        }
+        if (type != "Bar")
+            minimum <- minimum - pad
+        maximum <- maximum + pad
+    }
 
     if (!is.null(minimum) && !is.null(maximum))
     {

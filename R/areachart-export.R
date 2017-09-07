@@ -1,6 +1,6 @@
-#' Column chart
+#' Area chart
 #'
-#' Plot column chart 
+#' Plot area chart 
 #'
 #' @param y A table, matrix, vector or data frame.
 #' @param type One of "Column", "Stacked Column" or "100\% Stacked Column"
@@ -172,6 +172,8 @@
 #' colors from grDevices OR one or more specified hex value colors OR a single
 #' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
 #' be reversed.
+#' @param series.marker.show Can be "none", "automatic" or a vector referencing
+#' the plotly symbol dictionary using either numerics or strings.
 #' @param series.marker.opacity Opacity for series markers as an alpha value (0 to 1).
 #' @param series.marker.size Size in pixels of marker
 #' @param series.marker.border.width Width in pixels of border/line
@@ -181,6 +183,11 @@
 #' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
 #' @param series.marker.border.opacity Opacity of border/line around
 #' series markers as an alpha value (0 to 1).
+#' @param series.line.width Thickness, in pixels, of the series line
+#' @param series.line.colors  Character; a vector containing one or more named
+#' colors from grDevices OR one or more specified hex value colors OR a single
+#' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
+#' @param series.line.opacity Opacity for series lines as an alpha value (0 to 1)
 #' @param tooltip.show Logical; whether to show a tooltip on hover.
 #' @param modebar.show Logical; whether to show the zoom menu buttons or not.
 #' @param global.font.family Character; font family for all occurrences of any
@@ -218,8 +225,8 @@
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
 #' @export
-ColumnChart <-   function(y = NULL,
-                    type = "Column",
+AreaChart <-   function(y = NULL,
+                    type = "Area",
                     fit.type = "None", # can be "Smooth" or anything else
                     fit.ignore.last = FALSE,
                     fit.line.type = "dot",
@@ -319,9 +326,13 @@ ColumnChart <-   function(y = NULL,
                     x.tick.font.size = 10,
                     label.wrap = TRUE,
                     label.wrap.nchar = 21,
+                    series.marker.show = NULL,
                     series.marker.colors = colors,
                     series.marker.opacity = 1,
                     series.marker.size = 6,
+                    series.line.width = NULL,
+                    series.line.colors = colors,
+                    series.line.opacity = 1,
                     series.marker.border.width = 1,
                     series.marker.border.colors = colors,
                     series.marker.border.opacity = 1,
@@ -343,23 +354,37 @@ ColumnChart <-   function(y = NULL,
 {
     # Data checking
     chart.matrix <- as.matrix(y)
-    is.stacked <- type != "Column"
-    is.hundred.percent.stacked <- type == "100% Stacked Column"
+    is.stacked <- type != "Area"
+    is.hundred.percent.stacked <- type == "100% Stacked Area"
     if (is.stacked && ncol(chart.matrix) == 0)
-        stop(paste(type, "requires more than one series. Use Column charts instead for this data."))
+        stop(paste(type, "requires more than one series. Use Area charts instead for this data."))
     if (is.stacked && (any(is.na(chart.matrix)) || any(chart.matrix < 0)))
         stop("Stacked charts cannot be produced with missing or negative values.")
     if (is.hundred.percent.stacked && any(rowSums(chart.matrix) == 0))
         stop("100% stacked charts cannot be produced with rows that do not contain positive values.")
     if (any(is.na(as.matrix(chart.matrix))))
-        warnings("Missing values have been set to zero.")
+        warning("Missing values have been interpolated or omitted.")
 
     # Some minimal data cleaning
     # Assume formatting and Qtable/attribute handling already done
+    # Find gaps which are NOT at the ends of the series
+    has.gap <- FALSE
+    for (i in 1:ncol(chart.matrix))
+    {
+        na.seq <- rle(!is.finite(chart.matrix[,i]))
+        n <- length(na.seq$values)
+        if (any(na.seq$values[-c(1,n)]))
+            has.gap <- TRUE
+    }
+    if (is.null(series.line.width))
+        series.line.width <- if (!has.gap || type %in% c("Stacked Area", "100% Stacked Area")) 0 else 3 
+    if (type == "Stacked Area")
+        chart.matrix <- cum.data(chart.matrix, "cumulative.sum")
+    else if (type == "100% Stacked Area")
+        chart.matrix <- cum.data(chart.matrix, "cumulative.percentage")
     data.label.mult <- 1
     if (is.hundred.percent.stacked)
     {
-        chart.matrix <- cum.data(chart.matrix, "column.percentage")
         y.tick.format.manual <- "%" 
         data.label.suffix <- "%"
         data.label.mult <- 100
@@ -371,12 +396,32 @@ ColumnChart <-   function(y = NULL,
         y.title <- matrix.labels[2]
 
     # Constants
+    plotly.type <- "scatter"
     hover.mode <- if (tooltip.show) "closest" else FALSE
     barmode <- if (is.stacked) "stack" else ""
     legend.group <- if (is.stacked) "grouped" else ""
-    if (is.null(opacity))
-        opacity <- 1
+    fill.bound <- if (is.stacked) "tonexty" else "tozeroy"
+
+    series.marker.symbols <- if (is.null(series.marker.show)) rep(100, ncol(chart.matrix)) 
+                             else series.marker.show
+    if (is.null(series.line.width))
+        series.line.width <- if (!has.gap || is.stacked) 0 else 3
+    
+    series.mode <- "lines+markers"
+    if (is.null(series.marker.show))
+        series.mode <- "lines"
+    else if (series.line.width == 0 && series.marker.show != "none")
+        series.mode <- "markers"
+    else if (series.line.width >= 1 && series.marker.show == "none")
+        series.mode <- "lines"
+    else if (series.line.width == 0 && series.marker.show == "none")
+        series.mode <- "lines"
+
     eval(colors) # not sure why, but this is necessary for bars to appear properly
+    if (is.null(opacity))
+        opacity <- 0.4
+    if (opacity == 1 && type == "Area" && ncol(chart.matrix) > 1)
+        warning("Displaying this chart with opacity set to 1 will make it difficult to read as some data series may be obscured.")
 
     title.font=list(family=title.font.family, size=title.font.size, color=title.font.color)
     subtitle.font=list(family=subtitle.font.family, size=subtitle.font.size, color=subtitle.font.color)
@@ -432,21 +477,6 @@ ColumnChart <-   function(y = NULL,
     footer.axis <- setFooterAxis(footer, footer.font, margins)
     subtitle.axis <- setSubtitleAxis(subtitle, subtitle.font, title, title.font)
  
-    # Data label annotations
-    data.annotations <- NULL
-    if (data.label.show)
-        data.annotations <- dataLabelAnnotation(chart.matrix = chart.matrix,
-                            annotations = NULL,
-                            data.label.mult = data.label.mult,
-                            bar.decimals = data.label.decimals,
-                            bar.prefix = data.label.prefix,
-                            bar.suffix = data.label.suffix,
-                            barmode = barmode,
-                            swap.axes.and.data = FALSE,
-                            bar.gap = bar.gap,
-                            display.threshold = data.label.threshold,
-                            dates = axisFormat$ymd)
-
     ## Initiate plotly object
     p <- plot_ly(as.data.frame(chart.matrix))
     x.labels <- rownames(chart.matrix)
@@ -459,44 +489,135 @@ ColumnChart <-   function(y = NULL,
         y <- as.numeric(chart.matrix[, i])
         x <- x.labels
 
-        marker <- list(size = series.marker.size, color = toRGB(colors[i], alpha = opacity),
-                    line = list(color = toRGB(series.marker.border.colors[i], 
-                      alpha = series.marker.border.opacity),
-                      width = series.marker.border.width))
-                
+        lines <- list(width = series.line.width,
+                      color = toRGB(series.line.colors[i], alpha = series.line.opacity))
+
+        marker <- NULL
+        if (!is.null(series.mode) && regexpr('marker', series.mode) >= 1)
+            marker <- list(size = series.marker.size,
+                       color = toRGB(series.marker.colors[i], alpha = series.marker.opacity),
+                       symbol = series.marker.symbols[i],
+                       line = list(
+                       color = toRGB(series.marker.border.colors[i], alpha = series.marker.border.opacity),
+                       width = series.marker.border.width))
+       
+        source.text <- "" 
+        if (data.label.show)
+            source.text <- paste(data.label.prefix,
+                 FormatAsReal(chart.matrix[, i] * data.label.mult, decimals = data.label.decimals),
+                 data.label.suffix, sep = "")
+
         # add invisible line to force all categorical labels to be shown
-        if (i == 1)
+        if (!is.stacked && i == 1)
             p <- add_trace(p, x=rep(min(x,na.rm=T), length(y)), y=y,
                            type="scatter", mode="lines",
                            hoverinfo="none", showlegend=F, opacity=0)
 
-       
-        # this is the main trace for each data series 
-        tmp.group <- if (legend.group == "") paste("group", i) else legend.group
-        p <- add_trace(p, x = x, y = y, type = "bar", orientation = "v", marker = marker,
-                       name  =  y.labels[i], legendgroup  =  tmp.group,
-                       hoverinfo  =  if(ncol(chart.matrix) > 1) "x+y+name" else "x+y")
-
-        if (fit.type != "None" && !is.stacked)
+        if (!is.stacked)
         {
-            tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type)
-            tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
+            y.label <- y.labels[i]
+            tmp.group <- if (legend.group == "") paste("group", i) else legend.group
+
+            # Avoid weird thing plotly does in area charts with NAs
+            show.pts <- 1:length(y)
+            if (type == "Area")
+                show.pts <- which(is.finite(y))
+
+            # Need to add data labels first otherwise it will override hovertext in area chart
+            if (data.label.show)
+                p <- add_trace(p,
+                           type = "scatter",
+                           mode = "text",
+                           x = x,
+                           y = y,
+                           legendgroup = tmp.group,
+                           name = y.label,
+                           text = source.text,
+                           textfont = data.label.font,
+                           textposition = data.label.position,
+                           hoverinfo = "none",
+                           showlegend = FALSE)
+
+            # Area chart (with no line)
+            # We need to do this separately because connectgaps = FALSE
+            # has strange behaviour with single points
+                 p <- add_trace(p,
+                           type = plotly.type,
+                           x = x,
+                           y = y,
+                           fill = fill.bound,
+                           fillcolor = toRGB(colors[i], alpha = opacity),
+                           connectgaps = TRUE,
+                           line = list(width = 0),
+                           name = y.label,
+                           legendgroup = tmp.group,
+                           hoverinfo = if(ncol(chart.matrix) > 1) "x+y+name" else "x+y",
+                           marker = marker,
+                           mode = series.mode)
+
+           # draw line
+           if (has.gap || series.line.width > 0)
+                p <- add_trace(p,
+                           type = plotly.type,
+                           x = x,
+                           y = y,
+                           connectgaps = FALSE,
+                           line = lines,
+                           name = y.label,
+                           showlegend = (type == "Line"),
+                           legendgroup = tmp.group,
+                           hoverinfo = if(ncol(chart.matrix) > 1) "x+y+name" else "x+y",
+                           marker = marker,
+                           mode = series.mode)
+
+            # single points (no lines) need to be added separately
+            not.na <- is.finite(y)
+            is.single <- not.na & c(TRUE, !not.na[-nrow(chart.matrix)]) & c(!not.na[-1], TRUE)
+            if (any(is.single) && type == "Line")
+            {
+                p <- add_trace(p,
+                           type = "scatter",
+                           mode = "markers",
+                           x = x[is.single],
+                           y = y[is.single],
+                           legendgroup = tmp.group,
+                           name = y.label,
+                           marker = if (!is.null(marker)) marker
+                                    else list(color = toRGB(colors[i]),
+                                         size = series.marker.size),
+                           hoverinfo = if(ncol(chart.matrix) > 1) "x+y+name" else "x+y",
+                           showlegend = FALSE)
+            }
+            if (fit.type != "None")
+            {
+                tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                          else sprintf("%s: %s", fit.line.name, y.labels[i])
-            p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$y, type = 'scatter', mode = "lines",
-                      name = tmp.fname, legendgroup = tmp.group, showlegend = F,
-                      line = list(dash = fit.line.type, width = fit.line.width,
-                      color = fit.line.colors[i]))
+                tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type)
+                p <- add_trace(p, x=tmp.fit$x, y=tmp.fit$y, type='scatter', mode="lines",
+                          name=tmp.fname, legendgroup=tmp.group, showlegend=F,
+                          line=list(dash=fit.line.type, width=fit.line.width,
+                          color=fit.line.colors[i]))
+            }
         }
-
-        if (data.label.show && !is.stacked)
+        else
         {
-            x.range <- getRange(x, data.annotations$x, xaxis, axisFormat)
-            xaxis2 <- list(overlaying = "x", visible = FALSE, range = x.range)
-            p <- add_text(p, xaxis = "x2", x = data.annotations$x[,i], y = data.annotations$y[,i],
-                      text = data.annotations$text[,i], textposition = "top center",
-                      textfont = data.label.font, hoverinfo = "none",
-                      showlegend = FALSE, legendgroup = tmp.group)
-        }
+            y.label <- y.labels[i]
+            p <- add_trace(p,
+                           type = plotly.type,
+                           x = x,
+                           y = y,
+                           fill = fill.bound,
+                           fillcolor = toRGB(colors[i], alpha = opacity),
+                           line = lines,
+                           name = y.label,
+                           legendgroup = legend.group,
+                           text = source.text,
+                           textfont = data.label.font,
+                           textposition = data.label.position,
+                           hoverinfo = if (ncol(chart.matrix) > 1) "x+y+name" else "x+y",
+                           mode = series.mode,
+                           marker = marker)
+         }
     }
 
     p <- config(p, displayModeBar = modebar.show)
@@ -516,7 +637,7 @@ ColumnChart <-   function(y = NULL,
         hovermode = hover.mode,
         titlefont = title.font,
         font = data.label.font,
-        annotations = if (is.stacked) data.annotations else NULL,
+        annotations = NULL,
         bargap = bar.gap,
         barmode = barmode
     )

@@ -1,9 +1,9 @@
-#' Column chart
+#' Bar chart
 #'
-#' Plot column chart 
+#' Plot bar chart 
 #'
 #' @param y A table, matrix, vector or data frame.
-#' @param type One of "Column", "Stacked Column" or "100\% Stacked Column"
+#' @param type One of "Bar", "Stacked Bar" or "100\% Stacked Bar"
 #' @param fit.type Character; type of line of best fit. Can be one of "None", "Linear" or "Smooth" (loess local polynomial fitting).
 #' @param fit.ignore.last Boolean; whether to ignore the last data point in the fit.
 #' @param fit.line.type Character; One of "solid", "dot", "dash, "dotdash", or length of dash "2px", "5px".
@@ -104,8 +104,6 @@
 #' @param y.grid.color Color of y-grid lines as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param y.tick.show Whether to display the y-axis tick labels
-#' @param y.tick.suffix y-axis tick label suffix
-#' @param y.tick.prefix y-axis tick label prefix
 #' @param y.tick.decimals y-axis tick label decimal places
 #' @param y.tick.format.manual Overrides tick.prefix, suffix and decimals;
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
@@ -151,6 +149,8 @@
 #' @param x.grid.color Color of y-grid lines as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param x.tick.show Whether to display the x-axis tick labels
+#' @param x.tick.suffix x-axis tick label suffix
+#' @param x.tick.prefix x-axis tick label prefix
 #' @param x.tick.decimals x-axis tick label decimal places
 #' @param x.tick.format.manual Overrides tick.prefix, suffix and decimals;
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
@@ -218,8 +218,8 @@
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
 #' @export
-ColumnChart <-   function(y = NULL,
-                    type = "Column",
+BarChart <- function(y = NULL,
+                    type = "Bar",
                     fit.type = "None", # can be "Smooth" or anything else
                     fit.ignore.last = FALSE,
                     fit.line.type = "dot",
@@ -243,7 +243,7 @@ ColumnChart <-   function(y = NULL,
                     footer.wrap.nchar = 100,
                     colors = ChartColors(max(1, ncol(y))),
                     fit.line.colors = colors,
-                    opacity = NULL,
+                    opacity = 1,
                     background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
                     background.fill.opacity = 1,
                     charting.area.fill.color = background.fill.color,
@@ -282,8 +282,6 @@ ColumnChart <-   function(y = NULL,
                     y.grid.width = 1,
                     y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                     y.tick.show = TRUE,
-                    y.tick.suffix = "",
-                    y.tick.prefix = "",
                     y.tick.decimals = NULL,
                     y.tick.format.manual = "",
                     y.hovertext.decimals = NULL,
@@ -309,6 +307,8 @@ ColumnChart <-   function(y = NULL,
                     x.grid.width = 1,
                     x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                     x.tick.show = TRUE,
+                    x.tick.suffix = "",
+                    x.tick.prefix = "",
                     x.tick.decimals = NULL,
                     x.tick.format.manual = "",
                     x.hovertext.decimals = NULL,
@@ -343,10 +343,10 @@ ColumnChart <-   function(y = NULL,
 {
     # Data checking
     chart.matrix <- as.matrix(y)
-    is.stacked <- type != "Column"
-    is.hundred.percent.stacked <- type == "100% Stacked Column"
+    is.stacked <- type != "Bar"
+    is.hundred.percent.stacked <- type == "100% Stacked Bar"
     if (is.stacked && ncol(chart.matrix) == 0)
-        stop(paste(type, "requires more than one series. Use Column charts instead for this data."))
+        stop(paste(type, "requires more than one series. Use Bar charts instead for this data."))
     if (is.stacked && (any(is.na(chart.matrix)) || any(chart.matrix < 0)))
         stop("Stacked charts cannot be produced with missing or negative values.")
     if (is.hundred.percent.stacked && any(rowSums(chart.matrix) == 0))
@@ -357,18 +357,18 @@ ColumnChart <-   function(y = NULL,
     # Some minimal data cleaning
     # Assume formatting and Qtable/attribute handling already done
     data.label.mult <- 1
-    if (is.hundred.percent.stacked)
+    if(is.hundred.percent.stacked)
     {
         chart.matrix <- cum.data(chart.matrix, "column.percentage")
-        y.tick.format.manual <- "%" 
+        x.tick.format.manual <- "%" 
         data.label.suffix <- "%"
         data.label.mult <- 100
     }
     matrix.labels <- names(dimnames(chart.matrix))
-    if (nchar(x.title) == 0 && length(matrix.labels) == 2)
-        x.title <- matrix.labels[1]
     if (nchar(y.title) == 0 && length(matrix.labels) == 2)
-        y.title <- matrix.labels[2]
+        y.title <- matrix.labels[1]
+    if (nchar(x.title) == 0 && length(matrix.labels) == 2)
+        x.title <- matrix.labels[2]
 
     # Constants
     hover.mode <- if (tooltip.show) "closest" else FALSE
@@ -395,27 +395,31 @@ ColumnChart <-   function(y = NULL,
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
 
     # Format axis labels
-    if (is.null(y.tick.decimals))
-        y.tick.decimals <- decimalsToDisplay(as.numeric(chart.matrix))
-    xtick <- setTicks(x.bounds.minimum, x.bounds.maximum, x.tick.distance, x.data.reversed)
-    ytick <- setTicks(y.bounds.minimum, y.bounds.maximum, y.tick.distance, y.data.reversed)
+    if (is.null(x.tick.decimals))
+        x.tick.decimals <- decimalsToDisplay(as.numeric(chart.matrix))
+    tmp.label <- sprintf(paste0("%s%.", data.label.decimals, "f%s"), 
+                data.label.prefix, max(chart.matrix), data.label.suffix)
+    xtick <- setTicks(x.bounds.minimum, x.bounds.maximum, x.tick.distance, x.data.reversed,
+                  data = if (data.label.show && type == "Bar") chart.matrix else NULL, type = type, 
+                  labels = tmp.label, label.font.size = data.label.font.size)
+    ytick <- setTicks(y.bounds.minimum, y.bounds.maximum, y.tick.distance, !y.data.reversed)
     axisFormat <- formatAxis(chart.matrix, type, label.wrap, label.wrap.nchar, us.date.format) 
     yaxis <- setAxis(y.title, "left", axisFormat, y.title.font, 
                   y.line.color, y.line.width, y.grid.width, y.grid.color,
                   ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance, y.tick.format.manual, 
-                  y.tick.decimals, y.tick.prefix, y.tick.suffix,
-                  y.tick.show, y.zero, y.zero.line.width, y.zero.line.color, 
+                  y.tick.decimals, "", "", y.tick.show, y.zero, y.zero.line.width, y.zero.line.color, 
                   y.hovertext.format.manual, y.hovertext.decimals)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, x.tick.format.manual,
-                  x.tick.decimals, "", "", x.tick.show, FALSE, x.zero.line.width, x.zero.line.color, 
+                  x.tick.decimals, x.tick.prefix, x.tick.suffix,
+                  x.tick.show, FALSE, x.zero.line.width, x.zero.line.color, 
                   x.hovertext.format.manual, x.hovertext.decimals)
 
     # Work out margin spacing 
     margins <- list(t = 20, b = 50, r = 60, l = 80, pad = 0)
-    margins <- setMarginsForAxis(margins, axisFormat, xaxis)
     margins <- setMarginsForAxis(margins, axisFormat, yaxis)
+    margins <- setMarginsForAxis(margins, axisFormat, xaxis)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size, 
                                  subtitle.font.size, footer.font.size)
     margins <- setMarginsForLegend(margins, legend.show, NULL)
@@ -442,7 +446,7 @@ ColumnChart <-   function(y = NULL,
                             bar.prefix = data.label.prefix,
                             bar.suffix = data.label.suffix,
                             barmode = barmode,
-                            swap.axes.and.data = FALSE,
+                            swap.axes.and.data = TRUE,
                             bar.gap = bar.gap,
                             display.threshold = data.label.threshold,
                             dates = axisFormat$ymd)
@@ -451,7 +455,7 @@ ColumnChart <-   function(y = NULL,
     p <- plot_ly(as.data.frame(chart.matrix))
     x.labels <- rownames(chart.matrix)
     y.labels <- colnames(chart.matrix)
-    xaxis2 <- NULL
+    yaxis2 <- NULL
 
     ## Add a trace for each col of data in the matrix
     for (i in 1:ncol(chart.matrix))
@@ -466,23 +470,22 @@ ColumnChart <-   function(y = NULL,
                 
         # add invisible line to force all categorical labels to be shown
         if (i == 1)
-            p <- add_trace(p, x=rep(min(x,na.rm=T), length(y)), y=y,
+            p <- add_trace(p, y=rep(min(x,na.rm=T), length(y)), x=y,
                            type="scatter", mode="lines",
                            hoverinfo="none", showlegend=F, opacity=0)
 
-       
         # this is the main trace for each data series 
         tmp.group <- if (legend.group == "") paste("group", i) else legend.group
-        p <- add_trace(p, x = x, y = y, type = "bar", orientation = "v", marker = marker,
+        p <- add_trace(p, x = y, y = x, type = "bar", orientation = "h", marker = marker,
                        name  =  y.labels[i], legendgroup  =  tmp.group,
                        hoverinfo  =  if(ncol(chart.matrix) > 1) "x+y+name" else "x+y")
 
         if (fit.type != "None" && !is.stacked)
         {
-            tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type)
+            tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, yaxis$type)
             tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                          else sprintf("%s: %s", fit.line.name, y.labels[i])
-            p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$y, type = 'scatter', mode = "lines",
+            p <- add_trace(p, x = tmp.fit$y, y = tmp.fit$x, type = 'scatter', mode = "lines",
                       name = tmp.fname, legendgroup = tmp.group, showlegend = F,
                       line = list(dash = fit.line.type, width = fit.line.width,
                       color = fit.line.colors[i]))
@@ -490,10 +493,11 @@ ColumnChart <-   function(y = NULL,
 
         if (data.label.show && !is.stacked)
         {
-            x.range <- getRange(x, data.annotations$x, xaxis, axisFormat)
-            xaxis2 <- list(overlaying = "x", visible = FALSE, range = x.range)
-            p <- add_text(p, xaxis = "x2", x = data.annotations$x[,i], y = data.annotations$y[,i],
-                      text = data.annotations$text[,i], textposition = "top center",
+            y.range <- getRange(x, data.annotations$y, yaxis, axisFormat)
+            yaxis2 <- list(overlaying = "y", visible = FALSE, range = y.range)
+            x.diff <- diff(range(data.annotations$x))/100
+            p <- add_text(p, yaxis = "y2", x = data.annotations$x[,i] + x.diff, y = data.annotations$y[,i],
+                      text = data.annotations$text[,i], textposition = "middle right",
                       textfont = data.label.font, hoverinfo = "none",
                       showlegend = FALSE, legendgroup = tmp.group)
         }
@@ -508,7 +512,7 @@ ColumnChart <-   function(y = NULL,
         yaxis = yaxis,
         xaxis4 = footer.axis,
         xaxis3 = subtitle.axis,
-        xaxis2 = xaxis2,
+        yaxis2 = yaxis2,
         xaxis = xaxis,
         margin = margins,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
