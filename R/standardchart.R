@@ -498,6 +498,23 @@ Chart <-   function(y = NULL,
                     logos = NULL,
                     logo.size = 0.5)
 {
+    patt.list <- c("Column", "Bar", "Radar", "Area")
+    func.list <- c("ColumnChart", "BarChart", "RadarChart", "AreaChart")
+    f.type <- gsub(" ", "", type, fixed=T)
+    for (ffi in 1:length(func.list))
+    {
+        if (!grepl(patt.list[ffi], f.type))
+            next
+        ff <- func.list[ffi]
+        cat("Calling:", ff, "\n") 
+        args <- as.list(formals(ff))
+        user.args <- as.list(match.call())
+        for (nn in names(user.args)[-1])
+            args[[nn]] <- user.args[[nn]]
+        return(do.call(ff, args))
+    }
+    cat("Using old chart")
+
     if (!is.null(weights))
         warning("Weights are currently not used.")
     if (length(subset) > 1 && (scatter.var.from.matrix ||
