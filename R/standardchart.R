@@ -513,8 +513,9 @@ Chart <-   function(y = NULL,
             args[[nn]] <- user.args[[nn]]
         tmp.col <- ChartColors(10)
         args$color <- tmp.col
-        if (is.null(args$subtitle) || nchar(args$substitle) == 0)
+        if (is.null(args$subtitle) || nchar(args$subtitle) == 0)
             args$subtitle.font.size <- 10 
+        print(args)
         return(do.call(ff, args))
     }
     cat("Using old chart")
