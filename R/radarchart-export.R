@@ -156,6 +156,7 @@ RadarChart <- function(y,
                     modebar.show = FALSE,
                     global.font.family = "Arial",
                     global.font.color = rgb(44, 44, 44, maxColorValue = 255),
+                    x.title = "", # ignored but avoids matching problem
                     x.title.font.color = global.font.color,
                     x.title.font.family = global.font.family,
                     x.title.font.size = 12,
