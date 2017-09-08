@@ -498,7 +498,7 @@ Chart <-   function(y = NULL,
                     logos = NULL,
                     logo.size = 0.5)
 {
-    if (1)
+    if (0)
     {
     patt.list <- c("Column", "Bar", "Radar", "Area")
     func.list <- c("ColumnChart", "BarChart", "RadarChart", "AreaChart")
@@ -527,9 +527,9 @@ Chart <-   function(y = NULL,
  
         print(args)
         return(do.call(ff, args))
+        cat("Using old chart")
     }
     }
-    cat("Using old chart")
 
     if (!is.null(weights))
         warning("Weights are currently not used.")

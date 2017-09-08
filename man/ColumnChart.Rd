@@ -58,7 +58,7 @@ ColumnChart(y = NULL, type = "Column", fit.type = "None",
   series.marker.border.opacity = 1, tooltip.show = TRUE,
   modebar.show = FALSE, bar.gap = 0.15, data.label.show = FALSE,
   data.label.font.family = global.font.family, data.label.font.size = 10,
-  data.label.font.color = global.font.family, data.label.decimals = 2,
+  data.label.font.color = global.font.color, data.label.decimals = 2,
   data.label.prefix = "", data.label.suffix = "",
   data.label.threshold = NULL, data.label.position = "top middle",
   data.label.max.plot = 50, us.date.format = NULL, ...)
