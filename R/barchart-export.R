@@ -455,6 +455,8 @@ BarChart <- function(y = NULL,
 
     ## Initiate plotly object
     p <- plot_ly(as.data.frame(chart.matrix))
+    if (is.null(rownames(chart.matrix)))
+        rownames(chart.matrix) <- 1:nrow(chart.matrix)
     x.labels <- rownames(chart.matrix)
     y.labels <- colnames(chart.matrix)
     yaxis2 <- NULL
