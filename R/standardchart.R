@@ -512,7 +512,7 @@ Chart <-   function(y = NULL,
         for (nn in names(user.args)[-1])
             args[[nn]] <- user.args[[nn]]
         tmp.col <- ChartColors(10)
-        args$color <- tmp.col
+        args$colors <- tmp.col
         if (is.null(args$subtitle) || nchar(args$subtitle) == 0)
             args$subtitle.font.size <- 10 
         print(args)
