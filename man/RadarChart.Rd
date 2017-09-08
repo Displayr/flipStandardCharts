@@ -20,19 +20,21 @@ RadarChart(y, title = "", title.font.family = global.font.family,
   series.marker.colors = NULL, series.marker.size = 6,
   series.line.width = 3, tooltip.show = TRUE, modebar.show = FALSE,
   global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
-  maxColorValue = 255), x.title.font.color = global.font.color,
+  maxColorValue = 255), x.title = "",
+  x.title.font.color = global.font.color,
   x.title.font.family = global.font.family, x.title.font.size = 12,
   x.grid.width = 1, x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
   y.bounds.minimum = NULL, y.bounds.maximum = NULL,
   y.tick.distance = NULL, y.grid.width = 1, y.grid.color = rgb(225, 225,
   225, maxColorValue = 255), y.tick.show = TRUE, y.tick.suffix = "",
   y.tick.prefix = "", y.tick.decimals = NULL, y.hovertext.decimals = NULL,
-  y.tick.font.color = NULL, y.tick.font.family = NULL,
-  y.tick.font.size = 10, label.wrap = TRUE, label.wrap.nchar = 21,
-  data.label.show = FALSE, data.label.font.family = global.font.family,
-  data.label.font.size = 10, data.label.font.color = global.font.color,
-  data.label.decimals = 2, data.label.prefix = "", data.label.suffix = "",
-  subtitle = "", subtitle.font.family = global.font.family,
+  y.tick.font.color = global.font.color,
+  y.tick.font.family = global.font.family, y.tick.font.size = 10,
+  label.wrap = TRUE, label.wrap.nchar = 21, data.label.show = FALSE,
+  data.label.font.family = global.font.family, data.label.font.size = 10,
+  data.label.font.color = global.font.color, data.label.decimals = 2,
+  data.label.prefix = "", data.label.suffix = "", subtitle = "",
+  subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color, subtitle.font.size = 12,
   footer = "", footer.font.family = global.font.family,
   footer.font.color = global.font.color, footer.font.size = 8,
@@ -128,6 +130,9 @@ font attribute for the chart unless specified individually.}
 \item{global.font.color}{Global font color as a named color in character format
 (e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).}
 
+\item{x.title}{Character, x-axis title; defaults to chart input values;
+to turn off set to "FALSE".}
+
 \item{x.title.font.color}{x-axis title font color as a named color in
 character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
@@ -221,9 +226,6 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{opacity}{Opacity of area fill colors as an alpha value (0 to 1).}
 
 \item{legend.fill}{Same as \code{legend.fill.color}. Retained for backwards compatibility.}
-
-\item{x.title}{Character, x-axis title; defaults to chart input values;
-to turn off set to "FALSE".}
 }
 \description{
 Plot radar chart, also known as web chart, spider chart, star chart, star plot, cobweb chart, irregular polygon, polar chart, or Kiviat diagram

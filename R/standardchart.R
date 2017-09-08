@@ -498,6 +498,8 @@ Chart <-   function(y = NULL,
                     logos = NULL,
                     logo.size = 0.5)
 {
+    if (1)
+    {
     patt.list <- c("Column", "Bar", "Radar", "Area")
     func.list <- c("ColumnChart", "BarChart", "RadarChart", "AreaChart")
     f.type <- gsub(" ", "", type, fixed=T)
@@ -511,11 +513,21 @@ Chart <-   function(y = NULL,
         user.args <- as.list(match.call())
         for (nn in names(user.args)[-1])
             args[[nn]] <- user.args[[nn]]
+
+        # fix up Std R form problems
         tmp.col <- ChartColors(10)
         args$colors <- tmp.col
-        args$subtitle.font.size <- 12 
+        args$subtitle.font.size <- 12
+
+        # Match up renamed arguments
+        args$footer.wrap <- args$footer.wordwrap
+        args$footer.wrap.nchar <- args$footer.wordwrap.nchar
+        args$label.wrap <- args$x.tick.label.wordwrap
+        args$label.wrap.nchar <- args$wordwrap.nchar
+ 
         print(args)
         return(do.call(ff, args))
+    }
     }
     cat("Using old chart")
 
@@ -2114,7 +2126,7 @@ Chart <-   function(y = NULL,
     {
         ## Initiate plotly object
         p <- plot_ly(as.data.frame(chart.matrix))
-
+        
         ## Add a trace for each col of data in the matrix
         for (i in 1:ncol(chart.matrix))
         {

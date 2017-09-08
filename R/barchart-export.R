@@ -329,9 +329,9 @@ BarChart <- function(y = NULL,
                     modebar.show = FALSE,
                     bar.gap = 0.15,
                     data.label.show = FALSE,
-                    data.label.font.family = NULL,
+                    data.label.font.family = global.font.family,
                     data.label.font.size = 10,
-                    data.label.font.color = NULL,
+                    data.label.font.color = global.font.color,
                     data.label.decimals = 2, # Ignored in Labeled Bubble and Scatterplots
                     data.label.prefix = "",
                     data.label.suffix = "",
@@ -469,8 +469,8 @@ BarChart <- function(y = NULL,
                       width = series.marker.border.width))
                 
         # add invisible line to force all categorical labels to be shown
-        if (i == 1)
-            p <- add_trace(p, y=rep(min(x,na.rm=T), length(y)), x=y,
+        if (!is.stacked && i == 1)
+            p <- add_trace(p, x=rep(min(y,na.rm=T), length(y)), y=x,
                            type="scatter", mode="lines",
                            hoverinfo="none", showlegend=F, opacity=0)
 

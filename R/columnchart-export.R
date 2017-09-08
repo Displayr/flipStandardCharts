@@ -329,9 +329,9 @@ ColumnChart <-   function(y = NULL,
                     modebar.show = FALSE,
                     bar.gap = 0.15,
                     data.label.show = FALSE,
-                    data.label.font.family = NULL,
+                    data.label.font.family = global.font.family,
                     data.label.font.size = 10,
-                    data.label.font.color = NULL,
+                    data.label.font.color = global.font.family,
                     data.label.decimals = 2, # Ignored in Labeled Bubble and Scatterplots
                     data.label.prefix = "",
                     data.label.suffix = "",
@@ -410,12 +410,11 @@ ColumnChart <-   function(y = NULL,
                   x.line.color, x.line.width, x.grid.width, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, x.tick.format.manual,
                   x.tick.decimals, "", "", x.tick.show, FALSE, x.zero.line.width, x.zero.line.color, 
-                  x.hovertext.format.manual, x.hovertext.decimals)
+                  x.hovertext.format.manual, x.hovertext.decimals, axisFormat$labels)
 
     # Work out margin spacing 
     margins <- list(t = 20, b = 50, r = 60, l = 80, pad = 0)
     margins <- setMarginsForAxis(margins, axisFormat, xaxis)
-    margins <- setMarginsForAxis(margins, axisFormat, yaxis)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size, 
                                  subtitle.font.size, footer.font.size)
     margins <- setMarginsForLegend(margins, legend.show, NULL)
@@ -449,6 +448,8 @@ ColumnChart <-   function(y = NULL,
 
     ## Initiate plotly object
     p <- plot_ly(as.data.frame(chart.matrix))
+    if (is.null(rownames(chart.matrix)))
+        rownames(chart.matrix) <- 1:nrow(chart.matrix)
     x.labels <- rownames(chart.matrix)
     y.labels <- colnames(chart.matrix)
     xaxis2 <- NULL
@@ -465,8 +466,8 @@ ColumnChart <-   function(y = NULL,
                       width = series.marker.border.width))
                 
         # add invisible line to force all categorical labels to be shown
-        if (i == 1)
-            p <- add_trace(p, x=rep(min(x,na.rm=T), length(y)), y=y,
+        if (!is.stacked && i == 1)
+            p <- add_trace(p, x=x, y=rep(min(y,na.rm=T), length(x)),
                            type="scatter", mode="lines",
                            hoverinfo="none", showlegend=F, opacity=0)
 

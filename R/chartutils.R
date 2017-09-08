@@ -95,10 +95,17 @@ setAxis <- function(title, side, axisLabels, titlefont, linecolor, linewidth, gr
                     ticks, tickfont, tickangle, ticklen, tickdistance,
                     tickformatmanual, tickdecimals, tickprefix, ticksuffix, tickshow,
                     show.zero, zero.line.width, zero.line.color, 
-                    hovertext.format.manual, hovertext.decimals)
+                    hovertext.format.manual, hovertext.decimals, labels=NULL)
 {
     axis.type <- if (side %in% c("bottom", "top")) axisLabels$x.axis.type else axisLabels$y.axis.type
     has.line <- !is.null(linewidth) && linewidth > 0
+
+    if (!is.null(labels) && is.null(tickangle) && side %in% c("bottom", "top"))
+    {
+        lab.nchar <- max(nchar(unlist(strsplit(split="<br>", as.character(labels)))))
+        tickangle <- if (length(labels) > 9 && lab.nchar > 5) 90
+                          else 0
+    }
 
     tickformat <- ""
     if (axis.type == "linear" && nchar(tickformatmanual) == 0)
@@ -159,12 +166,6 @@ setMarginsForAxis <- function(margins, axisLabels, axis)
                      function(x){sum(x > -1)}))
                  else 0
 
-    if (is.null(axis$tickangle))
-    {
-        axis$tickangle <- if (length(labels) > 9 && lab.nchar > 5) 90
-                          else 0
-    }
-
     new.margin <- 0
     if (lab.len > 50 || (!is.null(lab.nline) && lab.nline > 0))
         new.margin <- lab.len
@@ -180,7 +181,12 @@ setMarginsForAxis <- function(margins, axisLabels, axis)
         margins$l <- margins$l + new.margin #+ title.pad 
     else if (axis$side == "bottom")
     {
-        if (axis$tickangle != 0)
+        # tickangle is changed in side setAxis
+        lab.nchar <- max(nchar(unlist(strsplit(split="<br>", as.character(labels)))))
+        tickangle <- if (length(labels) > 9 && lab.nchar > 5) 90
+                          else 0
+        
+        if (tickangle != 0)
             margins$b <- margins$b + new.margin - 40 + title.pad
         else
             margins$b <- margins$b + 1.25*axis$tickfont$size*floor(lab.nline) + title.pad
