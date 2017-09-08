@@ -11,8 +11,7 @@ getRange <- function(x, positions, axis, axisFormat)
             tmpd <- diff(sort(positions))[1] * 0.5
             range <- range + c(-tmpd, tmpd)
         }
-        ignored <- axis$side %in% c("left", "right") && !is.null(axisFormat$ymd)
-        if (axis$autorange == "reversed" && !ignored)
+        if (axis$autorange == "reversed")
             range <- rev(range) 
     }
     range
@@ -20,7 +19,7 @@ getRange <- function(x, positions, axis, axisFormat)
 
 fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
 {
-    tmp.is.factor <- axis.type != "linear" && axis.type != "date"
+    tmp.is.factor <- axis.type != "linear" #&& axis.type != "date"
     x0 <- if (!tmp.is.factor) x else 1:length(x)
     tmp.dat <- data.frame(x=x0, y=y)
     if (ignore.last)
@@ -176,9 +175,9 @@ setMarginsForAxis <- function(margins, axisLabels, axis)
     title.pad <- axis$titlefont$size * title.nline * 1.25 + 5
 
     if (axis$side == "right")
-        margins$r <- new.margin + title.pad 
+        margins$r <- max(margins$r, new.margin + title.pad) 
     else if (axis$side == "left")
-        margins$l <- new.margin + title.pad 
+        margins$l <- max(margins$l, new.margin + title.pad) 
     else if (axis$side == "bottom")
     {
         # tickangle is changed in side setAxis
