@@ -56,7 +56,7 @@ setLegend <- function(type, font, ascending, fill.color, fill.opacity, border.co
 
 
 
-formatAxis <- function(chart.matrix, type, label.wrap, label.wrap.nchar, us.date.format)
+formatLabels <- function(chart.matrix, type, label.wrap, label.wrap.nchar, us.date.format)
 {
     is.bar <- type %in% c("Bar", "Stacked Bar", "100% Stacked Bar")
     x.labels <- rownames(chart.matrix)
@@ -173,12 +173,12 @@ setMarginsForAxis <- function(margins, axisLabels, axis)
     title.nline <- 0
     if (nchar(axis$title) > 0)
         title.nline <- sum(gregexpr("<br>", axis$title)[[1]] > -1) + 1
-    title.pad <- axis$titlefont$size * title.nline * 1.25
+    title.pad <- axis$titlefont$size * title.nline * 1.25 + 5
 
     if (axis$side == "right")
-        margins$r <- margins$r + new.margin #+ title.pad 
+        margins$r <- new.margin + title.pad 
     else if (axis$side == "left")
-        margins$l <- margins$l + new.margin #+ title.pad 
+        margins$l <- new.margin + title.pad 
     else if (axis$side == "bottom")
     {
         # tickangle is changed in side setAxis

@@ -331,7 +331,7 @@ ColumnChart <-   function(y = NULL,
                     data.label.show = FALSE,
                     data.label.font.family = global.font.family,
                     data.label.font.size = 10,
-                    data.label.font.color = global.font.family,
+                    data.label.font.color = global.font.color,
                     data.label.decimals = 2, # Ignored in Labeled Bubble and Scatterplots
                     data.label.prefix = "",
                     data.label.suffix = "",
@@ -399,7 +399,9 @@ ColumnChart <-   function(y = NULL,
         y.tick.decimals <- decimalsToDisplay(as.numeric(chart.matrix))
     xtick <- setTicks(x.bounds.minimum, x.bounds.maximum, x.tick.distance, x.data.reversed)
     ytick <- setTicks(y.bounds.minimum, y.bounds.maximum, y.tick.distance, y.data.reversed)
-    axisFormat <- formatAxis(chart.matrix, type, label.wrap, label.wrap.nchar, us.date.format) 
+    axisFormat <- formatLabels(chart.matrix, type, label.wrap, label.wrap.nchar, us.date.format)
+    rownames(chart.matrix) <- axisFormat$labels
+ 
     yaxis <- setAxis(y.title, "left", axisFormat, y.title.font, 
                   y.line.color, y.line.width, y.grid.width, y.grid.color,
                   ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance, y.tick.format.manual, 
