@@ -2126,10 +2126,16 @@ Chart <-   function(y = NULL,
     {
         ## Initiate plotly object
         p <- plot_ly(as.data.frame(chart.matrix))
+        bar.text.pos <- "middle right"
         
         ## Add a trace for each col of data in the matrix
         for (i in 1:ncol(chart.matrix))
         {
+            if (i == 1 && ncol(chart.matrix) > 1)
+                bar.text.pos <- "top right"
+            if (i == ncol(chart.matrix) && ncol(chart.matrix) > 1)
+                bar.text.pos <- "bottom right"
+
             y <- as.numeric(chart.matrix[, i])
             x <- x.labels
 
@@ -2287,42 +2293,19 @@ Chart <-   function(y = NULL,
 
 
                 }
-                if (type == "Bar" && data.label.show)
+                if (type == "Bar" && data.label.show && !is.stacked)
                 {
-                    if (is.null(y.range))
-                    {
-                        if (is.numeric(y) || !is.null(ymd))
-                        {
-                            tmpd <- diff(sort(data.annotations$y))[1] * 0.5 * ncol(chart.matrix)
-                            y.range <- range(data.annotations$y)
-                        }
-                        else
-                        {
-                            tmpd <- 0.5
-                            y.range <- c(0, length(y)-1)
-                        }
-                        y.range <- y.range + c(-tmpd, tmpd)
-
-                        if (!is.null(ymd))
-                        {
-                            y.range <- rev(y.range)
-                            # plotly does not reverse dates on the y-axis
-                            if (y.autorange == "reversed")
-                                y.range <- rev(y.range)
-                        }
-                        if (y.autorange == "reversed")
-                            y.range <- rev(y.range)
-                    }
-                    yaxis2 <- list(overlaying = "y",
-                                   visible = FALSE,
-                                   range = y.range)
+                    # overlaying multiple y-axis does not work with bar charts in the same way as column charts
+                    # here we use the same categorical axis as the actual data 
+                    # it is more robust but there are problems for grouped bar charts because the offsets not accounted for
+                    # using add_annotations rather then add_text is also an option, but that does not allow
+                    # separate series to be toggled
                     x.diff <- diff(range(data.annotations$x))/100
-                    p <- add_text(p,
-                              yaxis = "y2",
+                    p <- add_text(p, yaxis="y", type="bar",
                               x = data.annotations$x[,i] + x.diff,
-                              y = data.annotations$y[,i],
+                              y = y, 
                               text = data.annotations$text[,i],
-                              textposition = "middle right",
+                              textposition = bar.text.pos,
                               textfont = textfont,
                               legendgroup = tmp.group,
                               hoverinfo = "none",
