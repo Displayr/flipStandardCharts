@@ -903,7 +903,7 @@ Chart <-   function(y = NULL,
             warning("Chart contains overlapping points in the same position.")
         if (length(subset) > 1 && !scatter.var.from.matrix)
         {
-            chart.matrix <- chart.matrix[subset,]
+            chart.matrix <- chart.matrix[subset,,drop=FALSE]
             scatter.group.indices <- scatter.group.indices[subset]
         }
 
@@ -1367,7 +1367,7 @@ Chart <-   function(y = NULL,
             label.plot[(data.label.max.plot + 1):n.lab] <- ""
         }
         if (is.null(scatterplot.data$label))
-            stop("Data contains no labels but 'Show labels' was checked.")
+            stop("Data contains no labels but 'Show labels' was checked. Check that data table has row labels or a 'Label' variable is supplied.")
 
         return(rhtmlLabeledScatter::LabeledScatter(X = scatterplot.data$x,
                        Y = scatterplot.data$y,
