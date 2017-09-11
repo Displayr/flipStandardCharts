@@ -25,7 +25,7 @@ scatterplotData <- function(chart.matrix,
     {
         warning("Data points with missing values have been omitted.")
         not.na <- which(!is.na(rowSums(chart.matrix)))
-        chart.matrix <- chart.matrix[not.na, ]
+        chart.matrix <- chart.matrix[not.na,,drop=FALSE]
         if (!is.null(logos))
             logos <- logos[not.na]
     }
@@ -105,6 +105,8 @@ scatterplotData <- function(chart.matrix,
         sc <- chart.matrix[,3]
         sc <- sqrt(abs(sc))
         sc <- sc/max(sc, na.rm=T) * 50
+        if (any(is.na(sc)) || any(sc == 0))
+            warnings("Some observations have been hidden as they have missing or zero size.")
         chart.matrix[,3] <- sc
     }
 
