@@ -904,7 +904,8 @@ Chart <-   function(y = NULL,
         if (length(subset) > 1 && !scatter.var.from.matrix)
         {
             chart.matrix <- chart.matrix[subset,,drop=FALSE]
-            scatter.group.indices <- scatter.group.indices[subset]
+            if (!is.null(scatter.group.indices) && scatter.group.indices != "")
+                scatter.group.indices <- scatter.group.indices[subset]
         }
 
         # this must be determined before the margin sizes are calculated
@@ -1367,7 +1368,7 @@ Chart <-   function(y = NULL,
             label.plot[(data.label.max.plot + 1):n.lab] <- ""
         }
         if (is.null(scatterplot.data$label))
-            stop("Data contains no labels but 'Show labels' was checked. Check that data table has row labels or a 'Label' variable is supplied.")
+            stop("Data contains no labels but 'Show labels' was checked.")
 
         return(rhtmlLabeledScatter::LabeledScatter(X = scatterplot.data$x,
                        Y = scatterplot.data$y,
