@@ -21,11 +21,24 @@ scatterplotData <- function(chart.matrix,
                             logos = NULL)
 {
     not.na <- NULL
-    if (any(is.na(as.matrix(chart.matrix))))
+    if (any(is.na(as.matrix(chart.matrix))) || (!is.null(colorscale.variable) && any(is.na(colorscale.variable))))
     {
+        col.not.na <- 1:nrow(chart.matrix)
+        if (!is.null(colorscale.variable) && any(is.na(colorscale.variable)))
+        {
+            warning("Data points with missing values in the 'Colors' variable are hidden")
+            col.not.na <- !is.na(colorscale.variable)
+        }
+
         warning("Data points with missing values have been omitted.")
-        not.na <- which(!is.na(rowSums(chart.matrix)))
+        not.na <- which(!is.na(rowSums(chart.matrix)) & col.not.na)
+
+        if (length(not.na) == 0)
+            stop("No non-missing values to plot")
+
         chart.matrix <- chart.matrix[not.na,,drop=FALSE]
+        if (!is.null(colorscale.variable))
+            colorscale.variable <- colorscale.variable[not.na]
         if (!is.null(logos))
             logos <- logos[not.na]
     }
@@ -148,7 +161,6 @@ scatterplotData <- function(chart.matrix,
          group <- 1:length(colorscale.variable)
          sc.vals <- (colorscale.variable - min(colorscale.variable, na.rm=T))/diff(range(colorscale.variable, na.rm=T))
          sc.tmp <- col.fun(sc.vals)
-         sc.tmp[is.na(sc.tmp)] <- 204    # NAs turn grey
          colors <- rgb(sc.tmp, maxColorValue=255)
     }
 

@@ -907,7 +907,6 @@ Chart <-   function(y = NULL,
             if (!is.null(scatter.group.indices) && scatter.group.indices != "")
                 scatter.group.indices <- scatter.group.indices[subset]
         }
-        cat("line 910: scatter.colors.var:", scatter.colors.var, "!!!\n")
 
         # this must be determined before the margin sizes are calculated
         scatterplot.data <- scatterplotData(chart.matrix,
