@@ -445,7 +445,6 @@ AreaChart <-   function(y = NULL,
     xtick <- setTicks(x.bounds.minimum, x.bounds.maximum, x.tick.distance, x.data.reversed)
     ytick <- setTicks(y.bounds.minimum, y.bounds.maximum, y.tick.distance, y.data.reversed)
     axisFormat <- formatLabels(chart.matrix, type, label.wrap, label.wrap.nchar, us.date.format) 
-    rownames(chart.matrix) <- axisFormat$labels
     
     yaxis <- setAxis(y.title, "left", axisFormat, y.title.font, 
                   y.line.color, y.line.width, y.grid.width, y.grid.color,
@@ -482,7 +481,7 @@ AreaChart <-   function(y = NULL,
     p <- plot_ly(as.data.frame(chart.matrix))
     if (is.null(rownames(chart.matrix)))
         rownames(chart.matrix) <- 1:nrow(chart.matrix)
-    x.labels <- rownames(chart.matrix)
+    x.labels <- axisFormat$labels
     y.labels <- colnames(chart.matrix)
     xaxis2 <- NULL
 

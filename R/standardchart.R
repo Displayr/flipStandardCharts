@@ -2128,7 +2128,7 @@ Chart <-   function(y = NULL,
     {
         ## Initiate plotly object
         p <- plot_ly(as.data.frame(chart.matrix))
-        
+         
         ## Add a trace for each col of data in the matrix
         for (i in 1:ncol(chart.matrix))
         {
@@ -2291,8 +2291,9 @@ Chart <-   function(y = NULL,
                 }
                 if (type == "Bar" && data.label.show && !is.stacked)
                 {
-                    y.range <- c(nrow(chart.matrix)-1+0.7, 0-0.7)
-                    y.diff = i * (1/(ncol(chart.matrix+1)))
+                    y.diff <- diff(sort(data.annotations$y))[1]
+                    y.range <- if (!is.null(ymd)) rev(range(as.numeric(ymd)*1000)) + c(y.diff,-y.diff)
+                               else c(nrow(chart.matrix)-0.5, -0.5)
                     x.diff <- diff(range(data.annotations$x))/100
                     yaxis2 <- list(overlaying = "y", visible = FALSE, range = y.range)
                     p <- add_text(p, yaxis="y2", type="bar", 
@@ -2486,7 +2487,7 @@ Chart <-   function(y = NULL,
             tickmode = y.tickmode,
             tickvals = y.tickvals,
             ticktext = y.ticktext,
-            range = if (type == "Bar") c(nrow(chart.matrix)-1+0.7, -0.7) else y.range,
+            range = if (type == "Bar" && y.axis.type=="category") c(nrow(chart.matrix)-0.5, -0.5) else y.range,
             rangemode = y.range.mode,
             ticks = y.tick.marks,
             tickangle = y.tick.angle,

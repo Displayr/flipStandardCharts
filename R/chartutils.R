@@ -111,6 +111,15 @@ setAxis <- function(title, side, axisLabels, titlefont, linecolor, linewidth, gr
         tickformat <- paste0(".", tickdecimals, "f")
     else
         tickformat <- tickformatmanual
+
+    autorange <- ticks$autorange
+    range <- ticks$range
+    if (axis.type == "category" && !axisLabels$labels.on.x && side %in% c("left","right"))
+    {
+        autorange <- FALSE
+        range <- c(length(axisLabels$labels)- 0.5, 0.5)
+    }
+
     
     hoverformat <- ""
     if (!is.null(hovertext.format.manual) && nchar(hovertext.format.manual))
@@ -131,7 +140,7 @@ setAxis <- function(title, side, axisLabels, titlefont, linecolor, linewidth, gr
                  ticks=if (has.line) "outside" else "", tickangle=tickangle, ticklen=ticklen,
                  tickcolor=linecolor, tickfont=tickfont, dtick=tickdistance, tickformat=tickformat,
                  tickprefix=tickprefix, ticksuffix=ticksuffix, hoverformat=hoverformat,
-                 autorange=ticks$autorange, range=ticks$range, rangemode=rangemode,
+                 autorange=autorange, range=range, rangemode=rangemode,
                  zeroline=zero.line.width > 0, zerolinewidth=zero.line.width, zerolinecolor=zero.line.color,
                  showexponent="all", showtickprefix=TRUE, showticksuffix=TRUE, showticklabels=tickshow))
 }

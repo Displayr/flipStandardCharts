@@ -404,7 +404,6 @@ BarChart <- function(y = NULL,
                   labels = tmp.label, label.font.size = data.label.font.size)
     ytick <- setTicks(y.bounds.minimum, y.bounds.maximum, y.tick.distance, !y.data.reversed)
     axisFormat <- formatLabels(chart.matrix, type, label.wrap, label.wrap.nchar, us.date.format) 
-    rownames(chart.matrix) <- axisFormat$labels
     
     yaxis <- setAxis(y.title, "left", axisFormat, y.title.font, 
                   y.line.color, y.line.width, y.grid.width, y.grid.color,
@@ -456,7 +455,7 @@ BarChart <- function(y = NULL,
     p <- plot_ly(as.data.frame(chart.matrix))
     if (is.null(rownames(chart.matrix)))
         rownames(chart.matrix) <- 1:nrow(chart.matrix)
-    x.labels <- rownames(chart.matrix)
+    x.labels <- axisFormat$labels
     y.labels <- colnames(chart.matrix)
     yaxis2 <- NULL
 
@@ -497,9 +496,12 @@ BarChart <- function(y = NULL,
         if (data.label.show && !is.stacked)
         {
             y.range <- getRange(x, data.annotations$y, yaxis, axisFormat)
+            #dd <- 0.5
+            #y.range <- c(nrow(chart.matrix)-1+dd, -dd)
             yaxis2 <- list(overlaying = "y", visible = FALSE, range = y.range)
             x.diff <- diff(range(data.annotations$x))/100
-            p <- add_text(p, yaxis = "y2", x = data.annotations$x[,i] + x.diff, y = data.annotations$y[,i],
+            p <- add_text(p, yaxis = "y2", x = data.annotations$x[,i] + x.diff, 
+                      y = data.annotations$y[,i],
                       text = data.annotations$text[,i], textposition = "middle right",
                       textfont = data.label.font, hoverinfo = "none",
                       showlegend = FALSE, legendgroup = tmp.group)
@@ -512,7 +514,7 @@ BarChart <- function(y = NULL,
         title = title,
         showlegend = legend.show,
         legend = legend,
-        yaxis = yaxis,
+        yaxis = yaxis, #list(title="Y", categoryorder="trace", autorange=F, range=c(nrow(chart.matrix)-0.5,-0.5)),
         xaxis4 = footer.axis,
         xaxis3 = subtitle.axis,
         yaxis2 = yaxis2,
