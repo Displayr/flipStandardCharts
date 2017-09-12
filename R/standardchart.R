@@ -907,6 +907,7 @@ Chart <-   function(y = NULL,
             if (!is.null(scatter.group.indices) && scatter.group.indices != "")
                 scatter.group.indices <- scatter.group.indices[subset]
         }
+        cat("line 910: scatter.colors.var:", scatter.colors.var, "!!!\n")
 
         # this must be determined before the margin sizes are calculated
         scatterplot.data <- scatterplotData(chart.matrix,
@@ -2127,16 +2128,10 @@ Chart <-   function(y = NULL,
     {
         ## Initiate plotly object
         p <- plot_ly(as.data.frame(chart.matrix))
-        bar.text.pos <- "middle right"
         
         ## Add a trace for each col of data in the matrix
         for (i in 1:ncol(chart.matrix))
         {
-            if (i == 1 && ncol(chart.matrix) > 1)
-                bar.text.pos <- "top right"
-            if (i == ncol(chart.matrix) && ncol(chart.matrix) > 1)
-                bar.text.pos <- "bottom right"
-
             y <- as.numeric(chart.matrix[, i])
             x <- x.labels
 
@@ -2296,17 +2291,15 @@ Chart <-   function(y = NULL,
                 }
                 if (type == "Bar" && data.label.show && !is.stacked)
                 {
-                    # overlaying multiple y-axis does not work with bar charts in the same way as column charts
-                    # here we use the same categorical axis as the actual data 
-                    # it is more robust but there are problems for grouped bar charts because the offsets not accounted for
-                    # using add_annotations rather then add_text is also an option, but that does not allow
-                    # separate series to be toggled
+                    y.range <- c(nrow(chart.matrix)-1+0.7, 0-0.7)
+                    y.diff = i * (1/(ncol(chart.matrix+1)))
                     x.diff <- diff(range(data.annotations$x))/100
-                    p <- add_text(p, yaxis="y", type="bar",
+                    yaxis2 <- list(overlaying = "y", visible = FALSE, range = y.range)
+                    p <- add_text(p, yaxis="y2", type="bar", 
                               x = data.annotations$x[,i] + x.diff,
-                              y = y, 
+                              y = data.annotations$y[,i], 
                               text = data.annotations$text[,i],
-                              textposition = bar.text.pos,
+                              textposition = "middle right",
                               textfont = textfont,
                               legendgroup = tmp.group,
                               hoverinfo = "none",
@@ -2493,7 +2486,7 @@ Chart <-   function(y = NULL,
             tickmode = y.tickmode,
             tickvals = y.tickvals,
             ticktext = y.ticktext,
-            range = y.range,
+            range = if (type == "Bar") c(nrow(chart.matrix)-1+0.7, -0.7) else y.range,
             rangemode = y.range.mode,
             ticks = y.tick.marks,
             tickangle = y.tick.angle,
@@ -2506,7 +2499,7 @@ Chart <-   function(y = NULL,
             tickformat = y.tickformat,
             tickprefix = y.tick.prefix,
             ticksuffix = y.tick.suffix,
-            autorange = y.autorange,
+            autorange = if (type == "Bar") FALSE else y.autorange,
             side = y.position,
             gridwidth = y.grid.width,
             gridcolor = y.grid.color,
