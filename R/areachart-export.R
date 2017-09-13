@@ -194,8 +194,6 @@
 #' font attribute for the chart unless specified individually.
 #' @param global.font.color Global font color as a named color in character format
 #' (e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param bar.gap Chart proportion between each bar or column if using
-#' bar or column charts, or between each cluster of bars or columns.
 #' @param data.label.show Logical; whether to show data labels.
 #' @param data.label.font.family Character; font family for data label.
 #' @param data.label.font.size Font size for data label.
@@ -206,14 +204,10 @@
 #' data labels.
 #' @param data.label.prefix Character; prefix for data values.
 #' @param data.label.suffix Character; suffix for data values.
-#' @param data.label.threshold The proportion of the total range below which
-#' data labels should not be displayed. Only applicable for pie, bar and column
-#' charts.
 #' @param data.label.position Character; where to place the source data
 #' value in relation to the marker icon.  Can be "top left", "top center", "top
 #' right", "middle left", "middle center", "middle right", "bottom left",
 #' "bottom center", "bottom right". Only applicable for line and area charts.
-#' @param data.label.max.plot Integer; the maximum number of labels to show on a Labeled Scatterplot.
 #' @param us.date.format Whether to apply the US convention when parsing dates.
 #' @param ... Extra arguments that are ignored.
 #' @examples
@@ -338,7 +332,6 @@ AreaChart <-   function(y = NULL,
                     series.marker.border.opacity = 1,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
-                    bar.gap = 0.15,
                     data.label.show = FALSE,
                     data.label.font.family = global.font.family,
                     data.label.font.size = 10,
@@ -346,9 +339,7 @@ AreaChart <-   function(y = NULL,
                     data.label.decimals = 2, # Ignored in Labeled Bubble and Scatterplots
                     data.label.prefix = "",
                     data.label.suffix = "",
-                    data.label.threshold = NULL,
                     data.label.position = "top middle",
-                    data.label.max.plot = 50,
                     us.date.format = NULL,
                     ...)
 {
@@ -520,11 +511,6 @@ AreaChart <-   function(y = NULL,
             y.label <- y.labels[i]
             tmp.group <- if (legend.group == "") paste("group", i) else legend.group
 
-            # Avoid weird thing plotly does in area charts with NAs
-            show.pts <- 1:length(y)
-            if (type == "Area")
-                show.pts <- which(is.finite(y))
-
             # Need to add data labels first otherwise it will override hovertext in area chart
             if (data.label.show)
                 p <- add_trace(p,
@@ -639,9 +625,6 @@ AreaChart <-   function(y = NULL,
         hovermode = hover.mode,
         titlefont = title.font,
         font = data.label.font,
-        annotations = NULL,
-        bargap = bar.gap,
-        barmode = barmode
     )
     result <- list(plotly.plot = p)
     class(result) <- "StandardChart"

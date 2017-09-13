@@ -58,12 +58,11 @@ AreaChart(y = NULL, type = "Area", fit.type = "None",
   series.line.colors = colors, series.line.opacity = 1,
   series.marker.border.width = 1, series.marker.border.colors = colors,
   series.marker.border.opacity = 1, tooltip.show = TRUE,
-  modebar.show = FALSE, bar.gap = 0.15, data.label.show = FALSE,
+  modebar.show = FALSE, data.label.show = FALSE,
   data.label.font.family = global.font.family, data.label.font.size = 10,
   data.label.font.color = global.font.color, data.label.decimals = 2,
   data.label.prefix = "", data.label.suffix = "",
-  data.label.threshold = NULL, data.label.position = "top middle",
-  data.label.max.plot = 50, us.date.format = NULL, ...)
+  data.label.position = "top middle", us.date.format = NULL, ...)
 }
 \arguments{
 \item{y}{A table, matrix, vector or data frame.}
@@ -371,9 +370,6 @@ series markers as an alpha value (0 to 1).}
 
 \item{modebar.show}{Logical; whether to show the zoom menu buttons or not.}
 
-\item{bar.gap}{Chart proportion between each bar or column if using
-bar or column charts, or between each cluster of bars or columns.}
-
 \item{data.label.show}{Logical; whether to show data labels.}
 
 \item{data.label.font.family}{Character; font family for data label.}
@@ -391,16 +387,10 @@ data labels.}
 
 \item{data.label.suffix}{Character; suffix for data values.}
 
-\item{data.label.threshold}{The proportion of the total range below which
-data labels should not be displayed. Only applicable for pie, bar and column
-charts.}
-
 \item{data.label.position}{Character; where to place the source data
 value in relation to the marker icon.  Can be "top left", "top center", "top
 right", "middle left", "middle center", "middle right", "bottom left",
 "bottom center", "bottom right". Only applicable for line and area charts.}
-
-\item{data.label.max.plot}{Integer; the maximum number of labels to show on a Labeled Scatterplot.}
 
 \item{us.date.format}{Whether to apply the US convention when parsing dates.}
 

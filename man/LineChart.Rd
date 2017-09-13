@@ -59,9 +59,9 @@ LineChart(y = NULL, type = "Line", fit.type = "None",
   series.marker.border.width = 1, series.marker.border.colors = colors,
   series.marker.border.opacity = 1, tooltip.show = TRUE,
   modebar.show = FALSE, data.label.show = FALSE,
-  data.label.font.family = global.font.family, data.label.font.size = 10,
-  data.label.font.color = global.font.color, data.label.decimals = 2,
-  data.label.prefix = "", data.label.suffix = "",
+  data.label.font.family = global.font.family,
+  data.label.font.color = global.font.color, data.label.font.size = 10,
+  data.label.decimals = 2, data.label.prefix = "", data.label.suffix = "",
   data.label.position = "top middle", us.date.format = NULL, ...)
 }
 \arguments{
@@ -374,11 +374,11 @@ series markers as an alpha value (0 to 1).}
 
 \item{data.label.font.family}{Character; font family for data label.}
 
-\item{data.label.font.size}{Font size for data label.}
-
 \item{data.label.font.color}{Font color as a named color
 in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
+
+\item{data.label.font.size}{Font size for data label.}
 
 \item{data.label.decimals}{Number of decimal places to show in
 data labels.}
@@ -395,9 +395,6 @@ right", "middle left", "middle center", "middle right", "bottom left",
 \item{us.date.format}{Whether to apply the US convention when parsing dates.}
 
 \item{...}{Extra arguments that are ignored.}
-
-\item{bar.gap}{Chart proportion between each bar or column if using
-bar or column charts, or between each cluster of bars or columns.}
 }
 \description{
 Plot line chart
@@ -405,5 +402,5 @@ Plot line chart
 \examples{
 z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L), 
       .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
-ColumnChart(z, type="Stacked Column")
+LineChart(z)
 }
