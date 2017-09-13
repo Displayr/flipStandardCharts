@@ -85,6 +85,7 @@ PieChart <- function(df,
 {
     # data is expected to already formatted as a dataframe
     df[,1] <- as.character(df[,1])
+    df[,2] <- as.numeric(df[,2])
     ind.missing <- which(!is.finite(df[,2]) | df[,2] < 0)
     if (length(ind.missing) > 0)
     {
