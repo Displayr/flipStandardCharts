@@ -2290,14 +2290,14 @@ Chart <-   function(y = NULL,
                 }
                 if (type == "Bar" && data.label.show && !is.stacked)
                 {
-                    y.diff <- diff(sort(data.annotations$y))[1]
-                    y.range <- if (!is.null(ymd)) rev(range(as.numeric(ymd)*1000)) + c(y.diff,-y.diff)
+                    y.diff <- diff(sort(data.annotations$y))[1] * ncol(chart.matrix)
+                    y.range <- if (!is.null(ymd)) rev(range(as.numeric(ymd)*1000)) + c(0.9*y.diff, -1.1 * y.diff)
                                else c(nrow(chart.matrix)-0.5, -0.5)
                     x.diff <- diff(range(data.annotations$x))/100
                     yaxis2 <- list(overlaying = "y", visible = FALSE, range = y.range)
                     p <- add_text(p, yaxis="y2", type="bar", 
                               x = data.annotations$x[,i] + x.diff,
-                              y = data.annotations$y[,i] + y.diff * (y.diff < 37e6), 
+                              y = data.annotations$y[,i], 
                               text = data.annotations$text[,i],
                               textposition = "middle right",
                               textfont = textfont,
@@ -2499,7 +2499,7 @@ Chart <-   function(y = NULL,
             tickformat = y.tickformat,
             tickprefix = y.tick.prefix,
             ticksuffix = y.tick.suffix,
-            autorange = if (type == "Bar" && y.axis.type=="category") FALSE else y.autorange,
+            autorange = if (type == "Bar") FALSE else y.autorange,
             side = y.position,
             gridwidth = y.grid.width,
             gridcolor = y.grid.color,
