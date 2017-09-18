@@ -55,11 +55,19 @@ setLegend <- function(type, font, ascending, fill.color, fill.opacity, border.co
 
 
 
-formatLabels <- function(chart.matrix, type, label.wrap, label.wrap.nchar, us.date.format)
+formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, us.date.format)
 {
     is.bar <- type %in% c("Bar", "Stacked Bar", "100% Stacked Bar")
-    x.labels <- rownames(chart.matrix)
-    y.labels <- colnames(chart.matrix)
+    if (is.matrix(dat))
+    {
+        x.labels <- rownames(dat)
+        y.labels <- colnames(dat)
+    }
+    else
+    {
+        x.labels <- sort(unique(dat[[1]])) 
+        y.labels <- sort(unique(dat[[2]]))
+    } 
 
     y.axis.type <- "linear"
     x.axis.type <- "linear"
@@ -69,13 +77,14 @@ formatLabels <- function(chart.matrix, type, label.wrap, label.wrap.nchar, us.da
         y.axis.type <- "category"
     
     # labels are only processed for independent x-axis (or y-axis in bar charts)
-    # the only axis is always numeric
+    # the other axis is always numeric
     labels <- x.labels
     ymd <- PeriodNameToDate(labels, us.format = us.date.format)
-    if (!any(is.na(ymd)) && length(labels) > 6)
+    if ((!any(is.na(ymd)) && length(labels) > 6) || class(labels) %in% c("Date", "POSIXct", "POSIXt"))
     {
         use.dates <- TRUE
-        labels <- ymd
+        if (all(!is.na(ymd)))
+            labels <- ymd
         if (is.bar)
             y.axis.type <- "date"
         else
@@ -84,7 +93,8 @@ formatLabels <- function(chart.matrix, type, label.wrap, label.wrap.nchar, us.da
     else
     {
         ymd <- NULL
-        labels <- autoFormatLongLabels(labels, label.wrap, label.wrap.nchar)
+        if (is.character(labels))
+            labels <- autoFormatLongLabels(labels, label.wrap, label.wrap.nchar)
     }
     return(list(ymd=ymd, labels=labels, labels.on.x=!is.bar, 
                 x.axis.type=x.axis.type, y.axis.type=y.axis.type))
@@ -99,9 +109,10 @@ setAxis <- function(title, side, axisLabels, titlefont, linecolor, linewidth, gr
     axis.type <- if (side %in% c("bottom", "top")) axisLabels$x.axis.type else axisLabels$y.axis.type
     has.line <- !is.null(linewidth) && linewidth > 0
 
-    if (!is.null(labels) && is.null(tickangle) && side %in% c("bottom", "top"))
+    if (!is.null(labels) && !is.na(labels) && any(nchar(labels) > 0) &&
+         is.null(tickangle) && side %in% c("bottom", "top"))
     {
-        lab.nchar <- max(nchar(unlist(strsplit(split="<br>", as.character(labels)))))
+        lab.nchar <- max(c(0, nchar(unlist(strsplit(split="<br>", as.character(labels))))))
         tickangle <- if (length(labels) > 9 && lab.nchar > 5) 90
                           else 0
     }
@@ -147,6 +158,8 @@ setAxis <- function(title, side, axisLabels, titlefont, linecolor, linewidth, gr
 
 fontAspectRatio <- function(font)
 {
+    if (length(font) == 0)
+        return (0.54)
     font <- as.character(font)
     font.asp <- switch(tolower(font),
                           'arial'= 0.54,
@@ -167,7 +180,11 @@ fontAspectRatio <- function(font)
 setMarginsForAxis <- function(margins, axisLabels, axis)
 {
     labels <- axisLabels$labels
-    lab.nchar <- max(nchar(unlist(strsplit(split="<br>", as.character(labels)))))
+    lab.len <- 0
+    lab.nline <- 0
+    lab.nchar <- 20
+
+    lab.nchar <- max(c(0,nchar(unlist(strsplit(split="<br>", as.character(labels))))))
     font.asp <- fontAspectRatio(axis$tickfont$family)
     lab.len <- font.asp * axis$tickfont$size * lab.nchar
     lab.nline <- if (is.character(labels)) max(sapply(gregexpr("<br>", labels),
@@ -190,7 +207,7 @@ setMarginsForAxis <- function(margins, axisLabels, axis)
     else if (axis$side == "bottom")
     {
         # tickangle is changed in side setAxis
-        lab.nchar <- max(nchar(unlist(strsplit(split="<br>", as.character(labels)))))
+        lab.nchar <- max(c(0,nchar(unlist(strsplit(split="<br>", as.character(labels))))))
         tickangle <- if (length(labels) > 9 && lab.nchar > 5) 90
                           else 0
         

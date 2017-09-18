@@ -1,9 +1,18 @@
-#' Bar chart
+#' Scatterplot chart
 #'
-#' Plot bar chart 
+#' Plot scatterplot chart 
 #'
-#' @param y A table, matrix, vector or data frame.
-#' @param type One of "Bar", "Stacked Bar" or "100\% Stacked Bar"
+#' @param x A table matrix or data frame.
+#' @param y Optional numeric vector for the y-axis positions. Should contain the same number of observations as x. If not provided, will use x instead.
+#' @param colors Optional vector determining the color of each observation.
+#' @param groups Alternative to using colors. Defaults to treating colors as categorical.
+#' @param colors.as.categorical Whether to treat colors as a categorical groups, or a numeric scale.
+#' @param color.palette A vector of colors to use in the chart. Should be the same length as the number of groups.
+#' @param sizes Optional vector determining of the size of each observation.
+#' @param labels Optional vector for labelling scatter points. This is used in the hovertext and data labels.
+#' @param labels.name Character; Used for labelling subtitles and footers.
+#' @param colors.name Character; Used for labelling subtitles and footers.
+#' @param sizes.name Character; Used for labelling subtitles and footers.
 #' @param fit.type Character; type of line of best fit. Can be one of "None", "Linear" or "Smooth" (loess local polynomial fitting).
 #' @param fit.ignore.last Boolean; whether to ignore the last data point in the fit.
 #' @param fit.line.type Character; One of "solid", "dot", "dash, "dotdash", or length of dash "2px", "5px".
@@ -32,9 +41,6 @@
 #' @param footer.wrap Logical; whether the footer text should be wrapped.
 #' @param footer.wrap.nchar Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.
 #' @param opacity Opacity of area fill colors as an alpha value (0 to 1).
-#' @param colors Character; a vector containing one or more named
-#' colors from grDevices OR one or more specified hex value colors OR a single
-#' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
 #' @param fit.line.colors Character; a vector containing one or more named
 #' colors from grDevices OR one or more specified hex value colors OR a single
 #' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
@@ -78,8 +84,7 @@
 #' @param y.title Character, y-axis title; defaults to chart input values;
 #' to turn off set to "FALSE".
 #' @param y.title.font.color y-axis title font color as a named color in
-#' character format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0,
-#' max = 255)).
+#' character format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).
 #' @param y.title.font.family Character; y-axis title font family
 #' @param y.title.font.size y-axis title font size
 #' @param y.line.width y-axis line in pixels, 0 = no line
@@ -104,6 +109,8 @@
 #' @param y.grid.color Color of y-grid lines as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param y.tick.show Whether to display the y-axis tick labels
+#' @param y.tick.suffix y-axis tick label suffix
+#' @param y.tick.prefix y-axis tick label prefix
 #' @param y.tick.decimals y-axis tick label decimal places
 #' @param y.tick.format.manual Overrides tick.prefix, suffix and decimals;
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
@@ -132,6 +139,8 @@
 #' @param x.tick.marks Character; whether and where to show tick marks on the
 #' x-axis.  Can be "outside", "inside", "none"
 #' @param x.tick.mark.length Length of tick marks in pixels.
+#' @param x.tick.suffix x-axis tick label suffix
+#' @param x.tick.prefix x-axis tick label prefix
 #' @param x.bounds.minimum Minimum of range for plotting;
 #' NULL = no manual range set.  Must be less than x.bounds.maximum
 #' @param x.bounds.maximum Maximum of range for
@@ -149,8 +158,6 @@
 #' @param x.grid.color Color of y-grid lines as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param x.tick.show Whether to display the x-axis tick labels
-#' @param x.tick.suffix x-axis tick label suffix
-#' @param x.tick.prefix x-axis tick label prefix
 #' @param x.tick.decimals x-axis tick label decimal places
 #' @param x.tick.format.manual Overrides tick.prefix, suffix and decimals;
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
@@ -168,6 +175,11 @@
 #' @param x.tick.font.size x-axis tick label font size
 #' @param label.wrap Logical; whether to wrap long labels on the x-axis.
 #' @param label.wrap.nchar Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.
+#' @param x.position Character; set x-axis position; can be "top" or "bottom"
+#' @param y.position Character; set y-axis position; can be "left" or "right"
+#' @param series.line.width Thickness, in pixels, of the series line
+#' @param series.marker.show Can be "none", "automatic" or a vector referencing
+#' the plotly symbol dictionary using either numerics or strings.
 #' @param series.marker.colors Character; a vector containing one or more named
 #' colors from grDevices OR one or more specified hex value colors OR a single
 #' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
@@ -176,19 +188,12 @@
 #' @param series.marker.size Size in pixels of marker
 #' @param series.marker.border.width Width in pixels of border/line
 #' around series markers; 0 is no line
-#' @param series.marker.border.colors Character; a vector containing one or more named
-#' colors from grDevices OR one or more specified hex value colors OR a single
-#' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
-#' @param series.marker.border.opacity Opacity of border/line around
-#' series markers as an alpha value (0 to 1).
 #' @param tooltip.show Logical; whether to show a tooltip on hover.
 #' @param modebar.show Logical; whether to show the zoom menu buttons or not.
 #' @param global.font.family Character; font family for all occurrences of any
 #' font attribute for the chart unless specified individually.
 #' @param global.font.color Global font color as a named color in character format
 #' (e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param bar.gap Chart proportion between each bar or column if using
-#' bar or column charts, or between each cluster of bars or columns.
 #' @param data.label.show Logical; whether to show data labels.
 #' @param data.label.font.family Character; font family for data label.
 #' @param data.label.font.size Font size for data label.
@@ -199,32 +204,35 @@
 #' data labels.
 #' @param data.label.prefix Character; prefix for data values.
 #' @param data.label.suffix Character; suffix for data values.
-#' @param data.label.threshold The proportion of the total range below which
-#' data labels should not be displayed. Only applicable for pie, bar and column
-#' charts.
 #' @param data.label.position Character; where to place the source data
 #' value in relation to the marker icon.  Can be "top left", "top center", "top
 #' right", "middle left", "middle center", "middle right", "bottom left",
 #' "bottom center", "bottom right". Only applicable for line and area charts.
-#' @param data.label.max.plot Integer; the maximum number of labels to show on a Labeled Scatterplot.
 #' @param us.date.format Whether to apply the US convention when parsing dates.
 #' @param ... Extra arguments that are ignored.
-#' @examples
-#' z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L), 
-#'       .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
-#' ColumnChart(z, type="Stacked Column")
 #' @importFrom grDevices rgb
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
 #' @export
-BarChart <- function(y = NULL,
-                    type = "Bar",
-                    fit.type = "None", # can be "Smooth" or anything else
+ScatterChart <- function(x, 
+                         y = NULL, 
+                         colors = NULL, 
+                         groups = colors, 
+                         sizes = NULL, 
+                         labels = NULL,
+                         colors.as.categorical = !is.null(groups),
+                         color.palette = flipChartBasics:::qColors, 
+                         labels.name = NA, colors.name = NA, sizes.name = NA,
+                    fit.type = "None",
                     fit.ignore.last = FALSE,
                     fit.line.type = "dot",
                     fit.line.width = 1,
                     fit.line.name = "Fitted",
+                    fit.line.colors = color.palette,
+                    legend.show = TRUE,
+                    tooltip.show = TRUE,
+                    modebar.show = FALSE,
                     global.font.family = "Arial",
                     global.font.color = rgb(44, 44, 44, maxColorValue = 255),
                     title = "",
@@ -241,21 +249,26 @@ BarChart <- function(y = NULL,
                     footer.font.size = 8,
                     footer.wrap = TRUE,
                     footer.wrap.nchar = 100,
-                    colors = ChartColors(max(1, ncol(y))),
-                    fit.line.colors = colors,
-                    opacity = 1,
+                    data.label.show = FALSE,
+                    data.label.font.family = NULL,
+                    data.label.font.size = 10,
+                    data.label.font.color = NULL,
+                    data.label.decimals = 2, # Ignored in Labeled Bubble and Scatterplots
+                    data.label.prefix = "",
+                    data.label.suffix = "",
+                    data.label.position = "top middle",
+                    opacity = NULL,
                     background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
                     background.fill.opacity = 1,
-                    charting.area.fill.color = background.fill.color,
+                    charting.area.fill.color = rgb(255, 255, 255, maxColorValue = 255),
                     charting.area.fill.opacity = 1,
-                    legend.show = TRUE,
-                    legend.fill = background.fill.color, # retained for backwards compatibility
+                    legend.fill = rgb(255, 255, 255, maxColorValue = 255), # retained for backwards compatibility
                     legend.fill.color = legend.fill,
                     legend.fill.opacity = 1,
                     legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
                     legend.border.line.width = 0,
-                    legend.font.color = global.font.color,
-                    legend.font.family = global.font.family,
+                    legend.font.color = NULL,
+                    legend.font.family = NULL,
                     legend.font.size = 10,
                     legend.position = "right",
                     legend.ascending = NA,
@@ -265,8 +278,8 @@ BarChart <- function(y = NULL,
                     margin.right = NULL,
                     margin.inner.pad = NULL,
                     y.title = "",
-                    y.title.font.color = global.font.color,
-                    y.title.font.family = global.font.family,
+                    y.title.font.color = NULL,
+                    y.title.font.family = NULL,
                     y.title.font.size = 12,
                     y.line.width = 0,
                     y.line.color = rgb(0, 0, 0, maxColorValue = 255),
@@ -278,21 +291,24 @@ BarChart <- function(y = NULL,
                     y.zero = TRUE,
                     y.zero.line.width = 0,
                     y.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
+                    y.position = "left",
                     y.data.reversed = FALSE,
                     y.grid.width = 1,
                     y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                     y.tick.show = TRUE,
+                    y.tick.suffix = "",
+                    y.tick.prefix = "",
                     y.tick.decimals = NULL,
                     y.tick.format.manual = "",
                     y.hovertext.decimals = NULL,
                     y.hovertext.format.manual = "",
                     y.tick.angle = NULL,
-                    y.tick.font.color = global.font.color,
-                    y.tick.font.family = global.font.family,
+                    y.tick.font.color = NULL,
+                    y.tick.font.family = NULL,
                     y.tick.font.size = 10,
                     x.title = "",
-                    x.title.font.color = global.font.color,
-                    x.title.font.family = global.font.family,
+                    x.title.font.color = NULL,
+                    x.title.font.family = NULL,
                     x.title.font.size = 12,
                     x.line.width = 0,
                     x.line.color = rgb(0, 0, 0, maxColorValue = 255),
@@ -303,6 +319,7 @@ BarChart <- function(y = NULL,
                     x.tick.distance = NULL,
                     x.zero.line.width = 0,
                     x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
+                    x.position = "bottom",
                     x.data.reversed = FALSE,
                     x.grid.width = 1,
                     x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
@@ -314,69 +331,103 @@ BarChart <- function(y = NULL,
                     x.hovertext.decimals = NULL,
                     x.hovertext.format.manual = "",
                     x.tick.angle = NULL,
-                    x.tick.font.color = global.font.color,
-                    x.tick.font.family = global.font.family,
+                    x.tick.font.color = NULL,
+                    x.tick.font.family = NULL,
                     x.tick.font.size = 10,
                     label.wrap = TRUE,
                     label.wrap.nchar = 21,
-                    series.marker.colors = colors,
-                    series.marker.opacity = 1,
-                    series.marker.size = 6,
+                    series.line.width = 0,
                     series.marker.border.width = 1,
-                    series.marker.border.colors = colors,
-                    series.marker.border.opacity = 1,
-                    tooltip.show = TRUE,
-                    modebar.show = FALSE,
-                    bar.gap = 0.15,
-                    data.label.show = FALSE,
-                    data.label.font.family = global.font.family,
-                    data.label.font.size = 10,
-                    data.label.font.color = global.font.color,
-                    data.label.decimals = 2, # Ignored in Labeled Bubble and Scatterplots
-                    data.label.prefix = "",
-                    data.label.suffix = "",
-                    data.label.threshold = NULL,
-                    data.label.position = "top middle",
-                    data.label.max.plot = 50,
-                    us.date.format = NULL,
-                    ...)
+                    series.marker.size = 6,
+                    series.marker.opacity = 1,
+                    series.marker.show = "none", # ignored
+                    series.marker.colors = NULL,
+                    us.date.format = FALSE)
 {
-    # Data checking
-    chart.matrix <- as.matrix(y)
-    is.stacked <- type != "Bar"
-    is.hundred.percent.stacked <- type == "100% Stacked Bar"
-    if (is.stacked && ncol(chart.matrix) == 0)
-        stop(paste(type, "requires more than one series. Use Bar charts instead for this data."))
-    if (is.stacked && (any(is.na(chart.matrix)) || any(chart.matrix < 0)))
-        stop("Stacked charts cannot be produced with missing or negative values.")
-    if (is.hundred.percent.stacked && any(rowSums(chart.matrix) == 0))
-        stop("100% stacked charts cannot be produced with rows that do not contain positive values.")
-    if (any(is.na(as.matrix(chart.matrix))))
-        warnings("Missing values have been set to zero.")
+    # if y, colors or sizes is null, look in x
+    # may need to pull x apart, but should not replace already assigned variables
+    # if x is df/matrix, use column names to fill in x.title, y.title, sizes.label, colors.label
+    # after pulling apart, assign x to be just a vector (can be numeric, factor or dates)
+    # assign NULL x and y's to zero vectors
 
-    # Some minimal data cleaning
-    # Assume formatting and Qtable/attribute handling already done
-    data.label.mult <- 1
-    if(is.hundred.percent.stacked)
+    # Get variable names
+    if (!is.null(sizes) && is.na(sizes.name))
     {
-        chart.matrix <- cum.data(chart.matrix, "column.percentage")
-        x.tick.format.manual <- "%" 
-        data.label.suffix <- "%"
-        data.label.mult <- 100
+        sizes.name <- deparse(substitute(sizes))
+        if (!is.null(attr(sizes, "label")))
+            sizes.name <- attr(sizes, "label")
     }
-    matrix.labels <- names(dimnames(chart.matrix))
-    if (nchar(y.title) == 0 && length(matrix.labels) == 2)
-        y.title <- matrix.labels[1]
-    if (nchar(x.title) == 0 && length(matrix.labels) == 2)
-        x.title <- matrix.labels[2]
+    if (!is.null(labels) && is.na(labels.name))
+    {
+        labels.name <- deparse(substitute(labels))
+        if (!is.null(attr(labels, "label")))
+            labels.name <- attr(labels, "label")
+    }
+    if (!is.null(colors) && is.na(colors.name))
+    {
+        colors.name <- deparse(substitute(colors))
+        if (!is.null(attr(colors, "label")))
+            colors.name <- attr(colors, "label")
+    }
+    n <- length(x)
+    opacity <- 1
+    if (!is.null(sizes))
+    {
+        sc.tmp <- sqrt(abs(as.numeric(sizes)))
+        sizes.scaled <- sc.tmp/max(sc.tmp, na.rm=T) * 50
+        opacity <- 0.4
+    } 
+   
+    colors.as.numeric <- 0
+    colorbar <- NULL
+    if (is.null(groups))
+        groups <- rep("Series 1", n)  
+    if (!is.null(colors) && !colors.as.categorical)
+    {
+        # make colorscalebar
+        col.fun <- colorRamp(color.palette)
+        c.tmp <- rgb(col.fun((0:5)/5), maxColorValue=255)
+        v.tmp <- seq(from=0, to=1, length=length(c.tmp))
+        col.scale <- mapply(function(a,b)c(a,b), a=v.tmp, b=c.tmp, SIMPLIFY=F)
+        colorbar <- list(#tickmode="array", tickvals=c(), ticktext=c(), 
+                         outlinewidth=0)
 
-    # Constants
-    hover.mode <- if (tooltip.show) "closest" else FALSE
-    barmode <- if (is.stacked) "stack" else ""
-    legend.group <- if (is.stacked) "grouped" else ""
-    if (is.null(opacity))
+        colors.as.numeric <- 1
+        groups <- 1:n
         opacity <- 1
-    eval(colors) # not sure why, but this is necessary for bars to appear properly
+        col.tmp <- AsNumeric(colors, binary=FALSE)
+        colors.scaled <- (col.tmp - min(col.tmp, na.rm=T))/diff(range(col.tmp, na.rm=T))
+        color.palette <- rgb(col.fun(colors.scaled), maxColorValue=255)
+    }
+    if (!is.null(groups) && colors.as.categorical)
+        groups <- as.character(groups)
+    g.list <- unique(groups)
+    num.groups <- length(g.list)
+    num.series <- if (colors.as.numeric) 1 else num.groups
+
+    # hovertext
+    x.str <- if (is.numeric(x)) FormatAsReal(x, decimals = data.label.decimals) else as.character(x)
+    y.str <- if (is.numeric(y)) FormatAsReal(y, decimals = data.label.decimals) else as.character(y)
+    source.text <- paste0(labels, " (", x.tick.prefix, x.str, x.tick.suffix, ", ", 
+                          y.tick.prefix, y.str, y.tick.suffix, ")")
+    if (!is.na(colors.name))
+        source.text <- paste0(source.text, "<br>", colors.name, ": ", as.character(colors))
+    if (!is.na(sizes.name))
+        source.text <- paste0(source.text, "<br>", sizes.name, ": ", as.character(sizes))
+    
+
+    # other constants
+    hover.mode <- if (tooltip.show) "closest" else FALSE
+    legend.show <- legend.show && num.series > 1
+    scatter.opacity <- if (!is.null(sizes)) 0.4 else 1
+    series.mode <- if (is.null(series.line.width) || series.line.width == 0) "markers"
+                   else "markers+lines"
+    series.marker.symbols <- if (is.null(series.marker.show) ||
+                                 series.marker.show == "automatic" ||
+                                 series.marker.show == "none")
+        rep(100, 100) # disc
+    else
+        series.marker.show
 
     title.font=list(family=title.font.family, size=title.font.size, color=title.font.color)
     subtitle.font=list(family=subtitle.font.family, size=subtitle.font.size, color=subtitle.font.color)
@@ -387,39 +438,45 @@ BarChart <- function(y = NULL,
     footer.font=list(family=footer.font.family, size=footer.font.size, color=footer.font.color)
     legend.font=list(family=legend.font.family, size=legend.font.size, color=legend.font.color)
     data.label.font=list(family=data.label.font.family, size=data.label.font.size, color=data.label.font.color)
-
-    if (ncol(chart.matrix) == 1)
-        legend.show <- FALSE
-    legend <- setLegend(type, legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
+    type <- "Scatterplot"
+    legend <- setLegend("Scatterplot", legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
                         legend.border.color, legend.border.line.width)
+    if (length(footer) == 0 || nchar(footer) == 0)
+    {
+        footer <- ""
+        if (!is.na(labels.name))
+            footer <- sprintf("%sPoints labeled by '%s'; ", footer, labels.name)
+        if (!is.na(colors.name))
+            footer <- sprintf("%sPoints colored according to '%s'; ", footer, colors.name)
+        if (!is.na(sizes.name))
+            footer <- sprintf("%sPoint sizes are proportional to absolute value of '%s'; ", 
+                              footer, sizes.name)
+    }
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
 
     # Format axis labels
-    if (is.null(x.tick.decimals))
-        x.tick.decimals <- decimalsToDisplay(as.numeric(chart.matrix))
-    tmp.label <- sprintf(paste0("%s%.", data.label.decimals, "f%s"), 
-                data.label.prefix, max(chart.matrix), data.label.suffix)
-    xtick <- setTicks(x.bounds.minimum, x.bounds.maximum, x.tick.distance, x.data.reversed,
-                  data = if (data.label.show && type == "Bar") chart.matrix else NULL, type = type, 
-                  labels = tmp.label, label.font.size = data.label.font.size)
-    ytick <- setTicks(y.bounds.minimum, y.bounds.maximum, y.tick.distance, !y.data.reversed)
-    axisFormat <- formatLabels(chart.matrix, type, label.wrap, label.wrap.nchar, us.date.format) 
+    if (is.null(y.tick.decimals))
+        y.tick.decimals <- decimalsToDisplay(as.numeric(y))
+    xtick <- setTicks(x.bounds.minimum, x.bounds.maximum, x.tick.distance, x.data.reversed)
+    ytick <- setTicks(y.bounds.minimum, y.bounds.maximum, y.tick.distance, y.data.reversed)
+    axisFormat <- formatLabels(list(x=x, y=y), type, label.wrap, label.wrap.nchar, us.date.format) 
     
     yaxis <- setAxis(y.title, "left", axisFormat, y.title.font, 
                   y.line.color, y.line.width, y.grid.width, y.grid.color,
-                  ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance, y.tick.format.manual, 
-                  y.tick.decimals, "", "", y.tick.show, y.zero, y.zero.line.width, y.zero.line.color, 
+                  ytick, ytick.font, y.tick.angle, y.tick.mark.length, 
+                  y.tick.distance, y.tick.format.manual, 
+                  y.tick.decimals, y.tick.prefix, y.tick.suffix,
+                  y.tick.show, y.zero, y.zero.line.width, y.zero.line.color, 
                   y.hovertext.format.manual, y.hovertext.decimals)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, x.tick.format.manual,
-                  x.tick.decimals, x.tick.prefix, x.tick.suffix,
-                  x.tick.show, FALSE, x.zero.line.width, x.zero.line.color, 
-                  x.hovertext.format.manual, x.hovertext.decimals)
+                  x.tick.decimals, "", "", x.tick.show, FALSE, x.zero.line.width, x.zero.line.color, 
+                  x.hovertext.format.manual, x.hovertext.decimals, axisFormat$labels)
 
     # Work out margin spacing 
     margins <- list(t = 20, b = 50, r = 60, l = 80, pad = 0)
-    margins <- setMarginsForAxis(margins, axisFormat, yaxis)
+    margins <- setMarginsForAxis(margins, axisFormat, xaxis)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size, 
                                  subtitle.font.size, footer.font.size)
     margins <- setMarginsForLegend(margins, legend.show, NULL)
@@ -435,80 +492,52 @@ BarChart <- function(y = NULL,
     # Finalise text in margins
     footer.axis <- setFooterAxis(footer, footer.font, margins)
     subtitle.axis <- setSubtitleAxis(subtitle, subtitle.font, title, title.font)
- 
-    # Data label annotations
-    data.annotations <- NULL
-    if (data.label.show)
-        data.annotations <- dataLabelAnnotation(chart.matrix = chart.matrix,
-                            annotations = NULL,
-                            data.label.mult = data.label.mult,
-                            bar.decimals = data.label.decimals,
-                            bar.prefix = data.label.prefix,
-                            bar.suffix = data.label.suffix,
-                            barmode = barmode,
-                            swap.axes.and.data = TRUE,
-                            bar.gap = bar.gap,
-                            display.threshold = data.label.threshold,
-                            dates = axisFormat$ymd)
 
-    ## Initiate plotly object
-    p <- plot_ly(as.data.frame(chart.matrix))
-    if (is.null(rownames(chart.matrix)))
-        rownames(chart.matrix) <- 1:nrow(chart.matrix)
-    x.labels <- axisFormat$labels
-    y.labels <- colnames(chart.matrix)
-    yaxis2 <- NULL
-
-    ## Add a trace for each col of data in the matrix
-    for (i in 1:ncol(chart.matrix))
+    ## START PLOTTING
+    p <- plot_ly(data.frame(x=x,y=y))
+    for (ggi in 1:num.groups)
     {
-        y <- as.numeric(chart.matrix[, i])
-        x <- x.labels
+        ind <- which(groups == g.list[ggi])
+        tmp.size <- if (!is.null(sizes)) sizes.scaled[ind]
+                 else series.marker.size
 
-        marker <- list(size = series.marker.size, color = toRGB(colors[i], alpha = opacity),
-                    line = list(color = toRGB(series.marker.border.colors[i], 
-                      alpha = series.marker.border.opacity),
-                      width = series.marker.border.width))
-                
-        # add invisible line to force all categorical labels to be shown
-        if (!is.stacked && i == 1)
-            p <- add_trace(p, x=rep(min(y,na.rm=T), length(y)), y=x,
-                           type="scatter", mode="lines",
-                           hoverinfo="none", showlegend=F, opacity=0)
+        # initialise marker/line settings
+        line.obj <- if (is.null(series.line.width) || series.line.width == 0) NULL
+                    else list(width=series.line.width, color=colors[ggi])
+        if (ggi == 1 && colors.as.numeric)
+            marker.obj <- list(size = tmp.size, sizemode = "diameter", opacity = opacity,
+                            line = list(width = series.marker.border.width),
+                            color = colors.scaled, colorscale = col.scale,
+                            showscale = T, colorbar = colorbar)
+        else
+            marker.obj <- list(size = tmp.size, sizemode = "diameter", opacity = opacity,
+                            color = color.palette[ggi], line = list(width = series.marker.border.width))
 
-        # this is the main trace for each data series 
-        tmp.group <- if (legend.group == "") paste("group", i) else legend.group
-        p <- add_trace(p, x = y, y = x, type = "bar", orientation = "h", marker = marker,
-                       name  =  y.labels[i], legendgroup  =  tmp.group,
-                       hoverinfo  =  if(ncol(chart.matrix) > 1) "x+y+name" else "x+y")
-
-        if (fit.type != "None" && !is.stacked)
+        # main trace
+        p <- add_trace(p, x = x[ind], y = y[ind], name = g.list[ggi], 
+                showlegend=legend.show, legendgroup = if (num.series > 1) ggi else 1,
+                #textfont=data.label.font, #textposition = data.label.position,
+                marker = marker.obj, line = line.obj, text = source.text[ind], 
+                hoverinfo = if (num.series == 1) "text" else "name+text",
+                type="scatter", mode=series.mode, symbols=series.marker.symbols)
+        
+        if (fit.type != "None" && num.series > 1)
         {
-            tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, yaxis$type)
-            tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
-                         else sprintf("%s: %s", fit.line.name, y.labels[i])
-            p <- add_trace(p, x = tmp.fit$y, y = tmp.fit$x, type = 'scatter', mode = "lines",
-                      name = tmp.fname, legendgroup = tmp.group, showlegend = F,
+            tmp.fit <- fitSeries(x[ind], y[ind], fit.type, fit.ignore.last, xaxis$type)
+            tmp.fname <- sprintf("%s: %s", fit.line.name, g.list[ggi]) 
+            p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$y, type = 'scatter', mode = "lines",
+                      name = tmp.fname, legendgroup = ggi, showlegend = F,
                       line = list(dash = fit.line.type, width = fit.line.width,
-                      color = fit.line.colors[i]))
-        }
-
-        if (data.label.show && !is.stacked)
-        {
-            y.range <- getRange(x, data.annotations$y, yaxis, axisFormat)
-            #dd <- 0.5
-            #y.range <- c(nrow(chart.matrix)-1+dd, -dd)
-            yaxis2 <- list(overlaying = "y", visible = FALSE, range = y.range)
-            x.diff <- diff(range(data.annotations$x))/100
-            p <- add_text(p, yaxis = "y2", x = data.annotations$x[,i] + x.diff, 
-                      y = data.annotations$y[,i],
-                      text = data.annotations$text[,i], textposition = "middle right",
-                      textfont = data.label.font, hoverinfo = "none",
-                      showlegend = FALSE, legendgroup = tmp.group)
+                      color = fit.line.colors[ggi], shape = 'spline'))
         }
     }
-    print(yaxis)
-
+    if (fit.type != "None" && num.series == 1)
+    {
+        tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type)
+        p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$y, type = 'scatter', mode = 'lines',
+                    name = fit.line.name, showlegend = F, line = list(dash = fit.line.type,
+                    width = fit.line.width, color = fit.line.colors[1], shape = 'spline'))
+    }
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
@@ -518,20 +547,15 @@ BarChart <- function(y = NULL,
         yaxis = yaxis, 
         xaxis4 = footer.axis,
         xaxis3 = subtitle.axis,
-        yaxis2 = yaxis2,
         xaxis = xaxis,
         margin = margins,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
         hovermode = hover.mode,
         titlefont = title.font,
-        font = data.label.font,
-        annotations = if (is.stacked) data.annotations else NULL,
-        bargap = bar.gap,
-        barmode = barmode
+        font = data.label.font
     )
     result <- list(plotly.plot = p)
     class(result) <- "StandardChart"
     result
 }
-

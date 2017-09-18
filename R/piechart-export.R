@@ -9,7 +9,6 @@
 #' @param pie.subslice.colors.repeat Logical; if, when a grouped
 #' pie chart is displayed, the colors of the subslices should repeat
 #' by group, or be different throughout; defaults to TRUE.
-
 #' @param title Character; chart title.
 #' @param title.font.family Character; title font family. Can be "Arial Black",
 #' "Arial", "Comic Sans MS", "Courier New", "Georgia", "Impact",
