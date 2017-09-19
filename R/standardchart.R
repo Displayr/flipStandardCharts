@@ -2101,7 +2101,8 @@ Chart <-   function(y = NULL,
 
                 p <- add_trace(p, x=x.fit, y=y.fit, type='scatter', mode="lines",
                           name=tmp.fname, legendgroup=ggi, showlegend=F,
-                          line=list(dash=fit.line.type, width=fit.line.width, color=fit.line.colors[ggi]))
+                          line=list(dash=fit.line.type, width=fit.line.width, 
+                          shape = 'spline', color=fit.line.colors[ggi]))
             }
         }
         if (num.fit == 1)
@@ -2120,7 +2121,8 @@ Chart <-   function(y = NULL,
             y.fit <- predict(tmp.fit, data.frame(x=x.fit))
             p <- add_trace(p, x=x.fit, y=y.fit, type='scatter', mode="lines",
                       name=fit.line.name, showlegend=F,
-                      line=list(dash=fit.line.type, width=fit.line.width, color=fit.line.colors[1]))
+                      line=list(dash=fit.line.type, width=fit.line.width, 
+                                shape='spline', color=fit.line.colors[1]))
         }
     }
     else
@@ -2227,7 +2229,7 @@ Chart <-   function(y = NULL,
                     p <- add_trace(p, x=x.fit, y=y.fit, type='scatter', mode="lines",
                               name=tmp.fname, legendgroup=tmp.group, showlegend=F,
                               line=list(dash=fit.line.type, width=fit.line.width,
-                              color=fit.line.colors[i]))
+                              color=fit.line.colors[i], shape='spline'))
                 }
 
                 if (type == "Column" && data.label.show && !is.stacked)
@@ -2284,7 +2286,7 @@ Chart <-   function(y = NULL,
                     p <- add_trace(p, x=x.fit, y=y.fit, type='scatter', mode="lines",
                               name=tmp.fname, legendgroup=tmp.group, showlegend=F,
                               line=list(dash=fit.line.type, width=fit.line.width,
-                              color=fit.line.colors[i]))
+                              color=fit.line.colors[i], shape='spline'))
 
 
                 }
@@ -2411,7 +2413,7 @@ Chart <-   function(y = NULL,
                     p <- add_trace(p, x=x.fit, y=y.fit, type='scatter', mode="lines",
                               name=tmp.fname, legendgroup=tmp.group, showlegend=F,
                               line=list(dash=fit.line.type, width=fit.line.width,
-                              color=fit.line.colors[i]))
+                              color=fit.line.colors[i], shape='spline'))
                 }
             }
             else
