@@ -4,14 +4,11 @@
 \alias{LabeledScatterChart}
 \title{Labeled Scatterplot chart}
 \usage{
-LabeledScatterChart(x, y = NULL, colors = NULL, groups = colors,
-  sizes = NULL, labels = 1:length(x),
+LabeledScatterChart(x = NULL, y = NULL, colors = NULL, sizes = NULL,
+  labels = NULL, trend.lines = FALSE, logos = NULL, logo.size = 0.5,
   colors.as.categorical = !is.null(groups),
   color.palette = flipChartBasics:::qColors, labels.name = NA,
-  colors.name = NA, sizes.name = NA, fit.type = "None",
-  fit.ignore.last = FALSE, fit.line.type = "dot", fit.line.width = 1,
-  fit.line.name = "Fitted", fit.line.colors = color.palette,
-  legend.show = TRUE, tooltip.show = TRUE, modebar.show = FALSE,
+  colors.name = NA, sizes.name = NA, legend.show = TRUE,
   global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
   maxColorValue = 255), title = "", title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
@@ -22,60 +19,44 @@ LabeledScatterChart(x, y = NULL, colors = NULL, groups = colors,
   footer.wrap = TRUE, footer.wrap.nchar = 100, data.label.max.plot = 50,
   data.label.font.family = global.font.family,
   data.label.font.color = global.font.color, data.label.font.size = 10,
-  data.label.decimals = 2, data.label.prefix = "", data.label.suffix = "",
-  data.label.position = "top middle", opacity = NULL,
-  background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
-  background.fill.opacity = 1, charting.area.fill.color = rgb(255, 255, 255,
-  maxColorValue = 255), charting.area.fill.opacity = 1,
-  legend.fill = rgb(255, 255, 255, maxColorValue = 255),
-  legend.fill.color = legend.fill, legend.fill.opacity = 1,
-  legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
-  legend.border.line.width = 0, legend.font.color = global.font.color,
+  legend.font.color = global.font.color,
   legend.font.family = global.font.family, legend.font.size = 10,
-  legend.position = "right", legend.ascending = NA, y.title = "",
-  y.title.font.color = global.font.color,
+  y.title = "", y.title.font.color = global.font.color,
   y.title.font.family = global.font.family, y.title.font.size = 12,
   y.line.width = 0, y.line.color = rgb(0, 0, 0, maxColorValue = 255),
-  y.tick.marks = "", y.tick.mark.length = 5, y.bounds.minimum = NULL,
-  y.bounds.maximum = NULL, y.tick.distance = NULL, y.zero = TRUE,
-  y.zero.line.width = 0, y.zero.line.color = rgb(44, 44, 44, maxColorValue =
-  255), y.position = "left", y.data.reversed = FALSE, y.grid.width = 1,
-  y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
-  y.tick.show = TRUE, y.tick.suffix = "", y.tick.prefix = "",
-  y.tick.decimals = NULL, y.tick.format.manual = "",
-  y.hovertext.decimals = NULL, y.hovertext.format.manual = "",
-  y.tick.angle = NULL, y.tick.font.color = NULL,
-  y.tick.font.family = NULL, y.tick.font.size = 10, x.title = "",
-  x.title.font.color = NULL, x.title.font.family = NULL,
-  x.title.font.size = 12, x.line.width = 0, x.line.color = rgb(0, 0, 0,
-  maxColorValue = 255), x.tick.marks = "", x.tick.mark.length = 5,
+  y.bounds.minimum = NULL, y.bounds.maximum = NULL,
+  y.tick.distance = NULL, y.grid.width = 1, y.grid.color = rgb(225, 225,
+  225, maxColorValue = 255), y.tick.show = TRUE, y.tick.suffix = "",
+  y.tick.prefix = "", y.tick.decimals = NULL, y.tick.format.manual = "",
+  y.tick.font.color = global.font.color,
+  y.tick.font.family = global.font.family, y.tick.font.size = 10,
+  x.title = "", x.title.font.color = global.font.color,
+  x.title.font.family = global.font.family, x.title.font.size = 12,
+  x.line.width = 0, x.line.color = rgb(0, 0, 0, maxColorValue = 255),
   x.bounds.minimum = NULL, x.bounds.maximum = NULL,
-  x.tick.distance = NULL, x.zero.line.width = 0,
-  x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
-  x.position = "bottom", x.data.reversed = FALSE, x.grid.width = 1,
-  x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
-  x.tick.show = TRUE, x.tick.suffix = "", x.tick.prefix = "",
-  x.tick.decimals = NULL, x.tick.format.manual = "",
-  x.hovertext.decimals = NULL, x.hovertext.format.manual = "",
-  x.tick.angle = NULL, x.tick.font.color = NULL,
-  x.tick.font.family = NULL, x.tick.font.size = 10, label.wrap = TRUE,
-  label.wrap.nchar = 21, series.line.width = 0,
-  series.marker.border.width = 1, series.marker.size = 6,
-  series.marker.opacity = 1, series.marker.show = "none",
-  series.marker.colors = NULL, us.date.format = FALSE)
+  x.tick.distance = NULL, x.grid.width = 1, x.grid.color = rgb(225, 225,
+  225, maxColorValue = 255), x.tick.show = TRUE, x.tick.suffix = "",
+  x.tick.prefix = "", x.tick.decimals = NULL,
+  x.tick.font.color = global.font.color,
+  x.tick.font.family = global.font.family, x.tick.font.size = 10,
+  series.marker.size = 6, swap.x.and.y = FALSE)
 }
 \arguments{
-\item{x}{A table matrix or data frame.}
+\item{x}{A numeric vector for the x-axis positions (which may be named); or a matrix or dataframe with the following columns: (1) x, (2), y, (3) sizes, (4) colors; or a list of matrices is the format described and which share the same row and column names}
 
 \item{y}{Optional numeric vector for the y-axis positions. Should contain the same number of observations as x. If not provided, will use x instead.}
 
 \item{colors}{Optional vector determining the color of each observation.}
 
-\item{groups}{Alternative to using colors. Defaults to treating colors as categorical.}
-
 \item{sizes}{Optional vector determining of the size of each observation.}
 
 \item{labels}{Optional vector for labelling scatter points. This is used in the hovertext and data labels.}
+
+\item{trend.lines}{Boolean indicating whether to plot trend lines for multiple tables.}
+
+\item{logos}{Optional list of images to be used to label scatterplot instead of the row names. It should be inputted as a comma-seperated list of URLs.}
+
+\item{logo.size}{Numeric controlling the size of the logos.}
 
 \item{colors.as.categorical}{Whether to treat colors as a categorical groups, or a numeric scale.}
 
@@ -87,25 +68,7 @@ LabeledScatterChart(x, y = NULL, colors = NULL, groups = colors,
 
 \item{sizes.name}{Character; Used for labelling subtitles and footers.}
 
-\item{fit.type}{Character; type of line of best fit. Can be one of "None", "Linear" or "Smooth" (loess local polynomial fitting).}
-
-\item{fit.ignore.last}{Boolean; whether to ignore the last data point in the fit.}
-
-\item{fit.line.type}{Character; One of "solid", "dot", "dash, "dotdash", or length of dash "2px", "5px".}
-
-\item{fit.line.width}{Numeric; Line width of line of best fit.}
-
-\item{fit.line.name}{Character; Name of the line of best fit, which will appear in the hovertext.}
-
-\item{fit.line.colors}{Character; a vector containing one or more named
-colors from grDevices OR one or more specified hex value colors OR a single
-named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
-
 \item{legend.show}{Logical; show the legend.}
-
-\item{tooltip.show}{Logical; whether to show a tooltip on hover.}
-
-\item{modebar.show}{Logical; whether to show the zoom menu buttons or not.}
 
 \item{global.font.family}{Character; font family for all occurrences of any
 font attribute for the chart unless specified individually.}
@@ -159,59 +122,12 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{data.label.font.size}{Font size for data label.}
 
-\item{data.label.decimals}{Number of decimal places to show in
-data labels.}
-
-\item{data.label.prefix}{Character; prefix for data values.}
-
-\item{data.label.suffix}{Character; suffix for data values.}
-
-\item{data.label.position}{Character; where to place the source data
-value in relation to the marker icon.  Can be "top left", "top center", "top
-right", "middle left", "middle center", "middle right", "bottom left",
-"bottom center", "bottom right". Only applicable for line and area charts.}
-
-\item{opacity}{Opacity of area fill colors as an alpha value (0 to 1).}
-
-\item{background.fill.color}{Background color in character format
-(e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
-
-\item{background.fill.opacity}{Background opacity as an alpha value
-(0 to 1).}
-
-\item{charting.area.fill.color}{Charting area background color as
-a named color in character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
-
-\item{charting.area.fill.opacity}{Charting area background
-opacity as an alpha value (0 to 1).}
-
-\item{legend.fill}{Same as \code{legend.fill.color}. Retained for backwards compatibility.}
-
-\item{legend.fill.color}{Legend fill color as a named color in character format
-(e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
-
-\item{legend.fill.opacity}{Legend fill opacity as an alpha value
-(0 to 1).}
-
-\item{legend.border.color}{Legend border color as a named color in character
-format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
-
-\item{legend.border.line.width}{Width in pixels of the border
-around the legend.  0 = no border.}
-
 \item{legend.font.color}{Legend font color as a named color in character
 format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{legend.font.family}{Character; legend font family.}
 
 \item{legend.font.size}{Legend font size.}
-
-\item{legend.position}{Where the legend will be placed; can be "left" or
-"right" of plot.}
-
-\item{legend.ascending}{Logical; TRUE for ascending, FALSE for descending.
-By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.}
 
 \item{y.title}{Character, y-axis title; defaults to chart input values;
 to turn off set to "FALSE".}
@@ -228,11 +144,6 @@ character format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).}
 \item{y.line.color}{y-axis line color as a named color in character format
 (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{y.tick.marks}{Character; whether and where to show tick marks on the
-y axis.  Can be "outside", "inside", "none"}
-
-\item{y.tick.mark.length}{Length of tick marks in pixels.}
-
 \item{y.bounds.minimum}{Minimum of range for plotting;
 NULL = no manual range set.  Must be less than y.bounds.maximum}
 
@@ -240,19 +151,6 @@ NULL = no manual range set.  Must be less than y.bounds.maximum}
 plotting; NULL = no manual range set.  Must be greater than y.bounds.minimum}
 
 \item{y.tick.distance}{Tick mark distance.}
-
-\item{y.zero}{Whether the y-axis should include zero.}
-
-\item{y.zero.line.width}{Width in pixels of zero line; 0 = no zero line
-shown}
-
-\item{y.zero.line.color}{Color of horizontal zero line as a named
-color in character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
-
-\item{y.position}{Character; set y-axis position; can be "left" or "right"}
-
-\item{y.data.reversed}{Logical; whether to reverse y-axis or not}
 
 \item{y.grid.width}{Width of y-grid lines in pixels; 0 = no line}
 
@@ -270,15 +168,6 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 \item{y.tick.format.manual}{Overrides tick.prefix, suffix and decimals;
 See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 https://docs.python.org/release/3.1.3/library/string.html#formatspec}
-
-\item{y.hovertext.decimals}{y-axis hover text decimal places}
-
-\item{y.hovertext.format.manual}{Overrides hovertext decimals;
-See https://github.com/mbostock/d3/wiki/Formatting#numbers or
-https://docs.python.org/release/3.1.3/library/string.html#formatspec}
-
-\item{y.tick.angle}{y-axis tick label angle in degrees.
-90 = vertical; 0 = horizontal}
 
 \item{y.tick.font.color}{y-axis tick label font color as a named color
 in character format (e.g. "black") or an rgb value (e.g.
@@ -304,11 +193,6 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{x.line.color}{x-axis line color as a named color in character format
 (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{x.tick.marks}{Character; whether and where to show tick marks on the
-x-axis.  Can be "outside", "inside", "none"}
-
-\item{x.tick.mark.length}{Length of tick marks in pixels.}
-
 \item{x.bounds.minimum}{Minimum of range for plotting;
 NULL = no manual range set.  Must be less than x.bounds.maximum}
 
@@ -318,17 +202,6 @@ plotting; NULL = no manual range set.  Must be greater than x.bounds.minimum}
 \item{x.tick.distance}{Tick mark distance in
 x-axis units between minimum and maximum for plotting; NULL = no manual
 range set.}
-
-\item{x.zero.line.width}{Width in pixels of zero line; 0 = no zero line
-shown}
-
-\item{x.zero.line.color}{Color of horizontal zero (origo) line as a named
-color in character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
-
-\item{x.position}{Character; set x-axis position; can be "top" or "bottom"}
-
-\item{x.data.reversed}{Logical; whether to reverse x-axis or not}
 
 \item{x.grid.width}{Width of y-grid lines in pixels; 0 = no line}
 
@@ -343,19 +216,6 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{x.tick.decimals}{x-axis tick label decimal places}
 
-\item{x.tick.format.manual}{Overrides tick.prefix, suffix and decimals;
-See https://github.com/mbostock/d3/wiki/Formatting#numbers or
-https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec}
-
-\item{x.hovertext.decimals}{X.axis hover text decimal places}
-
-\item{x.hovertext.format.manual}{Overrides hovertext decimals;
-See https://github.com/mbostock/d3/wiki/Formatting#numbers or
-https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec}
-
-\item{x.tick.angle}{x-axis tick label angle in degrees.
-90 = vertical; 0 = horizontal}
-
 \item{x.tick.font.color}{X-axis tick label font color as a named color in
 character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
@@ -364,28 +224,9 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{x.tick.font.size}{x-axis tick label font size}
 
-\item{label.wrap}{Logical; whether to wrap long labels on the x-axis.}
-
-\item{label.wrap.nchar}{Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.}
-
-\item{series.line.width}{Thickness, in pixels, of the series line}
-
-\item{series.marker.border.width}{Width in pixels of border/line
-around series markers; 0 is no line}
-
 \item{series.marker.size}{Size in pixels of marker}
 
-\item{series.marker.opacity}{Opacity for series markers as an alpha value (0 to 1).}
-
-\item{series.marker.show}{Can be "none", "automatic" or a vector referencing
-the plotly symbol dictionary using either numerics or strings.}
-
-\item{series.marker.colors}{Character; a vector containing one or more named
-colors from grDevices OR one or more specified hex value colors OR a single
-named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
-be reversed.}
-
-\item{us.date.format}{Whether to apply the US convention when parsing dates.}
+\item{swap.x.and.y}{Swap the x and y axis around on the chart.}
 
 \item{...}{Extra arguments that are ignored.}
 }
