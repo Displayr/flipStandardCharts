@@ -4,7 +4,7 @@
 \alias{PieChart}
 \title{Pie chart}
 \usage{
-PieChart(df, type = "Pie", colors = NULL, pie.subslice.colors = NULL,
+PieChart(x, type = "Pie", colors = NULL, pie.subslice.colors = NULL,
   pie.subslice.colors.repeat = TRUE, title = "",
   title.font.family = global.font.family, title.font.size = 16,
   title.font.color = global.font.color,
@@ -20,7 +20,7 @@ PieChart(df, type = "Pie", colors = NULL, pie.subslice.colors = NULL,
   global.font.color = rgb(44, 44, 44, maxColorValue = 255))
 }
 \arguments{
-\item{df}{Input data frame. The first column is expected to contain the label names, the second column contains numeric values and the third (optional) column are the group labels.}
+\item{x}{Input data in the form of a vector, matrix or dataframe. If a dataframe is given, the first column is expected to contain the label names, the second column contains numeric values and the third (optional) column are the group labels.}
 
 \item{type}{One of "Pie" or "Donut"}
 
@@ -95,7 +95,7 @@ font attribute for the chart unless specified individually.}
 Plot pie or donut chart
 }
 \examples{
-dat <- data.frame(labels=rep(LETTERS[24:26], each=3), abs(rnorm(9)),
+dat <- data.frame(labels=rep(LETTERS[24:26], each=3), vals=abs(rnorm(9)),
      groups=rep(LETTERS[1:3], 3), stringsAsFactors = FALSE)
 PieChart(dat)
 PieChart(dat, pie.subslice.colors=rainbow(9), pie.subslice.colors.repeat = FALSE)

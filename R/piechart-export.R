@@ -2,7 +2,7 @@
 #'
 #' Plot pie or donut chart
 #'
-#' @param df Input data frame. The first column is expected to contain the label names, the second column contains numeric values and the third (optional) column are the group labels.
+#' @param x Input data in the form of a vector, matrix or dataframe. If a dataframe is given, the first column is expected to contain the label names, the second column contains numeric values and the third (optional) column are the group labels.
 #' @param type One of "Pie" or "Donut"
 #' @param colors A vector containing a hex value colors.
 #' @param pie.subslice.colors A vector containing hex value colors for the outer ring of the pie chart. If not supplied will default to the same colors as the inner ring.
@@ -45,14 +45,14 @@
 #' (e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param ... Extra arguments that are ignored.
 #' @examples
-#' dat <- data.frame(labels=rep(LETTERS[24:26], each=3), abs(rnorm(9)),
+#' dat <- data.frame(labels=rep(LETTERS[24:26], each=3), vals=abs(rnorm(9)),
 #'      groups=rep(LETTERS[1:3], 3), stringsAsFactors = FALSE)
 #' PieChart(dat)
 #' PieChart(dat, pie.subslice.colors=rainbow(9), pie.subslice.colors.repeat = FALSE)
 #' @importFrom flipChartBasics ChartColors StripAlphaChannel
 #' @importFrom rhtmlDonut Donut
 #' @export
-PieChart <- function(df,
+PieChart <- function(x,
                      type = "Pie",
                      colors = NULL,
                      pie.subslice.colors = NULL,
@@ -78,23 +78,44 @@ PieChart <- function(df,
                      pie.inner.radius = 70,
                      pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
                      pie.show.percentages = TRUE,
-                     #table.statistic = "",  # this warning should be handled in AsBasicTables
                      global.font.family = "Arial",
                      global.font.color = rgb(44, 44, 44, maxColorValue = 255))
 {
-    # data is expected to already formatted as a dataframe
-    df[,1] <- as.character(df[,1])
-    df[,2] <- as.numeric(df[,2])
-    ind.missing <- which(!is.finite(df[,2]) | df[,2] < 0)
+    groups <- NULL
+    if (is.vector(x))
+    {
+        x.labels <- names(x)
+        if (is.null(x.labels))
+            x.labels <- as.character(1:length(x))
+        y.values <- as.numeric(x)
+    }
+    else if (is.matrix(x) && is.numeric(x))
+    {
+        if (is.null(rownames(x)))
+            rownames(x) <- 1:nrow(x)
+        if (is.null(colnames(x)))
+            colnames(x) <- sprintf("Group %d", 1:ncol(x))
+        x.labels <- rep(rownames(x), ncol(x))
+        y.values <- as.numeric(x)
+        groups <- rep(colnames(x), each=nrow(x))
+    }
+    else
+    {
+        # dataframe
+        x.labels <- as.character(x[,1])
+        y.values <- as.numeric(x[,2])
+        if (!is.null(ncol(x)) && ncol(x) >= 3)
+            groups <- as.character(x[,3])
+    }
+
+    # Some basic data checking
+    ind.missing <- which(!is.finite(y.values) | y.values < 0)
     if (length(ind.missing) > 0)
     {
         # Fill with zeros so the coloring does not change
         warning("Missing and negative values have been omitted.")
-        df[ind.missing,2] <- 0
+        y.values[ind.missing] <- 0
     }
-    groups <- NULL
-    if (ncol(df) >= 3)
-        groups <- as.character(df[,3])
 
     if (is.null(pie.data.threshold))
         pie.data.threshold <- 0.003
@@ -108,8 +129,8 @@ PieChart <- function(df,
         pie.values.colors <- colors
         pie.groups.colors <- NULL
 
-        if (!is.null(pie.values.colors) && length(pie.values.colors) != nrow(df))
-            warning("'Colors' does not have length equal to the number of slices (", nrow(df), ").")
+        if (!is.null(pie.values.colors) && length(pie.values.colors) != length(x.labels))
+            warning("'Colors' does not have length equal to the number of slices (", length(x.labels), ").")
     } else
     {
         pie.groups.colors <- if (!is.null(colors)) StripAlphaChannel(colors) else NULL
@@ -121,19 +142,19 @@ PieChart <- function(df,
         if (!is.null(pie.groups.colors) && length(pie.groups.colors) != num.groups)
             warning("'Colors' does not have length equal to the number of groups (", num.groups, ").")
 
-        num.values <- if (!pie.subslice.colors.repeat) nrow(df)
-                      else                             length(unique(df[,1]))
+        num.values <- if (!pie.subslice.colors.repeat) nrow(x)
+                      else                             length(unique(x.labels))
         if (!is.null(pie.values.colors) && length(pie.values.colors) != num.values)
             warning("'Outer ring colors' should be a vector of colors of length ", num.values, ".")
 
         if (pie.subslice.colors.repeat)
         {
-            v.list <- unique(df[,1])
+            v.list <- unique(x.labels)
             if (!is.null(pie.values.colors))
             {
                 pie.values.color <- paste(rep("", length(v.list)), pie.values.colors)
                 names(pie.values.colors) <- v.list
-                pie.values.colors <- pie.values.colors[as.character(df[,1])]
+                pie.values.colors <- pie.values.colors[x.labels]
             }
         }
     }
@@ -150,8 +171,8 @@ PieChart <- function(df,
         pie.values.suffix <- "%"
     }
 
-    Donut(values = df[,2],
-          labels = df[,1],
+    Donut(values = y.values,
+          labels = x.labels,
           values.color = pie.values.colors,
           values.order = pie.values.order,
           values.font.family = pie.values.font.family,
