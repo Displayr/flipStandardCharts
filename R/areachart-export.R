@@ -2,7 +2,7 @@
 #'
 #' Plot area chart 
 #'
-#' @param y A table, matrix, vector or data frame.
+#' @param x A table, matrix, vector or data frame.
 #' @param type One of "Column", "Stacked Column" or "100\% Stacked Column"
 #' @param fit.type Character; type of line of best fit. Can be one of "None", "Linear" or "Smooth" (loess local polynomial fitting).
 #' @param fit.ignore.last Boolean; whether to ignore the last data point in the fit.
@@ -61,8 +61,10 @@
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param legend.font.family Character; legend font family.
 #' @param legend.font.size Legend font size.
-#' @param legend.position Where the legend will be placed; can be "left" or
-#' "right" of plot.
+#' @param legend.position.x A numeric controlling the position of the legend. 
+#'   Values range from -0.5 (left) to 1.5 (right). 
+#' @param legend.position.y A numeric controlling the position of the legend. 
+#'   Values range from 0 (bottom) to 1 (top). 
 #' @param legend.ascending Logical; TRUE for ascending, FALSE for descending.
 #' By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.
 #' @param margin.top Margin between plot area and the top of the
@@ -219,7 +221,7 @@
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
 #' @export
-AreaChart <-   function(y = NULL,
+AreaChart <-   function(x,
                     type = "Area",
                     fit.type = "None", # can be "Smooth" or anything else
                     fit.ignore.last = FALSE,
@@ -242,7 +244,7 @@ AreaChart <-   function(y = NULL,
                     footer.font.size = 8,
                     footer.wrap = TRUE,
                     footer.wrap.nchar = 100,
-                    colors = ChartColors(max(1, ncol(y))),
+                    colors = ChartColors(max(1, ncol(x))),
                     fit.line.colors = colors,
                     opacity = NULL,
                     background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
@@ -258,7 +260,8 @@ AreaChart <-   function(y = NULL,
                     legend.font.color = global.font.color,
                     legend.font.family = global.font.family,
                     legend.font.size = 10,
-                    legend.position = "right",
+                    legend.position.x = 1.02,
+                    legend.position.y = 1.0,
                     legend.ascending = NA,
                     margin.top = NULL,
                     margin.bottom = NULL,
@@ -344,7 +347,7 @@ AreaChart <-   function(y = NULL,
                     ...)
 {
     # Data checking
-    chart.matrix <- as.matrix(y)
+    chart.matrix <- as.matrix(x)
     is.stacked <- type != "Area"
     is.hundred.percent.stacked <- type == "100% Stacked Area"
     if (is.stacked && ncol(chart.matrix) == 0)
@@ -385,6 +388,7 @@ AreaChart <-   function(y = NULL,
         x.title <- matrix.labels[1]
     if (nchar(y.title) == 0 && length(matrix.labels) == 2)
         y.title <- matrix.labels[2]
+    x.labels.full <- rownames(chart.matrix)
 
     # Constants
     plotly.type <- "scatter"
@@ -427,7 +431,7 @@ AreaChart <-   function(y = NULL,
     if (ncol(chart.matrix) == 1)
         legend.show <- FALSE
     legend <- setLegend(type, legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
-                        legend.border.color, legend.border.line.width)
+                        legend.border.color, legend.border.line.width, legend.position.x, legend.position.y)
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
 
     # Format axis labels
@@ -481,17 +485,19 @@ AreaChart <-   function(y = NULL,
     {
         y <- as.numeric(chart.matrix[, i])
         x <- x.labels
+        hover.text <- sprintf("(%s, %s%s%s)", x.labels.full, y.tick.prefix, 
+            FormatAsReal(y, decimals=y.hovertext.decimals), y.tick.suffix)
 
         lines <- list(width = series.line.width,
-                      color = toRGB(series.line.colors[i], alpha = series.line.opacity))
+                      color = toRGB(series.line.colors[i], alpha = series.line.opacity))        
 
         marker <- NULL
         if (!is.null(series.mode) && regexpr('marker', series.mode) >= 1)
             marker <- list(size = series.marker.size,
-                       color = toRGB(series.marker.colors[i], alpha = series.marker.opacity),
+                       color = toRGB(colors[i], alpha = series.marker.opacity),
                        symbol = series.marker.symbols[i],
                        line = list(
-                       color = toRGB(series.marker.border.colors[i], alpha = series.marker.border.opacity),
+                       color = toRGB(colors[i], alpha = series.marker.border.opacity),
                        width = series.marker.border.width))
        
         source.text <- "" 
@@ -526,23 +532,6 @@ AreaChart <-   function(y = NULL,
                            hoverinfo = "none",
                            showlegend = FALSE)
 
-            # Area chart (with no line)
-            # We need to do this separately because connectgaps = FALSE
-            # has strange behaviour with single points
-                 p <- add_trace(p,
-                           type = plotly.type,
-                           x = x,
-                           y = y,
-                           fill = fill.bound,
-                           fillcolor = toRGB(colors[i], alpha = opacity),
-                           connectgaps = TRUE,
-                           line = list(width = 0),
-                           name = y.label,
-                           legendgroup = tmp.group,
-                           hoverinfo = if(ncol(chart.matrix) > 1) "x+y+name" else "x+y",
-                           marker = marker,
-                           mode = series.mode)
-
            # draw line
            if (has.gap || series.line.width > 0)
                 p <- add_trace(p,
@@ -554,7 +543,7 @@ AreaChart <-   function(y = NULL,
                            name = y.label,
                            showlegend = (type == "Line"),
                            legendgroup = tmp.group,
-                           hoverinfo = if(ncol(chart.matrix) > 1) "x+y+name" else "x+y",
+                           hoverinfo = "skip", 
                            marker = marker,
                            mode = series.mode)
 
@@ -573,9 +562,31 @@ AreaChart <-   function(y = NULL,
                            marker = if (!is.null(marker)) marker
                                     else list(color = toRGB(colors[i]),
                                          size = series.marker.size),
-                           hoverinfo = if(ncol(chart.matrix) > 1) "x+y+name" else "x+y",
+                           hoverinfo = "skip", #if(ncol(chart.matrix) > 1) "x+y+name" else "x+y",
                            showlegend = FALSE)
             }
+
+            # Area chart (with no line)
+            # We need to do this separately because connectgaps = FALSE
+            # has strange behaviour with single points
+            # This is done last, to retain the hovertext
+            p <- add_trace(p,
+                           type = plotly.type,
+                           x = x,
+                           y = y,
+                           fill = fill.bound,
+                           fillcolor = toRGB(colors[i], alpha = opacity),
+                           connectgaps = TRUE,
+                           line = list(width = 0),
+                           name = y.label,
+                           legendgroup = tmp.group,
+                           text = hover.text,
+                           hoverlabel = list(bgcolor=colors[i]),
+                           hoverinfo = if(ncol(chart.matrix) > 1) "text+name" else "text",
+                           marker = marker,
+                           mode = series.mode)
+
+
             if (fit.type != "None")
             {
                 tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
@@ -603,7 +614,7 @@ AreaChart <-   function(y = NULL,
                            textfont = data.label.font,
                            textposition = data.label.position,
                            hoverinfo = if (ncol(chart.matrix) > 1) "x+y+name" else "x+y",
-                           mode = series.mode,
+                           mode = "lines+text", #series.mode,
                            marker = marker)
          }
     }
@@ -624,7 +635,7 @@ AreaChart <-   function(y = NULL,
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
         hovermode = hover.mode,
         titlefont = title.font,
-        font = data.label.font,
+        font = data.label.font
     )
     result <- list(plotly.plot = p)
     class(result) <- "StandardChart"

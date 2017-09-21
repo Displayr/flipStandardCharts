@@ -4,18 +4,17 @@
 \alias{LineChart}
 \title{Line chart}
 \usage{
-LineChart(y = NULL, type = "Line", fit.type = "None",
-  fit.ignore.last = FALSE, fit.line.type = "dot", fit.line.width = 1,
-  fit.line.name = "Fitted", global.font.family = "Arial",
-  global.font.color = rgb(44, 44, 44, maxColorValue = 255), title = "",
-  title.font.family = global.font.family,
+LineChart(x, type = "Line", fit.type = "None", fit.ignore.last = FALSE,
+  fit.line.type = "dot", fit.line.width = 1, fit.line.name = "Fitted",
+  global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
+  maxColorValue = 255), title = "", title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
   subtitle = "", subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color, subtitle.font.size = 12,
   footer = "", footer.font.family = global.font.family,
   footer.font.color = global.font.color, footer.font.size = 8,
   footer.wrap = TRUE, footer.wrap.nchar = 100, colors = ChartColors(max(1,
-  ncol(y))), fit.line.colors = colors, opacity = 1,
+  ncol(x))), fit.line.colors = colors, opacity = 1,
   background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
   background.fill.opacity = 1,
   charting.area.fill.color = background.fill.color,
@@ -25,9 +24,9 @@ LineChart(y = NULL, type = "Line", fit.type = "None",
   maxColorValue = 255), legend.border.line.width = 0,
   legend.font.color = global.font.color,
   legend.font.family = global.font.family, legend.font.size = 10,
-  legend.position = "right", legend.ascending = NA, margin.top = NULL,
-  margin.bottom = NULL, margin.left = NULL, margin.right = NULL,
-  margin.inner.pad = NULL, y.title = "",
+  legend.position.x = 1.02, legend.position.y = 1, legend.ascending = NA,
+  margin.top = NULL, margin.bottom = NULL, margin.left = NULL,
+  margin.right = NULL, margin.inner.pad = NULL, y.title = "",
   y.title.font.color = global.font.color,
   y.title.font.family = global.font.family, y.title.font.size = 12,
   y.line.width = 0, y.line.color = rgb(0, 0, 0, maxColorValue = 255),
@@ -65,7 +64,7 @@ LineChart(y = NULL, type = "Line", fit.type = "None",
   data.label.position = "top middle", us.date.format = NULL, ...)
 }
 \arguments{
-\item{y}{A table, matrix, vector or data frame.}
+\item{x}{A table, matrix, vector or data frame.}
 
 \item{type}{One of "Column", "Stacked Column" or "100\% Stacked Column"}
 
@@ -167,8 +166,11 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{legend.font.size}{Legend font size.}
 
-\item{legend.position}{Where the legend will be placed; can be "left" or
-"right" of plot.}
+\item{legend.position.x}{A numeric controlling the position of the legend. 
+Values range from -0.5 (left) to 1.5 (right).}
+
+\item{legend.position.y}{A numeric controlling the position of the legend. 
+Values range from 0 (bottom) to 1 (top).}
 
 \item{legend.ascending}{Logical; TRUE for ascending, FALSE for descending.
 By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.}

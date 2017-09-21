@@ -2,7 +2,12 @@
 #'
 #' Plot column chart 
 #'
-#' @param y A table, matrix, vector or data frame.
+#' @param x Input data may be a matrix or a vector. If \code{y} is not specified, then x contains the height of the columns
+#' to be plotted, with the name/rownames used as the column names of the chart. Numeric and date labels
+#' will be parsed automatically. Where \code{y} is specified, \code{x} is a vector containing the x-coordinates
+#' labels of the columns.
+#' @param y (Optional) numeric vector or matrix containing the data to be plotted on the y-axis of the chart. 
+#'  Each column of the matrix will be shown as a separate series. 
 #' @param type One of "Column", "Stacked Column" or "100\% Stacked Column"
 #' @param fit.type Character; type of line of best fit. Can be one of "None", "Linear" or "Smooth" (loess local polynomial fitting).
 #' @param fit.ignore.last Boolean; whether to ignore the last data point in the fit.
@@ -53,18 +58,20 @@
 #' (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param legend.fill.opacity Legend fill opacity as an alpha value
 #' (0 to 1).
+#' @param legend.ascending Logical; TRUE for ascending, FALSE for descending.
+#' By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.
 #' @param legend.border.color Legend border color as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param legend.border.line.width Width in pixels of the border
 #' around the legend.  0 = no border.
+#' @param legend.position.x A numeric controlling the position of the legend. 
+#'   Values range from -0.5 (left) to 1.5 (right). 
+#' @param legend.position.y A numeric controlling the position of the legend. 
+#'   Values range from 0 (bottom) to 1 (top). 
 #' @param legend.font.color Legend font color as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param legend.font.family Character; legend font family.
 #' @param legend.font.size Legend font size.
-#' @param legend.position Where the legend will be placed; can be "left" or
-#' "right" of plot.
-#' @param legend.ascending Logical; TRUE for ascending, FALSE for descending.
-#' By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.
 #' @param margin.top Margin between plot area and the top of the
 #' graphic in pixels
 #' @param margin.bottom Margin between plot area and the bottom of the
@@ -218,7 +225,7 @@
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
 #' @export
-ColumnChart <-   function(y = NULL,
+ColumnChart <-   function(x, y = NULL,
                     type = "Column",
                     fit.type = "None", # can be "Smooth" or anything else
                     fit.ignore.last = FALSE,
@@ -241,7 +248,7 @@ ColumnChart <-   function(y = NULL,
                     footer.font.size = 8,
                     footer.wrap = TRUE,
                     footer.wrap.nchar = 100,
-                    colors = ChartColors(max(1, ncol(y))),
+                    colors = ChartColors(max(1, ncol(x))),
                     fit.line.colors = colors,
                     opacity = NULL,
                     background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
@@ -249,15 +256,15 @@ ColumnChart <-   function(y = NULL,
                     charting.area.fill.color = background.fill.color,
                     charting.area.fill.opacity = 1,
                     legend.show = TRUE,
-                    legend.fill = background.fill.color, # retained for backwards compatibility
-                    legend.fill.color = legend.fill,
+                    legend.position.x = 1.02,
+                    legend.position.y = 1,
+                    legend.fill.color = background.fill.color,
                     legend.fill.opacity = 1,
                     legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
                     legend.border.line.width = 0,
                     legend.font.color = global.font.color,
                     legend.font.family = global.font.family,
                     legend.font.size = 10,
-                    legend.position = "right",
                     legend.ascending = NA,
                     margin.top = NULL,
                     margin.bottom = NULL,
@@ -341,8 +348,24 @@ ColumnChart <-   function(y = NULL,
                     us.date.format = NULL,
                     ...)
 {
+    # Combine all input data into a single matrix
+    if (!is.null(y))
+    {
+        y <- as.matrix(y)
+        if (!is.vector(x) && length(x) == nrow(y))
+            stop("When 'y' is provided, x should be a vector of length ", nrow(y), ".") 
+        rownames(y) <- x
+        x <- y
+    }
+    x.labels.full <- rownames(x)
+
     # Data checking
-    chart.matrix <- as.matrix(y)
+    chart.matrix <- as.matrix(x)
+    if (is.null(rownames(chart.matrix)))
+        rownames(chart.matrix) <- 1:nrow(chart.matrix)
+    if (!is.numeric(chart.matrix))
+        stop("Input data should be numeric.")
+
     is.stacked <- type != "Column"
     is.hundred.percent.stacked <- type == "100% Stacked Column"
     if (is.stacked && ncol(chart.matrix) == 0)
@@ -391,7 +414,7 @@ ColumnChart <-   function(y = NULL,
     if (ncol(chart.matrix) == 1)
         legend.show <- FALSE
     legend <- setLegend(type, legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
-                        legend.border.color, legend.border.line.width)
+                        legend.border.color, legend.border.line.width, legend.position.x, legend.position.y)
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
 
     # Format axis labels
@@ -458,6 +481,8 @@ ColumnChart <-   function(y = NULL,
     {
         y <- as.numeric(chart.matrix[, i])
         x <- x.labels
+        hover.text <- sprintf("%s: %s%s%s", x.labels.full, y.tick.prefix, 
+            FormatAsReal(y, decimals=y.hovertext.decimals), y.tick.suffix)
 
         marker <- list(size = series.marker.size, color = toRGB(colors[i], alpha = opacity),
                     line = list(color = toRGB(series.marker.border.colors[i], 
@@ -474,8 +499,8 @@ ColumnChart <-   function(y = NULL,
         # this is the main trace for each data series 
         tmp.group <- if (legend.group == "") paste("group", i) else legend.group
         p <- add_trace(p, x = x, y = y, type = "bar", orientation = "v", marker = marker,
-                       name  =  y.labels[i], legendgroup  =  tmp.group,
-                       hoverinfo  =  if(ncol(chart.matrix) > 1) "x+y+name" else "x+y")
+                       name  =  y.labels[i], legendgroup  =  tmp.group, text = hover.text,
+                       hoverinfo  =  if(ncol(chart.matrix) > 1) "text+name" else "text")
 
         if (fit.type != "None" && !is.stacked)
         {

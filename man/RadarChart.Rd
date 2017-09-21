@@ -4,9 +4,9 @@
 \alias{RadarChart}
 \title{Radar chart}
 \usage{
-RadarChart(y, title = "", title.font.family = global.font.family,
+RadarChart(x, title = "", title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
-  colors = ChartColors(max(1, ncol(y))), background.fill.color = rgb(255,
+  colors = ChartColors(max(1, ncol(x))), background.fill.color = rgb(255,
   255, 255, maxColorValue = 255), background.fill.opacity = 1,
   charting.area.fill.color = rgb(255, 255, 255, maxColorValue = 255),
   charting.area.fill.opacity = 1, legend.show = TRUE,
@@ -15,9 +15,9 @@ RadarChart(y, title = "", title.font.family = global.font.family,
   maxColorValue = 255), legend.border.line.width = 0,
   legend.font.color = global.font.color,
   legend.font.family = global.font.family, legend.font.size = 10,
-  legend.ascending = NA, margin.top = NULL, margin.bottom = NULL,
-  margin.left = NULL, margin.right = NULL, margin.inner.pad = NULL,
-  series.marker.colors = NULL, series.marker.size = 6,
+  legend.ascending = NA, legend.position.y = 1, legend.position.x = 1.02,
+  margin.top = NULL, margin.bottom = NULL, margin.left = NULL,
+  margin.right = NULL, margin.inner.pad = NULL, series.marker.size = 6,
   series.line.width = 3, tooltip.show = TRUE, modebar.show = FALSE,
   global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
   maxColorValue = 255), x.title = "",
@@ -41,7 +41,8 @@ RadarChart(y, title = "", title.font.family = global.font.family,
   footer.wrap = TRUE, footer.wrap.nchar = 100, ...)
 }
 \arguments{
-\item{y}{A table, matrix, vector or data frame.}
+\item{x}{Input data in the form of a vector or matrix. The categories used
+to create the radar (i.e. the x-axis) is taken from the names/rownames of x.}
 
 \item{title}{Character; chart title.}
 
@@ -96,6 +97,12 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 \item{legend.ascending}{Logical; TRUE for ascending, FALSE for descending.
 By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.}
 
+\item{legend.position.y}{A numeric controlling the position of the legend. 
+Values range from 0 (bottom) to 1 (top).}
+
+\item{legend.position.x}{A numeric controlling the position of the legend. 
+Values range from -0.5 (left) to 1.5 (right).}
+
 \item{margin.top}{Margin between plot area and the top of the
 graphic in pixels}
 
@@ -110,11 +117,6 @@ graphic in pixels}
 
 \item{margin.inner.pad}{Padding in pixels between plot proper
 and axis lines}
-
-\item{series.marker.colors}{Character; a vector containing one or more named
-colors from grDevices OR one or more specified hex value colors OR a single
-named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
-be reversed.}
 
 \item{series.marker.size}{Size in pixels of marker}
 
@@ -224,8 +226,6 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{...}{Extra arguments that are ignored.}
 
 \item{opacity}{Opacity of area fill colors as an alpha value (0 to 1).}
-
-\item{legend.fill}{Same as \code{legend.fill.color}. Retained for backwards compatibility.}
 }
 \description{
 Plot radar chart, also known as web chart, spider chart, star chart, star plot, cobweb chart, irregular polygon, polar chart, or Kiviat diagram

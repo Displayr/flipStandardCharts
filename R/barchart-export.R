@@ -2,7 +2,7 @@
 #'
 #' Plot bar chart 
 #'
-#' @param y A table, matrix, vector or data frame.
+#' @param x A table, matrix, vector or data frame.
 #' @param type One of "Bar", "Stacked Bar" or "100\% Stacked Bar"
 #' @param fit.type Character; type of line of best fit. Can be one of "None", "Linear" or "Smooth" (loess local polynomial fitting).
 #' @param fit.ignore.last Boolean; whether to ignore the last data point in the fit.
@@ -61,8 +61,10 @@
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param legend.font.family Character; legend font family.
 #' @param legend.font.size Legend font size.
-#' @param legend.position Where the legend will be placed; can be "left" or
-#' "right" of plot.
+#' @param legend.position.x A numeric controlling the position of the legend. 
+#'   Values range from -0.5 (left) to 1.5 (right). 
+#' @param legend.position.y A numeric controlling the position of the legend. 
+#'   Values range from 0 (bottom) to 1 (top). 
 #' @param legend.ascending Logical; TRUE for ascending, FALSE for descending.
 #' By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.
 #' @param margin.top Margin between plot area and the top of the
@@ -218,7 +220,7 @@
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
 #' @export
-BarChart <- function(y = NULL,
+BarChart <- function(x,
                     type = "Bar",
                     fit.type = "None", # can be "Smooth" or anything else
                     fit.ignore.last = FALSE,
@@ -241,7 +243,7 @@ BarChart <- function(y = NULL,
                     footer.font.size = 8,
                     footer.wrap = TRUE,
                     footer.wrap.nchar = 100,
-                    colors = ChartColors(max(1, ncol(y))),
+                    colors = ChartColors(max(1, ncol(x))),
                     fit.line.colors = colors,
                     opacity = 1,
                     background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
@@ -249,6 +251,9 @@ BarChart <- function(y = NULL,
                     charting.area.fill.color = background.fill.color,
                     charting.area.fill.opacity = 1,
                     legend.show = TRUE,
+                    legend.position.x = 1.02,
+                    legend.position.y = 1.00,
+                    legend.ascending = NA,
                     legend.fill = background.fill.color, # retained for backwards compatibility
                     legend.fill.color = legend.fill,
                     legend.fill.opacity = 1,
@@ -257,8 +262,6 @@ BarChart <- function(y = NULL,
                     legend.font.color = global.font.color,
                     legend.font.family = global.font.family,
                     legend.font.size = 10,
-                    legend.position = "right",
-                    legend.ascending = NA,
                     margin.top = NULL,
                     margin.bottom = NULL,
                     margin.left = NULL,
@@ -342,7 +345,7 @@ BarChart <- function(y = NULL,
                     ...)
 {
     # Data checking
-    chart.matrix <- as.matrix(y)
+    chart.matrix <- as.matrix(x)
     is.stacked <- type != "Bar"
     is.hundred.percent.stacked <- type == "100% Stacked Bar"
     if (is.stacked && ncol(chart.matrix) == 0)
@@ -369,6 +372,7 @@ BarChart <- function(y = NULL,
         y.title <- matrix.labels[1]
     if (nchar(x.title) == 0 && length(matrix.labels) == 2)
         x.title <- matrix.labels[2]
+    x.labels.full <- rownames(chart.matrix)
 
     # Constants
     hover.mode <- if (tooltip.show) "closest" else FALSE
@@ -391,7 +395,7 @@ BarChart <- function(y = NULL,
     if (ncol(chart.matrix) == 1)
         legend.show <- FALSE
     legend <- setLegend(type, legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
-                        legend.border.color, legend.border.line.width)
+                        legend.border.color, legend.border.line.width, legend.position.x, legend.position.y)
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
 
     # Format axis labels
@@ -464,6 +468,8 @@ BarChart <- function(y = NULL,
     {
         y <- as.numeric(chart.matrix[, i])
         x <- x.labels
+        hover.text <- sprintf("%s: %s%s%s", x.labels.full, x.tick.prefix, 
+            FormatAsReal(y, decimals=x.hovertext.decimals), x.tick.suffix)
 
         marker <- list(size = series.marker.size, color = toRGB(colors[i], alpha = opacity),
                     line = list(color = toRGB(series.marker.border.colors[i], 
@@ -479,8 +485,8 @@ BarChart <- function(y = NULL,
         # this is the main trace for each data series 
         tmp.group <- if (legend.group == "") paste("group", i) else legend.group
         p <- add_trace(p, x = y, y = x, type = "bar", orientation = "h", marker = marker,
-                       name  =  y.labels[i], legendgroup  =  tmp.group,
-                       hoverinfo  =  if(ncol(chart.matrix) > 1) "x+y+name" else "x+y")
+                       name  =  y.labels[i], legendgroup  =  tmp.group,  text = hover.text,
+                       hoverinfo  =  if(ncol(chart.matrix) > 1) "text+name" else "text")
 
         if (fit.type != "None" && !is.stacked)
         {
@@ -507,7 +513,6 @@ BarChart <- function(y = NULL,
                       showlegend = FALSE, legendgroup = tmp.group)
         }
     }
-    print(yaxis)
 
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0

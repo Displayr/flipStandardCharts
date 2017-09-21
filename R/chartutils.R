@@ -86,7 +86,8 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
     return(list(x=x.fit, y=y.fit))
 }
 
-setLegend <- function(type, font, ascending, fill.color, fill.opacity, border.color, border.line.width)
+setLegend <- function(type, font, ascending, fill.color, fill.opacity, border.color, border.line.width, 
+                      x.pos=1.02, y.pos=1.00)
 {
     if (is.na(ascending))
         ascending <- !grepl("Stacked", type) || type %in% c("Stacked Bar", "100% Stacked Bar")
@@ -94,11 +95,12 @@ setLegend <- function(type, font, ascending, fill.color, fill.opacity, border.co
     return(list(bgcolor = toRGB(fill.color, alpha=fill.opacity),
             bordercolor = border.color,
             borderwidth = border.line.width,
+            orientation = 'v',
             font = font,
             xanchor = "left",
             yanchor = "auto",
-            y = 1,
-            x = 1.02,
+            y = y.pos,
+            x = x.pos,
             traceorder = order))
 }
 
@@ -255,12 +257,9 @@ setMarginsForAxis <- function(margins, axisLabels, axis)
         margins$l <- max(margins$l, new.margin + title.pad) 
     else if (axis$side == "bottom")
     {
-        # tickangle is changed in side setAxis
+        # tickangle is changed in function setAxis
         lab.nchar <- max(c(0,nchar(unlist(strsplit(split="<br>", as.character(labels))))))
-        tickangle <- if (length(labels) > 9 && lab.nchar > 5) 90
-                          else 0
-        
-        if (tickangle != 0)
+        if (axis$tickangle != 0)
             margins$b <- margins$b + new.margin - 40 + title.pad
         else
             margins$b <- margins$b + 1.25*axis$tickfont$size*floor(lab.nline) + title.pad
@@ -292,7 +291,7 @@ setMarginsForText <- function(margins, title, subtitle, footer,
 
 setMarginsForLegend <- function(margins, showlegend, legend)
 {
-    if (!showlegend)
+    if (!showlegend && legend$x > 1)
         margins$r <- 20
     margins
 }

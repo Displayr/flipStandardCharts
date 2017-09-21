@@ -42,7 +42,7 @@ LabeledScatterChart(x = NULL, y = NULL, colors = NULL, sizes = NULL,
   series.marker.size = 6, swap.x.and.y = FALSE)
 }
 \arguments{
-\item{x}{A numeric vector for the x-axis positions (which may be named); or a matrix or dataframe with the following columns: (1) x, (2), y, (3) sizes, (4) colors; or a list of matrices is the format described and which share the same row and column names}
+\item{x}{A numeric vector for the x-axis positions (which may be named); or a matrix or dataframe which may have 1-4 columns containing: 1:x, 2:y, 3:sizes, 4:colors; or a list of matrices is the format described and which share the same row and column names}
 
 \item{y}{Optional numeric vector for the y-axis positions. Should contain the same number of observations as x. If not provided, will use x instead.}
 

@@ -2,7 +2,8 @@
 #'
 #' Plot radar chart, also known as web chart, spider chart, star chart, star plot, cobweb chart, irregular polygon, polar chart, or Kiviat diagram
 #'
-#' @param y A table, matrix, vector or data frame.
+#' @param x Input data in the form of a vector or matrix. The categories used
+#' to create the radar (i.e. the x-axis) is taken from the names/rownames of x.
 #' @param title Character; chart title.
 #' @param title.font.family Character; title font family. Can be "Arial Black",
 #' "Arial", "Comic Sans MS", "Courier New", "Georgia", "Impact",
@@ -39,7 +40,10 @@
 #' @param charting.area.fill.opacity Charting area background
 #' opacity as an alpha value (0 to 1).
 #' @param legend.show Logical; show the legend.
-#' @param legend.fill Same as \code{legend.fill.color}. Retained for backwards compatibility.
+#' @param legend.position.x A numeric controlling the position of the legend. 
+#'   Values range from -0.5 (left) to 1.5 (right). 
+#' @param legend.position.y A numeric controlling the position of the legend. 
+#'   Values range from 0 (bottom) to 1 (top). 
 #' @param legend.fill.color Legend fill color as a named color in character format
 #' (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param legend.fill.opacity Legend fill opacity as an alpha value
@@ -94,10 +98,6 @@
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param label.wrap Logical; whether to wrap long labels on the x-axis.
 #' @param label.wrap.nchar Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.
-#' @param series.marker.colors Character; a vector containing one or more named
-#' colors from grDevices OR one or more specified hex value colors OR a single
-#' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
-#' be reversed.
 #' @param series.marker.size Size in pixels of marker
 #' @param series.line.width Width of outline of radar polygons.
 #' @param tooltip.show Logical; whether to show a tooltip on hover.
@@ -121,12 +121,12 @@
 #' @importFrom plotly plot_ly layout config add_annotations
 #' @importFrom flipFormat FormatAsReal
 #' @export
-RadarChart <- function(y,
+RadarChart <- function(x,
                     title = "",
                     title.font.family = global.font.family,
                     title.font.color = global.font.color,
                     title.font.size = 16,
-                    colors = ChartColors(max(1, ncol(y))),
+                    colors = ChartColors(max(1, ncol(x))),
                     background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
                     background.fill.opacity = 1,
                     charting.area.fill.color = rgb(255, 255, 255, maxColorValue = 255),
@@ -140,16 +140,13 @@ RadarChart <- function(y,
                     legend.font.family = global.font.family,
                     legend.font.size = 10,
                     legend.ascending = NA,
-                    #legend.x.anchor = "left",
-                    #legend.y.anchor = "auto",
-                    #legend.y = 1,
-                    #legend.x = 1.02,
+                    legend.position.y = 1,
+                    legend.position.x = 1.02,
                     margin.top = NULL,
                     margin.bottom = NULL,
                     margin.left = NULL,
                     margin.right = NULL,
                     margin.inner.pad = NULL,
-                    series.marker.colors = NULL,
                     series.marker.size = 6,
                     series.line.width = 3,
                     tooltip.show = TRUE,
@@ -198,7 +195,7 @@ RadarChart <- function(y,
 
 {
     # Check data
-    chart.matrix <- as.matrix(y)
+    chart.matrix <- as.matrix(x)
     if (any(!is.finite(chart.matrix)))
         stop("Missing charts cannot contain missing or non-finite values.\n")
     if (any(chart.matrix < 0))
@@ -225,7 +222,7 @@ RadarChart <- function(y,
     footer.font = list(family = footer.font.family, size = footer.font.size, color = footer.font.color)
     legend.font = list(family = legend.font.family, size = legend.font.size, color = legend.font.color)
     legend <- setLegend("Radar", legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
-                        legend.border.color, legend.border.line.width)
+                        legend.border.color, legend.border.line.width, legend.position.x, legend.position.y)
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
 
     # Figure out positions of y-ticks (i.e. radial axis)
@@ -300,7 +297,7 @@ RadarChart <- function(y,
         p <- add_trace(p, x = pos$x[ind], y = pos$y[ind], type = "scatter", mode = "lines", fill = "toself",
                     name = g.list[ggi], legendgroup = g.list[ggi],
                     showlegend = TRUE, hoverinfo = "all+text", text = pos$HoverText[ind],
-                    line = list(width = series.line.width, color = toRGB(series.marker.colors[ggi])))
+                    line = list(width = series.line.width, color = toRGB(colors[ggi])))
     }
 
     # Markers are added as a separate trace to allow overlapping hoverinfo
