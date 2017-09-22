@@ -479,7 +479,7 @@ ScatterChart <- function(x = NULL,
     margins <- setMarginsForAxis(margins, axisFormat, xaxis)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size, 
                                  subtitle.font.size, footer.font.size)
-    margins <- setMarginsForLegend(margins, legend.show, NULL)
+    margins <- setMarginsForLegend(margins, legend.show, legend)
     if (!is.null(margin.top))
         margins$top <- margin.top
     if (!is.null(margin.bottom))

@@ -209,7 +209,7 @@ LabeledScatterChart <- function(x = NULL,
     # Try to store name of variables
     if (!is.null(scatter.sizes) && is.na(scatter.sizes.name))
     {
-        sizes.name <- deparse(substitute(sizes))
+        sizes.name <- deparse(substitute(scatter.sizes))
         if (!is.null(attr(scatter.sizes, "label")))
             scatter.sizes.name <- attr(scatter.sizes, "label")
     }
@@ -320,7 +320,7 @@ LabeledScatterChart <- function(x = NULL,
         if (any(!is.finite(scatter.sizes)))
         {
             warning("Some points omitted due to missing values in 'scatter.sizes'.")
-            not.na <- not.na & is.finite(sizes)
+            not.na <- not.na & is.finite(scatter.sizes)
         }
     }
     if (!is.null(scatter.colors))
