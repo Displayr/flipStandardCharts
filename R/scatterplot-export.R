@@ -438,14 +438,15 @@ ScatterChart <- function(x = NULL,
     if (!is.null(scatter.sizes))
     {
         sc.tmp <- sqrt(abs(as.numeric(scatter.sizes)))
-        scatter.sizes.scaled <- sc.tmp/max(sc.tmp, na.rm=T) * 50
+        if (any(class(scatter.sizes) %in% c("Date", "POSIXct", "POSIXt")))
+            scatter.sizes.scaled <- (sc.tmp - min(sc.tmp, na.rm=T))/diff(range(sc.tmp, na.rm=T)) * 50
+        else
+            scatter.sizes.scaled <- sc.tmp/max(sc.tmp, na.rm=T) * 50
         opacity <- 0.4
     } 
    
     scatter.colors.as.numeric <- 0
     colorbar <- NULL
-    #groups <- NULL
-    #if (is.null(groups))
     groups <- rep("Series 1", n)  
     if (!is.null(scatter.colors) && !scatter.colors.as.categorical)
     {
@@ -454,8 +455,19 @@ ScatterChart <- function(x = NULL,
         c.tmp <- rgb(col.fun((0:5)/5), maxColorValue=255)
         v.tmp <- seq(from=0, to=1, length=length(c.tmp))
         col.scale <- mapply(function(a,b)c(a,b), a=v.tmp, b=c.tmp, SIMPLIFY=F)
-        colorbar <- list(#tickmode="array", tickvals=c(), ticktext=c(), 
-                         outlinewidth=0)
+        
+        if (any(class(scatter.colors) %in% c("Date", "POSIXct", "POSIXt")))
+        {
+            tmp.seq <- seq(0, 1, length=5)
+            colorbar <- list(tickmode="array", tickvals=tmp.seq, 
+                             ticktext=c(min(scatter.sizes) + diff(range(scatter.sizes)) * tmp.seq), 
+                             outlinewidth=0)
+        }
+        else if (any(class(scatter.colors) == "factor"))
+            colorbar <- list(tickmode="array", tickvals=seq(0, 1, length=nlevels(scatter.colors)),
+                             ticktext=levels(scatter.colors), outlinewidth=0)
+        else
+            colorbar <- list(outlinewidth = 0)
 
         scatter.colors.as.numeric <- 1
         groups <- 1:n
