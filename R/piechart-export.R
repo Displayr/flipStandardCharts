@@ -82,6 +82,11 @@ PieChart <- function(x,
                      global.font.color = rgb(44, 44, 44, maxColorValue = 255))
 {
     groups <- NULL
+    
+    # Convert tables to matrices and retain names
+    if (length(dim(x)) == 1)
+        x <- as.matrix(x)
+
     if (is.vector(x))
     {
         x.labels <- names(x)
@@ -97,7 +102,8 @@ PieChart <- function(x,
             colnames(x) <- sprintf("Group %d", 1:ncol(x))
         x.labels <- rep(rownames(x), ncol(x))
         y.values <- as.numeric(x)
-        groups <- rep(colnames(x), each=nrow(x))
+        if (ncol(x) > 1)
+            groups <- rep(colnames(x), each=nrow(x))
     }
     else
     {

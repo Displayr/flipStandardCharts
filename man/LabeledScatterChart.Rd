@@ -4,13 +4,14 @@
 \alias{LabeledScatterChart}
 \title{Labeled Scatterplot chart}
 \usage{
-LabeledScatterChart(x = NULL, y = NULL, colors = NULL, sizes = NULL,
-  labels = NULL, trend.lines = FALSE, logos = NULL, logo.size = 0.5,
-  colors.as.categorical = !is.null(groups),
-  color.palette = flipChartBasics:::qColors, labels.name = NA,
-  colors.name = NA, sizes.name = NA, legend.show = TRUE,
-  global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
-  maxColorValue = 255), title = "", title.font.family = global.font.family,
+LabeledScatterChart(x = NULL, y = NULL, scatter.labels = NULL,
+  scatter.labels.name = NA, scatter.sizes = NULL, scatter.sizes.name = NA,
+  scatter.colors = NULL, scatter.colors.name = NA,
+  scatter.colors.as.categorical = !is.null(groups), trend.lines = FALSE,
+  logos = NULL, logo.size = 0.5, colors = flipChartBasics:::qColors,
+  legend.show = TRUE, global.font.family = "Arial",
+  global.font.color = rgb(44, 44, 44, maxColorValue = 255), title = "",
+  title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
   subtitle = "", subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color, subtitle.font.size = 12,
@@ -42,15 +43,23 @@ LabeledScatterChart(x = NULL, y = NULL, colors = NULL, sizes = NULL,
   series.marker.size = 6, swap.x.and.y = FALSE)
 }
 \arguments{
-\item{x}{A numeric vector for the x-axis positions (which may be named); or a matrix or dataframe which may have 1-4 columns containing: 1:x, 2:y, 3:sizes, 4:colors; or a list of matrices is the format described and which share the same row and column names}
+\item{x}{A numeric vector for the x-axis positions (which may be named); or a matrix or dataframe which may have 1-4 columns containing: 1:x, 2:y, 3:sizes, 4:colors; or a list of matrices, where each matrix is in the format described and share the same row and column names}
 
 \item{y}{Optional numeric vector for the y-axis positions. Should contain the same number of observations as x. If not provided, will use x instead.}
 
-\item{colors}{Optional vector determining the color of each observation.}
+\item{scatter.labels}{Optional vector for labelling scatter points. This should be the same length as the number of observations in x andy. This is used in the hovertext and data labels.}
 
-\item{sizes}{Optional vector determining of the size of each observation.}
+\item{scatter.labels.name}{Character; Used for labelling subtitles and footers.}
 
-\item{labels}{Optional vector for labelling scatter points. This is used in the hovertext and data labels.}
+\item{scatter.sizes}{Numeric vector determining of the size of each observation. These can alternatively be provided as a column in \code{x}.}
+
+\item{scatter.sizes.name}{Character; Used for labelling footers and legends.}
+
+\item{scatter.colors}{Numeric, character, or categorical vector determining the color of each observation. These can alternatively be provided as a column in \code{x}.}
+
+\item{scatter.colors.name}{Character; Used for labelling footers.}
+
+\item{scatter.colors.as.categorical}{Whether to treat colors as a categorical groups, or a numeric scale.}
 
 \item{trend.lines}{Boolean indicating whether to plot trend lines for multiple tables.}
 
@@ -58,15 +67,7 @@ LabeledScatterChart(x = NULL, y = NULL, colors = NULL, sizes = NULL,
 
 \item{logo.size}{Numeric controlling the size of the logos.}
 
-\item{colors.as.categorical}{Whether to treat colors as a categorical groups, or a numeric scale.}
-
-\item{color.palette}{A vector of colors to use in the chart. Should be the same length as the number of groups.}
-
-\item{labels.name}{Character; Used for labelling subtitles and footers.}
-
-\item{colors.name}{Character; Used for labelling subtitles and footers.}
-
-\item{sizes.name}{Character; Used for labelling subtitles and footers.}
+\item{colors}{A vector of colors to use in the chart. Should be the same length as the number of groups.}
 
 \item{legend.show}{Logical; show the legend.}
 

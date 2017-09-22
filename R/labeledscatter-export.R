@@ -2,16 +2,16 @@
 #'
 #' Plot scatterplot with labels - best used for small sets of data
 #'
-#' @param x A numeric vector for the x-axis positions (which may be named); or a matrix or dataframe which may have 1-4 columns containing: 1:x, 2:y, 3:sizes, 4:colors; or a list of matrices is the format described and which share the same row and column names
+#' @param x A numeric vector for the x-axis positions (which may be named); or a matrix or dataframe which may have 1-4 columns containing: 1:x, 2:y, 3:sizes, 4:colors; or a list of matrices, where each matrix is in the format described and share the same row and column names
 #' @param y Optional numeric vector for the y-axis positions. Should contain the same number of observations as x. If not provided, will use x instead.
-#' @param sizes Optional vector determining of the size of each observation.
-#' @param colors Optional vector determining the color of each observation.
-#' @param colors.as.categorical Whether to treat colors as a categorical groups, or a numeric scale.
-#' @param color.palette A vector of colors to use in the chart. Should be the same length as the number of groups.
-#' @param labels Optional vector for labelling scatter points. This is used in the hovertext and data labels.
-#' @param labels.name Character; Used for labelling subtitles and footers.
-#' @param colors.name Character; Used for labelling subtitles and footers.
-#' @param sizes.name Character; Used for labelling subtitles and footers.
+#' @param scatter.labels Optional vector for labelling scatter points. This should be the same length as the number of observations in x andy. This is used in the hovertext and data labels.
+#' @param scatter.labels.name Character; Used for labelling subtitles and footers. 
+#' @param scatter.sizes Numeric vector determining of the size of each observation. These can alternatively be provided as a column in \code{x}.
+#' @param scatter.sizes.name Character; Used for labelling footers and legends.
+#' @param scatter.colors Numeric, character, or categorical vector determining the color of each observation. These can alternatively be provided as a column in \code{x}.
+#' @param scatter.colors.name Character; Used for labelling footers.
+#' @param scatter.colors.as.categorical Whether to treat colors as a categorical groups, or a numeric scale.
+#' @param colors A vector of colors to use in the chart. Should be the same length as the number of groups.
 #' @param title Character; chart title.
 #' @param title.font.family Character; title font family. Can be "Arial Black",
 #' "Arial", "Comic Sans MS", "Courier New", "Georgia", "Impact",
@@ -114,22 +114,22 @@
 #' @param swap.x.and.y Swap the x and y axis around on the chart.
 #' @param ... Extra arguments that are ignored.
 #' @importFrom grDevices rgb
-#' @importFrom flipChartBasics ChartColors
+#' @importFrom flipChartBasics ChartColors StripAlphaChannel
 #' @importFrom rhtmlLabeledScatter LabeledScatter
 #' @export
 LabeledScatterChart <- function(x = NULL, 
                                 y = NULL, 
-                                colors = NULL, 
-                                sizes = NULL, 
-                                labels = NULL,
+                                scatter.labels = NULL,
+                                scatter.labels.name = NA,
+                                scatter.sizes = NULL,
+                                scatter.sizes.name = NA,
+                                scatter.colors = NULL, 
+                                scatter.colors.name = NA,
+                                scatter.colors.as.categorical = !is.null(groups),
                                 trend.lines = FALSE,
                                 logos = NULL,
                                 logo.size  = 0.5,
-                                colors.as.categorical = !is.null(groups),
-                                color.palette = flipChartBasics:::qColors, 
-                                labels.name = NA, 
-                                colors.name = NA,
-                                sizes.name = NA,
+                                colors = flipChartBasics:::qColors, 
                                 legend.show = TRUE,
                                 global.font.family = "Arial",
                                 global.font.color = rgb(44, 44, 44, maxColorValue = 255),
@@ -207,23 +207,23 @@ LabeledScatterChart <- function(x = NULL,
     }
  
     # Try to store name of variables
-    if (!is.null(sizes) && is.na(sizes.name))
+    if (!is.null(scatter.sizes) && is.na(scatter.sizes.name))
     {
         sizes.name <- deparse(substitute(sizes))
-        if (!is.null(attr(sizes, "label")))
-            sizes.name <- attr(sizes, "label")
+        if (!is.null(attr(scatter.sizes, "label")))
+            scatter.sizes.name <- attr(scatter.sizes, "label")
     }
-    if (!is.null(labels) && is.na(labels.name))
+    if (!is.null(scatter.labels) && is.na(scatter.labels.name))
     {
-        labels.name <- deparse(substitute(labels))
-        if (!is.null(attr(labels, "label")))
-            labels.name <- attr(labels, "label")
+        scatter.labels.name <- deparse(substitute(scatter.labels))
+        if (!is.null(attr(scatter.labels, "label")))
+            scatter.labels.name <- attr(scatter.labels, "label")
     }
-    if (!is.null(colors) && is.na(colors.name))
+    if (!is.null(scatter.colors) && is.na(scatter.colors.name))
     {
-        colors.name <- deparse(substitute(colors))
-        if (!is.null(attr(colors, "label")))
-            colors.name <- attr(colors, "label")
+        scatter.colors.name <- deparse(substitute(scatter.colors))
+        if (!is.null(attr(scatter.colors, "label")))
+            scatter.colors.name <- attr(scatter.colors, "label")
     }
 
     num.tables <- 1
@@ -253,34 +253,36 @@ LabeledScatterChart <- function(x = NULL,
         {
             if (!is.numeric(x[,1]))
             {
-                labels <- as.character(x[,1])
+                scatter.labels <- as.character(x[,1])
+                if (is.na(scatter.labels.names) && !is.null(colnames(x)))
+                    scatter.labels.name <- colnames(x)[1]
                 col.offset <- 1
             }
         }
         if (is.null(y) && ncol(x) >= col.offset + 2)
         {
-            if (is.na(y.title) || nchar(y.title) == 0) 
+            if ((is.na(y.title) || nchar(y.title) == 0) && !is.null(colnames(x))) 
                 y.title <- colnames(x)[col.offset + 2]
             y <- x[,col.offset + 2]
         }
-        if (is.null(sizes) && ncol(x) >= col.offset + 3)
+        if (is.null(scatter.sizes) && ncol(x) >= col.offset + 3)
         {
-            if (is.na(sizes.name) || nchar(sizes.name) == 0)
-                sizes.name <- colnames(x)[col.offset + 3]
-            sizes <- x[,col.offset + 3]
+            if (is.na(scatter.sizes.name) && !is.null(colnames(x)))
+                scatter.sizes.name <- colnames(x)[col.offset + 3]
+            scatter.sizes <- x[,col.offset + 3]
         }
-        if (is.null(colors) && ncol(x) >= col.offset + 4)
+        if (is.null(scatter.colors) && ncol(x) >= col.offset + 4)
         {
-            if (is.na(colors.name) || nchar(colors.name) == 0)
-                colors.name <- colnames(x)[col.offset + 4]
-            colors <- x[,col.offset + 4]
+            if (is.na(scatter.colors.name) || nchar(scatter.colors.name) == 0)
+                scatter.colors.name <- colnames(x)[col.offset + 4]
+            scatter.colors <- x[,col.offset + 4]
         }
-        if (is.na(x.title) || nchar(x.title) == 0) 
+        if ((is.na(x.title) || nchar(x.title) == 0) && !is.null(colnames(x)))
             x.title <- colnames(x)[col.offset + 1]
         x <- x[,col.offset + 1]
     }
-    if (is.null(labels) && !is.null(names(x)))
-        labels <- names(x)
+    if (is.null(scatter.labels) && !is.null(names(x)))
+        scatter.labels <- names(x)
 
     # Basic data checking
     if (is.null(x) && is.null(y))
@@ -310,94 +312,97 @@ LabeledScatterChart <- function(x = NULL,
     n <- length(x)
     x <- as.numeric(x)
     y <- as.numeric(y)
-    if (!is.null(sizes))
+    if (!is.null(scatter.sizes))
     {
-        if (length(sizes) != n)
-            stop("'sizes' should be a numeric vector with the same number of observations as 'x'.")
-        sizes <- AsNumeric(sizes, binary=TRUE)
-        if (any(!is.finite(sizes)))
+        if (length(scatter.sizes) != n)
+            stop("'scatter.sizes' should be a numeric vector with the same number of observations as 'x'.")
+        scatter.sizes <- AsNumeric(scatter.sizes, binary=TRUE)
+        if (any(!is.finite(scatter.sizes)))
         {
-            warning("Some points omitted due to missing values in 'sizes'.")
+            warning("Some points omitted due to missing values in 'scatter.sizes'.")
             not.na <- not.na & is.finite(sizes)
         }
     }
-    if (!is.null(colors))
+    if (!is.null(scatter.colors))
     {
-        if (length(colors) != n)
-            stop("'colors' should be a vector with the same number of observations as 'x'.")
-        if (any(is.na(colors)))
+        if (!scatter.colors.as.categorical)
+            scatter.colors <- AsNumeric(scatter.colors, binary = FALSE)
+        if (length(scatter.colors) != n)
+            stop("'scatter.colors' should be a vector with the same number of observations as 'x'.")
+        if (any(is.na(scatter.colors)))
         {
-            warning("Some points omitted due to missing values in 'colors'")
-            not.na <- not.na & !is.na(colors)
+            warning("Some points omitted due to missing values in 'scatter.colors'")
+            not.na <- not.na & !is.na(scatter.colors)
         }
     }
     if (sum(not.na) == 0)
         stop("No non-NA points to plot.")
        
     # Determine color for each observation     
-    if (!is.null(colors) && !colors.as.categorical)
-        colors <- AsNumeric(colors, binary=FALSE)
-    if (!is.null(colors) && !colors.as.categorical)
+    if (!is.null(scatter.colors) && !scatter.colors.as.categorical)
     {
+        if (num.tables > 1)
+            stop("'scatter.colors' cannot be used with multiple tables")
         legend.show <- FALSE # don't need to worry about order of groups
         groups <- 1:n # what about mult tables?
-        col.fun <- colorRamp(color.palette)
-        colors.scaled <- (colors - min(colors, na.rm=T))/diff(range(colors, na.rm=T))
-        color.palette <- rgb(col.fun(colors.scaled), maxColorValue=255)
+        col.fun <- colorRamp(scatter.colors)
+        scatter.colors.scaled <- (scatter.colors - min(scatter.colors, na.rm=T))/diff(range(scatter.colors, na.rm=T))
+        scatter.colors <- rgb(col.fun(scatter.colors.scaled), maxColorValue=255)
 
     } else
     {
         if (is.null(groups))
-            groups <- colors
+            groups <- scatter.colors
         if (length(groups) != n)
             groups <- rep(" ", n)
 
         groups <- as.character(groups)
         g.list <- unique(groups)
-        color.palette <- paste0(rep("", length(g.list)), color.palette)
-        names(color.palette) <- g.list
-        color.palette <- color.palette[g.list]
+        colors <- paste0(rep("", length(g.list)), colors)
+        names(colors) <- g.list
+        colors <- colors[g.list]
     }
-
+    colors <- StripAlphaChannel(colors)
+    
     if (trend.lines)
         legend.show <- FALSE
     if (!is.null(logo.urls) && length(logo.urls) != n)
         stop(sprintf("Number of URLs supplied in 'logos' is %.0f but must be equal to the number of rows in the table (%.0f)\n", length(logo.urls)/num.tables, n/num.tables)) 
     logo.size <- rep(logo.size, n)
-    if (is.null(labels))
-        labels <- rep("", n)
-    lab.tidy <- labels
-    if (length(labels) > data.label.max.plot)
-        lab.tidy <- labels[(data.label.max.plot+1):(length(labels))] <- ""
+    if (is.null(scatter.labels))
+        scatter.labels <- rep("", n)
+    lab.tidy <- scatter.labels
+    if (length(scatter.labels) > data.label.max.plot)
+        lab.tidy <- scatter.labels[(data.label.max.plot+1):(length(scatter.labels))] <- ""
     if (!is.null(logo.urls))
         lab.tidy <- logo.urls
     if (length(footer) == 0 || nchar(footer) == 0)
     {
         footer <- ""
-        if (!is.na(labels.name))
-            footer <- sprintf("%sPoints labeled by '%s'; ", footer, labels.name)
-        if (!is.na(colors.name))
-            footer <- sprintf("%sPoints colored according to '%s'; ", footer, colors.name)
-        if (!is.na(sizes.name))
+        if (!is.na(scatter.labels.name))
+            footer <- sprintf("%sPoints labeled by '%s'; ", footer, scatter.labels.name)
+        if (!is.na(scatter.colors.name))
+            footer <- sprintf("%sPoints colored according to '%s'; ", footer, scatter.colors.name)
+        if (!is.na(scatter.sizes.name))
             footer <- sprintf("%sPoint sizes are proportional to absolute value of '%s'; ", 
-                              footer, sizes.name)
+                              footer, scatter.sizes.name)
     }
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
 
     return(LabeledScatter(X = x[not.na],
                        Y = y[not.na],
-                       Z = if (is.null(sizes)) NULL else sizes[not.na],
+                       Z = if (is.null(scatter.sizes)) NULL else scatter.sizes[not.na],
                        group = groups[not.na],
-                       colors = color.palette[not.na],
+                       colors = colors[not.na],
                        label = lab.tidy[not.na], 
-                       label.alt = labels[not.na],
+                       label.alt = scatter.labels[not.na],
                        fixed.aspect = FALSE,
                        grid = x.grid.width != 0 && y.grid.width != 0,
                        origin = FALSE,
                        origin.align = FALSE,
                        labels.show = TRUE,
                        legend.show = legend.show && length(g.list) > 1,
-                       legend.bubbles.show = !is.null(sizes),
+                       legend.bubbles.show = !is.null(scatter.sizes),
                        legend.font.color = legend.font.color,
                        legend.font.family = legend.font.family,
                        legend.font.size = legend.font.size,
@@ -426,7 +431,7 @@ LabeledScatterChart <- function(x = NULL,
                        x.title.font.family = x.title.font.family,
                        x.title.font.color = x.title.font.color,
                        x.title.font.size = x.title.font.size,
-                       z.title = sizes.name,
+                       z.title = scatter.sizes.name,
                        x.decimals = if (is.null(x.tick.decimals)) decimalsToDisplay(x) else x.tick.decimals,
                        y.decimals = if (is.null(y.tick.decimals)) decimalsToDisplay(y) else y.tick.decimals,
                        x.prefix = x.tick.prefix,
