@@ -2,16 +2,16 @@
 #'
 #' Plot scatterplot with labels - best used for small sets of data
 #'
-#' @param x A numeric vector for the x-axis positions (which may be named); or a matrix or dataframe which may have 1-4 columns containing: 1:x, 2:y, 3:sizes, 4:colors; or a list of matrices, where each matrix is in the format described and share the same row and column names
-#' @param y Optional numeric vector for the y-axis positions. Should contain the same number of observations as x. If not provided, will use x instead.
+#' @param x A numeric vector for the x-axis coordinates (which may be named); or a matrix or dataframe which may have 1-4 columns containing: 1:x, 2:y, 3:sizes, 4:colors; or a list of matrices, where each matrix is in the format described and share the same row and column names
+#' @param y Optional numeric vector for the y-axis coordinates. Should contain the same number of observations as x. If not provided, will use x instead.
 #' @param scatter.labels Optional vector for labelling scatter points. This should be the same length as the number of observations in x andy. This is used in the hovertext and data labels.
 #' @param scatter.labels.name Character; Used for labelling subtitles and footers. 
 #' @param scatter.sizes Numeric vector determining of the size of each observation. These can alternatively be provided as a column in \code{x}.
 #' @param scatter.sizes.name Character; Used for labelling footers and legends.
 #' @param scatter.colors Numeric, character, or categorical vector determining the color of each observation. These can alternatively be provided as a column in \code{x}.
 #' @param scatter.colors.name Character; Used for labelling footers.
-#' @param scatter.colors.as.categorical Whether to treat colors as a categorical groups, or a numeric scale.
-#' @param colors A vector of colors to use in the chart. Should be the same length as the number of groups.
+#' @param scatter.colors.as.categorical Boolean; Whether to treat colors as a categorical groups, or a numeric scale.
+#' @param colors A vector of colors to use in the chart. When \code{scatter.colors.as.categorical}, the vector of colors should have the length as the number of categories in \code{scatter.colors}. If \code{scatter.colors} is used as numeric vector, then a color ramp is constructed from the colors listed.
 #' @param title Character; chart title.
 #' @param title.font.family Character; title font family. Can be "Arial Black",
 #' "Arial", "Comic Sans MS", "Courier New", "Georgia", "Impact",
@@ -209,7 +209,7 @@ LabeledScatterChart <- function(x = NULL,
     # Try to store name of variables
     if (!is.null(scatter.sizes) && is.na(scatter.sizes.name))
     {
-        sizes.name <- deparse(substitute(scatter.sizes))
+        scatter.sizes.name <- deparse(substitute(scatter.sizes))
         if (!is.null(attr(scatter.sizes, "label")))
             scatter.sizes.name <- attr(scatter.sizes, "label")
     }
@@ -254,7 +254,7 @@ LabeledScatterChart <- function(x = NULL,
             if (!is.numeric(x[,1]))
             {
                 scatter.labels <- as.character(x[,1])
-                if (is.na(scatter.labels.names) && !is.null(colnames(x)))
+                if (is.na(scatter.labels.name) && !is.null(colnames(x)))
                     scatter.labels.name <- colnames(x)[1]
                 col.offset <- 1
             }
@@ -345,9 +345,9 @@ LabeledScatterChart <- function(x = NULL,
             stop("'scatter.colors' cannot be used with multiple tables")
         legend.show <- FALSE # don't need to worry about order of groups
         groups <- 1:n # what about mult tables?
-        col.fun <- colorRamp(scatter.colors)
+        col.fun <- colorRamp(colors)
         scatter.colors.scaled <- (scatter.colors - min(scatter.colors, na.rm=T))/diff(range(scatter.colors, na.rm=T))
-        scatter.colors <- rgb(col.fun(scatter.colors.scaled), maxColorValue=255)
+        colors <- rgb(col.fun(scatter.colors.scaled), maxColorValue=255)
 
     } else
     {

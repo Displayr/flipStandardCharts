@@ -4,15 +4,16 @@
 \alias{ScatterChart}
 \title{Scatterplot chart}
 \usage{
-ScatterChart(x, y = NULL, colors = NULL, groups = colors, sizes = NULL,
-  labels = NULL, colors.as.categorical = !is.null(groups),
-  color.palette = flipChartBasics:::qColors, labels.name = NA,
-  colors.name = NA, sizes.name = NA, fit.type = "None",
+ScatterChart(x = NULL, y = NULL, scatter.labels = NULL,
+  scatter.labels.name = NA, scatter.sizes = NULL, scatter.sizes.name = NA,
+  scatter.colors = NULL, scatter.colors.name = NA,
+  scatter.colors.as.categorical = !is.null(groups),
+  colors = flipChartBasics::qColors, fit.type = "None",
   fit.ignore.last = FALSE, fit.line.type = "dot", fit.line.width = 1,
-  fit.line.name = "Fitted", fit.line.colors = color.palette,
-  legend.show = TRUE, tooltip.show = TRUE, modebar.show = FALSE,
-  global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
-  maxColorValue = 255), title = "", title.font.family = global.font.family,
+  fit.line.name = "Fitted", fit.line.colors = colors, legend.show = TRUE,
+  tooltip.show = TRUE, modebar.show = FALSE, global.font.family = "Arial",
+  global.font.color = rgb(44, 44, 44, maxColorValue = 255), title = "",
+  title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
   subtitle = "", subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color, subtitle.font.size = 12,
@@ -62,30 +63,29 @@ ScatterChart(x, y = NULL, colors = NULL, groups = colors, sizes = NULL,
   label.wrap.nchar = 21, series.line.width = 0,
   series.marker.border.width = 1, series.marker.size = 6,
   series.marker.opacity = 1, series.marker.show = "none",
-  series.marker.colors = NULL, us.date.format = FALSE)
+  series.marker.colors = NULL, swap.x.and.y = FALSE,
+  us.date.format = FALSE)
 }
 \arguments{
-\item{x}{A table matrix or data frame.}
+\item{x}{A numeric vector for the x-axis coordinates (which may be named); or a matrix or dataframe which may have 1-4 columns containing: 1:x, 2:y, 3:sizes, 4:colors.}
 
-\item{y}{Optional numeric vector for the y-axis positions. Should contain the same number of observations as x. If not provided, will use x instead.}
+\item{y}{Optional numeric vector for the y-axis coordinates. Should contain the same number of observations as x. If not provided, will use x instead.}
 
-\item{colors}{Optional vector determining the color of each observation.}
+\item{scatter.labels}{Optional vector for labelling scatter points. This should be the same length as the number of observations in x andy. This is used in the hovertext and data labels.}
 
-\item{groups}{Alternative to using colors. Defaults to treating colors as categorical.}
+\item{scatter.labels.name}{Character; Used for labelling subtitles and footers.}
 
-\item{sizes}{Optional vector determining of the size of each observation.}
+\item{scatter.sizes}{Numeric vector determining of the size of each observation. These can alternatively be provided as a column in \code{x}.}
 
-\item{labels}{Optional vector for labelling scatter points. This is used in the hovertext and data labels.}
+\item{scatter.sizes.name}{Character; Used for labelling footers and legends.}
 
-\item{colors.as.categorical}{Whether to treat colors as a categorical groups, or a numeric scale.}
+\item{scatter.colors}{Numeric, character, or categorical vector determining the color of each observation. These can alternatively be provided as a column in \code{x}.}
 
-\item{color.palette}{A vector of colors to use in the chart. Should be the same length as the number of groups.}
+\item{scatter.colors.name}{Character; Used for labelling footers.}
 
-\item{labels.name}{Character; Used for labelling subtitles and footers.}
+\item{scatter.colors.as.categorical}{Whether to treat colors as a categorical groups, or a numeric scale.}
 
-\item{colors.name}{Character; Used for labelling subtitles and footers.}
-
-\item{sizes.name}{Character; Used for labelling subtitles and footers.}
+\item{colors}{A vector of colors to use in the chart. When \code{scatter.colors.as.categorical}, the vector of colors should have the length as the number of categories in \code{scatter.colors}. If \code{scatter.colors} is used as numeric vector, then a color ramp is constructed from the colors listed.}
 
 \item{fit.type}{Character; type of line of best fit. Can be one of "None", "Linear" or "Smooth" (loess local polynomial fitting).}
 
@@ -399,6 +399,8 @@ the plotly symbol dictionary using either numerics or strings.}
 colors from grDevices OR one or more specified hex value colors OR a single
 named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
 be reversed.}
+
+\item{swap.x.and.y}{Swap the x and y axis around on the chart.}
 
 \item{us.date.format}{Whether to apply the US convention when parsing dates.}
 

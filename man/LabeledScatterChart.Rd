@@ -43,9 +43,9 @@ LabeledScatterChart(x = NULL, y = NULL, scatter.labels = NULL,
   series.marker.size = 6, swap.x.and.y = FALSE)
 }
 \arguments{
-\item{x}{A numeric vector for the x-axis positions (which may be named); or a matrix or dataframe which may have 1-4 columns containing: 1:x, 2:y, 3:sizes, 4:colors; or a list of matrices, where each matrix is in the format described and share the same row and column names}
+\item{x}{A numeric vector for the x-axis coordinates (which may be named); or a matrix or dataframe which may have 1-4 columns containing: 1:x, 2:y, 3:sizes, 4:colors; or a list of matrices, where each matrix is in the format described and share the same row and column names}
 
-\item{y}{Optional numeric vector for the y-axis positions. Should contain the same number of observations as x. If not provided, will use x instead.}
+\item{y}{Optional numeric vector for the y-axis coordinates. Should contain the same number of observations as x. If not provided, will use x instead.}
 
 \item{scatter.labels}{Optional vector for labelling scatter points. This should be the same length as the number of observations in x andy. This is used in the hovertext and data labels.}
 
@@ -59,7 +59,7 @@ LabeledScatterChart(x = NULL, y = NULL, scatter.labels = NULL,
 
 \item{scatter.colors.name}{Character; Used for labelling footers.}
 
-\item{scatter.colors.as.categorical}{Whether to treat colors as a categorical groups, or a numeric scale.}
+\item{scatter.colors.as.categorical}{Boolean; Whether to treat colors as a categorical groups, or a numeric scale.}
 
 \item{trend.lines}{Boolean indicating whether to plot trend lines for multiple tables.}
 
@@ -67,7 +67,7 @@ LabeledScatterChart(x = NULL, y = NULL, scatter.labels = NULL,
 
 \item{logo.size}{Numeric controlling the size of the logos.}
 
-\item{colors}{A vector of colors to use in the chart. Should be the same length as the number of groups.}
+\item{colors}{A vector of colors to use in the chart. When \code{scatter.colors.as.categorical}, the vector of colors should have the length as the number of categories in \code{scatter.colors}. If \code{scatter.colors} is used as numeric vector, then a color ramp is constructed from the colors listed.}
 
 \item{legend.show}{Logical; show the legend.}
 

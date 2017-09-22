@@ -2,17 +2,16 @@
 #'
 #' Plot scatterplot chart 
 #'
-#' @param x A table matrix or data frame.
-#' @param y Optional numeric vector for the y-axis positions. Should contain the same number of observations as x. If not provided, will use x instead.
-#' @param colors Optional vector determining the color of each observation.
-#' @param groups Alternative to using colors. Defaults to treating colors as categorical.
-#' @param colors.as.categorical Whether to treat colors as a categorical groups, or a numeric scale.
-#' @param color.palette A vector of colors to use in the chart. Should be the same length as the number of groups.
-#' @param sizes Optional vector determining of the size of each observation.
-#' @param labels Optional vector for labelling scatter points. This is used in the hovertext and data labels.
-#' @param labels.name Character; Used for labelling subtitles and footers.
-#' @param colors.name Character; Used for labelling subtitles and footers.
-#' @param sizes.name Character; Used for labelling subtitles and footers.
+#' @param x A numeric vector for the x-axis coordinates (which may be named); or a matrix or dataframe which may have 1-4 columns containing: 1:x, 2:y, 3:sizes, 4:colors.
+#' @param y Optional numeric vector for the y-axis coordinates. Should contain the same number of observations as x. If not provided, will use x instead.
+#' @param scatter.labels Optional vector for labelling scatter points. This should be the same length as the number of observations in x andy. This is used in the hovertext and data labels.
+#' @param scatter.labels.name Character; Used for labelling subtitles and footers. 
+#' @param scatter.sizes Numeric vector determining of the size of each observation. These can alternatively be provided as a column in \code{x}.
+#' @param scatter.sizes.name Character; Used for labelling footers and legends.
+#' @param scatter.colors Numeric, character, or categorical vector determining the color of each observation. These can alternatively be provided as a column in \code{x}.
+#' @param scatter.colors.name Character; Used for labelling footers.
+#' @param scatter.colors.as.categorical Whether to treat colors as a categorical groups, or a numeric scale.
+#' @param colors A vector of colors to use in the chart. When \code{scatter.colors.as.categorical}, the vector of colors should have the length as the number of categories in \code{scatter.colors}. If \code{scatter.colors} is used as numeric vector, then a color ramp is constructed from the colors listed.
 #' @param fit.type Character; type of line of best fit. Can be one of "None", "Linear" or "Smooth" (loess local polynomial fitting).
 #' @param fit.ignore.last Boolean; whether to ignore the last data point in the fit.
 #' @param fit.line.type Character; One of "solid", "dot", "dash, "dotdash", or length of dash "2px", "5px".
@@ -209,6 +208,7 @@
 #' right", "middle left", "middle center", "middle right", "bottom left",
 #' "bottom center", "bottom right". Only applicable for line and area charts.
 #' @param us.date.format Whether to apply the US convention when parsing dates.
+#' @param swap.x.and.y Swap the x and y axis around on the chart.
 #' @param ... Extra arguments that are ignored.
 #' @importFrom grDevices rgb
 #' @importFrom flipChartBasics ChartColors
@@ -224,12 +224,13 @@ ScatterChart <- function(x = NULL,
                          scatter.colors = NULL, 
                          scatter.colors.name = NA,
                          scatter.colors.as.categorical = !is.null(groups),
+                         colors = flipChartBasics::qColors,
                          fit.type = "None",
                          fit.ignore.last = FALSE,
                          fit.line.type = "dot",
                          fit.line.width = 1,
                          fit.line.name = "Fitted",
-                         fit.line.colors = color.palette,
+                         fit.line.colors = colors,
                          legend.show = TRUE,
                          tooltip.show = TRUE,
                          modebar.show = FALSE,
@@ -305,121 +306,185 @@ ScatterChart <- function(x = NULL,
                          y.tick.angle = NULL,
                          y.tick.font.color = NULL,
                          y.tick.font.family = NULL,
-                        y.tick.font.size = 10,
-                        x.title = "",
-                        x.title.font.color = NULL,
-                        x.title.font.family = NULL,
-                        x.title.font.size = 12,
-                        x.line.width = 0,
-                        x.line.color = rgb(0, 0, 0, maxColorValue = 255),
-                        x.tick.marks = "",
-                        x.tick.mark.length = 5,
-                        x.bounds.minimum = NULL,
-                        x.bounds.maximum = NULL,
-                        x.tick.distance = NULL,
-                        x.zero.line.width = 0,
-                        x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
-                        x.position = "bottom",
-                        x.data.reversed = FALSE,
-                        x.grid.width = 1,
-                        x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
-                        x.tick.show = TRUE,
-                        x.tick.suffix = "",
-                        x.tick.prefix = "",
-                        x.tick.decimals = NULL,
-                        x.tick.format.manual = "",
-                        x.hovertext.decimals = NULL,
-                        x.hovertext.format.manual = "",
-                        x.tick.angle = NULL,
-                        x.tick.font.color = NULL,
-                        x.tick.font.family = NULL,
-                        x.tick.font.size = 10,
-                        label.wrap = TRUE,
-                        label.wrap.nchar = 21,
-                        series.line.width = 0,
-                        series.marker.border.width = 1,
-                        series.marker.size = 6,
-                        series.marker.opacity = 1,
-                        series.marker.show = "none", # ignored
-                        series.marker.colors = NULL,
-                        us.date.format = FALSE)
+                         y.tick.font.size = 10,
+                         x.title = "",
+                         x.title.font.color = NULL,
+                         x.title.font.family = NULL,
+                         x.title.font.size = 12,
+                         x.line.width = 0,
+                         x.line.color = rgb(0, 0, 0, maxColorValue = 255),
+                         x.tick.marks = "",
+                         x.tick.mark.length = 5,
+                         x.bounds.minimum = NULL,
+                         x.bounds.maximum = NULL,
+                         x.tick.distance = NULL,
+                         x.zero.line.width = 0,
+                         x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
+                         x.position = "bottom",
+                         x.data.reversed = FALSE,
+                         x.grid.width = 1,
+                         x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+                         x.tick.show = TRUE,
+                         x.tick.suffix = "",
+                         x.tick.prefix = "",
+                         x.tick.decimals = NULL,
+                         x.tick.format.manual = "",
+                         x.hovertext.decimals = NULL,
+                         x.hovertext.format.manual = "",
+                         x.tick.angle = NULL,
+                         x.tick.font.color = NULL,
+                         x.tick.font.family = NULL,
+                         x.tick.font.size = 10,
+                         label.wrap = TRUE,
+                         label.wrap.nchar = 21,
+                         series.line.width = 0,
+                         series.marker.border.width = 1,
+                         series.marker.size = 6,
+                         series.marker.opacity = 1,
+                         series.marker.show = "none", # ignored
+                         series.marker.colors = NULL,
+                         swap.x.and.y = FALSE,
+                         us.date.format = FALSE)
+{
+    # Try to store name of variables
+    if (!is.null(scatter.sizes) && is.na(scatter.sizes.name))
     {
-        # if y, colors or sizes is null, look in x
-    # may need to pull x apart, but should not replace already assigned variables
-    # if x is df/matrix, use column names to fill in x.title, y.title, sizes.label, colors.label
-    # after pulling apart, assign x to be just a vector (can be numeric, factor or dates)
-    # assign NULL x and y's to zero vectors
+        scatter.sizes.name <- deparse(substitute(scatter.sizes))
+        if (!is.null(attr(scatter.sizes, "label")))
+            scatter.sizes.name <- attr(scatter.sizes, "label")
+    }
+    if (!is.null(scatter.labels) && is.na(scatter.labels.name))
+    {
+        scatter.labels.name <- deparse(substitute(scatter.labels))
+        if (!is.null(attr(scatter.labels, "label")))
+            scatter.labels.name <- attr(scatter.labels, "label")
+    }
+    if (!is.null(scatter.colors) && is.na(scatter.colors.name))
+    {
+        scatter.colors.name <- deparse(substitute(scatter.colors))
+        if (!is.null(attr(scatter.colors, "label")))
+            scatter.colors.name <- attr(scatter.colors, "label")
+    }
 
-    # Get variable names
-    if (!is.null(sizes) && is.na(sizes.name))
+    if (is.matrix(x) || is.data.frame(x))
     {
-        sizes.name <- deparse(substitute(sizes))
-        if (!is.null(attr(sizes, "label")))
-            sizes.name <- attr(sizes, "label")
+        col.offset <- 0
+        if (!is.null(rownames(x)))
+            labels <- rownames(x)
+        else
+        {
+            if (!is.numeric(x[,1]))
+            {
+                scatter.labels <- as.character(x[,1])
+                if (is.na(scatter.labels.name) && !is.null(colnames(x)))
+                    scatter.labels.name <- colnames(x)[1]
+                col.offset <- 1
+            }
+        }
+        if (is.null(y) && ncol(x) >= col.offset + 2)
+        {
+            if ((is.na(y.title) || nchar(y.title) == 0) && !is.null(colnames(x))) 
+                y.title <- colnames(x)[col.offset + 2]
+            y <- x[,col.offset + 2]
+        }
+        if (is.null(scatter.sizes) && ncol(x) >= col.offset + 3)
+        {
+            if (is.na(scatter.sizes.name) && !is.null(colnames(x)))
+                scatter.sizes.name <- colnames(x)[col.offset + 3]
+            scatter.sizes <- x[,col.offset + 3]
+        }
+        if (is.null(scatter.colors) && ncol(x) >= col.offset + 4)
+        {
+            if (is.na(scatter.colors.name) || nchar(scatter.colors.name) == 0)
+                scatter.colors.name <- colnames(x)[col.offset + 4]
+            scatter.colors <- x[,col.offset + 4]
+        }
+        if ((is.na(x.title) || nchar(x.title) == 0) && !is.null(colnames(x)))
+            x.title <- colnames(x)[col.offset + 1]
+        x <- x[,col.offset + 1]
     }
-    if (!is.null(labels) && is.na(labels.name))
-    {
-        labels.name <- deparse(substitute(labels))
-        if (!is.null(attr(labels, "label")))
-            labels.name <- attr(labels, "label")
-    }
-    if (!is.null(colors) && is.na(colors.name))
-    {
-        colors.name <- deparse(substitute(colors))
-        if (!is.null(attr(colors, "label")))
-            colors.name <- attr(colors, "label")
-    }
+    if (is.null(scatter.labels) && !is.null(names(x)))
+        scatter.labels <- names(x)
+
+    # Basic data checking
+    if (is.null(x) && is.null(y))
+        stop("At least one of x or y must be supplied.")
+    if (is.null(x))
+        x <- rep(0, length(y))
     n <- length(x)
-    opacity <- 1
-    if (!is.null(sizes))
+    if (is.null(y))
+        y <- rep(0, n)
+    if (swap.x.and.y)
     {
-        sc.tmp <- sqrt(abs(as.numeric(sizes)))
-        sizes.scaled <- sc.tmp/max(sc.tmp, na.rm=T) * 50
+        tmp <- x
+        x <- y
+        y <- tmp
+
+        tmp <- x.title
+        x.title <- y.title
+        y.title <- tmp
+    }
+    if (any(duplicated(cbind(x, y))))
+        warning("Some points are overlapping and may not be visible.")
+
+    not.na <- is.finite(x) & is.finite(y)
+    if (sum(not.na) != n)
+        warning("Some points omitted due to missing 'x' or 'y' values.")
+
+    n <- length(x)
+    x <- as.numeric(x)
+    y <- as.numeric(y)
+    opacity <- 1
+    if (!is.null(scatter.sizes))
+    {
+        sc.tmp <- sqrt(abs(as.numeric(scatter.sizes)))
+        scatter.sizes.scaled <- sc.tmp/max(sc.tmp, na.rm=T) * 50
         opacity <- 0.4
     } 
    
-    colors.as.numeric <- 0
+    scatter.colors.as.numeric <- 0
     colorbar <- NULL
-    if (is.null(groups))
-        groups <- rep("Series 1", n)  
-    if (!is.null(colors) && !colors.as.categorical)
+    #groups <- NULL
+    #if (is.null(groups))
+    groups <- rep("Series 1", n)  
+    if (!is.null(scatter.colors) && !scatter.colors.as.categorical)
     {
         # make colorscalebar
-        col.fun <- colorRamp(color.palette)
+        col.fun <- colorRamp(colors)
         c.tmp <- rgb(col.fun((0:5)/5), maxColorValue=255)
         v.tmp <- seq(from=0, to=1, length=length(c.tmp))
         col.scale <- mapply(function(a,b)c(a,b), a=v.tmp, b=c.tmp, SIMPLIFY=F)
         colorbar <- list(#tickmode="array", tickvals=c(), ticktext=c(), 
                          outlinewidth=0)
 
-        colors.as.numeric <- 1
+        scatter.colors.as.numeric <- 1
         groups <- 1:n
         opacity <- 1
-        col.tmp <- AsNumeric(colors, binary=FALSE)
-        colors.scaled <- (col.tmp - min(col.tmp, na.rm=T))/diff(range(col.tmp, na.rm=T))
-        color.palette <- rgb(col.fun(colors.scaled), maxColorValue=255)
+        col.tmp <- AsNumeric(scatter.colors, binary=FALSE)
+        scatter.colors.scaled <- (col.tmp - min(col.tmp, na.rm=T))/diff(range(col.tmp, na.rm=T))
+        colors <- rgb(col.fun(scatter.colors.scaled), maxColorValue=255)
     }
-    if (!is.null(groups) && colors.as.categorical)
-        groups <- as.character(groups)
+    if (!is.null(scatter.colors) && scatter.colors.as.categorical)
+        groups <- as.character(scatter.colors)
     g.list <- unique(groups)
     num.groups <- length(g.list)
-    num.series <- if (colors.as.numeric) 1 else num.groups
+    num.series <- if (scatter.colors.as.numeric) 1 else num.groups
 
     # hovertext
     x.str <- if (is.numeric(x)) FormatAsReal(x, decimals = data.label.decimals) else as.character(x)
     y.str <- if (is.numeric(y)) FormatAsReal(y, decimals = data.label.decimals) else as.character(y)
-    source.text <- paste0(labels, " (", x.tick.prefix, x.str, x.tick.suffix, ", ", 
+    source.text <- paste0(scatter.labels, " (", x.tick.prefix, x.str, x.tick.suffix, ", ", 
                           y.tick.prefix, y.str, y.tick.suffix, ")")
-    if (!is.na(colors.name))
-        source.text <- paste0(source.text, "<br>", colors.name, ": ", as.character(colors))
-    if (!is.na(sizes.name))
-        source.text <- paste0(source.text, "<br>", sizes.name, ": ", as.character(sizes))
+    if (!is.na(scatter.colors.name))
+        source.text <- paste0(source.text, "<br>", scatter.colors.name, ": ", as.character(scatter.colors))
+    if (!is.na(scatter.sizes.name))
+        source.text <- paste0(source.text, "<br>", scatter.sizes.name, ": ", as.character(scatter.sizes))
     
 
     # other constants
     hover.mode <- if (tooltip.show) "closest" else FALSE
     legend.show <- legend.show && num.series > 1
-    scatter.opacity <- if (!is.null(sizes)) 0.4 else 1
+    scatter.opacity <- if (!is.null(scatter.sizes)) 0.4 else 1
     series.mode <- if (is.null(series.line.width) || series.line.width == 0) "markers"
                    else "markers+lines"
     series.marker.symbols <- if (is.null(series.marker.show) ||
@@ -444,13 +509,13 @@ ScatterChart <- function(x = NULL,
     if (length(footer) == 0 || nchar(footer) == 0)
     {
         footer <- ""
-        if (!is.na(labels.name))
-            footer <- sprintf("%sPoints labeled by '%s'; ", footer, labels.name)
-        if (!is.na(colors.name))
-            footer <- sprintf("%sPoints colored according to '%s'; ", footer, colors.name)
-        if (!is.na(sizes.name))
+        if (!is.na(scatter.labels.name))
+            footer <- sprintf("%sPoints labeled by '%s'; ", footer, scatter.labels.name)
+        if (!is.na(scatter.colors.name))
+            footer <- sprintf("%sPoints colored according to '%s'; ", footer, scatter.colors.name)
+        if (!is.na(scatter.sizes.name))
             footer <- sprintf("%sPoint sizes are proportional to absolute value of '%s'; ", 
-                              footer, sizes.name)
+                              footer, scatter.sizes.name)
     }
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
 
@@ -498,20 +563,20 @@ ScatterChart <- function(x = NULL,
     for (ggi in 1:num.groups)
     {
         ind <- which(groups == g.list[ggi])
-        tmp.size <- if (!is.null(sizes)) sizes.scaled[ind]
+        tmp.size <- if (!is.null(scatter.sizes)) scatter.sizes.scaled[ind]
                  else series.marker.size
 
         # initialise marker/line settings
         line.obj <- if (is.null(series.line.width) || series.line.width == 0) NULL
                     else list(width=series.line.width, color=colors[ggi])
-        if (ggi == 1 && colors.as.numeric)
+        if (ggi == 1 && scatter.colors.as.numeric)
             marker.obj <- list(size = tmp.size, sizemode = "diameter", opacity = opacity,
                             line = list(width = series.marker.border.width),
-                            color = colors.scaled, colorscale = col.scale,
+                            color = scatter.colors.scaled, colorscale = col.scale,
                             showscale = T, colorbar = colorbar)
         else
             marker.obj <- list(size = tmp.size, sizemode = "diameter", opacity = opacity,
-                            color = color.palette[ggi], line = list(width = series.marker.border.width))
+                            color = colors[ggi], line = list(width = series.marker.border.width))
 
         # main trace
         p <- add_trace(p, x = x[ind], y = y[ind], name = g.list[ggi], 
