@@ -223,7 +223,7 @@ ScatterChart <- function(x = NULL,
                          scatter.sizes.name = NA,
                          scatter.colors = NULL, 
                          scatter.colors.name = NA,
-                         scatter.colors.as.categorical = !is.null(groups),
+                         scatter.colors.as.categorical = FALSE,
                          colors = flipChartBasics::qColors,
                          fit.type = "None",
                          fit.ignore.last = FALSE,
@@ -344,7 +344,8 @@ ScatterChart <- function(x = NULL,
                          series.marker.show = "none", # ignored
                          series.marker.colors = NULL,
                          swap.x.and.y = FALSE,
-                         us.date.format = FALSE)
+                         us.date.format = FALSE,
+                         ...)
 {
     # Try to store name of variables
     if (!is.null(scatter.sizes) && is.na(scatter.sizes.name))
@@ -425,11 +426,11 @@ ScatterChart <- function(x = NULL,
         y.title <- tmp
     }
     if (any(duplicated(cbind(x, y))))
-        warning("Some points are overlapping and may not be visible.")
+        warning("Chart contains overlapping points in the same position.")
 
     not.na <- is.finite(x) & is.finite(y)
     if (sum(not.na) != n)
-        warning("Some points omitted due to missing 'x' or 'y' values.")
+        warning("Data points with missing values have been omitted.")
 
     n <- length(x)
     x <- as.numeric(x)

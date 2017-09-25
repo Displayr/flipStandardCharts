@@ -7,13 +7,12 @@
 ScatterChart(x = NULL, y = NULL, scatter.labels = NULL,
   scatter.labels.name = NA, scatter.sizes = NULL, scatter.sizes.name = NA,
   scatter.colors = NULL, scatter.colors.name = NA,
-  scatter.colors.as.categorical = !is.null(groups),
-  colors = flipChartBasics::qColors, fit.type = "None",
-  fit.ignore.last = FALSE, fit.line.type = "dot", fit.line.width = 1,
-  fit.line.name = "Fitted", fit.line.colors = colors, legend.show = TRUE,
-  tooltip.show = TRUE, modebar.show = FALSE, global.font.family = "Arial",
-  global.font.color = rgb(44, 44, 44, maxColorValue = 255), title = "",
-  title.font.family = global.font.family,
+  scatter.colors.as.categorical = FALSE, colors = flipChartBasics::qColors,
+  fit.type = "None", fit.ignore.last = FALSE, fit.line.type = "dot",
+  fit.line.width = 1, fit.line.name = "Fitted", fit.line.colors = colors,
+  legend.show = TRUE, tooltip.show = TRUE, modebar.show = FALSE,
+  global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
+  maxColorValue = 255), title = "", title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
   subtitle = "", subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color, subtitle.font.size = 12,
@@ -64,7 +63,7 @@ ScatterChart(x = NULL, y = NULL, scatter.labels = NULL,
   series.marker.border.width = 1, series.marker.size = 6,
   series.marker.opacity = 1, series.marker.show = "none",
   series.marker.colors = NULL, swap.x.and.y = FALSE,
-  us.date.format = FALSE)
+  us.date.format = FALSE, ...)
 }
 \arguments{
 \item{x}{A numeric vector for the x-axis coordinates (which may be named); or a matrix or dataframe which may have 1-4 columns containing: 1:x, 2:y, 3:sizes, 4:colors.}

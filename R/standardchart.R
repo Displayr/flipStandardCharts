@@ -498,10 +498,10 @@ Chart <-   function(y = NULL,
                     logos = NULL,
                     logo.size = 0.5)
 {
-    if (0)
+    if (1)
     {
-    patt.list <- c("Column", "Bar", "Radar", "Area")
-    func.list <- c("ColumnChart", "BarChart", "RadarChart", "AreaChart")
+    patt.list <- c("Column", "Bar", "Radar", "Area", "Line", "Pie", "Labeled", "Scatterplot")
+    func.list <- c("ColumnChart", "BarChart", "RadarChart", "AreaChart", "LineChart", "PieChart", "LabeledScatterChart", "ScatterChart")
     f.type <- gsub(" ", "", type, fixed=T)
     for (ffi in 1:length(func.list))
     {
@@ -514,18 +514,57 @@ Chart <-   function(y = NULL,
         for (nn in names(user.args)[-1])
             args[[nn]] <- user.args[[nn]]
 
-        # fix up Std R form problems
-        tmp.col <- ChartColors(10)
-        args$colors <- tmp.col
+        # Data input
+        if (type %in% c("Scatterplot", "Labeled Scatterplot"))
+        {
+            args$x <- args$y
+            if (!is.null(scatter.colors.var))
+                num.colors <- length(unique(scatter.colors.var))
+            else
+                num.colors <- 1
+
+        } else
+        {
+            x <- y
+            num.colors <- ncol(as.matrix(x))
+            if (ff == "PieChart" && num.colors == 1)
+                num.colors <- nrow(as.matrix(x))
+            args$x <- x
+        }
+        cat("num.colors:", num.colors, "\n")
+        if (is.null(colors))
+            colors <- "Default colors"
+        cat("given.colors:", colors, "\n")
+        tmp.colors <- ChartColors(num.colors,
+                        given.colors = colors,
+                        custom.color = colors.custom.color,
+                        custom.gradient.start = colors.custom.gradient.start,
+                        custom.gradient.end = colors.custom.gradient.end,
+                        custom.palette = colors.custom.palette,
+                        reverse = colors.reverse)
+        cat("colors:", tmp.colors, "\n")
+
+        # fix up Std R form problem
+        args$colors <- tmp.colors
         args$subtitle.font.size <- 12
 
         # Match up renamed arguments
+        args$y <- NULL
+        args$type <- type
         args$footer.wrap <- args$footer.wordwrap
         args$footer.wrap.nchar <- args$footer.wordwrap.nchar
         args$label.wrap <- args$x.tick.label.wordwrap
         args$label.wrap.nchar <- args$wordwrap.nchar
+        args$scatter.colors <- scatter.colors.var
+        args$scatter.sizes <- scatter.sizes.var
+        args$scatter.labels <- scatter.labels.var
+        if (!is.null(args$scatter.y.var))
+            args$y <- scatter.y.var
+        if (!is.null(args$scatter.x.var))
+            args$x <- scatter.x.var
+        args$logos <- logos
  
-        print(args)
+        #print(args)
         return(do.call(ff, args))
         cat("Using old chart")
     }

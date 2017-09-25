@@ -195,7 +195,7 @@ RadarChart <- function(x,
 
 {
     # Check data
-    chart.matrix <- as.matrix(x)
+    chart.matrix <- checkMatrixNames(x)
     if (any(!is.finite(chart.matrix)))
         stop("Missing charts cannot contain missing or non-finite values.\n")
     if (any(chart.matrix < 0))

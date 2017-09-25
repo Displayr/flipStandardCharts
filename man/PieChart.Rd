@@ -17,7 +17,7 @@ PieChart(x, type = "Pie", colors = NULL, pie.subslice.colors = NULL,
   pie.groups.font.color = 10, pie.groups.order = "initial",
   pie.inner.radius = 70, pie.border.color = rgb(255, 255, 255, maxColorValue
   = 255), pie.show.percentages = TRUE, global.font.family = "Arial",
-  global.font.color = rgb(44, 44, 44, maxColorValue = 255))
+  global.font.color = rgb(44, 44, 44, maxColorValue = 255), ...)
 }
 \arguments{
 \item{x}{Input data in the form of a vector, matrix or dataframe. If a dataframe is given, the first column is expected to contain the label names, the second column contains numeric values and the third (optional) column are the group labels.}

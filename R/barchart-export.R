@@ -345,17 +345,17 @@ BarChart <- function(x,
                     ...)
 {
     # Data checking
-    chart.matrix <- as.matrix(x)
+    chart.matrix <- checkMatrixNames(x)
     is.stacked <- type != "Bar"
     is.hundred.percent.stacked <- type == "100% Stacked Bar"
-    if (is.stacked && ncol(chart.matrix) == 0)
+    if (is.stacked && ncol(chart.matrix) < 2)
         stop(paste(type, "requires more than one series. Use Bar charts instead for this data."))
     if (is.stacked && (any(is.na(chart.matrix)) || any(chart.matrix < 0)))
         stop("Stacked charts cannot be produced with missing or negative values.")
     if (is.hundred.percent.stacked && any(rowSums(chart.matrix) == 0))
         stop("100% stacked charts cannot be produced with rows that do not contain positive values.")
     if (any(is.na(as.matrix(chart.matrix))))
-        warnings("Missing values have been set to zero.")
+        warning("Missing values have been set to zero.")
 
     # Some minimal data cleaning
     # Assume formatting and Qtable/attribute handling already done
@@ -472,7 +472,7 @@ BarChart <- function(x,
             FormatAsReal(y, decimals=x.hovertext.decimals), x.tick.suffix)
 
         marker <- list(size = series.marker.size, color = toRGB(colors[i], alpha = opacity),
-                    line = list(color = toRGB(series.marker.border.colors[i], 
+                    line = list(color = toRGB(colors[i], 
                       alpha = series.marker.border.opacity),
                       width = series.marker.border.width))
                 

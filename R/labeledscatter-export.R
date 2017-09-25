@@ -194,7 +194,8 @@ LabeledScatterChart <- function(x = NULL,
                                 x.tick.font.family = global.font.family,
                                 x.tick.font.size = 10,
                                 series.marker.size = 6,
-                                swap.x.and.y = FALSE)
+                                swap.x.and.y = FALSE,
+                                ...)
 {
     logo.urls <- NULL
     if (!is.null(logos) && nchar(logos) != 0)
@@ -303,11 +304,11 @@ LabeledScatterChart <- function(x = NULL,
         y.title <- tmp
     }
     if (any(duplicated(cbind(x, y))))
-        warning("Some points are overlapping and may not be visible.")
+        warning("Chart contains overlapping points in the same position.")
 
     not.na <- is.finite(x) & is.finite(y)
     if (sum(not.na) != n)
-        warning("Some points omitted due to missing 'x' or 'y' values.")
+        warning("Data points with missing values have been omitted.")
 
     n <- length(x)
     x <- as.numeric(x)
@@ -367,7 +368,7 @@ LabeledScatterChart <- function(x = NULL,
     if (trend.lines)
         legend.show <- FALSE
     if (!is.null(logo.urls) && length(logo.urls) != n)
-        stop(sprintf("Number of URLs supplied in 'logos' is %.0f but must be equal to the number of rows in the table (%.0f)\n", length(logo.urls)/num.tables, n/num.tables)) 
+        stop(sprintf("Number of URLs supplied in logos is %.0f but must be equal to the number of rows in the table (%.0f)\n", length(logo.urls)/num.tables, n/num.tables)) 
     logo.size <- rep(logo.size, n)
     if (is.null(scatter.labels))
         scatter.labels <- rep("", n)

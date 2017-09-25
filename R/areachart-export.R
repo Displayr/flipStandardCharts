@@ -347,10 +347,10 @@ AreaChart <-   function(x,
                     ...)
 {
     # Data checking
-    chart.matrix <- as.matrix(x)
+    chart.matrix <- checkMatrixNames(x)
     is.stacked <- type != "Area"
     is.hundred.percent.stacked <- type == "100% Stacked Area"
-    if (is.stacked && ncol(chart.matrix) == 0)
+    if (is.stacked && ncol(chart.matrix) < 2)
         stop(paste(type, "requires more than one series. Use Area charts instead for this data."))
     if (is.stacked && (any(is.na(chart.matrix)) || any(chart.matrix < 0)))
         stop("Stacked charts cannot be produced with missing or negative values.")
@@ -489,7 +489,7 @@ AreaChart <-   function(x,
             FormatAsReal(y, decimals=y.hovertext.decimals), y.tick.suffix)
 
         lines <- list(width = series.line.width,
-                      color = toRGB(series.line.colors[i], alpha = series.line.opacity))        
+                      color = toRGB(colors[i], alpha = series.line.opacity))        
 
         marker <- NULL
         if (!is.null(series.mode) && regexpr('marker', series.mode) >= 1)

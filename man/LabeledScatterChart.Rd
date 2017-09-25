@@ -40,7 +40,7 @@ LabeledScatterChart(x = NULL, y = NULL, scatter.labels = NULL,
   x.tick.prefix = "", x.tick.decimals = NULL,
   x.tick.font.color = global.font.color,
   x.tick.font.family = global.font.family, x.tick.font.size = 10,
-  series.marker.size = 6, swap.x.and.y = FALSE)
+  series.marker.size = 6, swap.x.and.y = FALSE, ...)
 }
 \arguments{
 \item{x}{A numeric vector for the x-axis coordinates (which may be named); or a matrix or dataframe which may have 1-4 columns containing: 1:x, 2:y, 3:sizes, 4:colors; or a list of matrices, where each matrix is in the format described and share the same row and column names}

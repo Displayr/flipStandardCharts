@@ -1,3 +1,15 @@
+checkMatrixNames <- function(x)
+{
+    x <- as.matrix(x)
+    if (is.null(rownames(x)))
+        rownames(x) <- 1:nrow(x)
+    if (is.null(colnames(x)))
+        colnames(x) <- sprintf("Series %d", 1:ncol(x))
+    if (any(duplicated(rownames(x))))
+        stop("Row names of the input table must be unique.")
+    return(x)
+}
+
 checkTableList <- function(y, trend.lines)
 {
     num.tables <- length(y)
@@ -69,7 +81,7 @@ getRange <- function(x, positions, axis, axisFormat)
 fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
 {
     tmp.is.factor <- axis.type != "linear" #&& axis.type != "date"
-    x0 <- if (!tmp.is.factor) x else 1:length(x)
+    x0 <- if (!tmp.is.factor) as.numeric(x) else 1:length(x)
     tmp.dat <- data.frame(x=x0, y=y)
     if (ignore.last)
         tmp.dat <- tmp.dat[-which.max(tmp.dat$x),]
@@ -259,6 +271,8 @@ setMarginsForAxis <- function(margins, axisLabels, axis)
     {
         # tickangle is changed in function setAxis
         lab.nchar <- max(c(0,nchar(unlist(strsplit(split="<br>", as.character(labels))))))
+        if (is.null(axis$tickangle))
+            axis$tickangle <- 0
         if (axis$tickangle != 0)
             margins$b <- margins$b + new.margin - 40 + title.pad
         else

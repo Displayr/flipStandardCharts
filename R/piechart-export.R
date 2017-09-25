@@ -79,7 +79,8 @@ PieChart <- function(x,
                      pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
                      pie.show.percentages = TRUE,
                      global.font.family = "Arial",
-                     global.font.color = rgb(44, 44, 44, maxColorValue = 255))
+                     global.font.color = rgb(44, 44, 44, maxColorValue = 255),
+                     ...)
 {
     groups <- NULL
     
@@ -96,10 +97,7 @@ PieChart <- function(x,
     }
     else if (is.matrix(x) && is.numeric(x))
     {
-        if (is.null(rownames(x)))
-            rownames(x) <- 1:nrow(x)
-        if (is.null(colnames(x)))
-            colnames(x) <- sprintf("Group %d", 1:ncol(x))
+        x <- checkMatrixNames(x)
         x.labels <- rep(rownames(x), ncol(x))
         y.values <- as.numeric(x)
         if (ncol(x) > 1)

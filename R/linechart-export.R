@@ -349,7 +349,7 @@ LineChart <-   function(x,
     # Some minimal data cleaning
     # Assume formatting and Qtable/attribute handling already done
     # Find gaps which are NOT at the ends of the series
-    chart.matrix <- as.matrix(x)
+    chart.matrix <- checkMatrixNames(x)
     if (is.null(series.line.width))
         series.line.width <- 3
     matrix.labels <- names(dimnames(chart.matrix))
@@ -440,7 +440,7 @@ LineChart <-   function(x,
             FormatAsReal(y, decimals=y.hovertext.decimals), y.tick.suffix)
 
         lines <- list(width = series.line.width,
-                      color = toRGB(series.line.colors[i], alpha = series.line.opacity))
+                      color = toRGB(colors[i], alpha = series.line.opacity))
 
         marker <- NULL
         if (!is.null(series.mode) && regexpr('marker', series.mode) >= 1)

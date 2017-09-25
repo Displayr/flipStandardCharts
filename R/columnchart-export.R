@@ -348,6 +348,8 @@ ColumnChart <-   function(x, y = NULL,
                     us.date.format = NULL,
                     ...)
 {
+    print(sys.call())
+
     # Combine all input data into a single matrix
     if (!is.null(y))
     {
@@ -357,25 +359,23 @@ ColumnChart <-   function(x, y = NULL,
         rownames(y) <- x
         x <- y
     }
-    x.labels.full <- rownames(x)
 
     # Data checking
-    chart.matrix <- as.matrix(x)
-    if (is.null(rownames(chart.matrix)))
-        rownames(chart.matrix) <- 1:nrow(chart.matrix)
+    chart.matrix <- checkMatrixNames(x)
     if (!is.numeric(chart.matrix))
         stop("Input data should be numeric.")
+    x.labels.full <- rownames(chart.matrix)
 
     is.stacked <- type != "Column"
     is.hundred.percent.stacked <- type == "100% Stacked Column"
-    if (is.stacked && ncol(chart.matrix) == 0)
+    if (is.stacked && ncol(chart.matrix) < 2)
         stop(paste(type, "requires more than one series. Use Column charts instead for this data."))
     if (is.stacked && (any(is.na(chart.matrix)) || any(chart.matrix < 0)))
         stop("Stacked charts cannot be produced with missing or negative values.")
     if (is.hundred.percent.stacked && any(rowSums(chart.matrix) == 0))
         stop("100% stacked charts cannot be produced with rows that do not contain positive values.")
-    if (any(is.na(as.matrix(chart.matrix))))
-        warnings("Missing values have been set to zero.")
+    if (any(!is.finite(chart.matrix)))
+        warning("Missing values have been set to zero.")
 
     # Some minimal data cleaning
     # Assume formatting and Qtable/attribute handling already done
@@ -485,7 +485,7 @@ ColumnChart <-   function(x, y = NULL,
             FormatAsReal(y, decimals=y.hovertext.decimals), y.tick.suffix)
 
         marker <- list(size = series.marker.size, color = toRGB(colors[i], alpha = opacity),
-                    line = list(color = toRGB(series.marker.border.colors[i], 
+                    line = list(color = toRGB(colors[i], 
                       alpha = series.marker.border.opacity),
                       width = series.marker.border.width))
                 
