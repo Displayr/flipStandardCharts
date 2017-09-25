@@ -526,9 +526,9 @@ Chart <-   function(y = NULL,
             args$scatter.colors <- scatter.colors.var
             args$scatter.sizes <- scatter.sizes.var
             args$scatter.labels <- scatter.labels.var
-            if (!is.null(args$scatter.y.var) && scatter.var.from.matrix)
+            if (!is.null(scatter.y.var) && !scatter.var.from.matrix)
                 args$y <- scatter.y.var
-            if (!is.null(args$scatter.x.var) && scatter.var.from.matrix)
+            if (!is.null(scatter.x.var) && !scatter.var.from.matrix)
                 x <- scatter.x.var
             args$logos <- logos
 
