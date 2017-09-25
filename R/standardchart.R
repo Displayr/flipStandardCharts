@@ -500,8 +500,8 @@ Chart <-   function(y = NULL,
 {
     if (1)
     {
-    patt.list <- c("Column", "Bar", "Radar", "Area", "Line", "Pie", "Labeled", "Scatterplot")
-    func.list <- c("ColumnChart", "BarChart", "RadarChart", "AreaChart", "LineChart", "PieChart", "LabeledScatterChart", "ScatterChart")
+    patt.list <- c("Column", "Bar", "Radar", "Area", "Line", "Pie", "Labeled", "Scatterplot", "Donut")
+    func.list <- c("ColumnChart", "BarChart", "RadarChart", "AreaChart", "LineChart", "PieChart", "LabeledScatterChart", "ScatterChart", "PieChart")
     f.type <- gsub(" ", "", type, fixed=T)
     for (ffi in 1:length(func.list))
     {
@@ -532,12 +532,37 @@ Chart <-   function(y = NULL,
                 x <- scatter.x.var
             args$logos <- logos
 
-        } else
+        } else if (type == "Donut")
         {
             x <- y
+            num.colors <- length(x)
+
+        } else
+        {
+            x <- if (transpose) GetTidyTwoDimensionalArray(t(as.matrix(y)), rows.to.ignore, cols.to.ignore)
+                 else GetTidyTwoDimensionalArray(as.matrix(y), rows.to.ignore, cols.to.ignore)
             num.colors <- ncol(as.matrix(x))
             if (ff == "PieChart" && num.colors == 1)
                 num.colors <- nrow(as.matrix(x))
+            if (grepl("100%", type, fixed=T))
+                args$data.label.prefix <- NULL
+
+            if (fit.type != "None")
+            {
+                if (!is.null(fit.line.colors) && fit.line.colors == "Group colors")
+                    args$fit.line.colors <- NULL
+                if (!is.null(fit.line.colors))
+                {
+                    args$fit.line.colors <- ChartColors(ncol(x),
+                        given.colors = fit.line.colors,
+                        custom.color = fit.line.colors.custom.color,
+                        custom.gradient.start = fit.line.colors.custom.gradient.start,
+                        custom.gradient.end = fit.line.colors.custom.gradient.end,
+                        custom.palette = fit.line.colors.custom.palette,
+                        reverse = fit.line.colors.reverse)
+                } else
+                    args$fit.line.colors <- NULL
+            }
         }
         cat("num.colors:", num.colors, "\n")
         if (is.null(colors))
@@ -551,6 +576,22 @@ Chart <-   function(y = NULL,
                         custom.palette = colors.custom.palette,
                         reverse = colors.reverse)
         cat("colors:", tmp.colors, "\n")
+
+        if (type %in% c("Pie", "Donut"))
+        {
+            if (!is.null(pie.subslice.colors) && pie.subslice.colors == "Group colors")
+                args$pie.subslice.colors <- NULL
+            if (!is.null(args$pie.subslice.colors))
+            {
+                args$pie.subslice.colors <- ChartColors(nrow(x),
+                        given.colors = pie.subslice.colors,
+                        custom.color = pie.subslice.colors.custom.color,
+                        custom.gradient.start = pie.subslice.colors.custom.gradient.start,
+                        custom.gradient.end = pie.subslice.colors.custom.gradient.end,
+                        custom.palette = pie.subslice.colors.custom.palette,
+                        reverse = pie.subslice.colors.reverse)
+            }
+        }
 
         # fix up Std R form problem
         args$colors <- tmp.colors

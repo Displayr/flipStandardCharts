@@ -7,13 +7,11 @@
 PieChart(x, type = "Pie", colors = NULL, pie.subslice.colors = NULL,
   pie.subslice.colors.repeat = TRUE, title = "",
   title.font.family = global.font.family, title.font.size = 16,
-  title.font.color = global.font.color,
-  pie.values.font.family = global.font.family, pie.values.font.size = 10,
-  pie.values.prefix = "", pie.values.suffix = "",
-  pie.data.threshold = NULL, pie.values.order = "initial",
-  pie.values.decimals = 2, pie.labels.font.family = global.font.family,
-  pie.labels.font.size = 10, pie.labels.font.color = global.font.color,
-  pie.groups.font.family = global.font.family, pie.groups.font.size = 10,
+  title.font.color = global.font.color, pie.data.threshold = NULL,
+  pie.values.order = "initial", data.label.prefix = "",
+  data.label.suffix = "", data.label.decimals = 2,
+  data.label.font.size = 10, data.label.font.color = global.font.color,
+  data.label.font.family = global.font.family, pie.groups.font.size = 10,
   pie.groups.font.color = 10, pie.groups.order = "initial",
   pie.inner.radius = 70, pie.border.color = rgb(255, 255, 255, maxColorValue
   = 255), pie.show.percentages = TRUE, global.font.family = "Arial",
@@ -44,30 +42,20 @@ by group, or be different throughout; defaults to TRUE.}
 \item{title.font.color}{Title font color as a named color in character
 format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{pie.values.font.family}{Character; value labels font family}
-
-\item{pie.values.font.size}{value labels font size}
-
-\item{pie.values.prefix}{Character; prefix for data values.}
-
-\item{pie.values.suffix}{Character; suffix for data values.}
-
 \item{pie.data.threshold}{Labels with values smaller than the theshold are not shown.}
 
 \item{pie.values.order}{Order of the labels shown. Can be one of 'descending', 'ascending' or 'initial'.}
 
-\item{pie.values.decimals}{Number of decimal places to show in
+\item{data.label.prefix}{Character; prefix for data values.}
+
+\item{data.label.suffix}{Character; suffix for data values.}
+
+\item{data.label.decimals}{Number of decimal places to show in
 data labels.}
 
-\item{pie.labels.font.family}{Character; font family for data label.}
+\item{data.label.font.size}{Font size for data label.}
 
-\item{pie.labels.font.size}{Font size for data label.}
-
-\item{pie.labels.font.color}{value labels font color as a named color in
-character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
-
-\item{pie.groups.font.family}{Character; font family for group labels.}
+\item{data.label.font.family}{Character; font family for data label.}
 
 \item{pie.groups.font.size}{Font size for group labels.}
 
@@ -90,6 +78,8 @@ font attribute for the chart unless specified individually.}
 (e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{...}{Extra arguments that are ignored.}
+
+\item{pie.groups.font.family}{Character; font family for group labels.}
 }
 \description{
 Plot pie or donut chart

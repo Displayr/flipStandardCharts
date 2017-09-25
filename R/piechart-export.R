@@ -17,14 +17,9 @@
 #' @param title.font.color Title font color as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param title.font.size Title font size; default = 10.
-#' @param pie.values.font.family Character; value labels font family
-#' @param pie.values.font.size value labels font size
-#' @param pie.labels.font.color value labels font color as a named color in
-#' character format (e.g. "black") or an rgb value (e.g.
-#' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param pie.labels.font.family Character; font family for data label.
-#' @param pie.labels.font.size Font size for data label.
-#' @param pie.values.decimals Number of decimal places to show in
+#' @param data.label.font.family Character; font family for data label.
+#' @param data.label.font.size Font size for data label.
+#' @param data.label.decimals Number of decimal places to show in
 #' data labels.
 #' @param pie.values.order Order of the labels shown. Can be one of 'descending', 'ascending' or 'initial'.
 #' @param pie.groups.order Order of the groups shown. Can be one of 'descending', 'ascending' or 'initial'.
@@ -32,8 +27,8 @@
 #' @param pie.groups.font.size Font size for group labels.
 #' @param pie.groups.font.color Font color as a named color
 #' @param pie.data.threshold Labels with values smaller than the theshold are not shown.
-#' @param pie.values.prefix Character; prefix for data values.
-#' @param pie.values.suffix Character; suffix for data values.
+#' @param data.label.prefix Character; prefix for data values.
+#' @param data.label.suffix Character; suffix for data values.
 #' @param pie.border.color A single color for space around pie and between segments.
 #' @param pie.inner.radius The size of the inner radius of pie and
 #' donut charts as a proportion out of 100. defaults to 70.
@@ -61,17 +56,14 @@ PieChart <- function(x,
                      title.font.family = global.font.family,
                      title.font.size = 16,
                      title.font.color = global.font.color,
-                     pie.values.font.family = global.font.family,
-                     pie.values.font.size = 10,
-                     pie.values.prefix = "",
-                     pie.values.suffix = "",
                      pie.data.threshold = NULL,
                      pie.values.order = "initial",
-                     pie.values.decimals = 2,
-                     pie.labels.font.family = global.font.family,
-                     pie.labels.font.size = 10,
-                     pie.labels.font.color = global.font.color,
-                     pie.groups.font.family = global.font.family,
+                     data.label.prefix = "",
+                     data.label.suffix = "",
+                     data.label.decimals = 2,
+                     data.label.font.size = 10,
+                     data.label.font.color = global.font.color,
+                     data.label.font.family = global.font.family,
                      pie.groups.font.size = 10,
                      pie.groups.font.color = 10,
                      pie.groups.order = "initial",
@@ -82,7 +74,6 @@ PieChart <- function(x,
                      global.font.color = rgb(44, 44, 44, maxColorValue = 255),
                      ...)
 {
-    print(sys.call())
     groups <- NULL
     
     # Convert tables to matrices and retain names
@@ -126,7 +117,7 @@ PieChart <- function(x,
         pie.data.threshold <- 0.003
 
     # Check input data and parameters
-    if (is.null(groups) && type == "Donut")
+    if (length(unique(groups)) > 1 && type == "Donut")
         stop("The table supplied is two-dimensional and cannot be displayed as a donut chart.  Please change the chart type to 'Pie' and update.")
 
     if (is.null(groups))
@@ -172,23 +163,23 @@ PieChart <- function(x,
     values.display.as <- if (pie.show.percentages) "percentage" else "original"
     if (pie.show.percentages)
     {
-        pie.values.prefix <- ""
-        pie.values.suffix <- "%"
+        data.label.prefix <- ""
+        data.label.suffix <- "%"
     }
 
     Donut(values = y.values,
           labels = x.labels,
           values.color = pie.values.colors,
           values.order = pie.values.order,
-          values.font.family = pie.values.font.family,
-          values.font.size = pie.values.font.size,
-          values.decimal.places = pie.values.decimals,
+          values.font.family = data.label.font.family,
+          values.font.size = data.label.font.size,
+          values.decimal.places = data.label.decimals,
           values.display.as = values.display.as,
           values.display.thres = pie.data.threshold * 100,
-          labels.font.family = pie.labels.font.family,
-          labels.font.color = pie.labels.font.color,
-          labels.font.size = pie.labels.font.size,
-          labels.min.font.size = pie.labels.font.size,
+          labels.font.family = data.label.font.family,
+          labels.font.color = data.label.font.color,
+          labels.font.size = data.label.font.size,
+          labels.min.font.size = data.label.font.size,
           groups = groups,
           groups.color = pie.groups.colors,
           groups.order = pie.groups.order,
@@ -200,8 +191,8 @@ PieChart <- function(x,
           title.font.family = title.font.family,
           title.font.size = title.font.size,
           title.font.color = title.font.color,
-          prefix = pie.values.prefix,
-          suffix = pie.values.suffix,
+          prefix = data.label.prefix,
+          suffix = data.label.suffix,
           border.color = pie.border.color,
           inner.radius = inner.radius)
 }
