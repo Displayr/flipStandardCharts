@@ -496,7 +496,7 @@ BarChart <- function(x,
             p <- add_trace(p, x = tmp.fit$y, y = tmp.fit$x, type = 'scatter', mode = "lines",
                       name = tmp.fname, legendgroup = tmp.group, showlegend = F,
                       line = list(dash = fit.line.type, width = fit.line.width,
-                      color = fit.line.colors[i]))
+                      color = fit.line.colors[i], shape = 'spline'))
         }
 
         if (data.label.show && !is.stacked)

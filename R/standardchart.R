@@ -526,9 +526,9 @@ Chart <-   function(y = NULL,
             args$scatter.colors <- scatter.colors.var
             args$scatter.sizes <- scatter.sizes.var
             args$scatter.labels <- scatter.labels.var
-            if (!is.null(args$scatter.y.var))
+            if (!is.null(args$scatter.y.var) && scatter.var.matrix)
                 args$y <- scatter.y.var
-            if (!is.null(args$scatter.x.var))
+            if (!is.null(args$scatter.x.var) && scatter.var.matrix)
                 x <- scatter.x.var
             args$logos <- logos
 
@@ -539,6 +539,11 @@ Chart <-   function(y = NULL,
 
         } else
         {
+            if (!is.null(attr(y, "questions")))
+                args$x.title <- attr(y, "questions")[1 + transpose]
+            if (!is.null(attr(y, "statistic")))
+                args$y.title <- attr(y, "statistic")
+
             x <- if (transpose) GetTidyTwoDimensionalArray(t(as.matrix(y)), rows.to.ignore, cols.to.ignore)
                  else GetTidyTwoDimensionalArray(as.matrix(y), rows.to.ignore, cols.to.ignore)
             num.colors <- ncol(as.matrix(x))
@@ -599,7 +604,8 @@ Chart <-   function(y = NULL,
 
         # Match up renamed arguments
         args$x <- x
-        args$y <- NULL
+        dput(x)
+        #args$y <- NULL
         args$type <- type
         args$footer.wrap <- args$footer.wordwrap
         args$footer.wrap.nchar <- args$footer.wordwrap.nchar
