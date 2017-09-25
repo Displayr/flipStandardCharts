@@ -517,7 +517,7 @@ Chart <-   function(y = NULL,
         # Data input
         if (type %in% c("Scatterplot", "Labeled Scatterplot"))
         {
-            args$x <- args$y
+            args$x <- y
             if (!is.null(scatter.colors.var))
                 num.colors <- length(unique(scatter.colors.var))
             else
@@ -531,6 +531,8 @@ Chart <-   function(y = NULL,
                 num.colors <- nrow(as.matrix(x))
             args$x <- x
         }
+        cat("args$x: ")
+        dput(args$x)
         cat("num.colors:", num.colors, "\n")
         if (is.null(colors))
             colors <- "Default colors"
