@@ -498,9 +498,9 @@ Chart <-   function(y = NULL,
                     logos = NULL,
                     logo.size = 0.5)
 {
-    if (1)
+    if (!grepl("Scatter", type))
     {
-    patt.list <- c("Column", "Bar", "Radar", "Area", "Line", "Pie", "Labeled", "Scatterplot", "Donut")
+    patt.list <- c("Column", "Bar", "Radar", "Area", "Line", "Pie", "Labeled", "Scatter", "Donut")
     func.list <- c("ColumnChart", "BarChart", "RadarChart", "AreaChart", "LineChart", "PieChart", "LabeledScatterChart", "ScatterChart", "PieChart")
     f.type <- gsub(" ", "", type, fixed=T)
     for (ffi in 1:length(func.list))
@@ -613,6 +613,7 @@ Chart <-   function(y = NULL,
         args$label.wrap.nchar <- args$wordwrap.nchar
  
         #print(args)
+        print(args$x)
         return(do.call(ff, args))
         cat("Using old chart")
     }
