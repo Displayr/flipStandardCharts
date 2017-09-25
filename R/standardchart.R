@@ -517,11 +517,20 @@ Chart <-   function(y = NULL,
         # Data input
         if (type %in% c("Scatterplot", "Labeled Scatterplot"))
         {
-            args$x <- y
+            x <- y
             if (!is.null(scatter.colors.var))
                 num.colors <- length(unique(scatter.colors.var))
             else
                 num.colors <- 1
+
+            args$scatter.colors <- scatter.colors.var
+            args$scatter.sizes <- scatter.sizes.var
+            args$scatter.labels <- scatter.labels.var
+            if (!is.null(args$scatter.y.var))
+                args$y <- scatter.y.var
+            if (!is.null(args$scatter.x.var))
+                x <- scatter.x.var
+            args$logos <- logos
 
         } else
         {
@@ -529,10 +538,7 @@ Chart <-   function(y = NULL,
             num.colors <- ncol(as.matrix(x))
             if (ff == "PieChart" && num.colors == 1)
                 num.colors <- nrow(as.matrix(x))
-            args$x <- x
         }
-        cat("args$x: ")
-        dput(args$x)
         cat("num.colors:", num.colors, "\n")
         if (is.null(colors))
             colors <- "Default colors"
@@ -551,20 +557,13 @@ Chart <-   function(y = NULL,
         args$subtitle.font.size <- 12
 
         # Match up renamed arguments
+        args$x <- x
         args$y <- NULL
         args$type <- type
         args$footer.wrap <- args$footer.wordwrap
         args$footer.wrap.nchar <- args$footer.wordwrap.nchar
         args$label.wrap <- args$x.tick.label.wordwrap
         args$label.wrap.nchar <- args$wordwrap.nchar
-        args$scatter.colors <- scatter.colors.var
-        args$scatter.sizes <- scatter.sizes.var
-        args$scatter.labels <- scatter.labels.var
-        if (!is.null(args$scatter.y.var))
-            args$y <- scatter.y.var
-        if (!is.null(args$scatter.x.var))
-            args$x <- scatter.x.var
-        args$logos <- logos
  
         #print(args)
         return(do.call(ff, args))
