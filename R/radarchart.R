@@ -65,9 +65,9 @@ radarChart <- function(chart.matrix,
 
 {
     if (any(!is.finite(chart.matrix)))
-        stop("Missing charts cannot contain missing or non-finite values.\n")
+        stop("Missing charts cannot contain missing or non-finite values.")
     if (any(chart.matrix < 0))
-        stop("Radar charts cannot have negative values.\n")
+        stop("Radar charts cannot have negative values.")
 
     n <- nrow(chart.matrix)
     m <- ncol(chart.matrix)
