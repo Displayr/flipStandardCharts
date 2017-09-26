@@ -52,7 +52,8 @@ test_that("HeatMap Fonts",
 
 
 v1 <- seq(1:10)
-v2 <- head(letters, 20)
+v2 <- matrix(head(letters, 20), ncol = 1)
+colnames(v2) <- c("COL")
 t1 <- matrix(seq(100), nrow = 20, ncol = 10)
 rownames(t1) <- rownames(three.cols)[1:20]
 colnames(t1) <- LETTERS[1:10]
@@ -64,13 +65,13 @@ t3 <- matrix(seq(901:990), nrow = 45, ncol = 2)
 test_that("HeatMap Extra Columns",
           {
           expect_error(print(HeatMap(table = three.cols, left.columns = list(t1))), NA)
-          expect_warning(print(HeatMap(table = three.cols, left.columns = list(v1))), "There are no matching row.")
+          expect_error(print(HeatMap(table = three.cols, left.columns = list(v1))), "Left columns must be matrices and not vectors.")
           expect_warning(print(HeatMap(table = three.cols, left.columns = list(v2))), "There are no matching row.")
-          expect_warning(print(HeatMap(table = three.cols, left.columns = list(v1, t1))), "There are no matching row.")
+          expect_warning(print(HeatMap(table = three.cols, left.columns = list(v2, t1))), "There are no matching row.")
           expect_warning(print(HeatMap(table = three.cols, left.columns = list(t2))), "There are no matching row.")
-          expect_warning(print(HeatMap(table = three.cols, left.columns = list(v1, v2, t1, t2, t3))), "There are no matching row.")
-          expect_warning(print(HeatMap(table = three.cols, right.columns = list(v1, t3))), "There are no matching row.")
-          expect_warning(print(HeatMap(table = three.cols, right.columns = list(v1, v2))), "There are no matching row.")
-          expect_warning(print(HeatMap(table = three.cols, left.columns = list(t2, t3), right.columns = list(v1, t1))), "There are no matching row.")
+          expect_warning(print(HeatMap(table = three.cols, left.columns = list(v2, t1, t2, t3))), "There are no matching row.")
+          expect_warning(print(HeatMap(table = three.cols, right.columns = list(v2, t3))), "There are no matching row.")
+          expect_warning(print(HeatMap(table = three.cols, left.columns = list(t2, t3), right.columns = list(v2, t1))), "There are no matching row.")
           expect_warning(print(HeatMap(table = three.cols, left.columns = list(v2, t1, t3), right.columns = list(v2, t1, t3))), "There are no matching row.")
 })
+

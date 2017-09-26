@@ -37,7 +37,7 @@
 #' @param footer.font.family Character; footer font family
 #' @param footer.font.size footer font size
 #' @param footer.wordwrap Logical; whether the footer text should be wrapped.
-#' @param footer.wordwrap.nchar Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} i \code{TRUE}.
+#' @param footer.wordwrap.nchar Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.
 #' @param colors Character; a vector containing one or more named
 #' colors from grDevices OR one or more specified hex value colors OR a single
 #' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
@@ -308,7 +308,7 @@
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom flipTransformations Factor AsNumeric TextAsVector
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
-#' @importFrom stats loess lm predict
+#' @importFrom stats loess loess.control lm predict
 #' @export
 Chart <-   function(y = NULL,
                     type = "Column",
@@ -498,6 +498,127 @@ Chart <-   function(y = NULL,
                     logos = NULL,
                     logo.size = 0.5)
 {
+    if (0)
+    {
+    patt.list <- c("Column", "Bar", "Radar", "Area", "Line", "Pie", "Labeled", "Scatter", "Donut")
+    func.list <- c("ColumnChart", "BarChart", "RadarChart", "AreaChart", "LineChart", "PieChart", "LabeledScatterChart", "ScatterChart", "PieChart")
+    f.type <- gsub(" ", "", type, fixed=T)
+    for (ffi in 1:length(func.list))
+    {
+        if (!grepl(patt.list[ffi], f.type))
+            next
+        ff <- func.list[ffi]
+        cat("Calling:", ff, "\n")
+        args <- as.list(formals(ff))
+        user.args <- as.list(match.call())
+        for (nn in names(user.args)[-1])
+            args[[nn]] <- user.args[[nn]]
+
+        # Data input
+        if (type %in% c("Scatterplot", "Labeled Scatterplot"))
+        {
+            x <- y
+            if (!is.null(scatter.colors.var))
+                num.colors <- length(unique(scatter.colors.var))
+            else
+                num.colors <- 1
+
+            args$scatter.colors <- scatter.colors.var
+            args$scatter.sizes <- scatter.sizes.var
+            args$scatter.labels <- scatter.labels.var
+            if (!is.null(scatter.y.var) && !scatter.var.from.matrix)
+                args$y <- scatter.y.var
+            if (!is.null(scatter.x.var) && !scatter.var.from.matrix)
+                x <- scatter.x.var
+            args$logos <- logos
+
+        } else if (type == "Donut")
+        {
+            x <- y
+            num.colors <- length(x)
+
+        } else
+        {
+            if (!is.null(attr(y, "questions")))
+                args$x.title <- attr(y, "questions")[1 + transpose]
+            if (!is.null(attr(y, "statistic")))
+                args$y.title <- attr(y, "statistic")
+
+            x <- if (transpose) GetTidyTwoDimensionalArray(t(as.matrix(y)), rows.to.ignore, cols.to.ignore)
+                 else GetTidyTwoDimensionalArray(as.matrix(y), rows.to.ignore, cols.to.ignore)
+            num.colors <- ncol(as.matrix(x))
+            if (ff == "PieChart" && num.colors == 1)
+                num.colors <- nrow(as.matrix(x))
+            if (grepl("100%", type, fixed=T))
+                args$data.label.prefix <- NULL
+
+            if (fit.type != "None")
+            {
+                if (!is.null(fit.line.colors) && fit.line.colors == "Group colors")
+                    args$fit.line.colors <- NULL
+                if (!is.null(fit.line.colors))
+                {
+                    args$fit.line.colors <- ChartColors(ncol(x),
+                        given.colors = fit.line.colors,
+                        custom.color = fit.line.colors.custom.color,
+                        custom.gradient.start = fit.line.colors.custom.gradient.start,
+                        custom.gradient.end = fit.line.colors.custom.gradient.end,
+                        custom.palette = fit.line.colors.custom.palette,
+                        reverse = fit.line.colors.reverse)
+                } else
+                    args$fit.line.colors <- NULL
+            }
+        }
+        cat("num.colors:", num.colors, "\n")
+        if (is.null(colors))
+            colors <- "Default colors"
+        cat("given.colors:", colors, "\n")
+        tmp.colors <- ChartColors(num.colors,
+                        given.colors = colors,
+                        custom.color = colors.custom.color,
+                        custom.gradient.start = colors.custom.gradient.start,
+                        custom.gradient.end = colors.custom.gradient.end,
+                        custom.palette = colors.custom.palette,
+                        reverse = colors.reverse)
+        cat("colors:", tmp.colors, "\n")
+
+        if (type %in% c("Pie", "Donut"))
+        {
+            if (!is.null(pie.subslice.colors) && pie.subslice.colors == "Group colors")
+                args$pie.subslice.colors <- NULL
+            if (!is.null(args$pie.subslice.colors))
+            {
+                args$pie.subslice.colors <- ChartColors(nrow(x),
+                        given.colors = pie.subslice.colors,
+                        custom.color = pie.subslice.colors.custom.color,
+                        custom.gradient.start = pie.subslice.colors.custom.gradient.start,
+                        custom.gradient.end = pie.subslice.colors.custom.gradient.end,
+                        custom.palette = pie.subslice.colors.custom.palette,
+                        reverse = pie.subslice.colors.reverse)
+            }
+        }
+
+        # fix up Std R form problem
+        args$colors <- tmp.colors
+        args$subtitle.font.size <- 12
+
+        # Match up renamed arguments
+        args$x <- x
+        dput(x)
+        #args$y <- NULL
+        args$type <- type
+        args$footer.wrap <- args$footer.wordwrap
+        args$footer.wrap.nchar <- args$footer.wordwrap.nchar
+        args$label.wrap <- args$x.tick.label.wordwrap
+        args$label.wrap.nchar <- args$wordwrap.nchar
+
+        #print(args)
+        print(args$x)
+        return(do.call(ff, args))
+        cat("Using old chart")
+    }
+    }
+
     if (!is.null(weights))
         warning("Weights are currently not used.")
     if (length(subset) > 1 && (scatter.var.from.matrix ||
@@ -662,6 +783,10 @@ Chart <-   function(y = NULL,
             }
             y.names[i] <- attr(y[[i]], "name")[1]
         }
+        if (any(y.names == "") & !trend.lines)
+            warning(sprintf("Tables have been automatically assigned names '%s'. You can name tables using R code: 'attr(table.name, \"name\") <- \"Description\"'", paste(used.names, collapse="', '")))
+        if (any(duplicated(y.names)) & !trend.lines)
+            warning(sprintf("Tables have duplicate names: '%s'. Points from duplicated tables cannot be distinguised.", paste(y.names[duplicated(y.names)], collapse = "', '")))
 
         # Check tables match - order of rows will match first table
         y[[1]] <- if (transpose) GetTidyTwoDimensionalArray(t(y[[1]]), rows.to.ignore, cols.to.ignore)
@@ -690,6 +815,8 @@ Chart <-   function(y = NULL,
             }
         }
         y <- do.call(rbind, y)
+        if (!trend.lines)
+            rownames(y) <- sprintf("%s: %s", rep(y.names, each = length(r.names)), rownames(y))
 
         n1 <- nrow(y)/num.tables
         scatter.group.indices <- rep(seq(n1), num.tables)
@@ -864,8 +991,9 @@ Chart <-   function(y = NULL,
             warning("Chart contains overlapping points in the same position.")
         if (length(subset) > 1 && !scatter.var.from.matrix)
         {
-            chart.matrix <- chart.matrix[subset,]
-            scatter.group.indices <- scatter.group.indices[subset]
+            chart.matrix <- chart.matrix[subset,,drop=FALSE]
+            if (!is.null(scatter.group.indices) && scatter.group.indices != "")
+                scatter.group.indices <- scatter.group.indices[subset]
         }
 
         # this must be determined before the margin sizes are calculated
@@ -898,8 +1026,21 @@ Chart <-   function(y = NULL,
         if (!is.finite(y.abs.max) || y.abs.max == 0 || any(abs(range(scatterplot.data$y, na.rm=T))/y.abs.max < 1e-2))
             y.zero <- FALSE
 
-        if (nchar(footer) == 0)
+        # Sizes for scatterplots can be provided either using a matrix or as a separate variable
+        if (!is.null(scatterplot.data$z))
         {
+            if (!exists("scatter.sizes.name"))
+                scatter.sizes.name <- colnames(chart.matrix)[3]
+            if (length(scatter.sizes.name) == 0)
+                scatter.sizes.name <- ""
+            if (nchar(z.title) == 0)
+                z.title <- scatter.sizes.name
+        }
+
+        # But colors for scatterplots are always given as a separate variable
+        if (length(footer) == 0 || nchar(footer) == 0)
+        {
+            footer <- ""
             if (!is.null(scatter.labels.var))
                 footer <- sprintf("%sPoints labeled by '%s'; ", footer, scatter.labels.name)
             if ((!is.null(scatterplot.data$colors) || !is.null(scatterplot.data$color.values)) &&
@@ -911,13 +1052,7 @@ Chart <-   function(y = NULL,
                     colorbar.title <- scatter.colors.name
             }
             if (!is.null(scatterplot.data$z))
-            {
-                if (!exists("scatter.sizes.name"))
-                    scatter.sizes.name <- colnames(chart.matrix)[3]
                 footer <- sprintf("%sPoints sizes are proportional to absolute value of '%s'; ", footer, scatter.sizes.name)
-                if (nchar(z.title) == 0)
-                    z.title <- scatter.sizes.name
-            }
         }
 
     }
@@ -1127,9 +1262,9 @@ Chart <-   function(y = NULL,
         }
     }
     if (is.null(margin.left))
-        margin.left <- if (type == "Radar") 60 else 80
+        margin.left <- if (type == "Radar") 0 else 80
     if (is.null(margin.right))
-        margin.right <- 60
+        margin.right <- if (type == "Radar") 0 else 60
     if (is.null(margin.inner.pad))
         margin.inner.pad <- 0
 
@@ -1163,7 +1298,7 @@ Chart <-   function(y = NULL,
         series.line.width <- chart.type.outputs$line.width
         area.has.gap <- chart.type.outputs$has.gap
     }
-    
+
     ## Settings specific to Line Charts
     if (type == "Line")
     {
@@ -1385,7 +1520,8 @@ Chart <-   function(y = NULL,
                        plot.border.show = FALSE,
                        title = title,
                        trend.lines.show = trend.lines,
-                       labels.logo.scale = logo.size
+                       labels.logo.scale = logo.size,
+                       debug.mode = grepl("DEBUG_MODE_ON", title)
                        ))
     }
 
@@ -1405,8 +1541,7 @@ Chart <-   function(y = NULL,
                                                custom.gradient.start = colors.custom.gradient.start,
                                                custom.gradient.end = colors.custom.gradient.end,
                                                custom.palette = colors.custom.palette,
-                                               reverse = colors.reverse,
-                                               trim.light.colors = TRUE)
+                                               reverse = colors.reverse)
         if (fit.type != "None")
             fit.line.colors <- ChartColors(number.colors.needed = number.colors.needed,
                                                given.colors = fit.line.colors,
@@ -1414,8 +1549,7 @@ Chart <-   function(y = NULL,
                                                custom.gradient.start = fit.line.colors.custom.gradient.start,
                                                custom.gradient.end = fit.line.colors.custom.gradient.end,
                                                custom.palette = fit.line.colors.custom.palette,
-                                               reverse = fit.line.colors.reverse,
-                                               trim.light.colors = TRUE)
+                                               reverse = fit.line.colors.reverse)
 
         series.line.colors <- suppressWarnings(ChartColors(number.colors.needed = number.colors.needed,
                                                given.colors = series.line.colors,
@@ -1423,24 +1557,21 @@ Chart <-   function(y = NULL,
                                                custom.gradient.start = series.line.colors.custom.gradient.start,
                                                custom.gradient.end = series.line.colors.custom.gradient.end,
                                                custom.palette = series.line.colors.custom.palette,
-                                               reverse = series.line.colors.reverse,
-                                               trim.light.colors = TRUE))
+                                               reverse = series.line.colors.reverse))
         series.marker.colors <- suppressWarnings(ChartColors(number.colors.needed = number.colors.needed,
                                                given.colors = series.marker.colors,
                                                custom.color = series.marker.colors.custom.color,
                                                custom.gradient.start = series.marker.colors.custom.gradient.start,
                                                custom.gradient.end = series.marker.colors.custom.gradient.end,
                                                custom.palette = series.marker.colors.custom.palette,
-                                               reverse = series.marker.colors.reverse,
-                                               trim.light.colors = TRUE))
+                                               reverse = series.marker.colors.reverse))
         series.marker.border.colors <- suppressWarnings(ChartColors(number.colors.needed = number.colors.needed,
                                                given.colors = series.marker.border.colors,
                                                custom.color = series.marker.border.colors.custom.color,
                                                custom.gradient.start = series.marker.border.colors.custom.gradient.start,
                                                custom.gradient.end = series.marker.border.colors.custom.gradient.end,
                                                custom.palette = series.marker.border.colors.custom.palette,
-                                               reverse = series.marker.border.colors.reverse,
-                                               trim.light.colors = TRUE))
+                                               reverse = series.marker.border.colors.reverse))
 
 
         ## Color inheritance - second run
@@ -1770,7 +1901,7 @@ Chart <-   function(y = NULL,
             max.x <- max(x.vals)
         }
         else
-        {   
+        {
             min.x <- 0
             max.x <- max(not.na) - 1
         }
@@ -1962,6 +2093,8 @@ Chart <-   function(y = NULL,
         if (data.label.show)
             lab.len <- (nchar(data.label.prefix) + nchar(data.label.suffix) + data.label.decimals) *
                         data.label.font.size/10
+        if (diff(x.range) == 0)
+            x.range <- range(c(0, x.range))
         padding <- diff(x.range) * (0.05 * lab.len)
         x.range <- x.range + c(-padding, padding)
 
@@ -1994,8 +2127,7 @@ Chart <-   function(y = NULL,
                                                 custom.gradient.start = fit.line.colors.custom.gradient.start,
                                                 custom.gradient.end = fit.line.colors.custom.gradient.end,
                                                 custom.palette = fit.line.colors.custom.palette,
-                                                reverse = fit.line.colors.reverse,
-                                                trim.light.colors = TRUE)
+                                                reverse = fit.line.colors.reverse)
         }
 
         # Iteratively add each group so the order is the same as the dataframe
@@ -2006,6 +2138,10 @@ Chart <-   function(y = NULL,
             num.fit <- 1
         else
             num.fit <- length(g.list)
+
+        scatter.opacity <- 1
+        if (is.null(scatterplot.data$color.scale) && !is.null(scatterplot.data$z))
+            scatter.opacity <- 0.4
 
         p <- plot_ly(as.data.frame(x=scatterplot.data$x, y=scatterplot.data$y))
         for (ggi in 1:length(g.list))
@@ -2019,20 +2155,19 @@ Chart <-   function(y = NULL,
             marker.obj <- NULL
             if (ggi == 1 && !is.null(scatterplot.data$color.scale))
                 marker.obj <- list(size=sizes, sizemode="diameter", line=list(width=series.marker.border.width),
-                                color=scatterplot.data$color.values,
+                                color=scatterplot.data$color.values, opacity=scatter.opacity,
                                 showscale = T, colorscale=scatterplot.data$color.scale,
-                                colorbar = list(title=colorbar.title, outlinewidth=0, opacity=0.4))
+                                colorbar = list(title=colorbar.title, outlinewidth=0))
             else
                 marker.obj <- list(size=sizes, sizemode="diameter", line=list(width=series.marker.border.width),
-                                color=scatterplot.data$colors[ggi])
+                                color=scatterplot.data$colors[ggi], opacity=scatter.opacity)
 
             p <- add_trace(p, x=scatterplot.data$x[ind], y=scatterplot.data$y[ind],
                     name=g.list[ggi], showlegend=(length(g.list) > 1),
-                    opacity=if(is.null(scatterplot.data$z)) 1 else 0.4,
                     text=source.text[ind], textfont=textfont, textposition=data.label.position,
                     marker=marker.obj, line=line.obj,
                     type=plotly.type, mode=series.mode, symbols=series.marker.symbols,
-                    hoverinfo=if(length(g.list) > 1) "name+text" else "text")
+                    hoverinfo="name+text")
 
             if (num.fit > 1)
             {
@@ -2042,17 +2177,20 @@ Chart <-   function(y = NULL,
 
                 # Does not handle dates - because scatterplot does not handle dates
                 tmp.dat <- data.frame(x=scatterplot.data$x[indF], y=scatterplot.data$y[indF])
-                tmp.fit <- if (fit.type == "Smooth") loess(y~x, data=tmp.dat)
+                tmp.fit <- if (fit.type == "Smooth" && nrow(tmp.dat) > 7) loess(y~x, data=tmp.dat)
                            else                      lm(y~x, data=tmp.dat)
 
-                x.fit <- seq(from=min(tmp.dat$x), to=max(tmp.dat), length=100)
+                x.fit <- seq(from=min(tmp.dat$x), to=max(tmp.dat$x), length=100)
+                if (x.fit[100] < max(tmp.dat$x))
+                    x.fit <- c(tmp.fit, max(tmp.dat$x))
                 y.fit <- predict(tmp.fit, data.frame(x=x.fit))
                 tmp.fname <- if (length(g.list) == 1)  fit.line.name
                              else sprintf("%s: %s", fit.line.name, g.list[ggi])
 
                 p <- add_trace(p, x=x.fit, y=y.fit, type='scatter', mode="lines",
                           name=tmp.fname, legendgroup=ggi, showlegend=F,
-                          line=list(dash=fit.line.type, width=fit.line.width, color=fit.line.colors[ggi]))
+                          line=list(dash=fit.line.type, width=fit.line.width,
+                          shape = 'spline', color=fit.line.colors[ggi]))
             }
         }
         if (num.fit == 1)
@@ -2065,11 +2203,14 @@ Chart <-   function(y = NULL,
             tmp.fit <- if (fit.type == "Smooth" && length(indF) > 7) loess(y~x, data=tmp.dat)
                        else lm(y~x, data=tmp.dat)
 
-            x.fit <- seq(from=min(tmp.dat$x), to=max(tmp.dat), length=100)
+            x.fit <- seq(from=min(tmp.dat$x), to=max(tmp.dat$x), length=100)
+            if (x.fit[100] < max(tmp.dat$x))
+                x.fit <- c(tmp.fit, max(tmp.dat$x))
             y.fit <- predict(tmp.fit, data.frame(x=x.fit))
             p <- add_trace(p, x=x.fit, y=y.fit, type='scatter', mode="lines",
                       name=fit.line.name, showlegend=F,
-                      line=list(dash=fit.line.type, width=fit.line.width, color=fit.line.colors[1]))
+                      line=list(dash=fit.line.type, width=fit.line.width,
+                                shape='spline', color=fit.line.colors[1]))
         }
     }
     else
@@ -2129,11 +2270,11 @@ Chart <-   function(y = NULL,
             {
                 # add invisible line to force all categorical labels to be shown
                 if (!swap.axes.and.data)
-                    p <- add_trace(p, x=x, y=rep(min(y,na.rm=T), length(x)), 
+                    p <- add_trace(p, x=x, y=rep(min(y,na.rm=T), length(x)),
                                type="scatter", mode="lines",
                                hoverinfo="none", showlegend=F, opacity=0)
                 else
-                    p <- add_trace(p, x=rep(min(x,na.rm=T), length(y)), y=y, 
+                    p <- add_trace(p, x=rep(min(x,na.rm=T), length(y)), y=y,
                                type="scatter", mode="lines",
                                hoverinfo="none", showlegend=F, opacity=0)
             }
@@ -2159,22 +2300,24 @@ Chart <-   function(y = NULL,
                     tmp.dat <- data.frame(x=x0, y=y)
                     if (fit.ignore.last)
                         tmp.dat <- tmp.dat[-which.max(tmp.dat$x),]
-
                     tmp.fit <- if (fit.type == "Smooth" && nrow(tmp.dat) > 7) loess(y~I(as.numeric(x)), data=tmp.dat)
                                else lm(y~x, data=tmp.dat)
 
                     x.fit <- if (tmp.is.factor) x0
-                             else seq(from=min(x), to=max(x), length=100)
+                             else seq(from=min(x), to=max(tmp.dat$x), length=100)
+                    if (!tmp.is.factor && max(x.fit) < max(tmp.dat$x))
+                        x.fit <- c(x.fit, max(tmp.dat$x))
                     y.fit <- predict(tmp.fit, data.frame(x=x.fit))
                     tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                                  else sprintf("%s: %s", fit.line.name, y.labels[i])
 
                     if (tmp.is.factor)
                         x.fit <- x
+
                     p <- add_trace(p, x=x.fit, y=y.fit, type='scatter', mode="lines",
                               name=tmp.fname, legendgroup=tmp.group, showlegend=F,
                               line=list(dash=fit.line.type, width=fit.line.width,
-                              color=fit.line.colors[i]))
+                              color=fit.line.colors[i], shape='spline'))
                 }
 
                 if (type == "Column" && data.label.show && !is.stacked)
@@ -2218,9 +2361,10 @@ Chart <-   function(y = NULL,
 
                     tmp.fit <- if (fit.type == "Smooth" && nrow(tmp.dat) > 7) loess(x~I(as.numeric(y)), data=tmp.dat)
                                else lm(x~y, data=tmp.dat)
-
                     y.fit <- if (tmp.is.factor) y0
-                             else seq(from=min(y), to=max(y), length=100)
+                             else seq(from=min(tmp.dat$y), to=max(tmp.dat$y), length=100)
+                    if (!tmp.is.factor && max(y.fit) < max(tmp.dat$y))
+                        y.fit <- c(y.fit, max(tmp.dat$y))
                     x.fit <- predict(tmp.fit, data.frame(y=y.fit))
                     tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                                  else sprintf("%s: %s", fit.line.name, y.labels[i])
@@ -2230,42 +2374,18 @@ Chart <-   function(y = NULL,
                     p <- add_trace(p, x=x.fit, y=y.fit, type='scatter', mode="lines",
                               name=tmp.fname, legendgroup=tmp.group, showlegend=F,
                               line=list(dash=fit.line.type, width=fit.line.width,
-                              color=fit.line.colors[i]))
+                              color=fit.line.colors[i], shape='spline'))
 
 
                 }
-                if (type == "Bar" && data.label.show)
+                if (type == "Bar" && data.label.show && !is.stacked)
                 {
-                    if (is.null(y.range))
-                    {
-                        if (is.numeric(y) || !is.null(ymd))
-                        {
-                            tmpd <- diff(sort(data.annotations$y))[1] * 0.5 * ncol(chart.matrix)
-                            y.range <- range(data.annotations$y)
-                        }
-                        else
-                        {
-                            tmpd <- 0.5
-                            y.range <- c(0, length(y)-1)
-                        }
-                        y.range <- y.range + c(-tmpd, tmpd)
-                         
-                        if (!is.null(ymd))
-                        {
-                            y.range <- rev(y.range)
-                            # plotly does not reverse dates on the y-axis
-                            if (y.autorange == "reversed")
-                                y.range <- rev(y.range)
-                        }
-                        if (y.autorange == "reversed")
-                            y.range <- rev(y.range)
-                    }
-                    yaxis2 <- list(overlaying = "y",
-                                   visible = FALSE,
-                                   range = y.range)
+                    y.diff <- diff(sort(data.annotations$y))[1] * ncol(chart.matrix)
+                    y.range <- if (!is.null(ymd)) rev(range(as.numeric(ymd)*1000)) + c(0.9*y.diff, -1.1 * y.diff)
+                               else c(nrow(chart.matrix)-0.5, -0.5)
                     x.diff <- diff(range(data.annotations$x))/100
-                    p <- add_text(p,
-                              yaxis = "y2",
+                    yaxis2 <- list(overlaying = "y", visible = FALSE, range = y.range)
+                    p <- add_text(p, yaxis="y2", type="bar",
                               x = data.annotations$x[,i] + x.diff,
                               y = data.annotations$y[,i],
                               text = data.annotations$text[,i],
@@ -2282,7 +2402,7 @@ Chart <-   function(y = NULL,
                 y.label <- y.labels[i]
                 tmp.group <- if (legend.group == "") paste("group", i) else legend.group
 
-                # Avoid weird thing plotly does in area charts with NAs                
+                # Avoid weird thing plotly does in area charts with NAs
                 show.pts <- 1:length(y)
                 if (type == "Area")
                     show.pts <- which(is.finite(y))
@@ -2303,7 +2423,7 @@ Chart <-   function(y = NULL,
                                showlegend = FALSE)
 
                 # Area chart (with no line)
-                # We need to do this separately because connectgaps = FALSE 
+                # We need to do this separately because connectgaps = FALSE
                 # has strange behaviour with single points
                 if (is.area.chart)
                      p <- add_trace(p,
@@ -2319,7 +2439,7 @@ Chart <-   function(y = NULL,
                                hoverinfo = if(ncol(chart.matrix) > 1) "x+y+name" else "x+y",
                                marker = marker,
                                mode = series.mode)
-                
+
                # draw line
                if (type == "Line" || area.has.gap || series.line.width > 0)
                     p <- add_trace(p,
@@ -2329,7 +2449,7 @@ Chart <-   function(y = NULL,
                                connectgaps = FALSE,
                                line = lines,
                                name = y.label,
-                               showlegend = (type == "Line"), 
+                               showlegend = (type == "Line"),
                                legendgroup = tmp.group,
                                hoverinfo = if(ncol(chart.matrix) > 1) "x+y+name" else "x+y",
                                marker = marker,
@@ -2369,7 +2489,9 @@ Chart <-   function(y = NULL,
                                else lm(y~I(as.numeric(x)), data=tmp.dat)
 
                     x.fit <- if (tmp.is.factor) x0
-                             else seq(from=min(x), to=max(x), length=100)
+                             else seq(from=min(tmp.dat$x), to=max(tmp.dat$x), length=100)
+                    if (!tmp.is.factor && max(x.fit) < max(tmp.dat$x))
+                        x.fit <- c(x.fit, max(tmp.dat$x))
                     y.fit <- predict(tmp.fit, data.frame(x=x.fit))
                     tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                                  else sprintf("%s: %s", fit.line.name, y.labels[i])
@@ -2379,7 +2501,7 @@ Chart <-   function(y = NULL,
                     p <- add_trace(p, x=x.fit, y=y.fit, type='scatter', mode="lines",
                               name=tmp.fname, legendgroup=tmp.group, showlegend=F,
                               line=list(dash=fit.line.type, width=fit.line.width,
-                              color=fit.line.colors[i]))
+                              color=fit.line.colors[i], shape='spline'))
                 }
             }
             else
@@ -2454,7 +2576,7 @@ Chart <-   function(y = NULL,
             tickmode = y.tickmode,
             tickvals = y.tickvals,
             ticktext = y.ticktext,
-            range = y.range,
+            range = if (type == "Bar" && y.axis.type=="category") c(nrow(chart.matrix)-0.5, -0.5) else y.range,
             rangemode = y.range.mode,
             ticks = y.tick.marks,
             tickangle = y.tick.angle,
@@ -2467,7 +2589,7 @@ Chart <-   function(y = NULL,
             tickformat = y.tickformat,
             tickprefix = y.tick.prefix,
             ticksuffix = y.tick.suffix,
-            autorange = y.autorange,
+            autorange = if (type == "Bar") FALSE else y.autorange,
             side = y.position,
             gridwidth = y.grid.width,
             gridcolor = y.grid.color,
@@ -2559,5 +2681,5 @@ Chart <-   function(y = NULL,
 #' @export
 print.StandardChart <- function(x, ...)
 {
-    return(x$plotly.plot)
+    return(print(x$plotly.plot))
 }

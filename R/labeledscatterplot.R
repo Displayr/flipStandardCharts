@@ -21,11 +21,24 @@ scatterplotData <- function(chart.matrix,
                             logos = NULL)
 {
     not.na <- NULL
-    if (any(is.na(as.matrix(chart.matrix))))
+    if (any(is.na(as.matrix(chart.matrix))) || (!is.null(colorscale.variable) && any(is.na(colorscale.variable))))
     {
+        col.not.na <- 1:nrow(chart.matrix)
+        if (!is.null(colorscale.variable) && any(is.na(colorscale.variable)))
+        {
+            warning("Data points with missing values in the 'Colors' variable are hidden")
+            col.not.na <- !is.na(colorscale.variable)
+        }
+
         warning("Data points with missing values have been omitted.")
-        not.na <- which(!is.na(rowSums(chart.matrix)))
-        chart.matrix <- chart.matrix[not.na, ]
+        not.na <- which(!is.na(rowSums(chart.matrix)) & col.not.na)
+
+        if (length(not.na) == 0)
+            stop("No non-missing values to plot")
+
+        chart.matrix <- chart.matrix[not.na,,drop=FALSE]
+        if (!is.null(colorscale.variable))
+            colorscale.variable <- colorscale.variable[not.na]
         if (!is.null(logos))
             logos <- logos[not.na]
     }
@@ -36,21 +49,20 @@ scatterplotData <- function(chart.matrix,
     }
 
     # Remove rows and columns to ignore
-    no.dimnames <- is.null(dimnames(chart.matrix))
+    no.dimnames <- is.null(colnames(chart.matrix)) || colnames(chart.matrix)[1] == "chart.matrix"
     if (is.null(dim(chart.matrix)) || ncol(chart.matrix) == 1)
     {
         chart.matrix <- cbind(chart.matrix, rep(0, length(chart.matrix)))
         print(colnames(chart.matrix))
-        if (colnames(chart.matrix)[1] == "chart.matrix")
+        if (is.null(colnames(chart.matrix)) || colnames(chart.matrix)[1] == "chart.matrix")
             no.dimnames <- TRUE
     }
     chart.matrix <- GetTidyTwoDimensionalArray(chart.matrix,
                                                row.names.to.remove = rows.to.ignore,
                                                column.names.to.remove = cols.to.ignore)
-
     if (no.dimnames)
-        dimnames(chart.matrix) <- NULL
-
+        colnames(chart.matrix) <- NULL
+    
     pt.ord <- NULL
     if (!is.null(group.labels.text) && any(group.labels.text != ""))
     {
@@ -85,7 +97,7 @@ scatterplotData <- function(chart.matrix,
         if (!is.null(group.indices.text) && any(group.indices.text != ""))
             stop("Group indices were provided but group labels are missing.")
         else
-            group <- rep("Group", nrow(chart.matrix))
+            group <- rep(" ", nrow(chart.matrix))
     }
 
     # order data points so that the color of groups are ordered
@@ -104,8 +116,10 @@ scatterplotData <- function(chart.matrix,
         # scaling for plotly scatterplots - sizemode="area" does not work
         z.unscaled <- chart.matrix[,3]
         sc <- chart.matrix[,3]
-        sc <- sqrt(sc)
+        sc <- sqrt(abs(sc))
         sc <- sc/max(sc, na.rm=T) * 50
+        if (any(is.na(sc)) || any(sc == 0))
+            warnings("Some observations have been hidden as they have missing or zero size.")
         chart.matrix[,3] <- sc
     }
 
@@ -121,21 +135,20 @@ scatterplotData <- function(chart.matrix,
     }
     num.colors <- if (!is.null(colorscale.variable)) 3
                   else                               length(unique(group))
-    colors <- StripAlphaChannel(ChartColors(number.colors.needed = num.colors,
+    colors <- ChartColors(number.colors.needed = num.colors,
                                             given.colors = colors,
                                             custom.color = colors.custom.color,
                                             custom.gradient.start = colors.custom.gradient.start,
                                             custom.gradient.end = colors.custom.gradient.end,
                                             custom.palette = colors.custom.palette,
-                                            reverse = colors.reverse,
-                                            trim.light.colors = TRUE))
+                                            reverse = colors.reverse)
 
     color.scale <- NULL
     color.values <- NULL
     if (!is.null(colorscale.variable) && type == "Scatterplot")
     {
         col.fun <- colorRamp(colors)
-        group <- rep("Group", nrow(chart.matrix))
+        group <- rep(" ", nrow(chart.matrix))
         c.tmp <- rgb(col.fun((0:5)/5), maxColorValue=255)
         v.tmp <- seq(from=0, to=1, length=length(c.tmp))
         color.scale <- mapply(function(a,b)c(a,b), a=v.tmp, b=c.tmp, SIMPLIFY=F)
@@ -148,7 +161,6 @@ scatterplotData <- function(chart.matrix,
          group <- 1:length(colorscale.variable)
          sc.vals <- (colorscale.variable - min(colorscale.variable, na.rm=T))/diff(range(colorscale.variable, na.rm=T))
          sc.tmp <- col.fun(sc.vals)
-         sc.tmp[is.na(sc.tmp)] <- 204    # NAs turn grey
          colors <- rgb(sc.tmp, maxColorValue=255)
     }
 
