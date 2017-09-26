@@ -498,7 +498,7 @@ Chart <-   function(y = NULL,
                     logos = NULL,
                     logo.size = 0.5)
 {
-    if (!grepl("Scatter", type))
+    if (0)
     {
     patt.list <- c("Column", "Bar", "Radar", "Area", "Line", "Pie", "Labeled", "Scatter", "Donut")
     func.list <- c("ColumnChart", "BarChart", "RadarChart", "AreaChart", "LineChart", "PieChart", "LabeledScatterChart", "ScatterChart", "PieChart")
@@ -508,7 +508,7 @@ Chart <-   function(y = NULL,
         if (!grepl(patt.list[ffi], f.type))
             next
         ff <- func.list[ffi]
-        cat("Calling:", ff, "\n") 
+        cat("Calling:", ff, "\n")
         args <- as.list(formals(ff))
         user.args <- as.list(match.call())
         for (nn in names(user.args)[-1])
@@ -611,7 +611,7 @@ Chart <-   function(y = NULL,
         args$footer.wrap.nchar <- args$footer.wordwrap.nchar
         args$label.wrap <- args$x.tick.label.wordwrap
         args$label.wrap.nchar <- args$wordwrap.nchar
- 
+
         #print(args)
         print(args$x)
         return(do.call(ff, args))
@@ -2189,7 +2189,7 @@ Chart <-   function(y = NULL,
 
                 p <- add_trace(p, x=x.fit, y=y.fit, type='scatter', mode="lines",
                           name=tmp.fname, legendgroup=ggi, showlegend=F,
-                          line=list(dash=fit.line.type, width=fit.line.width, 
+                          line=list(dash=fit.line.type, width=fit.line.width,
                           shape = 'spline', color=fit.line.colors[ggi]))
             }
         }
@@ -2209,7 +2209,7 @@ Chart <-   function(y = NULL,
             y.fit <- predict(tmp.fit, data.frame(x=x.fit))
             p <- add_trace(p, x=x.fit, y=y.fit, type='scatter', mode="lines",
                       name=fit.line.name, showlegend=F,
-                      line=list(dash=fit.line.type, width=fit.line.width, 
+                      line=list(dash=fit.line.type, width=fit.line.width,
                                 shape='spline', color=fit.line.colors[1]))
         }
     }
@@ -2217,7 +2217,7 @@ Chart <-   function(y = NULL,
     {
         ## Initiate plotly object
         p <- plot_ly(as.data.frame(chart.matrix))
-         
+
         ## Add a trace for each col of data in the matrix
         for (i in 1:ncol(chart.matrix))
         {
@@ -2385,9 +2385,9 @@ Chart <-   function(y = NULL,
                                else c(nrow(chart.matrix)-0.5, -0.5)
                     x.diff <- diff(range(data.annotations$x))/100
                     yaxis2 <- list(overlaying = "y", visible = FALSE, range = y.range)
-                    p <- add_text(p, yaxis="y2", type="bar", 
+                    p <- add_text(p, yaxis="y2", type="bar",
                               x = data.annotations$x[,i] + x.diff,
-                              y = data.annotations$y[,i], 
+                              y = data.annotations$y[,i],
                               text = data.annotations$text[,i],
                               textposition = "middle right",
                               textfont = textfont,

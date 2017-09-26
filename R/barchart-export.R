@@ -346,8 +346,8 @@ BarChart <- function(x,
 {
     # Data checking
     chart.matrix <- checkMatrixNames(x)
-    is.stacked <- type != "Bar"
-    is.hundred.percent.stacked <- type == "100% Stacked Bar"
+    is.stacked <- grepl("Stacked", type, fixed=T)
+    is.hundred.percent.stacked <- grepl("100% Stacked", type, fixed=T)
     if (is.stacked && ncol(chart.matrix) < 2)
         stop(paste(type, "requires more than one series. Use Bar charts instead for this data."))
     if (is.stacked && (any(is.na(chart.matrix)) || any(chart.matrix < 0)))
@@ -404,7 +404,7 @@ BarChart <- function(x,
     tmp.label <- sprintf(paste0("%s%.", data.label.decimals, "f%s"), 
                 data.label.prefix, max(chart.matrix), data.label.suffix)
     xtick <- setTicks(x.bounds.minimum, x.bounds.maximum, x.tick.distance, x.data.reversed,
-                  data = if (data.label.show && type == "Bar") chart.matrix else NULL, type = type, 
+                  data = if (data.label.show && !is.stacked) chart.matrix else NULL, type = type, 
                   labels = tmp.label, label.font.size = data.label.font.size)
     ytick <- setTicks(y.bounds.minimum, y.bounds.maximum, y.tick.distance, !y.data.reversed)
     axisFormat <- formatLabels(chart.matrix, type, label.wrap, label.wrap.nchar, us.date.format) 

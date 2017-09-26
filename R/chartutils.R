@@ -102,7 +102,7 @@ setLegend <- function(type, font, ascending, fill.color, fill.opacity, border.co
                       x.pos=1.02, y.pos=1.00)
 {
     if (is.na(ascending))
-        ascending <- !grepl("Stacked", type) || type %in% c("Stacked Bar", "100% Stacked Bar")
+        ascending <- !grepl("Stacked", type) || grepl("Stacked Bar", type)
     order <- if (!ascending) "reversed" else "normal"
     return(list(bgcolor = toRGB(fill.color, alpha=fill.opacity),
             bordercolor = border.color,
@@ -120,7 +120,7 @@ setLegend <- function(type, font, ascending, fill.color, fill.opacity, border.co
 
 formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, us.date.format)
 {
-    is.bar <- type %in% c("Bar", "Stacked Bar", "100% Stacked Bar")
+    is.bar <- grepl("Bar", type, fixed=T)
     if (is.matrix(dat))
     {
         x.labels <- rownames(dat)
@@ -359,6 +359,7 @@ setTicks <- function(minimum, maximum, distance, reversed = FALSE,
 
     if (!is.null(data))
     {
+        is.bar <- grepl("Bar", type) && !grepl("Stacked", type)
         if (is.null(minimum))
             minimum <- min(0, min(data))
         if (is.null(maximum))
@@ -369,9 +370,9 @@ setTicks <- function(minimum, maximum, distance, reversed = FALSE,
         if (!is.null(labels))
         {
             lab.len <- max(nchar(as.character(unlist(labels)))) * label.font.size/10
-            pad <- (maximum - minimum) * (0.05 * lab.len/4 + (0.1 * (type=="Bar")))
+            pad <- (maximum - minimum) * (0.05 * lab.len/4 + (0.1 * is.bar))
         }
-        if (type != "Bar")
+        if (!is.bar)
             minimum <- minimum - pad
         maximum <- maximum + pad
     }

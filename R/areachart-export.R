@@ -348,8 +348,8 @@ AreaChart <-   function(x,
 {
     # Data checking
     chart.matrix <- checkMatrixNames(x)
-    is.stacked <- type != "Area"
-    is.hundred.percent.stacked <- type == "100% Stacked Area"
+    is.stacked <- grepl("Stacked", type, fixed=T)
+    is.hundred.percent.stacked <- grepl("100% Stacked", type, fixed=T)
     if (is.stacked && ncol(chart.matrix) < 2)
         stop(paste(type, "requires more than one series. Use Area charts instead for this data."))
     if (is.stacked && (any(is.na(chart.matrix)) || any(chart.matrix < 0)))
@@ -371,11 +371,11 @@ AreaChart <-   function(x,
             has.gap <- TRUE
     }
     if (is.null(series.line.width))
-        series.line.width <- if (!has.gap || type %in% c("Stacked Area", "100% Stacked Area")) 0 else 3 
-    if (type == "Stacked Area")
-        chart.matrix <- cum.data(chart.matrix, "cumulative.sum")
-    else if (type == "100% Stacked Area")
+        series.line.width <- if (!has.gap || is.stacked) 0 else 3 
+    if (is.hundred.percent.stacked)
         chart.matrix <- cum.data(chart.matrix, "cumulative.percentage")
+    else if (is.stacked)
+        chart.matrix <- cum.data(chart.matrix, "cumulative.sum")
     data.label.mult <- 1
     if (is.hundred.percent.stacked)
     {
@@ -414,8 +414,8 @@ AreaChart <-   function(x,
 
     eval(colors) # not sure why, but this is necessary for bars to appear properly
     if (is.null(opacity))
-        opacity <- if (type == "Area") 0.4 else 1
-    if (opacity == 1 && type == "Area" && ncol(chart.matrix) > 1)
+        opacity <- if (!is.stacked) 0.4 else 1
+    if (opacity == 1 && !is.stacked && ncol(chart.matrix) > 1)
         warning("Displaying this chart with opacity set to 1 will make it difficult to read as some data series may be obscured.")
 
     title.font=list(family=title.font.family, size=title.font.size, color=title.font.color)
@@ -541,7 +541,7 @@ AreaChart <-   function(x,
                            connectgaps = FALSE,
                            line = lines,
                            name = y.label,
-                           showlegend = (type == "Line"),
+                           showlegend = FALSE,
                            legendgroup = tmp.group,
                            hoverinfo = "skip", 
                            marker = marker,

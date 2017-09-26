@@ -19,6 +19,7 @@
 #' @param title.font.size Title font size; default = 10.
 #' @param data.label.font.family Character; font family for data label.
 #' @param data.label.font.size Font size for data label.
+#' @param data.label.font.color Font color for data label.
 #' @param data.label.decimals Number of decimal places to show in
 #' data labels.
 #' @param pie.values.order Order of the labels shown. Can be one of 'descending', 'ascending' or 'initial'.

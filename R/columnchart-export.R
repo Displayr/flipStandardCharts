@@ -2,12 +2,9 @@
 #'
 #' Plot column chart 
 #'
-#' @param x Input data may be a matrix or a vector. If \code{y} is not specified, then x contains the height of the columns
+#' @param x Input data may be a matrix or a vector, containing the height of the columns
 #' to be plotted, with the name/rownames used as the column names of the chart. Numeric and date labels
-#' will be parsed automatically. Where \code{y} is specified, \code{x} is a vector containing the x-coordinates
-#' labels of the columns.
-#' @param y (Optional) numeric vector or matrix containing the data to be plotted on the y-axis of the chart. 
-#'  Each column of the matrix will be shown as a separate series. 
+#' will be parsed automatically. 
 #' @param type One of "Column", "Stacked Column" or "100\% Stacked Column"
 #' @param fit.type Character; type of line of best fit. Can be one of "None", "Linear" or "Smooth" (loess local polynomial fitting).
 #' @param fit.ignore.last Boolean; whether to ignore the last data point in the fit.
@@ -225,7 +222,7 @@
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
 #' @export
-ColumnChart <-   function(x, y = NULL,
+ColumnChart <-   function(x,
                     type = "Column",
                     fit.type = "None", # can be "Smooth" or anything else
                     fit.ignore.last = FALSE,
@@ -348,26 +345,14 @@ ColumnChart <-   function(x, y = NULL,
                     us.date.format = NULL,
                     ...)
 {
-    print(sys.call())
-
-    # Combine all input data into a single matrix
-    if (!is.null(y))
-    {
-        y <- as.matrix(y)
-        if (!is.vector(x) && length(x) == nrow(y))
-            stop("When 'y' is provided, x should be a vector of length ", nrow(y), ".") 
-        rownames(y) <- x
-        x <- y
-    }
-
     # Data checking
     chart.matrix <- checkMatrixNames(x)
     if (!is.numeric(chart.matrix))
         stop("Input data should be numeric.")
     x.labels.full <- rownames(chart.matrix)
 
-    is.stacked <- type != "Column"
-    is.hundred.percent.stacked <- type == "100% Stacked Column"
+    is.stacked <- grepl("Stacked", type, fixed=T)
+    is.hundred.percent.stacked <- grepl("100% Stacked", type, fixed=T)
     if (is.stacked && ncol(chart.matrix) < 2)
         stop(paste(type, "requires more than one series. Use Column charts instead for this data."))
     if (is.stacked && (any(is.na(chart.matrix)) || any(chart.matrix < 0)))

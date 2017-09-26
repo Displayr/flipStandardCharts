@@ -12,7 +12,8 @@ PieChart(x, type = "Pie", colors = NULL, pie.subslice.colors = NULL,
   data.label.suffix = "", data.label.decimals = 2,
   data.label.font.size = 10, data.label.font.color = global.font.color,
   data.label.font.family = global.font.family, pie.groups.font.size = 10,
-  pie.groups.font.color = 10, pie.groups.order = "initial",
+  pie.groups.font.color = global.font.color,
+  pie.groups.font.family = global.font.family, pie.groups.order = "initial",
   pie.inner.radius = 70, pie.border.color = rgb(255, 255, 255, maxColorValue
   = 255), pie.show.percentages = TRUE, global.font.family = "Arial",
   global.font.color = rgb(44, 44, 44, maxColorValue = 255), ...)
@@ -55,11 +56,15 @@ data labels.}
 
 \item{data.label.font.size}{Font size for data label.}
 
+\item{data.label.font.color}{Font color for data label.}
+
 \item{data.label.font.family}{Character; font family for data label.}
 
 \item{pie.groups.font.size}{Font size for group labels.}
 
 \item{pie.groups.font.color}{Font color as a named color}
+
+\item{pie.groups.font.family}{Character; font family for group labels.}
 
 \item{pie.groups.order}{Order of the groups shown. Can be one of 'descending', 'ascending' or 'initial'.}
 
@@ -78,8 +83,6 @@ font attribute for the chart unless specified individually.}
 (e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{...}{Extra arguments that are ignored.}
-
-\item{pie.groups.font.family}{Character; font family for group labels.}
 }
 \description{
 Plot pie or donut chart
