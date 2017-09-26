@@ -7,7 +7,7 @@
 ScatterChart(x = NULL, y = NULL, scatter.labels = NULL,
   scatter.labels.name = NA, scatter.sizes = NULL, scatter.sizes.name = NA,
   scatter.colors = NULL, scatter.colors.name = NA,
-  scatter.colors.as.categorical = FALSE, colors = flipChartBasics::qColors,
+  scatter.colors.as.categorical = FALSE, colors = ChartColors(12),
   fit.type = "None", fit.ignore.last = FALSE, fit.line.type = "dot",
   fit.line.width = 1, fit.line.name = "Fitted", fit.line.colors = colors,
   legend.show = TRUE, tooltip.show = TRUE, modebar.show = FALSE,
