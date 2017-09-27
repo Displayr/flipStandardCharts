@@ -41,7 +41,7 @@ pieChart <- function(chart.matrix,
     chart.matrix <- as.matrix(chart.matrix)
 
     if (any(is.na(chart.matrix)) || any(chart.matrix < 0))
-    {
+    {   # negative values are automatically removed by plotly
         warning("Missing and negative values have been omitted.")
         chart.matrix[which(is.na(chart.matrix))] <- 0
     }

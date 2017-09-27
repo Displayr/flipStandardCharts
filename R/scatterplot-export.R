@@ -1,11 +1,11 @@
 #' Scatterplot chart
 #'
-#' Plot scatterplot chart 
+#' Plot scatterplot chart
 #'
 #' @param x A numeric vector for the x-axis coordinates (which may be named); or a matrix or dataframe which may have 1-4 columns containing: 1:x, 2:y, 3:sizes, 4:colors.
 #' @param y Optional numeric vector for the y-axis coordinates. Should contain the same number of observations as x. If not provided, will use x instead.
 #' @param scatter.labels Optional vector for labelling scatter points. This should be the same length as the number of observations in x andy. This is used in the hovertext and data labels.
-#' @param scatter.labels.name Character; Used for labelling subtitles and footers. 
+#' @param scatter.labels.name Character; Used for labelling subtitles and footers.
 #' @param scatter.sizes Numeric vector determining of the size of each observation. These can alternatively be provided as a column in \code{x}.
 #' @param scatter.sizes.name Character; Used for labelling footers and legends.
 #' @param scatter.colors Numeric, character, or categorical vector determining the color of each observation. These can alternatively be provided as a column in \code{x}.
@@ -215,16 +215,16 @@
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
 #' @export
-ScatterChart <- function(x = NULL, 
-                         y = NULL, 
+ScatterChart <- function(x = NULL,
+                         y = NULL,
                          scatter.labels = NULL,
                          scatter.labels.name = NA,
                          scatter.sizes = NULL,
                          scatter.sizes.name = NA,
-                         scatter.colors = NULL, 
+                         scatter.colors = NULL,
                          scatter.colors.name = NA,
                          scatter.colors.as.categorical = FALSE,
-                         colors = flipChartBasics::qColors,
+                         colors = ChartColors(12),
                          fit.type = "None",
                          fit.ignore.last = FALSE,
                          fit.line.type = "dot",
@@ -384,7 +384,7 @@ ScatterChart <- function(x = NULL,
         }
         if (is.null(y) && ncol(x) >= col.offset + 2)
         {
-            if ((is.na(y.title) || nchar(y.title) == 0) && !is.null(colnames(x))) 
+            if ((is.na(y.title) || nchar(y.title) == 0) && !is.null(colnames(x)))
                 y.title <- colnames(x)[col.offset + 2]
             y <- x[,col.offset + 2]
         }
@@ -444,11 +444,11 @@ ScatterChart <- function(x = NULL,
         else
             scatter.sizes.scaled <- sc.tmp/max(sc.tmp, na.rm=T) * 50
         opacity <- 0.4
-    } 
-   
+    }
+
     scatter.colors.as.numeric <- 0
     colorbar <- NULL
-    groups <- rep("Series 1", n)  
+    groups <- rep("Series 1", n)
     if (!is.null(scatter.colors) && !scatter.colors.as.categorical)
     {
         # make colorscalebar
@@ -456,12 +456,12 @@ ScatterChart <- function(x = NULL,
         c.tmp <- rgb(col.fun((0:5)/5), maxColorValue=255)
         v.tmp <- seq(from=0, to=1, length=length(c.tmp))
         col.scale <- mapply(function(a,b)c(a,b), a=v.tmp, b=c.tmp, SIMPLIFY=F)
-        
+
         if (any(class(scatter.colors) %in% c("Date", "POSIXct", "POSIXt")))
         {
             tmp.seq <- seq(0, 1, length=5)
-            colorbar <- list(tickmode="array", tickvals=tmp.seq, 
-                             ticktext=c(min(scatter.sizes) + diff(range(scatter.sizes)) * tmp.seq), 
+            colorbar <- list(tickmode="array", tickvals=tmp.seq,
+                             ticktext=c(min(scatter.sizes) + diff(range(scatter.sizes)) * tmp.seq),
                              outlinewidth=0)
         }
         else if (any(class(scatter.colors) == "factor"))
@@ -486,13 +486,13 @@ ScatterChart <- function(x = NULL,
     # hovertext
     x.str <- if (is.numeric(x)) FormatAsReal(x, decimals = data.label.decimals) else as.character(x)
     y.str <- if (is.numeric(y)) FormatAsReal(y, decimals = data.label.decimals) else as.character(y)
-    source.text <- paste0(scatter.labels, " (", x.tick.prefix, x.str, x.tick.suffix, ", ", 
+    source.text <- paste0(scatter.labels, " (", x.tick.prefix, x.str, x.tick.suffix, ", ",
                           y.tick.prefix, y.str, y.tick.suffix, ")")
     if (!is.na(scatter.colors.name))
         source.text <- paste0(source.text, "<br>", scatter.colors.name, ": ", as.character(scatter.colors))
     if (!is.na(scatter.sizes.name))
         source.text <- paste0(source.text, "<br>", scatter.sizes.name, ": ", as.character(scatter.sizes))
-    
+
 
     # other constants
     hover.mode <- if (tooltip.show) "closest" else FALSE
@@ -527,7 +527,7 @@ ScatterChart <- function(x = NULL,
         if (!is.na(scatter.colors.name))
             footer <- sprintf("%sPoints colored according to '%s'; ", footer, scatter.colors.name)
         if (!is.na(scatter.sizes.name))
-            footer <- sprintf("%sPoint sizes are proportional to absolute value of '%s'; ", 
+            footer <- sprintf("%sPoint sizes are proportional to absolute value of '%s'; ",
                               footer, scatter.sizes.name)
     }
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
@@ -537,25 +537,25 @@ ScatterChart <- function(x = NULL,
         y.tick.decimals <- decimalsToDisplay(as.numeric(y))
     xtick <- setTicks(x.bounds.minimum, x.bounds.maximum, x.tick.distance, x.data.reversed)
     ytick <- setTicks(y.bounds.minimum, y.bounds.maximum, y.tick.distance, y.data.reversed)
-    axisFormat <- formatLabels(list(x=x, y=y), type, label.wrap, label.wrap.nchar, us.date.format) 
-    
-    yaxis <- setAxis(y.title, "left", axisFormat, y.title.font, 
+    axisFormat <- formatLabels(list(x=x, y=y), type, label.wrap, label.wrap.nchar, us.date.format)
+
+    yaxis <- setAxis(y.title, "left", axisFormat, y.title.font,
                   y.line.color, y.line.width, y.grid.width, y.grid.color,
-                  ytick, ytick.font, y.tick.angle, y.tick.mark.length, 
-                  y.tick.distance, y.tick.format.manual, 
+                  ytick, ytick.font, y.tick.angle, y.tick.mark.length,
+                  y.tick.distance, y.tick.format.manual,
                   y.tick.decimals, y.tick.prefix, y.tick.suffix,
-                  y.tick.show, y.zero, y.zero.line.width, y.zero.line.color, 
+                  y.tick.show, y.zero, y.zero.line.width, y.zero.line.color,
                   y.hovertext.format.manual, y.hovertext.decimals)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, x.tick.format.manual,
-                  x.tick.decimals, "", "", x.tick.show, FALSE, x.zero.line.width, x.zero.line.color, 
+                  x.tick.decimals, "", "", x.tick.show, FALSE, x.zero.line.width, x.zero.line.color,
                   x.hovertext.format.manual, x.hovertext.decimals, axisFormat$labels)
 
-    # Work out margin spacing 
+    # Work out margin spacing
     margins <- list(t = 20, b = 50, r = 60, l = 80, pad = 0)
     margins <- setMarginsForAxis(margins, axisFormat, xaxis)
-    margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size, 
+    margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
     margins <- setMarginsForLegend(margins, legend.show, legend)
     if (!is.null(margin.top))
@@ -566,7 +566,7 @@ ScatterChart <- function(x = NULL,
         margins$left <- margin.left
     if (!is.null(margin.right))
         margins$right <- margin.right
-    
+
     # Finalise text in margins
     footer.axis <- setFooterAxis(footer, footer.font, margins)
     subtitle.axis <- setSubtitleAxis(subtitle, subtitle.font, title, title.font)
@@ -592,17 +592,17 @@ ScatterChart <- function(x = NULL,
                             color = colors[ggi], line = list(width = series.marker.border.width))
 
         # main trace
-        p <- add_trace(p, x = x[ind], y = y[ind], name = g.list[ggi], 
+        p <- add_trace(p, x = x[ind], y = y[ind], name = g.list[ggi],
                 showlegend=legend.show, legendgroup = if (num.series > 1) ggi else 1,
                 #textfont=data.label.font, #textposition = data.label.position,
-                marker = marker.obj, line = line.obj, text = source.text[ind], 
+                marker = marker.obj, line = line.obj, text = source.text[ind],
                 hoverinfo = if (num.series == 1) "text" else "name+text",
                 type="scatter", mode=series.mode, symbols=series.marker.symbols)
-        
+
         if (fit.type != "None" && num.series > 1)
         {
             tmp.fit <- fitSeries(x[ind], y[ind], fit.type, fit.ignore.last, xaxis$type)
-            tmp.fname <- sprintf("%s: %s", fit.line.name, g.list[ggi]) 
+            tmp.fname <- sprintf("%s: %s", fit.line.name, g.list[ggi])
             p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$y, type = 'scatter', mode = "lines",
                       name = tmp.fname, legendgroup = ggi, showlegend = F,
                       line = list(dash = fit.line.type, width = fit.line.width,
@@ -622,7 +622,7 @@ ScatterChart <- function(x = NULL,
         title = title,
         showlegend = legend.show,
         legend = legend,
-        yaxis = yaxis, 
+        yaxis = yaxis,
         xaxis4 = footer.axis,
         xaxis3 = subtitle.axis,
         xaxis = xaxis,
