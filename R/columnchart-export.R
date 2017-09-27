@@ -428,13 +428,13 @@ ColumnChart <-   function(x,
                                  subtitle.font.size, footer.font.size)
     margins <- setMarginsForLegend(margins, legend.show, legend)
     if (!is.null(margin.top))
-        margins$top <- margin.top
+        margins$t <- margin.top
     if (!is.null(margin.bottom))
-        margins$bottom <- margin.bottom
+        margins$b <- margin.bottom
     if (!is.null(margin.left))
-        margins$left <- margin.left
+        margins$l <- margin.left
     if (!is.null(margin.right))
-        margins$right <- margin.right
+        margins$r <- margin.right
     
     # Finalise text in margins
     footer.axis <- setFooterAxis(footer, footer.font, margins)
@@ -500,7 +500,7 @@ ColumnChart <-   function(x,
 
         if (data.label.show && !is.stacked)
         {
-            x.range <- getRange(x, data.annotations$x, xaxis, axisFormat)
+            x.range <- getRange(x, xaxis, axisFormat)
             xaxis2 <- list(overlaying = "x", visible = FALSE, range = x.range)
             p <- add_text(p, xaxis = "x2", x = data.annotations$x[,i], y = data.annotations$y[,i],
                       text = data.annotations$text[,i], textposition = "top center",

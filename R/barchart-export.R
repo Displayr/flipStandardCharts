@@ -424,6 +424,7 @@ BarChart <- function(x,
     # Work out margin spacing 
     margins <- list(t = 20, b = 50, r = 60, l = 80, pad = 0)
     margins <- setMarginsForAxis(margins, axisFormat, yaxis)
+    margins <- setMarginsForAxis(margins, axisFormat, xaxis)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size, 
                                  subtitle.font.size, footer.font.size)
     margins <- setMarginsForLegend(margins, legend.show, legend)
@@ -501,13 +502,11 @@ BarChart <- function(x,
 
         if (data.label.show && !is.stacked)
         {
-            y.range <- getRange(x, data.annotations$y, yaxis, axisFormat)
-            #dd <- 0.5
-            #y.range <- c(nrow(chart.matrix)-1+dd, -dd)
+            y.range <- getRange(x, yaxis, axisFormat)
             yaxis2 <- list(overlaying = "y", visible = FALSE, range = y.range)
             x.diff <- diff(range(data.annotations$x))/100
             p <- add_text(p, yaxis = "y2", x = data.annotations$x[,i] + x.diff, 
-                      y = data.annotations$y[,i] + 1,
+                      y = data.annotations$y[,i] + (yaxis$type == "linear"),
                       text = data.annotations$text[,i], textposition = "middle right",
                       textfont = data.label.font, hoverinfo = "none",
                       showlegend = FALSE, legendgroup = tmp.group)
