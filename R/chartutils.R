@@ -65,7 +65,7 @@ getRange <- function(x, positions, axis, axisFormat)
     if (is.null(range))
     {
         range <- if (is.numeric(x) || !is.null(axisFormat$ymd)) range(positions)
-                 else c(-0.5, length(x)-0.5)
+                 else c(0.5, length(x)+0.5)
 
         if (!is.null(axisFormat$ymd))
         {
@@ -188,12 +188,18 @@ setAxis <- function(title, side, axisLabels, titlefont, linecolor, linewidth, gr
 
     autorange <- ticks$autorange
     range <- ticks$range
-    if (axis.type == "category" && !axisLabels$labels.on.x && side %in% c("left","right"))
+    if (axis.type != "date" && !axisLabels$labels.on.x && side %in% c("left","right"))
     {
         autorange <- FALSE
-        range <- c(length(axisLabels$labels)- 0.5, 0.5)
+        range <- c(length(axisLabels$labels)+0.5, 0.5)
     }
-
+    if (axis.type == "date" && !axisLabels$labels.on.x && side %in% c("left","right"))
+    {
+        autorange <- FALSE
+        range <- range(axisLabels$ymd)
+        tmpd <- diff(sort(axisLabels$ymd))[1] * 0.5
+        range <- range + c(-tmpd, tmpd)
+    }
     
     hoverformat <- ""
     if (!is.null(hovertext.format.manual) && nchar(hovertext.format.manual))
@@ -364,7 +370,8 @@ setTicks <- function(minimum, maximum, distance, reversed = FALSE,
             minimum <- min(0, min(data))
         if (is.null(maximum))
             maximum <- max(data)
-
+        
+        # Add horizontal space for data labels
         pad <- 0
         lab.len <- 1
         if (!is.null(labels))

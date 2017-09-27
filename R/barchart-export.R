@@ -408,7 +408,7 @@ BarChart <- function(x,
                   labels = tmp.label, label.font.size = data.label.font.size)
     ytick <- setTicks(y.bounds.minimum, y.bounds.maximum, y.tick.distance, !y.data.reversed)
     axisFormat <- formatLabels(chart.matrix, type, label.wrap, label.wrap.nchar, us.date.format) 
-    
+   
     yaxis <- setAxis(y.title, "left", axisFormat, y.title.font, 
                   y.line.color, y.line.width, y.grid.width, y.grid.color,
                   ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance, y.tick.format.manual, 
@@ -507,7 +507,7 @@ BarChart <- function(x,
             yaxis2 <- list(overlaying = "y", visible = FALSE, range = y.range)
             x.diff <- diff(range(data.annotations$x))/100
             p <- add_text(p, yaxis = "y2", x = data.annotations$x[,i] + x.diff, 
-                      y = data.annotations$y[,i],
+                      y = data.annotations$y[,i] + 1,
                       text = data.annotations$text[,i], textposition = "middle right",
                       textfont = data.label.font, hoverinfo = "none",
                       showlegend = FALSE, legendgroup = tmp.group)
