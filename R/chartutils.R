@@ -211,7 +211,7 @@ setAxis <- function(title, side, axisLabels, titlefont, linecolor, linewidth, gr
         tmp.dates <- as.numeric(axisLabels$ymd) * 1000
         diff <- min(diff(tmp.dates), na.rm=T)
         range <- range(tmp.dates, na.rm=T) + c(-1, 1) * diff
-    }   
+    }
 
     hoverformat <- ""
     if (!is.null(hovertext.format.manual) && nchar(hovertext.format.manual))
