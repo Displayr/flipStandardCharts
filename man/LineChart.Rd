@@ -14,7 +14,7 @@ LineChart(x, type = "Line", fit.type = "None", fit.ignore.last = FALSE,
   footer = "", footer.font.family = global.font.family,
   footer.font.color = global.font.color, footer.font.size = 8,
   footer.wrap = TRUE, footer.wrap.nchar = 100, colors = ChartColors(max(1,
-  ncol(x))), fit.line.colors = colors, opacity = 1,
+  ncol(x))), fit.line.colors = colors, opacity = 1, grid.show = TRUE,
   background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
   background.fill.opacity = 1,
   charting.area.fill.color = background.fill.color,
@@ -33,9 +33,10 @@ LineChart(x, type = "Line", fit.type = "None", fit.ignore.last = FALSE,
   y.tick.marks = "", y.tick.mark.length = 5, y.bounds.minimum = NULL,
   y.bounds.maximum = NULL, y.tick.distance = NULL, y.zero = TRUE,
   y.zero.line.width = 0, y.zero.line.color = rgb(44, 44, 44, maxColorValue =
-  255), y.data.reversed = FALSE, y.grid.width = 1, y.grid.color = rgb(225,
-  225, 225, maxColorValue = 255), y.tick.show = TRUE, y.tick.suffix = "",
-  y.tick.prefix = "", y.tick.decimals = NULL, y.tick.format.manual = "",
+  255), y.data.reversed = FALSE, y.grid.width = 1 * grid.show,
+  y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+  y.tick.show = TRUE, y.tick.suffix = "", y.tick.prefix = "",
+  y.tick.decimals = NULL, y.tick.format.manual = "",
   y.hovertext.decimals = NULL, y.hovertext.format.manual = "",
   y.tick.angle = NULL, y.tick.font.color = global.font.color,
   y.tick.font.family = global.font.family, y.tick.font.size = 10,
@@ -45,11 +46,11 @@ LineChart(x, type = "Line", fit.type = "None", fit.ignore.last = FALSE,
   x.tick.marks = "", x.tick.mark.length = 5, x.bounds.minimum = NULL,
   x.bounds.maximum = NULL, x.tick.distance = NULL, x.zero.line.width = 0,
   x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
-  x.data.reversed = FALSE, x.grid.width = 1, x.grid.color = rgb(225, 225,
-  225, maxColorValue = 255), x.tick.show = TRUE, x.tick.decimals = NULL,
-  x.tick.format.manual = "", x.hovertext.decimals = NULL,
-  x.hovertext.format.manual = "", x.tick.angle = NULL,
-  x.tick.font.color = global.font.color,
+  x.data.reversed = FALSE, x.grid.width = 0 * grid.show,
+  x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+  x.tick.show = TRUE, x.tick.decimals = NULL, x.tick.format.manual = "",
+  x.hovertext.decimals = NULL, x.hovertext.format.manual = "",
+  x.tick.angle = NULL, x.tick.font.color = global.font.color,
   x.tick.font.family = global.font.family, x.tick.font.size = 10,
   label.wrap = TRUE, label.wrap.nchar = 21, series.marker.show = NULL,
   series.marker.colors = colors, series.marker.opacity = 1,
@@ -130,6 +131,9 @@ named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 
 \item{opacity}{Opacity of area fill colors as an alpha value (0 to 1).}
 
+\item{grid.show}{Logical; Whether to show grid lines.
+opacity as an alpha value (0 to 1).}
+
 \item{background.fill.color}{Background color in character format
 (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
@@ -140,8 +144,7 @@ named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 a named color in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{charting.area.fill.opacity}{Charting area background
-opacity as an alpha value (0 to 1).}
+\item{charting.area.fill.opacity}{Charting area background}
 
 \item{legend.show}{Logical; show the legend.}
 

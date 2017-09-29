@@ -131,8 +131,8 @@ formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, us.date.format
     }
     else
     {
-        x.labels <- sort(unique(dat[[1]]))
-        y.labels <- sort(unique(dat[[2]]))
+        x.labels <- unique(dat[[1]])
+        y.labels <- unique(dat[[2]])
     }
 
     y.axis.type <- "linear"
@@ -267,13 +267,13 @@ setMarginsForAxis <- function(margins, axisLabels, axis)
 
     lab.nchar <- max(c(0,nchar(unlist(strsplit(split="<br>", as.character(labels))))))
     font.asp <- fontAspectRatio(axis$tickfont$family)
-    lab.len <- font.asp * axis$tickfont$size * lab.nchar
+    lab.len <- font.asp * axis$tickfont$size * lab.nchar * 1.25
     lab.nline <- if (is.character(labels)) max(sapply(gregexpr("<br>", labels),
                      function(x){sum(x > -1)}))
                  else 0
 
     new.margin <- 0
-    if (lab.len > 50 || (!is.null(lab.nline) && lab.nline > 0))
+    if (lab.len > 5 || (!is.null(lab.nline) && lab.nline > 0))
         new.margin <- lab.len
 
     title.nline <- 0

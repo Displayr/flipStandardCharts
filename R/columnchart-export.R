@@ -7,7 +7,7 @@
 #' will be parsed automatically. 
 #' @param type One of "Column", "Stacked Column" or "100\% Stacked Column"
 #' @param fit.type Character; type of line of best fit. Can be one of "None", "Linear" or "Smooth" (loess local polynomial fitting).
-#' @param fit.ignore.last Boolean; whether to ignore the last data point in the fit.
+#' @param fit.ignore.last Logical; whether to ignore the last data point in the fit.
 #' @param fit.line.type Character; One of "solid", "dot", "dash, "dotdash", or length of dash "2px", "5px".
 #' @param fit.line.width Numeric; Line width of line of best fit.
 #' @param fit.line.name Character; Name of the line of best fit, which will appear in the hovertext.
@@ -33,6 +33,7 @@
 #' @param footer.font.size footer font size
 #' @param footer.wrap Logical; whether the footer text should be wrapped.
 #' @param footer.wrap.nchar Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.
+#' @param grid.show Logical; whether to show grid lines.
 #' @param opacity Opacity of area fill colors as an alpha value (0 to 1).
 #' @param colors Character; a vector containing one or more named
 #' colors from grDevices OR one or more specified hex value colors OR a single
@@ -268,6 +269,7 @@ ColumnChart <-   function(x,
                     margin.left = NULL,
                     margin.right = NULL,
                     margin.inner.pad = NULL,
+                    grid.show = TRUE,
                     y.title = "",
                     y.title.font.color = global.font.color,
                     y.title.font.family = global.font.family,
@@ -283,7 +285,7 @@ ColumnChart <-   function(x,
                     y.zero.line.width = 0,
                     y.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
                     y.data.reversed = FALSE,
-                    y.grid.width = 1,
+                    y.grid.width = 1 * grid.show,
                     y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                     y.tick.show = TRUE,
                     y.tick.suffix = "",
@@ -310,7 +312,7 @@ ColumnChart <-   function(x,
                     x.zero.line.width = 0,
                     x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
                     x.data.reversed = FALSE,
-                    x.grid.width = 1,
+                    x.grid.width = 0 * grid.show,
                     x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                     x.tick.show = TRUE,
                     x.tick.decimals = NULL,

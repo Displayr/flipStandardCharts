@@ -33,7 +33,7 @@
 #' @param pie.border.color A single color for space around pie and between segments.
 #' @param pie.inner.radius The size of the inner radius of pie and
 #' donut charts as a proportion out of 100. defaults to 70.
-#' @param pie.show.percentages Whether to show percentages in pie and donut
+#' @param as.percentages Whether to show percentages in pie and donut
 #' charts instead of original values.
 #' @param global.font.family Character; font family for all occurrences of any
 #' font attribute for the chart unless specified individually.
@@ -71,7 +71,7 @@ PieChart <- function(x,
                      pie.groups.order = "initial",
                      pie.inner.radius = 70,
                      pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
-                     pie.show.percentages = TRUE,
+                     as.percentages = TRUE,
                      global.font.family = "Arial",
                      global.font.color = rgb(44, 44, 44, maxColorValue = 255),
                      ...)
@@ -162,8 +162,8 @@ PieChart <- function(x,
 
     # Convert pie.inner.radius to character
     inner.radius <- paste(pie.inner.radius, "%", sep = "")
-    values.display.as <- if (pie.show.percentages) "percentage" else "original"
-    if (pie.show.percentages)
+    values.display.as <- if (as.percentages) "percentage" else "original"
+    if (as.percentages)
     {
         data.label.prefix <- ""
         data.label.suffix <- "%"

@@ -39,6 +39,7 @@
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param legend.font.family Character; legend font family.
 #' @param legend.font.size Legend font size.
+#' @param grid.show Logical; Whether to show grid lines.
 #' @param y.title Character, y-axis title; defaults to chart input values;
 #' to turn off set to "FALSE".
 #' @param y.title.font.color y-axis title font color as a named color in
@@ -154,6 +155,7 @@ LabeledScatterChart <- function(x = NULL,
                                 legend.font.color = global.font.color,
                                 legend.font.family = global.font.family,
                                 legend.font.size = 10,
+                                grid.show = TRUE,
                                 y.title = "",
                                 y.title.font.color = global.font.color,
                                 y.title.font.family = global.font.family,
@@ -392,13 +394,13 @@ LabeledScatterChart <- function(x = NULL,
 
     return(LabeledScatter(X = x[not.na],
                        Y = y[not.na],
-                       Z = if (is.null(scatter.sizes)) NULL else scatter.sizes[not.na],
+                       Z = if (is.null(scatter.sizes)) NULL else abs(scatter.sizes[not.na]),
                        group = groups[not.na],
                        colors = colors[not.na],
                        label = lab.tidy[not.na],
                        label.alt = scatter.labels[not.na],
                        fixed.aspect = FALSE,
-                       grid = x.grid.width != 0 && y.grid.width != 0,
+                       grid = grid.show,
                        origin = FALSE,
                        origin.align = FALSE,
                        labels.show = TRUE,

@@ -9,6 +9,7 @@
 #' @param fit.line.type Character; One of "solid", "dot", "dash, "dotdash", or length of dash "2px", "5px".
 #' @param fit.line.width Numeric; Line width of line of best fit.
 #' @param fit.line.name Character; Name of the line of best fit, which will appear in the hovertext.
+#' @param grid.show Logical; Whether to show grid lines.
 #' @param title Character; chart title.
 #' @param title.font.family Character; title font family. Can be "Arial Black",
 #' "Arial", "Comic Sans MS", "Courier New", "Georgia", "Impact",
@@ -267,6 +268,7 @@ BarChart <- function(x,
                     margin.left = NULL,
                     margin.right = NULL,
                     margin.inner.pad = NULL,
+                    grid.show = TRUE,
                     y.title = "",
                     y.title.font.color = global.font.color,
                     y.title.font.family = global.font.family,
@@ -282,7 +284,7 @@ BarChart <- function(x,
                     y.zero.line.width = 0,
                     y.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
                     y.data.reversed = FALSE,
-                    y.grid.width = 1,
+                    y.grid.width = 0 * grid.show,
                     y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                     y.tick.show = TRUE,
                     y.tick.decimals = NULL,
@@ -307,7 +309,7 @@ BarChart <- function(x,
                     x.zero.line.width = 0,
                     x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
                     x.data.reversed = FALSE,
-                    x.grid.width = 1,
+                    x.grid.width = 1 * grid.show,
                     x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                     x.tick.show = TRUE,
                     x.tick.suffix = "",

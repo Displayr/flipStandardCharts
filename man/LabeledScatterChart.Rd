@@ -22,7 +22,7 @@ LabeledScatterChart(x = NULL, y = NULL, scatter.labels = NULL,
   data.label.font.color = global.font.color, data.label.font.size = 10,
   legend.font.color = global.font.color,
   legend.font.family = global.font.family, legend.font.size = 10,
-  y.title = "", y.title.font.color = global.font.color,
+  grid.show = TRUE, y.title = "", y.title.font.color = global.font.color,
   y.title.font.family = global.font.family, y.title.font.size = 12,
   y.line.width = 0, y.line.color = rgb(0, 0, 0, maxColorValue = 255),
   y.bounds.minimum = NULL, y.bounds.maximum = NULL,
@@ -129,6 +129,8 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 \item{legend.font.family}{Character; legend font family.}
 
 \item{legend.font.size}{Legend font size.}
+
+\item{grid.show}{Logical; Whether to show grid lines.}
 
 \item{y.title}{Character, y-axis title; defaults to chart input values;
 to turn off set to "FALSE".}

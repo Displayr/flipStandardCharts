@@ -46,6 +46,7 @@
 #' a named color in character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param charting.area.fill.opacity Charting area background
+#' @param grid.show Logical; Whether to show grid lines.
 #' opacity as an alpha value (0 to 1).
 #' @param legend.show Logical; show the legend.
 #' @param legend.fill Same as \code{legend.fill.color}. Retained for backwards compatibility.
@@ -247,6 +248,7 @@ LineChart <-   function(x,
                     colors = ChartColors(max(1, ncol(x))),
                     fit.line.colors = colors,
                     opacity = 1,
+                    grid.show = TRUE,
                     background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
                     background.fill.opacity = 1,
                     charting.area.fill.color = background.fill.color,
@@ -283,7 +285,7 @@ LineChart <-   function(x,
                     y.zero.line.width = 0,
                     y.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
                     y.data.reversed = FALSE,
-                    y.grid.width = 1,
+                    y.grid.width = 1 * grid.show,
                     y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                     y.tick.show = TRUE,
                     y.tick.suffix = "",
@@ -310,7 +312,7 @@ LineChart <-   function(x,
                     x.zero.line.width = 0,
                     x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
                     x.data.reversed = FALSE,
-                    x.grid.width = 1,
+                    x.grid.width = 0 * grid.show,
                     x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                     x.tick.show = TRUE,
                     x.tick.decimals = NULL,
