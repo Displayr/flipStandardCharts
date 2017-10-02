@@ -252,9 +252,9 @@ ScatterChart <- function(x = NULL,
                          footer.wrap = TRUE,
                          footer.wrap.nchar = 100,
                          data.label.show = FALSE,
-                         data.label.font.family = NULL,
+                         data.label.font.family = global.font.family,
+                         data.label.font.color = global.font.color,
                          data.label.font.size = 10,
-                         data.label.font.color = NULL,
                          data.label.decimals = 2, # Ignored in Labeled Bubble and Scatterplots
                          data.label.prefix = "",
                          data.label.suffix = "",
@@ -349,6 +349,16 @@ ScatterChart <- function(x = NULL,
                          us.date.format = FALSE,
                          ...)
 {
+    title.font=list(family=title.font.family, size=title.font.size, color=title.font.color)
+    subtitle.font=list(family=subtitle.font.family, size=subtitle.font.size, color=subtitle.font.color)
+    x.title.font=list(family=x.title.font.family, size=x.title.font.size, color=x.title.font.color)
+    y.title.font=list(family=y.title.font.family, size=y.title.font.size, color=y.title.font.color)
+    ytick.font=list(family=y.tick.font.family, size=y.tick.font.size, color=y.tick.font.color)
+    xtick.font=list(family=x.tick.font.family, size=x.tick.font.size, color=x.tick.font.color)
+    footer.font=list(family=footer.font.family, size=footer.font.size, color=footer.font.color)
+    legend.font=list(family=legend.font.family, size=legend.font.size, color=legend.font.color)
+    data.label.font=list(family=data.label.font.family, size=data.label.font.size, color=data.label.font.color)
+
     # Try to store name of variables
     if (!is.null(scatter.sizes) && is.na(scatter.sizes.name))
     {
@@ -464,13 +474,13 @@ ScatterChart <- function(x = NULL,
             tmp.seq <- seq(0, 1, length=5)
             colorbar <- list(tickmode="array", tickvals=tmp.seq,
                              ticktext=c(min(scatter.sizes) + diff(range(scatter.sizes)) * tmp.seq),
-                             outlinewidth=0)
+                             outlinewidth=0, tickfont=data.label.font)
         }
         else if (any(class(scatter.colors) == "factor"))
             colorbar <- list(tickmode="array", tickvals=seq(0, 1, length=nlevels(scatter.colors)),
-                             ticktext=levels(scatter.colors), outlinewidth=0)
+                             ticktext=levels(scatter.colors), outlinewidth=0, tickfont=data.label.font)
         else
-            colorbar <- list(outlinewidth = 0)
+            colorbar <- list(outlinewidth = 0, tickfont=data.label.font)
 
         scatter.colors.as.numeric <- 1
         groups <- 1:n
@@ -508,6 +518,8 @@ ScatterChart <- function(x = NULL,
     scatter.opacity <- if (!is.null(scatter.sizes)) 0.4 else 1
     series.mode <- if (is.null(series.line.width) || series.line.width == 0) "markers"
                    else "markers+lines"
+    if (data.label.show)
+        series.mode <- paste0(series.mode, "+text")
     series.marker.symbols <- if (is.null(series.marker.show) ||
                                  series.marker.show == "automatic" ||
                                  series.marker.show == "none")
@@ -515,15 +527,6 @@ ScatterChart <- function(x = NULL,
     else
         series.marker.show
 
-    title.font=list(family=title.font.family, size=title.font.size, color=title.font.color)
-    subtitle.font=list(family=subtitle.font.family, size=subtitle.font.size, color=subtitle.font.color)
-    x.title.font=list(family=x.title.font.family, size=x.title.font.size, color=x.title.font.color)
-    y.title.font=list(family=y.title.font.family, size=y.title.font.size, color=y.title.font.color)
-    ytick.font=list(family=y.tick.font.family, size=y.tick.font.size, color=y.tick.font.color)
-    xtick.font=list(family=x.tick.font.family, size=x.tick.font.size, color=x.tick.font.color)
-    footer.font=list(family=footer.font.family, size=footer.font.size, color=footer.font.color)
-    legend.font=list(family=legend.font.family, size=legend.font.size, color=legend.font.color)
-    data.label.font=list(family=data.label.font.family, size=data.label.font.size, color=data.label.font.color)
     type <- "Scatterplot"
     legend <- setLegend("Scatterplot", legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
                         legend.border.color, legend.border.line.width)

@@ -19,9 +19,9 @@ ScatterChart(x = NULL, y = NULL, scatter.labels = NULL,
   footer = "", footer.font.family = global.font.family,
   footer.font.color = global.font.color, footer.font.size = 8,
   footer.wrap = TRUE, footer.wrap.nchar = 100, data.label.show = FALSE,
-  data.label.font.family = NULL, data.label.font.size = 10,
-  data.label.font.color = NULL, data.label.decimals = 2,
-  data.label.prefix = "", data.label.suffix = "",
+  data.label.font.family = global.font.family,
+  data.label.font.color = global.font.color, data.label.font.size = 10,
+  data.label.decimals = 2, data.label.prefix = "", data.label.suffix = "",
   data.label.position = "top middle", opacity = NULL,
   background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
   background.fill.opacity = 1, charting.area.fill.color = rgb(255, 255, 255,
@@ -153,11 +153,11 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{data.label.font.family}{Character; font family for data label.}
 
-\item{data.label.font.size}{Font size for data label.}
-
 \item{data.label.font.color}{Font color as a named color
 in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
+
+\item{data.label.font.size}{Font size for data label.}
 
 \item{data.label.decimals}{Number of decimal places to show in
 data labels.}
