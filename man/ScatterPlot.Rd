@@ -4,7 +4,8 @@
 \alias{ScatterPlot}
 \title{Scatterplot chart}
 \usage{
-ScatterPlot(x, scatter.labels = NULL, show.labels.as.hovertext = FALSE, ...)
+ScatterPlot(x, scatter.labels = NULL, show.labels.as.hovertext = FALSE,
+  max.label.length = 200, ...)
 }
 \arguments{
 \item{x}{Input data for charting}
@@ -12,6 +13,8 @@ ScatterPlot(x, scatter.labels = NULL, show.labels.as.hovertext = FALSE, ...)
 \item{scatter.labels}{Alternative way to provide data labels.}
 
 \item{show.labels.as.hovertext}{Use a normal scatterplot even if labels are provided.}
+
+\item{max.label.length}{Maximum number of points above which Labeled Scatter plots will not be used.}
 
 \item{...}{Extra arguments that are ignored.}
 }
