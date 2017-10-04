@@ -36,11 +36,8 @@
 #' of the heatmap.
 #' @param right.columns An optional list of vectors or matrices to be appended to the right
 #' of the heatmap.
-
-#' @importFrom flipData GetTidyTwoDimensionalArray
 #' @importFrom flipFormat FormatAsReal
-#' @importFrom flipTables Reorder Cbind
-#' @importFrom flipTransformations ParseEnteredData
+#' @importFrom flipTables Reorder Cbind BasicTable
 #' @importFrom stringr str_trim
 #' @export
 #'
@@ -72,18 +69,10 @@ HeatMap <- function(table,
                     left.columns = NULL,
                     right.columns = NULL) {
 
-    t <- if (data.type == "Use an existing table") {
-        table
-    } else {
-        ParseEnteredData(table)
-    }
-
-    mat <- GetTidyTwoDimensionalArray(t, ignore.rows, ignore.columns)
+    mat <- BasicTable(table, row.names.to.remove = ignore.rows,
+                      col.names.to.remove = ignore.columns, transpose = transpose)
     if (!is.numeric(mat[1, 1]))
         stop("The input table must contain only numeric values.")
-
-    if (transpose)
-        mat <- t(mat)
 
     mat <- if (sort.rows == "Sort by averages (ascending)") {
         Reorder(mat, rows = "Ascending", columns = "None")
