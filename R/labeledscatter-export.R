@@ -121,11 +121,11 @@
 LabeledScatterChart <- function(x = NULL,
                                 y = NULL,
                                 scatter.labels = NULL,
-                                scatter.labels.name = NA,
+                                scatter.labels.name = NULL,
                                 scatter.sizes = NULL,
-                                scatter.sizes.name = NA,
+                                scatter.sizes.name = NULL,
                                 scatter.colors = NULL,
-                                scatter.colors.name = NA,
+                                scatter.colors.name = NULL,
                                 scatter.colors.as.categorical = !is.null(groups),
                                 trend.lines = FALSE,
                                 logos = NULL,
@@ -210,19 +210,19 @@ LabeledScatterChart <- function(x = NULL,
     }
 
     # Try to store name of variables
-    if (!is.null(scatter.sizes) && is.na(scatter.sizes.name))
+    if (!is.null(scatter.sizes) && is.null(scatter.sizes.name))
     {
         scatter.sizes.name <- deparse(substitute(scatter.sizes))
         if (!is.null(attr(scatter.sizes, "label")))
             scatter.sizes.name <- attr(scatter.sizes, "label")
     }
-    if (!is.null(scatter.labels) && is.na(scatter.labels.name))
+    if (!is.null(scatter.labels) && is.null(scatter.labels.name))
     {
         scatter.labels.name <- deparse(substitute(scatter.labels))
         if (!is.null(attr(scatter.labels, "label")))
             scatter.labels.name <- attr(scatter.labels, "label")
     }
-    if (!is.null(scatter.colors) && is.na(scatter.colors.name))
+    if (!is.null(scatter.colors) && is.null(scatter.colors.name))
     {
         scatter.colors.name <- deparse(substitute(scatter.colors))
         if (!is.null(attr(scatter.colors, "label")))
@@ -251,13 +251,13 @@ LabeledScatterChart <- function(x = NULL,
     {
         col.offset <- 0
         if (!is.null(rownames(x)))
-            labels <- rownames(x)
+            scatter.labels <- rownames(x)
         else
         {
             if (!is.numeric(x[,1]))
             {
                 scatter.labels <- as.character(x[,1])
-                if (is.na(scatter.labels.name) && !is.null(colnames(x)))
+                if (is.null(scatter.labels.name) && !is.null(colnames(x)))
                     scatter.labels.name <- colnames(x)[1]
                 col.offset <- 1
             }
@@ -270,13 +270,13 @@ LabeledScatterChart <- function(x = NULL,
         }
         if (is.null(scatter.sizes) && ncol(x) >= col.offset + 3)
         {
-            if (is.na(scatter.sizes.name) && !is.null(colnames(x)))
+            if (is.null(scatter.sizes.name) && !is.null(colnames(x)))
                 scatter.sizes.name <- colnames(x)[col.offset + 3]
             scatter.sizes <- x[,col.offset + 3]
         }
         if (is.null(scatter.colors) && ncol(x) >= col.offset + 4)
         {
-            if (is.na(scatter.colors.name) || nchar(scatter.colors.name) == 0)
+            if (is.null(scatter.colors.name) || nchar(scatter.colors.name) == 0)
                 scatter.colors.name <- colnames(x)[col.offset + 4]
             scatter.colors <- x[,col.offset + 4]
         }
@@ -332,10 +332,10 @@ LabeledScatterChart <- function(x = NULL,
             scatter.colors <- AsNumeric(scatter.colors, binary = FALSE)
         if (length(scatter.colors) != n)
             stop("'scatter.colors' should be a vector with the same number of observations as 'x'.")
-        if (any(is.na(scatter.colors)))
+        if (any(is.null(scatter.colors)))
         {
             warning("Some points omitted due to missing values in 'scatter.colors'")
-            not.na <- not.na & !is.na(scatter.colors)
+            not.na <- not.na & !is.null(scatter.colors)
         }
     }
     if (sum(not.na) == 0)
@@ -382,11 +382,11 @@ LabeledScatterChart <- function(x = NULL,
     if (length(footer) == 0 || nchar(footer) == 0)
     {
         footer <- ""
-        if (!is.na(scatter.labels.name))
+        if (!is.null(scatter.labels.name))
             footer <- sprintf("%sPoints labeled by '%s'; ", footer, scatter.labels.name)
-        if (!is.na(scatter.colors.name))
+        if (!is.null(scatter.colors.name))
             footer <- sprintf("%sPoints colored according to '%s'; ", footer, scatter.colors.name)
-        if (!is.na(scatter.sizes.name))
+        if (!is.null(scatter.sizes.name))
             footer <- sprintf("%sPoint sizes are proportional to absolute value of '%s'; ",
                               footer, scatter.sizes.name)
     }

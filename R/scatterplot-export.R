@@ -219,11 +219,11 @@
 ScatterChart <- function(x = NULL,
                          y = NULL,
                          scatter.labels = NULL,
-                         scatter.labels.name = NA,
+                         scatter.labels.name = NULL,
                          scatter.sizes = NULL,
-                         scatter.sizes.name = NA,
+                         scatter.sizes.name = NULL,
                          scatter.colors = NULL,
-                         scatter.colors.name = NA,
+                         scatter.colors.name = NULL,
                          scatter.colors.as.categorical = FALSE,
                          colors = ChartColors(12),
                          fit.type = "None",
@@ -360,19 +360,19 @@ ScatterChart <- function(x = NULL,
     data.label.font=list(family=data.label.font.family, size=data.label.font.size, color=data.label.font.color)
 
     # Try to store name of variables
-    if (!is.null(scatter.sizes) && is.na(scatter.sizes.name))
+    if (!is.null(scatter.sizes) && is.null(scatter.sizes.name))
     {
         scatter.sizes.name <- deparse(substitute(scatter.sizes))
         if (!is.null(attr(scatter.sizes, "label")))
             scatter.sizes.name <- attr(scatter.sizes, "label")
     }
-    if (!is.null(scatter.labels) && is.na(scatter.labels.name))
+    if (!is.null(scatter.labels) && is.null(scatter.labels.name))
     {
         scatter.labels.name <- deparse(substitute(scatter.labels))
         if (!is.null(attr(scatter.labels, "label")))
             scatter.labels.name <- attr(scatter.labels, "label")
     }
-    if (!is.null(scatter.colors) && is.na(scatter.colors.name))
+    if (!is.null(scatter.colors) && is.null(scatter.colors.name))
     {
         scatter.colors.name <- deparse(substitute(scatter.colors))
         if (!is.null(attr(scatter.colors, "label")))
@@ -383,13 +383,13 @@ ScatterChart <- function(x = NULL,
     {
         col.offset <- 0
         if (!is.null(rownames(x)))
-            labels <- rownames(x)
+            scatter.labels <- rownames(x)
         else
         {
             if (!is.numeric(x[,1]))
             {
                 scatter.labels <- as.character(x[,1])
-                if (is.na(scatter.labels.name) && !is.null(colnames(x)))
+                if (is.null(scatter.labels.name) && !is.null(colnames(x)))
                     scatter.labels.name <- colnames(x)[1]
                 col.offset <- 1
             }
@@ -402,13 +402,13 @@ ScatterChart <- function(x = NULL,
         }
         if (is.null(scatter.sizes) && ncol(x) >= col.offset + 3)
         {
-            if (is.na(scatter.sizes.name) && !is.null(colnames(x)))
+            if (is.null(scatter.sizes.name) && !is.null(colnames(x)))
                 scatter.sizes.name <- colnames(x)[col.offset + 3]
             scatter.sizes <- x[,col.offset + 3]
         }
         if (is.null(scatter.colors) && ncol(x) >= col.offset + 4)
         {
-            if (is.na(scatter.colors.name) || nchar(scatter.colors.name) == 0)
+            if (is.null(scatter.colors.name) || nchar(scatter.colors.name) == 0)
                 scatter.colors.name <- colnames(x)[col.offset + 4]
             scatter.colors <- x[,col.offset + 4]
         }
@@ -500,12 +500,12 @@ ScatterChart <- function(x = NULL,
     y.str <- if (is.numeric(y)) FormatAsReal(y, decimals = data.label.decimals) else as.character(y)
     source.text <- paste0(scatter.labels, " (", x.tick.prefix, x.str, x.tick.suffix, ", ",
                           y.tick.prefix, y.str, y.tick.suffix, ")")
-    if (!is.na(scatter.colors.name))
+    if (!is.null(scatter.colors.name))
     {
         colors.str <- if (is.numeric(scatter.colors)) FormatAsReal(scatter.colors, decimals = data.label.decimals) else as.character(scatter.colors)
         source.text <- paste0(source.text, "<br>", scatter.colors.name, ": ", colors.str)
     }
-    if (!is.na(scatter.sizes.name))
+    if (!is.null(scatter.sizes.name))
     {
         sizes.str <- if (is.numeric(scatter.sizes)) FormatAsReal(scatter.sizes, decimals=data.label.decimals) else as.character(scatter.sizes)
         source.text <- paste0(source.text, "<br>", scatter.sizes.name, ": ", sizes.str)
@@ -533,11 +533,11 @@ ScatterChart <- function(x = NULL,
     if (length(footer) == 0 || nchar(footer) == 0)
     {
         footer <- ""
-        if (!is.na(scatter.labels.name))
+        if (!is.null(scatter.labels.name))
             footer <- sprintf("%sPoints labeled by '%s'; ", footer, scatter.labels.name)
-        if (!is.na(scatter.colors.name))
+        if (!is.null(scatter.colors.name))
             footer <- sprintf("%sPoints colored according to '%s'; ", footer, scatter.colors.name)
-        if (!is.na(scatter.sizes.name))
+        if (!is.null(scatter.sizes.name))
             footer <- sprintf("%sPoint sizes are proportional to absolute value of '%s'; ",
                               footer, scatter.sizes.name)
     }
