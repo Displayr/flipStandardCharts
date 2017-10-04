@@ -114,6 +114,16 @@ setLegend <- function(type, font, ascending, fill.color, fill.opacity, border.co
             traceorder = order))
 }
 
+getAxisType <- function(labels, us.date.format)
+{
+    type <- "linear"
+    if (any(is.na(suppressWarnings(as.numeric(labels)))))
+        type <- "category"
+    ymd <- PeriodNameToDate(labels, us.format = us.date.format)
+    if ((length(labels) > 6 && !any(is.na(ymd))) || class(labels) %in% c("Date", "POSIXct", "POSIXt"))
+        type <- "date"
+    return(type)
+}
 
 
 formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, us.date.format)
@@ -130,12 +140,15 @@ formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, us.date.format
         y.labels <- unique(dat[[2]])
     }
 
-    y.axis.type <- "linear"
-    x.axis.type <- "linear"
-    if (!is.bar && any(is.na(suppressWarnings(as.numeric(x.labels)))))
-        x.axis.type <- "category"
-    if (is.bar && any(is.na(suppressWarnings(as.numeric(x.labels)))))
-        y.axis.type <- "category"
+    if (!is.bar)
+    {
+        x.axis.type <- getAxisType(x.labels, us.date.format)
+        y.axis.type <- getAxisType(y.labels, us.date.format)
+    } else
+    {
+        x.axis.type <- getAxisType(y.labels, us.date.format)
+        y.axis.type <- getAxisType(x.labels, us.date.format)
+    }
 
     # labels are only processed for independent x-axis (or y-axis in bar charts)
     # the other axis is always numeric
@@ -146,10 +159,6 @@ formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, us.date.format
         use.dates <- TRUE
         if (all(!is.na(ymd)))
             labels <- ymd
-        if (is.bar)
-            y.axis.type <- "date"
-        else
-            x.axis.type <- "date"
     }
     else
     {
@@ -200,7 +209,7 @@ setAxis <- function(title, side, axisLabels, titlefont, linecolor, linewidth, gr
         else
             range <- c(length(axisLabels$labels)-0.5, -0.5)
     }
-    else if (axis.type == "date")
+    else if (axis.type == "date" && !is.null(axisLabels$ymd))
     {
         autorange <- FALSE
         tmp.dates <- as.numeric(axisLabels$ymd) * 1000

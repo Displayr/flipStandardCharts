@@ -445,8 +445,8 @@ ScatterChart <- function(x = NULL,
         warning("Data points with missing values have been omitted.")
 
     n <- length(x)
-    x <- as.numeric(x)
-    y <- as.numeric(y)
+    #x <- as.numeric(x)
+    #y <- as.numeric(y)
     opacity <- 1
     if (!is.null(scatter.sizes))
     {
@@ -538,7 +538,7 @@ ScatterChart <- function(x = NULL,
         if (!is.null(scatter.colors.name))
             footer <- sprintf("%sPoints colored according to '%s'; ", footer, scatter.colors.name)
         if (!is.null(scatter.sizes.name))
-            footer <- sprintf("%sPoint sizes are proportional to absolute value of '%s'; ",
+            footer <- sprintf("%sArea of points are proportional to absolute value of '%s'; ",
                               footer, scatter.sizes.name)
     }
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
@@ -555,13 +555,18 @@ ScatterChart <- function(x = NULL,
                 else FormatAsReal(y, decimals=y.tick.decimals)
 
 
-    x.abs.max <- max(abs(range(x, na.rm=T)), na.rm=T)
-    if (!is.finite(x.abs.max) || x.abs.max == 0 || any(abs(range(x, na.rm=T))/x.abs.max < 1e-2))
-        x.zero <- FALSE
-    y.abs.max <- max(abs(range(y, na.rm=T)), na.rm=T)
-    if (!is.finite(y.abs.max) || y.abs.max == 0 || any(abs(range(y, na.rm=T))/y.abs.max < 1e-2))
-        y.zero <- FALSE
- 
+    if (is.numeric(x))
+    {
+        x.abs.max <- max(abs(range(x, na.rm=T)), na.rm=T)
+        if (!is.finite(x.abs.max) || x.abs.max == 0 || any(abs(range(x, na.rm=T))/x.abs.max < 1e-2))
+            x.zero <- FALSE
+    }
+    if (is.numeric(y))
+    {
+        y.abs.max <- max(abs(range(y, na.rm=T)), na.rm=T)
+        if (!is.finite(y.abs.max) || y.abs.max == 0 || any(abs(range(y, na.rm=T))/y.abs.max < 1e-2))
+            y.zero <- FALSE
+    } 
     axisFormat <- formatLabels(list(x=xlab.tmp, y=ylab.tmp), type, 
                        label.wrap, label.wrap.nchar, us.date.format)
     yaxis <- setAxis(y.title, "left", axisFormat, y.title.font,
@@ -619,7 +624,7 @@ ScatterChart <- function(x = NULL,
         # main trace
         p <- add_trace(p, x = x[ind], y = y[ind], name = g.list[ggi],
                 showlegend=legend.show, legendgroup = if (num.series > 1) ggi else 1,
-                #textfont=data.label.font, #textposition = data.label.position,
+                textposition = data.label.position,
                 marker = marker.obj, line = line.obj, text = source.text[ind],
                 hoverinfo = if (num.series == 1) "text" else "name+text",
                 type="scatter", mode=series.mode, symbols=series.marker.symbols)

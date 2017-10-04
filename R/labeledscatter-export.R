@@ -387,7 +387,7 @@ LabeledScatterChart <- function(x = NULL,
         if (!is.null(scatter.colors.name))
             footer <- sprintf("%sPoints colored according to '%s'; ", footer, scatter.colors.name)
         if (!is.null(scatter.sizes.name))
-            footer <- sprintf("%sPoint sizes are proportional to absolute value of '%s'; ",
+            footer <- sprintf("%sArea of points are proportional to absolute value of '%s'; ",
                               footer, scatter.sizes.name)
     }
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)

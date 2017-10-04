@@ -5,8 +5,9 @@
 \title{Labeled Scatterplot chart}
 \usage{
 LabeledScatterChart(x = NULL, y = NULL, scatter.labels = NULL,
-  scatter.labels.name = NA, scatter.sizes = NULL, scatter.sizes.name = NA,
-  scatter.colors = NULL, scatter.colors.name = NA,
+  scatter.labels.name = NULL, scatter.sizes = NULL,
+  scatter.sizes.name = NULL, scatter.colors = NULL,
+  scatter.colors.name = NULL,
   scatter.colors.as.categorical = !is.null(groups), trend.lines = FALSE,
   logos = NULL, logo.size = 0.5, colors = ChartColors(12),
   legend.show = TRUE, global.font.family = "Arial",
