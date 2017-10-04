@@ -26,16 +26,16 @@ BarChart(x, type = "Bar", fit.type = "None", fit.ignore.last = FALSE,
   legend.font.color = global.font.color,
   legend.font.family = global.font.family, legend.font.size = 10,
   margin.top = NULL, margin.bottom = NULL, margin.left = NULL,
-  margin.right = NULL, margin.inner.pad = NULL, y.title = "",
-  y.title.font.color = global.font.color,
+  margin.right = NULL, margin.inner.pad = NULL, grid.show = TRUE,
+  y.title = "", y.title.font.color = global.font.color,
   y.title.font.family = global.font.family, y.title.font.size = 12,
   y.line.width = 0, y.line.color = rgb(0, 0, 0, maxColorValue = 255),
   y.tick.marks = "", y.tick.mark.length = 5, y.bounds.minimum = NULL,
   y.bounds.maximum = NULL, y.tick.distance = NULL, y.zero = TRUE,
   y.zero.line.width = 0, y.zero.line.color = rgb(44, 44, 44, maxColorValue =
-  255), y.data.reversed = FALSE, y.grid.width = 1, y.grid.color = rgb(225,
-  225, 225, maxColorValue = 255), y.tick.show = TRUE,
-  y.tick.decimals = NULL, y.tick.format.manual = "",
+  255), y.data.reversed = FALSE, y.grid.width = 0 * grid.show,
+  y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+  y.tick.show = TRUE, y.tick.decimals = NULL, y.tick.format.manual = "",
   y.hovertext.decimals = NULL, y.hovertext.format.manual = "",
   y.tick.angle = NULL, y.tick.font.color = global.font.color,
   y.tick.font.family = global.font.family, y.tick.font.size = 10,
@@ -45,9 +45,10 @@ BarChart(x, type = "Bar", fit.type = "None", fit.ignore.last = FALSE,
   x.tick.marks = "", x.tick.mark.length = 5, x.bounds.minimum = NULL,
   x.bounds.maximum = NULL, x.tick.distance = NULL, x.zero.line.width = 0,
   x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
-  x.data.reversed = FALSE, x.grid.width = 1, x.grid.color = rgb(225, 225,
-  225, maxColorValue = 255), x.tick.show = TRUE, x.tick.suffix = "",
-  x.tick.prefix = "", x.tick.decimals = NULL, x.tick.format.manual = "",
+  x.data.reversed = FALSE, x.grid.width = 1 * grid.show,
+  x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+  x.tick.show = TRUE, x.tick.suffix = "", x.tick.prefix = "",
+  x.tick.decimals = NULL, x.tick.format.manual = "",
   x.hovertext.decimals = NULL, x.hovertext.format.manual = "",
   x.tick.angle = NULL, x.tick.font.color = global.font.color,
   x.tick.font.family = global.font.family, x.tick.font.size = 10,
@@ -188,6 +189,8 @@ graphic in pixels}
 
 \item{margin.inner.pad}{Padding in pixels between plot proper
 and axis lines}
+
+\item{grid.show}{Logical; Whether to show grid lines.}
 
 \item{y.title}{Character, y-axis title; defaults to chart input values;
 to turn off set to "FALSE".}

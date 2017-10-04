@@ -9,6 +9,7 @@
 #' @param fit.line.type Character; One of "solid", "dot", "dash, "dotdash", or length of dash "2px", "5px".
 #' @param fit.line.width Numeric; Line width of line of best fit.
 #' @param fit.line.name Character; Name of the line of best fit, which will appear in the hovertext.
+#' @param grid.show Logical; Whether to show grid lines.
 #' @param title Character; chart title.
 #' @param title.font.family Character; title font family. Can be "Arial Black",
 #' "Arial", "Comic Sans MS", "Courier New", "Georgia", "Impact",
@@ -267,6 +268,7 @@ BarChart <- function(x,
                     margin.left = NULL,
                     margin.right = NULL,
                     margin.inner.pad = NULL,
+                    grid.show = TRUE,
                     y.title = "",
                     y.title.font.color = global.font.color,
                     y.title.font.family = global.font.family,
@@ -282,7 +284,7 @@ BarChart <- function(x,
                     y.zero.line.width = 0,
                     y.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
                     y.data.reversed = FALSE,
-                    y.grid.width = 1,
+                    y.grid.width = 0 * grid.show,
                     y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                     y.tick.show = TRUE,
                     y.tick.decimals = NULL,
@@ -307,7 +309,7 @@ BarChart <- function(x,
                     x.zero.line.width = 0,
                     x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
                     x.data.reversed = FALSE,
-                    x.grid.width = 1,
+                    x.grid.width = 1 * grid.show,
                     x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                     x.tick.show = TRUE,
                     x.tick.suffix = "",
@@ -408,7 +410,7 @@ BarChart <- function(x,
                   labels = tmp.label, label.font.size = data.label.font.size)
     ytick <- setTicks(y.bounds.minimum, y.bounds.maximum, y.tick.distance, !y.data.reversed)
     axisFormat <- formatLabels(chart.matrix, type, label.wrap, label.wrap.nchar, us.date.format) 
-    
+   
     yaxis <- setAxis(y.title, "left", axisFormat, y.title.font, 
                   y.line.color, y.line.width, y.grid.width, y.grid.color,
                   ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance, y.tick.format.manual, 
@@ -424,6 +426,7 @@ BarChart <- function(x,
     # Work out margin spacing 
     margins <- list(t = 20, b = 50, r = 60, l = 80, pad = 0)
     margins <- setMarginsForAxis(margins, axisFormat, yaxis)
+    margins <- setMarginsForAxis(margins, axisFormat, xaxis)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size, 
                                  subtitle.font.size, footer.font.size)
     margins <- setMarginsForLegend(margins, legend.show, legend)
@@ -501,13 +504,11 @@ BarChart <- function(x,
 
         if (data.label.show && !is.stacked)
         {
-            y.range <- getRange(x, data.annotations$y, yaxis, axisFormat)
-            #dd <- 0.5
-            #y.range <- c(nrow(chart.matrix)-1+dd, -dd)
+            y.range <- getRange(x, yaxis, axisFormat)
             yaxis2 <- list(overlaying = "y", visible = FALSE, range = y.range)
             x.diff <- diff(range(data.annotations$x))/100
             p <- add_text(p, yaxis = "y2", x = data.annotations$x[,i] + x.diff, 
-                      y = data.annotations$y[,i],
+                      y = data.annotations$y[,i] + (yaxis$type == "linear"),
                       text = data.annotations$text[,i], textposition = "middle right",
                       textfont = data.label.font, hoverinfo = "none",
                       showlegend = FALSE, legendgroup = tmp.group)

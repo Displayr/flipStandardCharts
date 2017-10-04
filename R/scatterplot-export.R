@@ -80,6 +80,7 @@
 #' graphic in pixels
 #' @param margin.inner.pad Padding in pixels between plot proper
 #' and axis lines
+#' @param grid.show Logical; Whether to show grid lines.
 #' @param y.title Character, y-axis title; defaults to chart input values;
 #' to turn off set to "FALSE".
 #' @param y.title.font.color y-axis title font color as a named color in
@@ -251,9 +252,9 @@ ScatterChart <- function(x = NULL,
                          footer.wrap = TRUE,
                          footer.wrap.nchar = 100,
                          data.label.show = FALSE,
-                         data.label.font.family = NULL,
+                         data.label.font.family = global.font.family,
+                         data.label.font.color = global.font.color,
                          data.label.font.size = 10,
-                         data.label.font.color = NULL,
                          data.label.decimals = 2, # Ignored in Labeled Bubble and Scatterplots
                          data.label.prefix = "",
                          data.label.suffix = "",
@@ -268,8 +269,8 @@ ScatterChart <- function(x = NULL,
                          legend.fill.opacity = 1,
                          legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
                          legend.border.line.width = 0,
-                         legend.font.color = NULL,
-                         legend.font.family = NULL,
+                         legend.font.color = global.font.color,
+                         legend.font.family = global.font.family,
                          legend.font.size = 10,
                          legend.position = "right",
                          legend.ascending = NA,
@@ -278,9 +279,10 @@ ScatterChart <- function(x = NULL,
                          margin.left = NULL,
                          margin.right = NULL,
                          margin.inner.pad = NULL,
+                         grid.show = TRUE,
                          y.title = "",
-                         y.title.font.color = NULL,
-                         y.title.font.family = NULL,
+                         y.title.font.color = global.font.color,
+                         y.title.font.family = global.font.color,
                          y.title.font.size = 12,
                          y.line.width = 0,
                          y.line.color = rgb(0, 0, 0, maxColorValue = 255),
@@ -294,7 +296,7 @@ ScatterChart <- function(x = NULL,
                          y.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
                          y.position = "left",
                          y.data.reversed = FALSE,
-                         y.grid.width = 1,
+                         y.grid.width = 1 * grid.show,
                          y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                          y.tick.show = TRUE,
                          y.tick.suffix = "",
@@ -304,12 +306,12 @@ ScatterChart <- function(x = NULL,
                          y.hovertext.decimals = NULL,
                          y.hovertext.format.manual = "",
                          y.tick.angle = NULL,
-                         y.tick.font.color = NULL,
-                         y.tick.font.family = NULL,
+                         y.tick.font.color = global.font.color,
+                         y.tick.font.family = global.font.family,
                          y.tick.font.size = 10,
                          x.title = "",
-                         x.title.font.color = NULL,
-                         x.title.font.family = NULL,
+                         x.title.font.color = global.font.color,
+                         x.title.font.family = global.font.family,
                          x.title.font.size = 12,
                          x.line.width = 0,
                          x.line.color = rgb(0, 0, 0, maxColorValue = 255),
@@ -322,7 +324,7 @@ ScatterChart <- function(x = NULL,
                          x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
                          x.position = "bottom",
                          x.data.reversed = FALSE,
-                         x.grid.width = 1,
+                         x.grid.width = 1 * grid.show,
                          x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                          x.tick.show = TRUE,
                          x.tick.suffix = "",
@@ -332,8 +334,8 @@ ScatterChart <- function(x = NULL,
                          x.hovertext.decimals = NULL,
                          x.hovertext.format.manual = "",
                          x.tick.angle = NULL,
-                         x.tick.font.color = NULL,
-                         x.tick.font.family = NULL,
+                         x.tick.font.color = global.font.color,
+                         x.tick.font.family = global.font.family,
                          x.tick.font.size = 10,
                          label.wrap = TRUE,
                          label.wrap.nchar = 21,
@@ -347,6 +349,16 @@ ScatterChart <- function(x = NULL,
                          us.date.format = FALSE,
                          ...)
 {
+    title.font=list(family=title.font.family, size=title.font.size, color=title.font.color)
+    subtitle.font=list(family=subtitle.font.family, size=subtitle.font.size, color=subtitle.font.color)
+    x.title.font=list(family=x.title.font.family, size=x.title.font.size, color=x.title.font.color)
+    y.title.font=list(family=y.title.font.family, size=y.title.font.size, color=y.title.font.color)
+    ytick.font=list(family=y.tick.font.family, size=y.tick.font.size, color=y.tick.font.color)
+    xtick.font=list(family=x.tick.font.family, size=x.tick.font.size, color=x.tick.font.color)
+    footer.font=list(family=footer.font.family, size=footer.font.size, color=footer.font.color)
+    legend.font=list(family=legend.font.family, size=legend.font.size, color=legend.font.color)
+    data.label.font=list(family=data.label.font.family, size=data.label.font.size, color=data.label.font.color)
+
     # Try to store name of variables
     if (!is.null(scatter.sizes) && is.na(scatter.sizes.name))
     {
@@ -462,13 +474,13 @@ ScatterChart <- function(x = NULL,
             tmp.seq <- seq(0, 1, length=5)
             colorbar <- list(tickmode="array", tickvals=tmp.seq,
                              ticktext=c(min(scatter.sizes) + diff(range(scatter.sizes)) * tmp.seq),
-                             outlinewidth=0)
+                             outlinewidth=0, tickfont=data.label.font)
         }
         else if (any(class(scatter.colors) == "factor"))
             colorbar <- list(tickmode="array", tickvals=seq(0, 1, length=nlevels(scatter.colors)),
-                             ticktext=levels(scatter.colors), outlinewidth=0)
+                             ticktext=levels(scatter.colors), outlinewidth=0, tickfont=data.label.font)
         else
-            colorbar <- list(outlinewidth = 0)
+            colorbar <- list(outlinewidth = 0, tickfont=data.label.font)
 
         scatter.colors.as.numeric <- 1
         groups <- 1:n
@@ -489,9 +501,15 @@ ScatterChart <- function(x = NULL,
     source.text <- paste0(scatter.labels, " (", x.tick.prefix, x.str, x.tick.suffix, ", ",
                           y.tick.prefix, y.str, y.tick.suffix, ")")
     if (!is.na(scatter.colors.name))
-        source.text <- paste0(source.text, "<br>", scatter.colors.name, ": ", as.character(scatter.colors))
+    {
+        colors.str <- if (is.numeric(scatter.colors)) FormatAsReal(scatter.colors, decimals = data.label.decimals) else as.character(scatter.colors)
+        source.text <- paste0(source.text, "<br>", scatter.colors.name, ": ", colors.str)
+    }
     if (!is.na(scatter.sizes.name))
-        source.text <- paste0(source.text, "<br>", scatter.sizes.name, ": ", as.character(scatter.sizes))
+    {
+        sizes.str <- if (is.numeric(scatter.sizes)) FormatAsReal(scatter.sizes, decimals=data.label.decimals) else as.character(scatter.sizes)
+        source.text <- paste0(source.text, "<br>", scatter.sizes.name, ": ", sizes.str)
+    }
 
 
     # other constants
@@ -500,6 +518,8 @@ ScatterChart <- function(x = NULL,
     scatter.opacity <- if (!is.null(scatter.sizes)) 0.4 else 1
     series.mode <- if (is.null(series.line.width) || series.line.width == 0) "markers"
                    else "markers+lines"
+    if (data.label.show)
+        series.mode <- paste0(series.mode, "+text")
     series.marker.symbols <- if (is.null(series.marker.show) ||
                                  series.marker.show == "automatic" ||
                                  series.marker.show == "none")
@@ -507,15 +527,6 @@ ScatterChart <- function(x = NULL,
     else
         series.marker.show
 
-    title.font=list(family=title.font.family, size=title.font.size, color=title.font.color)
-    subtitle.font=list(family=subtitle.font.family, size=subtitle.font.size, color=subtitle.font.color)
-    x.title.font=list(family=x.title.font.family, size=x.title.font.size, color=x.title.font.color)
-    y.title.font=list(family=y.title.font.family, size=y.title.font.size, color=y.title.font.color)
-    ytick.font=list(family=y.tick.font.family, size=y.tick.font.size, color=y.tick.font.color)
-    xtick.font=list(family=x.tick.font.family, size=x.tick.font.size, color=x.tick.font.color)
-    footer.font=list(family=footer.font.family, size=footer.font.size, color=footer.font.color)
-    legend.font=list(family=legend.font.family, size=legend.font.size, color=legend.font.color)
-    data.label.font=list(family=data.label.font.family, size=data.label.font.size, color=data.label.font.color)
     type <- "Scatterplot"
     legend <- setLegend("Scatterplot", legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
                         legend.border.color, legend.border.line.width)
@@ -537,8 +548,22 @@ ScatterChart <- function(x = NULL,
         y.tick.decimals <- decimalsToDisplay(as.numeric(y))
     xtick <- setTicks(x.bounds.minimum, x.bounds.maximum, x.tick.distance, x.data.reversed)
     ytick <- setTicks(y.bounds.minimum, y.bounds.maximum, y.tick.distance, y.data.reversed)
-    axisFormat <- formatLabels(list(x=x, y=y), type, label.wrap, label.wrap.nchar, us.date.format)
+    
+    xlab.tmp <- if (!is.numeric(x)) as.character(x)
+                else FormatAsReal(x, decimals=x.tick.decimals) 
+    ylab.tmp <- if (!is.numeric(y)) as.character(y)
+                else FormatAsReal(y, decimals=y.tick.decimals)
 
+
+    x.abs.max <- max(abs(range(x, na.rm=T)), na.rm=T)
+    if (!is.finite(x.abs.max) || x.abs.max == 0 || any(abs(range(x, na.rm=T))/x.abs.max < 1e-2))
+        x.zero <- FALSE
+    y.abs.max <- max(abs(range(y, na.rm=T)), na.rm=T)
+    if (!is.finite(y.abs.max) || y.abs.max == 0 || any(abs(range(y, na.rm=T))/y.abs.max < 1e-2))
+        y.zero <- FALSE
+ 
+    axisFormat <- formatLabels(list(x=xlab.tmp, y=ylab.tmp), type, 
+                       label.wrap, label.wrap.nchar, us.date.format)
     yaxis <- setAxis(y.title, "left", axisFormat, y.title.font,
                   y.line.color, y.line.width, y.grid.width, y.grid.color,
                   ytick, ytick.font, y.tick.angle, y.tick.mark.length,

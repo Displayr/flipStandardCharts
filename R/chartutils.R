@@ -54,21 +54,24 @@ checkTableList <- function(y, trend.lines)
 }
 
 
-getRange <- function(x, positions, axis, axisFormat)
+getRange <- function(x, axis, axisFormat)
 {
     range <- axis$range
     if (is.null(range))
     {
-        range <- if (is.numeric(x) || !is.null(axisFormat$ymd)) range(positions)
-                 else c(-0.5, length(x)-0.5)
-
         if (!is.null(axisFormat$ymd))
         {
-            tmpd <- diff(sort(positions))[1] * 0.5
-            range <- range + c(-tmpd, tmpd)
+            tmp.dates <- as.numeric(axisFormat$ymd) * 1000
+            diff <- min(diff(tmp.dates), na.rm=T)
+            range <- range(tmp.dates) + c(-1, 1) * diff
         }
+        else if (is.numeric(x))
+            range <- range(x) + c(0.5, -0.5)
+        else
+            range <- c(-0.5, length(x)-0.5)
+        
         if (axis$autorange == "reversed")
-            range <- rev(range) 
+            range <- rev(range)
     }
     range
 }
@@ -93,7 +96,7 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
     return(list(x=x.fit, y=y.fit))
 }
 
-setLegend <- function(type, font, ascending, fill.color, fill.opacity, border.color, border.line.width, 
+setLegend <- function(type, font, ascending, fill.color, fill.opacity, border.color, border.line.width,
                       x.pos=1.02, y.pos=1.00)
 {
     if (is.na(ascending))
@@ -123,9 +126,9 @@ formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, us.date.format
     }
     else
     {
-        x.labels <- sort(unique(dat[[1]])) 
-        y.labels <- sort(unique(dat[[2]]))
-    } 
+        x.labels <- unique(dat[[1]])
+        y.labels <- unique(dat[[2]])
+    }
 
     y.axis.type <- "linear"
     x.axis.type <- "linear"
@@ -133,7 +136,7 @@ formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, us.date.format
         x.axis.type <- "category"
     if (is.bar && any(is.na(suppressWarnings(as.numeric(x.labels)))))
         y.axis.type <- "category"
-    
+
     # labels are only processed for independent x-axis (or y-axis in bar charts)
     # the other axis is always numeric
     labels <- x.labels
@@ -154,14 +157,14 @@ formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, us.date.format
         if (is.character(labels))
             labels <- autoFormatLongLabels(labels, label.wrap, label.wrap.nchar)
     }
-    return(list(ymd=ymd, labels=labels, labels.on.x=!is.bar, 
+    return(list(ymd=ymd, labels=labels, labels.on.x=!is.bar,
                 x.axis.type=x.axis.type, y.axis.type=y.axis.type))
 }
 
 setAxis <- function(title, side, axisLabels, titlefont, linecolor, linewidth, gridwidth, gridcolor,
                     ticks, tickfont, tickangle, ticklen, tickdistance,
                     tickformatmanual, tickdecimals, tickprefix, ticksuffix, tickshow,
-                    show.zero, zero.line.width, zero.line.color, 
+                    show.zero, zero.line.width, zero.line.color,
                     hovertext.format.manual, hovertext.decimals, labels=NULL)
 {
     axis.type <- if (side %in% c("bottom", "top")) axisLabels$x.axis.type else axisLabels$y.axis.type
@@ -183,13 +186,28 @@ setAxis <- function(title, side, axisLabels, titlefont, linecolor, linewidth, gr
 
     autorange <- ticks$autorange
     range <- ticks$range
-    if (axis.type == "category" && !axisLabels$labels.on.x && side %in% c("left","right"))
+    if ((!axisLabels$labels.on.x && side %in% c("left","right")))
     {
         autorange <- FALSE
-        range <- c(length(axisLabels$labels)- 0.5, 0.5)
+        if (axis.type == "date")
+        {
+            tmp.dates <- as.numeric(axisLabels$ymd) * 1000
+            diff <- min(diff(tmp.dates), na.rm=T)
+            range <- rev(range(tmp.dates, na.rm=T)) + c(1, -1) * diff
+        }
+        else if (axis.type == "linear")
+            range <- rev(range(as.numeric(axisLabels$labels))) + c(0.5, -0.5)
+        else
+            range <- c(length(axisLabels$labels)-0.5, -0.5)
+    }
+    else if (axis.type == "date")
+    {
+        autorange <- FALSE
+        tmp.dates <- as.numeric(axisLabels$ymd) * 1000
+        diff <- min(diff(tmp.dates), na.rm=T)
+        range <- range(tmp.dates, na.rm=T) + c(-1, 1) * diff
     }
 
-    
     hoverformat <- ""
     if (!is.null(hovertext.format.manual) && nchar(hovertext.format.manual))
         hoverformat <- hovertext.format.manual
@@ -197,13 +215,13 @@ setAxis <- function(title, side, axisLabels, titlefont, linecolor, linewidth, gr
         hoverformat <- ""
     else
         hoverformat <- paste0(".", hovertext.decimals, "f")
-    
+
     rangemode <- "normal"
     if (axis.type == "linear" && show.zero)
         rangemode <- "tozero"
 
-    return (list(title=title, side=side, type=axis.type, titlefont=titlefont, tickfont=tickfont, 
-                 showline=has.line, linecolor=linecolor, linewidth=if (has.line) NULL else linewidth, 
+    return (list(title=title, side=side, type=axis.type, titlefont=titlefont, tickfont=tickfont,
+                 showline=has.line, linecolor=linecolor, linewidth=if (has.line) NULL else linewidth,
                  showgrid=gridwidth > 0, gridwidth=gridwidth, gridcolor=gridcolor,
                  tickmode=ticks$mode, tickvals=ticks$tickvals, ticktext=ticks$ticktext,
                  ticks=if (has.line) "outside" else "", tickangle=tickangle, ticklen=ticklen,
@@ -244,13 +262,13 @@ setMarginsForAxis <- function(margins, axisLabels, axis)
 
     lab.nchar <- max(c(0,nchar(unlist(strsplit(split="<br>", as.character(labels))))))
     font.asp <- fontAspectRatio(axis$tickfont$family)
-    lab.len <- font.asp * axis$tickfont$size * lab.nchar
+    lab.len <- font.asp * axis$tickfont$size * lab.nchar * 1.25
     lab.nline <- if (is.character(labels)) max(sapply(gregexpr("<br>", labels),
                      function(x){sum(x > -1)}))
                  else 0
 
     new.margin <- 0
-    if (lab.len > 50 || (!is.null(lab.nline) && lab.nline > 0))
+    if (lab.len > 5 || (!is.null(lab.nline) && lab.nline > 0))
         new.margin <- lab.len
 
     title.nline <- 0
@@ -259,9 +277,9 @@ setMarginsForAxis <- function(margins, axisLabels, axis)
     title.pad <- axis$titlefont$size * title.nline * 1.25 + 5
 
     if (axis$side == "right")
-        margins$r <- max(margins$r, new.margin + title.pad) 
+        margins$r <- max(margins$r, new.margin + title.pad)
     else if (axis$side == "left")
-        margins$l <- max(margins$l, new.margin + title.pad) 
+        margins$l <- max(margins$l, new.margin + title.pad)
     else if (axis$side == "bottom")
     {
         # tickangle is changed in function setAxis
@@ -276,7 +294,7 @@ setMarginsForAxis <- function(margins, axisLabels, axis)
     return(margins)
 }
 
-setMarginsForText <- function(margins, title, subtitle, footer, 
+setMarginsForText <- function(margins, title, subtitle, footer,
                         title.font.size, subtitle.font.size, footer.font.size)
 {
     title.nline <- 0
@@ -330,7 +348,7 @@ setFooterAxis <- function(footer, footer.font, margins)
     if (nchar(footer) > 0)
     {
         footer.nline <- sum(gregexpr("<br>", footer)[[1]] > -1) + 1
-        footer.npad <- max(0, ceiling(margins$b/footer.font$size/1.25) - footer.nline - 2) 
+        footer.npad <- max(0, ceiling(margins$b/footer.font$size/1.25) - footer.nline - 2)
         footer <- paste0(paste(rep("<br>", footer.npad), collapse=""), footer)
         res <- list(overlaying="x", side = "bottom", anchor="free", position=0,
              visible=T, showline=F, zeroline=F, showgrid=F, tickfont=footer.font,
@@ -339,7 +357,7 @@ setFooterAxis <- function(footer, footer.font, margins)
     res
 }
 
-setTicks <- function(minimum, maximum, distance, reversed = FALSE, 
+setTicks <- function(minimum, maximum, distance, reversed = FALSE,
                 data = NULL, labels = NULL, type="scatter", label.font.size = 10)
 {
     # starting values
@@ -360,6 +378,7 @@ setTicks <- function(minimum, maximum, distance, reversed = FALSE,
         if (is.null(maximum))
             maximum <- max(data)
 
+        # Add horizontal space for data labels
         pad <- 0
         lab.len <- 1
         if (!is.null(labels))
@@ -384,7 +403,7 @@ setTicks <- function(minimum, maximum, distance, reversed = FALSE,
         mode <- "array"
         tickvals <- seq(minimum, maximum, by=distance)
     }
-    return (list(autorange=autorange, mode=mode, range=range, 
+    return (list(autorange=autorange, mode=mode, range=range,
                  tickvals=tickvals, ticktext=ticktext))
 }
 

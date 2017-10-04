@@ -20,14 +20,15 @@ RadarChart(x, title = "", title.font.family = global.font.family,
   margin.right = NULL, margin.inner.pad = NULL, series.marker.size = 6,
   series.line.width = 3, tooltip.show = TRUE, modebar.show = FALSE,
   global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
-  maxColorValue = 255), x.title = "",
+  maxColorValue = 255), grid.show = TRUE, x.title = "",
   x.title.font.color = global.font.color,
   x.title.font.family = global.font.family, x.title.font.size = 12,
-  x.grid.width = 1, x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
-  y.bounds.minimum = NULL, y.bounds.maximum = NULL,
-  y.tick.distance = NULL, y.grid.width = 1, y.grid.color = rgb(225, 225,
-  225, maxColorValue = 255), y.tick.show = TRUE, y.tick.suffix = "",
-  y.tick.prefix = "", y.tick.decimals = NULL, y.hovertext.decimals = NULL,
+  x.grid.width = 1 * grid.show, x.grid.color = rgb(225, 225, 225,
+  maxColorValue = 255), y.bounds.minimum = NULL, y.bounds.maximum = NULL,
+  y.tick.distance = NULL, y.grid.width = 1 * grid.show,
+  y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+  y.tick.show = TRUE, y.tick.suffix = "", y.tick.prefix = "",
+  y.tick.decimals = NULL, y.hovertext.decimals = NULL,
   y.tick.font.color = global.font.color,
   y.tick.font.family = global.font.family, y.tick.font.size = 10,
   label.wrap = TRUE, label.wrap.nchar = 21, data.label.show = FALSE,
@@ -70,8 +71,7 @@ named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 a named color in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{charting.area.fill.opacity}{Charting area background
-opacity as an alpha value (0 to 1).}
+\item{charting.area.fill.opacity}{Charting area background}
 
 \item{legend.show}{Logical; show the legend.}
 
@@ -131,6 +131,9 @@ font attribute for the chart unless specified individually.}
 
 \item{global.font.color}{Global font color as a named color in character format
 (e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).}
+
+\item{grid.show}{Logical; Whether to show grid lines.
+opacity as an alpha value (0 to 1).}
 
 \item{x.title}{Character, x-axis title; defaults to chart input values;
 to turn off set to "FALSE".}

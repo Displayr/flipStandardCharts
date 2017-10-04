@@ -15,7 +15,7 @@ PieChart(x, type = "Pie", colors = NULL, pie.subslice.colors = NULL,
   pie.groups.font.color = global.font.color,
   pie.groups.font.family = global.font.family, pie.groups.order = "initial",
   pie.inner.radius = 70, pie.border.color = rgb(255, 255, 255, maxColorValue
-  = 255), pie.show.percentages = TRUE, global.font.family = "Arial",
+  = 255), as.percentages = TRUE, global.font.family = "Arial",
   global.font.color = rgb(44, 44, 44, maxColorValue = 255), ...)
 }
 \arguments{
@@ -73,7 +73,7 @@ donut charts as a proportion out of 100. defaults to 70.}
 
 \item{pie.border.color}{A single color for space around pie and between segments.}
 
-\item{pie.show.percentages}{Whether to show percentages in pie and donut
+\item{as.percentages}{Whether to show percentages in pie and donut
 charts instead of original values.}
 
 \item{global.font.family}{Character; font family for all occurrences of any

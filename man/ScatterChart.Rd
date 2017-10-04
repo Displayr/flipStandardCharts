@@ -19,9 +19,9 @@ ScatterChart(x = NULL, y = NULL, scatter.labels = NULL,
   footer = "", footer.font.family = global.font.family,
   footer.font.color = global.font.color, footer.font.size = 8,
   footer.wrap = TRUE, footer.wrap.nchar = 100, data.label.show = FALSE,
-  data.label.font.family = NULL, data.label.font.size = 10,
-  data.label.font.color = NULL, data.label.decimals = 2,
-  data.label.prefix = "", data.label.suffix = "",
+  data.label.font.family = global.font.family,
+  data.label.font.color = global.font.color, data.label.font.size = 10,
+  data.label.decimals = 2, data.label.prefix = "", data.label.suffix = "",
   data.label.position = "top middle", opacity = NULL,
   background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
   background.fill.opacity = 1, charting.area.fill.color = rgb(255, 255, 255,
@@ -29,37 +29,38 @@ ScatterChart(x = NULL, y = NULL, scatter.labels = NULL,
   legend.fill = rgb(255, 255, 255, maxColorValue = 255),
   legend.fill.color = legend.fill, legend.fill.opacity = 1,
   legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
-  legend.border.line.width = 0, legend.font.color = NULL,
-  legend.font.family = NULL, legend.font.size = 10,
+  legend.border.line.width = 0, legend.font.color = global.font.color,
+  legend.font.family = global.font.family, legend.font.size = 10,
   legend.position = "right", legend.ascending = NA, margin.top = NULL,
   margin.bottom = NULL, margin.left = NULL, margin.right = NULL,
-  margin.inner.pad = NULL, y.title = "", y.title.font.color = NULL,
-  y.title.font.family = NULL, y.title.font.size = 12, y.line.width = 0,
-  y.line.color = rgb(0, 0, 0, maxColorValue = 255), y.tick.marks = "",
-  y.tick.mark.length = 5, y.bounds.minimum = NULL,
+  margin.inner.pad = NULL, grid.show = TRUE, y.title = "",
+  y.title.font.color = global.font.color,
+  y.title.font.family = global.font.color, y.title.font.size = 12,
+  y.line.width = 0, y.line.color = rgb(0, 0, 0, maxColorValue = 255),
+  y.tick.marks = "", y.tick.mark.length = 5, y.bounds.minimum = NULL,
   y.bounds.maximum = NULL, y.tick.distance = NULL, y.zero = TRUE,
   y.zero.line.width = 0, y.zero.line.color = rgb(44, 44, 44, maxColorValue =
-  255), y.position = "left", y.data.reversed = FALSE, y.grid.width = 1,
-  y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+  255), y.position = "left", y.data.reversed = FALSE, y.grid.width = 1 *
+  grid.show, y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
   y.tick.show = TRUE, y.tick.suffix = "", y.tick.prefix = "",
   y.tick.decimals = NULL, y.tick.format.manual = "",
   y.hovertext.decimals = NULL, y.hovertext.format.manual = "",
-  y.tick.angle = NULL, y.tick.font.color = NULL,
-  y.tick.font.family = NULL, y.tick.font.size = 10, x.title = "",
-  x.title.font.color = NULL, x.title.font.family = NULL,
-  x.title.font.size = 12, x.line.width = 0, x.line.color = rgb(0, 0, 0,
-  maxColorValue = 255), x.tick.marks = "", x.tick.mark.length = 5,
-  x.bounds.minimum = NULL, x.bounds.maximum = NULL,
-  x.tick.distance = NULL, x.zero.line.width = 0,
+  y.tick.angle = NULL, y.tick.font.color = global.font.color,
+  y.tick.font.family = global.font.family, y.tick.font.size = 10,
+  x.title = "", x.title.font.color = global.font.color,
+  x.title.font.family = global.font.family, x.title.font.size = 12,
+  x.line.width = 0, x.line.color = rgb(0, 0, 0, maxColorValue = 255),
+  x.tick.marks = "", x.tick.mark.length = 5, x.bounds.minimum = NULL,
+  x.bounds.maximum = NULL, x.tick.distance = NULL, x.zero.line.width = 0,
   x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
-  x.position = "bottom", x.data.reversed = FALSE, x.grid.width = 1,
-  x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+  x.position = "bottom", x.data.reversed = FALSE, x.grid.width = 1 *
+  grid.show, x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
   x.tick.show = TRUE, x.tick.suffix = "", x.tick.prefix = "",
   x.tick.decimals = NULL, x.tick.format.manual = "",
   x.hovertext.decimals = NULL, x.hovertext.format.manual = "",
-  x.tick.angle = NULL, x.tick.font.color = NULL,
-  x.tick.font.family = NULL, x.tick.font.size = 10, label.wrap = TRUE,
-  label.wrap.nchar = 21, series.line.width = 0,
+  x.tick.angle = NULL, x.tick.font.color = global.font.color,
+  x.tick.font.family = global.font.family, x.tick.font.size = 10,
+  label.wrap = TRUE, label.wrap.nchar = 21, series.line.width = 0,
   series.marker.border.width = 1, series.marker.size = 6,
   series.marker.opacity = 1, series.marker.show = "none",
   series.marker.colors = NULL, swap.x.and.y = FALSE,
@@ -152,11 +153,11 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{data.label.font.family}{Character; font family for data label.}
 
-\item{data.label.font.size}{Font size for data label.}
-
 \item{data.label.font.color}{Font color as a named color
 in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
+
+\item{data.label.font.size}{Font size for data label.}
 
 \item{data.label.decimals}{Number of decimal places to show in
 data labels.}
@@ -226,6 +227,8 @@ graphic in pixels}
 
 \item{margin.inner.pad}{Padding in pixels between plot proper
 and axis lines}
+
+\item{grid.show}{Logical; Whether to show grid lines.}
 
 \item{y.title}{Character, y-axis title; defaults to chart input values;
 to turn off set to "FALSE".}

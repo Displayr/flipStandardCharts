@@ -38,6 +38,7 @@
 #' a named color in character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param charting.area.fill.opacity Charting area background
+#' @param grid.show Logical; Whether to show grid lines.
 #' opacity as an alpha value (0 to 1).
 #' @param legend.show Logical; show the legend.
 #' @param legend.position.x A numeric controlling the position of the legend. 
@@ -153,16 +154,17 @@ RadarChart <- function(x,
                     modebar.show = FALSE,
                     global.font.family = "Arial",
                     global.font.color = rgb(44, 44, 44, maxColorValue = 255),
+                    grid.show = TRUE,
                     x.title = "", # ignored but avoids matching problem
                     x.title.font.color = global.font.color,
                     x.title.font.family = global.font.family,
                     x.title.font.size = 12,
-                    x.grid.width = 1,
+                    x.grid.width = 1 * grid.show,
                     x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                     y.bounds.minimum = NULL,
                     y.bounds.maximum = NULL,
                     y.tick.distance = NULL,
-                    y.grid.width = 1,
+                    y.grid.width = 1 * grid.show,
                     y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                     y.tick.show = TRUE,
                     y.tick.suffix = "",
