@@ -30,8 +30,6 @@ checkTableList <- function(y, trend.lines)
         warning(sprintf("Tables have duplicate names: '%s'. Points from duplicated tables cannot be distinguised.", paste(y.names[duplicated(y.names)], collapse = "', '")))
 
     # Check tables match - order of rows will match first table
-    #y[[1]] <- if (transpose) GetTidyTwoDimensionalArray(t(y[[1]]), rows.to.ignore, cols.to.ignore)
-    #else GetTidyTwoDimensionalArray(y[[1]], rows.to.ignore, cols.to.ignore)
     r.names <- rownames(y[[1]])
     c.names <- colnames(y[[1]])
     if (!is.null(r.names) && any(duplicated(r.names)) && length(y) > 1)
@@ -40,9 +38,6 @@ checkTableList <- function(y, trend.lines)
     if (num.tables > 1) {
         for (i in 2:num.tables)
         {
-            #y[[i]] <- if (transpose) GetTidyTwoDimensionalArray(t(y[[i]]), rows.to.ignore, cols.to.ignore)
-            #            else GetTidyTwoDimensionalArray(y[[i]], rows.to.ignore, cols.to.ignore)
-
             if (!setequal(r.names, rownames(y[[i]])))
                 stop(sprintf("Tables should have identical row names but table '%s' differs from table '%s'.",
                              y.names[i], y.names[1]))

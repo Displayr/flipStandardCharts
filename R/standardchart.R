@@ -307,6 +307,7 @@
 #' @importFrom flipTime PeriodNameToDate
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom flipTransformations Factor AsNumeric TextAsVector
+#' @importFrom flipData GetTidyTwoDimensionalArray
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
 #' @export
