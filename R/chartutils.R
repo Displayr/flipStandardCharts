@@ -132,7 +132,7 @@ formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, us.date.format
     if (is.matrix(dat))
     {
         x.labels <- rownames(dat)
-        y.labels <- colnames(dat)
+        y.labels <- NULL
     }
     else
     {
@@ -144,6 +144,7 @@ formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, us.date.format
     {
         x.axis.type <- getAxisType(x.labels, us.date.format)
         y.axis.type <- getAxisType(y.labels, us.date.format)
+
     } else
     {
         x.axis.type <- getAxisType(y.labels, us.date.format)
@@ -195,7 +196,7 @@ setAxis <- function(title, side, axisLabels, titlefont, linecolor, linewidth, gr
 
     autorange <- ticks$autorange
     range <- ticks$range
-    if ((!axisLabels$labels.on.x && side %in% c("left","right")))
+    if ((!axisLabels$labels.on.x) && side %in% c("left","right"))
     {
         autorange <- FALSE
         if (axis.type == "date")
