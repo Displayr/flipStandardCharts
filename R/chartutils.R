@@ -262,9 +262,10 @@ fontAspectRatio <- function(font)
 }
 
 
-setMarginsForAxis <- function(margins, axisLabels, axis)
+setMarginsForAxis <- function(margins, labels, axis)
 {
-    labels <- axisLabels$labels
+    if (!is.character(labels) && !is.null(labels$labels))
+        labels <- labels$labels
     lab.len <- 0
     lab.nline <- 0
     lab.nchar <- 1
@@ -283,7 +284,7 @@ setMarginsForAxis <- function(margins, axisLabels, axis)
     title.nline <- 0
     if (nchar(axis$title) > 0)
         title.nline <- sum(gregexpr("<br>", axis$title)[[1]] > -1) + 1
-    title.pad <- axis$titlefont$size * title.nline * 1.25 + 5
+    title.pad <- axis$titlefont$size * title.nline * 1.25
 
     if (axis$side == "right")
         margins$r <- max(margins$r, new.margin + title.pad)
@@ -296,7 +297,7 @@ setMarginsForAxis <- function(margins, axisLabels, axis)
         if (is.null(axis$tickangle))
             axis$tickangle <- 0
         if (axis$tickangle != 0)
-            margins$b <- margins$b + new.margin - 40 + title.pad
+            margins$b <- margins$b + new.margin * 0.5 + title.pad 
         else
             margins$b <- margins$b + 1.25*axis$tickfont$size*floor(lab.nline) + title.pad
     }
