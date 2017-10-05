@@ -508,7 +508,7 @@ BarChart <- function(x,
             yaxis2 <- list(overlaying = "y", visible = FALSE, range = y.range)
             x.diff <- diff(range(data.annotations$x))/100
             p <- add_text(p, yaxis = "y2", x = data.annotations$x[,i] + x.diff, 
-                      y = data.annotations$y[,i] + (yaxis$type == "linear"),
+                      y = data.annotations$y[,i],
                       text = data.annotations$text[,i], textposition = "middle right",
                       textfont = data.label.font, hoverinfo = "none",
                       showlegend = FALSE, legendgroup = tmp.group)

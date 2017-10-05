@@ -38,14 +38,17 @@ dataLabelAnnotation <- function(chart.matrix,
         y.positions <- chart.matrix
     }
 
-    x.positions <- if (!is.null(dates))
+    x.positions <- NULL
+    if (!is.null(dates))
     {
         date.vals <- as.numeric(dates) * 1000           # convert to milliseconds
         date.vals <- date.vals - 43200000               # middle of day
         x.positions <- date.vals + rep(series.positions, each = nrow(chart.matrix)) * (date.vals[2] - date.vals[1])
     }
+    else if (all(!is.na(as.numeric(rownames(chart.matrix)))))
+        x.positions <- as.numeric(rownames(chart.matrix)) + rep(series.positions, each = nrow(chart.matrix))
     else
-        0:(nrow(chart.matrix) - 1) + rep(series.positions, each = nrow(chart.matrix))
+        x.positions <- 0:(nrow(chart.matrix) - 1) + rep(series.positions, each = nrow(chart.matrix))
 
     if (barmode != "stack")
     {

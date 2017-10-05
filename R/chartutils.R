@@ -66,7 +66,9 @@ getRange <- function(x, axis, axisFormat)
             range <- range(tmp.dates) + c(-1, 1) * diff
         }
         else if (is.numeric(x))
-            range <- range(x) + c(0.5, -0.5)
+            range <- range(x) + c(-0.5, 0.5)
+        else if (all(!is.na(as.numeric(x))))
+            range <- range(as.numeric(x)) + c(-0.5, 0.5)
         else
             range <- c(-0.5, length(x)-0.5)
         
