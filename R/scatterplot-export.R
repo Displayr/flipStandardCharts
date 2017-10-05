@@ -440,7 +440,7 @@ ScatterChart <- function(x = NULL,
     if (any(duplicated(cbind(x, y))))
         warning("Chart contains overlapping points in the same position.")
 
-    not.na <- is.finite(x) & is.finite(y)
+    not.na <- !is.na(x) & !is.na(y)
     if (sum(not.na) != n)
         warning("Data points with missing values have been omitted.")
 
@@ -585,6 +585,7 @@ ScatterChart <- function(x = NULL,
     # Work out margin spacing
     margins <- list(t = 20, b = 50, r = 60, l = 80, pad = 0)
     margins <- setMarginsForAxis(margins, axisFormat, xaxis)
+    margins <- setMarginsForAxis(margins, axisFormat, yaxis)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
     margins <- setMarginsForLegend(margins, legend.show, legend)

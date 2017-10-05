@@ -267,7 +267,7 @@ setMarginsForAxis <- function(margins, axisLabels, axis)
     labels <- axisLabels$labels
     lab.len <- 0
     lab.nline <- 0
-    lab.nchar <- 20
+    lab.nchar <- 1
 
     lab.nchar <- max(c(0,nchar(unlist(strsplit(split="<br>", as.character(labels))))))
     font.asp <- fontAspectRatio(axis$tickfont$family)
@@ -277,7 +277,7 @@ setMarginsForAxis <- function(margins, axisLabels, axis)
                  else 0
 
     new.margin <- 0
-    if (lab.len > 5 || (!is.null(lab.nline) && lab.nline > 0))
+    if (lab.len > 2 || (!is.null(lab.nline) && lab.nline > 0))
         new.margin <- lab.len
 
     title.nline <- 0
