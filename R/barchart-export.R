@@ -446,7 +446,7 @@ BarChart <- function(x,
     # Data label annotations
     data.annotations <- NULL
     if (data.label.show)
-        data.annotations <- dataLabelAnnotation(chart.matrix = chart.matrix,
+        data.annotations <- dataLabelPositions(chart.matrix = chart.matrix,
                             annotations = NULL,
                             data.label.mult = data.label.mult,
                             bar.decimals = data.label.decimals,
@@ -514,7 +514,7 @@ BarChart <- function(x,
                       showlegend = FALSE, legendgroup = tmp.group)
         }
     }
-
+    
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,

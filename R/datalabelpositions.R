@@ -1,8 +1,5 @@
-# This function is only used in the old StandardChart function
-# See dataLabelPositions which handles axis-type more consistently
-
 #' @importFrom flipFormat FormatAsReal
-dataLabelAnnotation <- function(chart.matrix,
+dataLabelPositions <- function(chart.matrix,
                                 annotations = NULL,
                                 data.label.mult = 1,
                                 bar.decimals = 0,
@@ -48,6 +45,8 @@ dataLabelAnnotation <- function(chart.matrix,
         date.vals <- date.vals - 43200000               # middle of day
         x.positions <- date.vals + rep(series.positions, each = nrow(chart.matrix)) * (date.vals[2] - date.vals[1])
     }
+    else if (all(!is.na(as.numeric(rownames(chart.matrix)))))
+        x.positions <- as.numeric(rownames(chart.matrix)) + rep(series.positions, each = nrow(chart.matrix))
     else
         x.positions <- 0:(nrow(chart.matrix) - 1) + rep(series.positions, each = nrow(chart.matrix))
 
@@ -56,13 +55,8 @@ dataLabelAnnotation <- function(chart.matrix,
         text <- matrix(text, ncol=ncol(chart.matrix))
         x.positions <- matrix(x.positions, ncol=ncol(chart.matrix))
         y.positions <- matrix(y.positions, ncol=ncol(chart.matrix))
-    } else
-    {
-        # Plotly v4.7.1 handles unnamed matrices differently for some reason
-        if (all(rownames(chart.matrix) == as.character(1:nrow(chart.matrix))))
-            x.positions <- x.positions + 1
     }
-
+ 
     data.annotations <- if (swap.axes.and.data)
     {
         xanchor <- if (barmode == "stack")

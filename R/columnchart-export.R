@@ -445,7 +445,7 @@ ColumnChart <-   function(x,
     # Data label annotations
     data.annotations <- NULL
     if (data.label.show)
-        data.annotations <- dataLabelAnnotation(chart.matrix = chart.matrix,
+        data.annotations <- dataLabelPositions(chart.matrix = chart.matrix,
                             annotations = NULL,
                             data.label.mult = data.label.mult,
                             bar.decimals = data.label.decimals,
