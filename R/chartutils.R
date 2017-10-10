@@ -1,3 +1,12 @@
+minPosition <- function(x, n)
+{
+    if (is.factor(x) || is.character(x))
+        return(rep(0, n))
+    else
+        return(rep(min(x, na.rm=T), n))
+}
+
+
 checkMatrixNames <- function(x)
 {
     x <- as.matrix(x)

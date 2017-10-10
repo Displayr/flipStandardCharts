@@ -624,10 +624,10 @@ ScatterChart <- function(x = NULL,
 
         # add invisisble trace to force correct order
         if (ggi == 1 && is.factor(x))
-        p <- add_trace(p, x = levels(x), y = rep(min(y,na.rm=T), nlevels(x)), type = "scatter",
+        p <- add_trace(p, x = levels(x), y = minPosition(y, nlevels(x)), type = "scatter",
                        mode = "lines", hoverinfo = "none", showlegend = F, opacity = 0)
         if (ggi == 1 && is.factor(y))
-        p <- add_trace(p, y = levels(y), x = rep(min(x,na.rm=T), nlevels(y)), type = "scatter",
+        p <- add_trace(p, y = levels(y), x = minPosition(x, nlevels(y)), type = "scatter",
                        mode = "lines", hoverinfo = "none", showlegend = F, opacity = 0)
 
         # main trace
