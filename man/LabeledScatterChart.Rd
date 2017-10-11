@@ -18,7 +18,7 @@ LabeledScatterChart(x = NULL, y = NULL, scatter.labels = NULL,
   subtitle.font.color = global.font.color, subtitle.font.size = 12,
   footer = "", footer.font.family = global.font.family,
   footer.font.color = global.font.color, footer.font.size = 8,
-  footer.wrap = TRUE, footer.wrap.nchar = 100, data.label.max.plot = 50,
+  footer.wrap = TRUE, footer.wrap.nchar = 100, scatter.max.labels = 20,
   data.label.font.family = global.font.family,
   data.label.font.color = global.font.color, data.label.font.size = 10,
   legend.font.color = global.font.color,
@@ -114,7 +114,7 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{footer.wrap.nchar}{Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.}
 
-\item{data.label.max.plot}{Integer; the maximum number of labels to show on a Labeled Scatterplot.}
+\item{scatter.max.labels}{Integer; the maximum number of labels to show on a Labeled Scatterplot.}
 
 \item{data.label.font.family}{Character; font family for data label.}
 

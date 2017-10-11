@@ -108,7 +108,7 @@
 #' @param data.label.font.color Font color as a named color
 #' in character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param data.label.max.plot Integer; the maximum number of labels to show on a Labeled Scatterplot.
+#' @param scatter.max.labels Integer; the maximum number of labels to show on a Labeled Scatterplot.
 #' @param trend.lines Boolean indicating whether to plot trend lines for multiple tables.
 #' @param logos Optional list of images to be used to label scatterplot instead of the row names. It should be inputted as a comma-seperated list of URLs.
 #' @param logo.size Numeric controlling the size of the logos.
@@ -148,7 +148,7 @@ LabeledScatterChart <- function(x = NULL,
                                 footer.font.size = 8,
                                 footer.wrap = TRUE,
                                 footer.wrap.nchar = 100,
-                                data.label.max.plot = 50,
+                                scatter.max.labels = 20,
                                 data.label.font.family = global.font.family,
                                 data.label.font.color = global.font.color,
                                 data.label.font.size = 10,
@@ -375,8 +375,8 @@ LabeledScatterChart <- function(x = NULL,
     if (is.null(scatter.labels))
         scatter.labels <- rep("", n)
     lab.tidy <- scatter.labels
-    if (length(scatter.labels) > data.label.max.plot)
-        lab.tidy <- scatter.labels[(data.label.max.plot+1):(length(scatter.labels))] <- ""
+    if (length(scatter.labels) > scatter.max.labels)
+        lab.tidy <- scatter.labels[(scatter.max.labels+1):(length(scatter.labels))] <- ""
     if (!is.null(logo.urls))
         lab.tidy <- logo.urls
     if (length(footer) == 0 || nchar(footer) == 0)
