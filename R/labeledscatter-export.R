@@ -148,7 +148,7 @@ LabeledScatterChart <- function(x = NULL,
                                 footer.font.size = 8,
                                 footer.wrap = TRUE,
                                 footer.wrap.nchar = 100,
-                                scatter.max.labels = 20,
+                                scatter.max.labels = 50,
                                 data.label.font.family = global.font.family,
                                 data.label.font.color = global.font.color,
                                 data.label.font.size = 10,
@@ -320,6 +320,8 @@ LabeledScatterChart <- function(x = NULL,
     }
     if (sum(not.na) == 0)
         stop("No non-NA points to plot.")
+    if (is.finite(scatter.max.labels) && scatter.max.labels < 0)
+            scatter.max.labels <- NA
 
     # Determine color for each observation
     if (!is.null(scatter.colors) && !scatter.colors.as.categorical)
@@ -355,8 +357,14 @@ LabeledScatterChart <- function(x = NULL,
     if (is.null(scatter.labels))
         scatter.labels <- rep("", n)
     lab.tidy <- scatter.labels
-    if (length(scatter.labels) > scatter.max.labels)
-        lab.tidy <- scatter.labels[(scatter.max.labels+1):(length(scatter.labels))] <- ""
+    if (!is.na(scatter.max.labels) && length(scatter.labels) > scatter.max.labels)
+    {
+        if (scatter.max.labels == 50)
+            warning("By default, only the first 50 labels are shown to avoid long running times. Adjust 'Maximum data labels to plot' to show more labels. Alternatively, to show a large number of points, show as 'Hovertext' instead.")
+        else
+            warning("Some labels have been hidden. Adjust 'Maximum data labels to plot' to show more labels.")
+        lab.tidy[(scatter.max.labels+1):(length(scatter.labels))] <- ""
+    }
     if (!is.null(logo.urls))
         lab.tidy <- logo.urls
     if (length(footer) == 0 || nchar(footer) == 0)
