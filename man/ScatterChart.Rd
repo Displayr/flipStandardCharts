@@ -68,7 +68,7 @@ ScatterChart(x = NULL, y = NULL, scatter.labels = NULL,
   us.date.format = FALSE, ...)
 }
 \arguments{
-\item{x}{A numeric vector for the x-axis coordinates (which may be named); or a matrix or dataframe which may have 1-4 columns containing: 1:x, 2:y, 3:sizes, 4:colors.}
+\item{x}{A numeric vector for the x-axis coordinates (which may be named); or a matrix or dataframe which may have 1-4 columns containing: 1:x, 2:y, 3:sizes, 4:colors. Columns with no non-NA values are ignored.}
 
 \item{y}{Optional numeric vector for the y-axis coordinates. Should contain the same number of observations as x. If not provided, will use x instead.}
 

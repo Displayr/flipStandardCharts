@@ -1,10 +1,10 @@
 #' Column chart
 #'
-#' Plot column chart 
+#' Plot column chart
 #'
 #' @param x Input data may be a matrix or a vector, containing the height of the columns
 #' to be plotted, with the name/rownames used as the column names of the chart. Numeric and date labels
-#' will be parsed automatically. 
+#' will be parsed automatically.
 #' @param type One of "Column", "Stacked Column" or "100\% Stacked Column"
 #' @param fit.type Character; type of line of best fit. Can be one of "None", "Linear" or "Smooth" (loess local polynomial fitting).
 #' @param fit.ignore.last Logical; whether to ignore the last data point in the fit.
@@ -62,10 +62,10 @@
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param legend.border.line.width Width in pixels of the border
 #' around the legend.  0 = no border.
-#' @param legend.position.x A numeric controlling the position of the legend. 
-#'   Values range from -0.5 (left) to 1.5 (right). 
-#' @param legend.position.y A numeric controlling the position of the legend. 
-#'   Values range from 0 (bottom) to 1 (top). 
+#' @param legend.position.x A numeric controlling the position of the legend.
+#'   Values range from -0.5 (left) to 1.5 (right).
+#' @param legend.position.y A numeric controlling the position of the legend.
+#'   Values range from 0 (bottom) to 1 (top).
 #' @param legend.font.color Legend font color as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param legend.font.family Character; legend font family.
@@ -215,7 +215,7 @@
 #' @param us.date.format Whether to apply the US convention when parsing dates.
 #' @param ... Extra arguments that are ignored.
 #' @examples
-#' z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L), 
+#' z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L),
 #'       .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
 #' ColumnChart(z, type="Stacked Column")
 #' @importFrom grDevices rgb
@@ -356,7 +356,7 @@ ColumnChart <-   function(x,
     is.stacked <- grepl("Stacked", type, fixed=T)
     is.hundred.percent.stacked <- grepl("100% Stacked", type, fixed=T)
     if (is.stacked && ncol(chart.matrix) < 2)
-        stop(paste(type, "requires more than one series. Use Column charts instead for this data."))
+        stop(paste(type, "requires more than one series. Use Column Chart instead for this data."))
     if (is.stacked && (any(is.na(chart.matrix)) || any(chart.matrix < 0)))
         stop("Stacked charts cannot be produced with missing or negative values.")
     if (is.hundred.percent.stacked && any(rowSums(chart.matrix) == 0))
@@ -370,7 +370,7 @@ ColumnChart <-   function(x,
     if (is.hundred.percent.stacked)
     {
         chart.matrix <- cum.data(chart.matrix, "column.percentage")
-        y.tick.format.manual <- "%" 
+        y.tick.format.manual <- "%"
         data.label.suffix <- "%"
         data.label.mult <- 100
     }
@@ -410,23 +410,23 @@ ColumnChart <-   function(x,
     xtick <- setTicks(x.bounds.minimum, x.bounds.maximum, x.tick.distance, x.data.reversed)
     ytick <- setTicks(y.bounds.minimum, y.bounds.maximum, y.tick.distance, y.data.reversed)
     axisFormat <- formatLabels(chart.matrix, type, label.wrap, label.wrap.nchar, us.date.format)
- 
-    yaxis <- setAxis(y.title, "left", axisFormat, y.title.font, 
+
+    yaxis <- setAxis(y.title, "left", axisFormat, y.title.font,
                   y.line.color, y.line.width, y.grid.width, y.grid.color,
-                  ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance, y.tick.format.manual, 
+                  ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance, y.tick.format.manual,
                   y.tick.decimals, y.tick.prefix, y.tick.suffix,
-                  y.tick.show, y.zero, y.zero.line.width, y.zero.line.color, 
+                  y.tick.show, y.zero, y.zero.line.width, y.zero.line.color,
                   y.hovertext.format.manual, y.hovertext.decimals)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, x.tick.format.manual,
-                  x.tick.decimals, "", "", x.tick.show, FALSE, x.zero.line.width, x.zero.line.color, 
+                  x.tick.decimals, "", "", x.tick.show, FALSE, x.zero.line.width, x.zero.line.color,
                   x.hovertext.format.manual, x.hovertext.decimals, axisFormat$labels)
 
-    # Work out margin spacing 
+    # Work out margin spacing
     margins <- list(t = 20, b = 50, r = 60, l = 80, pad = 0)
     margins <- setMarginsForAxis(margins, axisFormat, xaxis)
-    margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size, 
+    margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
     margins <- setMarginsForLegend(margins, legend.show, legend)
     if (!is.null(margin.top))
@@ -437,11 +437,11 @@ ColumnChart <-   function(x,
         margins$l <- margin.left
     if (!is.null(margin.right))
         margins$r <- margin.right
-    
+
     # Finalise text in margins
     footer.axis <- setFooterAxis(footer, footer.font, margins)
     subtitle.axis <- setSubtitleAxis(subtitle, subtitle.font, title, title.font)
- 
+
     # Data label annotations
     data.annotations <- NULL
     if (data.label.show)
@@ -468,22 +468,22 @@ ColumnChart <-   function(x,
     {
         y <- as.numeric(chart.matrix[, i])
         x <- x.labels
-        hover.text <- sprintf("%s: %s%s%s", x.labels.full, y.tick.prefix, 
+        hover.text <- sprintf("%s: %s%s%s", x.labels.full, y.tick.prefix,
             FormatAsReal(y, decimals=y.hovertext.decimals), y.tick.suffix)
 
         marker <- list(size = series.marker.size, color = toRGB(colors[i], alpha = opacity),
-                    line = list(color = toRGB(colors[i], 
+                    line = list(color = toRGB(colors[i],
                       alpha = series.marker.border.opacity),
                       width = series.marker.border.width))
-                
+
         # add invisible line to force all categorical labels to be shown
         if (!is.stacked && i == 1)
             p <- add_trace(p, x=x, y=rep(min(y,na.rm=T), length(x)),
                            type="scatter", mode="lines",
                            hoverinfo="none", showlegend=F, opacity=0)
 
-       
-        # this is the main trace for each data series 
+
+        # this is the main trace for each data series
         tmp.group <- if (legend.group == "") paste("group", i) else legend.group
         p <- add_trace(p, x = x, y = y, type = "bar", orientation = "v", marker = marker,
                        name  =  y.labels[i], legendgroup  =  tmp.group, text = hover.text,

@@ -2,7 +2,7 @@
 #'
 #' Plot scatterplot with labels - best used for small sets of data
 #'
-#' @param x A numeric vector for the x-axis coordinates (which may be named); or a matrix or dataframe which may have 1-4 columns containing: 1:x, 2:y, 3:sizes, 4:colors; or a list of matrices, where each matrix is in the format described and share the same row and column names
+#' @param x A numeric vector for the x-axis coordinates (which may be named); or a matrix or dataframe which may have 1-4 columns containing: 1:x, 2:y, 3:sizes, 4:colors (columns with all NAs ignored); or a list of matrices, where each matrix is in the format described and share the same row and column names
 #' @param y Optional numeric vector for the y-axis coordinates. Should contain the same number of observations as x. If not provided, will use x instead.
 #' @param scatter.labels Optional vector for labelling scatter points. This should be the same length as the number of observations in x andy. This is used in the hovertext and data labels.
 #' @param scatter.labels.name Character; Used for labelling subtitles and footers.
@@ -211,23 +211,11 @@ LabeledScatterChart <- function(x = NULL,
 
     # Try to store name of variables
     if (!is.null(scatter.sizes) && is.null(scatter.sizes.name))
-    {
         scatter.sizes.name <- deparse(substitute(scatter.sizes))
-        if (!is.null(attr(scatter.sizes, "label")))
-            scatter.sizes.name <- attr(scatter.sizes, "label")
-    }
     if (!is.null(scatter.labels) && is.null(scatter.labels.name))
-    {
         scatter.labels.name <- deparse(substitute(scatter.labels))
-        if (!is.null(attr(scatter.labels, "label")))
-            scatter.labels.name <- attr(scatter.labels, "label")
-    }
     if (!is.null(scatter.colors) && is.null(scatter.colors.name))
-    {
         scatter.colors.name <- deparse(substitute(scatter.colors))
-        if (!is.null(attr(scatter.colors, "label")))
-            scatter.colors.name <- attr(scatter.colors, "label")
-    }
 
     num.tables <- 1
     groups <- NULL
@@ -252,37 +240,29 @@ LabeledScatterChart <- function(x = NULL,
         col.offset <- 0
         if (!is.null(rownames(x)))
             scatter.labels <- rownames(x)
-        else
-        {
-            if (!is.numeric(x[,1]))
-            {
-                scatter.labels <- as.character(x[,1])
-                if (is.null(scatter.labels.name) && !is.null(colnames(x)))
-                    scatter.labels.name <- colnames(x)[1]
-                col.offset <- 1
-            }
-        }
-        if (is.null(y) && ncol(x) >= col.offset + 2)
+        if (is.null(y) && ncol(x) >= col.offset + 2 && any(!is.na(x[,col.offset+2])))
         {
             if ((is.na(y.title) || nchar(y.title) == 0) && !is.null(colnames(x)))
                 y.title <- colnames(x)[col.offset + 2]
             y <- x[,col.offset + 2]
         }
-        if (is.null(scatter.sizes) && ncol(x) >= col.offset + 3)
+        if (is.null(scatter.sizes) && ncol(x) >= col.offset + 3 && any(!is.na(x[,col.offset+3])))
         {
             if (is.null(scatter.sizes.name) && !is.null(colnames(x)))
                 scatter.sizes.name <- colnames(x)[col.offset + 3]
             scatter.sizes <- x[,col.offset + 3]
         }
-        if (is.null(scatter.colors) && ncol(x) >= col.offset + 4)
+        if (is.null(scatter.colors) && ncol(x) >= col.offset + 4 && any(!is.na(x[,col.offset+4])))
         {
             if (is.null(scatter.colors.name) || nchar(scatter.colors.name) == 0)
                 scatter.colors.name <- colnames(x)[col.offset + 4]
             scatter.colors <- x[,col.offset + 4]
         }
-        if ((is.na(x.title) || nchar(x.title) == 0) && !is.null(colnames(x)))
+        if (((is.na(x.title) || nchar(x.title) == 0) && !is.null(colnames(x))) && any(!is.na(x[,col.offset+1])))
             x.title <- colnames(x)[col.offset + 1]
         x <- x[,col.offset + 1]
+        if (all(is.na(x)))
+            x <- NULL
     }
     if (is.null(scatter.labels) && !is.null(names(x)))
         scatter.labels <- names(x)
