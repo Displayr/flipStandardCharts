@@ -647,12 +647,12 @@ ScatterChart <- function(x = NULL,
                             color = colors[ggi], line = list(width = series.marker.border.width))
 
         # add invisisble trace to force correct order
-        #if (ggi == 1 && is.factor(x))
-        #p <- add_trace(p, x = levels(x), y = minPosition(y, nlevels(x)), type = "scatter",
-        #               mode = "lines", hoverinfo = "none", showlegend = F, opacity = 0)
-        #if (ggi == 1 && is.factor(y))
-        #p <- add_trace(p, y = levels(y), x = minPosition(x, nlevels(y)), type = "scatter",
-        #               mode = "lines", hoverinfo = "none", showlegend = F, opacity = 0)
+        if (ggi == 1 && is.factor(x))
+        p <- add_trace(p, x = levels(x), y = minPosition(y, nlevels(x)), type = "scatter",
+                       mode = "lines", hoverinfo = "none", showlegend = F, opacity = 0)
+        if (ggi == 1 && is.factor(y))
+        p <- add_trace(p, y = levels(y), x = minPosition(x, nlevels(y)), type = "scatter",
+                       mode = "lines", hoverinfo = "none", showlegend = F, opacity = 0)
 
         # main trace
         p <- add_trace(p, x = x[ind], y = y[ind], name = g.list[ggi],
