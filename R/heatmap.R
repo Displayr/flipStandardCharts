@@ -71,6 +71,11 @@ HeatMap <- function(table,
 
     mat <- BasicTable(table, row.names.to.remove = ignore.rows,
                       col.names.to.remove = ignore.columns, transpose = transpose)
+    if (!is.matrix(mat)) {
+        rownames <- names(mat)
+        mat <- matrix(mat) # create single column matrix from vector
+        rownames(mat) <- rownames
+    }
     if (!is.numeric(mat[1, 1]))
         stop("The input table must contain only numeric values.")
 
