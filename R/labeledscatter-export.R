@@ -2,8 +2,13 @@
 #'
 #' Plot scatterplot with labels - best used for small sets of data
 #'
-#' @param x A numeric vector for the x-axis coordinates (which may be named); or a matrix or dataframe which may have 1-4 columns containing: 1:x, 2:y, 3:sizes, 4:colors (columns with all NAs ignored); or a list of matrices, where each matrix is in the format described and share the same row and column names
+#' @param x A numeric vector for the x-axis coordinates (which may be named); or a matrix or dataframe; or a list of matrices, where each matrix share the same row and column names
 #' @param y Optional numeric vector for the y-axis coordinates. Should contain the same number of observations as x. If not provided, will use x instead.
+#' @param scatter.x.column When \code{x} is a dataframe or matrix, the index of the column (1-based) which contains the x-coordinate data.
+#' @param scatter.y.column When \code{x} is a dataframe or matrix, the index of the column (1-based) which contains the y-coordinate data.
+#' @param scatter.sizes.column When \code{x} is a dataframe or matrix, the index of the column (1-based) which contains \code{scatter.sizes} data.
+#' @param scatter.colors.column When \code{x} is a dataframe or matrix, the index of the column (1-based) which contains \code{scatter.colors} data.
+
 #' @param scatter.labels Optional vector for labelling scatter points. This should be the same length as the number of observations in x andy. This is used in the hovertext and data labels.
 #' @param scatter.labels.name Character; Used for labelling subtitles and footers.
 #' @param scatter.sizes Numeric vector determining of the size of each observation. These can alternatively be provided as a column in \code{x}.
@@ -120,13 +125,17 @@
 #' @export
 LabeledScatterChart <- function(x = NULL,
                                 y = NULL,
+                                scatter.x.column = 1,
+                                scatter.y.column = 2,
                                 scatter.labels = NULL,
                                 scatter.labels.name = NULL,
                                 scatter.sizes = NULL,
                                 scatter.sizes.name = NULL,
+                                scatter.sizes.column = 3,
                                 scatter.colors = NULL,
                                 scatter.colors.name = NULL,
-                                scatter.colors.as.categorical = !is.null(groups),
+                                scatter.colors.column = 4,
+                                scatter.colors.as.categorical = FALSE,
                                 trend.lines = FALSE,
                                 logos = NULL,
                                 logo.size  = 0.5,
@@ -237,35 +246,37 @@ LabeledScatterChart <- function(x = NULL,
 
     if (is.matrix(x) || is.data.frame(x))
     {
-        col.offset <- 0
-        if (!is.null(rownames(x)))
+        is.valid.col <- function(n) {return (!is.null(n) && !is.na(n) && n > 0 && n <= ncol(x))}
+        if (is.null(scatter.labels) && !is.null(rownames(x)))
             scatter.labels <- rownames(x)
-        if (is.null(y) && ncol(x) >= col.offset + 2 && any(!is.na(x[,col.offset+2])))
+        if (is.null(y) && is.valid.col(scatter.y.column)) 
         {
             if ((is.na(y.title) || nchar(y.title) == 0) && !is.null(colnames(x)))
-                y.title <- colnames(x)[col.offset + 2]
-            y <- x[,col.offset + 2]
+                y.title <- colnames(x)[scatter.y.column]
+            y <- x[,scatter.y.column]
         }
-        if (is.null(scatter.sizes) && ncol(x) >= col.offset + 3 && any(!is.na(x[,col.offset+3])))
+        if (is.null(scatter.sizes) && is.valid.col(scatter.sizes.column)) 
         {
             if (is.null(scatter.sizes.name) && !is.null(colnames(x)))
-                scatter.sizes.name <- colnames(x)[col.offset + 3]
-            scatter.sizes <- x[,col.offset + 3]
+                scatter.sizes.name <- colnames(x)[scatter.sizes.column]
+            scatter.sizes <- x[,scatter.sizes.column]
         }
-        if (is.null(scatter.colors) && ncol(x) >= col.offset + 4 && any(!is.na(x[,col.offset+4])))
+        if (is.null(scatter.colors) && is.valid.col(scatter.colors.column))
         {
             if (is.null(scatter.colors.name) || nchar(scatter.colors.name) == 0)
-                scatter.colors.name <- colnames(x)[col.offset + 4]
-            scatter.colors <- x[,col.offset + 4]
+                scatter.colors.name <- colnames(x)[scatter.colors.column]
+            scatter.colors <- x[,scatter.colors.column]
         }
-        if (((is.na(x.title) || nchar(x.title) == 0) && !is.null(colnames(x))) && any(!is.na(x[,col.offset+1])))
-            x.title <- colnames(x)[col.offset + 1]
-        x <- x[,col.offset + 1]
-        if (all(is.na(x)))
+        if (((is.na(x.title) || nchar(x.title) == 0) && !is.null(colnames(x))) && is.valid.col(scatter.x.column))
+            x.title <- colnames(x)[scatter.x.column]
+        if (scatter.x.column <= 0 || scatter.x.column > ncol(x))
             x <- NULL
+        else
+            x <- x[,scatter.x.column]
     }
     if (is.null(scatter.labels) && !is.null(names(x)))
         scatter.labels <- names(x)
+
 
     # Basic data checking
     if (is.null(x) && is.null(y))
@@ -312,10 +323,10 @@ LabeledScatterChart <- function(x = NULL,
             scatter.colors <- AsNumeric(scatter.colors, binary = FALSE)
         if (length(scatter.colors) != n)
             stop("'scatter.colors' should be a vector with the same number of observations as 'x'.")
-        if (any(is.null(scatter.colors)))
+        if (any(is.na(scatter.colors)))
         {
             warning("Some points omitted due to missing values in 'scatter.colors'")
-            not.na <- not.na & !is.null(scatter.colors)
+            not.na <- not.na & !is.na(scatter.colors)
         }
     }
     if (sum(not.na) == 0)
@@ -332,6 +343,7 @@ LabeledScatterChart <- function(x = NULL,
         groups <- 1:n # what about mult tables?
         col.fun <- colorRamp(colors)
         scatter.colors.scaled <- (scatter.colors - min(scatter.colors, na.rm=T))/diff(range(scatter.colors, na.rm=T))
+        scatter.colors.scaled[which(!not.na)] <- 0 # removed later
         colors <- rgb(col.fun(scatter.colors.scaled), maxColorValue=255)
 
     } else

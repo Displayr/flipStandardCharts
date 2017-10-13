@@ -2,8 +2,12 @@
 #'
 #' Plot scatterplot chart
 #'
-#' @param x A numeric vector for the x-axis coordinates (which may be named); or a matrix or dataframe which may have 1-4 columns containing: 1:x, 2:y, 3:sizes, 4:colors. Columns with no non-NA values are ignored.
+#' @param x A numeric vector for the x-axis coordinates (which may be named); or a matrix or dataframe.
 #' @param y Optional numeric vector for the y-axis coordinates. Should contain the same number of observations as x. If not provided, will use x instead.
+#' @param scatter.x.column When \code{x} is a dataframe or matrix, the index of the column (1-based) which contains the x-coordinate data.
+#' @param scatter.y.column When \code{x} is a dataframe or matrix, the index of the column (1-based) which contains the y-coordinate data.
+#' @param scatter.sizes.column When \code{x} is a dataframe or matrix, the index of the column (1-based) which contains \code{scatter.sizes} data.
+#' @param scatter.colors.column When \code{x} is a dataframe or matrix, the index of the column (1-based) which contains \code{scatter.colors} data.
 #' @param scatter.labels Optional vector for labelling scatter points. This should be the same length as the number of observations in x andy. This is used in the hovertext and data labels.
 #' @param scatter.labels.name Character; Used for labelling subtitles and footers.
 #' @param scatter.sizes Numeric vector determining of the size of each observation. These can alternatively be provided as a column in \code{x}.
@@ -218,12 +222,16 @@
 #' @export
 ScatterChart <- function(x = NULL,
                          y = NULL,
+                         scatter.x.column = 1,
+                         scatter.y.column = 2,
                          scatter.labels = NULL,
                          scatter.labels.name = NULL,
                          scatter.sizes = NULL,
                          scatter.sizes.name = NULL,
+                         scatter.sizes.column = 3,
                          scatter.colors = NULL,
                          scatter.colors.name = NULL,
+                         scatter.colors.column = 4,
                          scatter.colors.as.categorical = FALSE,
                          colors = ChartColors(12),
                          fit.type = "None",
@@ -369,32 +377,33 @@ ScatterChart <- function(x = NULL,
 
     if (is.matrix(x) || is.data.frame(x))
     {
-        col.offset <- 0
-        if (!is.null(rownames(x)))
+        is.valid.col <- function(n) {return (!is.null(n) && !is.na(n) && n > 0 && n <= ncol(x))}
+        if (is.null(scatter.labels) && !is.null(rownames(x)))
             scatter.labels <- rownames(x)
-        if (is.null(y) && ncol(x) >= col.offset + 2 && any(!is.na(x[,col.offset+2])))
+        if (is.null(y) && is.valid.col(scatter.y.column)) 
         {
             if ((is.na(y.title) || nchar(y.title) == 0) && !is.null(colnames(x)))
-                y.title <- colnames(x)[col.offset + 2]
-            y <- x[,col.offset + 2]
+                y.title <- colnames(x)[scatter.y.column]
+            y <- x[,scatter.y.column]
         }
-        if (is.null(scatter.sizes) && ncol(x) >= col.offset + 3 && any(!is.na(x[,col.offset+3])))
+        if (is.null(scatter.sizes) && is.valid.col(scatter.sizes.column)) 
         {
             if (is.null(scatter.sizes.name) && !is.null(colnames(x)))
-                scatter.sizes.name <- colnames(x)[col.offset + 3]
-            scatter.sizes <- x[,col.offset + 3]
+                scatter.sizes.name <- colnames(x)[scatter.sizes.column]
+            scatter.sizes <- x[,scatter.sizes.column]
         }
-        if (is.null(scatter.colors) && ncol(x) >= col.offset + 4 && any(!is.na(x[,col.offset+4])))
+        if (is.null(scatter.colors) && is.valid.col(scatter.colors.column))
         {
             if (is.null(scatter.colors.name) || nchar(scatter.colors.name) == 0)
-                scatter.colors.name <- colnames(x)[col.offset + 4]
-            scatter.colors <- x[,col.offset + 4]
+                scatter.colors.name <- colnames(x)[scatter.colors.column]
+            scatter.colors <- x[,scatter.colors.column]
         }
-        if (((is.na(x.title) || nchar(x.title) == 0) && !is.null(colnames(x))) && any(!is.na(x[,col.offset+1])))
-            x.title <- colnames(x)[col.offset + 1]
-        x <- x[,col.offset + 1]
-        if (all(is.na(x)))
+        if (((is.na(x.title) || nchar(x.title) == 0) && !is.null(colnames(x))) && is.valid.col(scatter.x.column))
+            x.title <- colnames(x)[scatter.x.column]
+        if (scatter.x.column <= 0 || scatter.x.column > ncol(x))
             x <- NULL
+        else
+            x <- x[,scatter.x.column]
     }
     if (is.null(scatter.labels) && !is.null(names(x)))
         scatter.labels <- names(x)
@@ -420,14 +429,49 @@ ScatterChart <- function(x = NULL,
     if (any(duplicated(cbind(x, y))))
         warning("Chart contains overlapping points in the same position.")
 
+    # Remove NAs
     not.na <- !is.na(x) & !is.na(y)
     if (sum(not.na) != n)
         warning("Data points with missing values have been omitted.")
-
     n <- length(x)
-    #x <- as.numeric(x)
-    #y <- as.numeric(y)
+    if (!is.null(scatter.sizes))
+    {
+        if (length(scatter.sizes) != n)
+            stop("'scatter.sizes' should be a numeric vector with the same number of observations as 'x'.")
+        if (any(!is.finite(scatter.sizes)))
+        {
+            warning("Some points omitted due to missing values in 'scatter.sizes'.")
+            not.na <- not.na & is.finite(scatter.sizes)
+        }
+    }
+    if (!is.null(scatter.colors))
+    {
+        if (length(scatter.colors) != n)
+            stop("'scatter.colors' should be a vector with the same number of observations as 'x'.")
+        if (any(is.na(scatter.colors)))
+        {
+            warning("Some points omitted due to missing values in 'scatter.colors'")
+            not.na <- not.na & !is.na(scatter.colors)
+        }
+    }
+    if (sum(not.na) == 0)
+        stop("No non-NA points to plot.")
+    if (any(not.na))
+    {
+        if (!is.null(scatter.labels))
+            scatter.labels <- scatter.labels[which(not.na)]
+        if (!is.null(x))
+            x <- x[which(not.na)]
+        if (!is.null(y))
+            y <-y[which(not.na)]
+        if (!is.null(scatter.sizes))
+            scatter.sizes <- scatter.sizes[which(not.na)]
+        if (!is.null(scatter.colors))
+            scatter.colors <- scatter.colors[which(not.na)]
+    }
+
     opacity <- 1
+    n <- sum(not.na)
     if (!is.null(scatter.sizes))
     {
         sc.tmp <- sqrt(abs(as.numeric(scatter.sizes)))
@@ -593,7 +637,7 @@ ScatterChart <- function(x = NULL,
         # initialise marker/line settings
         line.obj <- if (is.null(series.line.width) || series.line.width == 0) NULL
                     else list(width=series.line.width, color=colors[ggi])
-        if (ggi == 1 && scatter.colors.as.numeric)
+        if (FALSE && ggi == 1 && scatter.colors.as.numeric)
             marker.obj <- list(size = tmp.size, sizemode = "diameter", opacity = opacity,
                             line = list(width = series.marker.border.width),
                             color = scatter.colors.scaled, colorscale = col.scale,
@@ -603,12 +647,12 @@ ScatterChart <- function(x = NULL,
                             color = colors[ggi], line = list(width = series.marker.border.width))
 
         # add invisisble trace to force correct order
-        if (ggi == 1 && is.factor(x))
-        p <- add_trace(p, x = levels(x), y = minPosition(y, nlevels(x)), type = "scatter",
-                       mode = "lines", hoverinfo = "none", showlegend = F, opacity = 0)
-        if (ggi == 1 && is.factor(y))
-        p <- add_trace(p, y = levels(y), x = minPosition(x, nlevels(y)), type = "scatter",
-                       mode = "lines", hoverinfo = "none", showlegend = F, opacity = 0)
+        #if (ggi == 1 && is.factor(x))
+        #p <- add_trace(p, x = levels(x), y = minPosition(y, nlevels(x)), type = "scatter",
+        #               mode = "lines", hoverinfo = "none", showlegend = F, opacity = 0)
+        #if (ggi == 1 && is.factor(y))
+        #p <- add_trace(p, y = levels(y), x = minPosition(x, nlevels(y)), type = "scatter",
+        #               mode = "lines", hoverinfo = "none", showlegend = F, opacity = 0)
 
         # main trace
         p <- add_trace(p, x = x[ind], y = y[ind], name = g.list[ggi],
@@ -637,21 +681,21 @@ ScatterChart <- function(x = NULL,
     }
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
-    p <- layout(p,
-        title = title,
-        showlegend = legend.show,
-        legend = legend,
-        yaxis = yaxis,
-        xaxis4 = footer.axis,
-        xaxis3 = subtitle.axis,
-        xaxis = xaxis,
-        margin = margins,
-        plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
-        paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
-        hovermode = hover.mode,
-        titlefont = title.font,
-        font = data.label.font
-    )
+    #p <- layout(p,
+        #title = title,
+    #    showlegend = legend.show,
+        #legend = legend,
+        #yaxis = yaxis,
+        #xaxis4 = footer.axis,
+        #xaxis3 = subtitle.axis,
+        #xaxis = xaxis,
+        #margin = margins,
+        #plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
+        #paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
+        #hovermode = hover.mode,
+        #titlefont = title.font,
+    #    font = data.label.font
+    #)
     result <- list(plotly.plot = p)
     class(result) <- "StandardChart"
     result

@@ -4,16 +4,17 @@
 \alias{ScatterChart}
 \title{Scatterplot chart}
 \usage{
-ScatterChart(x = NULL, y = NULL, scatter.labels = NULL,
-  scatter.labels.name = NULL, scatter.sizes = NULL,
-  scatter.sizes.name = NULL, scatter.colors = NULL,
-  scatter.colors.name = NULL, scatter.colors.as.categorical = FALSE,
-  colors = ChartColors(12), fit.type = "None", fit.ignore.last = FALSE,
-  fit.line.type = "dot", fit.line.width = 1, fit.line.name = "Fitted",
-  fit.line.colors = colors, legend.show = TRUE, tooltip.show = TRUE,
-  modebar.show = FALSE, global.font.family = "Arial",
-  global.font.color = rgb(44, 44, 44, maxColorValue = 255), title = "",
-  title.font.family = global.font.family,
+ScatterChart(x = NULL, y = NULL, scatter.x.column = 1,
+  scatter.y.column = 2, scatter.labels = NULL, scatter.labels.name = NULL,
+  scatter.sizes = NULL, scatter.sizes.name = NULL,
+  scatter.sizes.column = 3, scatter.colors = NULL,
+  scatter.colors.name = NULL, scatter.colors.column = 4,
+  scatter.colors.as.categorical = FALSE, colors = ChartColors(12),
+  fit.type = "None", fit.ignore.last = FALSE, fit.line.type = "dot",
+  fit.line.width = 1, fit.line.name = "Fitted", fit.line.colors = colors,
+  legend.show = TRUE, tooltip.show = TRUE, modebar.show = FALSE,
+  global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
+  maxColorValue = 255), title = "", title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
   subtitle = "", subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color, subtitle.font.size = 12,
@@ -68,9 +69,13 @@ ScatterChart(x = NULL, y = NULL, scatter.labels = NULL,
   us.date.format = FALSE, ...)
 }
 \arguments{
-\item{x}{A numeric vector for the x-axis coordinates (which may be named); or a matrix or dataframe which may have 1-4 columns containing: 1:x, 2:y, 3:sizes, 4:colors. Columns with no non-NA values are ignored.}
+\item{x}{A numeric vector for the x-axis coordinates (which may be named); or a matrix or dataframe.}
 
 \item{y}{Optional numeric vector for the y-axis coordinates. Should contain the same number of observations as x. If not provided, will use x instead.}
+
+\item{scatter.x.column}{When \code{x} is a dataframe or matrix, the index of the column (1-based) which contains the x-coordinate data.}
+
+\item{scatter.y.column}{When \code{x} is a dataframe or matrix, the index of the column (1-based) which contains the y-coordinate data.}
 
 \item{scatter.labels}{Optional vector for labelling scatter points. This should be the same length as the number of observations in x andy. This is used in the hovertext and data labels.}
 
@@ -80,9 +85,13 @@ ScatterChart(x = NULL, y = NULL, scatter.labels = NULL,
 
 \item{scatter.sizes.name}{Character; Used for labelling footers and legends.}
 
+\item{scatter.sizes.column}{When \code{x} is a dataframe or matrix, the index of the column (1-based) which contains \code{scatter.sizes} data.}
+
 \item{scatter.colors}{Numeric, character, or categorical vector determining the color of each observation. These can alternatively be provided as a column in \code{x}.}
 
 \item{scatter.colors.name}{Character; Used for labelling footers.}
+
+\item{scatter.colors.column}{When \code{x} is a dataframe or matrix, the index of the column (1-based) which contains \code{scatter.colors} data.}
 
 \item{scatter.colors.as.categorical}{Whether to treat colors as a categorical groups, or a numeric scale.}
 
