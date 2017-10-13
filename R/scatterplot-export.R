@@ -380,13 +380,13 @@ ScatterChart <- function(x = NULL,
         is.valid.col <- function(n) {return (!is.null(n) && !is.na(n) && n > 0 && n <= ncol(x))}
         if (is.null(scatter.labels) && !is.null(rownames(x)))
             scatter.labels <- rownames(x)
-        if (is.null(y) && is.valid.col(scatter.y.column)) 
+        if (is.null(y) && is.valid.col(scatter.y.column))
         {
             if ((is.na(y.title) || nchar(y.title) == 0) && !is.null(colnames(x)))
                 y.title <- colnames(x)[scatter.y.column]
             y <- x[,scatter.y.column]
         }
-        if (is.null(scatter.sizes) && is.valid.col(scatter.sizes.column)) 
+        if (is.null(scatter.sizes) && is.valid.col(scatter.sizes.column))
         {
             if (is.null(scatter.sizes.name) && !is.null(colnames(x)))
                 scatter.sizes.name <- colnames(x)[scatter.sizes.column]
@@ -572,9 +572,9 @@ ScatterChart <- function(x = NULL,
         y.tick.decimals <- decimalsToDisplay(as.numeric(y))
     xtick <- setTicks(x.bounds.minimum, x.bounds.maximum, x.tick.distance, x.data.reversed)
     ytick <- setTicks(y.bounds.minimum, y.bounds.maximum, y.tick.distance, y.data.reversed)
-    
+
     xlab.tmp <- if (!is.numeric(x)) as.character(x)
-                else FormatAsReal(x, decimals=x.tick.decimals) 
+                else FormatAsReal(x, decimals=x.tick.decimals)
     ylab.tmp <- if (!is.numeric(y)) as.character(y)
                 else FormatAsReal(y, decimals=y.tick.decimals)
 
@@ -590,8 +590,8 @@ ScatterChart <- function(x = NULL,
         y.abs.max <- max(abs(range(y, na.rm=T)), na.rm=T)
         if (!is.finite(y.abs.max) || y.abs.max == 0 || any(abs(range(y, na.rm=T))/y.abs.max < 1e-2))
             y.zero <- FALSE
-    } 
-    axisFormat <- formatLabels(list(x=xlab.tmp, y=ylab.tmp), type, 
+    }
+    axisFormat <- formatLabels(list(x=xlab.tmp, y=ylab.tmp), type,
                        label.wrap, label.wrap.nchar, us.date.format)
     yaxis <- setAxis(y.title, "left", axisFormat, y.title.font,
                   y.line.color, y.line.width, y.grid.width, y.grid.color,
@@ -681,21 +681,21 @@ ScatterChart <- function(x = NULL,
     }
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
-    #p <- layout(p,
-        #title = title,
-    #    showlegend = legend.show,
-        #legend = legend,
-        #yaxis = yaxis,
-        #xaxis4 = footer.axis,
-        #xaxis3 = subtitle.axis,
-        #xaxis = xaxis,
-        #margin = margins,
-        #plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
-        #paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
-        #hovermode = hover.mode,
-        #titlefont = title.font,
-    #    font = data.label.font
-    #)
+    p <- layout(p,
+        title = title,
+        showlegend = legend.show,
+        legend = legend,
+        yaxis = yaxis,
+        xaxis4 = footer.axis,
+        xaxis3 = subtitle.axis,
+        xaxis = xaxis,
+        margin = margins,
+        plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
+        paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
+        hovermode = hover.mode,
+        titlefont = title.font,
+        font = data.label.font
+    )
     result <- list(plotly.plot = p)
     class(result) <- "StandardChart"
     result
