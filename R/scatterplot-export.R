@@ -637,7 +637,7 @@ ScatterChart <- function(x = NULL,
         # initialise marker/line settings
         line.obj <- if (is.null(series.line.width) || series.line.width == 0) NULL
                     else list(width=series.line.width, color=colors[ggi])
-        if (FALSE && ggi == 1 && scatter.colors.as.numeric)
+        if (ggi == 1 && scatter.colors.as.numeric)
             marker.obj <- list(size = tmp.size, sizemode = "diameter", opacity = opacity,
                             line = list(width = series.marker.border.width),
                             color = scatter.colors.scaled, colorscale = col.scale,
@@ -647,12 +647,12 @@ ScatterChart <- function(x = NULL,
                             color = colors[ggi], line = list(width = series.marker.border.width))
 
         # add invisisble trace to force correct order
-        #if (ggi == 1 && is.factor(x))
-        #p <- add_trace(p, x = levels(x), y = minPosition(y, nlevels(x)), type = "scatter",
-        #               mode = "lines", hoverinfo = "none", showlegend = F, opacity = 0)
-        #if (ggi == 1 && is.factor(y))
-        #p <- add_trace(p, y = levels(y), x = minPosition(x, nlevels(y)), type = "scatter",
-        #               mode = "lines", hoverinfo = "none", showlegend = F, opacity = 0)
+        if (ggi == 1 && is.factor(x))
+        p <- add_trace(p, x = levels(x), y = minPosition(y, nlevels(x)), type = "scatter",
+                       mode = "lines", hoverinfo = "none", showlegend = F, opacity = 0)
+        if (ggi == 1 && is.factor(y))
+        p <- add_trace(p, y = levels(y), x = minPosition(x, nlevels(y)), type = "scatter",
+                       mode = "lines", hoverinfo = "none", showlegend = F, opacity = 0)
 
         # main trace
         p <- add_trace(p, x = x[ind], y = y[ind], name = g.list[ggi],
