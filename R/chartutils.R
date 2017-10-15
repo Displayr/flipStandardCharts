@@ -80,7 +80,7 @@ getRange <- function(x, axis, axisFormat)
             range <- range(as.numeric(x)) + c(-0.5, 0.5)
         else
             range <- c(-0.5, length(x)-0.5)
-        
+
         if (axis$autorange == "reversed")
             range <- rev(range)
     }
@@ -202,6 +202,9 @@ setAxis <- function(title, side, axisLabels, titlefont, linecolor, linewidth, gr
     tickformat <- ""
     if (axis.type == "linear" && nchar(tickformatmanual) == 0)
         tickformat <- paste0(".", tickdecimals, "f")
+    if (axis.type == "date" && nchar(tickformatmanual) > 0 &&
+        substr(tickformatmanual, nchar(tickformatmanual), nchar(tickformatmanual)) %in% c("e", "f", "%", "s"))
+        tickformat <- ""
     else
         tickformat <- tickformatmanual
 
@@ -309,7 +312,7 @@ setMarginsForAxis <- function(margins, labels, axis)
         if (is.null(axis$tickangle))
             axis$tickangle <- 0
         if (axis$tickangle != 0)
-            margins$b <- margins$b + new.margin * 0.5 + title.pad 
+            margins$b <- margins$b + new.margin * 0.5 + title.pad
         else
             margins$b <- margins$b + 1.25*axis$tickfont$size*floor(lab.nline) + title.pad
     }
