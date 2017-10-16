@@ -493,6 +493,9 @@ ScatterChart <- function(x = NULL,
         v.tmp <- seq(from=0, to=1, length=length(c.tmp))
         col.scale <- mapply(function(a,b)c(a,b), a=v.tmp, b=c.tmp, SIMPLIFY=F)
 
+        # getting labels for all types
+        if (is.character(scatter.colors))
+            scatter.colors <- as.factor(scatter.colors)
         if (any(class(scatter.colors) %in% c("Date", "POSIXct", "POSIXt")))
         {
             tmp.seq <- seq(0, 1, length=5)
@@ -511,6 +514,9 @@ ScatterChart <- function(x = NULL,
         opacity <- 1
         col.tmp <- AsNumeric(scatter.colors, binary=FALSE)
         scatter.colors.scaled <- (col.tmp - min(col.tmp, na.rm=T))/diff(range(col.tmp, na.rm=T))
+        scatter.colors.labels <- col.tmp
+        if (any(class(scatter.colors) == "factor") || any(class(scatter.colors) %in% c("Date", "POSIXct", "POSIXt")))
+            scatter.colors.labels <- scatter.colors.scaled
         colors <- rgb(col.fun(scatter.colors.scaled), maxColorValue=255)
     }
     if (!is.null(scatter.colors) && scatter.colors.as.categorical)
@@ -640,7 +646,7 @@ ScatterChart <- function(x = NULL,
         if (ggi == 1 && scatter.colors.as.numeric)
             marker.obj <- list(size = tmp.size, sizemode = "diameter", opacity = opacity,
                             line = list(width = series.marker.border.width),
-                            color = scatter.colors.scaled, colorscale = col.scale,
+                            color = scatter.colors.labels, colorscale = col.scale,
                             showscale = T, colorbar = colorbar)
         else
             marker.obj <- list(size = tmp.size, sizemode = "diameter", opacity = opacity,
