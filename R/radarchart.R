@@ -41,10 +41,10 @@
 #' @param grid.show Logical; Whether to show grid lines.
 #' opacity as an alpha value (0 to 1).
 #' @param legend.show Logical; show the legend.
-#' @param legend.position.x A numeric controlling the position of the legend. 
-#'   Values range from -0.5 (left) to 1.5 (right). 
-#' @param legend.position.y A numeric controlling the position of the legend. 
-#'   Values range from 0 (bottom) to 1 (top). 
+#' @param legend.position.x A numeric controlling the position of the legend.
+#'   Values range from -0.5 (left) to 1.5 (right).
+#' @param legend.position.y A numeric controlling the position of the legend.
+#'   Values range from 0 (bottom) to 1 (top).
 #' @param legend.fill.color Legend fill color as a named color in character format
 #' (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param legend.fill.opacity Legend fill opacity as an alpha value
@@ -87,13 +87,11 @@
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param y.tick.font.family Character; y-axis tick label font family
 #' @param y.tick.font.size y-axis tick label font size
-#' @param x.title Character, x-axis title; defaults to chart input values;
-#' to turn off set to "FALSE".
-#' @param x.title.font.color x-axis title font color as a named color in
+#' @param x.tick.font.color x-axis title font color as a named color in
 #' character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param x.title.font.family Character; x-axis title font family
-#' @param x.title.font.size x-axis title font size
+#' @param x.tick.font.family Character; x-axis title font family
+#' @param x.tick.font.size x-axis title font size
 #' @param x.grid.width Width of y-grid lines in pixels; 0 = no line
 #' @param x.grid.color Color of y-grid lines as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
@@ -155,10 +153,9 @@ RadarChart <- function(x,
                     global.font.family = "Arial",
                     global.font.color = rgb(44, 44, 44, maxColorValue = 255),
                     grid.show = TRUE,
-                    x.title = "", # ignored but avoids matching problem
-                    x.title.font.color = global.font.color,
-                    x.title.font.family = global.font.family,
-                    x.title.font.size = 12,
+                    x.tick.font.color = global.font.color,
+                    x.tick.font.family = global.font.family,
+                    x.tick.font.size = 12,
                     x.grid.width = 1 * grid.show,
                     x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                     y.bounds.minimum = NULL,
@@ -204,7 +201,7 @@ RadarChart <- function(x,
         stop("Radar charts cannot have negative values.\n")
     n <- nrow(chart.matrix)
     m <- ncol(chart.matrix)
-    
+
     if (is.null(n) || n == 1 || m == 1)
     {
         # only 1 series
@@ -216,10 +213,10 @@ RadarChart <- function(x,
     {
         warning("Radar chart only has two spokes. It may be more appropriate to use another chart type.")
     }
-    
+
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
     subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
-    x.title.font = list(family = x.title.font.family, size = x.title.font.size, color = x.title.font.color)
+    x.tick.font = list(family = x.tick.font.family, size = x.tick.font.size, color = x.tick.font.color)
     y.tick.font = list(family = y.tick.font.family, size = y.tick.font.size, color = y.tick.font.color)
     footer.font = list(family = footer.font.family, size = footer.font.size, color = footer.font.color)
     legend.font = list(family = legend.font.family, size = legend.font.size, color = legend.font.color)
@@ -269,11 +266,11 @@ RadarChart <- function(x,
                 FormatAsReal(unlist(chart.matrix), decimals = data.label.decimals),
                 data.label.suffix))
 
-    
+
     # Set margins
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate = FALSE)
     margins <- list(b = 20, l = 0, r = 0, t = 20, inner = 0)
-    margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size, 
+    margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
     subtitle.axis <- setSubtitleAxis(subtitle, subtitle.font, title, title.font)
     footer.axis <- setFooterAxis(footer, footer.font, margins)
@@ -341,18 +338,18 @@ RadarChart <- function(x,
     xanch[which(abs(outer[,2]) < r.max/100 & sign(outer[,1]) > 0)] <- "left"
 
     xlab <- autoFormatLongLabels(rownames(chart.matrix)[1:n], label.wrap, label.wrap.nchar)
-    font.asp <- fontAspectRatio(x.title.font.family)
+    font.asp <- fontAspectRatio(x.tick.font.family)
 
     # X-axis label widths are fixed to avoid the chart width changing in regression tests.
     # We avoided fixing the x-axis range because autorange handles variation in the xaxis labels quite well
-    xlab.width <- (font.asp + 0.5) * x.title.font.size * 
+    xlab.width <- (font.asp + 0.5) * x.tick.font.size *
                     max(nchar(unlist(strsplit(split="<br>", as.character(xlab)))))
-    xlabels <- list(x = outer[,1], y = outer[,2], text = xlab, 
-                width = xlab.width, font = x.title.font,
+    xlabels <- list(x = outer[,1], y = outer[,2], text = xlab,
+                width = xlab.width, font = x.tick.font,
                 showarrow = F, yshift = outer[1:n,2]/r.max * 15,
                 xanchor = xanch, xshift = outer[1:n,1]/r.max)
 
-    p <- layout(p, margin = margins, title = title, titlefont = title.font, 
+    p <- layout(p, margin = margins, title = title, titlefont = title.font,
             plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
             paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
             hovermode = if (tooltip.show) "closest" else FALSE,
@@ -360,7 +357,7 @@ RadarChart <- function(x,
             legend = legend, showlegend = legend.show, shapes = grid, annotations = xlabels)
 
     if (y.grid.width > 0 && y.tick.show && !is.null(tick.vals))
-        p <- add_annotations(p, x=rep(0, length(tick.vals)), y = tick.vals, 
+        p <- add_annotations(p, x=rep(0, length(tick.vals)), y = tick.vals,
                 font = y.tick.font, showarrow = F, xanchor = "right", xshift = -5,
                 text = paste0(y.tick.prefix, FormatAsReal(tick.vals, decimals = y.tick.decimals), y.tick.suffix))
 

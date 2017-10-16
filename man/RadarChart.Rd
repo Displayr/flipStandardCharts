@@ -20,9 +20,9 @@ RadarChart(x, title = "", title.font.family = global.font.family,
   margin.right = NULL, margin.inner.pad = NULL, series.marker.size = 6,
   series.line.width = 3, tooltip.show = TRUE, modebar.show = FALSE,
   global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
-  maxColorValue = 255), grid.show = TRUE, x.title = "",
-  x.title.font.color = global.font.color,
-  x.title.font.family = global.font.family, x.title.font.size = 12,
+  maxColorValue = 255), grid.show = TRUE,
+  x.tick.font.color = global.font.color,
+  x.tick.font.family = global.font.family, x.tick.font.size = 12,
   x.grid.width = 1 * grid.show, x.grid.color = rgb(225, 225, 225,
   maxColorValue = 255), y.bounds.minimum = NULL, y.bounds.maximum = NULL,
   y.tick.distance = NULL, y.grid.width = 1 * grid.show,
@@ -97,10 +97,10 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 \item{legend.ascending}{Logical; TRUE for ascending, FALSE for descending.
 By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.}
 
-\item{legend.position.y}{A numeric controlling the position of the legend. 
+\item{legend.position.y}{A numeric controlling the position of the legend.
 Values range from 0 (bottom) to 1 (top).}
 
-\item{legend.position.x}{A numeric controlling the position of the legend. 
+\item{legend.position.x}{A numeric controlling the position of the legend.
 Values range from -0.5 (left) to 1.5 (right).}
 
 \item{margin.top}{Margin between plot area and the top of the
@@ -135,16 +135,13 @@ font attribute for the chart unless specified individually.}
 \item{grid.show}{Logical; Whether to show grid lines.
 opacity as an alpha value (0 to 1).}
 
-\item{x.title}{Character, x-axis title; defaults to chart input values;
-to turn off set to "FALSE".}
-
-\item{x.title.font.color}{x-axis title font color as a named color in
+\item{x.tick.font.color}{x-axis title font color as a named color in
 character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{x.title.font.family}{Character; x-axis title font family}
+\item{x.tick.font.family}{Character; x-axis title font family}
 
-\item{x.title.font.size}{x-axis title font size}
+\item{x.tick.font.size}{x-axis title font size}
 
 \item{x.grid.width}{Width of y-grid lines in pixels; 0 = no line}
 
