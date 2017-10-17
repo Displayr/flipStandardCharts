@@ -251,7 +251,7 @@ setAxis <- function(title, side, axisLabels, titlefont, linecolor, linewidth, gr
                  ticks=if (has.line) "outside" else "", tickangle=tickangle, ticklen=ticklen,
                  tickcolor=linecolor, tickfont=tickfont, dtick=tickdistance, tickformat=tickformat,
                  tickprefix=tickprefix, ticksuffix=ticksuffix, hoverformat=hoverformat,
-                 autorange=autorange, range=range, rangemode=rangemode,
+                 autorange=autorange, range=range, rangemode=rangemode, layer="below traces",
                  zeroline=zero.line.width > 0, zerolinewidth=zero.line.width, zerolinecolor=zero.line.color,
                  showexponent="all", showtickprefix=TRUE, showticksuffix=TRUE, showticklabels=tickshow))
 }
@@ -411,7 +411,7 @@ setTicks <- function(minimum, maximum, distance, reversed = FALSE,
             lab.len <- max(nchar(as.character(unlist(labels)))) * label.font.size/10
             pad <- (maximum - minimum) * (0.05 * lab.len/4 + (0.1 * is.bar))
         }
-        if (!is.bar)
+        if (!is.bar || min(data) < 0)
             minimum <- minimum - pad
         maximum <- maximum + pad
     }

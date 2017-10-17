@@ -506,10 +506,12 @@ BarChart <- function(x,
         {
             y.range <- getRange(x, yaxis, axisFormat)
             yaxis2 <- list(overlaying = "y", visible = FALSE, range = y.range)
-            x.diff <- diff(range(data.annotations$x))/100
+            x.sign <- sign(data.annotations$x[,i])
+            x.diff <- x.sign * diff(range(data.annotations$x))/100
             p <- add_text(p, yaxis = "y2", x = data.annotations$x[,i] + x.diff, 
                       y = data.annotations$y[,i],
-                      text = data.annotations$text[,i], textposition = "middle right",
+                      text = data.annotations$text[,i],
+                      textposition = ifelse(x.sign >= 0, "middle right", "middle left"),
                       textfont = data.label.font, hoverinfo = "none",
                       showlegend = FALSE, legendgroup = tmp.group)
         }

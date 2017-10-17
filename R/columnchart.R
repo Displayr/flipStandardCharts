@@ -503,9 +503,13 @@ ColumnChart <-   function(x,
         if (data.label.show && !is.stacked)
         {
             x.range <- getRange(x, xaxis, axisFormat)
+            y.sign <- sign(data.annotations$y[,i])
+            y.diff <- -1 * (y.sign < 0) * diff(range(data.annotations$y))/200
             xaxis2 <- list(overlaying = "x", visible = FALSE, range = x.range)
-            p <- add_text(p, xaxis = "x2", x = data.annotations$x[,i], y = data.annotations$y[,i],
-                      text = data.annotations$text[,i], textposition = "top center",
+            p <- add_text(p, xaxis = "x2", x = data.annotations$x[,i], 
+                      y = data.annotations$y[,i] + y.diff,
+                      text = data.annotations$text[,i], 
+                      textposition = ifelse(y.sign >= 0, "top center", "bottom center"),
                       textfont = data.label.font, hoverinfo = "none",
                       showlegend = FALSE, legendgroup = tmp.group)
         }
