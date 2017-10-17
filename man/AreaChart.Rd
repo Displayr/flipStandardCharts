@@ -168,10 +168,10 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{legend.font.size}{Legend font size.}
 
-\item{legend.position.x}{A numeric controlling the position of the legend. 
+\item{legend.position.x}{A numeric controlling the position of the legend.
 Values range from -0.5 (left) to 1.5 (right).}
 
-\item{legend.position.y}{A numeric controlling the position of the legend. 
+\item{legend.position.y}{A numeric controlling the position of the legend.
 Values range from 0 (bottom) to 1 (top).}
 
 \item{legend.ascending}{Logical; TRUE for ascending, FALSE for descending.
@@ -406,7 +406,7 @@ right", "middle left", "middle center", "middle right", "bottom left",
 Plot area chart
 }
 \examples{
-z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L), 
+z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L),
       .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
 ColumnChart(z, type="Stacked Column")
 }

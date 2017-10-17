@@ -377,8 +377,6 @@ ColumnChart <-   function(x,
     matrix.labels <- names(dimnames(chart.matrix))
     if (nchar(x.title) == 0 && length(matrix.labels) == 2)
         x.title <- matrix.labels[1]
-    if (nchar(y.title) == 0 && length(matrix.labels) == 2)
-        y.title <- matrix.labels[2]
 
     # Constants
     hover.mode <- if (tooltip.show) "closest" else FALSE
@@ -506,9 +504,9 @@ ColumnChart <-   function(x,
             y.sign <- sign(data.annotations$y[,i])
             y.diff <- -1 * (y.sign < 0) * diff(range(data.annotations$y))/200
             xaxis2 <- list(overlaying = "x", visible = FALSE, range = x.range)
-            p <- add_text(p, xaxis = "x2", x = data.annotations$x[,i], 
+            p <- add_text(p, xaxis = "x2", x = data.annotations$x[,i],
                       y = data.annotations$y[,i] + y.diff,
-                      text = data.annotations$text[,i], 
+                      text = data.annotations$text[,i],
                       textposition = ifelse(y.sign >= 0, "top center", "bottom center"),
                       textfont = data.label.font, hoverinfo = "none",
                       showlegend = FALSE, legendgroup = tmp.group)

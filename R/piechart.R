@@ -71,7 +71,7 @@ PieChart <- function(x,
                      pie.groups.order = "initial",
                      pie.inner.radius = 70,
                      pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
-                     as.percentages = TRUE,
+                     as.percentages = FALSE,
                      global.font.family = "Arial",
                      global.font.color = rgb(44, 44, 44, maxColorValue = 255),
                      ...)

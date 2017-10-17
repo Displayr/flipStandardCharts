@@ -15,7 +15,7 @@ PieChart(x, type = "Pie", colors = NULL, pie.subslice.colors = NULL,
   pie.groups.font.color = global.font.color,
   pie.groups.font.family = global.font.family, pie.groups.order = "initial",
   pie.inner.radius = 70, pie.border.color = rgb(255, 255, 255, maxColorValue
-  = 255), as.percentages = TRUE, global.font.family = "Arial",
+  = 255), as.percentages = FALSE, global.font.family = "Arial",
   global.font.color = rgb(44, 44, 44, maxColorValue = 255), ...)
 }
 \arguments{

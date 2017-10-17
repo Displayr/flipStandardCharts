@@ -1,6 +1,6 @@
 #' Bar chart
 #'
-#' Plot bar chart 
+#' Plot bar chart
 #'
 #' @param x A table, matrix, vector or data frame.
 #' @param type One of "Bar", "Stacked Bar" or "100\% Stacked Bar"
@@ -62,10 +62,10 @@
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param legend.font.family Character; legend font family.
 #' @param legend.font.size Legend font size.
-#' @param legend.position.x A numeric controlling the position of the legend. 
-#'   Values range from -0.5 (left) to 1.5 (right). 
-#' @param legend.position.y A numeric controlling the position of the legend. 
-#'   Values range from 0 (bottom) to 1 (top). 
+#' @param legend.position.x A numeric controlling the position of the legend.
+#'   Values range from -0.5 (left) to 1.5 (right).
+#' @param legend.position.y A numeric controlling the position of the legend.
+#'   Values range from 0 (bottom) to 1 (top).
 #' @param legend.ascending Logical; TRUE for ascending, FALSE for descending.
 #' By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.
 #' @param margin.top Margin between plot area and the top of the
@@ -213,7 +213,7 @@
 #' @param us.date.format Whether to apply the US convention when parsing dates.
 #' @param ... Extra arguments that are ignored.
 #' @examples
-#' z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L), 
+#' z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L),
 #'       .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
 #' ColumnChart(z, type="Stacked Column")
 #' @importFrom grDevices rgb
@@ -365,15 +365,13 @@ BarChart <- function(x,
     if(is.hundred.percent.stacked)
     {
         chart.matrix <- cum.data(chart.matrix, "column.percentage")
-        x.tick.format.manual <- "%" 
+        x.tick.format.manual <- "%"
         data.label.suffix <- "%"
         data.label.mult <- 100
     }
     matrix.labels <- names(dimnames(chart.matrix))
     if (nchar(y.title) == 0 && length(matrix.labels) == 2)
         y.title <- matrix.labels[1]
-    if (nchar(x.title) == 0 && length(matrix.labels) == 2)
-        x.title <- matrix.labels[2]
     x.labels.full <- rownames(chart.matrix)
 
     # Constants
@@ -403,31 +401,31 @@ BarChart <- function(x,
     # Format axis labels
     if (is.null(x.tick.decimals))
         x.tick.decimals <- decimalsToDisplay(as.numeric(chart.matrix))
-    tmp.label <- sprintf(paste0("%s%.", data.label.decimals, "f%s"), 
+    tmp.label <- sprintf(paste0("%s%.", data.label.decimals, "f%s"),
                 data.label.prefix, max(chart.matrix), data.label.suffix)
     xtick <- setTicks(x.bounds.minimum, x.bounds.maximum, x.tick.distance, x.data.reversed,
-                  data = if (data.label.show && !is.stacked) chart.matrix else NULL, type = type, 
+                  data = if (data.label.show && !is.stacked) chart.matrix else NULL, type = type,
                   labels = tmp.label, label.font.size = data.label.font.size)
     ytick <- setTicks(y.bounds.minimum, y.bounds.maximum, y.tick.distance, !y.data.reversed)
-    axisFormat <- formatLabels(chart.matrix, type, label.wrap, label.wrap.nchar, us.date.format) 
-   
-    yaxis <- setAxis(y.title, "left", axisFormat, y.title.font, 
+    axisFormat <- formatLabels(chart.matrix, type, label.wrap, label.wrap.nchar, us.date.format)
+
+    yaxis <- setAxis(y.title, "left", axisFormat, y.title.font,
                   y.line.color, y.line.width, y.grid.width, y.grid.color,
-                  ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance, y.tick.format.manual, 
-                  y.tick.decimals, "", "", y.tick.show, y.zero, y.zero.line.width, y.zero.line.color, 
+                  ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance, y.tick.format.manual,
+                  y.tick.decimals, "", "", y.tick.show, y.zero, y.zero.line.width, y.zero.line.color,
                   y.hovertext.format.manual, y.hovertext.decimals)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, x.tick.format.manual,
                   x.tick.decimals, x.tick.prefix, x.tick.suffix,
-                  x.tick.show, FALSE, x.zero.line.width, x.zero.line.color, 
+                  x.tick.show, FALSE, x.zero.line.width, x.zero.line.color,
                   x.hovertext.format.manual, x.hovertext.decimals)
 
-    # Work out margin spacing 
+    # Work out margin spacing
     margins <- list(t = 20, b = 50, r = 60, l = 80, pad = 0)
     margins <- setMarginsForAxis(margins, axisFormat, yaxis)
     margins <- setMarginsForAxis(margins, axisFormat, xaxis)
-    margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size, 
+    margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
     margins <- setMarginsForLegend(margins, legend.show, legend)
     if (!is.null(margin.top))
@@ -438,11 +436,11 @@ BarChart <- function(x,
         margins$left <- margin.left
     if (!is.null(margin.right))
         margins$right <- margin.right
-    
+
     # Finalise text in margins
     footer.axis <- setFooterAxis(footer, footer.font, margins)
     subtitle.axis <- setSubtitleAxis(subtitle, subtitle.font, title, title.font)
- 
+
     # Data label annotations
     data.annotations <- NULL
     if (data.label.show)
@@ -471,21 +469,21 @@ BarChart <- function(x,
     {
         y <- as.numeric(chart.matrix[, i])
         x <- x.labels
-        hover.text <- sprintf("%s: %s%s%s", x.labels.full, x.tick.prefix, 
+        hover.text <- sprintf("%s: %s%s%s", x.labels.full, x.tick.prefix,
             FormatAsReal(y, decimals=x.hovertext.decimals), x.tick.suffix)
 
         marker <- list(size = series.marker.size, color = toRGB(colors[i], alpha = opacity),
-                    line = list(color = toRGB(colors[i], 
+                    line = list(color = toRGB(colors[i],
                       alpha = series.marker.border.opacity),
                       width = series.marker.border.width))
-                
+
         # add invisible line to force all categorical labels to be shown
         if (!is.stacked && i == 1)
             p <- add_trace(p, x=rep(min(y,na.rm=T), length(y)), y=x,
                            type="scatter", mode="lines",
                            hoverinfo="none", showlegend=F, opacity=0)
 
-        # this is the main trace for each data series 
+        # this is the main trace for each data series
         tmp.group <- if (legend.group == "") paste("group", i) else legend.group
         p <- add_trace(p, x = y, y = x, type = "bar", orientation = "h", marker = marker,
                        name  =  y.labels[i], legendgroup  =  tmp.group,  text = hover.text,
@@ -508,7 +506,7 @@ BarChart <- function(x,
             yaxis2 <- list(overlaying = "y", visible = FALSE, range = y.range)
             x.sign <- sign(data.annotations$x[,i])
             x.diff <- x.sign * diff(range(data.annotations$x))/100
-            p <- add_text(p, yaxis = "y2", x = data.annotations$x[,i] + x.diff, 
+            p <- add_text(p, yaxis = "y2", x = data.annotations$x[,i] + x.diff,
                       y = data.annotations$y[,i],
                       text = data.annotations$text[,i],
                       textposition = ifelse(x.sign >= 0, "middle right", "middle left"),
@@ -516,14 +514,14 @@ BarChart <- function(x,
                       showlegend = FALSE, legendgroup = tmp.group)
         }
     }
-    
+
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
         title = title,
         showlegend = legend.show,
         legend = legend,
-        yaxis = yaxis, 
+        yaxis = yaxis,
         xaxis4 = footer.axis,
         xaxis3 = subtitle.axis,
         yaxis2 = yaxis2,

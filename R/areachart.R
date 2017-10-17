@@ -1,6 +1,6 @@
 #' Area chart
 #'
-#' Plot area chart 
+#' Plot area chart
 #'
 #' @param x A table, matrix, vector or data frame.
 #' @param type One of "Column", "Stacked Column" or "100\% Stacked Column"
@@ -62,10 +62,10 @@
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param legend.font.family Character; legend font family.
 #' @param legend.font.size Legend font size.
-#' @param legend.position.x A numeric controlling the position of the legend. 
-#'   Values range from -0.5 (left) to 1.5 (right). 
-#' @param legend.position.y A numeric controlling the position of the legend. 
-#'   Values range from 0 (bottom) to 1 (top). 
+#' @param legend.position.x A numeric controlling the position of the legend.
+#'   Values range from -0.5 (left) to 1.5 (right).
+#' @param legend.position.y A numeric controlling the position of the legend.
+#'   Values range from 0 (bottom) to 1 (top).
 #' @param legend.ascending Logical; TRUE for ascending, FALSE for descending.
 #' By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.
 #' @param margin.top Margin between plot area and the top of the
@@ -214,7 +214,7 @@
 #' @param us.date.format Whether to apply the US convention when parsing dates.
 #' @param ... Extra arguments that are ignored.
 #' @examples
-#' z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L), 
+#' z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L),
 #'       .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
 #' ColumnChart(z, type="Stacked Column")
 #' @importFrom grDevices rgb
@@ -373,7 +373,7 @@ AreaChart <-   function(x,
             has.gap <- TRUE
     }
     if (is.null(series.line.width))
-        series.line.width <- if (!has.gap || is.stacked) 0 else 3 
+        series.line.width <- if (!has.gap || is.stacked) 0 else 3
     if (is.hundred.percent.stacked)
         chart.matrix <- cum.data(chart.matrix, "cumulative.percentage")
     else if (is.stacked)
@@ -381,15 +381,13 @@ AreaChart <-   function(x,
     data.label.mult <- 1
     if (is.hundred.percent.stacked)
     {
-        y.tick.format.manual <- "%" 
+        y.tick.format.manual <- "%"
         data.label.suffix <- "%"
         data.label.mult <- 100
     }
     matrix.labels <- names(dimnames(chart.matrix))
     if (nchar(x.title) == 0 && length(matrix.labels) == 2)
         x.title <- matrix.labels[1]
-    if (nchar(y.title) == 0 && length(matrix.labels) == 2)
-        y.title <- matrix.labels[2]
     x.labels.full <- rownames(chart.matrix)
 
     # Constants
@@ -399,11 +397,11 @@ AreaChart <-   function(x,
     legend.group <- if (is.stacked) "grouped" else ""
     fill.bound <- if (is.stacked) "tonexty" else "tozeroy"
 
-    series.marker.symbols <- if (is.null(series.marker.show)) rep(100, ncol(chart.matrix)) 
+    series.marker.symbols <- if (is.null(series.marker.show)) rep(100, ncol(chart.matrix))
                              else series.marker.show
     if (is.null(series.line.width))
         series.line.width <- if (!has.gap || is.stacked) 0 else 3
-    
+
     series.mode <- "lines+markers"
     if (is.null(series.marker.show))
         series.mode <- "lines"
@@ -441,24 +439,24 @@ AreaChart <-   function(x,
         y.tick.decimals <- decimalsToDisplay(as.numeric(chart.matrix))
     xtick <- setTicks(x.bounds.minimum, x.bounds.maximum, x.tick.distance, x.data.reversed)
     ytick <- setTicks(y.bounds.minimum, y.bounds.maximum, y.tick.distance, y.data.reversed)
-    axisFormat <- formatLabels(chart.matrix, type, label.wrap, label.wrap.nchar, us.date.format) 
-    
-    yaxis <- setAxis(y.title, "left", axisFormat, y.title.font, 
+    axisFormat <- formatLabels(chart.matrix, type, label.wrap, label.wrap.nchar, us.date.format)
+
+    yaxis <- setAxis(y.title, "left", axisFormat, y.title.font,
                   y.line.color, y.line.width, y.grid.width, y.grid.color,
-                  ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance, y.tick.format.manual, 
+                  ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance, y.tick.format.manual,
                   y.tick.decimals, y.tick.prefix, y.tick.suffix,
-                  y.tick.show, y.zero, y.zero.line.width, y.zero.line.color, 
+                  y.tick.show, y.zero, y.zero.line.width, y.zero.line.color,
                   y.hovertext.format.manual, y.hovertext.decimals)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, x.tick.format.manual,
-                  x.tick.decimals, "", "", x.tick.show, FALSE, x.zero.line.width, x.zero.line.color, 
+                  x.tick.decimals, "", "", x.tick.show, FALSE, x.zero.line.width, x.zero.line.color,
                   x.hovertext.format.manual, x.hovertext.decimals, axisFormat$labels)
 
-    # Work out margin spacing 
+    # Work out margin spacing
     margins <- list(t = 20, b = 50, r = 60, l = 80, pad = 0)
     margins <- setMarginsForAxis(margins, axisFormat, xaxis)
-    margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size, 
+    margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
     margins <- setMarginsForLegend(margins, legend.show, legend)
     if (!is.null(margin.top))
@@ -469,11 +467,11 @@ AreaChart <-   function(x,
         margins$left <- margin.left
     if (!is.null(margin.right))
         margins$right <- margin.right
-    
+
     # Finalise text in margins
     footer.axis <- setFooterAxis(footer, footer.font, margins)
     subtitle.axis <- setSubtitleAxis(subtitle, subtitle.font, title, title.font)
- 
+
     ## Initiate plotly object
     p <- plot_ly(as.data.frame(chart.matrix))
     if (is.null(rownames(chart.matrix)))
@@ -487,11 +485,11 @@ AreaChart <-   function(x,
     {
         y <- as.numeric(chart.matrix[, i])
         x <- x.labels
-        hover.text <- sprintf("(%s, %s%s%s)", x.labels.full, y.tick.prefix, 
+        hover.text <- sprintf("(%s, %s%s%s)", x.labels.full, y.tick.prefix,
             FormatAsReal(y, decimals=y.hovertext.decimals), y.tick.suffix)
 
         lines <- list(width = series.line.width,
-                      color = toRGB(colors[i], alpha = series.line.opacity))        
+                      color = toRGB(colors[i], alpha = series.line.opacity))
 
         marker <- NULL
         if (!is.null(series.mode) && regexpr('marker', series.mode) >= 1)
@@ -501,8 +499,8 @@ AreaChart <-   function(x,
                        line = list(
                        color = toRGB(colors[i], alpha = series.marker.border.opacity),
                        width = series.marker.border.width))
-       
-        source.text <- "" 
+
+        source.text <- ""
         if (data.label.show)
             source.text <- paste(data.label.prefix,
                  FormatAsReal(chart.matrix[, i] * data.label.mult, decimals = data.label.decimals),
@@ -545,7 +543,7 @@ AreaChart <-   function(x,
                            name = y.label,
                            showlegend = FALSE,
                            legendgroup = tmp.group,
-                           hoverinfo = "skip", 
+                           hoverinfo = "skip",
                            marker = marker,
                            mode = series.mode)
 
