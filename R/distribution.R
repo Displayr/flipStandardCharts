@@ -1,14 +1,13 @@
-library(plotly)
 #' Distribution
 #'
 #' Distribution Chart.
 #'
-#' @param x A \code{link{list}}, where each vector contains data to be plotted. If the data is not numeric
+#' @param x A \code{\link{list}}, where each vector contains data to be plotted. If the data is not numeric
 #' it is coerced to be numeric.
 #' Input data may be a matrix or a vector, containing the height of the columns
 #' to be plotted, with the name/rownames used as the column names of the chart. Numeric and date labels
 #' will be parsed automatically.
-#' @param weights An optional \code{link{list}}, where each element is a vecytor containing weights corresponding to
+#' @param weights An optional \code{\link{list}}, where each element is a vecytor containing weights corresponding to
 #' the3 values of \code{x}.
 #' @param vertical Display the densities vertically.
 #' @param show.mean Displays the mean of the data.
@@ -75,7 +74,7 @@ library(plotly)
 #' NULL = no manual range set.  Must be less than values.bounds.maximum
 #' @param values.bounds.maximum Maximum of range for
 #' plotting; NULL = no manual range set.  Must be greater than values.bounds.minimum
-#' @param values.tick.distance Tick mark distance.
+#' @param values.tick.distance The distance between the ticks. Requires that \code{values.bounds.minimum} and \code{values.bounds.maximum} have been set.
 #' @param values.zero.line.width Width in pixels of zero line; 0 = no zero line
 #' shown
 #' @param values.zero.line.color Color of horizontal zero line as a named
@@ -116,10 +115,9 @@ library(plotly)
 #' (e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param us.date.format Whether to apply the US convention when parsing dates.
 #' @param ... Extra arguments that are ignored.
+#' @return A \code{plotly} chart.
 #' @examples
-#' z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L),
-#'       .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
-#' ColumnChart(z, type="Stacked Column")
+#' Distribution(list(rnorm(100)))
 #' @importFrom grDevices rgb
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
