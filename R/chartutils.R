@@ -399,7 +399,7 @@ setFooterAxis <- function(footer, footer.font, margins)
 setTicks <- function(minimum, maximum, distance, reversed = FALSE,
                 data = NULL, labels = NULL, type="scatter", label.font.size = 10)
 {
-    if (is.null(minimum) || is.null(maximum) && !is.null(distance))
+    if ((is.null(minimum) || is.null(maximum)) && !is.null(distance))
         stop("If specifying the distance between ticks on an axis, you must also specify the minimum and maximum values.")
     # starting values
     mode <- "auto"
