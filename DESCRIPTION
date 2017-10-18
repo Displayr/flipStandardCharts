@@ -14,9 +14,9 @@ Imports:
     flipChartBasics,
     flipData,
     flipFormat,
-    flipTables,
+    flipTables (>= 1.0.1),
     flipTime,
-    flipTransformations,
+    flipTransformations (>= 1.1.2),
     rhtmlDonut,
     rhtmlHeatmap,
     rhtmlLabeledScatter,
@@ -25,6 +25,7 @@ Remotes:
     Displayr/flipU,
     Displayr/flipChartBasics,
     Displayr/flipData,
+    Displayr/flipExampleData,
     Displayr/flipFormat,
     Displayr/flipTables,
     Displayr/flipTime,
@@ -33,5 +34,6 @@ Remotes:
     Displayr/rhtmlHeatmap,
     Displayr/rhtmlLabeledScatter
 Suggests:
-    testthat
+    testthat,
+    flipExampleData
 RoxygenNote: 6.0.1

@@ -362,7 +362,7 @@ setMarginsForLegend <- function(margins, showlegend, legend)
 }
 
 # No wordwrap - subtitles should not be too long
-setSubtitleAxis <- function(subtitle, subtitle.font, title, title.font)
+setSubtitleAxis <- function(subtitle, subtitle.font, title, title.font, overlaying = "x")
 {
     res <- NULL
     if (nchar(subtitle) > 0)
@@ -370,8 +370,9 @@ setSubtitleAxis <- function(subtitle, subtitle.font, title, title.font)
         title.nline <- sum(gregexpr("<br>", title)[[1]] > -1) + 1
         subtitle.npad <- max(0, round(title.nline * subtitle.font$size/title.font$size * 0.9))
         subtitle <- paste0(paste(rep("<br>", subtitle.npad), collapse=""), subtitle)
-        res <- list(overlaying="x", side="top", anchor="free", position=1,
-             showline=F, zeroline=F, showgrid=F, showticklabels=F, title=subtitle,
+        res <- list(overlaying = overlaying, side="top", anchor="free", position = 1,
+             showline = F, zeroline = F, showgrid = F, showticklabels = F, title = subtitle,
+             domain = c(0, 1),
              titlefont=subtitle.font)
     }
     res
