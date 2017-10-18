@@ -37,8 +37,8 @@ Distribution(x, weights = NULL, vertical = TRUE, show.mean = TRUE,
   values.tick.font.family = global.font.family, values.tick.font.size = 10,
   categories.tick.font.color = global.font.color,
   categories.tick.font.family = global.font.family,
-  categories.tick.font.size = 10, label.wrap = TRUE,
-  label.wrap.nchar = 21, tooltip.show = TRUE, modebar.show = FALSE,
+  categories.tick.font.size = 10, categories.label.wrap = TRUE,
+  categories.categories.label.wrap.nchar = 21, modebar.show = FALSE,
   us.date.format = NULL)
 }
 \arguments{
@@ -216,11 +216,9 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{categories.tick.font.size}{x-axis tick label font size}
 
-\item{label.wrap}{Logical; whether to wrap long labels on the x-axis.}
+\item{categories.label.wrap}{Logical; whether to wrap long labels on the x-axis.}
 
-\item{label.wrap.nchar}{Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.}
-
-\item{tooltip.show}{Logical; whether to show a tooltip on hover.}
+\item{categories.categories.label.wrap.nchar}{Integer; number of characters in each line when \code{categories.label.wrap} is \code{TRUE}.}
 
 \item{modebar.show}{Logical; whether to show the zoom menu buttons or not.}
 

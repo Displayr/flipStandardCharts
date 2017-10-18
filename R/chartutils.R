@@ -3,7 +3,7 @@ setHoverText <- function(axis, chart.matrix, is.bar = FALSE)
     formatStr <- if (axis$type == "linear") "x+y"
                  else                       "text+y"
     if (is.bar && axis$type != "linear")
-        formatStr <- "text+x"    
+        formatStr <- "text+x"
 
     if (ncol(chart.matrix) > 1)
         formatStr <- paste0("name+", formatStr)
@@ -399,6 +399,8 @@ setFooterAxis <- function(footer, footer.font, margins)
 setTicks <- function(minimum, maximum, distance, reversed = FALSE,
                 data = NULL, labels = NULL, type="scatter", label.font.size = 10)
 {
+    if (is.null(minimum) || is.null(maximum) && !is.null(distance))
+        stop("If specifying the distance between ticks on an axis, you must also specify the minimum and maximum values.")
     # starting values
     mode <- "auto"
     range <- NULL

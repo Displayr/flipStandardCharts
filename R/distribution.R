@@ -102,14 +102,13 @@ library(plotly)
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param values.tick.font.family Character; y-axis tick label font family
 #' @param values.tick.font.size y-axis tick label font size
-#' @param categories.tick.font.color X-axis tick label font color as a named color in
+#' @param categories.font.color X-axis tick label font color as a named color in
 #' character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param categories.tick.font.family Character; x-axis tick label font family
-#' @param categories.tick.font.size x-axis tick label font size
-#' @param label.wrap Logical; whether to wrap long labels on the x-axis.
-#' @param label.wrap.nchar Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.
-#' @param tooltip.show Logical; whether to show a tooltip on hover.
+#' @param categories.font.family Character; x-axis tick label font family
+#' @param categories.font.size x-axis tick label font size
+#' @param categories.label.wrap Logical; whether to wrap long labels on the x-axis.
+#' @param categories.categories.label.wrap.nchar Integer; number of characters in each line when \code{categories.label.wrap} is \code{TRUE}.
 #' @param modebar.show Logical; whether to show the zoom menu buttons or not.
 #' @param global.font.family Character; font family for all occurrences of any
 #' font attribute for the chart unless specified individually.
@@ -189,18 +188,17 @@ Distribution <-   function(x,
     values.tick.font.color = global.font.color,
     values.tick.font.family = global.font.family,
     values.tick.font.size = 10,
-    categories.tick.font.color = global.font.color,
-    categories.tick.font.family = global.font.family,
-    categories.tick.font.size = 10,
-    label.wrap = TRUE,
-    label.wrap.nchar = 21,
-    tooltip.show = TRUE,
+    categories.font.color = global.font.color,
+    categories.font.family = global.font.family,
+    categories.font.size = 10,
+    categories.label.wrap = TRUE,
+    categories.categories.label.wrap.nchar = 21,
     modebar.show = FALSE,
     us.date.format = NULL)
 {
     # Extracting and wrapping labels
     labels <- names(x)
-    labels <- autoFormatLongLabels(labels, label.wrap, label.wrap.nchar)
+    labels <- autoFormatLongLabels(labels, categories.label.wrap, categories.categories.label.wrap.nchar)
 
     if (!is.list(x))
         stop("Input data should be a list of numeric vectors.")
@@ -226,7 +224,7 @@ Distribution <-   function(x,
 
     values.title.font=list(family=values.title.font.family, size=values.title.font.size, color=values.title.font.color)
     values.tick.font=list(family=values.tick.font.family, size=values.tick.font.size, color=values.tick.font.color)
-    categories.tick.font=list(family=categories.tick.font.family, size=categories.tick.font.size, color=categories.tick.font.color)
+    categories.font=list(family=categories.font.family, size=categories.font.size, color=categories.font.color)
 
     # Work out margin spacing
     margins <- list(t = 20, b = 50, r = 60, l = 80, pad = 0)
@@ -276,9 +274,9 @@ Distribution <-   function(x,
     # Format axis labels
     if (is.null(values.tick.decimals))
         values.tick.decimals <- decimalsToDisplay(values)
-    #categories.tick <- setTicks(categories.bounds.minimum, categories.bounds.maximum, categories.tick.distance, FALSE)
+    #categories.tick <- setTicks(categories.bounds.minimum, categories.bounds.maximum, categories.distance, FALSE)
     values.tick <- setTicks(values.bounds.minimum, values.bounds.maximum, values.tick.distance, FALSE)
-    axisFormat <- formatLabels(values, "Area", label.wrap, label.wrap.nchar, us.date.format) #ignored
+    axisFormat <- formatLabels(values, "Area", categories.label.wrap, categories.categories.label.wrap.nchar, us.date.format) #ignored
 
     if (is.null(values.bounds.minimum))
         values.bounds.minimum <- rng[1]
@@ -512,7 +510,7 @@ rugCategoryAxis <- function(i, n.variables, vertical, show.density, show.mirror.
 
 violinCategoriesAxes <- function(vertical, n.variables, labels)
 {
-    standard.parameters <- "n.variables, vertical, show.values, show.density, show.mirror.density, categories.tick.font.family, categories.tick.font.size, categories.tick.font.color"
+    standard.parameters <- "n.variables, vertical, show.values, show.density, show.mirror.density, categories.font.family, categories.font.size, categories.font.color"
     axes <- paste0("xaxis = violinCategoryAxis(1, '", labels[1], "',", standard.parameters, "), xaxis2 = rugCategoryAxis(1, n.variables, vertical, show.density, show.mirror.density, show.values), ")
     if (n.variables > 1)
     {

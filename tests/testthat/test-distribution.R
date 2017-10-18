@@ -284,16 +284,11 @@ test_that("Distribution: checking all the common parameters",{
     Distribution(Normals, values.title = "Values title", values.title.font.color =  "Red", values.title.font.family = "Courier", values.title.font.size = 40)
     Distribution(Normals, values.line.width = 0)
     Distribution(Normals, values.line.width = 0.5)
-    Distribution(Normals, values.line.width = 10) #That this is doing nothing is a problem in Carmen's code. She has been told.
     Distribution(Normals, values.line.width = 10, values.line.color = "Pink")
     Distribution(Normals, values.line.width = 1, values.line.color = "Pink", values.tick.mark.length = 10)
-    # The following also do nothing at the time of creating this package. Also reported to Carmen.
-    Distribution(Normals, values.tick.marks = "outside", values.line.width = 1, values.line.color = "Pink", values.tick.mark.length = 10)
-    Distribution(Normals, values.tick.marks = "inside", values.line.width = 1, values.line.color = "Pink", values.tick.mark.length = 10)
-    Distribution(Normals, values.tick.marks = "none", values.line.width = 1, values.line.color = "Pink", values.tick.mark.length = 10)
-
     Distribution(Normals, values.bounds.minimum = -100, values.bounds.maximum = 100)
     Distribution(Normals, values.bounds.minimum = -100, values.bounds.maximum = 100, values.tick.distance = 20)
+    expect_error(Distribution(Normals, values.tick.distance = 20))
     Distribution(Normals, values.zero.line.width = 0)
     Distribution(Normals, values.zero.line.width = 1)
     Distribution(Normals, values.zero.line.width = 10)
@@ -307,12 +302,36 @@ test_that("Distribution: checking all the common parameters",{
     Distribution(Normals, values.tick.prefix = "My ")
     Distribution(Normals, values.tick.prefix = "My ", values.tick.suffix = " dogs")
 
-    Distribution(Normals, values.tick.decimals = 2)
-    Distribution(Normals, values.tick.decimals = 2)
     Distribution(Normals, values.tick.angle = 45)
+    Distribution(Normals, values.tick.font.color = "Red")
+    Distribution(Normals, values.tick.font.family = "Courier")
+    Distribution(Normals, values.tick.font.size = 13)
 
-    ColumnChart(-1:5, y.tick.decimals = 2)
-    ColumnChart(-1:5, y.line.width = 1, grid.show = TRUE, y.grid.width = 10)
+    Distribution(Normals, categories.font.color = "Red")
+    Distribution(Normals, categories.font.family = "Courier")
+    Distribution(Normals, categories.font.size = 13)
+
+    Distribution(Normals, categories.label.wrap = FALSE)
+    Distribution(Normals, categories.label.wrap.nchar = 12)
+
+    Distribution(Normals, tooltip.show = FALSE)
+    Distribution(Normals, modebar.show = TRUE)
+
+    # Arguments that do nothing or need to be revised after Jake's stuff.
+    Distribution(Normals, values.tick.decimals = 2)
+    Distribution(Normals, values.line.width = 10) #That this is doing nothing is a problem in Carmen's code. She has been told.
+
+    Distribution(Normals, values.tick.marks = "outside", values.line.width = 1, values.line.color = "Pink", values.tick.mark.length = 10)
+    Distribution(Normals, values.tick.marks = "inside", values.line.width = 1, values.line.color = "Pink", values.tick.mark.length = 10)
+    Distribution(Normals, values.tick.marks = "none", values.line.width = 1, values.line.color = "Pink", values.tick.mark.length = 10)
+# values.tick.format.manual = "",
+# values.hovertext.decimals = NULL,
+# values.hovertext.format.manual = "",
+# Distribution(Normals, values.tick.distance = 20)
+# us.date.format = NULL
+
+    # ColumnChart(-1:5, y.tick.decimals = 2)
+    # ColumnChart(-1:5, y.line.width = 1, grid.show = TRUE, y.grid.width = 10)
     #
     #
     # ColumnChart(-1:5, y.zero = TRUE, grid.show = FALSE, y.tick.decimals = 2)
