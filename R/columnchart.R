@@ -293,7 +293,7 @@ ColumnChart <-   function(x,
                     y.tick.decimals = NULL,
                     y.tick.format.manual = "",
                     y.hovertext.decimals = NULL,
-                    y.hovertext.format.manual = "",
+                    y.hovertext.format.manual = y.tick.format.manual,
                     y.tick.angle = NULL,
                     y.tick.font.color = global.font.color,
                     y.tick.font.family = global.font.family,
@@ -318,7 +318,7 @@ ColumnChart <-   function(x,
                     x.tick.decimals = NULL,
                     x.tick.format.manual = "",
                     x.hovertext.decimals = y.hovertext.decimals,
-                    x.hovertext.format.manual = "",
+                    x.hovertext.format.manual = x.tick.format.manual,
                     x.tick.angle = NULL,
                     x.tick.font.color = global.font.color,
                     x.tick.font.family = global.font.family,
@@ -371,6 +371,7 @@ ColumnChart <-   function(x,
     {
         chart.matrix <- cum.data(chart.matrix, "column.percentage")
         y.tick.format.manual <- "%"
+        y.hovertext.format.manual <- "%"
         data.label.suffix <- "%"
         data.label.mult <- 100
     }
@@ -466,9 +467,6 @@ ColumnChart <-   function(x,
     {
         y <- as.numeric(chart.matrix[, i])
         x <- x.labels
-        hover.text <- sprintf("%s: %s%s%s", x.labels.full, y.tick.prefix,
-            FormatAsReal(y, decimals=y.hovertext.decimals), y.tick.suffix)
-
         marker <- list(size = series.marker.size, color = toRGB(colors[i], alpha = opacity),
                     line = list(color = toRGB(colors[i],
                       alpha = series.marker.border.opacity),
@@ -476,16 +474,17 @@ ColumnChart <-   function(x,
 
         # add invisible line to force all categorical labels to be shown
         if (!is.stacked && i == 1)
-            p <- add_trace(p, x=x, y=rep(min(y,na.rm=T), length(x)),
-                           type="scatter", mode="lines",
-                           hoverinfo="none", showlegend=F, opacity=0)
+            p <- add_trace(p, x = x, y = rep(min(y,na.rm = T), length(x)),
+                           type = "scatter", mode = "lines",
+                           hoverinfo = "none", showlegend = F, opacity = 0)
 
 
         # this is the main trace for each data series
         tmp.group <- if (legend.group == "") paste("group", i) else legend.group
         p <- add_trace(p, x = x, y = y, type = "bar", orientation = "v", marker = marker,
-                       name  =  y.labels[i], legendgroup  =  tmp.group, text = hover.text,
-                       hoverinfo  =  if(ncol(chart.matrix) > 1) "text+name" else "text")
+                       name  =  y.labels[i], legendgroup  =  tmp.group, 
+                       text = autoFormatLongLabels(x.labels.full, wordwrap=T, truncate=F),
+                       hoverinfo  = setHoverText(xaxis, chart.matrix)) 
 
         if (fit.type != "None" && !is.stacked)
         {

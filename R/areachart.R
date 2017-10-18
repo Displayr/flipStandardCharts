@@ -293,7 +293,7 @@ AreaChart <-   function(x,
                     y.tick.decimals = NULL,
                     y.tick.format.manual = "",
                     y.hovertext.decimals = NULL,
-                    y.hovertext.format.manual = "",
+                    y.hovertext.format.manual = y.tick.format.manual,
                     y.tick.angle = NULL,
                     y.tick.font.color = global.font.color,
                     y.tick.font.family = global.font.family,
@@ -318,7 +318,7 @@ AreaChart <-   function(x,
                     x.tick.decimals = NULL,
                     x.tick.format.manual = "",
                     x.hovertext.decimals = y.hovertext.decimals,
-                    x.hovertext.format.manual = "",
+                    x.hovertext.format.manual = x.tick.format.manual,
                     x.tick.angle = NULL,
                     x.tick.font.color = global.font.color,
                     x.tick.font.family = global.font.family,
@@ -382,6 +382,7 @@ AreaChart <-   function(x,
     if (is.hundred.percent.stacked)
     {
         y.tick.format.manual <- "%"
+        y.hovertext.format.manual <- "%"
         data.label.suffix <- "%"
         data.label.mult <- 100
     }
@@ -485,8 +486,6 @@ AreaChart <-   function(x,
     {
         y <- as.numeric(chart.matrix[, i])
         x <- x.labels
-        hover.text <- sprintf("(%s, %s%s%s)", x.labels.full, y.tick.prefix,
-            FormatAsReal(y, decimals=y.hovertext.decimals), y.tick.suffix)
 
         lines <- list(width = series.line.width,
                       color = toRGB(colors[i], alpha = series.line.opacity))
@@ -580,9 +579,9 @@ AreaChart <-   function(x,
                            line = list(width = 0),
                            name = y.label,
                            legendgroup = tmp.group,
-                           text = hover.text,
                            hoverlabel = list(bgcolor=colors[i]),
-                           hoverinfo = if(ncol(chart.matrix) > 1) "text+name" else "text",
+                           text = autoFormatLongLabels(x.labels.full, wordwrap=T, truncate=F),
+                           hoverinfo = setHoverText(xaxis, chart.matrix),
                            marker = marker,
                            mode = series.mode)
 

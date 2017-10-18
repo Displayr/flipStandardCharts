@@ -1,3 +1,16 @@
+setHoverText <- function(axis, chart.matrix, is.bar = FALSE)
+{
+    formatStr <- if (axis$type == "linear") "x+y"
+                 else                       "text+y"
+    if (is.bar && axis$type != "linear")
+        formatStr <- "text+x"    
+
+    if (ncol(chart.matrix) > 1)
+        formatStr <- paste0("name+", formatStr)
+}
+
+
+
 minPosition <- function(x, n)
 {
     if (is.factor(x) || is.character(x))
@@ -199,15 +212,6 @@ setAxis <- function(title, side, axisLabels, titlefont, linecolor, linewidth, gr
                           else 0
     }
 
-    tickformat <- ""
-    if (axis.type == "linear" && nchar(tickformatmanual) == 0)
-        tickformat <- paste0(".", tickdecimals, "f")
-    if (axis.type == "date" && nchar(tickformatmanual) > 0 &&
-        substr(tickformatmanual, nchar(tickformatmanual), nchar(tickformatmanual)) %in% c("e", "f", "%", "s"))
-        tickformat <- ""
-    else
-        tickformat <- tickformatmanual
-
     autorange <- ticks$autorange
     range <- ticks$range
     if ((!axisLabels$labels.on.x) && side %in% c("left","right"))
@@ -231,6 +235,15 @@ setAxis <- function(title, side, axisLabels, titlefont, linecolor, linewidth, gr
         diff <- min(diff(tmp.dates), na.rm=T)
         range <- range(tmp.dates, na.rm=T) + c(-1, 1) * diff
     }
+
+    tickformat <- ""
+    if (axis.type == "linear" && nchar(tickformatmanual) == 0)
+        tickformat <- paste0(".", tickdecimals, "f")
+    if (axis.type == "date" && nchar(tickformatmanual) > 0 &&
+        substr(tickformatmanual, nchar(tickformatmanual), nchar(tickformatmanual)) %in% c("e", "f", "%", "s"))
+        tickformat <- ""
+    else
+        tickformat <- tickformatmanual
 
     hoverformat <- ""
     if (!is.null(hovertext.format.manual) && nchar(hovertext.format.manual))

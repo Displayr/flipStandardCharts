@@ -293,7 +293,7 @@ LineChart <-   function(x,
                     y.tick.decimals = NULL,
                     y.tick.format.manual = "",
                     y.hovertext.decimals = NULL,
-                    y.hovertext.format.manual = "",
+                    y.hovertext.format.manual = y.tick.format.manual,
                     y.tick.angle = NULL,
                     y.tick.font.color = global.font.color,
                     y.tick.font.family = global.font.family,
@@ -318,7 +318,7 @@ LineChart <-   function(x,
                     x.tick.decimals = NULL,
                     x.tick.format.manual = "",
                     x.hovertext.decimals = y.hovertext.decimals,
-                    x.hovertext.format.manual = "",
+                    x.hovertext.format.manual = x.tick.format.manual,
                     x.tick.angle = NULL,
                     x.tick.font.color = global.font.color,
                     x.tick.font.family = global.font.family,
@@ -436,8 +436,6 @@ LineChart <-   function(x,
     {
         y <- as.numeric(chart.matrix[, i])
         x <- x.labels
-        hover.text <- sprintf("(%s, %s%s%s)", x.labels.full, y.tick.prefix,
-            FormatAsReal(y, decimals=y.hovertext.decimals), y.tick.suffix)
 
         lines <- list(width = series.line.width,
                       color = toRGB(colors[i], alpha = series.line.opacity))
@@ -482,8 +480,8 @@ LineChart <-   function(x,
                    name = y.label,
                    showlegend = (type == "Line"),
                    legendgroup = tmp.group,
-                   hoverinfo = if(ncol(chart.matrix) > 1) "text+name" else "text",
-                   text = hover.text,
+                   text = autoFormatLongLabels(x.labels.full, wordwrap=T, truncate=F),
+                   hoverinfo  = setHoverText(xaxis, chart.matrix), 
                    marker = marker,
                    mode = series.mode)
 
@@ -502,7 +500,8 @@ LineChart <-   function(x,
                        marker = if (!is.null(marker)) marker
                                 else list(color = toRGB(colors[i]),
                                      size = series.marker.size),
-                       hoverinfo = if(ncol(chart.matrix) > 1) "x+y+name" else "x+y",
+                       text = autoFormatLongLabels(x.labels.full[is.single], wordwrap=T, truncate=F),
+                       hoverinfo  = setHoverText(xaxis, chart.matrix), 
                        showlegend = FALSE)
         }
         if (fit.type != "None")

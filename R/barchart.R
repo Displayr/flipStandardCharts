@@ -290,7 +290,7 @@ BarChart <- function(x,
                     y.tick.decimals = NULL,
                     y.tick.format.manual = "",
                     y.hovertext.decimals = NULL,
-                    y.hovertext.format.manual = "",
+                    y.hovertext.format.manual = y.tick.format.manual,
                     y.tick.angle = NULL,
                     y.tick.font.color = global.font.color,
                     y.tick.font.family = global.font.family,
@@ -317,7 +317,7 @@ BarChart <- function(x,
                     x.tick.decimals = NULL,
                     x.tick.format.manual = "",
                     x.hovertext.decimals = y.hovertext.decimals,
-                    x.hovertext.format.manual = "",
+                    x.hovertext.format.manual = x.tick.format.manual,
                     x.tick.angle = NULL,
                     x.tick.font.color = global.font.color,
                     x.tick.font.family = global.font.family,
@@ -366,6 +366,7 @@ BarChart <- function(x,
     {
         chart.matrix <- cum.data(chart.matrix, "column.percentage")
         x.tick.format.manual <- "%"
+        x.hovertext.format.manual <- "%"
         data.label.suffix <- "%"
         data.label.mult <- 100
     }
@@ -469,8 +470,6 @@ BarChart <- function(x,
     {
         y <- as.numeric(chart.matrix[, i])
         x <- x.labels
-        hover.text <- sprintf("%s: %s%s%s", x.labels.full, x.tick.prefix,
-            FormatAsReal(y, decimals=x.hovertext.decimals), x.tick.suffix)
 
         marker <- list(size = series.marker.size, color = toRGB(colors[i], alpha = opacity),
                     line = list(color = toRGB(colors[i],
@@ -486,8 +485,9 @@ BarChart <- function(x,
         # this is the main trace for each data series
         tmp.group <- if (legend.group == "") paste("group", i) else legend.group
         p <- add_trace(p, x = y, y = x, type = "bar", orientation = "h", marker = marker,
-                       name  =  y.labels[i], legendgroup  =  tmp.group,  text = hover.text,
-                       hoverinfo  =  if(ncol(chart.matrix) > 1) "text+name" else "text")
+                       name  =  y.labels[i], legendgroup  =  tmp.group,  
+                       text = autoFormatLongLabels(x.labels.full, wordwrap=T, truncate=F),
+                       hoverinfo  = setHoverText(yaxis, chart.matrix, is.bar=TRUE)) 
 
         if (fit.type != "None" && !is.stacked)
         {

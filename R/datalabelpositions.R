@@ -45,7 +45,7 @@ dataLabelPositions <- function(chart.matrix,
         date.vals <- date.vals - 43200000               # middle of day
         x.positions <- date.vals + rep(series.positions, each = nrow(chart.matrix)) * (date.vals[2] - date.vals[1])
     }
-    else if (all(!is.na(as.numeric(rownames(chart.matrix)))))
+    else if (all(!is.na(suppressWarnings(as.numeric(rownames(chart.matrix))))))
         x.positions <- as.numeric(rownames(chart.matrix)) + rep(series.positions, each = nrow(chart.matrix))
     else
         x.positions <- 0:(nrow(chart.matrix) - 1) + rep(series.positions, each = nrow(chart.matrix))
