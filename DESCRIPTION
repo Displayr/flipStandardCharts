@@ -17,6 +17,7 @@ Imports:
     flipTables (>= 1.0.1),
     flipTime,
     flipTransformations (>= 1.1.2),
+    Hmisc,
     rhtmlDonut,
     rhtmlHeatmap,
     rhtmlLabeledScatter,

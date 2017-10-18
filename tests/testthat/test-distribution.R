@@ -309,9 +309,10 @@ test_that("Distribution: checking all the common parameters",{
 
     Distribution(Normals, values.tick.decimals = 2)
     Distribution(Normals, values.tick.decimals = 2)
+    Distribution(Normals, values.tick.angle = 45)
 
-    # ColumnChart(-1:5, y.line.width = 1, grid.show = FALSE, y.grid.width = 10)
-    # ColumnChart(-1:5, y.line.width = 1, grid.show = TRUE, y.grid.width = 10)
+    ColumnChart(-1:5, y.tick.decimals = 2)
+    ColumnChart(-1:5, y.line.width = 1, grid.show = TRUE, y.grid.width = 10)
     #
     #
     # ColumnChart(-1:5, y.zero = TRUE, grid.show = FALSE, y.tick.decimals = 2)

@@ -229,7 +229,7 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{...}{Extra arguments that are ignored.}
 }
 \description{
-Distribution Chart. This is a generalization of \code{\link{Violin}}, \code{\link{Density}}, \code{\link{Bean}}, \code{\link{Histogram}}, and  \code{\link{Box}}.
+Distribution Chart.
 }
 \examples{
 z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L),
