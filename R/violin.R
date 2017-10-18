@@ -64,7 +64,7 @@ Violin <- function(x,
     categories.font.family = global.font.family,
     categories.font.size = 10,
     categories.label.wrap = TRUE,
-    categories.categories.label.wrap.nchar = 21,
+    categories.label.wrap.nchar = 21,
     modebar.show = FALSE,
     us.date.format = NULL)
 {
