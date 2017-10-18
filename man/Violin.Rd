@@ -191,8 +191,6 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{categories.label.wrap}{Logical; whether to wrap long labels on the x-axis.}
 
-\item{categories.categories.label.wrap.nchar}{Integer; number of characters in each line when \code{categories.label.wrap} is \code{TRUE}.}
-
 \item{modebar.show}{Logical; whether to show the zoom menu buttons or not.}
 
 \item{us.date.format}{Whether to apply the US convention when parsing dates.}

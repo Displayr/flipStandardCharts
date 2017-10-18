@@ -199,7 +199,7 @@ test_that("Violin plots - Different data inputs and orientations", {
     # Multiple verticals
     Distribution(Normals, values.title = "Number of opens", vertical = FALSE, density.type = "Density", show.mirror.density = TRUE, show.mean = TRUE, show.median = TRUE, show.range = TRUE, show.quartiles = TRUE, show.values = FALSE)
     # Factor
-    supressWarnings(Distribution(Phone[1:5]))
+    suppressWarnings(Distribution(Phone[1:5]))
 
 
 })

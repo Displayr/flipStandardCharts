@@ -107,7 +107,7 @@
 #' @param categories.font.family Character; x-axis tick label font family
 #' @param categories.font.size x-axis tick label font size
 #' @param categories.label.wrap Logical; whether to wrap long labels on the x-axis.
-#' @param categories.categories.label.wrap.nchar Integer; number of characters in each line when \code{categories.label.wrap} is \code{TRUE}.
+#' @param categories.label.wrap.nchar Integer; number of characters in each line when \code{categories.label.wrap} is \code{TRUE}.
 #' @param modebar.show Logical; whether to show the zoom menu buttons or not.
 #' @param global.font.family Character; font family for all occurrences of any
 #' font attribute for the chart unless specified individually.
@@ -190,13 +190,13 @@ Distribution <-   function(x,
     categories.font.family = global.font.family,
     categories.font.size = 10,
     categories.label.wrap = TRUE,
-    categories.categories.label.wrap.nchar = 21,
+    categories.label.wrap.nchar = 21,
     modebar.show = FALSE,
     us.date.format = NULL)
 {
     # Extracting and wrapping labels
     labels <- names(x)
-    labels <- autoFormatLongLabels(labels, categories.label.wrap, categories.categories.label.wrap.nchar)
+    labels <- autoFormatLongLabels(labels, categories.label.wrap, categories.label.wrap.nchar)
 
     if (!is.list(x))
         stop("Input data should be a list of numeric vectors.")
@@ -274,7 +274,7 @@ Distribution <-   function(x,
         values.tick.decimals <- decimalsToDisplay(values)
     #categories.tick <- setTicks(categories.bounds.minimum, categories.bounds.maximum, categories.distance, FALSE)
     values.tick <- setTicks(values.bounds.minimum, values.bounds.maximum, values.tick.distance, FALSE)
-    axisFormat <- formatLabels(values, "Area", categories.label.wrap, categories.categories.label.wrap.nchar, us.date.format) #ignored
+    axisFormat <- formatLabels(values, "Area", categories.label.wrap, categories.label.wrap.nchar, us.date.format) #ignored
 
     if (is.null(values.bounds.minimum))
         values.bounds.minimum <- rng[1]

@@ -37,7 +37,7 @@ Distribution(x, weights = NULL, vertical = TRUE, show.mean = TRUE,
   values.tick.font.family = global.font.family, values.tick.font.size = 10,
   categories.font.color = global.font.color,
   categories.font.family = global.font.family, categories.font.size = 10,
-  categories.label.wrap = TRUE, categories.categories.label.wrap.nchar = 21,
+  categories.label.wrap = TRUE, categories.label.wrap.nchar = 21,
   modebar.show = FALSE, us.date.format = NULL)
 }
 \arguments{
@@ -217,7 +217,7 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{categories.label.wrap}{Logical; whether to wrap long labels on the x-axis.}
 
-\item{categories.categories.label.wrap.nchar}{Integer; number of characters in each line when \code{categories.label.wrap} is \code{TRUE}.}
+\item{categories.label.wrap.nchar}{Integer; number of characters in each line when \code{categories.label.wrap} is \code{TRUE}.}
 
 \item{modebar.show}{Logical; whether to show the zoom menu buttons or not.}
 
