@@ -2680,6 +2680,7 @@ Chart <-   function(y = NULL,
 }
 
 #' @export
+#' @method print StandardChart
 print.StandardChart <- function(x, ...)
 {
     return(print(x$plotly.plot))
