@@ -3,7 +3,7 @@ setHoverText <- function(axis, chart.matrix, is.bar = FALSE)
     formatStr <- if (axis$type == "linear") "x+y"
                  else                       "text+y"
     if (is.bar && axis$type != "linear")
-        formatStr <- "text+x"    
+        formatStr <- "text+x"
 
     if (ncol(chart.matrix) > 1)
         formatStr <- paste0("name+", formatStr)
@@ -362,7 +362,7 @@ setMarginsForLegend <- function(margins, showlegend, legend)
 }
 
 # No wordwrap - subtitles should not be too long
-setSubtitleAxis <- function(subtitle, subtitle.font, title, title.font)
+setSubtitleAxis <- function(subtitle, subtitle.font, title, title.font, overlaying = "x")
 {
     res <- NULL
     if (nchar(subtitle) > 0)
@@ -370,8 +370,9 @@ setSubtitleAxis <- function(subtitle, subtitle.font, title, title.font)
         title.nline <- sum(gregexpr("<br>", title)[[1]] > -1) + 1
         subtitle.npad <- max(0, round(title.nline * subtitle.font$size/title.font$size * 0.9))
         subtitle <- paste0(paste(rep("<br>", subtitle.npad), collapse=""), subtitle)
-        res <- list(overlaying="x", side="top", anchor="free", position=1,
-             showline=F, zeroline=F, showgrid=F, showticklabels=F, title=subtitle,
+        res <- list(overlaying = overlaying, side="top", anchor="free", position = 1,
+             showline = F, zeroline = F, showgrid = F, showticklabels = F, title = subtitle,
+             domain = c(0, 1),
              titlefont=subtitle.font)
     }
     res
@@ -398,6 +399,8 @@ setFooterAxis <- function(footer, footer.font, margins)
 setTicks <- function(minimum, maximum, distance, reversed = FALSE,
                 data = NULL, labels = NULL, type="scatter", label.font.size = 10)
 {
+    if ((is.null(minimum) || is.null(maximum)) && !is.null(distance))
+        stop("If specifying the distance between ticks on an axis, you must also specify the minimum and maximum values.")
     # starting values
     mode <- "auto"
     range <- NULL
