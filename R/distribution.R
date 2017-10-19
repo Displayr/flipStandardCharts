@@ -274,7 +274,7 @@ Distribution <-   function(x,
         values.tick.decimals <- decimalsToDisplay(values)
     #categories.tick <- setTicks(categories.bounds.minimum, categories.bounds.maximum, categories.distance, FALSE)
     values.tick <- setTicks(values.bounds.minimum, values.bounds.maximum, values.tick.distance, FALSE)
-    axisFormat <- formatLabels(values, "Area", categories.label.wrap, categories.label.wrap.nchar, us.date.format) #ignored
+    axisFormat <- formatLabels(values, "Area", categories.label.wrap, categories.label.wrap.nchar, "", values.tick.format.manual) #ignored
 
     if (is.null(values.bounds.minimum))
         values.bounds.minimum <- rng[1]
@@ -283,9 +283,9 @@ Distribution <-   function(x,
     values.axis <- setAxis(values.title, "left", axisFormat, values.title.font,
                   values.line.color, values.line.width, values.grid.width, values.grid.color,
                   values.tick, values.tick.font, values.tick.angle, values.tick.mark.length, values.tick.distance, values.tick.format.manual,
-                  values.tick.decimals, values.tick.prefix, values.tick.suffix,
+                  values.tick.prefix, values.tick.suffix,
                   values.tick.show, FALSE, values.zero.line.width, values.zero.line.color,
-                  values.hovertext.format.manual, values.hovertext.decimals)
+                  values.hovertext.format.manual)
     txt <- paste0("p <- layout(p, autosize=TRUE,
         font=list(size = 11),
         hovermode = 'closest',

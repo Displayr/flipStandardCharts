@@ -138,53 +138,71 @@ setLegend <- function(type, font, ascending, fill.color, fill.opacity, border.co
             traceorder = order))
 }
 
-getAxisType <- function(labels, us.date.format)
+getAxisType <- function(labels, format)
 {
-    type <- "linear"
-    if (any(is.na(suppressWarnings(as.numeric(labels)))))
-        type <- "category"
-    ymd <- PeriodNameToDate(labels, us.format = us.date.format)
-    if ((length(labels) > 6 && !any(is.na(ymd))) || class(labels) %in% c("Date", "POSIXct", "POSIXt"))
-        type <- "date"
-    return(type)
+    d3.type <- d3FormatType(format)
+    if (d3.type == "date")
+    {
+        ymd <- PeriodNameToDate(labels)
+        if (!any(is.na(ymd)))
+            return("date")
+    }
+    if (d3.type == "numeric")
+    {
+        if (!any(is.na(suppressWarnings(is.numeric(labels)))))
+            return("linear")
+    }
+
+    # Try to find default format based only on labels
+    ymd <- PeriodNameToDate(labels)
+    if (all(!is.na(ymd)))
+        return("date")
+    if (!any(is.na(suppressWarnings(as.numeric(labels)))))
+        return("numeric")
+    else
+        return("category")
+}    
+
+d3FormatType <- function(format)
+{
+    if (is.null(format) || is.na(format) || format == "")
+        return("")
+    
+    if (grepl("%[aAbBcdefHIJmMLpQsSuUVwWxXyYz]", format))
+        return("date")
+    else
+        return("linear")
 }
 
-
-formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, us.date.format)
+formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, x.format, y.format)
 {
     is.bar <- grepl("Bar", type, fixed=T)
     if (is.matrix(dat))
     {
         x.labels <- rownames(dat)
         y.labels <- NULL
+        
+        x.axis.type <- "linear"
+        y.axis.type <- "linear"
+        if (!is.bar)
+            x.axis.type <- getAxisType(x.labels, x.format)
+        else
+            y.axis.type <- getAxisType(x.labels, x.format)
     }
     else
     {
         x.labels <- unique(dat[[1]])
         y.labels <- unique(dat[[2]])
-    }
-
-    if (!is.bar)
-    {
-        x.axis.type <- getAxisType(x.labels, us.date.format)
-        y.axis.type <- getAxisType(y.labels, us.date.format)
-
-    } else
-    {
-        x.axis.type <- getAxisType(y.labels, us.date.format)
-        y.axis.type <- getAxisType(x.labels, us.date.format)
+        x.axis.type <- getAxisType(x.labels, x.format)
+        y.axis.type <- getAxisType(y.labels, y.format)
     }
 
     # labels are only processed for independent x-axis (or y-axis in bar charts)
     # the other axis is always numeric
     labels <- x.labels
-    ymd <- PeriodNameToDate(labels, us.format = us.date.format)
-    if ((!any(is.na(ymd)) && length(labels) > 6) || class(labels) %in% c("Date", "POSIXct", "POSIXt"))
-    {
-        use.dates <- TRUE
-        if (all(!is.na(ymd)))
-            labels <- ymd
-    }
+    ymd <- PeriodNameToDate(labels)
+    if (all(!is.na(ymd)) || class(labels) %in% c("Date", "POSIXct", "POSIXt"))
+        labels <- ymd
     else
     {
         ymd <- NULL
@@ -195,11 +213,12 @@ formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, us.date.format
                 x.axis.type=x.axis.type, y.axis.type=y.axis.type))
 }
 
-setAxis <- function(title, side, axisLabels, titlefont, linecolor, linewidth, gridwidth, gridcolor,
+setAxis <- function(title, side, axisLabels, titlefont, 
+                    linecolor, linewidth, gridwidth, gridcolor,
                     ticks, tickfont, tickangle, ticklen, tickdistance,
-                    tickformatmanual, tickdecimals, tickprefix, ticksuffix, tickshow,
+                    tickformatmanual, tickprefix, ticksuffix, tickshow,
                     show.zero, zero.line.width, zero.line.color,
-                    hovertext.format.manual, hovertext.decimals, labels=NULL)
+                    hovertext.format.manual, labels=NULL)
 {
     axis.type <- if (side %in% c("bottom", "top")) axisLabels$x.axis.type else axisLabels$y.axis.type
     has.line <- !is.null(linewidth) && linewidth > 0
@@ -227,6 +246,8 @@ setAxis <- function(title, side, axisLabels, titlefont, linecolor, linewidth, gr
             range <- rev(range(as.numeric(axisLabels$labels))) + c(0.5, -0.5)
         else
             range <- c(length(axisLabels$labels)-0.5, -0.5)
+        if (ticks$autorange != "reversed")
+            range <- rev(range)
     }
     else if (axis.type == "date" && !is.null(axisLabels$ymd))
     {
@@ -234,40 +255,45 @@ setAxis <- function(title, side, axisLabels, titlefont, linecolor, linewidth, gr
         tmp.dates <- as.numeric(axisLabels$ymd) * 1000
         diff <- min(diff(tmp.dates), na.rm=T)
         range <- range(tmp.dates, na.rm=T) + c(-1, 1) * diff
+        if (ticks$autorange == "reversed")
+            range <- rev(range)
     }
 
     tickformat <- ""
-    if (axis.type == "linear" && nchar(tickformatmanual) == 0)
-        tickformat <- paste0(".", tickdecimals, "f")
-    if (axis.type == "date" && nchar(tickformatmanual) > 0 &&
-        substr(tickformatmanual, nchar(tickformatmanual), nchar(tickformatmanual)) %in% c("e", "f", "%", "s"))
-        tickformat <- ""
-    else
+    if (sum(nchar(tickformatmanual)) > 0 && d3FormatType(tickformatmanual) %in% c("", axis.type))
         tickformat <- tickformatmanual
+    else if (sum(nchar(tickformatmanual)) > 0)
+        warning("Axis label format of type '", d3FormatType(tickformatmanual), 
+                "' incompatible with axis type '", axis.type, "'")
 
     hoverformat <- ""
-    if (!is.null(hovertext.format.manual) && nchar(hovertext.format.manual))
+    if (sum(nchar(hovertext.format.manual)) > 0 && d3FormatType(hovertext.format.manual) %in% c("", axis.type))
         hoverformat <- hovertext.format.manual
-    else if (axis.type == "date")
-        hoverformat <- ""
-    else
-        hoverformat <- paste0(".", hovertext.decimals, "f")
-
+    else if (sum(nchar(hovertext.format.manual)))
+        warning("Hovertext label format of type '", d3FormatType(hovertext.format.manual), 
+                "' incompatible with axis type '", axis.type, "'")
+  
+    if (!show.zero)
+        zero.line.width <- 0
+    if (zero.line.width == 0)
+        show.zero <- FALSE
+  
     rangemode <- "normal"
     if (axis.type == "linear" && show.zero)
         rangemode <- "tozero"
 
     return (list(title=title, side=side, type=axis.type, titlefont=titlefont, tickfont=tickfont,
-                 showline=has.line, linecolor=linecolor, linewidth=if (has.line) NULL else linewidth,
+                 showline=has.line, linecolor=linecolor, linewidth=if (!has.line) NULL else linewidth,
                  showgrid=gridwidth > 0, gridwidth=gridwidth, gridcolor=gridcolor,
                  tickmode=ticks$mode, tickvals=ticks$tickvals, ticktext=ticks$ticktext,
                  ticks=if (has.line) "outside" else "", tickangle=tickangle, ticklen=ticklen,
                  tickcolor=linecolor, tickfont=tickfont, dtick=tickdistance, tickformat=tickformat,
                  tickprefix=tickprefix, ticksuffix=ticksuffix, hoverformat=hoverformat,
                  autorange=autorange, range=range, rangemode=rangemode, layer="below traces",
-                 zeroline=zero.line.width > 0, zerolinewidth=zero.line.width, zerolinecolor=zero.line.color,
+                 zeroline=show.zero, zerolinewidth=zero.line.width, zerolinecolor=zero.line.color,
                  showexponent="all", showtickprefix=TRUE, showticksuffix=TRUE, showticklabels=tickshow))
 }
+
 
 fontAspectRatio <- function(font)
 {

@@ -115,12 +115,10 @@
 #' @param y.tick.show Whether to display the y-axis tick labels
 #' @param y.tick.suffix y-axis tick label suffix
 #' @param y.tick.prefix y-axis tick label prefix
-#' @param y.tick.decimals y-axis tick label decimal places
-#' @param y.tick.format.manual Overrides tick.prefix, suffix and decimals;
+#' @param y.tick.format Overrides tick.prefix, suffix and decimals;
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 #' https://docs.python.org/release/3.1.3/library/string.html#formatspec
-#' @param y.hovertext.decimals y-axis hover text decimal places
-#' @param y.hovertext.format.manual Overrides hovertext decimals;
+#' @param y.hovertext.format Overrides hovertext decimals;
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 #' https://docs.python.org/release/3.1.3/library/string.html#formatspec
 #' @param y.tick.angle y-axis tick label angle in degrees.
@@ -162,12 +160,10 @@
 #' @param x.grid.color Color of y-grid lines as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param x.tick.show Whether to display the x-axis tick labels
-#' @param x.tick.decimals x-axis tick label decimal places
-#' @param x.tick.format.manual Overrides tick.prefix, suffix and decimals;
+#' @param x.tick.format Overrides tick.prefix, suffix and decimals;
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 #' https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec
-#' @param x.hovertext.decimals X.axis hover text decimal places
-#' @param x.hovertext.format.manual Overrides hovertext decimals;
+#' @param x.hovertext.format Overrides hovertext decimals;
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 #' https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec
 #' @param x.tick.angle x-axis tick label angle in degrees.
@@ -177,8 +173,8 @@
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param x.tick.font.family Character; x-axis tick label font family
 #' @param x.tick.font.size x-axis tick label font size
-#' @param label.wrap Logical; whether to wrap long labels on the x-axis.
-#' @param label.wrap.nchar Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.
+#' @param x.tick.label.wrap Logical; whether to wrap long labels on the x-axis.
+#' @param x.tick.label.wrap.nchar Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.
 #' @param x.position Character; set x-axis position; can be "top" or "bottom"
 #' @param y.position Character; set y-axis position; can be "left" or "right"
 #' @param series.line.width Thickness, in pixels, of the series line
@@ -309,10 +305,8 @@ ScatterChart <- function(x = NULL,
                          y.tick.show = TRUE,
                          y.tick.suffix = "",
                          y.tick.prefix = "",
-                         y.tick.decimals = NULL,
-                         y.tick.format.manual = "",
-                         y.hovertext.decimals = NULL,
-                         y.hovertext.format.manual = "",
+                         y.tick.format = "",
+                         y.hovertext.format = "",
                          y.tick.angle = NULL,
                          y.tick.font.color = global.font.color,
                          y.tick.font.family = global.font.family,
@@ -337,16 +331,14 @@ ScatterChart <- function(x = NULL,
                          x.tick.show = TRUE,
                          x.tick.suffix = "",
                          x.tick.prefix = "",
-                         x.tick.decimals = NULL,
-                         x.tick.format.manual = "",
-                         x.hovertext.decimals = NULL,
-                         x.hovertext.format.manual = "",
+                         x.tick.format = "",
+                         x.hovertext.format = "",
                          x.tick.angle = NULL,
                          x.tick.font.color = global.font.color,
                          x.tick.font.family = global.font.family,
                          x.tick.font.size = 10,
-                         label.wrap = TRUE,
-                         label.wrap.nchar = 21,
+                         x.tick.label.wrap = TRUE,
+                         x.tick.label.wrap.nchar = 21,
                          series.line.width = 0,
                          series.marker.border.width = 1,
                          series.marker.size = 6,
@@ -580,9 +572,9 @@ ScatterChart <- function(x = NULL,
     ytick <- setTicks(y.bounds.minimum, y.bounds.maximum, y.tick.distance, y.data.reversed)
 
     xlab.tmp <- if (!is.numeric(x)) as.character(x)
-                else FormatAsReal(x, decimals=x.tick.decimals)
+                else FormatAsReal(x, decimals=2) #x.tick.decimals)
     ylab.tmp <- if (!is.numeric(y)) as.character(y)
-                else FormatAsReal(y, decimals=y.tick.decimals)
+                else FormatAsReal(y, decimals=2) #y.tick.decimals)
 
 
     if (is.numeric(x))
@@ -598,19 +590,20 @@ ScatterChart <- function(x = NULL,
             y.zero <- FALSE
     }
     axisFormat <- formatLabels(list(x=xlab.tmp, y=ylab.tmp), type,
-                       label.wrap, label.wrap.nchar, us.date.format)
+                       x.tick.label.wrap, x.tick.label.wrap.nchar,
+                       x.tick.format, y.tick.format)
     yaxis <- setAxis(y.title, "left", axisFormat, y.title.font,
                   y.line.color, y.line.width, y.grid.width, y.grid.color,
                   ytick, ytick.font, y.tick.angle, y.tick.mark.length,
-                  y.tick.distance, y.tick.format.manual,
-                  y.tick.decimals, y.tick.prefix, y.tick.suffix,
+                  y.tick.distance, y.tick.format,
+                  y.tick.prefix, y.tick.suffix,
                   y.tick.show, y.zero, y.zero.line.width, y.zero.line.color,
-                  y.hovertext.format.manual, y.hovertext.decimals)
+                  y.hovertext.format)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width, x.grid.color,
-                  xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, x.tick.format.manual,
-                  x.tick.decimals, "", "", x.tick.show, FALSE, x.zero.line.width, x.zero.line.color,
-                  x.hovertext.format.manual, x.hovertext.decimals, axisFormat$labels)
+                  xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, x.tick.format,
+                  "", "", x.tick.show, FALSE, x.zero.line.width, x.zero.line.color,
+                  x.hovertext.format, axisFormat$labels)
 
     # Work out margin spacing
     margins <- list(t = 20, b = 50, r = 60, l = 80, pad = 0)
@@ -627,6 +620,8 @@ ScatterChart <- function(x = NULL,
         margins$left <- margin.left
     if (!is.null(margin.right))
         margins$right <- margin.right
+    if (!is.null(margin.inner.pad))
+        margins$pad <- margin.inner.pad
 
     # Finalise text in margins
     footer.axis <- setFooterAxis(footer, footer.font, margins)

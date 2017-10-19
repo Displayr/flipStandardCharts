@@ -95,8 +95,8 @@
 #' @param x.grid.width Width of y-grid lines in pixels; 0 = no line
 #' @param x.grid.color Color of y-grid lines as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
-#' @param label.wrap Logical; whether to wrap long labels on the x-axis.
-#' @param label.wrap.nchar Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.
+#' @param x.tick.label.wrap Logical; whether to wrap long labels on the x-axis.
+#' @param x.tick.label.wrap.nchar Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.
 #' @param series.marker.size Size in pixels of marker
 #' @param series.line.width Width of outline of radar polygons.
 #' @param tooltip.show Logical; whether to show a tooltip on hover.
@@ -171,8 +171,8 @@ RadarChart <- function(x,
                     y.tick.font.color = global.font.color,
                     y.tick.font.family = global.font.family,
                     y.tick.font.size = 10,
-                    label.wrap = TRUE,
-                    label.wrap.nchar = 21,
+                    x.tick.label.wrap = TRUE,
+                    x.tick.label.wrap.nchar = 21,
                     data.label.show = FALSE,
                     data.label.font.family = global.font.family,
                     data.label.font.size = 10,
@@ -286,6 +286,8 @@ RadarChart <- function(x,
         margins$b <- margin.bottom
     if (!is.null(margin.right))
         margins$r <- margin.right
+    if (!is.null(margin.inner.pad))
+        margins$pad <- margin.inner.pad
 
     # Initialise plot
     p <- plot_ly(pos)
@@ -337,7 +339,7 @@ RadarChart <- function(x,
     xanch[which(abs(outer[,2]) < r.max/100 & sign(outer[,1]) < 0)] <- "right"
     xanch[which(abs(outer[,2]) < r.max/100 & sign(outer[,1]) > 0)] <- "left"
 
-    xlab <- autoFormatLongLabels(rownames(chart.matrix)[1:n], label.wrap, label.wrap.nchar)
+    xlab <- autoFormatLongLabels(rownames(chart.matrix)[1:n], x.tick.label.wrap, x.tick.label.wrap.nchar)
     font.asp <- fontAspectRatio(x.tick.font.family)
 
     # X-axis label widths are fixed to avoid the chart width changing in regression tests.
