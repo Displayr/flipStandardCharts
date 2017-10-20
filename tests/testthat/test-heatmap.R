@@ -37,6 +37,7 @@ test_that("HeatMap",
             expect_error(print(HeatMap(table = three.cols, standardization = "Standardize columns")), NA)
             expect_error(print(HeatMap(table = three.cols, show.cell.values = "No",
                                        show.row.labels = "No", show.column.labels = "No")), NA)
+            expect_error(print(HeatMap(table = seq(5))), "Input must be two-dimensional.")
         })
 
 test_that("HeatMap Fonts",

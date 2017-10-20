@@ -75,6 +75,8 @@ HeatMap <- function(table,
         rownames <- names(mat)
         mat <- matrix(mat) # create single column matrix from vector
         rownames(mat) <- rownames
+        # Until VIS-362 is fixed, rhtmlHeatmap cannot handle vectors
+        stop("Input must be two-dimensional.")
     }
     if (!is.numeric(mat[1, 1]))
         stop("The input table must contain only numeric values.")
