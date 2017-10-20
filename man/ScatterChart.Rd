@@ -45,8 +45,8 @@ ScatterChart(x = NULL, y = NULL, scatter.x.column = 1,
   255), y.position = "left", y.data.reversed = FALSE, y.grid.width = 1 *
   grid.show, y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
   y.tick.show = TRUE, y.tick.suffix = "", y.tick.prefix = "",
-  y.tick.format = "", y.hovertext.format = "", y.tick.angle = NULL,
-  y.tick.font.color = global.font.color,
+  y.tick.format = "", y.hovertext.format = y.tick.format,
+  y.tick.angle = NULL, y.tick.font.color = global.font.color,
   y.tick.font.family = global.font.family, y.tick.font.size = 10,
   x.title = "", x.title.font.color = global.font.color,
   x.title.font.family = global.font.family, x.title.font.size = 12,
@@ -57,14 +57,14 @@ ScatterChart(x = NULL, y = NULL, scatter.x.column = 1,
   x.position = "bottom", x.data.reversed = FALSE, x.grid.width = 1 *
   grid.show, x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
   x.tick.show = TRUE, x.tick.suffix = "", x.tick.prefix = "",
-  x.tick.format = "", x.hovertext.format = "", x.tick.angle = NULL,
-  x.tick.font.color = global.font.color,
+  x.tick.format = "", x.hovertext.format = x.tick.format,
+  x.tick.angle = NULL, x.tick.font.color = global.font.color,
   x.tick.font.family = global.font.family, x.tick.font.size = 10,
   x.tick.label.wrap = TRUE, x.tick.label.wrap.nchar = 21,
   series.line.width = 0, series.marker.border.width = 1,
   series.marker.size = 6, series.marker.opacity = 1,
   series.marker.show = "none", series.marker.colors = NULL,
-  swap.x.and.y = FALSE, us.date.format = FALSE, ...)
+  swap.x.and.y = FALSE)
 }
 \arguments{
 \item{x}{A numeric vector for the x-axis coordinates (which may be named); or a matrix or dataframe.}
@@ -403,8 +403,6 @@ named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
 be reversed.}
 
 \item{swap.x.and.y}{Swap the x and y axis around on the chart.}
-
-\item{us.date.format}{Whether to apply the US convention when parsing dates.}
 
 \item{...}{Extra arguments that are ignored.}
 }

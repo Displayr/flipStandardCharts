@@ -113,8 +113,7 @@
 #' font attribute for the chart unless specified individually.
 #' @param global.font.color Global font color as a named color in character format
 #' (e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param us.date.format Whether to apply the US convention when parsing dates.
-#' @param ... Extra arguments that are ignored.
+#' @param tooltip.show Logical; whether to show a tooltip on hover.
 #' @return A \code{plotly} chart.
 #' @examples
 #' Distribution(list(rnorm(100)))
@@ -191,8 +190,8 @@ Distribution <-   function(x,
     categories.font.size = 10,
     categories.label.wrap = TRUE,
     categories.label.wrap.nchar = 21,
-    modebar.show = FALSE,
-    us.date.format = NULL)
+    tooltip.show = TRUE,
+    modebar.show = FALSE)
 {
     # Extracting and wrapping labels
     labels <- names(x)
@@ -282,14 +281,16 @@ Distribution <-   function(x,
         values.bounds.maximum <- rng[2]
     values.axis <- setAxis(values.title, "left", axisFormat, values.title.font,
                   values.line.color, values.line.width, values.grid.width, values.grid.color,
-                  values.tick, values.tick.font, values.tick.angle, values.tick.mark.length, values.tick.distance, values.tick.format.manual,
+                  values.tick, values.tick.font, values.tick.angle, 
+                  values.tick.mark.length, values.tick.distance, values.tick.format.manual,
                   values.tick.prefix, values.tick.suffix,
                   values.tick.show, FALSE, values.zero.line.width, values.zero.line.color,
                   values.hovertext.format.manual)
+    hover.mode <- if (tooltip.show) "'closest'" else "FALSE"
     txt <- paste0("p <- layout(p, autosize=TRUE,
         font=list(size = 11),
-        hovermode = 'closest',
-        showlegend=FALSE,
+        hovermode=", hover.mode, ",",
+        "showlegend=FALSE,
         title = title,
         titlefont = title.font,
         showlegend = FALSE,", violinCategoriesAxes(vertical, n.variables, labels), "
