@@ -149,7 +149,7 @@ getAxisType <- function(labels, format)
     }
     if (d3.type == "numeric")
     {
-        if (!any(is.na(suppressWarnings(is.numeric(labels)))))
+        if (!any(is.na(suppressWarnings(as.numeric(labels)))))
             return("numeric")
     }
 
