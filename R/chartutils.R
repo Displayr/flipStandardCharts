@@ -1,8 +1,8 @@
 setHoverText <- function(axis, chart.matrix, is.bar = FALSE)
 {
-    formatStr <- if (axis$type == "linear") "x+y"
+    formatStr <- if (axis$type == "numeric") "x+y"
                  else                       "text+y"
-    if (is.bar && axis$type != "linear")
+    if (is.bar && axis$type != "numeric")
         formatStr <- "text+x"
 
     if (ncol(chart.matrix) > 1)
@@ -102,7 +102,7 @@ getRange <- function(x, axis, axisFormat)
 
 fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
 {
-    tmp.is.factor <- axis.type != "linear" #&& axis.type != "date"
+    tmp.is.factor <- axis.type != "numeric" #&& axis.type != "date"
     x0 <- if (!tmp.is.factor) as.numeric(x) else 1:length(x)
     tmp.dat <- data.frame(x=x0, y=y)
     if (ignore.last)
@@ -150,7 +150,7 @@ getAxisType <- function(labels, format)
     if (d3.type == "numeric")
     {
         if (!any(is.na(suppressWarnings(is.numeric(labels)))))
-            return("linear")
+            return("numeric")
     }
 
     # Try to find default format based only on labels
@@ -171,7 +171,7 @@ d3FormatType <- function(format)
     if (grepl("%[aAbBcdefHIJmMLpQsSuUVwWxXyYz]", format))
         return("date")
     else
-        return("linear")
+        return("numeric")
 }
 
 formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, x.format, y.format)
@@ -182,8 +182,8 @@ formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, x.format, y.fo
         x.labels <- rownames(dat)
         y.labels <- NULL
         
-        x.axis.type <- "linear"
-        y.axis.type <- "linear"
+        x.axis.type <- "numeric"
+        y.axis.type <- "numeric"
         if (!is.bar)
             x.axis.type <- getAxisType(x.labels, x.format)
         else
@@ -242,7 +242,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
             diff <- min(diff(tmp.dates), na.rm=T)
             range <- rev(range(tmp.dates, na.rm=T)) + c(1, -1) * diff
         }
-        else if (axis.type == "linear")
+        else if (axis.type == "numeric")
             range <- rev(range(as.numeric(axisLabels$labels))) + c(0.5, -0.5)
         else
             range <- c(length(axisLabels$labels)-0.5, -0.5)
@@ -279,7 +279,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
         show.zero <- FALSE
   
     rangemode <- "normal"
-    if (axis.type == "linear" && show.zero)
+    if (axis.type == "numeric" && show.zero)
         rangemode <- "tozero"
 
     return (list(title=title, side=side, type=axis.type, titlefont=titlefont, tickfont=tickfont,

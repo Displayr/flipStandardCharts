@@ -208,7 +208,6 @@
 #' value in relation to the marker icon.  Can be "top left", "top center", "top
 #' right", "middle left", "middle center", "middle right", "bottom left",
 #' "bottom center", "bottom right". Only applicable for line and area charts.
-#' @param us.date.format Whether to apply the US convention when parsing dates.
 #' @param swap.x.and.y Swap the x and y axis around on the chart.
 #' @param ... Extra arguments that are ignored.
 #' @importFrom grDevices rgb
@@ -306,7 +305,7 @@ ScatterChart <- function(x = NULL,
                          y.tick.suffix = "",
                          y.tick.prefix = "",
                          y.tick.format = "",
-                         y.hovertext.format = "",
+                         y.hovertext.format = y.tick.format,
                          y.tick.angle = NULL,
                          y.tick.font.color = global.font.color,
                          y.tick.font.family = global.font.family,
@@ -332,7 +331,7 @@ ScatterChart <- function(x = NULL,
                          x.tick.suffix = "",
                          x.tick.prefix = "",
                          x.tick.format = "",
-                         x.hovertext.format = "",
+                         x.hovertext.format = x.tick.format,
                          x.tick.angle = NULL,
                          x.tick.font.color = global.font.color,
                          x.tick.font.family = global.font.family,
@@ -345,9 +344,7 @@ ScatterChart <- function(x = NULL,
                          series.marker.opacity = 1,
                          series.marker.show = "none", # ignored
                          series.marker.colors = NULL,
-                         swap.x.and.y = FALSE,
-                         us.date.format = FALSE,
-                         ...)
+                         swap.x.and.y = FALSE)
 {
     title.font=list(family=title.font.family, size=title.font.size, color=title.font.color)
     subtitle.font=list(family=subtitle.font.family, size=subtitle.font.size, color=subtitle.font.color)
@@ -566,8 +563,8 @@ ScatterChart <- function(x = NULL,
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
 
     # Format axis labels
-    if (is.null(y.tick.decimals))
-        y.tick.decimals <- decimalsToDisplay(as.numeric(y))
+    #if (is.null(y.tick.decimals))
+    #    y.tick.decimals <- decimalsToDisplay(as.numeric(y))
     xtick <- setTicks(x.bounds.minimum, x.bounds.maximum, x.tick.distance, x.data.reversed)
     ytick <- setTicks(y.bounds.minimum, y.bounds.maximum, y.tick.distance, y.data.reversed)
 
