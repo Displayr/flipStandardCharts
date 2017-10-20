@@ -65,8 +65,7 @@ Violin <- function(x,
     categories.font.size = 10,
     categories.label.wrap = TRUE,
     categories.label.wrap.nchar = 21,
-    modebar.show = FALSE,
-    us.date.format = NULL)
+    modebar.show = FALSE)
 {
     call <- match.call()
     call[[1]] <- Distribution
