@@ -20,24 +20,22 @@ BarChart(x, type = "Bar", fit.type = "None", fit.ignore.last = FALSE,
   charting.area.fill.color = background.fill.color,
   charting.area.fill.opacity = 1, legend.show = TRUE,
   legend.position.x = 1.02, legend.position.y = 1, legend.ascending = NA,
-  legend.fill = background.fill.color, legend.fill.color = legend.fill,
-  legend.fill.opacity = 1, legend.border.color = rgb(44, 44, 44,
-  maxColorValue = 255), legend.border.line.width = 0,
-  legend.font.color = global.font.color,
+  legend.fill.color = background.fill.color, legend.fill.opacity = 1,
+  legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
+  legend.border.line.width = 0, legend.font.color = global.font.color,
   legend.font.family = global.font.family, legend.font.size = 10,
   margin.top = NULL, margin.bottom = NULL, margin.left = NULL,
   margin.right = NULL, margin.inner.pad = NULL, grid.show = TRUE,
   y.title = "", y.title.font.color = global.font.color,
   y.title.font.family = global.font.family, y.title.font.size = 12,
   y.line.width = 0, y.line.color = rgb(0, 0, 0, maxColorValue = 255),
-  y.tick.marks = "", y.tick.mark.length = 5, y.bounds.minimum = NULL,
+  y.tick.mark.length = 5, y.bounds.minimum = NULL,
   y.bounds.maximum = NULL, y.tick.distance = NULL, y.zero = TRUE,
   y.zero.line.width = 0, y.zero.line.color = rgb(44, 44, 44, maxColorValue =
   255), y.data.reversed = FALSE, y.grid.width = 0 * grid.show,
   y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
-  y.tick.show = TRUE, y.tick.decimals = NULL, y.tick.format.manual = "",
-  y.hovertext.decimals = NULL,
-  y.hovertext.format.manual = y.tick.format.manual, y.tick.angle = NULL,
+  y.tick.show = TRUE, y.tick.format = "",
+  y.hovertext.format = y.tick.format, y.tick.angle = NULL,
   y.tick.font.color = global.font.color,
   y.tick.font.family = global.font.family, y.tick.font.size = 10,
   x.title = "", x.title.font.color = global.font.color,
@@ -49,30 +47,28 @@ BarChart(x, type = "Bar", fit.type = "None", fit.ignore.last = FALSE,
   x.data.reversed = FALSE, x.grid.width = 1 * grid.show,
   x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
   x.tick.show = TRUE, x.tick.suffix = "", x.tick.prefix = "",
-  x.tick.decimals = NULL, x.tick.format.manual = "",
-  x.hovertext.decimals = y.hovertext.decimals,
-  x.hovertext.format.manual = x.tick.format.manual, x.tick.angle = NULL,
-  x.tick.font.color = global.font.color,
+  x.tick.format = "", x.hovertext.format = x.tick.format,
+  x.tick.angle = NULL, x.tick.font.color = global.font.color,
   x.tick.font.family = global.font.family, x.tick.font.size = 10,
-  label.wrap = TRUE, label.wrap.nchar = 21, series.marker.colors = colors,
-  series.marker.opacity = 1, series.marker.size = 6,
+  y.tick.label.wrap = TRUE, y.tick.label.wrap.nchar = 21,
   series.marker.border.width = 1, series.marker.border.colors = colors,
   series.marker.border.opacity = 1, tooltip.show = TRUE,
   modebar.show = FALSE, bar.gap = 0.15, data.label.show = FALSE,
   data.label.font.family = global.font.family, data.label.font.size = 10,
   data.label.font.color = global.font.color, data.label.decimals = 2,
   data.label.prefix = "", data.label.suffix = "",
-  data.label.threshold = NULL, data.label.position = "top middle",
-  data.label.max.plot = 50, us.date.format = NULL, ...)
+  data.label.threshold = NULL)
 }
 \arguments{
-\item{x}{A table, matrix, vector or data frame.}
+\item{x}{Input data may be a matrix or a vector, containing the height of the columns
+to be plotted, with the name/rownames used as the column names of the chart. Numeric and date labels
+will be parsed automatically.}
 
-\item{type}{One of "Bar", "Stacked Bar" or "100\% Stacked Bar"}
+\item{type}{One of "Column", "Stacked Column" or "100\% Stacked Column"}
 
 \item{fit.type}{Character; type of line of best fit. Can be one of "None", "Linear" or "Smooth" (loess local polynomial fitting).}
 
-\item{fit.ignore.last}{Boolean; whether to ignore the last data point in the fit.}
+\item{fit.ignore.last}{Logical; whether to ignore the last data point in the fit.}
 
 \item{fit.line.type}{Character; One of "solid", "dot", "dash, "dotdash", or length of dash "2px", "5px".}
 
@@ -142,8 +138,7 @@ named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 a named color in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{charting.area.fill.opacity}{Charting area background
-opacity as an alpha value (0 to 1).}
+\item{charting.area.fill.opacity}{Charting area background opacity as an alpha value (0 to 1).}
 
 \item{legend.show}{Logical; show the legend.}
 
@@ -156,13 +151,10 @@ Values range from 0 (bottom) to 1 (top).}
 \item{legend.ascending}{Logical; TRUE for ascending, FALSE for descending.
 By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.}
 
-\item{legend.fill}{Same as \code{legend.fill.color}. Retained for backwards compatibility.}
-
 \item{legend.fill.color}{Legend fill color as a named color in character format
 (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{legend.fill.opacity}{Legend fill opacity as an alpha value
-(0 to 1).}
+\item{legend.fill.opacity}{Legend fill opacity as an alpha value (0 to 1).}
 
 \item{legend.border.color}{Legend border color as a named color in character
 format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
@@ -192,7 +184,7 @@ graphic in pixels}
 \item{margin.inner.pad}{Padding in pixels between plot proper
 and axis lines}
 
-\item{grid.show}{Logical; Whether to show grid lines.}
+\item{grid.show}{Logical; whether to show grid lines.}
 
 \item{y.title}{Character, y-axis title; defaults to chart input values;
 to turn off set to "FALSE".}
@@ -205,23 +197,18 @@ max = 255)).}
 
 \item{y.title.font.size}{y-axis title font size}
 
-\item{y.line.width}{y-axis line in pixels, 0 = no line}
+\item{y.line.width}{y-axis line width in pixels (0 = no line).}
 
 \item{y.line.color}{y-axis line color as a named color in character format
 (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{y.tick.marks}{Character; whether and where to show tick marks on the
-y axis.  Can be "outside", "inside", "none"}
+\item{y.tick.mark.length}{Length of tick marks in pixels. Ticks are only shown when \code{y.line.width > 0}.}
 
-\item{y.tick.mark.length}{Length of tick marks in pixels.}
+\item{y.bounds.minimum}{Minimum of range for plotting; NULL = no manual range set.}
 
-\item{y.bounds.minimum}{Minimum of range for plotting;
-NULL = no manual range set.  Must be less than y.bounds.maximum}
+\item{y.bounds.maximum}{Maximum of range for plotting; NULL = no manual range set.}
 
-\item{y.bounds.maximum}{Maximum of range for
-plotting; NULL = no manual range set.  Must be greater than y.bounds.minimum}
-
-\item{y.tick.distance}{Tick mark distance.}
+\item{y.tick.distance}{Distance between tick marks. Requires that \code{values.bounds.minimum} and \code{values.bounds.maximum} have been set.}
 
 \item{y.zero}{Whether the y-axis should include zero.}
 
@@ -241,15 +228,11 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{y.tick.show}{Whether to display the y-axis tick labels}
 
-\item{y.tick.decimals}{y-axis tick label decimal places}
-
-\item{y.tick.format.manual}{Overrides tick.prefix, suffix and decimals;
+\item{y.tick.format}{Overrides tick.prefix, suffix and decimals;
 See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 https://docs.python.org/release/3.1.3/library/string.html#formatspec}
 
-\item{y.hovertext.decimals}{y-axis hover text decimal places}
-
-\item{y.hovertext.format.manual}{Overrides hovertext decimals;
+\item{y.hovertext.format}{Overrides hovertext decimals;
 See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 https://docs.python.org/release/3.1.3/library/string.html#formatspec}
 
@@ -295,10 +278,9 @@ plotting; NULL = no manual range set.  Must be greater than x.bounds.minimum}
 x-axis units between minimum and maximum for plotting; NULL = no manual
 range set.}
 
-\item{x.zero.line.width}{Width in pixels of zero line; 0 = no zero line
-shown}
+\item{x.zero.line.width}{Width in pixels of zero line; 0 = no zero line shown}
 
-\item{x.zero.line.color}{Color of horizontal zero (origo) line as a named
+\item{x.zero.line.color}{Color of horizontal zero (origin) line as a named
 color in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
@@ -315,15 +297,11 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{x.tick.prefix}{x-axis tick label prefix}
 
-\item{x.tick.decimals}{x-axis tick label decimal places}
-
-\item{x.tick.format.manual}{Overrides tick.prefix, suffix and decimals;
+\item{x.tick.format}{Overrides tick.prefix, suffix and decimals;
 See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec}
 
-\item{x.hovertext.decimals}{X.axis hover text decimal places}
-
-\item{x.hovertext.format.manual}{Overrides hovertext decimals;
+\item{x.hovertext.format}{Overrides hovertext decimals;
 See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec}
 
@@ -338,28 +316,18 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{x.tick.font.size}{x-axis tick label font size}
 
-\item{label.wrap}{Logical; whether to wrap long labels on the x-axis.}
+\item{y.tick.label.wrap}{Logical; whether to wrap long labels on the y-axis (vertical).}
 
-\item{label.wrap.nchar}{Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.}
-
-\item{series.marker.colors}{Character; a vector containing one or more named
-colors from grDevices OR one or more specified hex value colors OR a single
-named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
-be reversed.}
-
-\item{series.marker.opacity}{Opacity for series markers as an alpha value (0 to 1).}
-
-\item{series.marker.size}{Size in pixels of marker}
+\item{y.tick.label.wrap.nchar}{Integer; number of characters in each line when \code{y.tick.label.wrap} is \code{TRUE}.}
 
 \item{series.marker.border.width}{Width in pixels of border/line
-around series markers; 0 is no line}
+around series bars; 0 is no line}
 
 \item{series.marker.border.colors}{Character; a vector containing one or more named
 colors from grDevices OR one or more specified hex value colors OR a single
 named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 
-\item{series.marker.border.opacity}{Opacity of border/line around
-series markers as an alpha value (0 to 1).}
+\item{series.marker.border.opacity}{Opacity of border around bars as an alpha value (0 to 1).}
 
 \item{tooltip.show}{Logical; whether to show a tooltip on hover.}
 
@@ -388,17 +356,6 @@ data labels.}
 \item{data.label.threshold}{The proportion of the total range below which
 data labels should not be displayed. Only applicable for pie, bar and column
 charts.}
-
-\item{data.label.position}{Character; where to place the source data
-value in relation to the marker icon.  Can be "top left", "top center", "top
-right", "middle left", "middle center", "middle right", "bottom left",
-"bottom center", "bottom right". Only applicable for line and area charts.}
-
-\item{data.label.max.plot}{Integer; the maximum number of labels to show on a Labeled Scatterplot.}
-
-\item{us.date.format}{Whether to apply the US convention when parsing dates.}
-
-\item{...}{Extra arguments that are ignored.}
 }
 \description{
 Plot bar chart
@@ -406,5 +363,5 @@ Plot bar chart
 \examples{
 z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L),
       .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
-ColumnChart(z, type="Stacked Column")
+BarChart(z, type="100\% Stacked Bar")
 }

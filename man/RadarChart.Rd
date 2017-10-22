@@ -31,11 +31,11 @@ RadarChart(x, title = "", title.font.family = global.font.family,
   y.tick.decimals = NULL, y.hovertext.decimals = NULL,
   y.tick.font.color = global.font.color,
   y.tick.font.family = global.font.family, y.tick.font.size = 10,
-  label.wrap = TRUE, label.wrap.nchar = 21, data.label.show = FALSE,
-  data.label.font.family = global.font.family, data.label.font.size = 10,
-  data.label.font.color = global.font.color, data.label.decimals = 2,
-  data.label.prefix = "", data.label.suffix = "", subtitle = "",
-  subtitle.font.family = global.font.family,
+  x.tick.label.wrap = TRUE, x.tick.label.wrap.nchar = 21,
+  data.label.show = FALSE, data.label.font.family = global.font.family,
+  data.label.font.size = 10, data.label.font.color = global.font.color,
+  data.label.decimals = 2, data.label.prefix = "", data.label.suffix = "",
+  subtitle = "", subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color, subtitle.font.size = 12,
   footer = "", footer.font.family = global.font.family,
   footer.font.color = global.font.color, footer.font.size = 8,
@@ -179,9 +179,9 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{y.tick.font.size}{y-axis tick label font size}
 
-\item{label.wrap}{Logical; whether to wrap long labels on the x-axis.}
+\item{x.tick.label.wrap}{Logical; whether to wrap long labels on the x-axis.}
 
-\item{label.wrap.nchar}{Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.}
+\item{x.tick.label.wrap.nchar}{Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.}
 
 \item{data.label.show}{Logical; whether to show data labels.}
 

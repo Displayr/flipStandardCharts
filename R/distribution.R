@@ -86,10 +86,12 @@
 #' @param values.tick.show Whether to display the y-axis tick labels
 #' @param values.tick.suffix y-axis tick label suffix
 #' @param values.tick.prefix y-axis tick label prefix
-#' @param values.tick.format Overrides tick.prefix, suffix and decimals;
+#' @param values.tick.decimals y-axis tick label decimal places
+#' @param values.tick.format.manual Overrides tick.prefix, suffix and decimals;
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 #' https://docs.python.org/release/3.1.3/library/string.html#formatspec
-#' @param values.hovertext.format XXXX
+#' @param values.hovertext.decimals y-axis hover text decimal places
+#' @param values.hovertext.format.manual Overrides hovertext decimals;
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 #' https://docs.python.org/release/3.1.3/library/string.html#formatspec
 #' @param values.tick.angle y-axis tick label angle in degrees.
@@ -106,7 +108,6 @@
 #' @param categories.font.size x-axis tick label font size
 #' @param categories.label.wrap Logical; whether to wrap long labels on the x-axis.
 #' @param categories.label.wrap.nchar Integer; number of characters in each line when \code{categories.label.wrap} is \code{TRUE}.
-#' @param categories.tick.format  Character; XXX
 #' @param modebar.show Logical; whether to show the zoom menu buttons or not.
 #' @param global.font.family Character; font family for all occurrences of any
 #' font attribute for the chart unless specified individually.
@@ -115,8 +116,7 @@
 #' @param tooltip.show Logical; whether to show a tooltip on hover.
 #' @return A \code{plotly} chart.
 #' @examples
-#' Distribution(rnorm(100))
-#' Distribution(list(rnorm(100), rexp(100)))
+#' Distribution(list(rnorm(100)))
 #' @importFrom grDevices rgb
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
@@ -177,9 +177,10 @@ Distribution <-   function(x,
     values.tick.show = TRUE,
     values.tick.suffix = "",
     values.tick.prefix = "",
-    values.tick.format = "",
+    values.tick.decimals = NULL,
+    values.tick.format.manual = "",
     values.hovertext.decimals = NULL,
-    values.hovertext.format = "",
+    values.hovertext.format.manual = "",
     values.tick.angle = NULL,
     values.tick.font.color = global.font.color,
     values.tick.font.family = global.font.family,
@@ -195,9 +196,8 @@ Distribution <-   function(x,
     # Extracting and wrapping labels
     labels <- names(x)
     labels <- autoFormatLongLabels(labels, categories.label.wrap, categories.label.wrap.nchar)
-    if (!is.list(x) && is.vector(x))
-        x <- list(x)
-    else if (!is.list(x))
+
+    if (!is.list(x))
         stop("Input data should be a list of numeric vectors.")
     x <- AsNumeric(x, FALSE)
     if (density.type == "Box" && !is.null(weights))
@@ -211,16 +211,11 @@ Distribution <-   function(x,
         warning("Mirror densities are only shown with 'density.type' set to 'Density'.")
         show.mirror.density = FALSE
     }
-    if (density.type == "Box")
+    if (density.type == "Box" && any(show.values || show.mean || show.range || show.median || show.quartiles))
     {
-        if (show.values)
-        {
-            show.values <- FALSE
-            box.points <- "All"
-        }
-        if (any(show.mean || show.range || show.median || show.quartiles))
-            warning("Means, medians, quartiles, and values, will often cause problems when added to a box plot (as the box plot already shows this information).")
+        warning("Means, medians, quartiles, and values, will often cause problems when added to a box plot (as the box plot already shows this information).")
     }
+
     # Titles and footers
     title.font=list(family=title.font.family, size=title.font.size, color=title.font.color)
 
@@ -274,17 +269,20 @@ Distribution <-   function(x,
     }
     # Finalizing the layout
     # Format axis labels
+    if (is.null(values.tick.decimals))
+        values.tick.decimals <- decimalsToDisplay(values)
     #categories.tick <- setTicks(categories.bounds.minimum, categories.bounds.maximum, categories.distance, FALSE)
     values.tick <- setTicks(values.bounds.minimum, values.bounds.maximum, values.tick.distance, FALSE)
-    axisFormat <- formatLabels(values, "Area", categories.label.wrap, categories.label.wrap.nchar, "", values.tick.format) #ignored
+    axisFormat <- formatLabels(values, "Area", categories.label.wrap, categories.label.wrap.nchar, "", values.tick.format.manual) #ignored
+
     if (is.null(values.bounds.minimum))
         values.bounds.minimum <- rng[1]
     if (is.null(values.bounds.maximum))
         values.bounds.maximum <- rng[2]
     values.axis <- setAxis(values.title, "left", axisFormat, values.title.font,
                   values.line.color, values.line.width, values.grid.width, values.grid.color,
-                  values.tick, values.tick.font, values.tick.angle,
-                  values.tick.mark.length, values.tick.distance, values.tick.format,
+                  values.tick, values.tick.font, values.tick.angle, 
+                  values.tick.mark.length, values.tick.distance, values.tick.format.manual,
                   values.tick.prefix, values.tick.suffix,
                   values.tick.show, FALSE, values.zero.line.width, values.zero.line.color,
                   values.hovertext.format.manual)
@@ -331,6 +329,7 @@ addDensities <- function(p, values, label, vertical, show.density, show.mirror.d
     if (density.type == "Box")
     {
         p <-add_trace(p,
+                      #orientation = if (vertical) "h" else "v",
                       boxpoints  = switch(box.points, "Outliers" = "outliers", "All" = "all", "Suspected outliers" = "suspectedoutliers"),
                       x = if (vertical) NULL else values,
                       y = if (vertical) values else NULL ,
@@ -344,12 +343,13 @@ addDensities <- function(p, values, label, vertical, show.density, show.mirror.d
     } else if (density.type == "Histogram")
     {
         p <-add_trace(p,
+                      #orientation = if (vertical) "h" else "v",
                       nbinsx = maximum.bins,
                       x = if (vertical) NULL else values,
                       y = if (vertical) values else NULL ,
                       marker = list(color = rep(density.color, max(100, maximum.bins))), # Hacking past a plotly bug
                       histnorm = if(histogram.counts) "" else "probability",
-                      hoverinfo = if (vertical) "x" else "y",
+                      hoverinfo = if (vertical) "y" else "x",
                       cumulative = list(enabled = histogram.cumulative),
                       name = label,
                       cumulative = list(enabled = histogram.cumulative),
@@ -418,16 +418,17 @@ addSummaryStatistics <- function(p, values, weights, vertical, show.mean, show.m
     }
     mn <- if(show.mean)  c("Mean:" = weighted.mean(values, w = weights)) else NULL
     # Function for adding components of boxplot to plot
-    .addBox <- function(p, y, x, name, line = NULL, marker = NULL)
+    .addBox <- function(p, y, x, line = NULL, marker = NULL)
     {
         p <- add_trace(p,
                        x = x,
                        y = y,
                        line = line,
                        marker = marker,
-                       name = name,
-                       hoverinfo = "name+y",
+                       hoverinfo = "text",
+                       text = paste(names(y), round(y)),
                        mode = if (is.null(line)) "markers" else "lines",
+                       name = "",
                        type = "scatter",
                        xaxis = category.axis,
                        yaxis = value.axis
@@ -438,26 +439,26 @@ addSummaryStatistics <- function(p, values, weights, vertical, show.mean, show.m
     {
         v1 <- c(0, 0)
         v2 <- five.num[c(1, 5)]
-        p <- .addBox(p, x = if (vertical) v1 else v2, y = if (vertical) v2 else v1, "Range", line = list(width = 1.5, color = range.color))
+        p <- .addBox(p, x = if (vertical) v1 else v2, y = if (vertical) v2 else v1, line = list(width = 1.5, color = range.color))
     }
     if (show.quartiles)
     {
         v1 <- c(0, 0)
         v2 <- five.num[c(2, 4)]
-        p <- .addBox(p, x = if (vertical) v1 else v2, y = if (vertical) v2 else v1, "Quartiles", line = list(width = 8, color = quartile.color))
+        p <- .addBox(p, x = if (vertical) v1 else v2, y = if (vertical) v2 else v1, line = list(width = 8, color = quartile.color))
     }
     if (show.median)
     {
         half.mean.width = 0.2 * max(abs(range(attr(p, "values.density")$y)))
         v1 <- c(-half.mean.width, half.mean.width)
         v2 <- rep(five.num[3], 2)
-        p <- .addBox(p,  x = if (vertical) v1 else v2, y = if (vertical) v2 else v1, "Median", line = list(width = 4, color = median.color))
+        p <- .addBox(p,  x = if (vertical) v1 else v2, y = if (vertical) v2 else v1, line = list(width = 4, color = median.color))
     }
     if (show.mean)
     {
         v1 <- 0
         v2 <- mn
-        p <- .addBox(p,  x = if (vertical) v1 else v2, y = if (vertical) v2 else v1, "Mean", marker = list(color = mean.color, symbol = "square"))
+        p <- .addBox(p,  x = if (vertical) v1 else v2, y = if (vertical) v2 else v1, marker = list(color = mean.color, symbol = "square"))
     }
     p
 
@@ -469,7 +470,7 @@ violinCategoryAxis <- function(i, label, n.variables, vertical, show.values, sho
     if (i > n.variables)
         return(NULL)
     if (!show.mirror.density)
-        domain = c(if (show.values) .12 else 0, .95)
+        domain = c(if (show.values) .13 else 0, .95)
     else if (!show.density)
         domain = c(0, .9)
     else
@@ -520,17 +521,4 @@ violinCategoriesAxes <- function(vertical, n.variables, labels)
     if (!vertical)
         axes <- gsub("xaxis", "yaxis", axes)
     axes
-}
-
-distributionArgs <- function(call, chart.function, arguments)
-{
-    # Setting the arguments that define a Bean plot
-    distribution.args <- modifyList(as.list(args(Distribution)), arguments)
-    # Setting the arguments from the signature
-    function.args <- as.list(args(chart.function))
-    distribution.args <- modifyList(distribution.args, function.args[-length(function.args)])
-    # Deleting the 'body'
-    distribution.args <- distribution.args[-length(distribution.args)]
-    # Adding in the arguments the user has specified
-    modifyList(distribution.args, as.list(call)[-1])
 }

@@ -45,8 +45,7 @@ ScatterChart(x = NULL, y = NULL, scatter.x.column = 1,
   255), y.position = "left", y.data.reversed = FALSE, y.grid.width = 1 *
   grid.show, y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
   y.tick.show = TRUE, y.tick.suffix = "", y.tick.prefix = "",
-  y.tick.decimals = NULL, y.tick.format.manual = "",
-  y.hovertext.decimals = NULL, y.hovertext.format.manual = "",
+  y.tick.format = "", y.hovertext.format = y.tick.format,
   y.tick.angle = NULL, y.tick.font.color = global.font.color,
   y.tick.font.family = global.font.family, y.tick.font.size = 10,
   x.title = "", x.title.font.color = global.font.color,
@@ -58,15 +57,14 @@ ScatterChart(x = NULL, y = NULL, scatter.x.column = 1,
   x.position = "bottom", x.data.reversed = FALSE, x.grid.width = 1 *
   grid.show, x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
   x.tick.show = TRUE, x.tick.suffix = "", x.tick.prefix = "",
-  x.tick.decimals = NULL, x.tick.format.manual = "",
-  x.hovertext.decimals = NULL, x.hovertext.format.manual = "",
+  x.tick.format = "", x.hovertext.format = x.tick.format,
   x.tick.angle = NULL, x.tick.font.color = global.font.color,
   x.tick.font.family = global.font.family, x.tick.font.size = 10,
-  label.wrap = TRUE, label.wrap.nchar = 21, series.line.width = 0,
-  series.marker.border.width = 1, series.marker.size = 6,
-  series.marker.opacity = 1, series.marker.show = "none",
-  series.marker.colors = NULL, swap.x.and.y = FALSE,
-  us.date.format = FALSE, ...)
+  x.tick.label.wrap = TRUE, x.tick.label.wrap.nchar = 21,
+  series.line.width = 0, series.marker.border.width = 1,
+  series.marker.size = 6, series.marker.opacity = 1,
+  series.marker.show = "none", series.marker.colors = NULL,
+  swap.x.and.y = FALSE)
 }
 \arguments{
 \item{x}{A numeric vector for the x-axis coordinates (which may be named); or a matrix or dataframe.}
@@ -292,15 +290,11 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{y.tick.prefix}{y-axis tick label prefix}
 
-\item{y.tick.decimals}{y-axis tick label decimal places}
-
-\item{y.tick.format.manual}{Overrides tick.prefix, suffix and decimals;
+\item{y.tick.format}{Overrides tick.prefix, suffix and decimals;
 See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 https://docs.python.org/release/3.1.3/library/string.html#formatspec}
 
-\item{y.hovertext.decimals}{y-axis hover text decimal places}
-
-\item{y.hovertext.format.manual}{Overrides hovertext decimals;
+\item{y.hovertext.format}{Overrides hovertext decimals;
 See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 https://docs.python.org/release/3.1.3/library/string.html#formatspec}
 
@@ -368,15 +362,11 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{x.tick.prefix}{x-axis tick label prefix}
 
-\item{x.tick.decimals}{x-axis tick label decimal places}
-
-\item{x.tick.format.manual}{Overrides tick.prefix, suffix and decimals;
+\item{x.tick.format}{Overrides tick.prefix, suffix and decimals;
 See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec}
 
-\item{x.hovertext.decimals}{X.axis hover text decimal places}
-
-\item{x.hovertext.format.manual}{Overrides hovertext decimals;
+\item{x.hovertext.format}{Overrides hovertext decimals;
 See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec}
 
@@ -391,9 +381,9 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{x.tick.font.size}{x-axis tick label font size}
 
-\item{label.wrap}{Logical; whether to wrap long labels on the x-axis.}
+\item{x.tick.label.wrap}{Logical; whether to wrap long labels on the x-axis.}
 
-\item{label.wrap.nchar}{Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.}
+\item{x.tick.label.wrap.nchar}{Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.}
 
 \item{series.line.width}{Thickness, in pixels, of the series line}
 
@@ -413,8 +403,6 @@ named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
 be reversed.}
 
 \item{swap.x.and.y}{Swap the x and y axis around on the chart.}
-
-\item{us.date.format}{Whether to apply the US convention when parsing dates.}
 
 \item{...}{Extra arguments that are ignored.}
 }

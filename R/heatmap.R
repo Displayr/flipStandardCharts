@@ -37,7 +37,7 @@
 #' @param right.columns An optional list of vectors or matrices to be appended to the right
 #' of the heatmap.
 #' @importFrom flipFormat FormatAsReal
-#' @importFrom flipTables Reorder Cbind BasicTable
+#' @importFrom flipTables Reorder Cbind TidyTabularData
 #' @importFrom stringr str_trim
 #' @export
 #'
@@ -69,12 +69,14 @@ HeatMap <- function(table,
                     left.columns = NULL,
                     right.columns = NULL) {
 
-    mat <- BasicTable(table, row.names.to.remove = ignore.rows,
+    mat <- TidyTabularData(table, row.names.to.remove = ignore.rows,
                       col.names.to.remove = ignore.columns, transpose = transpose)
     if (!is.matrix(mat)) {
         rownames <- names(mat)
         mat <- matrix(mat) # create single column matrix from vector
         rownames(mat) <- rownames
+        # Until VIS-362 is fixed, rhtmlHeatmap cannot handle vectors
+        stop("Input must be two-dimensional.")
     }
     if (!is.numeric(mat[1, 1]))
         stop("The input table must contain only numeric values.")

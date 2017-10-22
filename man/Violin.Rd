@@ -8,9 +8,8 @@ Violin(x, weights = NULL, vertical = TRUE, show.mean = TRUE,
   show.median = TRUE, show.quartiles = TRUE, show.range = TRUE,
   mean.color = "White", median.color = "Black", quartile.color = "Black",
   range.color = "Black", density.color = "Green",
-  automatic.lower.density = TRUE, global.font.family = "Arial",
-  global.font.color = rgb(44, 44, 44, maxColorValue = 255), title = "",
-  title.font.family = global.font.family,
+  global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
+  maxColorValue = 255), title = "", title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
   background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
   background.fill.opacity = 1,
@@ -27,8 +26,9 @@ Violin(x, weights = NULL, vertical = TRUE, show.mean = TRUE,
   values.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
   values.grid.width = 1 * grid.show, values.grid.color = rgb(225, 225, 225,
   maxColorValue = 255), values.tick.show = TRUE, values.tick.suffix = "",
-  values.tick.prefix = "", values.tick.format = "",
-  values.hovertext.format = "", values.tick.angle = NULL,
+  values.tick.prefix = "", values.tick.decimals = NULL,
+  values.tick.format.manual = "", values.hovertext.decimals = NULL,
+  values.hovertext.format.manual = "", values.tick.angle = NULL,
   values.tick.font.color = global.font.color,
   values.tick.font.family = global.font.family, values.tick.font.size = 10,
   categories.font.color = global.font.color,
@@ -65,8 +65,6 @@ the3 values of \code{x}.}
 \item{range.color}{Defaults to "black"}
 
 \item{density.color}{Defaults to "Green"}
-
-\item{automatic.lower.density}{When \code{TRUE}, which is the default, the empirical lowest value is assumed to be the lowest value when estimating the density.}
 
 \item{global.font.family}{Character; font family for all occurrences of any
 font attribute for the chart unless specified individually.}
@@ -160,11 +158,15 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{values.tick.prefix}{y-axis tick label prefix}
 
-\item{values.tick.format}{Overrides tick.prefix, suffix and decimals;
+\item{values.tick.decimals}{y-axis tick label decimal places}
+
+\item{values.tick.format.manual}{Overrides tick.prefix, suffix and decimals;
 See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 https://docs.python.org/release/3.1.3/library/string.html#formatspec}
 
-\item{values.hovertext.format}{XXXX
+\item{values.hovertext.decimals}{y-axis hover text decimal places}
+
+\item{values.hovertext.format.manual}{Overrides hovertext decimals;
 See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 https://docs.python.org/release/3.1.3/library/string.html#formatspec}
 
@@ -200,6 +202,5 @@ A \code{plotly} chart.
 Violin plot.
 }
 \examples{
-Violin(rnorm(100))
-Violin(list(rnorm(100), rexp(100)))
+Distribution(list(rnorm(100)))
 }
