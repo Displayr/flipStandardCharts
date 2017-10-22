@@ -4,7 +4,8 @@
 #'
 #' @inherit Distribution
 #' @examples
-#' Distribution(list(rnorm(100)))
+#' Violin(rnorm(100))
+#' Violin(list(rnorm(100), rexp(100)))
 
 #' @export
 Violin <- function(x,
@@ -19,6 +20,7 @@ Violin <- function(x,
     quartile.color = "Black",
     range.color = "Black",
     density.color = "Green",
+    automatic.lower.density = TRUE,
     global.font.family = "Arial",
     global.font.color = rgb(44, 44, 44, maxColorValue = 255),
     title = "",
@@ -52,10 +54,8 @@ Violin <- function(x,
     values.tick.show = TRUE,
     values.tick.suffix = "",
     values.tick.prefix = "",
-    values.tick.decimals = NULL,
-    values.tick.format.manual = "",
-    values.hovertext.decimals = NULL,
-    values.hovertext.format.manual = "",
+    values.tick.format = "",
+    values.hovertext.format = "",
     values.tick.angle = NULL,
     values.tick.font.color = global.font.color,
     values.tick.font.family = global.font.family,
@@ -65,20 +65,16 @@ Violin <- function(x,
     categories.font.size = 10,
     categories.label.wrap = TRUE,
     categories.label.wrap.nchar = 21,
-    modebar.show = FALSE,
-    us.date.format = NULL)
+    modebar.show = FALSE)
 {
-    call <- match.call()
-    call[[1]] <- Distribution
-    call$density.type <- "Density"
-    call$automatic.lower.density <- TRUE
-    call$histogram.cumulative <- FALSE
-    call$histogram.counts <- FALSE
-    call$maximum.bins <- NULL
-    call$show.density <- TRUE
-    call$values.color <- "Green"
-    call$box.points <- "Shouldn't do anything"
-    call$show.mirror.density <- TRUE
-    call$show.values <- FALSE
-    eval(call)
+    do.call("Distribution", distributionArgs(match.call(), Violin, list(density.type = "Density")))
 }
+
+
+
+
+
+
+
+
+

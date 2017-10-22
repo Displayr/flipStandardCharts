@@ -30,15 +30,14 @@ Distribution(x, weights = NULL, vertical = TRUE, show.mean = TRUE,
   values.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
   values.grid.width = 1 * grid.show, values.grid.color = rgb(225, 225, 225,
   maxColorValue = 255), values.tick.show = TRUE, values.tick.suffix = "",
-  values.tick.prefix = "", values.tick.decimals = NULL,
-  values.tick.format.manual = "", values.hovertext.decimals = NULL,
-  values.hovertext.format.manual = "", values.tick.angle = NULL,
-  values.tick.font.color = global.font.color,
+  values.tick.prefix = "", values.tick.format = "",
+  values.hovertext.decimals = NULL, values.hovertext.format = "",
+  values.tick.angle = NULL, values.tick.font.color = global.font.color,
   values.tick.font.family = global.font.family, values.tick.font.size = 10,
   categories.font.color = global.font.color,
   categories.font.family = global.font.family, categories.font.size = 10,
   categories.label.wrap = TRUE, categories.label.wrap.nchar = 21,
-  modebar.show = FALSE, us.date.format = NULL)
+  modebar.show = FALSE)
 }
 \arguments{
 \item{x}{A \code{\link{list}}, where each vector contains data to be plotted. If the data is not numeric
@@ -184,15 +183,11 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{values.tick.prefix}{y-axis tick label prefix}
 
-\item{values.tick.decimals}{y-axis tick label decimal places}
-
-\item{values.tick.format.manual}{Overrides tick.prefix, suffix and decimals;
+\item{values.tick.format}{Overrides tick.prefix, suffix and decimals;
 See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 https://docs.python.org/release/3.1.3/library/string.html#formatspec}
 
-\item{values.hovertext.decimals}{y-axis hover text decimal places}
-
-\item{values.hovertext.format.manual}{Overrides hovertext decimals;
+\item{values.hovertext.format}{XXXX
 See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 https://docs.python.org/release/3.1.3/library/string.html#formatspec}
 
@@ -221,9 +216,7 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{modebar.show}{Logical; whether to show the zoom menu buttons or not.}
 
-\item{us.date.format}{Whether to apply the US convention when parsing dates.}
-
-\item{...}{Extra arguments that are ignored.}
+\item{categories.tick.format}{Character; XXX}
 }
 \value{
 A \code{plotly} chart.
@@ -232,5 +225,6 @@ A \code{plotly} chart.
 Distribution Chart.
 }
 \examples{
-Distribution(list(rnorm(100)))
+Distribution(rnorm(100))
+Distribution(list(rnorm(100), rexp(100)))
 }
