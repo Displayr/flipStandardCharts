@@ -112,6 +112,7 @@
 #' font attribute for the chart unless specified individually.
 #' @param global.font.color Global font color as a named color in character format
 #' (e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).
+#' @param tooltip.show Logical; whether to show a tooltip on hover.
 #' @return A \code{plotly} chart.
 #' @examples
 #' Distribution(rnorm(100))
@@ -188,6 +189,7 @@ Distribution <-   function(x,
     categories.font.size = 10,
     categories.label.wrap = TRUE,
     categories.label.wrap.nchar = 21,
+    tooltip.show = TRUE,
     modebar.show = FALSE)
 {
     # Extracting and wrapping labels
@@ -274,22 +276,23 @@ Distribution <-   function(x,
     # Format axis labels
     #categories.tick <- setTicks(categories.bounds.minimum, categories.bounds.maximum, categories.distance, FALSE)
     values.tick <- setTicks(values.bounds.minimum, values.bounds.maximum, values.tick.distance, FALSE)
-    axisFormat <- formatLabels(values, "Area", categories.label.wrap, categories.label.wrap.nchar, FALSE) #ignored
-
+    axisFormat <- formatLabels(values, "Area", categories.label.wrap, categories.label.wrap.nchar, "", values.tick.format) #ignored
     if (is.null(values.bounds.minimum))
         values.bounds.minimum <- rng[1]
     if (is.null(values.bounds.maximum))
         values.bounds.maximum <- rng[2]
     values.axis <- setAxis(values.title, "left", axisFormat, values.title.font,
                   values.line.color, values.line.width, values.grid.width, values.grid.color,
-                  values.tick, values.tick.font, values.tick.angle, values.tick.mark.length, values.tick.distance, values.tick.format,
-                  NA, values.tick.prefix, values.tick.suffix,
+                  values.tick, values.tick.font, values.tick.angle,
+                  values.tick.mark.length, values.tick.distance, values.tick.format,
+                  values.tick.prefix, values.tick.suffix,
                   values.tick.show, FALSE, values.zero.line.width, values.zero.line.color,
-                  values.hovertext.format, 5)
+                  values.hovertext.format.manual)
+    hover.mode <- if (tooltip.show) "'closest'" else "FALSE"
     txt <- paste0("p <- layout(p, autosize=TRUE,
         font=list(size = 11),
-        hovermode = 'closest',
-        showlegend=FALSE,
+        hovermode=", hover.mode, ",",
+        "showlegend=FALSE,
         title = title,
         titlefont = title.font,
         showlegend = FALSE,", violinCategoriesAxes(vertical, n.variables, labels), "

@@ -37,7 +37,7 @@ Distribution(x, weights = NULL, vertical = TRUE, show.mean = TRUE,
   categories.font.color = global.font.color,
   categories.font.family = global.font.family, categories.font.size = 10,
   categories.label.wrap = TRUE, categories.label.wrap.nchar = 21,
-  modebar.show = FALSE)
+  tooltip.show = TRUE, modebar.show = FALSE)
 }
 \arguments{
 \item{x}{A \code{\link{list}}, where each vector contains data to be plotted. If the data is not numeric
@@ -213,6 +213,8 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{categories.label.wrap}{Logical; whether to wrap long labels on the x-axis.}
 
 \item{categories.label.wrap.nchar}{Integer; number of characters in each line when \code{categories.label.wrap} is \code{TRUE}.}
+
+\item{tooltip.show}{Logical; whether to show a tooltip on hover.}
 
 \item{modebar.show}{Logical; whether to show the zoom menu buttons or not.}
 
