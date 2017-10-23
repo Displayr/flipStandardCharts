@@ -66,26 +66,5 @@ Box <- function(x,
                                                                  show.range = FALSE,
                                                     show.mirror.density = FALSE))
     do.call(Distribution, args)
-    # args <- modifyList(as.list(args(Box)), list(density.type = "Box",
-    #                                                                   show.mean = FALSE,
-    #                                                                   show.median = FALSE,
-    #                                                                   show.quartiles = FALSE,
-    #                                                                   show.range = FALSE,
-    #                                                                   show.mirror.density = FALSE))
-    # call <- match.call()
-    # nms <- names(args)
-    # nms <- nms[nms != ""]
-    # nms <- nms[!nms %in% names(call)]
-    # args <- args[nms]
-    # args <- args[!sapply(args, is.null)]
-    # call[[1]] <- Distribution
-    # modify_call(call, force(args))
-    # eval(call)
 
-    # do.call("Distribution", distributionArgs(match.call(),  Box, list(density.type = "Box",
-    #                                                                   show.mean = FALSE,
-    #                                                                   show.median = FALSE,
-    #                                                                   show.quartiles = FALSE,
-    #                                                                   show.range = FALSE,
-    #                                                                   show.mirror.density = FALSE)))
 }

@@ -4,13 +4,12 @@ Title: Standard R interactive charts
 Version: 1.0.0
 Author: Displayr <opensource@displayr.com>
 Maintainer: Displayr <opensource@displayr.com>
-Description: Wrapper for plotly interactive charts used in standard R objects.
+Description: Wrapper for other charting packages. The goal is to provide a relatively standard API across multiple packages, so that a user can create just about any 'standard' chart easily.
 License: GPL-3
 Depends: R (>= 2.10)
 LazyData: TRUE
 Imports:
-    plotly,
-    pryr, 
+    d3vennR,
     flipU,
     flipChartBasics,
     flipData,
@@ -19,9 +18,13 @@ Imports:
     flipTime,
     flipTransformations (>= 1.1.2),
     Hmisc,
+    plotly,
+    pryr, 
+    htmlwidgets, 
     rhtmlDonut,
     rhtmlHeatmap,
     rhtmlLabeledScatter,
+    streamgraph,
     stringr
 Remotes:
     Displayr/flipU,
@@ -36,6 +39,8 @@ Remotes:
     Displayr/rhtmlHeatmap,
     Displayr/rhtmlLabeledScatter
 Suggests:
-    testthat,
-    flipExampleData
+    dplyr,
+    flipExampleData,
+    ggplot2movies,
+    testthat
 RoxygenNote: 6.0.1
