@@ -37,7 +37,9 @@ Remotes:
     Displayr/flipTransformations,
     Displayr/rhtmlDonut,
     Displayr/rhtmlHeatmap,
-    Displayr/rhtmlLabeledScatter
+    Displayr/rhtmlLabeledScatter,
+    hrbrmstr/streamgraph,
+    timelyportfolio/d3vennR
 Suggests:
     dplyr,
     flipExampleData,
