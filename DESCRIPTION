@@ -10,6 +10,7 @@ Depends: R (>= 2.10)
 LazyData: TRUE
 Imports:
     plotly,
+    pryr, 
     flipU,
     flipChartBasics,
     flipData,

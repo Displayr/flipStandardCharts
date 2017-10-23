@@ -307,23 +307,18 @@ test_that("Distribution: checking all the common parameters",{
     Distribution(Normals, values.tick.font.family = "Courier")
     Distribution(Normals, values.tick.font.size = 13)
 
-    Distribution(Normals, categories.font.color = "Red")
-    Distribution(Normals, categories.font.family = "Courier")
-    Distribution(Normals, categories.font.size = 13)
+    Distribution(Normals, categories.tick.font.color = "Red")
+    Distribution(Normals, categories.tick.font.family = "Courier")
+    Distribution(Normals, categories.tick.font.size = 13)
 
-    Distribution(Normals, categories.label.wrap = FALSE)
-    Distribution(Normals, categories.label.wrap.nchar = 12)
+    Distribution(Normals, categories.tick.label.wrap = FALSE)
+    Distribution(Normals, categories.tick.label.wrap.nchar = 12)
 
     Distribution(Normals, tooltip.show = FALSE)
     Distribution(Normals, modebar.show = TRUE)
 
-    # Arguments that do nothing or need to be revised after Jake's stuff.
-    Distribution(Normals, values.tick.decimals = 2)
     Distribution(Normals, values.line.width = 10) #That this is doing nothing is a problem in Carmen's code. She has been told.
 
-    Distribution(Normals, values.tick.marks = "outside", values.line.width = 1, values.line.color = "Pink", values.tick.mark.length = 10)
-    Distribution(Normals, values.tick.marks = "inside", values.line.width = 1, values.line.color = "Pink", values.tick.mark.length = 10)
-    Distribution(Normals, values.tick.marks = "none", values.line.width = 1, values.line.color = "Pink", values.tick.mark.length = 10)
 # values.tick.format.manual = "",
 # values.hovertext.decimals = NULL,
 # values.hovertext.format.manual = "",
