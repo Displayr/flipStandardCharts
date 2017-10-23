@@ -1,6 +1,6 @@
-#' Pie chart
+#' Pie
 #'
-#' Plot pie or donut chart
+#' Pie chart
 #'
 #' @param x Input data in the form of a vector, matrix or dataframe. If a dataframe is given, the first column is expected to contain the label names, the second column contains numeric values and the third (optional) column are the group labels.
 #' @param type One of "Pie" or "Donut"
@@ -43,12 +43,12 @@
 #' @examples
 #' dat <- data.frame(labels=rep(LETTERS[24:26], each=3), vals=abs(rnorm(9)),
 #'      groups=rep(LETTERS[1:3], 3), stringsAsFactors = FALSE)
-#' PieChart(dat)
-#' PieChart(dat, pie.subslice.colors=rainbow(9), pie.subslice.colors.repeat = FALSE)
+#' Pie(dat)
+#' Pie(dat, pie.subslice.colors=rainbow(9), pie.subslice.colors.repeat = FALSE)
 #' @importFrom flipChartBasics ChartColors StripAlphaChannel
 #' @importFrom rhtmlDonut Donut
 #' @export
-PieChart <- function(x,
+Pie <- function(x,
                      type = "Pie",
                      colors = NULL,
                      pie.subslice.colors = NULL,

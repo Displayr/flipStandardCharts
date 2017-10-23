@@ -1,6 +1,6 @@
-#' Scatterplot chart
+#' Scatter
 #'
-#' Plot scatterplot chart
+#' Scatter plot
 #'
 #' @param x A numeric vector for the x-axis coordinates (which may be named); or a matrix or dataframe.
 #' @param y Optional numeric vector for the y-axis coordinates. Should contain the same number of observations as x. If not provided, will use x instead.
@@ -215,7 +215,7 @@
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
 #' @export
-ScatterChart <- function(x = NULL,
+Scatter <- function(x = NULL,
                          y = NULL,
                          scatter.x.column = 1,
                          scatter.y.column = 2,

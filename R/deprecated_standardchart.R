@@ -502,7 +502,8 @@ Chart <-   function(y = NULL,
     if (0)
     {
     patt.list <- c("Column", "Bar", "Radar", "Area", "Line", "Pie", "Labeled", "Scatter", "Donut")
-    func.list <- c("ColumnChart", "BarChart", "RadarChart", "AreaChart", "LineChart", "PieChart", "LabeledScatterChart", "ScatterChart", "PieChart")
+    func.list <- c("Column", "Bar", "Radar", "Area", "Line", "Pie", "LabeledScatter", "Scatter", "Pie")
+    #func.list <- c("ColumnChart", "BarChart", "RadarChart", "AreaChart", "LineChart", "PieChart", "LabeledScatterChart", "ScatterChart", "PieChart")
     f.type <- gsub(" ", "", type, fixed=T)
     for (ffi in 1:length(func.list))
     {

@@ -1,6 +1,6 @@
-#' Labeled Scatterplot chart
+#' LabeledScatter
 #'
-#' Plot scatterplot with labels - best used for small sets of data
+#' Labeled Scatter Chart
 #'
 #' @param x A numeric vector for the x-axis coordinates (which may be named); or a matrix or dataframe; or a list of matrices, where each matrix share the same row and column names
 #' @param y Optional numeric vector for the y-axis coordinates. Should contain the same number of observations as x. If not provided, will use x instead.
@@ -123,7 +123,7 @@
 #' @importFrom flipChartBasics ChartColors StripAlphaChannel
 #' @importFrom rhtmlLabeledScatter LabeledScatter
 #' @export
-LabeledScatterChart <- function(x = NULL,
+LabeledScatter <- function(x = NULL,
                                 y = NULL,
                                 scatter.x.column = 1,
                                 scatter.y.column = 2,
@@ -249,13 +249,13 @@ LabeledScatterChart <- function(x = NULL,
         is.valid.col <- function(n) {return (!is.null(n) && !is.na(n) && n > 0 && n <= ncol(x))}
         if (is.null(scatter.labels) && !is.null(rownames(x)))
             scatter.labels <- rownames(x)
-        if (is.null(y) && is.valid.col(scatter.y.column)) 
+        if (is.null(y) && is.valid.col(scatter.y.column))
         {
             if ((is.na(y.title) || nchar(y.title) == 0) && !is.null(colnames(x)))
                 y.title <- colnames(x)[scatter.y.column]
             y <- x[,scatter.y.column]
         }
-        if (is.null(scatter.sizes) && is.valid.col(scatter.sizes.column)) 
+        if (is.null(scatter.sizes) && is.valid.col(scatter.sizes.column))
         {
             if (is.null(scatter.sizes.name) && !is.null(colnames(x)))
                 scatter.sizes.name <- colnames(x)[scatter.sizes.column]

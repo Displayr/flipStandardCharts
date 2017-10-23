@@ -317,23 +317,7 @@ test_that("Distribution: checking all the common parameters",{
     Distribution(Normals, tooltip.show = FALSE)
     Distribution(Normals, modebar.show = TRUE)
 
-    Distribution(Normals, values.line.width = 10) #That this is doing nothing is a problem in Carmen's code. She has been told.
+    Distribution(Normals, values.line.width = 10)
 
-# values.tick.format.manual = "",
-# values.hovertext.decimals = NULL,
-# values.hovertext.format.manual = "",
-# Distribution(Normals, values.tick.distance = 20)
-# us.date.format = NULL
-
-    # ColumnChart(-1:5, y.tick.decimals = 2)
-    # ColumnChart(-1:5, y.line.width = 1, grid.show = TRUE, y.grid.width = 10)
-    #
-    #
-    # ColumnChart(-1:5, y.zero = TRUE, grid.show = FALSE, y.tick.decimals = 2)
-    #
-    #
-    # ColumnChart(-1:5, y.zero = TRUE, y.zero.line.width = 0,  grid.show = FALSE)
-    # ColumnChart(-1:5, y.zero = TRUE, y.zero.line.width = 1,  grid.show = FALSE)
-    # ColumnChart(-1:5, y.zero = FALSE, y.zero.line.width = 1,  grid.show = FALSE)
 
           })

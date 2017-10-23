@@ -1,6 +1,6 @@
-#' Radar chart
+#' Radar
 #'
-#' Plot radar chart, also known as web chart, spider chart, star chart, star plot, cobweb chart, irregular polygon, polar chart, or Kiviat diagram
+#' Radar chart, also known as web chart, spider chart, star chart, star plot, cobweb chart, irregular polygon, polar chart, or Kiviat diagram
 #'
 #' @param x Input data in the form of a vector or matrix. The categories used
 #' to create the radar (i.e. the x-axis) is taken from the names/rownames of x.
@@ -120,7 +120,7 @@
 #' @importFrom plotly plot_ly layout config add_annotations
 #' @importFrom flipFormat FormatAsReal
 #' @export
-RadarChart <- function(x,
+Radar <- function(x,
                     title = "",
                     title.font.family = global.font.family,
                     title.font.color = global.font.color,

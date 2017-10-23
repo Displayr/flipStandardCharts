@@ -1,6 +1,6 @@
-#' Column chart
+#' Column
 #'
-#' Plot column chart
+#' Column chart
 #'
 #' @param x Input data may be a matrix or a vector, containing the height of the columns
 #' to be plotted, with the name/rownames used as the column names of the chart. Numeric and date labels
@@ -191,13 +191,13 @@
 #' @examples
 #' z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L),
 #'       .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
-#' ColumnChart(z, type="Stacked Column")
+#' Column(z, type="Stacked Column")
 #' @importFrom grDevices rgb
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
 #' @export
-ColumnChart <- function(x,
+Column <- function(x,
                     type = "Column",
                     fit.type = "None", # can be "Smooth" or anything else
                     fit.ignore.last = FALSE,
@@ -374,7 +374,7 @@ ColumnChart <- function(x,
     xtick <- setTicks(x.bounds.minimum, x.bounds.maximum, x.tick.distance, x.data.reversed)
     ytick <- setTicks(y.bounds.minimum, y.bounds.maximum, y.tick.distance, y.data.reversed)
 
-    axisFormat <- formatLabels(chart.matrix, type, x.tick.label.wrap, x.tick.label.wrap.nchar, 
+    axisFormat <- formatLabels(chart.matrix, type, x.tick.label.wrap, x.tick.label.wrap.nchar,
                         x.tick.format, y.tick.format)
 
     yaxis <- setAxis(y.title, "left", axisFormat, y.title.font,
@@ -451,9 +451,9 @@ ColumnChart <- function(x,
         # this is the main trace for each data series
         tmp.group <- if (legend.group == "") paste("group", i) else legend.group
         p <- add_trace(p, x = x, y = y, type = "bar", orientation = "v", marker = marker,
-                       name  =  y.labels[i], legendgroup  =  tmp.group, 
+                       name  =  y.labels[i], legendgroup  =  tmp.group,
                        text = autoFormatLongLabels(x.labels.full, wordwrap=T, truncate=F),
-                       hoverinfo  = setHoverText(xaxis, chart.matrix)) 
+                       hoverinfo  = setHoverText(xaxis, chart.matrix))
 
         if (fit.type != "None" && !is.stacked)
         {

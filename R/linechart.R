@@ -1,17 +1,17 @@
-#' Line chart
+#' Line
 #'
-#' Plot line chart
-#' @inherit AreaChart 
+#' Line chart
+#' @inherit Area
 #' @examples
 #' z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L),
 #'       .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
-#' LineChart(z)
+#' Line(z)
 #' @importFrom grDevices rgb
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
 #' @export
-LineChart <-   function(x,
+Line <-   function(x,
                     type = "Line",
                     fit.type = "None", # can be "Smooth" or anything else
                     fit.ignore.last = FALSE,
@@ -263,7 +263,7 @@ LineChart <-   function(x,
                    showlegend = (type == "Line"),
                    legendgroup = tmp.group,
                    text = autoFormatLongLabels(x.labels.full, wordwrap=T, truncate=F),
-                   hoverinfo  = setHoverText(xaxis, chart.matrix), 
+                   hoverinfo  = setHoverText(xaxis, chart.matrix),
                    marker = marker,
                    mode = series.mode)
 
@@ -283,7 +283,7 @@ LineChart <-   function(x,
                                 else list(color = toRGB(colors[i]),
                                      size = series.marker.size),
                        text = autoFormatLongLabels(x.labels.full[is.single], wordwrap=T, truncate=F),
-                       hoverinfo  = setHoverText(xaxis, chart.matrix), 
+                       hoverinfo  = setHoverText(xaxis, chart.matrix),
                        showlegend = FALSE)
         }
         if (fit.type != "None")

@@ -1,6 +1,6 @@
-#' Area chart
+#' Area
 #'
-#' Plot area chart
+#' Area chart
 #' @param series.marker.show Can be "none", "automatic" or a vector referencing
 #' the plotly symbol dictionary using either numerics or strings.
 #' @param series.marker.colors Character; a vector containing one or more named
@@ -25,17 +25,17 @@
 #' value in relation to the marker icon.  Can be "top left", "top center", "top
 #' right", "middle left", "middle center", "middle right", "bottom left",
 #' "bottom center", "bottom right".
-#' @inherit ColumnChart
+#' @inherit Column
 #' @examples
 #' z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L),
 #'       .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
-#' AreaChart(z)
+#' Area(z)
 #' @importFrom grDevices rgb
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
 #' @export
-AreaChart <- function(x,
+Area <- function(x,
                     type = "Area",
                     fit.type = "None", # can be "Smooth" or anything else
                     fit.ignore.last = FALSE,
@@ -248,7 +248,7 @@ AreaChart <- function(x,
 
     yaxis <- setAxis(y.title, "left", axisFormat, y.title.font,
                   y.line.color, y.line.width, y.grid.width, y.grid.color,
-                  ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance, 
+                  ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance,
                   y.tick.format, y.tick.prefix, y.tick.suffix,
                   y.tick.show, y.zero, y.zero.line.width, y.zero.line.color,
                   y.hovertext.format)
@@ -301,7 +301,7 @@ AreaChart <- function(x,
             marker <- list(size = series.marker.size,
                        color = toRGB(series.marker.colors[i], alpha = series.marker.opacity),
                        symbol = series.marker.symbols[i],
-                       line = list(color = toRGB(series.marker.border.colors[i], 
+                       line = list(color = toRGB(series.marker.border.colors[i],
                        alpha = series.marker.border.opacity),
                        width = series.marker.border.width))
 

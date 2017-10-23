@@ -1,7 +1,7 @@
-#' Bar chart
+#' Bar
 #'
-#' Plot bar chart
-#' @inherit ColumnChart
+#' Bar Chart
+#' @inherit Column
 #' @param y.tick.label.wrap Logical; whether to wrap long labels on the y-axis (vertical).
 #' @param y.tick.label.wrap.nchar Integer; number of characters in each line when \code{y.tick.label.wrap} is \code{TRUE}.
 #' @param x.tick.suffix x-axis tick label suffix
@@ -9,13 +9,13 @@
 #' @examples
 #' z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L),
 #'       .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
-#' BarChart(z, type="100% Stacked Bar")
+#' Bar(z, type="100% Stacked Bar")
 #' @importFrom grDevices rgb
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
 #' @export
-BarChart <- function(x,
+Bar <- function(x,
                     type = "Bar",
                     fit.type = "None", # can be "Smooth" or anything else
                     fit.ignore.last = FALSE,
@@ -187,19 +187,19 @@ BarChart <- function(x,
                   data = if (data.label.show && !is.stacked) chart.matrix else NULL, type = type,
                   labels = tmp.label, label.font.size = data.label.font.size)
     ytick <- setTicks(y.bounds.minimum, y.bounds.maximum, y.tick.distance, !y.data.reversed)
-    axisFormat <- formatLabels(chart.matrix, type, y.tick.label.wrap, y.tick.label.wrap.nchar, 
+    axisFormat <- formatLabels(chart.matrix, type, y.tick.label.wrap, y.tick.label.wrap.nchar,
                                y.tick.format, x.tick.format)
 
     yaxis <- setAxis(y.title, "left", axisFormat, y.title.font,
                   y.line.color, y.line.width, y.grid.width, y.grid.color,
-                  ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance, 
-                  y.tick.format, "", "", y.tick.show, 
+                  ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance,
+                  y.tick.format, "", "", y.tick.show,
                   y.zero, y.zero.line.width, y.zero.line.color,
                   y.hovertext.format)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width, x.grid.color,
-                  xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, 
-                  x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show, 
+                  xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance,
+                  x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show,
                   FALSE, x.zero.line.width, x.zero.line.color,
                   x.hovertext.format)
 
@@ -220,7 +220,7 @@ BarChart <- function(x,
         margins$right <- margin.right
     if (!is.null(margin.inner.pad))
         margins$pad <- margin.inner.pad
-    
+
     # Finalise text in margins
     footer.axis <- setFooterAxis(footer, footer.font, margins)
     subtitle.axis <- setSubtitleAxis(subtitle, subtitle.font, title, title.font)
@@ -268,9 +268,9 @@ BarChart <- function(x,
         # this is the main trace for each data series
         tmp.group <- if (legend.group == "") paste("group", i) else legend.group
         p <- add_trace(p, x = y, y = x, type = "bar", orientation = "h", marker = marker,
-                       name  =  y.labels[i], legendgroup  =  tmp.group,  
+                       name  =  y.labels[i], legendgroup  =  tmp.group,
                        text = autoFormatLongLabels(x.labels.full, wordwrap=T, truncate=F),
-                       hoverinfo  = setHoverText(yaxis, chart.matrix, is.bar=TRUE)) 
+                       hoverinfo  = setHoverText(yaxis, chart.matrix, is.bar=TRUE))
 
         if (fit.type != "None" && !is.stacked)
         {
