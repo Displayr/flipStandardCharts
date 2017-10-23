@@ -392,7 +392,7 @@ LabeledScatter <- function(x = NULL,
     }
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
 
-    return(LabeledScatter(X = x[not.na],
+    return(rhtmlLabeledScatter::LabeledScatter(X = x[not.na],
                        Y = y[not.na],
                        Z = if (is.null(scatter.sizes)) NULL else abs(scatter.sizes[not.na]),
                        group = groups[not.na],
