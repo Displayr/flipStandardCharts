@@ -200,9 +200,12 @@ formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, x.format, y.fo
     # labels are only processed for independent x-axis (or y-axis in bar charts)
     # the other axis is always numeric
     labels <- x.labels
-    ymd <- PeriodNameToDate(labels)
-    if (all(!is.na(ymd)) || class(labels) %in% c("Date", "POSIXct", "POSIXt"))
+    axis.type <- if (is.bar) y.axis.type else x.axis.type
+    if (axis.type == "date")
+    {
+        ymd <- PeriodNameToDate(labels) # currently cannot switch between US/international inputs
         labels <- ymd
+    }
     else
     {
         ymd <- NULL
