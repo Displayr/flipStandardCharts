@@ -310,7 +310,7 @@ LabeledScatter <- function(x = NULL,
     {
         if (length(scatter.sizes) != n)
             stop("'scatter.sizes' should be a numeric vector with the same number of observations as 'x'.")
-        scatter.sizes <- AsNumeric(scatter.sizes, binary=TRUE)
+        scatter.sizes <- AsNumeric(scatter.sizes, binary=FALSE)
         if (any(!is.finite(scatter.sizes)))
         {
             warning("Some points omitted due to missing values in 'scatter.sizes'.")
