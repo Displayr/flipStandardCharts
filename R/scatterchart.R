@@ -490,13 +490,13 @@ Scatter <- function(x = NULL,
             tmp.seq <- seq(0, 1, length=5)
             colorbar <- list(tickmode="array", tickvals=tmp.seq,
                              ticktext=c(min(scatter.sizes) + diff(range(scatter.sizes)) * tmp.seq),
-                             outlinewidth=0, tickfont=data.label.font)
+                             outlinewidth=0, tickfont=legend.font)
         }
         else if (any(class(scatter.colors) == "factor"))
             colorbar <- list(tickmode="array", tickvals=seq(0, 1, length=nlevels(scatter.colors)),
-                             ticktext=levels(scatter.colors), outlinewidth=0, tickfont=data.label.font)
+                             ticktext=levels(scatter.colors), outlinewidth=0, tickfont=legend.font)
         else
-            colorbar <- list(outlinewidth = 0, tickfont=data.label.font)
+            colorbar <- list(outlinewidth = 0, tickfont=legend.font)
 
         scatter.colors.as.numeric <- 1
         groups <- 1:n
