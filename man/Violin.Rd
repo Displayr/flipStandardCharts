@@ -192,6 +192,8 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 }
 \value{
 A \code{plotly} chart.
+
+A \code{plotly} chart.
 }
 \description{
 Violin plot.

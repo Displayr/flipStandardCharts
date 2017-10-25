@@ -66,5 +66,4 @@ Box <- function(x,
                                                                  show.range = FALSE,
                                                     show.mirror.density = FALSE))
     do.call(Distribution, args)
-
 }

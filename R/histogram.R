@@ -75,4 +75,5 @@ Histogram <- function(x,
     #                                                                    show.quartiles = FALSE,
     #                                                                    show.range = FALSE,
     #                                                                    show.mirror.density = FALSE)))
+    do.call(Distribution, args)
 }

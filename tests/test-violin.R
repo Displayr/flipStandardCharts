@@ -18,4 +18,10 @@ library(flipStandardCharts)
            global.font.family = "Courier",
            global.font.color = "Red",
            vertical = FALSE)
+    Violin(z, title = "Comparing distributions",
+           values.title = "Values",
+           global.font.family = "Courier",
+           global.font.color = "Red",
+           categories.tick.label.wrap.nchar = 5,
+           vertical = FALSE)
 # })
