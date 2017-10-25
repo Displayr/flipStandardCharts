@@ -107,8 +107,7 @@
 #' @param y.tick.format Overrides tick.prefix, suffix and decimals;
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 #' https://docs.python.org/release/3.1.3/library/string.html#formatspec
-#' @param y.hovertext.format Overrides hovertext decimals;
-#' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
+#' @param y.hovertext.format See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 #' https://docs.python.org/release/3.1.3/library/string.html#formatspec
 #' @param y.tick.angle y-axis tick label angle in degrees.
 #' 90 = vertical; 0 = horizontal

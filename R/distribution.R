@@ -87,8 +87,7 @@
 #' @param values.tick.format Overrides tick.prefix, suffix and decimals;
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 #' https://docs.python.org/release/3.1.3/library/string.html#formatspec
-#' @param values.hovertext.format XXXX
-#' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
+#' @param values.hovertext.format See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 #' https://docs.python.org/release/3.1.3/library/string.html#formatspec
 #' @param values.tick.angle y-axis tick label angle in degrees.
 #' 90 = vertical; 0 = horizontal
@@ -297,6 +296,7 @@ paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
 hovermode = 'text',
 titlefont = title.font)")
     eval(parse(text = txt))
+    cat(txt)
    p
 }
 
@@ -420,7 +420,7 @@ addSummaryStatistics <- function(p, values, weights, vertical, show.mean, show.m
                        line = line,
                        marker = marker,
                        name = name,
-                       hoverinfo = "name+y",
+                       hoverinfo = paste0("name+", if (vertical) "y" else "x"),
                        mode = if (is.null(line)) "markers" else "lines",
                        type = "scatter",
                        xaxis = category.axis,
@@ -516,30 +516,9 @@ violinCategoriesAxes <- function(vertical, n.variables, labels)
     axes
 }
 
-
-# runDistribution <- function(call, chart.function, arguments)
-# {
-#
-#
-#         args <- modifyList(as.list(args(chart.function)), arguments)
-#
-#  #   call <- match.call()
-#     nms <- names(args)
-#     nms <- nms[nms != ""]
-#     nms <- nms[!nms %in% names(call)]
-#     args <- args[nms]
-#     args <- args[!sapply(args, is.null)]
-#     call[[1]] <- Distribution
-#     call <- modify_call(call, args)
-#    # eval(call)
-#     do.call(Distribution, (as.list(call[-1])))
-# }
-
 distributionArgs <- function(call, chart.function, arguments)
 {
-            args <- modifyList(as.list(args(chart.function)), arguments)
-
- #   call <- match.call()
+    args <- modifyList(as.list(args(chart.function)), arguments)
     nms <- names(args)
     nms <- nms[nms != ""]
     nms <- nms[!nms %in% names(call)]
@@ -548,14 +527,4 @@ distributionArgs <- function(call, chart.function, arguments)
     call[[1]] <- Distribution
     call <- modify_call(call, args)
     as.list(call[-1])
-   # eval(call)
-    # # Setting the arguments that define a Bean plot
-    # distribution.args <- modifyList(as.list(args(Distribution)), arguments)
-    # # Setting the arguments from the signature
-    # function.args <- as.list(args(chart.function))
-    # distribution.args <- modifyList(distribution.args, function.args[-length(function.args)])
-    # # Deleting the 'body'
-    # distribution.args <- distribution.args[-length(distribution.args)]
-    # # Adding in the arguments the user has specified
-    # modifyList(distribution.args, call[-1])
 }

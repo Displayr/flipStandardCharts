@@ -239,8 +239,7 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 https://docs.python.org/release/3.1.3/library/string.html#formatspec}
 
-\item{y.hovertext.format}{Overrides hovertext decimals;
-See https://github.com/mbostock/d3/wiki/Formatting#numbers or
+\item{y.hovertext.format}{See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 https://docs.python.org/release/3.1.3/library/string.html#formatspec}
 
 \item{y.tick.angle}{y-axis tick label angle in degrees.
