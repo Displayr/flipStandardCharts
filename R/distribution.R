@@ -296,7 +296,6 @@ paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
 hovermode = 'text',
 titlefont = title.font)")
     eval(parse(text = txt))
-    cat(txt)
    p
 }
 

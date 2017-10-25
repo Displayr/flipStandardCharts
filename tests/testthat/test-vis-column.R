@@ -3,7 +3,7 @@ context("Column Chart")
 test_that("Default options", {
     xx <- 1:10
     names(xx) <- letters[1:10]
-    expect_error(pp <- Column(xx, y), NA)
+    expect_error(pp <- Column(xx), NA)
     filestem <- "column-default"
     acceptedfile <- paste0("accepted-snapshots/", filestem, ".png")
     difffile <- paste0(filestem, "-diff.png")
