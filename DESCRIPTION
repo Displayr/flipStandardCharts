@@ -40,12 +40,9 @@ Remotes:
     Displayr/rhtmlLabeledScatter,
     hrbrmstr/streamgraph,
     timelyportfolio/d3vennR,
-    MangoTheCat/visualTest
 Suggests:
     dplyr,
     flipExampleData,
     ggplot2movies,
     testthat,
-    webshot,
-    visualTest
 RoxygenNote: 6.0.1

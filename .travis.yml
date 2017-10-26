@@ -28,7 +28,6 @@ r_github_packages:
 script:
   - R CMD build --no-manual --no-build-vignettes --no-resave-data .
   - R CMD check --as-cran --no-manual --no-build-vignettes --no-tests *.tar.gz
-  - Rscript -e 'install.packages("webshot"); webshot::install_phantomjs()'
   - if [ -d tests/testthat ]; then
     Rscript --default-packages='datasets,utils,grDevices,graphics,stats,methods' -e "$rcode";
     fi
