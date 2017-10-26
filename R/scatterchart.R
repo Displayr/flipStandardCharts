@@ -214,6 +214,7 @@
 #' @param ... Extra arguments that are ignored.
 #' @importFrom grDevices rgb
 #' @importFrom flipChartBasics ChartColors
+#' @importFrom flipTime ParseDateTime
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
 #' @export
@@ -576,19 +577,20 @@ Scatter <- function(x = NULL,
     ylab.tmp <- if (!is.numeric(y)) as.character(y)
                 else FormatAsReal(y, decimals=2) #y.tick.decimals)
 
+    # x.zero, y.zero, x.abs.max and y.abs.max are not referenced
+    #if (is.numeric(x))
+    #{
+    #    x.abs.max <- max(abs(range(x, na.rm=T)), na.rm=T)
+    #    if (!is.finite(x.abs.max) || x.abs.max == 0 || any(abs(range(x, na.rm=T))/x.abs.max < 1e-2))
+    #        x.zero <- FALSE
+    #}
+    #if (is.numeric(y))
+    #{
+    #    y.abs.max <- max(abs(range(y, na.rm=T)), na.rm=T)
+    #    if (!is.finite(y.abs.max) || y.abs.max == 0 || any(abs(range(y, na.rm=T))/y.abs.max < 1e-2))
+    #        y.zero <- FALSE
+    #}
 
-    if (is.numeric(x))
-    {
-        x.abs.max <- max(abs(range(x, na.rm=T)), na.rm=T)
-        if (!is.finite(x.abs.max) || x.abs.max == 0 || any(abs(range(x, na.rm=T))/x.abs.max < 1e-2))
-            x.zero <- FALSE
-    }
-    if (is.numeric(y))
-    {
-        y.abs.max <- max(abs(range(y, na.rm=T)), na.rm=T)
-        if (!is.finite(y.abs.max) || y.abs.max == 0 || any(abs(range(y, na.rm=T))/y.abs.max < 1e-2))
-            y.zero <- FALSE
-    }
     axisFormat <- formatLabels(list(x=xlab.tmp, y=ylab.tmp), type,
                        x.tick.label.wrap, x.tick.label.wrap.nchar,
                        x.tick.format, y.tick.format)
@@ -604,6 +606,14 @@ Scatter <- function(x = NULL,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, x.tick.format,
                   "", "", x.tick.show, FALSE, x.zero.line.width, x.zero.line.color,
                   x.hovertext.format, axisFormat$labels)
+
+    # Convert dates from factors
+    if (xaxis$type == "date") {
+        x <- ParseDateTime(as.character(x))
+    }
+    if (yaxis$type == "date") {
+        y <- ParseDateTime(as.character(y))
+    }
 
     # Work out margin spacing
     margins <- list(t = 20, b = 50, r = 60, l = 80, pad = 0)
