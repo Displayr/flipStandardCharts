@@ -42,7 +42,7 @@ for (ff in funcs)
                 plotly::export(pp$plotly.plot, file=difffile)
                 res <- expect_equal(visualTest::isSimilar(file = difffile,
                               fingerprint = acceptedfile,
-                              threshold = 0.001), TRUE)
+                              threshold = 0.1), TRUE)
 
                 # If test fails, leave diff for visual inspection
                 if (res)
