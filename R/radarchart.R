@@ -189,9 +189,7 @@ Radar <- function(x,
                     footer.font.color = global.font.color,
                     footer.font.size = 8,
                     footer.wrap = TRUE,
-                    footer.wrap.nchar = 100,
-                    ...)
-
+                    footer.wrap.nchar = 100)
 {
     # Check data
     chart.matrix <- checkMatrixNames(x)
@@ -365,6 +363,8 @@ Radar <- function(x,
 
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
-    return(p)
+    result <- list(plotly.plot = p)
+    class(result) <- "StandardChart"
+    result
 }
 

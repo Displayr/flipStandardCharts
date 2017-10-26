@@ -70,8 +70,10 @@
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param legend.font.family Character; legend font family.
 #' @param legend.font.size Legend font size.
-#' @param legend.position Where the legend will be placed; can be "left" or
-#' "right" of plot.
+#' @param legend.position.x A numeric controlling the position of the legend.
+#'   Values range from -0.5 (left) to 1.5 (right).
+#' @param legend.position.y A numeric controlling the position of the legend.
+#'   Values range from 0 (bottom) to 1 (top).
 #' @param legend.ascending Logical; TRUE for ascending, FALSE for descending.
 #' By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.
 #' @param margin.top Margin between plot area and the top of the
@@ -275,7 +277,8 @@ Scatter <- function(x = NULL,
                          legend.font.color = global.font.color,
                          legend.font.family = global.font.family,
                          legend.font.size = 10,
-                         legend.position = "right",
+                         legend.position.y = 1,
+                         legend.position.x = 1.02,
                          legend.ascending = NA,
                          margin.top = NULL,
                          margin.bottom = NULL,
@@ -548,7 +551,7 @@ Scatter <- function(x = NULL,
 
     type <- "Scatterplot"
     legend <- setLegend("Scatterplot", legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
-                        legend.border.color, legend.border.line.width)
+                        legend.border.color, legend.border.line.width, legend.position.x, legend.position.y)
     if (length(footer) == 0 || nchar(footer) == 0)
     {
         footer <- ""

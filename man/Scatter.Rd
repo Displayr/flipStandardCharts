@@ -33,10 +33,10 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1, scatter.y.column = 2,
   legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
   legend.border.line.width = 0, legend.font.color = global.font.color,
   legend.font.family = global.font.family, legend.font.size = 10,
-  legend.position = "right", legend.ascending = NA, margin.top = NULL,
-  margin.bottom = NULL, margin.left = NULL, margin.right = NULL,
-  margin.inner.pad = NULL, grid.show = TRUE, y.title = "",
-  y.title.font.color = global.font.color,
+  legend.position.y = 1, legend.position.x = 1.02, legend.ascending = NA,
+  margin.top = NULL, margin.bottom = NULL, margin.left = NULL,
+  margin.right = NULL, margin.inner.pad = NULL, grid.show = TRUE,
+  y.title = "", y.title.font.color = global.font.color,
   y.title.font.family = global.font.color, y.title.font.size = 12,
   y.line.width = 0, y.line.color = rgb(0, 0, 0, maxColorValue = 255),
   y.tick.marks = "", y.tick.mark.length = 5, y.bounds.minimum = NULL,
@@ -215,8 +215,11 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{legend.font.size}{Legend font size.}
 
-\item{legend.position}{Where the legend will be placed; can be "left" or
-"right" of plot.}
+\item{legend.position.y}{A numeric controlling the position of the legend.
+Values range from 0 (bottom) to 1 (top).}
+
+\item{legend.position.x}{A numeric controlling the position of the legend.
+Values range from -0.5 (left) to 1.5 (right).}
 
 \item{legend.ascending}{Logical; TRUE for ascending, FALSE for descending.
 By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.}

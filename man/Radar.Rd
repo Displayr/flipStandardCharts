@@ -39,7 +39,7 @@ Radar(x, title = "", title.font.family = global.font.family,
   subtitle.font.color = global.font.color, subtitle.font.size = 12,
   footer = "", footer.font.family = global.font.family,
   footer.font.color = global.font.color, footer.font.size = 8,
-  footer.wrap = TRUE, footer.wrap.nchar = 100, ...)
+  footer.wrap = TRUE, footer.wrap.nchar = 100)
 }
 \arguments{
 \item{x}{Input data in the form of a vector or matrix. The categories used
@@ -223,9 +223,9 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{footer.wrap.nchar}{Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.}
 
-\item{...}{Extra arguments that are ignored.}
-
 \item{opacity}{Opacity of area fill colors as an alpha value (0 to 1).}
+
+\item{...}{Extra arguments that are ignored.}
 }
 \description{
 Radar chart, also known as web chart, spider chart, star chart, star plot, cobweb chart, irregular polygon, polar chart, or Kiviat diagram

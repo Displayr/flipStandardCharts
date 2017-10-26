@@ -89,7 +89,7 @@ getRange <- function(x, axis, axisFormat)
         }
         else if (is.numeric(x))
             range <- range(x) + c(-0.5, 0.5)
-        else if (all(!is.na(as.numeric(x))))
+        else if (all(!is.na(suppressWarnings(as.numeric(x)))))
             range <- range(as.numeric(x)) + c(-0.5, 0.5)
         else
             range <- c(-0.5, length(x)-0.5)
@@ -161,13 +161,13 @@ getAxisType <- function(labels, format)
         return("numeric")
     else
         return("category")
-}    
+}
 
 d3FormatType <- function(format)
 {
     if (is.null(format) || is.na(format) || format == "")
         return("")
-    
+
     if (grepl("%[aAbBcdefHIJmMLpQsSuUVwWxXyYz]", format))
         return("date")
     else
@@ -181,7 +181,7 @@ formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, x.format, y.fo
     {
         x.labels <- rownames(dat)
         y.labels <- NULL
-        
+
         x.axis.type <- "numeric"
         y.axis.type <- "numeric"
         if (!is.bar)
@@ -216,7 +216,7 @@ formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, x.format, y.fo
                 x.axis.type=x.axis.type, y.axis.type=y.axis.type))
 }
 
-setAxis <- function(title, side, axisLabels, titlefont, 
+setAxis <- function(title, side, axisLabels, titlefont,
                     linecolor, linewidth, gridwidth, gridcolor,
                     ticks, tickfont, tickangle, ticklen, tickdistance,
                     tickformatmanual, tickprefix, ticksuffix, tickshow,
@@ -266,21 +266,21 @@ setAxis <- function(title, side, axisLabels, titlefont,
     if (sum(nchar(tickformatmanual)) > 0 && d3FormatType(tickformatmanual) %in% c("", axis.type))
         tickformat <- tickformatmanual
     else if (sum(nchar(tickformatmanual)) > 0)
-        warning("Axis label format of type '", d3FormatType(tickformatmanual), 
+        warning("Axis label format of type '", d3FormatType(tickformatmanual),
                 "' incompatible with axis type '", axis.type, "'")
 
     hoverformat <- ""
     if (sum(nchar(hovertext.format.manual)) > 0 && d3FormatType(hovertext.format.manual) %in% c("", axis.type))
         hoverformat <- hovertext.format.manual
     else if (sum(nchar(hovertext.format.manual)))
-        warning("Hovertext label format of type '", d3FormatType(hovertext.format.manual), 
+        warning("Hovertext label format of type '", d3FormatType(hovertext.format.manual),
                 "' incompatible with axis type '", axis.type, "'")
-  
+
     if (!show.zero)
         zero.line.width <- 0
     if (zero.line.width == 0)
         show.zero <- FALSE
-  
+
     rangemode <- "normal"
     if (axis.type == "numeric" && show.zero)
         rangemode <- "tozero"
