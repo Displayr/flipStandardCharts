@@ -370,28 +370,28 @@ Scatter <- function(x = NULL,
 
     if (is.matrix(x) || is.data.frame(x))
     {
-        is.valid.col <- function(n) {return (!is.null(n) && !is.na(n) && n > 0 && n <= ncol(x))}
+        .isValidColumnIndex <- function(n) {return (!is.null(n) && !is.na(n) && n > 0 && n <= ncol(x))}
         if (is.null(scatter.labels) && !is.null(rownames(x)))
             scatter.labels <- rownames(x)
-        if (is.null(y) && is.valid.col(scatter.y.column))
+        if (is.null(y) && .isValidColumnIndex(scatter.y.column))
         {
             if ((is.na(y.title) || nchar(y.title) == 0) && !is.null(colnames(x)))
                 y.title <- colnames(x)[scatter.y.column]
             y <- x[,scatter.y.column]
         }
-        if (is.null(scatter.sizes) && is.valid.col(scatter.sizes.column))
+        if (is.null(scatter.sizes) && .isValidColumnIndex(scatter.sizes.column))
         {
             if (is.null(scatter.sizes.name) && !is.null(colnames(x)))
                 scatter.sizes.name <- colnames(x)[scatter.sizes.column]
             scatter.sizes <- x[,scatter.sizes.column]
         }
-        if (is.null(scatter.colors) && is.valid.col(scatter.colors.column))
+        if (is.null(scatter.colors) && .isValidColumnIndex(scatter.colors.column))
         {
             if (is.null(scatter.colors.name) || nchar(scatter.colors.name) == 0)
                 scatter.colors.name <- colnames(x)[scatter.colors.column]
             scatter.colors <- x[,scatter.colors.column]
         }
-        if (((is.na(x.title) || nchar(x.title) == 0) && !is.null(colnames(x))) && is.valid.col(scatter.x.column))
+        if (((is.na(x.title) || nchar(x.title) == 0) && !is.null(colnames(x))) && .isValidColumnIndex(scatter.x.column))
             x.title <- colnames(x)[scatter.x.column]
         if (scatter.x.column <= 0 || scatter.x.column > ncol(x))
             x <- NULL
