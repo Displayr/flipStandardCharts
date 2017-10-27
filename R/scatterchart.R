@@ -117,10 +117,10 @@
 #' @param y.tick.show Whether to display the y-axis tick labels
 #' @param y.tick.suffix y-axis tick label suffix
 #' @param y.tick.prefix y-axis tick label prefix
-#' @param y.tick.format Overrides tick.prefix, suffix and decimals;
+#' @param y.tick.format A string representing a d3 formatting code.
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 #' https://docs.python.org/release/3.1.3/library/string.html#formatspec
-#' @param y.hovertext.format Overrides hovertext decimals;
+#' @param y.hovertext.format A string representing a d3 formatting code.
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 #' https://docs.python.org/release/3.1.3/library/string.html#formatspec
 #' @param y.tick.angle y-axis tick label angle in degrees.
@@ -162,10 +162,10 @@
 #' @param x.grid.color Color of y-grid lines as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param x.tick.show Whether to display the x-axis tick labels
-#' @param x.tick.format Overrides tick.prefix, suffix and decimals;
+#' @param x.tick.format A string representing a d3 formatting code.
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 #' https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec
-#' @param x.hovertext.format Overrides hovertext decimals;
+#' @param x.hovertext.format A string representing a d3 formatting code.
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 #' https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec
 #' @param x.tick.angle x-axis tick label angle in degrees.
@@ -577,19 +577,19 @@ Scatter <- function(x = NULL,
     ylab.tmp <- if (!is.numeric(y)) as.character(y)
                 else FormatAsReal(y, decimals=2) #y.tick.decimals)
 
-    # x.zero, y.zero, x.abs.max and y.abs.max are not referenced
+    # x.zero and x.abs.max are not referenced
     #if (is.numeric(x))
     #{
     #    x.abs.max <- max(abs(range(x, na.rm=T)), na.rm=T)
     #    if (!is.finite(x.abs.max) || x.abs.max == 0 || any(abs(range(x, na.rm=T))/x.abs.max < 1e-2))
     #        x.zero <- FALSE
     #}
-    #if (is.numeric(y))
-    #{
-    #    y.abs.max <- max(abs(range(y, na.rm=T)), na.rm=T)
-    #    if (!is.finite(y.abs.max) || y.abs.max == 0 || any(abs(range(y, na.rm=T))/y.abs.max < 1e-2))
-    #        y.zero <- FALSE
-    #}
+    if (is.numeric(y))
+    {
+        y.abs.max <- max(abs(range(y, na.rm=T)), na.rm=T)
+        if (!is.finite(y.abs.max) || y.abs.max == 0 || any(abs(range(y, na.rm=T))/y.abs.max < 1e-2))
+            y.zero <- FALSE
+    }
 
     axisFormat <- formatLabels(list(x=xlab.tmp, y=ylab.tmp), type,
                        x.tick.label.wrap, x.tick.label.wrap.nchar,
@@ -607,12 +607,13 @@ Scatter <- function(x = NULL,
                   "", "", x.tick.show, FALSE, x.zero.line.width, x.zero.line.color,
                   x.hovertext.format, axisFormat$labels)
 
-    # Convert dates from factors
+    # Convert dates from factors - this should be updated to AsDateTime when it can handle periods
+    # as per DS-1607
     if (xaxis$type == "date") {
-        x <- ParseDateTime(as.character(x))
+        x <- PeriodNameToDate(as.character(x))
     }
     if (yaxis$type == "date") {
-        y <- ParseDateTime(as.character(y))
+        y <- PeriodNameToDate(as.character(y))
     }
 
     # Work out margin spacing

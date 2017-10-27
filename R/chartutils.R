@@ -141,6 +141,10 @@ setLegend <- function(type, font, ascending, fill.color, fill.opacity, border.co
 getAxisType <- function(labels, format)
 {
     d3.type <- d3FormatType(format)
+
+    if (d3.type == "category")
+        return("category")
+
     if (d3.type == "date")
     {
         ymd <- PeriodNameToDate(labels)
@@ -149,7 +153,7 @@ getAxisType <- function(labels, format)
     }
     if (d3.type == "numeric")
     {
-        if (!any(is.na(suppressWarnings(as.numeric(labels)))))
+        if (!any(is.na(suppressWarnings(as.numeric(gsub(",", "", labels))))))
             return("numeric")
     }
 
@@ -157,7 +161,7 @@ getAxisType <- function(labels, format)
     ymd <- PeriodNameToDate(labels)
     if (all(!is.na(ymd)))
         return("date")
-    if (!any(is.na(suppressWarnings(as.numeric(labels)))))
+    if (!any(is.na(suppressWarnings(as.numeric(gsub(",", "", labels))))))
         return("numeric")
     else
         return("category")
@@ -167,6 +171,8 @@ d3FormatType <- function(format)
 {
     if (is.null(format) || is.na(format) || format == "")
         return("")
+    if (format == "Category")
+        return("category")
 
     if (grepl("%[aAbBcdefHIJmMLpQsSuUVwWxXyYz]", format))
         return("date")
@@ -203,7 +209,7 @@ formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, x.format, y.fo
     axis.type <- if (is.bar) y.axis.type else x.axis.type
     if (axis.type == "date")
     {
-        ymd <- PeriodNameToDate(labels) # currently cannot switch between US/international inputs
+        ymd <- PeriodNameToDate(labels) # currently cannot switch between US/international inputs, amend to ParseDateTime see DS-1607
         labels <- ymd
     }
     else

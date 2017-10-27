@@ -104,10 +104,11 @@
 #' @param y.tick.show Whether to display the y-axis tick labels
 #' @param y.tick.suffix y-axis tick label suffix
 #' @param y.tick.prefix y-axis tick label prefix
-#' @param y.tick.format Overrides tick.prefix, suffix and decimals;
+#' @param y.tick.format A string representing a d3 formatting code.
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 #' https://docs.python.org/release/3.1.3/library/string.html#formatspec
-#' @param y.hovertext.format See https://github.com/mbostock/d3/wiki/Formatting#numbers or
+#' @param y.hovertext.format A string representing a d3 formatting code
+#' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 #' https://docs.python.org/release/3.1.3/library/string.html#formatspec
 #' @param y.tick.angle y-axis tick label angle in degrees.
 #' 90 = vertical; 0 = horizontal
@@ -145,10 +146,10 @@
 #' @param x.grid.color Color of y-grid lines as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param x.tick.show Whether to display the x-axis tick labels
-#' @param x.tick.format Overrides tick.prefix, suffix and decimals;
+#' @param x.tick.format A string representing a d3 formatting code.
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 #' https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec
-#' @param x.hovertext.format Overrides hovertext decimals;
+#' @param x.hovertext.format A string representing a d3 formatting code.
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 #' https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec
 #' @param x.tick.angle x-axis tick label angle in degrees.

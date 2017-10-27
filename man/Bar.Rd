@@ -228,11 +228,12 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{y.tick.show}{Whether to display the y-axis tick labels}
 
-\item{y.tick.format}{Overrides tick.prefix, suffix and decimals;
+\item{y.tick.format}{A string representing a d3 formatting code.
 See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 https://docs.python.org/release/3.1.3/library/string.html#formatspec}
 
-\item{y.hovertext.format}{See https://github.com/mbostock/d3/wiki/Formatting#numbers or
+\item{y.hovertext.format}{A string representing a d3 formatting code
+See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 https://docs.python.org/release/3.1.3/library/string.html#formatspec}
 
 \item{y.tick.angle}{y-axis tick label angle in degrees.
@@ -296,11 +297,11 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{x.tick.prefix}{x-axis tick label prefix}
 
-\item{x.tick.format}{Overrides tick.prefix, suffix and decimals;
+\item{x.tick.format}{A string representing a d3 formatting code.
 See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec}
 
-\item{x.hovertext.format}{Overrides hovertext decimals;
+\item{x.hovertext.format}{A string representing a d3 formatting code.
 See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec}
 
