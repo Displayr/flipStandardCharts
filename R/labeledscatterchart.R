@@ -65,8 +65,7 @@
 #' @param y.tick.show Whether to display the y-axis tick labels
 #' @param y.tick.suffix y-axis tick label suffix
 #' @param y.tick.prefix y-axis tick label prefix
-#' @param y.tick.decimals y-axis tick label decimal places
-#' @param y.tick.format.manual Overrides tick.prefix, suffix and decimals;
+#' @param y.tick.format A string representing a d3 formatting code.
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 #' https://docs.python.org/release/3.1.3/library/string.html#formatspec
 #' @param y.tick.font.color y-axis tick label font color as a named color
@@ -86,6 +85,9 @@
 #' (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param x.tick.suffix x-axis tick label suffix
 #' @param x.tick.prefix x-axis tick label prefix
+#' @param x.tick.format A string representing a d3 formatting code.
+#' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
+#' https://docs.python.org/release/3.1.3/library/string.html#formatspec
 #' @param x.bounds.minimum Minimum of range for plotting;
 #' NULL = no manual range set.  Must be less than x.bounds.maximum
 #' @param x.bounds.maximum Maximum of range for
@@ -97,7 +99,6 @@
 #' @param x.grid.color Color of y-grid lines as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param x.tick.show Whether to display the x-axis tick labels
-#' @param x.tick.decimals x-axis tick label decimal places
 #' @param x.tick.font.color X-axis tick label font color as a named color in
 #' character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
@@ -180,8 +181,7 @@ LabeledScatter <- function(x = NULL,
                                 y.tick.show = TRUE,
                                 y.tick.suffix = "",
                                 y.tick.prefix = "",
-                                y.tick.decimals = NULL,
-                                y.tick.format.manual = "",
+                                y.tick.format = "",
                                 y.tick.font.color = global.font.color,
                                 y.tick.font.family = global.font.family,
                                 y.tick.font.size = 10,
@@ -200,7 +200,7 @@ LabeledScatter <- function(x = NULL,
                                 x.tick.show = TRUE,
                                 x.tick.suffix = "",
                                 x.tick.prefix = "",
-                                x.tick.decimals = NULL,
+                                x.tick.format = "",
                                 x.tick.font.color = global.font.color,
                                 x.tick.font.family = global.font.family,
                                 x.tick.font.size = 10,
@@ -392,6 +392,17 @@ LabeledScatter <- function(x = NULL,
     }
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
 
+    # Convert d3 formatting to number of decimals
+    if (is.null(x.tick.format) || x.tick.format == "")
+        x.decimals <- decimalsToDisplay(x)
+    else
+        x.decimals <- as.numeric(substr(x.tick.format, 2, nchar(x.tick.format) - 1))
+    if (is.null(y.tick.format) || y.tick.format == "")
+        y.decimals <- decimalsToDisplay(y)
+    else
+        y.decimals <- as.numeric(substr(y.tick.format, 2, nchar(y.tick.format) - 1))
+
+
     return(rhtmlLabeledScatter::LabeledScatter(X = x[not.na],
                        Y = y[not.na],
                        Z = if (is.null(scatter.sizes)) NULL else abs(scatter.sizes[not.na]),
@@ -435,8 +446,8 @@ LabeledScatter <- function(x = NULL,
                        x.title.font.color = x.title.font.color,
                        x.title.font.size = x.title.font.size,
                        z.title = scatter.sizes.name,
-                       x.decimals = if (is.null(x.tick.decimals)) decimalsToDisplay(x) else x.tick.decimals,
-                       y.decimals = if (is.null(y.tick.decimals)) decimalsToDisplay(y) else y.tick.decimals,
+                       x.decimals = x.decimals,
+                       y.decimals = y.decimals,
                        x.prefix = x.tick.prefix,
                        y.prefix = y.tick.prefix,
                        x.suffix = x.tick.suffix,
