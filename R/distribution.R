@@ -191,6 +191,8 @@ Distribution <-   function(x,
     labels <- autoFormatLongLabels(labels, categories.tick.label.wrap, categories.tick.label.wrap.nchar)
     if (!is.list(x) && is.vector(x))
         x <- list(x)
+    else if (is.matrix(x))
+        x <- as.data.frame(x)
     else if (!is.list(x))
         stop("Input data should be a list of numeric vectors.")
     x <- AsNumeric(x, FALSE)

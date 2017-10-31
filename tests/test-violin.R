@@ -38,4 +38,24 @@ library(flipStandardCharts)
            global.font.color = "Red",
            categories.tick.label.wrap.nchar = 5,
            vertical = TRUE)
+
+    # matrix
+    z = matrix(1:10, 5)
+    Violin(z, title = "Comparing distributions",
+           values.title = "Values",
+           values.hovertext.format = "%",
+           global.font.family = "Courier",
+           global.font.color = "Red",
+           categories.tick.label.wrap.nchar = 5,
+           vertical = TRUE)
+    # data.frame
+    z = as.data.frame(matrix(1:10, 5))
+    Violin(z, title = "Comparing distributions",
+           values.title = "Values",
+           values.hovertext.format = "%",
+           global.font.family = "Courier",
+           global.font.color = "Red",
+           categories.tick.label.wrap.nchar = 5,
+           vertical = TRUE)
+
 # })
