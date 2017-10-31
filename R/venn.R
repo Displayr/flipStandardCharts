@@ -7,8 +7,9 @@
 #' @param x A \link{data.frame} \code{logical} (converted to logical using >= 1 if not) or a JSON-like list.
 #' @param weights An optional vector of weights, or, the name or, the name of a variable in \code{x}. It may not be an expression.
 #' @param data.label.font.size The font size of the labels. Defaults to 10.
-#' @param as.percentages Show percentages in the Venn diagram (without the percentage signs). These do not necessarily add up to 100\%. This option only applies when x is a matrix.
-#' @param data.label.decimals Number of decimal places.
+#' @param as.percentages Show percentages in the Venn diagram (without the percentage signs).
+#' These do not necessarily add up to 100\%. This option only applies when \code{x} is a data.frame.
+#' @param data.label.decimals Number of decimal places. This option only applies when \code{x} is a data.frame.
 #' @examples
 #' Venn(list(
 #'    list("sets"= list(0), "label"= "Like", "size"= 100),

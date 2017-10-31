@@ -4,10 +4,11 @@
 \alias{Box}
 \title{Box}
 \usage{
-Box(x, weights = NULL, vertical = TRUE, density.color = "Green",
-  show.values = FALSE, box.points = "Suspected outliers",
-  global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
-  maxColorValue = 255), title = "", title.font.family = global.font.family,
+Box(x, weights = NULL, vertical = TRUE, show.values = FALSE,
+  density.color = "Green", values.color = "Green",
+  box.points = "Suspected outliers", global.font.family = "Arial",
+  global.font.color = rgb(44, 44, 44, maxColorValue = 255), title = "",
+  title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
   background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
   background.fill.opacity = 1,
@@ -45,9 +46,11 @@ the3 values of \code{x}.}
 
 \item{vertical}{Display the densities vertically.}
 
+\item{show.values}{Produces a rug plot of individual values.}
+
 \item{density.color}{Defaults to "Green"}
 
-\item{show.values}{Produces a rug plot of individual values.}
+\item{values.color}{Defaults to "Green"}
 
 \item{box.points}{How outliers are displayed boxplots. \code{"All"} plots all the points. \code{"Suspected outliers"} plots points
 between 1.5 and 3 IQR from the 1st and 3rd quartile with un-filled circles. \code{"Outliers"} does not plot points between 1.5 and 3 IQR from the 1st and 3rd quartiles.}
