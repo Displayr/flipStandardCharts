@@ -23,6 +23,12 @@
         values.title = "Values",
         global.font.family = "Courier",
         global.font.color = "Red",
-        show.values = TRUE)
+        show.values = TRUE,
+        values.color = "Blue")
+    Box(z, title = "Comparing distributions",
+        values.title = "Values",
+        global.font.family = "Courier",
+        global.font.color = "Red",
+        values.color = "Blue")
 
 # })

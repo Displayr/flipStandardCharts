@@ -262,7 +262,7 @@ Distribution <-   function(x,
 
         #
         density.from <- if (automatic.lower.density) rng[1] else NULL
-        p <- addDensities(p, values, labels[v], vertical, show.density, show.mirror.density, density.type, histogram.cumulative, histogram.counts, maximum.bins, box.points, category.axis, value.axis, density.color, density.from)
+        p <- addDensities(p, values, labels[v], vertical, show.density, show.mirror.density, density.type, histogram.cumulative, histogram.counts, maximum.bins, box.points, category.axis, value.axis, density.color, values.color, density.from)
         p <- addSummaryStatistics(p, values, wgt, vertical,  show.mean, show.median, show.quartiles, show.range, show.values,
                                  mean.color, median.color, quartile.color, range.color, values.color,
                                  category.axis, axisName(vertical, v, 1, TRUE), value.axis, value.axis.2)
@@ -316,7 +316,7 @@ axisName <- function(vertical, n.variables, axis.number, secondary.category = FA
 
 
 
-addDensities <- function(p, values, label, vertical, show.density, show.mirror.density, density.type, histogram.cumulative, histogram.counts, maximum.bins, box.points, category.axis, value.axis, density.color, density.from)
+addDensities <- function(p, values, label, vertical, show.density, show.mirror.density, density.type, histogram.cumulative, histogram.counts, maximum.bins, box.points, category.axis, value.axis, density.color, values.color, density.from)
 {
     # Comuting the density Also used in plotting other graphical elements.
     values.density <- if (is.null(density.from)) density(values, na.rm = TRUE) else density(values, from = density.from, na.rm = TRUE)
@@ -329,7 +329,7 @@ addDensities <- function(p, values, label, vertical, show.density, show.mirror.d
                       boxpoints  = switch(box.points, "Outliers" = "outliers", "All" = "all", "Suspected outliers" = "suspectedoutliers"),
                       x = if (vertical) NULL else values,
                       y = if (vertical) values else NULL ,
-                      marker = list(color = density.color),
+                      marker = list(color = values.color),
                       name = label,
                       line = list(color = density.color),
                       hoverinfo = if (vertical) "y" else "x",
