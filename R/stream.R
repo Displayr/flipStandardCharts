@@ -1,6 +1,6 @@
-#' Streamgraph
+#' Stream
 #'
-#' Area chart centerd around the x-axis rather than on top of it.
+#' Create a Streamtraph, which is an area chart centerd around the x-axis rather than on top of it.
 #' @param x A \code{matrix}, with columns containing the dates or other numericx-axis variable.
 #' @param colors The colors of the streams.
 #' @param y.axis.show If FALSE, the y-axis is not shown.
@@ -17,7 +17,7 @@
 #' @importFrom streamgraph streamgraph sg_fill_manual sg_axis_x sg_axis_y
 #' @importFrom flipTime ParseDates
 #' @export
-Streamgraph <- function(x,
+Stream <- function(x,
                         colors = c("#5C9AD3", "#ED7D31", "#A5A5A5", "#FFC000", "#4473C5", "#70AD46", "#255F91", "#9E480D", "#636365", "#987300", "#26408B", "#42682B"),
                         y.axis.show = TRUE,
                         y.tick.format = "",
