@@ -32,6 +32,7 @@ Stream <- function(x,
                         margin.right = 40)
 {
     if (!is.matrix(x) && !is.data.frame(x) && !is.array(x))
+        stop("Stream graphs should have a tabular input (e.g., a matrix).")
     columns <- colnames(x)
     if (x.tick.format == "Number")
     {
