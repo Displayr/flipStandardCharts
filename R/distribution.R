@@ -8,7 +8,7 @@
 #' to be plotted, with the name/rownames used as the column names of the chart. Numeric and date labels
 #' will be parsed automatically.
 #' @param weights An optional \code{\link{list}}, where each element is a vecytor containing weights corresponding to
-#' the3 values of \code{x}.
+#' the3 values of \code{x}, or, a vector where the weights is assumed applicable for each element in \code{x}.
 #' @param vertical Display the densities vertically.
 #' @param show.mean Displays the mean of the data.
 #' @param show.median Displays the median of the data.
@@ -202,7 +202,7 @@ Distribution <-   function(x,
     {
         warning("Weights are ignored in box plots.")
     }
-    weights <- createWeights(x, weights)
+    # weights <- createWeights(x, weights)
     # Checking inputs.
     if (density.type != "Density" && show.mirror.density)
     {
@@ -259,10 +259,10 @@ Distribution <-   function(x,
         values <- x[[v]]
         # Removing missing values
         not.missing <- !is.na(values)
-        wgt <- weights[[v]][not.missing]
         values <- values[not.missing]
+        wgt <- if (is.null(weights)) rep(1, length(values)) else
+                (if (is.list(weights)) weights[[v]] else weights)[not.missing]
 
-        #
         density.from <- if (automatic.lower.density) rng[1] else NULL
         p <- addDensities(p, values, labels[v], vertical, show.density, show.mirror.density, density.type, histogram.cumulative, histogram.counts, maximum.bins, box.points, category.axis, value.axis, density.color, values.color, density.from)
         p <- addSummaryStatistics(p, values, wgt, vertical,  show.mean, show.median, show.quartiles, show.range, show.values,
@@ -373,11 +373,12 @@ addDensities <- function(p, values, label, vertical, show.density, show.mirror.d
 
 createWeights <- function(x, weights)
 {
-    if (is.null(weights))
-        group.sizes <- sapply(x, length)
-    weights <- rep(1, sum(group.sizes))
-    groups <- rep(1:length(x), group.sizes)
-    tapply(weights, groups, c)
+    rep(list(weights), length(x))
+    # group.sizes <- sapply(x, length)
+    # if (is.null(weights))
+    #     weights <- rep(1, sum(group.sizes))
+    # groups <- rep(1:length(x), group.sizes)
+    # tapply(weights, groups, c)
 }
 
 #' @importFrom stats density weighted.mean

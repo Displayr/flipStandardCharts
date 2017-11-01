@@ -186,7 +186,8 @@ Normals <- c(runif(38, 10, 20), rnorm(100,-5,2), rnorm(60, 5, 2), 35, 30)
 Normals = list(A = Normals, "Big fat dog jumped over the lazy bigger water buffalo" = Normals + 3, "Cat" = Normals + 10)
 
 data(phone, package = "flipExampleData")
-Phone <- as.list(phone[, match("q23a", names(phone)):match("q23y", names(phone))])
+PhoneDF <- phone[, match("q23a", names(phone)):match("q23y", names(phone))]
+Phone <- as.list(PhoneDF)
 
 
 test_that("Violin plots - Different data inputs and orientations", {
@@ -201,6 +202,16 @@ test_that("Violin plots - Different data inputs and orientations", {
     # Factor
     suppressWarnings(Distribution(Phone[1:5]))
 
+    # Factors as Data Frame with weights - vector
+    set.seed(1223)
+    zz = suppressWarnings(flipTransformations::AsNumeric(PhoneDF, binary = FALSE))
+    zz = zz[complete.cases(zz),]
+    suppressWarnings(Distribution(zz, weights = runif(NROW(zz))))
+    # Factors as Data Frame with weights - list
+    set.seed(1223)
+    zz = suppressWarnings(flipTransformations::AsNumeric(PhoneDF, binary = FALSE))
+    zz = zz[complete.cases(zz),]
+    suppressWarnings(Distribution(zz, weights = rep(list(runif(NROW(zz))), NCOL(zz))))
 
 })
 
