@@ -31,6 +31,7 @@ Stream <- function(x,
                         margin.bottom = 30,
                         margin.right = 40)
 {
+    if (!is.matrix(x) && !is.data.frame(x) && !is.array(x))
     columns <- colnames(x)
     if (x.tick.format == "Number")
     {
