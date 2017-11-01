@@ -38,6 +38,7 @@ pieChart <- function(chart.matrix,
                      pie.show.percentages,
                      table.statistic)
 {
+    ErrorIfNotEnoughData(chart.matrix)
     chart.matrix <- as.matrix(chart.matrix)
 
     if (any(is.na(chart.matrix)) || any(chart.matrix < 0))

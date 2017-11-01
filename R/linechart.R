@@ -129,6 +129,7 @@ Line <-   function(x,
                     data.label.suffix = "",
                     data.label.position = "top middle")
 {
+    ErrorIfNotEnoughData(x)
     # Some minimal data cleaning
     # Assume formatting and Qtable/attribute handling already done
     # Find gaps which are NOT at the ends of the series

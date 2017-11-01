@@ -306,3 +306,14 @@ test_that("Annotations", {
         expect_error(Chart(named.matrix, type=type, annotations=t(a2)))
     }
 })
+
+
+test_that("No data", {
+    z = matrix(1:4,2)[-1:-2, , drop = FALSE]
+    expect_error(Area(z))
+    z = matrix(1:4,2)[-1:-4, drop = FALSE]
+    expect_error(Area(z))
+    expect_error(Area(list(z)))
+    z = as.data.frame(matrix(1:4,2))[-1:-2, , drop = FALSE]
+    expect_error(Area(list(z)))
+})

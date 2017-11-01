@@ -2,6 +2,7 @@ lineChart <- function(chart.matrix,
                       series.line.width,
                       series.marker.show)
 {
+    ErrorIfNotEnoughData(chart.matrix)
     no.data.in.series <- colSums(is.na(chart.matrix)) >= length(chart.matrix[, 1])
     if (any(no.data.in.series))
         chart.matrix <- chart.matrix[, !no.data.in.series]

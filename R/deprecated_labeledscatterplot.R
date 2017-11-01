@@ -20,6 +20,7 @@ scatterplotData <- function(chart.matrix,
                             colorscale.variable = NULL,
                             logos = NULL)
 {
+    ErrorIfNotEnoughData(chart.matrix)
     not.na <- NULL
     if (any(is.na(as.matrix(chart.matrix))) || (!is.null(colorscale.variable) && any(is.na(colorscale.variable))))
     {
@@ -62,7 +63,7 @@ scatterplotData <- function(chart.matrix,
                                                column.names.to.remove = cols.to.ignore)
     if (no.dimnames)
         colnames(chart.matrix) <- NULL
-    
+
     pt.ord <- NULL
     if (!is.null(group.labels.text) && any(group.labels.text != ""))
     {

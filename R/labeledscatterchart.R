@@ -208,6 +208,7 @@ LabeledScatter <- function(x = NULL,
                                 swap.x.and.y = FALSE,
                                 ...)
 {
+    ErrorIfNotEnoughData(cbind(x, y))
     logo.urls <- NULL
     if (!is.null(logos) && nchar(logos) != 0)
     {

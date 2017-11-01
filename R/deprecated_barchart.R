@@ -3,6 +3,7 @@ barChart <- function(chart.matrix,
                      x.tick.format.manual = "",
                      series.marker.border.width)
 {
+    ErrorIfNotEnoughData(chart.matrix)
     # Data is not changed, but NAs look like zeros on the chart
     if (any(is.na(as.matrix(chart.matrix))))
         warning("Missing values have been set to zero.")

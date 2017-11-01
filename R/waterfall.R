@@ -41,6 +41,7 @@ Waterfall <- function(y,
                       label.in.column.threshold = 0.025,
                       label.offset = 0.025)
 {
+    ErrorIfNotEnoughData(y)
     if (is.vector(y)) # Converting to a matrix
     {
         original.y <- y

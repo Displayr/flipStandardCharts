@@ -71,6 +71,7 @@ HeatMap <- function(table,
 
     mat <- TidyTabularData(table, row.names.to.remove = ignore.rows,
                       col.names.to.remove = ignore.columns, transpose = transpose)
+    ErrorIfNotEnoughData(mat)
     if (!is.matrix(mat)) {
         rownames <- names(mat)
         mat <- matrix(mat) # create single column matrix from vector

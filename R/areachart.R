@@ -154,9 +154,10 @@ Area <- function(x,
                     data.label.position = "top middle")
 {
     # Data checking
+    ErrorIfNotEnoughData(x)
     chart.matrix <- checkMatrixNames(x)
-    is.stacked <- grepl("Stacked", type, fixed=T)
-    is.hundred.percent.stacked <- grepl("100% Stacked", type, fixed=T)
+    is.stacked <- grepl("Stacked", type, fixed = TRUE)
+    is.hundred.percent.stacked <- grepl("100% Stacked", type, fixed = TRUE)
     if (is.stacked && ncol(chart.matrix) < 2)
         stop(paste(type, "requires more than one series. Use Area charts instead for this data."))
     if (is.stacked && (any(is.na(chart.matrix)) || any(chart.matrix < 0)))

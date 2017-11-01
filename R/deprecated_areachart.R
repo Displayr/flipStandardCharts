@@ -6,6 +6,7 @@ areaChart <- function(chart.matrix,
                       series.line.width,
                       series.marker.show)
 {
+    ErrorIfNotEnoughData(chart.matrix)
     if (is.null(opacity))
         opacity <- 0.4
 
@@ -26,7 +27,7 @@ areaChart <- function(chart.matrix,
             has.gap <- TRUE
     }
     if (is.null(series.line.width))
-        series.line.width <- if (!has.gap || type %in% c("Stacked Area", "100% Stacked Area")) 0 else 3 
+        series.line.width <- if (!has.gap || type %in% c("Stacked Area", "100% Stacked Area")) 0 else 3
 
     ## Change the matrix data according to requirements of the chart type
     if (type == "Stacked Area")

@@ -64,6 +64,7 @@ radarChart <- function(chart.matrix,
                     footer.axis = NULL)
 
 {
+    ErrorIfNotEnoughData(chart.matrix)
     if (any(!is.finite(chart.matrix)))
         stop("Missing charts cannot contain missing or non-finite values.")
     if (any(chart.matrix < 0))

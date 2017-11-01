@@ -76,6 +76,7 @@ Pie <- function(x,
                      global.font.color = rgb(44, 44, 44, maxColorValue = 255),
                      ...)
 {
+    ErrorIfNotEnoughData(x)
     groups <- NULL
 
     # Convert tables to matrices and retain names

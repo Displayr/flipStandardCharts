@@ -30,7 +30,10 @@ Venn <- function(x = NULL,
                         data.label.decimals = 0)
 {
     if (is.numeric(x))
+    {
+        ErrorIfNotEnoughData(x)
         x <- as.data.frame(x)
+    }
     if (is.data.frame(x))
     {
         nms = Labels(x)

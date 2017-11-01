@@ -309,6 +309,7 @@ Column <- function(x,
                     data.label.suffix = "",
                     data.label.threshold = NULL)
 {
+    ErrorIfNotEnoughData(x)
     # Data checking
     chart.matrix <- checkMatrixNames(x)
     if (!is.numeric(chart.matrix))

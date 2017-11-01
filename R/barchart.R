@@ -128,6 +128,7 @@ Bar <- function(x,
                     data.label.threshold = NULL)
 {
     # Data checking
+    ErrorIfNotEnoughData(x)
     chart.matrix <- checkMatrixNames(x)
     is.stacked <- grepl("Stacked", type, fixed=T)
     is.hundred.percent.stacked <- grepl("100% Stacked", type, fixed=T)

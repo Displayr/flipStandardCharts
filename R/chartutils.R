@@ -1,3 +1,22 @@
+#' ErrorIfNotEnoughData
+#'
+#' Returns an error if there is not enough data for charting/
+#' @param x The data to be plotted.
+#' @export
+ErrorIfNotEnoughData <- function(x)
+{
+    error <- FALSE
+    if (is.list(x))
+        x <- x[[1]]
+    if (is.null(x))
+        error <- TRUE
+    else if ((is.matrix(x) || is.data.frame(x) || is.array(x)) && (NROW(x) == 0 || NCOL(x) == 0 || all(is.na(x))))
+        error <- TRUE
+    if (error)
+        stop("There is not enough data to create a plot.")
+}
+
+
 setHoverText <- function(axis, chart.matrix, is.bar = FALSE)
 {
     formatStr <- if (axis$type == "numeric") "x+y"

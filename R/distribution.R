@@ -187,6 +187,8 @@ Distribution <-   function(x,
     modebar.show = FALSE)
 {
     # Extracting and wrapping labels
+    ErrorIfNotEnoughData(x)
+
     labels <- names(x)
     labels <- autoFormatLongLabels(labels, categories.tick.label.wrap, categories.tick.label.wrap.nchar)
     if (!is.list(x) && is.vector(x))

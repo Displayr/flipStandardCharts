@@ -192,6 +192,7 @@ Radar <- function(x,
                     footer.wrap.nchar = 100)
 {
     # Check data
+    ErrorIfNotEnoughData(x)
     chart.matrix <- checkMatrixNames(x)
     if (any(!is.finite(chart.matrix)))
         stop("Missing charts cannot contain missing or non-finite values.\n")
