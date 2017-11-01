@@ -213,6 +213,9 @@ test_that("Violin plots - Different data inputs and orientations", {
     zz = zz[complete.cases(zz),]
     suppressWarnings(Distribution(zz, weights = rep(list(runif(NROW(zz))), NCOL(zz))))
 
+    Distribution(list(rnorm(100)), values.tick.format=".2f")
+
+
 })
 
 
