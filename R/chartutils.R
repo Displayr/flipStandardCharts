@@ -97,10 +97,12 @@ checkTableList <- function(y, trend.lines)
 
 getRange <- function(x, axis, axisFormat)
 {
-    range <- axis$range
+    range <- NULL
+    if (!is.null(axis))
+        range <- axis$range
     if (is.null(range))
     {
-        if (!is.null(axisFormat$ymd))
+        if (!is.null(axisFormat) && !is.null(axisFormat$ymd))
         {
             tmp.dates <- as.numeric(axisFormat$ymd) * 1000
             diff <- min(diff(tmp.dates), na.rm=T)
@@ -113,7 +115,7 @@ getRange <- function(x, axis, axisFormat)
         else
             range <- c(-0.5, length(x)-0.5)
 
-        if (axis$autorange == "reversed")
+        if (!is.null(axis) && axis$autorange == "reversed")
             range <- rev(range)
     }
     range
@@ -454,7 +456,9 @@ setTicks <- function(minimum, maximum, distance, reversed = FALSE,
                 data = NULL, labels = NULL, type="scatter", label.font.size = 10)
 {
     if ((is.null(minimum) || is.null(maximum)) && !is.null(distance))
-        stop("If specifying the distance between ticks on an axis, you must also specify the minimum and maximum values.")
+        stop("If specifying the distance between ticks on an axis,",
+             "you must also specify the minimum and maximum values.")
+    
     # starting values
     mode <- "auto"
     range <- NULL
@@ -469,9 +473,9 @@ setTicks <- function(minimum, maximum, distance, reversed = FALSE,
     {
         is.bar <- grepl("Bar", type) && !grepl("Stacked", type)
         if (is.null(minimum))
-            minimum <- min(0, min(data))
+            minimum <- min(0, min(data, na.rm = TRUE))
         if (is.null(maximum))
-            maximum <- max(data)
+            maximum <- max(data, na.rm = TRUE)
 
         # Add horizontal space for data labels
         pad <- 0
@@ -481,7 +485,7 @@ setTicks <- function(minimum, maximum, distance, reversed = FALSE,
             lab.len <- max(nchar(as.character(unlist(labels)))) * label.font.size/10
             pad <- (maximum - minimum) * (0.05 * lab.len/4 + (0.1 * is.bar))
         }
-        if (!is.bar || min(data) < 0)
+        if (!is.bar || min(data, na.rm = TRUE) < 0)
             minimum <- minimum - pad
         maximum <- maximum + pad
     }

@@ -44,7 +44,7 @@ to be plotted, with the name/rownames used as the column names of the chart. Num
 will be parsed automatically.}
 
 \item{weights}{An optional \code{\link{list}}, where each element is a vecytor containing weights corresponding to
-the3 values of \code{x}.}
+the3 values of \code{x}, or, a vector where the weights is assumed applicable for each element in \code{x}.}
 
 \item{vertical}{Display the densities vertically.}
 

@@ -372,6 +372,14 @@ Column <- function(x,
         x.grid.width <- 0
         y.grid.width <- 0
     }
+
+    # Turn off autorange if data labels are shown
+    if (data.label.show && is.null(x.bounds.minimum))
+    {
+        tmp.range <- getRange(rownames(chart.matrix), NULL, NULL)
+        x.bounds.minimum <- tmp.range[1]
+        x.bounds.maximum <- tmp.range[2]
+    }
     xtick <- setTicks(x.bounds.minimum, x.bounds.maximum, x.tick.distance, x.data.reversed)
     ytick <- setTicks(y.bounds.minimum, y.bounds.maximum, y.tick.distance, y.data.reversed)
 
@@ -431,7 +439,7 @@ Column <- function(x,
     x.labels <- axisFormat$labels
     y.labels <- colnames(chart.matrix)
     xaxis2 <- NULL
-
+ 
     ## Add a trace for each col of data in the matrix
     for (i in 1:ncol(chart.matrix))
     {
@@ -447,7 +455,6 @@ Column <- function(x,
             p <- add_trace(p, x = x, y = rep(min(y,na.rm = T), length(x)),
                            type = "scatter", mode = "lines",
                            hoverinfo = "none", showlegend = F, opacity = 0)
-
 
         # this is the main trace for each data series
         tmp.group <- if (legend.group == "") paste("group", i) else legend.group

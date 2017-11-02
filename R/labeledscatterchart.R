@@ -119,7 +119,6 @@
 #' @param logos Optional list of images to be used to label scatterplot instead of the row names. It should be inputted as a comma-seperated list of URLs.
 #' @param logo.size Numeric controlling the size of the logos.
 #' @param swap.x.and.y Swap the x and y axis around on the chart.
-#' @param ... Extra arguments that are ignored.
 #' @importFrom grDevices rgb
 #' @importFrom flipChartBasics ChartColors StripAlphaChannel
 #' @importFrom rhtmlLabeledScatter LabeledScatter
@@ -205,8 +204,7 @@ LabeledScatter <- function(x = NULL,
                                 x.tick.font.family = global.font.family,
                                 x.tick.font.size = 10,
                                 series.marker.size = 6,
-                                swap.x.and.y = FALSE,
-                                ...)
+                                swap.x.and.y = FALSE)
 {
     ErrorIfNotEnoughData(cbind(x, y))
     logo.urls <- NULL
