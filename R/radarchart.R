@@ -221,7 +221,6 @@ Radar <- function(x,
     legend.font = list(family = legend.font.family, size = legend.font.size, color = legend.font.color)
     legend <- setLegend("Radar", legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
                         legend.border.color, legend.border.line.width, legend.position.x, legend.position.y)
-    footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
 
     # Figure out positions of y-ticks (i.e. radial axis)
     tick.vals <- NULL
