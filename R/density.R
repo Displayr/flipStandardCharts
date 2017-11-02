@@ -60,7 +60,10 @@ Density <- function(x,
                  categories.tick.label.wrap.nchar = 21,
                  modebar.show = FALSE)
 {
-    args <- distributionArgs(match.call(),  Density, list(density.type = "Density",
+    cl <- match.call()
+    cl <- c(cl[1], lapply(cl[-1], evalc, env = parent.frame()))
+    cl <- as.call(cl)
+    args <- distributionArgs(cl,  Density, list(density.type = "Density",
                                                                        show.mean = FALSE,
                                                                        show.median = FALSE,
                                                                        show.quartiles = FALSE,

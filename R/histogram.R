@@ -62,18 +62,14 @@ Histogram <- function(x,
                  categories.tick.label.wrap.nchar = 21,
                  modebar.show = FALSE)
 {
-
-   args <- distributionArgs(match.call(), Histogram, list(density.type = "Histogram",
+    cl <- match.call()
+    cl <- c(cl[1], lapply(cl[-1], evalc, env = parent.frame()))
+    cl <- as.call(cl)
+    args <- distributionArgs(cl, Histogram, list(density.type = "Histogram",
                                                                        show.mean = FALSE,
                                                                        show.median = FALSE,
                                                                        show.quartiles = FALSE,
                                                                        show.range = FALSE,
                                                                        show.mirror.density = FALSE))
-    # do.call(Distribution, args)    do.call("Distribution", distributionArgs(match.call(),  Histogram, list(density.type = "Histogram",
-    #                                                                    show.mean = FALSE,
-    #                                                                    show.median = FALSE,
-    #                                                                    show.quartiles = FALSE,
-    #                                                                    show.range = FALSE,
-    #                                                                    show.mirror.density = FALSE)))
     do.call(Distribution, args)
 }

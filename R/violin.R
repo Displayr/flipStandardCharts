@@ -66,7 +66,10 @@ Violin <- function(x,
     categories.tick.label.wrap.nchar = 21,
     modebar.show = FALSE)
 {
-    args <- distributionArgs(match.call(), Violin, list(density.type = "Density"))
+    cl <- match.call()
+    cl <- c(cl[1], lapply(cl[-1], evalc, env = parent.frame()))
+    cl <- as.call(cl)
+    args <- distributionArgs(cl, Violin, list(density.type = "Density"))
     do.call(Distribution, args)
 }
 

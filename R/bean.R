@@ -60,14 +60,18 @@ Bean <- function(x,
                    categories.tick.label.wrap.nchar = 21,
                    modebar.show = FALSE)
 {
-   args <- distributionArgs(match.call(), Bean, list(density.type = "Density",
+    cl <- match.call()
+    cl <- c(cl[1], lapply(cl[-1], evalc, env = parent.frame()))
+    cl <- as.call(cl)
+    args <- distributionArgs(cl, Bean, list(density.type = "Density",
                                                                  show.mean = FALSE,
                                                                  show.median = FALSE,
                                                                  show.quartiles = FALSE,
                                                                  show.range = FALSE,
-                                                                  show.values = TRUE))
-    do.call(Distribution, args)
+                                                     show.values = TRUE))
 
+    do.call(Distribution, args)
+}
 #
 #     args <- modifyList(as.list(args(Bean)), list(density.type = "Density",
 #                                                                  show.mean = FALSE,
@@ -85,7 +89,7 @@ Bean <- function(x,
 #     call <- modify_call(call, args)
 #    # eval(call)
 #     do.call(Distribution, (as.list(call[-1])))
- }
+
 
 
 

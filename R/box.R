@@ -60,7 +60,10 @@ Box <- function(x,
                  categories.tick.label.wrap.nchar = 21,
                  modebar.show = FALSE)
 {
-   args <- distributionArgs(match.call(), Box, list(density.type = "Box",
+    cl <- match.call()
+    cl <- c(cl[1], lapply(cl[-1], evalc, env = parent.frame()))
+    cl <- as.call(cl)
+   args <- distributionArgs(cl, Box, list(density.type = "Box",
                                                                  show.mean = FALSE,
                                                                  show.median = FALSE,
                                                                  show.quartiles = FALSE,

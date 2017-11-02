@@ -580,3 +580,22 @@ decimalsToDisplay <- function(x)
     else
         NULL
 }
+
+#' Force evaluation of variables in an environment
+#'
+#' Used by some plotting functions before calling Distribution
+#' important for unit testing with testthat.
+#' Also evaluates variables that have been assigned
+#' another variable in the signature (relevant if
+#' try eval(cl, parent.frame()) )
+#' @noRd
+#' @param x Component of a \code{\link{call}}
+#' @param env Environment to evaluate \code{x} in
+#' @return \code{x} or if it has class \code{"name"}
+#' or \code{"call"}, its value when evaluated in \code{env}.
+evalc <- function(x, env)
+{
+    if (inherits(x, c("name", "call")))
+        return(eval(x, env))
+    x
+}
