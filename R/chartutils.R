@@ -128,6 +128,12 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
     tmp.dat <- data.frame(x=x0, y=y)
     if (ignore.last)
         tmp.dat <- tmp.dat[-which.max(tmp.dat$x),]
+    if (nrow(tmp.dat) < 2)
+    {
+        warning("Not enough data to constuct line of best fit.")
+        return(list(x = NULL, y = NULL))
+    }
+
     tmp.fit <- if (fit.type == "Smooth" && nrow(tmp.dat) > 7) loess(y~I(as.numeric(x)), data=tmp.dat)
                else lm(y~x, data=tmp.dat)
 
@@ -138,7 +144,7 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
     y.fit <- predict(tmp.fit, data.frame(x = x.fit))
     if (tmp.is.factor)
         x.fit <- x
-    return(list(x=x.fit, y=y.fit))
+    return(list(x = x.fit, y = y.fit))
 }
 
 setLegend <- function(type, font, ascending, fill.color, fill.opacity, border.color, border.line.width,

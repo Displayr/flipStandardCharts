@@ -140,6 +140,8 @@ Line <-   function(x,
     if (nchar(x.title) == 0 && length(matrix.labels) == 2)
         x.title <- matrix.labels[1]
     x.labels.full <- rownames(chart.matrix)
+    if (any(is.na(chart.matrix)))
+        warning("Missing values have been omitted.")
 
     # Constants
     plotly.type <- "scatter"

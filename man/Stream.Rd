@@ -12,7 +12,7 @@ Stream(x, colors = c("#5C9AD3", "#ED7D31", "#A5A5A5", "#FFC000", "#4473C5",
   margin.left = 50, margin.bottom = 30, margin.right = 40)
 }
 \arguments{
-\item{x}{A \code{matrix}, with columns containing the dates or other numericx-axis variable.}
+\item{x}{A \code{matrix}, with columns containing the dates or other numeric x-axis variable.}
 
 \item{colors}{The colors of the streams.}
 
