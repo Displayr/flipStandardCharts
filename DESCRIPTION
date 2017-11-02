@@ -4,13 +4,14 @@ Title: Standard R interactive charts
 Version: 1.0.1
 Author: Displayr <opensource@displayr.com>
 Maintainer: Displayr <opensource@displayr.com>
-Description: Wrapper for other charting packages. The goal is to provide a relatively standard API across multiple packages, so that a user can create just about any 'standard' chart easily.
+Description: Wrapper for other charting packages. The goal is to provide a
+    relatively standard API across multiple packages, so that a user can create
+    just about any 'standard' chart easily.
 License: GPL-3
 Depends: R (>= 2.10)
 LazyData: TRUE
 Imports:
     d3vennR,
-    flipU,
     flipChartBasics,
     flipData,
     flipFormat,
