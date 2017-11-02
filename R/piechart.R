@@ -39,7 +39,6 @@
 #' font attribute for the chart unless specified individually.
 #' @param global.font.color Global font color as a named color in character format
 #' (e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param ... Extra arguments that are ignored.
 #' @examples
 #' dat <- data.frame(labels=rep(LETTERS[24:26], each=3), vals=abs(rnorm(9)),
 #'      groups=rep(LETTERS[1:3], 3), stringsAsFactors = FALSE)
@@ -73,8 +72,7 @@ Pie <- function(x,
                      pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
                      as.percentages = FALSE,
                      global.font.family = "Arial",
-                     global.font.color = rgb(44, 44, 44, maxColorValue = 255),
-                     ...)
+                     global.font.color = rgb(44, 44, 44, maxColorValue = 255))
 {
     ErrorIfNotEnoughData(x)
     groups <- NULL

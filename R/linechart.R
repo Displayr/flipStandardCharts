@@ -223,6 +223,12 @@ Line <-   function(x,
         lines <- list(width = series.line.width,
                       color = toRGB(colors[i], alpha = series.line.opacity))
 
+        # add invisible line to force all categorical labels to be shown
+        if (i == 1)
+            p <- add_trace(p, x = x, y = rep(min(y,na.rm = T), length(x)),
+                           type = "scatter", mode = "lines",
+                           hoverinfo = "none", showlegend = F, opacity = 0)
+
         marker <- NULL
         if (!is.null(series.mode) && regexpr('marker', series.mode) >= 1)
             marker <- list(size = series.marker.size,

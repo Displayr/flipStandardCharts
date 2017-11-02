@@ -166,6 +166,10 @@ Area <- function(x,
         stop("100% stacked charts cannot be produced with rows that do not contain positive values.")
     if (any(is.na(as.matrix(chart.matrix))))
         warning("Missing values have been interpolated or omitted.")
+    
+    num.notNA <- colSums(!is.na(chart.matrix))
+    if (all(num.notNA < 2))
+        stop("Area is not defined for a series with only one data point.")  
 
     # Some minimal data cleaning
     # Assume formatting and Qtable/attribute handling already done
