@@ -60,18 +60,11 @@ Density <- function(x,
                  categories.tick.label.wrap.nchar = 21,
                  modebar.show = FALSE)
 {
-   args <- distributionArgs(match.call(), Bean, list(density.type = "Density",
-                                                                 show.mean = FALSE,
-                                                                 show.median = FALSE,
-                                                                 show.quartiles = FALSE,
-                                                                 show.range = FALSE,
-                                                                  show.values = TRUE))
-    do.call(Distribution, args)
-
-    do.call("Distribution", distributionArgs(match.call(),  Density, list(density.type = "Density",
+    args <- distributionArgs(match.call(),  Density, list(density.type = "Density",
                                                                        show.mean = FALSE,
                                                                        show.median = FALSE,
                                                                        show.quartiles = FALSE,
                                                                        show.mirror.density = FALSE,
-                                                                       show.range = FALSE)))
+                                                                       show.range = FALSE))
+    do.call(Distribution, args)
 }
