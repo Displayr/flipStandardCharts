@@ -1,5 +1,9 @@
 context("Vector data")
 
+# Set up various data types to test
+# Names are used directory in filenames so keep punctuation use minimal
+# Here we only use 1d vectors (see test-matrixdata.R for 2d data)
+# They are kept separate because 2d data is applicable to more chart types
 set.seed(1234)
 unnamed <- abs(rnorm(10))
 named <- structure(rnorm(10), .Names=letters[1:10])
@@ -14,7 +18,8 @@ gapdates <- structure(rnorm(10), .Names=sprintf("2017-01-%s", c(11:15, 26:30)))
 single <- c(5)
 double <- c(5, 1)
 
-funcs <- c("Column", "Bar", "Area", "Line", "Scatter", "LabeledScatter") # "Pie", "Radar")
+# Create lists of all charting functions, data types and options to use
+charting.funcs <- c("Column", "Bar", "Area", "Line", "Scatter", "LabeledScatter")
 dat.list <- c("unnamed", "named", "missing1", "missing13",
                "gapped", "dated", "gapdates", "single", "double")
 opts <- c('default' = '',
@@ -22,38 +27,36 @@ opts <- c('default' = '',
           'linearfit' = 'fit.type="Linear", fit.ignore.last=T, fit.line.color="red"',
           'smoothfit' = 'fit.type="Smooth", fit.line.type="dashdot", fit.line.width=3')
 
-for (ff in funcs)
+# Iterate through all combinations of charting functions, data type and options
+for (func in charting.funcs)
 {
-    for (dd in dat.list)
+    for (dat in dat.list)
     {
-    for (ii in 1:length(opts))
-    {
-        filestem <- paste0(tolower(ff), "-", dd, "-", names(opts)[ii])
-        if (grepl("area-single", filestem))
-            next
+        for (ii in 1:length(opts))
+        {
+            # Create name which will appear in the error message if test fails
+            filestem <- paste0(tolower(func), "-", dat, "-", names(opts)[ii])
 
-        test_that(filestem, {
-            cmd <- paste0("pp <- ", ff, "(", dd, ",", opts[ii], ")")
+            test_that(filestem, {
 
-            if (grepl("labeledscatter-.*-(datalabel|linearfit|smoothfit)", filestem))
-                expect_error(eval(parse(text=cmd)))
-            else if (grepl("area-single", filestem))
-                expect_error(eval(parse(text=cmd)))
-            else if (grepl("missing", filestem))
-                expect_warning(eval(parse(text=cmd)))
-            else if (grepl("single-.*fit", filestem))
-                expect_warning(eval(parse(text=cmd)))
-            else if (grepl("double-linearfit", filestem))
-                expect_warning(eval(parse(text=cmd)))
-            else
-                expect_error(eval(parse(text=cmd)), NA)
+                # Create command that will create widget
+                cmd <- paste0("pp <- ", func, "(", dat, ",", opts[ii], ")")
 
-            #Useful for interactive viewing
-            #print(pp)
-            #readline(prompt=paste0(filestem, ": press [enter] to continue: "))
-
-        })
-    }
+                # Run command to create the widget and compare expectation
+                if (grepl("labeledscatter-.*(datalabel|fit)", filestem))
+                    expect_error(eval(parse(text=cmd)))
+                else if (grepl("area-single", filestem))
+                    expect_error(eval(parse(text=cmd)))
+                else if (grepl("missing", filestem))
+                    expect_warning(eval(parse(text=cmd)))
+                else if (grepl("single-.*fit", filestem))
+                    expect_warning(eval(parse(text=cmd)))
+                else if (grepl("double-linearfit", filestem))
+                    expect_warning(eval(parse(text=cmd)))
+                else
+                    expect_error(eval(parse(text=cmd)), NA)
+            })
+        }
     }
 }
 
