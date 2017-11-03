@@ -187,7 +187,7 @@ Distribution <-   function(x,
     modebar.show = FALSE)
 {
     # Extracting and wrapping labels
-    ErrorIfNotEnoughData(x)
+    ErrorIfNotEnoughData(x, require.tidy = FALSE)
 
     labels <- names(x)
     labels <- autoFormatLongLabels(labels, categories.tick.label.wrap, categories.tick.label.wrap.nchar)
