@@ -215,6 +215,7 @@
 #' @importFrom grDevices rgb
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom flipTime ParseDateTime
+#' @importFrom flipTransformations AsNumeric
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
 #' @export
@@ -431,10 +432,10 @@ Scatter <- function(x = NULL,
     {
         if (length(scatter.sizes) != n)
             stop("'scatter.sizes' should be a numeric vector with the same number of observations as 'x'.")
-        if (any(!is.finite(scatter.sizes)))
+        if (any(!is.finite(AsNumeric(scatter.sizes, binary = FALSE))))
         {
             warning("Some points omitted due to missing values in 'scatter.sizes'.")
-            not.na <- not.na & is.finite(scatter.sizes)
+            not.na <- not.na & is.finite(AsNumeric(scatter.sizes, binary = FALSE))
         }
     }
     if (!is.null(scatter.colors))
@@ -467,7 +468,7 @@ Scatter <- function(x = NULL,
     n <- sum(not.na)
     if (!is.null(scatter.sizes))
     {
-        sc.tmp <- sqrt(abs(as.numeric(scatter.sizes)))
+        sc.tmp <- sqrt(abs(AsNumeric(scatter.sizes, binary = FALSE)))
         if (any(class(scatter.sizes) %in% c("Date", "POSIXct", "POSIXt")))
             scatter.sizes.scaled <- (sc.tmp - min(sc.tmp, na.rm=T))/diff(range(sc.tmp, na.rm=T)) * 50
         else

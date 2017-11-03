@@ -120,6 +120,7 @@
 #' @param logo.size Numeric controlling the size of the logos.
 #' @param swap.x.and.y Swap the x and y axis around on the chart.
 #' @importFrom grDevices rgb
+#' @importFrom flipTransformations AsNumeric
 #' @importFrom flipChartBasics ChartColors StripAlphaChannel
 #' @importFrom rhtmlLabeledScatter LabeledScatter
 #' @export
@@ -206,7 +207,10 @@ LabeledScatter <- function(x = NULL,
                                 series.marker.size = 6,
                                 swap.x.and.y = FALSE)
 {
-    ErrorIfNotEnoughData(cbind(x, y))
+    if (!is.null(y))
+        ErrorIfNotEnoughData(cbind(x, y))
+    else
+        ErrorIfNotEnoughData(x)
     logo.urls <- NULL
     if (!is.null(logos) && nchar(logos) != 0)
     {
@@ -298,6 +302,9 @@ LabeledScatter <- function(x = NULL,
     if (any(duplicated(cbind(x, y))))
         warning("Chart contains overlapping points in the same position.")
 
+    # Unlike plotly scatterplots, axis can only deal with numeric data
+    x <- AsNumeric(x, binary = FALSE)
+    y <- AsNumeric(y, binary = FALSE)
     not.na <- is.finite(x) & is.finite(y)
     if (sum(not.na) != n)
         warning("Data points with missing values have been omitted.")
@@ -309,7 +316,7 @@ LabeledScatter <- function(x = NULL,
     {
         if (length(scatter.sizes) != n)
             stop("'scatter.sizes' should be a numeric vector with the same number of observations as 'x'.")
-        scatter.sizes <- AsNumeric(scatter.sizes, binary=FALSE)
+        scatter.sizes <- AsNumeric(scatter.sizes, binary = FALSE)
         if (any(!is.finite(scatter.sizes)))
         {
             warning("Some points omitted due to missing values in 'scatter.sizes'.")
