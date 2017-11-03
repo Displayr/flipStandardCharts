@@ -317,3 +317,13 @@ test_that("No data", {
     z = as.data.frame(matrix(1:4,2))[-1:-2, , drop = FALSE]
     expect_error(Area(list(z)))
 })
+
+test_that("Data not 'tidy'",
+{
+
+    Other.List <- list(Normal = rnorm(1000), "Poisson with unit lamda" = rpois(1000, 1), Exponential = rexp(1000))
+    Other.ListUnequal <- list(Normal = rnorm(20), "Poisson with unit lamda" = rpois(1000, 1))
+
+    expect_error(Bar(Other.List), "The data is not in an appropriate format.")
+    expect_error(Bar(Other.ListUnequal), "The data is not in an appropriate format.")
+})
