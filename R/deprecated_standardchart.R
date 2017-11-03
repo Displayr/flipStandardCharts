@@ -499,7 +499,7 @@ Chart <-   function(y = NULL,
                     logos = NULL,
                     logo.size = 0.5)
 {
-    ErrorIfNotEnoughData(if(scatter.var.from.matrix) y else cbind(scatter.x.var, scatter.y.var))
+    ErrorIfNotEnoughData(if(scatter.var.from.matrix) y else cbind(scatter.x.var, scatter.y.var), require.tidy = FALSE)
     if (0)
     {
     patt.list <- c("Column", "Bar", "Radar", "Area", "Line", "Pie", "Labeled", "Scatter", "Donut")
