@@ -22,8 +22,8 @@
 #' @param data.label.font.color Font color for data label.
 #' @param data.label.decimals Number of decimal places to show in
 #' data labels.
-#' @param pie.values.order Order of the labels shown. Can be one of 'descending', 'ascending' or 'initial'.
-#' @param pie.groups.order Order of the groups shown. Can be one of 'descending', 'ascending' or 'initial'.
+#' @param pie.values.order Order of the labels shown. Can be one of 'descending', 'alphabetical' or 'initial'.
+#' @param pie.groups.order Order of the groups shown. Can be one of 'descending', 'alphabetical' or 'initial'.
 #' @param pie.groups.font.family Character; font family for group labels.
 #' @param pie.groups.font.size Font size for group labels.
 #' @param pie.groups.font.color Font color as a named color
@@ -32,7 +32,7 @@
 #' @param data.label.suffix Character; suffix for data values.
 #' @param pie.border.color A single color for space around pie and between segments.
 #' @param pie.inner.radius The size of the inner radius of pie and
-#' donut charts as a proportion out of 100. defaults to 70.
+#' donut charts as a proportion out of 100. Defaults to 70.
 #' @param as.percentages Whether to show percentages in pie and donut
 #' charts instead of original values.
 #' @param global.font.family Character; font family for all occurrences of any
@@ -68,7 +68,7 @@ Pie <- function(x,
                      pie.groups.font.color = global.font.color,
                      pie.groups.font.family = global.font.family,
                      pie.groups.order = "initial",
-                     pie.inner.radius = 70,
+                     pie.inner.radius = NULL,
                      pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
                      as.percentages = FALSE,
                      global.font.family = "Arial",
@@ -156,8 +156,13 @@ Pie <- function(x,
         }
     }
 
-    if (type == "Pie" && is.null(groups))
-        pie.inner.radius <- 0
+    if (is.null(pie.inner.radius))
+    {
+        if (type == "Pie" && is.null(groups))
+            pie.inner.radius <- 0
+        else
+            pie.inner.radius <- 70
+    }
 
     # Convert pie.inner.radius to character
     inner.radius <- paste(pie.inner.radius, "%", sep = "")
@@ -194,6 +199,6 @@ Pie <- function(x,
           title.font.color = title.font.color,
           prefix = data.label.prefix,
           suffix = data.label.suffix,
-          border.color = pie.border.color,
+          border.color = StripAlphaChannel(pie.border.color),
           inner.radius = inner.radius)
 }

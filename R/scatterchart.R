@@ -494,7 +494,7 @@ Scatter <- function(x = NULL,
         {
             tmp.seq <- seq(0, 1, length=5)
             colorbar <- list(tickmode="array", tickvals=tmp.seq,
-                             ticktext=c(min(scatter.sizes) + diff(range(scatter.sizes)) * tmp.seq),
+                             ticktext=c(min(scatter.colors) + diff(range(scatter.colors)) * tmp.seq),
                              outlinewidth=0, tickfont=legend.font)
         }
         else if (any(class(scatter.colors) == "factor"))
@@ -514,8 +514,11 @@ Scatter <- function(x = NULL,
         colors <- rgb(col.fun(scatter.colors.scaled), maxColorValue=255)
     }
     if (!is.null(scatter.colors) && scatter.colors.as.categorical)
-        groups <- as.character(scatter.colors)
-    g.list <- unique(groups)
+        groups <- as.factor(scatter.colors)
+    if (is.factor(groups))
+        g.list <- levels(groups) # fix legend order
+    else
+        g.list <- unique(groups)
     num.groups <- length(g.list)
     num.series <- if (scatter.colors.as.numeric) 1 else num.groups
 
@@ -538,6 +541,7 @@ Scatter <- function(x = NULL,
 
     # other constants
     hover.mode <- if (tooltip.show) "closest" else FALSE
+    colorbar.show <- legend.show
     legend.show <- legend.show && num.series > 1
     scatter.opacity <- if (!is.null(scatter.sizes)) 0.4 else 1
     series.mode <- if (is.null(series.line.width) || series.line.width == 0) "markers"
@@ -654,7 +658,7 @@ Scatter <- function(x = NULL,
             marker.obj <- list(size = tmp.size, sizemode = "diameter", opacity = opacity,
                             line = list(width = series.marker.border.width),
                             color = scatter.colors.labels, colorscale = col.scale,
-                            showscale = T, colorbar = colorbar)
+                            showscale = colorbar.show, colorbar = colorbar)
         else
             marker.obj <- list(size = tmp.size, sizemode = "diameter", opacity = opacity,
                             color = colors[ggi], line = list(width = series.marker.border.width))

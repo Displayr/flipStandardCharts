@@ -38,7 +38,7 @@ setHoverText <- function(axis, chart.matrix, is.bar = FALSE)
 minPosition <- function(x, n)
 {
     if (is.factor(x) || is.character(x))
-        return(rep(0, n))
+        return(rep(x[1], n))
     else
         return(rep(min(x, na.rm=T), n))
 }
@@ -128,6 +128,12 @@ getRange <- function(x, axis, axisFormat)
 
 fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
 {
+    if (!is.numeric(y))
+    {
+        warning("Line of best fit cannot handle non-numeric y-values.")
+        return(list(x = NULL, y = NULL))
+    }
+
     tmp.is.factor <- axis.type != "numeric" #&& axis.type != "date"
     x0 <- if (!tmp.is.factor) as.numeric(x) else 1:length(x)
     tmp.dat <- data.frame(x=x0, y=y)
