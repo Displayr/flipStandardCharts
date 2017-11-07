@@ -41,24 +41,26 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1, scatter.y.column = 2,
   y.line.width = 0, y.line.color = rgb(0, 0, 0, maxColorValue = 255),
   y.tick.marks = "", y.tick.mark.length = 5, y.bounds.minimum = NULL,
   y.bounds.maximum = NULL, y.tick.distance = NULL, y.zero = TRUE,
-  y.zero.line.width = 0, y.zero.line.color = rgb(44, 44, 44, maxColorValue =
-  255), y.position = "left", y.data.reversed = FALSE, y.grid.width = 1 *
-  grid.show, y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
-  y.tick.show = TRUE, y.tick.suffix = "", y.tick.prefix = "",
-  y.tick.format = "", y.hovertext.format = y.tick.format,
-  y.tick.angle = NULL, y.tick.font.color = global.font.color,
+  y.zero.line.width = 0, y.zero.line.color = rgb(225, 225, 225,
+  maxColorValue = 255), y.position = "left", y.data.reversed = FALSE,
+  y.grid.width = 1 * grid.show, y.grid.color = rgb(225, 225, 225,
+  maxColorValue = 255), y.tick.show = TRUE, y.tick.suffix = "",
+  y.tick.prefix = "", y.tick.format = "",
+  y.hovertext.format = y.tick.format, y.tick.angle = NULL,
+  y.tick.font.color = global.font.color,
   y.tick.font.family = global.font.family, y.tick.font.size = 10,
   x.title = "", x.title.font.color = global.font.color,
   x.title.font.family = global.font.family, x.title.font.size = 12,
   x.line.width = 0, x.line.color = rgb(0, 0, 0, maxColorValue = 255),
   x.tick.marks = "", x.tick.mark.length = 5, x.bounds.minimum = NULL,
-  x.bounds.maximum = NULL, x.tick.distance = NULL, x.zero.line.width = 0,
-  x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
-  x.position = "bottom", x.data.reversed = FALSE, x.grid.width = 1 *
-  grid.show, x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
-  x.tick.show = TRUE, x.tick.suffix = "", x.tick.prefix = "",
-  x.tick.format = "", x.hovertext.format = x.tick.format,
-  x.tick.angle = NULL, x.tick.font.color = global.font.color,
+  x.bounds.maximum = NULL, x.tick.distance = NULL, x.zero = TRUE,
+  x.zero.line.width = 0, x.zero.line.color = rgb(225, 225, 225,
+  maxColorValue = 255), x.position = "bottom", x.data.reversed = FALSE,
+  x.grid.width = 1 * grid.show, x.grid.color = rgb(225, 225, 225,
+  maxColorValue = 255), x.tick.show = TRUE, x.tick.suffix = "",
+  x.tick.prefix = "", x.tick.format = "",
+  x.hovertext.format = x.tick.format, x.tick.angle = NULL,
+  x.tick.font.color = global.font.color,
   x.tick.font.family = global.font.family, x.tick.font.size = 10,
   x.tick.label.wrap = TRUE, x.tick.label.wrap.nchar = 21,
   series.line.width = 0, series.marker.border.width = 1,
@@ -343,8 +345,9 @@ plotting; NULL = no manual range set.  Must be greater than x.bounds.minimum}
 x-axis units between minimum and maximum for plotting; NULL = no manual
 range set.}
 
-\item{x.zero.line.width}{Width in pixels of zero line; 0 = no zero line
-shown}
+\item{x.zero}{Whether the x-axis should include zero.}
+
+\item{x.zero.line.width}{Width in pixels of zero line.}
 
 \item{x.zero.line.color}{Color of horizontal zero (origo) line as a named
 color in character format (e.g. "black") or an rgb value (e.g.

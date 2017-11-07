@@ -14,9 +14,10 @@ Pie(x, type = "Pie", colors = NULL, pie.subslice.colors = NULL,
   data.label.font.family = global.font.family, pie.groups.font.size = 10,
   pie.groups.font.color = global.font.color,
   pie.groups.font.family = global.font.family, pie.groups.order = "initial",
-  pie.inner.radius = 70, pie.border.color = rgb(255, 255, 255, maxColorValue
-  = 255), as.percentages = FALSE, global.font.family = "Arial",
-  global.font.color = rgb(44, 44, 44, maxColorValue = 255))
+  pie.inner.radius = NULL, pie.border.color = rgb(255, 255, 255,
+  maxColorValue = 255), as.percentages = FALSE,
+  global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
+  maxColorValue = 255))
 }
 \arguments{
 \item{x}{Input data in the form of a vector, matrix or dataframe. If a dataframe is given, the first column is expected to contain the label names, the second column contains numeric values and the third (optional) column are the group labels.}
@@ -45,7 +46,7 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{pie.data.threshold}{Labels with values smaller than the theshold are not shown.}
 
-\item{pie.values.order}{Order of the labels shown. Can be one of 'descending', 'ascending' or 'initial'.}
+\item{pie.values.order}{Order of the labels shown. Can be one of 'descending', 'alphabetical' or 'initial'.}
 
 \item{data.label.prefix}{Character; prefix for data values.}
 
@@ -66,10 +67,10 @@ data labels.}
 
 \item{pie.groups.font.family}{Character; font family for group labels.}
 
-\item{pie.groups.order}{Order of the groups shown. Can be one of 'descending', 'ascending' or 'initial'.}
+\item{pie.groups.order}{Order of the groups shown. Can be one of 'descending', 'alphabetical' or 'initial'.}
 
 \item{pie.inner.radius}{The size of the inner radius of pie and
-donut charts as a proportion out of 100. defaults to 70.}
+donut charts as a proportion out of 100. Defaults to 70.}
 
 \item{pie.border.color}{A single color for space around pie and between segments.}
 

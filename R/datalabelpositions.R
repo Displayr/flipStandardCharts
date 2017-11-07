@@ -9,7 +9,8 @@ dataLabelPositions <- function(chart.matrix,
                                 swap.axes.and.data = FALSE,
                                 bar.gap = 0,
                                 display.threshold = NULL,
-                                dates)
+                                dates,
+                                reversed = FALSE)
 {
     text <- if (!is.null(annotations)) annotations
             else paste(bar.prefix,
@@ -72,10 +73,11 @@ dataLabelPositions <- function(chart.matrix,
     }
     else
     {
-        yanchor <- if (barmode == "stack")
-            "top"
-        else
-            ifelse(chart.matrix >= 0, "bottom", "top")
+        yanchor <- "top"
+        if (barmode == "stack" && reversed)
+            yanchor <- "bottom"
+        if (barmode != "stack")
+            yanchor <- ifelse(chart.matrix >= 0, "bottom", "top")
 
         list(x = x.positions,
              y = y.positions,

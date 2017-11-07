@@ -152,8 +152,8 @@
 #' @param x.tick.distance Tick mark distance in
 #' x-axis units between minimum and maximum for plotting; NULL = no manual
 #' range set.
-#' @param x.zero.line.width Width in pixels of zero line; 0 = no zero line
-#' shown
+#' @param x.zero Whether the x-axis should include zero.
+#' @param x.zero.line.width Width in pixels of zero line.
 #' @param x.zero.line.color Color of horizontal zero (origo) line as a named
 #' color in character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
@@ -301,7 +301,7 @@ Scatter <- function(x = NULL,
                          y.tick.distance = NULL,
                          y.zero = TRUE,
                          y.zero.line.width = 0,
-                         y.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
+                         y.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
                          y.position = "left",
                          y.data.reversed = FALSE,
                          y.grid.width = 1 * grid.show,
@@ -326,8 +326,9 @@ Scatter <- function(x = NULL,
                          x.bounds.minimum = NULL,
                          x.bounds.maximum = NULL,
                          x.tick.distance = NULL,
+                         x.zero = TRUE,
                          x.zero.line.width = 0,
-                         x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
+                         x.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
                          x.position = "bottom",
                          x.data.reversed = FALSE,
                          x.grid.width = 1 * grid.show,
@@ -582,14 +583,14 @@ Scatter <- function(x = NULL,
     ylab.tmp <- if (!is.numeric(y)) as.character(y)
                 else FormatAsReal(y, decimals=2) #y.tick.decimals)
 
-    # x.zero and x.abs.max are not referenced
-    #if (is.numeric(x))
-    #{
-    #    x.abs.max <- max(abs(range(x, na.rm=T)), na.rm=T)
-    #    if (!is.finite(x.abs.max) || x.abs.max == 0 || any(abs(range(x, na.rm=T))/x.abs.max < 1e-2))
-    #        x.zero <- FALSE
-    #}
-    if (is.numeric(y))
+    # Avoid points being trimmed off if they are too close to zero
+    if (x.zero && is.numeric(x))
+    {
+        x.abs.max <- max(abs(range(x, na.rm=T)), na.rm=T)
+        if (!is.finite(x.abs.max) || x.abs.max == 0 || any(abs(range(x, na.rm=T))/x.abs.max < 1e-2))
+            x.zero <- FALSE
+    }
+    if (y.zero && is.numeric(y))
     {
         y.abs.max <- max(abs(range(y, na.rm=T)), na.rm=T)
         if (!is.finite(y.abs.max) || y.abs.max == 0 || any(abs(range(y, na.rm=T))/y.abs.max < 1e-2))
@@ -609,7 +610,7 @@ Scatter <- function(x = NULL,
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, x.tick.format,
-                  "", "", x.tick.show, FALSE, x.zero.line.width, x.zero.line.color,
+                  "", "", x.tick.show, x.zero, x.zero.line.width, x.zero.line.color,
                   x.hovertext.format, axisFormat$labels)
 
     # Convert dates from factors - this should be updated to AsDateTime when it can handle periods
@@ -629,13 +630,13 @@ Scatter <- function(x = NULL,
                                  subtitle.font.size, footer.font.size)
     margins <- setMarginsForLegend(margins, legend.show, legend)
     if (!is.null(margin.top))
-        margins$top <- margin.top
+        margins$t <- margin.top
     if (!is.null(margin.bottom))
-        margins$bottom <- margin.bottom
+        margins$b <- margin.bottom
     if (!is.null(margin.left))
-        margins$left <- margin.left
+        margins$l <- margin.left
     if (!is.null(margin.right))
-        margins$right <- margin.right
+        margins$r <- margin.right
     if (!is.null(margin.inner.pad))
         margins$pad <- margin.inner.pad
 

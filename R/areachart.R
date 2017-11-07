@@ -94,7 +94,7 @@ Area <- function(x,
                     y.tick.distance = NULL,
                     y.zero = TRUE,
                     y.zero.line.width = 0,
-                    y.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
+                    y.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
                     y.data.reversed = FALSE,
                     y.grid.width = 1 * grid.show,
                     y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
@@ -118,6 +118,7 @@ Area <- function(x,
                     x.bounds.minimum = NULL,
                     x.bounds.maximum = NULL,
                     x.tick.distance = NULL,
+                    x.zero = FALSE,
                     x.zero.line.width = 0,
                     x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
                     x.data.reversed = FALSE,
@@ -242,7 +243,8 @@ Area <- function(x,
     if (ncol(chart.matrix) == 1)
         legend.show <- FALSE
     legend <- setLegend(type, legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
-                        legend.border.color, legend.border.line.width, legend.position.x, legend.position.y)
+                        legend.border.color, legend.border.line.width, 
+                        legend.position.x, legend.position.y, y.data.reversed)
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate = FALSE)
 
     # Format axis labels
@@ -260,7 +262,7 @@ Area <- function(x,
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance,
-                  x.tick.format, "", "", x.tick.show, FALSE, x.zero.line.width, x.zero.line.color,
+                  x.tick.format, "", "", x.tick.show, x.zero, x.zero.line.width, x.zero.line.color,
                   x.hovertext.format, axisFormat$labels)
 
     # Work out margin spacing
@@ -317,11 +319,11 @@ Area <- function(x,
                  data.label.suffix, sep = "")
 
         # add invisible line to force all categorical labels to be shown
-        if (!is.stacked && i == 1)
-            p <- add_trace(p, x=x, y=rep(min(y,na.rm=T), length(x)),
-                           type="scatter", mode="lines",
-                           hoverinfo="none", showlegend=F, opacity=0)
-
+        if (i == 1)
+            p <- add_trace(p, x = x, y = rep(min(y,na.rm=T), length(x)),
+                           type = "scatter", mode = "lines",
+                           hoverinfo = "none", showlegend = F, opacity = 0)
+        
         if (!is.stacked)
         {
             y.label <- y.labels[i]
@@ -410,6 +412,8 @@ Area <- function(x,
         }
         else
         {
+            # plotly has bug where for stacked area charts, 
+            # text and line must occur together as a single trace
             y.label <- y.labels[i]
             p <- add_trace(p,
                            type = plotly.type,
@@ -420,12 +424,13 @@ Area <- function(x,
                            line = lines,
                            name = y.label,
                            legendgroup = legend.group,
-                           text = source.text,
-                           textfont = data.label.font,
-                           textposition = data.label.position,
+                           text = if (!data.label.show) NULL else source.text,
+                           textfont = if (!data.label.show) NULL else data.label.font,
+                           textposition = if (!data.label.show) NULL else data.label.position,
                            hoverinfo = if (ncol(chart.matrix) > 1) "x+y+name" else "x+y",
-                           mode = "lines+text", #series.mode,
+                           mode = if (data.label.show) "lines+text" else "lines", 
                            marker = marker)
+
          }
     }
 

@@ -72,9 +72,9 @@ Bar <- function(x,
                     y.bounds.minimum = NULL,
                     y.bounds.maximum = NULL,
                     y.tick.distance = NULL,
-                    y.zero = TRUE,
+                    y.zero = FALSE,
                     y.zero.line.width = 0,
-                    y.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
+                    y.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
                     y.data.reversed = FALSE,
                     y.grid.width = 0 * grid.show,
                     y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
@@ -96,8 +96,9 @@ Bar <- function(x,
                     x.bounds.minimum = NULL,
                     x.bounds.maximum = NULL,
                     x.tick.distance = NULL,
+                    x.zero = TRUE,
                     x.zero.line.width = 0,
-                    x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
+                    x.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
                     x.data.reversed = FALSE,
                     x.grid.width = 1 * grid.show,
                     x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
@@ -140,6 +141,10 @@ Bar <- function(x,
         stop("100% stacked charts cannot be produced with rows that do not contain positive values.")
     if (any(is.na(as.matrix(chart.matrix))))
         warning("Missing values have been set to zero.")
+    if (type == "Stacked")
+        type <- "Stacked Bar"
+    if (type == "100% Stacked")
+        type <- "100% Stacked Bar"
 
     # Some minimal data cleaning
     # Assume formatting and Qtable/attribute handling already done
@@ -201,7 +206,7 @@ Bar <- function(x,
                   x.line.color, x.line.width, x.grid.width, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance,
                   x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show,
-                  FALSE, x.zero.line.width, x.zero.line.color,
+                  x.zero, x.zero.line.width, x.zero.line.color,
                   x.hovertext.format)
 
     # Work out margin spacing
