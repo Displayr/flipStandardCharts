@@ -120,7 +120,7 @@ Area <- function(x,
                     x.tick.distance = NULL,
                     x.zero = FALSE,
                     x.zero.line.width = 0,
-                    x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
+                    x.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
                     x.data.reversed = FALSE,
                     x.grid.width = 0 * grid.show,
                     x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
@@ -272,13 +272,13 @@ Area <- function(x,
                                  subtitle.font.size, footer.font.size)
     margins <- setMarginsForLegend(margins, legend.show, legend)
     if (!is.null(margin.top))
-        margins$top <- margin.top
+        margins$t <- margin.top
     if (!is.null(margin.bottom))
-        margins$bottom <- margin.bottom
+        margins$b <- margin.bottom
     if (!is.null(margin.left))
-        margins$left <- margin.left
+        margins$l <- margin.left
     if (!is.null(margin.right))
-        margins$right <- margin.right
+        margins$r <- margin.right
     if (!is.null(margin.inner.pad))
         margins$pad <- margin.inner.pad
 

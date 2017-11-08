@@ -136,7 +136,7 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
         return(list(x = NULL, y = NULL))
     }
 
-    tmp.is.factor <- axis.type != "numeric" #&& axis.type != "date"
+    tmp.is.factor <- axis.type != "numeric" 
     x0 <- if (!tmp.is.factor) as.numeric(x) else 1:length(x)
     tmp.dat <- data.frame(x=x0, y=y)
     if (ignore.last)
@@ -151,7 +151,7 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
                else lm(y~x, data=tmp.dat)
 
     x.fit <- if (tmp.is.factor) x0
-             else seq(from = min(x), to = max(tmp.dat$x), length = 100)
+             else seq(from = min(tmp.dat$x), to = max(tmp.dat$x), length = 100)
     if (!tmp.is.factor && max(x.fit) < max(tmp.dat$x))
         x.fit <- c(x.fit, max(tmp.dat$x))
     y.fit <- predict(tmp.fit, data.frame(x = x.fit))
@@ -520,6 +520,8 @@ setTicks <- function(minimum, maximum, distance, reversed = FALSE,
     {
         autorange <- FALSE
         range <- c(minimum, maximum)
+        if (reversed)
+            range <- rev(range)
     }
     if (!is.null(distance))
     {

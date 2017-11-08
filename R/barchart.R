@@ -217,13 +217,13 @@ Bar <- function(x,
                                  subtitle.font.size, footer.font.size)
     margins <- setMarginsForLegend(margins, legend.show, legend)
     if (!is.null(margin.top))
-        margins$top <- margin.top
+        margins$t <- margin.top
     if (!is.null(margin.bottom))
-        margins$bottom <- margin.bottom
+        margins$b <- margin.bottom
     if (!is.null(margin.left))
-        margins$left <- margin.left
+        margins$l <- margin.left
     if (!is.null(margin.right))
-        margins$right <- margin.right
+        margins$r <- margin.right
     if (!is.null(margin.inner.pad))
         margins$pad <- margin.inner.pad
 
@@ -294,6 +294,8 @@ Bar <- function(x,
             y.range <- getRange(x, yaxis, axisFormat)
             yaxis2 <- list(overlaying = "y", visible = FALSE, range = y.range)
             x.sign <- sign(data.annotations$x[,i])
+            if (x.data.reversed)
+                x.sign <- -1 * x.sign
             x.diff <- x.sign * diff(range(data.annotations$x))/100
             p <- add_text(p, yaxis = "y2", x = data.annotations$x[,i] + x.diff,
                       y = data.annotations$y[,i],

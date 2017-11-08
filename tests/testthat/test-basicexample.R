@@ -42,7 +42,10 @@ for (func in charting.funcs)
             # be skipped before entering 'test_that'
             # (i.e. line 44 moved to line 26, and use 'next' to skip snapshot)
             else if (filestem == "basicexample-radar-random")
+            {
                 expect_error(eval(parse(text=cmd)))
+                skip("")
+            }
 
             # General case for all other combinations
             else
@@ -50,8 +53,8 @@ for (func in charting.funcs)
 
             # The following lines are useful for interactive viewing
             # But should be commented out after everything is set up
-            #print(pp)
-            #readline(prompt=paste0(filestem, ": press [enter] to continue: "))
+            print(pp)
+            readline(prompt=paste0(filestem, ": press [enter] to continue: "))
 
             # Create snapshot and compare against reference (in flipChartTests)
             # If none exists, the snapshot will be accepted as the reference

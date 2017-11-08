@@ -28,18 +28,18 @@ for (func in c("Area", "Bar", "Column"))
         for (ii in 1:length(opts))
         {
             filestem <- paste("stacked", tolower(func), dat, names(opts)[ii], sep="-")
-            cmd <- paste0("pp <- ", func, "(", dat, ", type = \"Stacked\", ", opts[ii], ")")
+            test_that(filestem, {
+                cmd <- paste0("pp <- ", func, "(", dat, ", type = \"Stacked\", ", opts[ii], ")")
 
-            if (grepl("missing", filestem))
-            {
-                expect_error(eval(parse(text=cmd)))
-                next
-            }
-            else
-                expect_error(eval(parse(text=cmd)), NA)
-
-            print(pp)
-            readline(prompt=paste0(filestem, ": press [enter] to continue: "))
+                if (grepl("missing", filestem))
+                    expect_error(eval(parse(text=cmd)))
+                else
+                {
+                    expect_error(eval(parse(text=cmd)), NA)
+                    #print(pp)
+                    #readline(prompt=paste0(filestem, ": press [enter] to continue: "))
+                }
+            })
         }
     }
 }

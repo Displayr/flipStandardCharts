@@ -43,9 +43,9 @@ Area(x, type = "Area", fit.type = "None", fit.ignore.last = FALSE,
   x.line.width = 0, x.line.color = rgb(0, 0, 0, maxColorValue = 255),
   x.tick.marks = "", x.tick.mark.length = 5, x.bounds.minimum = NULL,
   x.bounds.maximum = NULL, x.tick.distance = NULL, x.zero = FALSE,
-  x.zero.line.width = 0, x.zero.line.color = rgb(44, 44, 44, maxColorValue =
-  255), x.data.reversed = FALSE, x.grid.width = 0 * grid.show,
-  x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+  x.zero.line.width = 0, x.zero.line.color = rgb(225, 225, 225,
+  maxColorValue = 255), x.data.reversed = FALSE, x.grid.width = 0 *
+  grid.show, x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
   x.tick.show = TRUE, x.tick.format = "",
   x.hovertext.format = x.tick.format, x.tick.angle = NULL,
   x.tick.font.color = global.font.color,

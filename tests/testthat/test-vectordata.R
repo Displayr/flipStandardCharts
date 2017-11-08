@@ -19,6 +19,7 @@ single <- c(5)
 double <- c(5, 1)
 
 # Create lists of all charting functions, data types and options to use
+# Relevant tests for radar charts in test-radar.R
 charting.funcs <- c("Column", "Bar", "Area", "Line", "Scatter", "LabeledScatter")
 dat.list <- c("unnamed", "named", "missing1", "missing13",
                "gapped", "dated", "gapdates", "single", "double")

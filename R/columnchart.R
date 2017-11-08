@@ -387,12 +387,12 @@ Column <- function(x,
             x.bounds.minimum  <- min(0, x.bounds.minimum)
             x.bounds.maximum <- max(0, x.bounds.maximum)
         }
-        if (x.data.reversed && x.bounds.minimum < x.bounds.maximum)
-        {
-            tmp <- x.bounds.minimum
-            x.bounds.minimum <- x.bounds.maximum
-            x.bounds.maximum <- tmp
-        }
+        #if (x.data.reversed && x.bounds.minimum < x.bounds.maximum)
+        #{
+        #    tmp <- x.bounds.minimum
+        #    x.bounds.minimum <- x.bounds.maximum
+        #    x.bounds.maximum <- tmp
+        #}
     }
     xtick <- setTicks(x.bounds.minimum, x.bounds.maximum, x.tick.distance, x.data.reversed)
     ytick <- setTicks(y.bounds.minimum, y.bounds.maximum, y.tick.distance, y.data.reversed)
@@ -493,10 +493,12 @@ Column <- function(x,
         {
             x.range <- getRange(x, xaxis, axisFormat)
             y.sign <- sign(data.annotations$y[,i])
-            y.diff <- -1 * (y.sign < 0) * diff(range(data.annotations$y))/200
+            if (y.data.reversed)
+                y.sign <- -1 * (y.sign)
+            #y.diff <- -10 * (y.sign < 0) * diff(range(data.annotations$y))/200
             xaxis2 <- list(overlaying = "x", visible = FALSE, range = x.range)
             p <- add_text(p, xaxis = "x2", x = data.annotations$x[,i],
-                      y = data.annotations$y[,i] + y.diff,
+                      y = data.annotations$y[,i],# + y.diff,
                       text = data.annotations$text[,i],
                       textposition = ifelse(y.sign >= 0, "top center", "bottom center"),
                       textfont = data.label.font, hoverinfo = "none",
