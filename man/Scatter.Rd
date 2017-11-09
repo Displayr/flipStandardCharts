@@ -28,10 +28,10 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1, scatter.y.column = 2,
   background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
   background.fill.opacity = 1, charting.area.fill.color = rgb(255, 255, 255,
   maxColorValue = 255), charting.area.fill.opacity = 1,
-  legend.fill = rgb(255, 255, 255, maxColorValue = 255),
-  legend.fill.color = legend.fill, legend.fill.opacity = 1,
-  legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
-  legend.border.line.width = 0, legend.font.color = global.font.color,
+  legend.fill.color = rgb(255, 255, 255, maxColorValue = 255),
+  legend.fill.opacity = 0, legend.border.color = rgb(44, 44, 44,
+  maxColorValue = 255), legend.border.line.width = 0,
+  legend.font.color = global.font.color,
   legend.font.family = global.font.family, legend.font.size = 10,
   legend.position.y = 1, legend.position.x = 1.02, legend.ascending = NA,
   margin.top = NULL, margin.bottom = NULL, margin.left = NULL,
@@ -195,8 +195,6 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{charting.area.fill.opacity}{Charting area background
 opacity as an alpha value (0 to 1).}
-
-\item{legend.fill}{Same as \code{legend.fill.color}. Retained for backwards compatibility.}
 
 \item{legend.fill.color}{Legend fill color as a named color in character format
 (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
@@ -409,6 +407,8 @@ named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
 be reversed.}
 
 \item{swap.x.and.y}{Swap the x and y axis around on the chart.}
+
+\item{legend.fill}{Same as \code{legend.fill.color}. Retained for backwards compatibility.}
 
 \item{...}{Extra arguments that are ignored.}
 }

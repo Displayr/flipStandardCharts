@@ -6,28 +6,28 @@
 \usage{
 Radar(x, title = "", title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
-  colors = ChartColors(max(1, ncol(x))), background.fill.color = rgb(255,
-  255, 255, maxColorValue = 255), background.fill.opacity = 1,
+  colors = ChartColors(max(1, ncol(x))), opacity = 0.4,
+  background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
+  background.fill.opacity = 1,
   charting.area.fill.color = background.fill.color,
   charting.area.fill.opacity = 1, legend.show = TRUE,
-  legend.fill.color = background.fill.color, legend.fill.opacity = 1,
+  legend.fill.color = background.fill.color, legend.fill.opacity = 0,
   legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
   legend.border.line.width = 0, legend.font.color = global.font.color,
   legend.font.family = global.font.family, legend.font.size = 10,
   legend.ascending = NA, legend.position.y = 1, legend.position.x = 1.02,
   margin.top = NULL, margin.bottom = NULL, margin.left = NULL,
-  margin.right = NULL, margin.inner.pad = NULL, series.marker.size = 6,
-  series.line.width = 3, tooltip.show = TRUE, modebar.show = FALSE,
-  global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
-  maxColorValue = 255), grid.show = TRUE,
+  margin.right = NULL, margin.inner.pad = NULL, series.line.width = 3,
+  tooltip.show = TRUE, modebar.show = FALSE, global.font.family = "Arial",
+  global.font.color = rgb(44, 44, 44, maxColorValue = 255),
+  grid.show = TRUE, x.tick.show = TRUE,
   x.tick.font.color = global.font.color,
   x.tick.font.family = global.font.family, x.tick.font.size = 12,
   x.grid.width = 1 * grid.show, x.grid.color = rgb(225, 225, 225,
-  maxColorValue = 255), y.bounds.minimum = NULL, y.bounds.maximum = NULL,
-  y.tick.distance = NULL, y.grid.width = 1 * grid.show,
-  y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
-  y.tick.show = TRUE, y.tick.suffix = "", y.tick.prefix = "",
-  y.tick.decimals = NULL, y.hovertext.decimals = NULL,
+  maxColorValue = 255), y.bounds.maximum = NULL, y.tick.distance = NULL,
+  y.grid.width = 1 * grid.show, y.grid.color = rgb(225, 225, 225,
+  maxColorValue = 255), y.tick.show = TRUE, y.tick.suffix = "",
+  y.tick.prefix = "", y.tick.decimals = NULL, y.hovertext.decimals = NULL,
   y.tick.font.color = global.font.color,
   y.tick.font.family = global.font.family, y.tick.font.size = 10,
   x.tick.label.wrap = TRUE, x.tick.label.wrap.nchar = 21,
@@ -59,6 +59,8 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 \item{colors}{Character; a vector containing one or more named
 colors from grDevices OR one or more specified hex value colors OR a single
 named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
+
+\item{opacity}{Opacity of area fill colors as an alpha value (0 to 1).}
 
 \item{background.fill.color}{Background color in character format
 (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
@@ -117,8 +119,6 @@ graphic in pixels}
 \item{margin.inner.pad}{Padding in pixels between plot proper
 and axis lines}
 
-\item{series.marker.size}{Size in pixels of marker}
-
 \item{series.line.width}{Width of outline of radar polygons.}
 
 \item{tooltip.show}{Logical; whether to show a tooltip on hover.}
@@ -134,6 +134,9 @@ font attribute for the chart unless specified individually.}
 \item{grid.show}{Logical; Whether to show grid lines.
 opacity as an alpha value (0 to 1).}
 
+\item{x.tick.show}{Whether to display the x-axis tick labels 
+(i.e. labels around the sides of the radar chart)}
+
 \item{x.tick.font.color}{x-axis title font color as a named color in
 character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
@@ -147,11 +150,8 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{x.grid.color}{Color of y-grid lines as a named color in character
 format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{y.bounds.minimum}{Minimum of range for plotting;
-NULL = no manual range set.  Must be less than y.bounds.maximum}
-
 \item{y.bounds.maximum}{Maximum of range for
-plotting; NULL = no manual range set.  Must be greater than y.bounds.minimum}
+plotting; NULL = no manual range set.  The minimum is always 0.}
 
 \item{y.tick.distance}{Tick mark distance.}
 
@@ -160,7 +160,8 @@ plotting; NULL = no manual range set.  Must be greater than y.bounds.minimum}
 \item{y.grid.color}{Color of y-grid lines as a named color in character
 format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{y.tick.show}{Whether to display the y-axis tick labels}
+\item{y.tick.show}{Whether to display the y-axis tick labels 
+(i.e. radial distance from center)}
 
 \item{y.tick.suffix}{y-axis tick label suffix}
 
@@ -221,8 +222,6 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{footer.wrap}{Logical; whether the footer text should be wrapped.}
 
 \item{footer.wrap.nchar}{Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.}
-
-\item{opacity}{Opacity of area fill colors as an alpha value (0 to 1).}
 
 \item{...}{Extra arguments that are ignored.}
 }
