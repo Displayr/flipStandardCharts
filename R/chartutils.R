@@ -165,6 +165,7 @@ setLegend <- function(type, font, ascending, fill.color, fill.opacity, border.co
             traceorder = order))
 }
 
+#' @importFrom flipTime AsDate
 getAxisType <- function(labels, format)
 {
     d3.type <- d3FormatType(format)
@@ -174,7 +175,7 @@ getAxisType <- function(labels, format)
 
     if (d3.type == "date")
     {
-        ymd <- PeriodNameToDate(labels)
+        ymd <- AsDate(labels, on.parse.failure = "silent")
         if (!any(is.na(ymd)))
             return("date")
     }
@@ -185,7 +186,7 @@ getAxisType <- function(labels, format)
     }
 
     # Try to find default format based only on labels
-    ymd <- PeriodNameToDate(labels)
+    ymd <- AsDate(labels, on.parse.failure = "silent")
     if (all(!is.na(ymd)))
         return("date")
     if (!any(is.na(suppressWarnings(as.numeric(gsub(",", "", labels))))))
@@ -207,6 +208,8 @@ d3FormatType <- function(format)
         return("numeric")
 }
 
+#' @importFrom flipTime AsDate
+#' @noRd
 formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, x.format, y.format)
 {
     is.bar <- grepl("Bar", type, fixed=T)
@@ -235,8 +238,8 @@ formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, x.format, y.fo
     labels <- x.labels
     axis.type <- if (is.bar) y.axis.type else x.axis.type
     if (axis.type == "date")
-    {
-        ymd <- PeriodNameToDate(labels) # currently cannot switch between US/international inputs, amend to ParseDateTime see DS-1607
+    {  ## currently cannot switch between US/international inputs
+        ymd <- AsDate(labels, on.parse.failure = "silent")
         labels <- ymd
     }
     else
@@ -464,7 +467,7 @@ setTicks <- function(minimum, maximum, distance, reversed = FALSE,
     if ((is.null(minimum) || is.null(maximum)) && !is.null(distance))
         stop("If specifying the distance between ticks on an axis,",
              "you must also specify the minimum and maximum values.")
-    
+
     # starting values
     mode <- "auto"
     range <- NULL

@@ -214,7 +214,7 @@
 #' @param ... Extra arguments that are ignored.
 #' @importFrom grDevices rgb
 #' @importFrom flipChartBasics ChartColors
-#' @importFrom flipTime ParseDateTime
+#' @importFrom flipTime AsDate
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
 #' @export
@@ -609,12 +609,12 @@ Scatter <- function(x = NULL,
 
     # Convert dates from factors - this should be updated to AsDateTime when it can handle periods
     # as per DS-1607
-    if (xaxis$type == "date") {
-        x <- PeriodNameToDate(as.character(x))
-    }
-    if (yaxis$type == "date") {
-        y <- PeriodNameToDate(as.character(y))
-    }
+    if (xaxis$type == "date")
+        x <- AsDate(as.character(x), on.parse.failure = "silent")
+
+    if (yaxis$type == "date")
+        y <- AsDate(as.character(y), on.parse.failure = "silent")
+
 
     # Work out margin spacing
     margins <- list(t = 20, b = 50, r = 60, l = 80, pad = 0)

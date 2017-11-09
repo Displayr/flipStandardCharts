@@ -304,7 +304,7 @@
 #' Chart(y = z, type = "Area")
 #' @importFrom grDevices rgb
 #' @importFrom flipFormat FormatAsReal
-#' @importFrom flipTime PeriodNameToDate
+#' @importFrom flipTime AsDate
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom flipTransformations Factor AsNumeric TextAsVector
 #' @importFrom flipData GetTidyTwoDimensionalArray
@@ -1598,8 +1598,8 @@ Chart <-   function(y = NULL,
     x.labels <- rownames(chart.matrix)
     y.labels <- colnames(chart.matrix)
 
-    ymd <- PeriodNameToDate(x.labels, us.format = us.date.format)
-    if (!any(is.na(ymd)) && (is.area.or.line.chart ||
+    ymd <- AsDate(x.labels, us.format = us.date.format, on.parse.failure = "silent")
+    if (length(ymd) && !any(is.na(ymd)) && (is.area.or.line.chart ||
          (is.bar.chart && length(x.labels) > 6) ||
          (is.column.chart && length(x.labels) > 6)))
     {

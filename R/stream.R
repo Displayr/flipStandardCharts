@@ -15,21 +15,23 @@
 #' @param margin.bottom Bottom margin (default should be fine, this allows for fine-tuning plot space)
 #' @param margin.left Left margin (default should be fine, this allows for fine-tuning plot space)
 #' @importFrom streamgraph streamgraph sg_fill_manual sg_axis_x sg_axis_y
-#' @importFrom flipTime ParseDates
+#' @importFrom flipTime AsDate
 #' @export
 Stream <- function(x,
-                        colors = c("#5C9AD3", "#ED7D31", "#A5A5A5", "#FFC000", "#4473C5", "#70AD46", "#255F91", "#9E480D", "#636365", "#987300", "#26408B", "#42682B"),
-                        y.axis.show = TRUE,
-                        y.tick.format = "",
-                        y.number.ticks = 5,
-                        hover.decimals = 2,
-                        x.tick.format = "%d %b %y",
-                        x.tick.units = "Month",
-                        x.tick.interval = 1,
-                        margin.top = 20,
-                        margin.left = 50,
-                        margin.bottom = 30,
-                        margin.right = 40)
+                   colors = c("#5C9AD3", "#ED7D31", "#A5A5A5", "#FFC000",
+                              "#4473C5", "#70AD46", "#255F91", "#9E480D",
+                              "#636365", "#987300", "#26408B", "#42682B"),
+                   y.axis.show = TRUE,
+                   y.tick.format = "",
+                   y.number.ticks = 5,
+                   hover.decimals = 2,
+                   x.tick.format = "%d %b %y",
+                   x.tick.units = "Month",
+                   x.tick.interval = 1,
+                   margin.top = 20,
+                   margin.left = 50,
+                   margin.bottom = 30,
+                   margin.right = 40)
 {
     if (!is.matrix(x) && !is.data.frame(x) && !is.array(x))
         stop("Stream graphs should have a tabular input (e.g., a matrix).")
@@ -46,7 +48,7 @@ Stream <- function(x,
     }
     else
     {
-        columns <- ParseDates(columns)
+        columns <- AsDate(columns, on.parse.failure = "silent")
     }
     x <- round(x, hover.decimals)
     df <- data.frame(value = as.numeric(t(x)), date = columns, key = rep(rownames(x), rep(ncol(x), nrow(x))))
