@@ -91,9 +91,8 @@
 #' @param y.bounds.minimum Minimum of range for plotting; NULL = no manual range set.
 #' @param y.bounds.maximum Maximum of range for plotting; NULL = no manual range set.
 #' @param y.tick.distance Distance between tick marks. Requires that \code{values.bounds.minimum} and \code{values.bounds.maximum} have been set.
-#' @param y.zero Whether the y-axis should include zero.
-#' @param y.zero.line.width Width in pixels of zero line; 0 = no zero line
-#' shown
+#' @param y.zero Whether the y-axis should include zero. 
+#' @param y.zero.line.width Width in pixels of zero line;
 #' @param y.zero.line.color Color of horizontal zero line as a named
 #' color in character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
@@ -137,7 +136,8 @@
 #' @param x.tick.distance Tick mark distance in
 #' x-axis units between minimum and maximum for plotting; NULL = no manual
 #' range set.
-#' @param x.zero.line.width Width in pixels of zero line; 0 = no zero line shown
+#' @param x.zero Whether the x-axis should include zero. 
+#' @param x.zero.line.width Width in pixels of zero line.
 #' @param x.zero.line.color Color of horizontal zero (origin) line as a named
 #' color in character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
@@ -256,7 +256,7 @@ Column <- function(x,
                     y.tick.distance = NULL,
                     y.zero = TRUE,
                     y.zero.line.width = 0,
-                    y.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
+                    y.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
                     y.data.reversed = FALSE,
                     y.grid.width = 1 * grid.show,
                     y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
@@ -280,8 +280,9 @@ Column <- function(x,
                     x.bounds.minimum = NULL,
                     x.bounds.maximum = NULL,
                     x.tick.distance = NULL,
+                    x.zero = FALSE,
                     x.zero.line.width = 0,
-                    x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
+                    x.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
                     x.data.reversed = FALSE,
                     x.grid.width = 0 * grid.show,
                     x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
@@ -363,7 +364,8 @@ Column <- function(x,
     if (ncol(chart.matrix) == 1)
         legend.show <- FALSE
     legend <- setLegend(type, legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
-                        legend.border.color, legend.border.line.width, legend.position.x, legend.position.y)
+                        legend.border.color, legend.border.line.width, 
+                        legend.position.x, legend.position.y, y.data.reversed)
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
 
     # Format axis labels
@@ -376,9 +378,21 @@ Column <- function(x,
     # Turn off autorange if data labels are shown
     if (data.label.show && is.null(x.bounds.minimum))
     {
-        tmp.range <- getRange(rownames(chart.matrix), NULL, NULL)
+        xlab.tmp <- rownames(chart.matrix)
+        tmp.range <- getRange(xlab.tmp, NULL, NULL)
         x.bounds.minimum <- tmp.range[1]
         x.bounds.maximum <- tmp.range[2]
+        if (x.zero && all(!is.na(suppressWarnings(as.numeric(xlab.tmp)))))
+        {
+            x.bounds.minimum  <- min(0, x.bounds.minimum)
+            x.bounds.maximum <- max(0, x.bounds.maximum)
+        }
+        #if (x.data.reversed && x.bounds.minimum < x.bounds.maximum)
+        #{
+        #    tmp <- x.bounds.minimum
+        #    x.bounds.minimum <- x.bounds.maximum
+        #    x.bounds.maximum <- tmp
+        #}
     }
     xtick <- setTicks(x.bounds.minimum, x.bounds.maximum, x.tick.distance, x.data.reversed)
     ytick <- setTicks(y.bounds.minimum, y.bounds.maximum, y.tick.distance, y.data.reversed)
@@ -395,7 +409,7 @@ Column <- function(x,
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, x.tick.format,
-                  "", "", x.tick.show, FALSE, x.zero.line.width, x.zero.line.color,
+                  "", "", x.tick.show, x.zero, x.zero.line.width, x.zero.line.color,
                   x.hovertext.format, axisFormat$labels)
 
     # Work out margin spacing
@@ -432,7 +446,8 @@ Column <- function(x,
                             swap.axes.and.data = FALSE,
                             bar.gap = bar.gap,
                             display.threshold = data.label.threshold,
-                            dates = axisFormat$ymd)
+                            dates = axisFormat$ymd,
+                            reversed = y.data.reversed)
 
     ## Initiate plotly object
     p <- plot_ly(as.data.frame(chart.matrix))
@@ -478,10 +493,12 @@ Column <- function(x,
         {
             x.range <- getRange(x, xaxis, axisFormat)
             y.sign <- sign(data.annotations$y[,i])
-            y.diff <- -1 * (y.sign < 0) * diff(range(data.annotations$y))/200
+            if (y.data.reversed)
+                y.sign <- -1 * (y.sign)
+            #y.diff <- -10 * (y.sign < 0) * diff(range(data.annotations$y))/200
             xaxis2 <- list(overlaying = "x", visible = FALSE, range = x.range)
             p <- add_text(p, xaxis = "x2", x = data.annotations$x[,i],
-                      y = data.annotations$y[,i] + y.diff,
+                      y = data.annotations$y[,i],# + y.diff,
                       text = data.annotations$text[,i],
                       textposition = ifelse(y.sign >= 0, "top center", "bottom center"),
                       textfont = data.label.font, hoverinfo = "none",

@@ -1,4 +1,4 @@
-context("margins")
+context("Margins")
 
 # These are already tested in the Standard R tests, but are repeated here
 # so that developers can quickly re-run them. However, they have limited use

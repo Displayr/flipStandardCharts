@@ -70,7 +70,7 @@ Line <-   function(x,
                     y.tick.distance = NULL,
                     y.zero = TRUE,
                     y.zero.line.width = 0,
-                    y.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
+                    y.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
                     y.data.reversed = FALSE,
                     y.grid.width = 1 * grid.show,
                     y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
@@ -94,8 +94,9 @@ Line <-   function(x,
                     x.bounds.minimum = NULL,
                     x.bounds.maximum = NULL,
                     x.tick.distance = NULL,
+                    x.zero = FALSE,
                     x.zero.line.width = 0,
-                    x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
+                    x.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
                     x.data.reversed = FALSE,
                     x.grid.width = 0 * grid.show,
                     x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
@@ -184,7 +185,7 @@ Line <-   function(x,
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, x.tick.format,
-                  "", "", x.tick.show, FALSE, x.zero.line.width, x.zero.line.color,
+                  "", "", x.tick.show, x.zero, x.zero.line.width, x.zero.line.color,
                   x.hovertext.format, axisFormat$labels)
 
     # Work out margin spacing
@@ -194,13 +195,13 @@ Line <-   function(x,
                                  subtitle.font.size, footer.font.size)
     margins <- setMarginsForLegend(margins, legend.show, legend)
     if (!is.null(margin.top))
-        margins$top <- margin.top
+        margins$t <- margin.top
     if (!is.null(margin.bottom))
-        margins$bottom <- margin.bottom
+        margins$b <- margin.bottom
     if (!is.null(margin.left))
-        margins$left <- margin.left
+        margins$l <- margin.left
     if (!is.null(margin.right))
-        margins$right <- margin.right
+        margins$r <- margin.right
     if (!is.null(margin.inner.pad))
         margins$pad <- margin.inner.pad
 

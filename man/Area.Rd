@@ -31,9 +31,9 @@ Area(x, type = "Area", fit.type = "None", fit.ignore.last = FALSE,
   y.line.width = 0, y.line.color = rgb(0, 0, 0, maxColorValue = 255),
   y.tick.mark.length = 5, y.bounds.minimum = NULL,
   y.bounds.maximum = NULL, y.tick.distance = NULL, y.zero = TRUE,
-  y.zero.line.width = 0, y.zero.line.color = rgb(44, 44, 44, maxColorValue =
-  255), y.data.reversed = FALSE, y.grid.width = 1 * grid.show,
-  y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+  y.zero.line.width = 0, y.zero.line.color = rgb(225, 225, 225,
+  maxColorValue = 255), y.data.reversed = FALSE, y.grid.width = 1 *
+  grid.show, y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
   y.tick.show = TRUE, y.tick.suffix = "", y.tick.prefix = "",
   y.tick.format = "", y.hovertext.format = y.tick.format,
   y.tick.angle = NULL, y.tick.font.color = global.font.color,
@@ -42,10 +42,10 @@ Area(x, type = "Area", fit.type = "None", fit.ignore.last = FALSE,
   x.title.font.family = global.font.family, x.title.font.size = 12,
   x.line.width = 0, x.line.color = rgb(0, 0, 0, maxColorValue = 255),
   x.tick.marks = "", x.tick.mark.length = 5, x.bounds.minimum = NULL,
-  x.bounds.maximum = NULL, x.tick.distance = NULL, x.zero.line.width = 0,
-  x.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
-  x.data.reversed = FALSE, x.grid.width = 0 * grid.show,
-  x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+  x.bounds.maximum = NULL, x.tick.distance = NULL, x.zero = FALSE,
+  x.zero.line.width = 0, x.zero.line.color = rgb(225, 225, 225,
+  maxColorValue = 255), x.data.reversed = FALSE, x.grid.width = 0 *
+  grid.show, x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
   x.tick.show = TRUE, x.tick.format = "",
   x.hovertext.format = x.tick.format, x.tick.angle = NULL,
   x.tick.font.color = global.font.color,
@@ -215,8 +215,7 @@ max = 255)).}
 
 \item{y.zero}{Whether the y-axis should include zero.}
 
-\item{y.zero.line.width}{Width in pixels of zero line; 0 = no zero line
-shown}
+\item{y.zero.line.width}{Width in pixels of zero line;}
 
 \item{y.zero.line.color}{Color of horizontal zero line as a named
 color in character format (e.g. "black") or an rgb value (e.g.
@@ -285,7 +284,9 @@ plotting; NULL = no manual range set.  Must be greater than x.bounds.minimum}
 x-axis units between minimum and maximum for plotting; NULL = no manual
 range set.}
 
-\item{x.zero.line.width}{Width in pixels of zero line; 0 = no zero line shown}
+\item{x.zero}{Whether the x-axis should include zero.}
+
+\item{x.zero.line.width}{Width in pixels of zero line.}
 
 \item{x.zero.line.color}{Color of horizontal zero (origin) line as a named
 color in character format (e.g. "black") or an rgb value (e.g.

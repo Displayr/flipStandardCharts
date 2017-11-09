@@ -8,8 +8,7 @@
 #' @param scatter.y.column When \code{x} is a dataframe or matrix, the index of the column (1-based) which contains the y-coordinate data.
 #' @param scatter.sizes.column When \code{x} is a dataframe or matrix, the index of the column (1-based) which contains \code{scatter.sizes} data.
 #' @param scatter.colors.column When \code{x} is a dataframe or matrix, the index of the column (1-based) which contains \code{scatter.colors} data.
-
-#' @param scatter.labels Optional vector for labelling scatter points. This should be the same length as the number of observations in x andy. This is used in the hovertext and data labels.
+#' @param scatter.labels Optional vector for labelling scatter points. This should be the same length as the number of observations in x and y.
 #' @param scatter.labels.name Character; Used for labelling subtitles and footers.
 #' @param scatter.sizes Numeric vector determining of the size of each observation. These can alternatively be provided as a column in \code{x}.
 #' @param scatter.sizes.name Character; Used for labelling footers and legends.
@@ -114,12 +113,18 @@
 #' @param data.label.font.color Font color as a named color
 #' in character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
+#' @param data.label.decimals  Number of decimal places to show in data labels.
+#' @param data.label.prefix Character; prefix for data values.
+#' @param data.label.suffix Character; suffix for data values.
 #' @param scatter.max.labels Integer; the maximum number of labels to show on a Labeled Scatterplot.
 #' @param trend.lines Boolean indicating whether to plot trend lines for multiple tables.
-#' @param logos Optional list of images to be used to label scatterplot instead of the row names. It should be inputted as a comma-seperated list of URLs.
+#' @param logos Optional list of images to be used to label scatterplot instead of the row names.
+#' This should be input as a comma-seperated list of URLs.
 #' @param logo.size Numeric controlling the size of the logos.
 #' @param swap.x.and.y Swap the x and y axis around on the chart.
 #' @importFrom grDevices rgb
+#' @importFrom flipTransformations AsNumeric
+#' @importFrom flipFormat FormatAsReal
 #' @importFrom flipChartBasics ChartColors StripAlphaChannel
 #' @importFrom rhtmlLabeledScatter LabeledScatter
 #' @export
@@ -161,6 +166,9 @@ LabeledScatter <- function(x = NULL,
                                 data.label.font.family = global.font.family,
                                 data.label.font.color = global.font.color,
                                 data.label.font.size = 10,
+                                data.label.decimals = 0,
+                                data.label.prefix = "",
+                                data.label.suffix = "",
                                 legend.font.color = global.font.color,
                                 legend.font.family = global.font.family,
                                 legend.font.size = 10,
@@ -206,7 +214,10 @@ LabeledScatter <- function(x = NULL,
                                 series.marker.size = 6,
                                 swap.x.and.y = FALSE)
 {
-    ErrorIfNotEnoughData(cbind(x, y))
+    if (!is.null(y))
+        ErrorIfNotEnoughData(cbind(x, y))
+    else
+        ErrorIfNotEnoughData(x)
     logo.urls <- NULL
     if (!is.null(logos) && nchar(logos) != 0)
     {
@@ -298,6 +309,9 @@ LabeledScatter <- function(x = NULL,
     if (any(duplicated(cbind(x, y))))
         warning("Chart contains overlapping points in the same position.")
 
+    # Unlike plotly scatterplots, axis can only deal with numeric data
+    x <- AsNumeric(x, binary = FALSE)
+    y <- AsNumeric(y, binary = FALSE)
     not.na <- is.finite(x) & is.finite(y)
     if (sum(not.na) != n)
         warning("Data points with missing values have been omitted.")
@@ -309,7 +323,10 @@ LabeledScatter <- function(x = NULL,
     {
         if (length(scatter.sizes) != n)
             stop("'scatter.sizes' should be a numeric vector with the same number of observations as 'x'.")
-        scatter.sizes <- AsNumeric(scatter.sizes, binary=FALSE)
+        sz.tmp <- AsNumeric(scatter.sizes, binary = FALSE)
+        if (any(class(scatter.sizes) %in% c("Date", "POSIXct", "POSIXt")))
+            sz.tmp <- sz.tmp - min(sz.tmp, na.rm = TRUE)
+        scatter.sizes <- sz.tmp
         if (any(!is.finite(scatter.sizes)))
         {
             warning("Some points omitted due to missing values in 'scatter.sizes'.")
@@ -365,8 +382,13 @@ LabeledScatter <- function(x = NULL,
     if (!is.null(logo.urls) && length(logo.urls) != n)
         stop(sprintf("Number of URLs supplied in logos is %.0f but must be equal to the number of rows in the table (%.0f)\n", length(logo.urls)/num.tables, n/num.tables))
     logo.size <- rep(logo.size, n)
+
     if (is.null(scatter.labels))
         scatter.labels <- rep("", n)
+    if (is.numeric(scatter.labels))
+        scatter.labels <- FormatAsReal(scatter.labels, decimals = data.label.decimals)
+    scatter.labels <- paste0(data.label.prefix, scatter.labels, data.label.suffix)
+
     lab.tidy <- scatter.labels
     if (!is.na(scatter.max.labels) && length(scatter.labels) > scatter.max.labels)
     {

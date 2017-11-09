@@ -1,4 +1,4 @@
-#context("Bean")
+context("Bean")
 
 # The tests on this page function only as a smoke test.
 # The testing of all the individual parameters is

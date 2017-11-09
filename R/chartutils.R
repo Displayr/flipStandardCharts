@@ -2,18 +2,23 @@
 #'
 #' Returns an error if there is not enough data for charting/
 #' @param x The data to be plotted.
+#' @param require.tidy The data is assumed to be a numeric vector, matrix, array, or data frame.
 #' @export
-ErrorIfNotEnoughData <- function(x)
+ErrorIfNotEnoughData <- function(x, require.tidy = TRUE)
 {
-    error <- FALSE
-    if (is.list(x))
+    .stop <- function()
+        { stop("There is not enough data to create a plot.") }
+    .possiblyTidy <- function(x)
+        {is.numeric(x) || is.matrix(x) || is.data.frame(x) || is.array(x)}
+    .noData <- function(x)
+        {NROW(x) == 0 || NCOL(x) == 0 || all(is.na(x))}
+
+    if (!require.tidy && is.list(x))
         x <- x[[1]]
-    if (is.null(x))
-        error <- TRUE
-    else if ((is.matrix(x) || is.data.frame(x) || is.array(x)) && (NROW(x) == 0 || NCOL(x) == 0 || all(is.na(x))))
-        error <- TRUE
-    if (error)
-        stop("There is not enough data to create a plot.")
+    if (require.tidy && !.possiblyTidy(x))
+        stop("The data is not in an appropriate format.")
+    if (.noData(x))
+        .stop()
 }
 
 
@@ -33,7 +38,7 @@ setHoverText <- function(axis, chart.matrix, is.bar = FALSE)
 minPosition <- function(x, n)
 {
     if (is.factor(x) || is.character(x))
-        return(rep(0, n))
+        return(rep(x[1], n))
     else
         return(rep(min(x, na.rm=T), n))
 }
@@ -112,6 +117,8 @@ getRange <- function(x, axis, axisFormat)
             range <- range(x) + c(-0.5, 0.5)
         else if (all(!is.na(suppressWarnings(as.numeric(x)))))
             range <- range(as.numeric(x)) + c(-0.5, 0.5)
+        else if (all(!is.na(PeriodNameToDate(x))))
+            range <- range(PeriodNameToDate(x))
         else
             range <- c(-0.5, length(x)-0.5)
 
@@ -123,7 +130,13 @@ getRange <- function(x, axis, axisFormat)
 
 fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
 {
-    tmp.is.factor <- axis.type != "numeric" #&& axis.type != "date"
+    if (!is.numeric(y))
+    {
+        warning("Line of best fit cannot handle non-numeric y-values.")
+        return(list(x = NULL, y = NULL))
+    }
+
+    tmp.is.factor <- axis.type != "numeric" 
     x0 <- if (!tmp.is.factor) as.numeric(x) else 1:length(x)
     tmp.dat <- data.frame(x=x0, y=y)
     if (ignore.last)
@@ -138,7 +151,7 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
                else lm(y~x, data=tmp.dat)
 
     x.fit <- if (tmp.is.factor) x0
-             else seq(from = min(x), to = max(tmp.dat$x), length = 100)
+             else seq(from = min(tmp.dat$x), to = max(tmp.dat$x), length = 100)
     if (!tmp.is.factor && max(x.fit) < max(tmp.dat$x))
         x.fit <- c(x.fit, max(tmp.dat$x))
     y.fit <- predict(tmp.fit, data.frame(x = x.fit))
@@ -148,10 +161,10 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
 }
 
 setLegend <- function(type, font, ascending, fill.color, fill.opacity, border.color, border.line.width,
-                      x.pos=1.02, y.pos=1.00)
+                      x.pos=1.02, y.pos=1.00, reversed = FALSE)
 {
     if (is.na(ascending))
-        ascending <- !grepl("Stacked", type) || grepl("Stacked Bar", type)
+        ascending <- !(grepl("Stacked", type) && !reversed) || grepl("Stacked Bar", type)
     order <- if (!ascending) "reversed" else "normal"
     return(list(bgcolor = toRGB(fill.color, alpha=fill.opacity),
             bordercolor = border.color,
@@ -248,8 +261,8 @@ formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, x.format, y.fo
         if (is.character(labels))
             labels <- autoFormatLongLabels(labels, label.wrap, label.wrap.nchar)
     }
-    return(list(ymd=ymd, labels=labels, labels.on.x=!is.bar,
-                x.axis.type=x.axis.type, y.axis.type=y.axis.type))
+    return(list(ymd = ymd, labels = labels, labels.on.x = !is.bar,
+                x.axis.type = x.axis.type, y.axis.type = y.axis.type))
 }
 
 setAxis <- function(title, side, axisLabels, titlefont,
@@ -257,7 +270,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
                     ticks, tickfont, tickangle, ticklen, tickdistance,
                     tickformatmanual, tickprefix, ticksuffix, tickshow,
                     show.zero, zero.line.width, zero.line.color,
-                    hovertext.format.manual, labels=NULL)
+                    hovertext.format.manual, labels = NULL)
 {
     axis.type <- if (side %in% c("bottom", "top")) axisLabels$x.axis.type else axisLabels$y.axis.type
     has.line <- !is.null(linewidth) && linewidth > 0
@@ -282,7 +295,14 @@ setAxis <- function(title, side, axisLabels, titlefont,
             range <- rev(range(tmp.dates, na.rm=T)) + c(1, -1) * diff
         }
         else if (axis.type == "numeric")
+        {
             range <- rev(range(as.numeric(axisLabels$labels))) + c(0.5, -0.5)
+            if (show.zero)
+            {
+                range[2] <- min(range[2], 0)
+                range[1] <- max(range[1], 0)
+            }
+        }
         else
             range <- c(length(axisLabels$labels)-0.5, -0.5)
         if (ticks$autorange != "reversed")
@@ -312,10 +332,10 @@ setAxis <- function(title, side, axisLabels, titlefont,
         warning("Hovertext label format of type '", d3FormatType(hovertext.format.manual),
                 "' incompatible with axis type '", axis.type, "'")
 
-    if (!show.zero)
-        zero.line.width <- 0
-    if (zero.line.width == 0)
-        show.zero <- FALSE
+    #if (!show.zero)
+    #    zero.line.width <- 0
+    #if (zero.line.width == 0)
+    #    show.zero <- FALSE
 
     rangemode <- "normal"
     if (axis.type == "numeric" && show.zero)
@@ -486,7 +506,7 @@ setTicks <- function(minimum, maximum, distance, reversed = FALSE,
         if (is.null(maximum))
             maximum <- max(data, na.rm = TRUE)
 
-        # Add horizontal space for data labels
+        # Add horizontal space for data labels in column charts
         pad <- 0
         lab.len <- 1
         if (!is.null(labels))
@@ -503,6 +523,8 @@ setTicks <- function(minimum, maximum, distance, reversed = FALSE,
     {
         autorange <- FALSE
         range <- c(minimum, maximum)
+        if (reversed)
+            range <- rev(range)
     }
     if (!is.null(distance))
     {
