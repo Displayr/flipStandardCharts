@@ -1,4 +1,4 @@
-context("chart")
+context("(deprecated) Chart")
 
 types <- c("Area", "Stacked Area", "100% Stacked Area",
            "Bar", "Stacked Bar", "100% Stacked Bar",

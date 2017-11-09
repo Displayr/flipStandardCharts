@@ -177,8 +177,6 @@
 #' @param x.tick.font.size x-axis tick label font size
 #' @param x.tick.label.wrap Logical; whether to wrap long labels on the x-axis.
 #' @param x.tick.label.wrap.nchar Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.
-#' @param x.position Character; set x-axis position; can be "top" or "bottom"
-#' @param y.position Character; set y-axis position; can be "left" or "right"
 #' @param series.line.width Thickness, in pixels, of the series line
 #' @param series.marker.show Can be "none", "automatic" or a vector referencing
 #' the plotly symbol dictionary using either numerics or strings.
@@ -214,7 +212,7 @@
 #' @param ... Extra arguments that are ignored.
 #' @importFrom grDevices rgb
 #' @importFrom flipChartBasics ChartColors
-#' @importFrom flipTime ParseDateTime
+#' @importFrom flipTime ParseDateTime AsDate
 #' @importFrom flipTransformations AsNumeric
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
@@ -298,10 +296,9 @@ Scatter <- function(x = NULL,
                          y.bounds.minimum = NULL,
                          y.bounds.maximum = NULL,
                          y.tick.distance = NULL,
-                         y.zero = TRUE,
+                         y.zero = FALSE,
                          y.zero.line.width = 0,
                          y.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
-                         y.position = "left",
                          y.data.reversed = FALSE,
                          y.grid.width = 1 * grid.show,
                          y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
@@ -325,10 +322,9 @@ Scatter <- function(x = NULL,
                          x.bounds.minimum = NULL,
                          x.bounds.maximum = NULL,
                          x.tick.distance = NULL,
-                         x.zero = TRUE,
+                         x.zero = FALSE,
                          x.zero.line.width = 0,
                          x.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
-                         x.position = "bottom",
                          x.data.reversed = FALSE,
                          x.grid.width = 1 * grid.show,
                          x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
@@ -600,26 +596,23 @@ Scatter <- function(x = NULL,
                        x.tick.label.wrap, x.tick.label.wrap.nchar,
                        x.tick.format, y.tick.format)
     yaxis <- setAxis(y.title, "left", axisFormat, y.title.font,
-                  y.line.color, y.line.width, y.grid.width, y.grid.color,
+                  y.line.color, y.line.width, y.grid.width * grid.show, y.grid.color,
                   ytick, ytick.font, y.tick.angle, y.tick.mark.length,
-                  y.tick.distance, y.tick.format,
-                  y.tick.prefix, y.tick.suffix,
+                  y.tick.distance, y.tick.format, y.tick.prefix, y.tick.suffix,
                   y.tick.show, y.zero, y.zero.line.width, y.zero.line.color,
                   y.hovertext.format)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
-                  x.line.color, x.line.width, x.grid.width, x.grid.color,
-                  xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, x.tick.format,
-                  "", "", x.tick.show, x.zero, x.zero.line.width, x.zero.line.color,
+                  x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
+                  xtick, xtick.font, x.tick.angle, x.tick.mark.length, 
+                  x.tick.distance, x.tick.format, "", "", x.tick.show, 
+                  x.zero, x.zero.line.width, x.zero.line.color,
                   x.hovertext.format, axisFormat$labels)
 
-    # Convert dates from factors - this should be updated to AsDateTime when it can handle periods
-    # as per DS-1607
-    if (xaxis$type == "date") {
-        x <- PeriodNameToDate(as.character(x))
-    }
-    if (yaxis$type == "date") {
-        y <- PeriodNameToDate(as.character(y))
-    }
+    if (xaxis$type == "date")
+        x <- AsDate(as.character(x), on.parse.failure = "silent")
+    if (yaxis$type == "date")
+        y <- AsDate(as.character(y), on.parse.failure = "silent")
+    
 
     # Work out margin spacing
     margins <- list(t = 20, b = 50, r = 60, l = 80, pad = 0)

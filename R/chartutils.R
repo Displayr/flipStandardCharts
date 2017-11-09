@@ -119,8 +119,8 @@ getRange <- function(x, axis, axisFormat)
             range <- range(x) + c(-0.5, 0.5)
         else if (all(!is.na(suppressWarnings(as.numeric(x)))))
             range <- range(as.numeric(x)) + c(-0.5, 0.5)
-        else if (all(!is.na(PeriodNameToDate(x))))
-            range <- range(PeriodNameToDate(x))
+        else if (all(!is.na(AsDate(x, on.parse.failure = "silent"))))
+            range <- range(AsDate(x))
         else
             range <- c(-0.5, length(x)-0.5)
 
@@ -189,7 +189,7 @@ getAxisType <- function(labels, format)
 
     if (d3.type == "date")
     {
-        ymd <- PeriodNameToDate(labels)
+        ymd <- PeriodNa(labels)
         if (!any(is.na(ymd)))
             return("date")
     }
@@ -200,11 +200,11 @@ getAxisType <- function(labels, format)
     }
 
     # Try to find default format based only on labels
-    ymd <- PeriodNameToDate(labels)
-    if (all(!is.na(ymd)))
-        return("date")
     if (!any(is.na(suppressWarnings(as.numeric(gsub(",", "", labels))))))
         return("numeric")
+    ymd <- AsDate(labels, on.parse.failure = "silent")
+    if (all(!is.na(ymd)))
+        return("date")
     else
         return("category")
 }
@@ -251,7 +251,7 @@ formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, x.format, y.fo
     axis.type <- if (is.bar) y.axis.type else x.axis.type
     if (axis.type == "date")
     {
-        ymd <- PeriodNameToDate(labels) # currently cannot switch between US/international inputs, amend to ParseDateTime see DS-1607
+        ymd <- AsDate(labels, on.parse.failure = "silent") # currently cannot switch between US/international inputs, amend to ParseDateTime see DS-1607
         labels <- ymd
     }
     else
@@ -331,25 +331,27 @@ setAxis <- function(title, side, axisLabels, titlefont,
         warning("Hovertext label format of type '", d3FormatType(hovertext.format.manual),
                 "' incompatible with axis type '", axis.type, "'")
 
-    #if (!show.zero)
-    #    zero.line.width <- 0
-    #if (zero.line.width == 0)
-    #    show.zero <- FALSE
-
     rangemode <- "normal"
     if (axis.type == "numeric" && show.zero)
         rangemode <- "tozero"
 
-    return (list(title=title, side=side, type=axis.type, titlefont=titlefont, tickfont=tickfont,
-                 showline=has.line, linecolor=linecolor, linewidth=if (!has.line) NULL else linewidth,
-                 showgrid=gridwidth > 0, gridwidth=gridwidth, gridcolor=gridcolor,
-                 tickmode=ticks$mode, tickvals=ticks$tickvals, ticktext=ticks$ticktext,
-                 ticks=if (has.line) "outside" else "", tickangle=tickangle, ticklen=ticklen,
-                 tickcolor=linecolor, tickfont=tickfont, dtick=tickdistance, tickformat=tickformat,
-                 tickprefix=tickprefix, ticksuffix=ticksuffix, hoverformat=hoverformat,
-                 autorange=autorange, range=range, rangemode=rangemode, layer="below traces",
-                 zeroline=show.zero, zerolinewidth=zero.line.width, zerolinecolor=zero.line.color,
-                 showexponent="all", showtickprefix=TRUE, showticksuffix=TRUE, showticklabels=tickshow))
+    return (list(title = title, side = side, type = axis.type,
+                 titlefont = titlefont, tickfont = tickfont,
+                 showline = has.line, linecolor = linecolor, 
+                 linewidth = if (!has.line) NULL else linewidth,
+                 showgrid = gridwidth > 0, gridwidth = gridwidth, 
+                 gridcolor = gridcolor, tickmode = ticks$mode, 
+                 tickvals = ticks$tickvals, ticktext = ticks$ticktext,
+                 ticks = if (has.line) "outside" else "", tickangle = tickangle, 
+                 ticklen = ticklen, tickcolor = linecolor, tickfont = tickfont, 
+                 dtick = tickdistance, tickformat = tickformat,
+                 tickprefix = tickprefix, ticksuffix = ticksuffix, 
+                 hoverformat = hoverformat, layer = "below traces",
+                 autorange = autorange, range = range, rangemode = rangemode, 
+                 zeroline = show.zero, zerolinewidth = zero.line.width, 
+                 zerolinecolor = zero.line.color,
+                 showexponent="all", showtickprefix=TRUE, showticksuffix=TRUE, 
+                 showticklabels=tickshow))
 }
 
 

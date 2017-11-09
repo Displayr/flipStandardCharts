@@ -369,12 +369,6 @@ Column <- function(x,
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
 
     # Format axis labels
-    if (!grid.show)
-    {
-        x.grid.width <- 0
-        y.grid.width <- 0
-    }
-
     # Turn off autorange if data labels are shown
     if (data.label.show && is.null(x.bounds.minimum))
     {
@@ -387,12 +381,6 @@ Column <- function(x,
             x.bounds.minimum  <- min(0, x.bounds.minimum)
             x.bounds.maximum <- max(0, x.bounds.maximum)
         }
-        #if (x.data.reversed && x.bounds.minimum < x.bounds.maximum)
-        #{
-        #    tmp <- x.bounds.minimum
-        #    x.bounds.minimum <- x.bounds.maximum
-        #    x.bounds.maximum <- tmp
-        #}
     }
     xtick <- setTicks(x.bounds.minimum, x.bounds.maximum, x.tick.distance, x.data.reversed)
     ytick <- setTicks(y.bounds.minimum, y.bounds.maximum, y.tick.distance, y.data.reversed)
@@ -401,13 +389,13 @@ Column <- function(x,
                         x.tick.format, y.tick.format)
 
     yaxis <- setAxis(y.title, "left", axisFormat, y.title.font,
-                  y.line.color, y.line.width, y.grid.width, y.grid.color,
+                  y.line.color, y.line.width, y.grid.width * grid.show, y.grid.color,
                   ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance, y.tick.format,
                   y.tick.prefix, y.tick.suffix,
                   y.tick.show, y.zero, y.zero.line.width, y.zero.line.color,
                   y.hovertext.format)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
-                  x.line.color, x.line.width, x.grid.width, x.grid.color,
+                  x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, x.tick.format,
                   "", "", x.tick.show, x.zero, x.zero.line.width, x.zero.line.color,
                   x.hovertext.format, axisFormat$labels)

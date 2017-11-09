@@ -1598,7 +1598,7 @@ Chart <-   function(y = NULL,
     x.labels <- rownames(chart.matrix)
     y.labels <- colnames(chart.matrix)
 
-    ymd <- PeriodNameToDate(x.labels, us.format = us.date.format)
+    ymd <- suppressWarnings(PeriodNameToDate(x.labels, us.format = us.date.format))
     if (!any(is.na(ymd)) && (is.area.or.line.chart ||
          (is.bar.chart && length(x.labels) > 6) ||
          (is.column.chart && length(x.labels) > 6)))

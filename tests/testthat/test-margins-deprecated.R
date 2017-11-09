@@ -1,4 +1,4 @@
-context("Margins")
+context("(deprecated) Margins")
 
 # These are already tested in the Standard R tests, but are repeated here
 # so that developers can quickly re-run them. However, they have limited use
@@ -107,6 +107,6 @@ test_that("Axis and data labels placement", {
     print(Chart(df[-c(3,8),], footer="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", type="Radar", footer.wordwrap=100))
 
      # miscellaneous errors
-     expect_warning(print(Chart(x.dates, x.tick.angle=0)))
+     #expect_warning(print(Chart(x.dates, x.tick.angle=0)))
     })
 

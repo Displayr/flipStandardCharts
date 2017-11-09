@@ -22,6 +22,7 @@ LabeledScatter(x = NULL, y = NULL, scatter.x.column = 1,
   footer.wrap = TRUE, footer.wrap.nchar = 100, scatter.max.labels = 50,
   data.label.font.family = global.font.family,
   data.label.font.color = global.font.color, data.label.font.size = 10,
+  data.label.decimals = 0, data.label.prefix = "", data.label.suffix = "",
   legend.font.color = global.font.color,
   legend.font.family = global.font.family, legend.font.size = 10,
   grid.show = TRUE, y.title = "", y.title.font.color = global.font.color,
@@ -53,7 +54,7 @@ LabeledScatter(x = NULL, y = NULL, scatter.x.column = 1,
 
 \item{scatter.y.column}{When \code{x} is a dataframe or matrix, the index of the column (1-based) which contains the y-coordinate data.}
 
-\item{scatter.labels}{Optional vector for labelling scatter points. This should be the same length as the number of observations in x andy. This is used in the hovertext and data labels.}
+\item{scatter.labels}{Optional vector for labelling scatter points. This should be the same length as the number of observations in x and y.}
 
 \item{scatter.labels.name}{Character; Used for labelling subtitles and footers.}
 
@@ -73,7 +74,8 @@ LabeledScatter(x = NULL, y = NULL, scatter.x.column = 1,
 
 \item{trend.lines}{Boolean indicating whether to plot trend lines for multiple tables.}
 
-\item{logos}{Optional list of images to be used to label scatterplot instead of the row names. It should be inputted as a comma-seperated list of URLs.}
+\item{logos}{Optional list of images to be used to label scatterplot instead of the row names.
+This should be input as a comma-seperated list of URLs.}
 
 \item{logo.size}{Numeric controlling the size of the logos.}
 
@@ -132,6 +134,12 @@ in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{data.label.font.size}{Font size for data label.}
+
+\item{data.label.decimals}{Number of decimal places to show in data labels.}
+
+\item{data.label.prefix}{Character; prefix for data values.}
+
+\item{data.label.suffix}{Character; suffix for data values.}
 
 \item{legend.font.color}{Legend font color as a named color in character
 format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}

@@ -215,11 +215,6 @@ Radar <- function(x,
         warning("Radar chart only has two or less spokes. ",
                 "It may be more appropriate to use another chart type.")
     }
-    if (!grid.show)
-    {
-        x.grid.width = 0
-        y.grid.width = 0
-    }
 
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
     subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
@@ -328,7 +323,7 @@ Radar <- function(x,
     outer <- getPolarCoord(rep(r.max, n))
     grid <- apply(outer, 1, function(zz){
         return(list(type = "line", x0 = 0, y0 = 0, x1 = zz[1], y1 = zz[2], layer = "below",
-                    line = list(width = x.grid.width, color = x.grid.color)))})
+                    line = list(width = x.grid.width * grid.show, color = x.grid.color)))})
 
     # Hexagonal grid
     for (tt in tick.vals)
@@ -337,7 +332,7 @@ Radar <- function(x,
         for (i in 1:n)
             grid[[length(grid)+1]] <- list(type = "line", layer = "below",
                  x0 = gpos[i,1], x1 = gpos[i+1,1], y0 = gpos[i,2], y1 = gpos[i+1,2],
-                 line = list(width = y.grid.width, dash = "dot", color = y.grid.color))
+                 line = list(width = y.grid.width * grid.show, dash = "dot", color = y.grid.color))
     }
 
     # Position of labels (x-axis)
@@ -369,7 +364,7 @@ Radar <- function(x,
             xaxis2 = footer.axis, xaxis3 = subtitle.axis, xaxis = xaxis, yaxis = yaxis,
             legend = legend, showlegend = legend.show, shapes = grid, annotations = xlabels)
 
-    if (y.grid.width > 0 && y.tick.show && !is.null(tick.vals))
+    if (grid.show && y.grid.width > 0 && y.tick.show && !is.null(tick.vals))
         p <- add_annotations(p, x=rep(0, length(tick.vals)), y = tick.vals,
                 font = y.tick.font, showarrow = F, xanchor = "right", xshift = -5,
                 text = paste0(y.tick.prefix, FormatAsReal(tick.vals, 

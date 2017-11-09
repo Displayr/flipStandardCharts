@@ -13,8 +13,8 @@ gapped <- matrix(unnamed, 20, 3, dimnames = list(c(1:10, 21:30), LETTERS[1:3]))
 missing1 <- gapped
 missing1[1,1] <- NA
 rownames(missing1) <- 25:44
-missing13 <- missing1
-missing13[c(1,3),1] <- NA
+missing124 <- missing1
+missing124[c(1,2,4),1] <- NA
 dated <- gapped
 rownames(dated) <- sprintf("%02d/01/2017", 1:20)
 gapdated <- dated
@@ -22,7 +22,7 @@ rownames(gapdated) <- sprintf("%02d/01/2017", c(1:10, 21:30))
 
 # Set up combinations to iterate tests through
 charting.funcs <- c("Bar", "Column", "Area", "Line")
-dat.list <- c("unnamed", "named", "signed2", "gapped", "missing1", "missing13",
+dat.list <- c("unnamed", "named", "signed2", "gapped", "missing1", "missing124",
               "dated", "gapdated")
 opts <- c('default' = '',
           'datalabels' = 'data.label.show = TRUE, data.label.decimals = 0',
