@@ -99,7 +99,7 @@ checkTableList <- function(y, trend.lines)
     return(y)
 }
 
-
+#' @importFrom flipTime AsDate
 getRange <- function(x, axis, axisFormat)
 {
     range <- NULL
@@ -117,8 +117,8 @@ getRange <- function(x, axis, axisFormat)
             range <- range(x) + c(-0.5, 0.5)
         else if (all(!is.na(suppressWarnings(as.numeric(x)))))
             range <- range(as.numeric(x)) + c(-0.5, 0.5)
-        else if (all(!is.na(PeriodNameToDate(x))))
-            range <- range(PeriodNameToDate(x))
+        else if (all(!is.na(AsDate(x, on.parse.failure = "silent"))))
+            range <- range(AsDate(x, on.parse.failure = "silent"))
         else
             range <- c(-0.5, length(x)-0.5)
 
@@ -136,7 +136,7 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
         return(list(x = NULL, y = NULL))
     }
 
-    tmp.is.factor <- axis.type != "numeric" 
+    tmp.is.factor <- axis.type != "numeric"
     x0 <- if (!tmp.is.factor) as.numeric(x) else 1:length(x)
     tmp.dat <- data.frame(x=x0, y=y)
     if (ignore.last)
