@@ -1,6 +1,7 @@
 context("Scatter plot")
 
 # Set up dataframe containing different types of data types
+# None with missing values???
 set.seed(1234)
 dat <- data.frame('Score' = rnorm(20),
                   'Cost ($)' = abs(rnorm(20)), # check plotly is handling '$' properly

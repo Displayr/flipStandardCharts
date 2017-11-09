@@ -24,13 +24,15 @@ ErrorIfNotEnoughData <- function(x, require.tidy = TRUE)
 
 setHoverText <- function(axis, chart.matrix, is.bar = FALSE)
 {
-    formatStr <- if (axis$type == "numeric") "x+y"
-                 else                       "text+y"
-    if (is.bar && axis$type != "numeric")
+    formatStr <- if (axis$type == "category") "text+y"
+                 else                         "x+y"
+    if (is.bar && axis$type == "category")
         formatStr <- "text+x"
 
     if (ncol(chart.matrix) > 1)
         formatStr <- paste0("name+", formatStr)
+    
+    return(formatStr)
 }
 
 

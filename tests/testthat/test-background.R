@@ -6,6 +6,7 @@ context("Chart backgrounds")
 funcs <- c("Column", "Bar", "Area", "Line")
 
 test.args <- c('default' = '',
+    'datalabelonly' = 'data.label.show=TRUE, y.tick.show=FALSE',
     'zeros' = 'x.zero=TRUE, y.zero=TRUE, x.zero.line.color="red", y.zero.line.color="blue"',
     'zerolabeled' = 'x.zero=TRUE, y.zero=TRUE, x.zero.line.color="red", y.zero.line.color="blue", data.label.show=TRUE',
     'zerorev' = 'x.zero=TRUE, y.zero=TRUE, x.zero.line.color="red", y.zero.line.color="blue", x.data.reversed=TRUE, y.data.reversed=TRUE',
@@ -15,7 +16,7 @@ test.args <- c('default' = '',
     'grid' = 'x.line.width=2, y.line.width=4, y.line.color="red", x.line.color="blue", y.tick.mark.length=10, x.tick.mark.length=1, x.grid.width=1, y.grid.width=1',
     'tickdist' = 'y.bounds.minimum=3, y.bounds.maximum=20, y.tick.distance=1',
     'reversed' = 'x.data.reversed=TRUE, y.data.reversed=TRUE',
-    'legendpos' = 'legend.position.y=0.5, legend.position.x=0, legend.font.color="red"',
+    'legendpos' = 'legend.position.y=0.5, legend.position.x=0, legend.font.color="red", legend.fill.opacity=0',
     'legendbg' = 'legend.fill.color="blue", legend.fill.opacity=0.5, legend.border.color="red", legend.border.line.width=2',
     'margins' = 'margin.left=0, margin.right=0, margin.top=0, margin.inner.pad=10, margin.bottom=0, background.fill.color="blue", charting.area.fill.color="red", legend.show=FALSE, grid.show=FALSE',
     'font' = 'global.font.family="Courier", global.font.color="red"',

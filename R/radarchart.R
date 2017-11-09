@@ -69,15 +69,14 @@
 #' graphic in pixels
 #' @param margin.inner.pad Padding in pixels between plot proper
 #' and axis lines
-#' @param y.bounds.minimum Minimum of range for plotting;
-#' NULL = no manual range set.  Must be less than y.bounds.maximum
 #' @param y.bounds.maximum Maximum of range for
-#' plotting; NULL = no manual range set.  Must be greater than y.bounds.minimum
+#' plotting; NULL = no manual range set.  The minimum is always 0.
 #' @param y.tick.distance Tick mark distance.
 #' @param y.grid.width Width of y-grid lines in pixels; 0 = no line
 #' @param y.grid.color Color of y-grid lines as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
-#' @param y.tick.show Whether to display the y-axis tick labels
+#' @param y.tick.show Whether to display the y-axis tick labels 
+#' (i.e. radial distance from center)
 #' @param y.tick.suffix y-axis tick label suffix
 #' @param y.tick.prefix y-axis tick label prefix
 #' @param y.tick.decimals y-axis tick label decimal places
@@ -87,6 +86,8 @@
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param y.tick.font.family Character; y-axis tick label font family
 #' @param y.tick.font.size y-axis tick label font size
+#' @param x.tick.show  Whether to display the x-axis tick labels 
+#' (i.e. labels around the sides of the radar chart)
 #' @param x.tick.font.color x-axis title font color as a named color in
 #' character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
@@ -97,7 +98,6 @@
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param x.tick.label.wrap Logical; whether to wrap long labels on the x-axis.
 #' @param x.tick.label.wrap.nchar Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.
-#' @param series.marker.size Size in pixels of marker
 #' @param series.line.width Width of outline of radar polygons.
 #' @param tooltip.show Logical; whether to show a tooltip on hover.
 #' @param modebar.show Logical; whether to show the zoom menu buttons or not.
@@ -126,13 +126,14 @@ Radar <- function(x,
                     title.font.color = global.font.color,
                     title.font.size = 16,
                     colors = ChartColors(max(1, ncol(x))),
+                    opacity = 0.4,
                     background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
                     background.fill.opacity = 1,
                     charting.area.fill.color = background.fill.color,
                     charting.area.fill.opacity = 1,
                     legend.show = TRUE,
                     legend.fill.color = background.fill.color,
-                    legend.fill.opacity = 1,
+                    legend.fill.opacity = 0,
                     legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
                     legend.border.line.width = 0,
                     legend.font.color = global.font.color,
@@ -146,19 +147,18 @@ Radar <- function(x,
                     margin.left = NULL,
                     margin.right = NULL,
                     margin.inner.pad = NULL,
-                    series.marker.size = 6,
                     series.line.width = 3,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
                     global.font.family = "Arial",
                     global.font.color = rgb(44, 44, 44, maxColorValue = 255),
                     grid.show = TRUE,
+                    x.tick.show = TRUE,
                     x.tick.font.color = global.font.color,
                     x.tick.font.family = global.font.family,
                     x.tick.font.size = 12,
                     x.grid.width = 1 * grid.show,
                     x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
-                    y.bounds.minimum = NULL,
                     y.bounds.maximum = NULL,
                     y.tick.distance = NULL,
                     y.grid.width = 1 * grid.show,
@@ -195,7 +195,7 @@ Radar <- function(x,
     ErrorIfNotEnoughData(x)
     chart.matrix <- checkMatrixNames(x)
     if (any(!is.finite(chart.matrix)))
-        stop("Missing charts cannot contain missing or non-finite values.\n")
+        stop("Radar charts cannot contain missing or non-finite values.\n")
     if (any(chart.matrix < 0))
         stop("Radar charts cannot have negative values.\n")
     n <- nrow(chart.matrix)
@@ -208,9 +208,17 @@ Radar <- function(x,
         n <- nrow(chart.matrix)
         m <- ncol(chart.matrix)
         legend.show <- FALSE
-    } else if (n == 2)
+    } 
+
+    if (n <= 2)
     {
-        warning("Radar chart only has two spokes. It may be more appropriate to use another chart type.")
+        warning("Radar chart only has two or less spokes. ",
+                "It may be more appropriate to use another chart type.")
+    }
+    if (!grid.show)
+    {
+        x.grid.width = 0
+        y.grid.width = 0
     }
 
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
@@ -224,8 +232,6 @@ Radar <- function(x,
 
     # Figure out positions of y-ticks (i.e. radial axis)
     tick.vals <- NULL
-    if (is.null(y.bounds.minimum))
-        y.bounds.minimum <- 0
     if (is.null(y.bounds.maximum))
     {
         offset <- 1.0
@@ -239,7 +245,7 @@ Radar <- function(x,
         mult <- max(1, floor((y.bounds.maximum/base)/5))
         y.tick.distance <- base * mult
     }
-    tick.vals <- seq(from = y.bounds.minimum, to = y.bounds.maximum, by = y.tick.distance)
+    tick.vals <- seq(from = 0, to = y.bounds.maximum, by = y.tick.distance)
     r.max <- y.bounds.maximum
 
     if (is.null(y.tick.decimals))
@@ -293,9 +299,11 @@ Radar <- function(x,
     for (ggi in 1:length(g.list))
     {
         ind <- which(pos$Group == g.list[ggi])
-        p <- add_trace(p, x = pos$x[ind], y = pos$y[ind], type = "scatter", mode = "lines", fill = "toself",
-                    name = g.list[ggi], legendgroup = g.list[ggi],
-                    showlegend = TRUE, hoverinfo = "all+text", text = pos$HoverText[ind],
+        p <- add_trace(p, x = pos$x[ind], y = pos$y[ind], name = g.list[ggi], 
+                    type = "scatter", mode = "lines", fill = "toself",
+                    fillcolor = toRGB(colors[ggi], alpha = opacity),
+                    legendgroup = g.list[ggi], showlegend = TRUE,
+                    hoverinfo = "all+text", text = pos$HoverText[ind],
                     line = list(width = series.line.width, color = toRGB(colors[ggi])))
     }
 
@@ -333,22 +341,27 @@ Radar <- function(x,
     }
 
     # Position of labels (x-axis)
-    xanch <- rep("center", n)
-    xanch[which(abs(outer[,2]) < r.max/100 & sign(outer[,1]) < 0)] <- "right"
-    xanch[which(abs(outer[,2]) < r.max/100 & sign(outer[,1]) > 0)] <- "left"
+    xlabels <- NULL
+    if (x.tick.show)
+    {
+        xanch <- rep("center", n)
+        xanch[which(abs(outer[,2]) < r.max/100 & sign(outer[,1]) < 0)] <- "right"
+        xanch[which(abs(outer[,2]) < r.max/100 & sign(outer[,1]) > 0)] <- "left"
 
-    xlab <- autoFormatLongLabels(rownames(chart.matrix)[1:n], x.tick.label.wrap, x.tick.label.wrap.nchar)
-    font.asp <- fontAspectRatio(x.tick.font.family)
+        xlab <- autoFormatLongLabels(rownames(chart.matrix)[1:n], 
+                    x.tick.label.wrap, x.tick.label.wrap.nchar)
+        font.asp <- fontAspectRatio(x.tick.font.family)
 
-    # X-axis label widths are fixed to avoid the chart width changing in regression tests.
-    # We avoided fixing the x-axis range because autorange handles variation in the xaxis labels quite well
-    xlab.width <- (font.asp + 0.5) * x.tick.font.size *
-                    max(nchar(unlist(strsplit(split="<br>", as.character(xlab)))))
-    xlabels <- list(x = outer[,1], y = outer[,2], text = xlab,
-                width = xlab.width, font = x.tick.font,
-                showarrow = F, yshift = outer[1:n,2]/r.max * 15,
-                xanchor = xanch, xshift = outer[1:n,1]/r.max)
-
+        # X-axis label widths are fixed to avoid the chart width changing in 
+        # Standard R regression tests. We avoided fixing the x-axis range 
+        # because autorange handles variation in the xaxis labels quite well
+        xlab.width <- (font.asp + 0.5) * x.tick.font.size *
+                        max(nchar(unlist(strsplit(split="<br>", as.character(xlab)))))
+        xlabels <- list(x = outer[,1], y = outer[,2], text = xlab,
+                    width = xlab.width, font = x.tick.font,
+                    showarrow = F, yshift = outer[1:n,2]/r.max * 15,
+                    xanchor = xanch, xshift = outer[1:n,1]/r.max)
+    }
     p <- layout(p, margin = margins, title = title, titlefont = title.font,
             plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
             paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
@@ -359,7 +372,8 @@ Radar <- function(x,
     if (y.grid.width > 0 && y.tick.show && !is.null(tick.vals))
         p <- add_annotations(p, x=rep(0, length(tick.vals)), y = tick.vals,
                 font = y.tick.font, showarrow = F, xanchor = "right", xshift = -5,
-                text = paste0(y.tick.prefix, FormatAsReal(tick.vals, decimals = y.tick.decimals), y.tick.suffix))
+                text = paste0(y.tick.prefix, FormatAsReal(tick.vals, 
+                              decimals = y.tick.decimals), y.tick.suffix))
 
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
