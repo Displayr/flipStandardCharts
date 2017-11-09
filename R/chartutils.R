@@ -101,7 +101,7 @@ checkTableList <- function(y, trend.lines)
     return(y)
 }
 
-
+#' @importFrom flipTime AsDate
 getRange <- function(x, axis, axisFormat)
 {
     range <- NULL
@@ -138,7 +138,7 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
         return(list(x = NULL, y = NULL))
     }
 
-    tmp.is.factor <- axis.type != "numeric" 
+    tmp.is.factor <- axis.type != "numeric"
     x0 <- if (!tmp.is.factor) as.numeric(x) else 1:length(x)
     tmp.dat <- data.frame(x=x0, y=y)
     if (ignore.last)
@@ -180,6 +180,7 @@ setLegend <- function(type, font, ascending, fill.color, fill.opacity, border.co
             traceorder = order))
 }
 
+#' @importFrom flipTime AsDate
 getAxisType <- function(labels, format)
 {
     d3.type <- d3FormatType(format)
@@ -189,7 +190,7 @@ getAxisType <- function(labels, format)
 
     if (d3.type == "date")
     {
-        ymd <- PeriodNa(labels)
+        ymd <- AsDate(labels, on.parse.failure = "silent")
         if (!any(is.na(ymd)))
             return("date")
     }
@@ -222,6 +223,8 @@ d3FormatType <- function(format)
         return("numeric")
 }
 
+#' @importFrom flipTime AsDate
+#' @noRd
 formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, x.format, y.format)
 {
     is.bar <- grepl("Bar", type, fixed=T)
@@ -251,7 +254,8 @@ formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, x.format, y.fo
     axis.type <- if (is.bar) y.axis.type else x.axis.type
     if (axis.type == "date")
     {
-        ymd <- AsDate(labels, on.parse.failure = "silent") # currently cannot switch between US/international inputs, amend to ParseDateTime see DS-1607
+        ## currently cannot switch between US/international inputs
+        ymd <- AsDate(labels, on.parse.failure = "silent")
         labels <- ymd
     }
     else
@@ -488,7 +492,7 @@ setTicks <- function(minimum, maximum, distance, reversed = FALSE,
     if ((is.null(minimum) || is.null(maximum)) && !is.null(distance))
         stop("If specifying the distance between ticks on an axis,",
              "you must also specify the minimum and maximum values.")
-    
+
     # starting values
     mode <- "auto"
     range <- NULL
