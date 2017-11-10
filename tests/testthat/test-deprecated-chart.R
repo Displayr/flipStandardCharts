@@ -327,3 +327,9 @@ test_that("Data not 'tidy'",
     expect_error(Bar(Other.List), "The data is not in an appropriate format.")
     expect_error(Bar(Other.ListUnequal), "The data is not in an appropriate format.")
 })
+
+test_that("Ignore rows",
+{
+    xx <- c(A = 1, B = 2, C = 3, Total = 6)
+    Chart(xx, rows.to.ignore = "Total, C")
+})

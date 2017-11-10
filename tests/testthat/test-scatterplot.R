@@ -1,4 +1,5 @@
 context("Scatter plot")
+library("flipChartBasics")
 
 # Set up dataframe containing different types of data types
 # None with missing values???
@@ -15,15 +16,17 @@ rownames(dat) <- letters[1:20]
 
 # Set up matrix to use the different variable types
 #tmp <- expand.grid(0:6, 0:6, 0:6, 0:6)
-tmp <- cbind(0:6, 0:6, 0:6, 0:6)
-tmp <- tmp[-1,]
+tmp.attr <- expand.grid(0:6, 0:6)
+tmp.var <- t(combn(0:6, 2))
+tmp <- cbind(tmp.var[c(1:21, 1:21, 1:7),], tmp.attr)
+
 dat.columns <- sprintf("scatter.x.column = %d, scatter.y.column = %d,
                         scatter.colors.column = %d, scatter.sizes.column = %d",
                        tmp[,1], tmp[,2], tmp[,3], tmp[,4])
 names(dat.columns) <- apply(tmp, 1, paste, collapse="")
 
 # These are only the options that can be used by both Labeled and (plotly) Scatterplots
-opts <- c('default' = '',
+opts <- c('default' = 'colors = ChartColors(5, "Blues")',
          'categoricalcolor' = 'scatter.colors.as.categorical = TRUE, legend.font.color = "red"',
          'numericalcolor' = 'scatter.colors.as.categorical = FALSE, colors = grey(1:4/5)',
          'nolegend' = 'legend.show = FALSE, colors = "red"',
@@ -35,7 +38,7 @@ for (func in c("Scatter", "LabeledScatter"))
 {
     for (ii in 1:length(dat.columns))
     {
-        for (jj in 1:length(opts))
+        for (jj in 1)   #:length(opts))
         {
             filestem <- paste0(tolower(func), "-", names(dat.columns)[ii], "-", names(opts)[jj])
             test_that(filestem, {

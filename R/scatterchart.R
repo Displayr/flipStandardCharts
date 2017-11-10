@@ -16,6 +16,7 @@
 #' @param scatter.colors.name Character; Used for labelling footers.
 #' @param scatter.colors.as.categorical Whether to treat colors as a categorical groups, or a numeric scale.
 #' @param colors A vector of colors to use in the chart. When \code{scatter.colors.as.categorical}, the vector of colors should have the length as the number of categories in \code{scatter.colors}. If \code{scatter.colors} is used as numeric vector, then a color ramp is constructed from the colors listed.
+#' @param scatter.sizes.as.diameter Whether to show the points with diameter (instead of area, which is the default) proportional to the sizes variable.
 #' @param fit.type Character; type of line of best fit. Can be one of "None", "Linear" or "Smooth" (loess local polynomial fitting).
 #' @param fit.ignore.last Boolean; whether to ignore the last data point in the fit.
 #' @param fit.line.type Character; One of "solid", "dot", "dash, "dotdash", or length of dash "2px", "5px".
@@ -226,6 +227,7 @@ Scatter <- function(x = NULL,
                          scatter.sizes = NULL,
                          scatter.sizes.name = NULL,
                          scatter.sizes.column = 3,
+                         scatter.sizes.as.diameter = FALSE,
                          scatter.colors = NULL,
                          scatter.colors.name = NULL,
                          scatter.colors.column = 4,
@@ -464,7 +466,9 @@ Scatter <- function(x = NULL,
     n <- sum(not.na)
     if (!is.null(scatter.sizes))
     {
-        sc.tmp <- sqrt(abs(AsNumeric(scatter.sizes, binary = FALSE)))
+        sc.tmp <- abs(AsNumeric(scatter.sizes, binary = FALSE))
+        if (!scatter.sizes.as.diameter)
+            sc.tmp <- sqrt(sc.tmp)
         if (any(class(scatter.sizes) %in% c("Date", "POSIXct", "POSIXt")))
             scatter.sizes.scaled <- (sc.tmp - min(sc.tmp, na.rm=T))/diff(range(sc.tmp, na.rm=T)) * 50
         else
@@ -552,18 +556,24 @@ Scatter <- function(x = NULL,
         series.marker.show
 
     type <- "Scatterplot"
-    legend <- setLegend("Scatterplot", legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
-                        legend.border.color, legend.border.line.width, legend.position.x, legend.position.y)
+    legend <- setLegend("Scatterplot", legend.font, legend.ascending, 
+                        legend.fill.color, legend.fill.opacity,
+                        legend.border.color, legend.border.line.width,
+                        legend.position.x, legend.position.y)
     if (length(footer) == 0 || nchar(footer) == 0)
     {
         footer <- ""
         if (!is.null(scatter.labels.name))
-            footer <- sprintf("%sPoints labeled by '%s'; ", footer, scatter.labels.name)
+            footer <- sprintf("%sPoints labeled by '%s'; ", 
+                               footer, scatter.labels.name)
         if (!is.null(scatter.colors.name))
-            footer <- sprintf("%sPoints colored according to '%s'; ", footer, scatter.colors.name)
+            footer <- sprintf("%sPoints colored according to '%s'; ",
+                              footer, scatter.colors.name)
         if (!is.null(scatter.sizes.name))
-            footer <- sprintf("%sArea of points are proportional to absolute value of '%s'; ",
-                              footer, scatter.sizes.name)
+            footer <- sprintf("%s%s of points are proportional to absolute value of '%s'; ",
+                              footer, 
+                              if (scatter.sizes.as.diameter) "Diameter" else "Area",
+                              scatter.sizes.name)
     }
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
 

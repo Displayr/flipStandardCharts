@@ -217,9 +217,10 @@ LabeledScatter <- function(x = NULL,
     if (!is.null(y))
         ErrorIfNotEnoughData(cbind(x, y))
     else
-        ErrorIfNotEnoughData(x)
+        ErrorIfNotEnoughData(x, require.tidy = FALSE)
+
     logo.urls <- NULL
-    if (!is.null(logos) && nchar(logos) != 0)
+    if (!is.null(logos) && any(nchar(logos) != 0))
     {
         logo.urls <- try(TextAsVector(logos))
         if (inherits(logo.urls, "try-error"))
