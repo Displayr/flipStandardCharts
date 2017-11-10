@@ -7,14 +7,14 @@
 Scatter(x = NULL, y = NULL, scatter.x.column = 1, scatter.y.column = 2,
   scatter.labels = NULL, scatter.labels.name = NULL, scatter.sizes = NULL,
   scatter.sizes.name = NULL, scatter.sizes.column = 3,
-  scatter.colors = NULL, scatter.colors.name = NULL,
-  scatter.colors.column = 4, scatter.colors.as.categorical = FALSE,
-  colors = ChartColors(12), fit.type = "None", fit.ignore.last = FALSE,
-  fit.line.type = "dot", fit.line.width = 1, fit.line.name = "Fitted",
-  fit.line.colors = colors, legend.show = TRUE, tooltip.show = TRUE,
-  modebar.show = FALSE, global.font.family = "Arial",
-  global.font.color = rgb(44, 44, 44, maxColorValue = 255), title = "",
-  title.font.family = global.font.family,
+  scatter.sizes.as.diameter = FALSE, scatter.colors = NULL,
+  scatter.colors.name = NULL, scatter.colors.column = 4,
+  scatter.colors.as.categorical = FALSE, colors = ChartColors(12),
+  fit.type = "None", fit.ignore.last = FALSE, fit.line.type = "dot",
+  fit.line.width = 1, fit.line.name = "Fitted", fit.line.colors = colors,
+  legend.show = TRUE, tooltip.show = TRUE, modebar.show = FALSE,
+  global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
+  maxColorValue = 255), title = "", title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
   subtitle = "", subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color, subtitle.font.size = 12,
@@ -84,6 +84,8 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1, scatter.y.column = 2,
 \item{scatter.sizes.name}{Character; Used for labelling footers and legends.}
 
 \item{scatter.sizes.column}{When \code{x} is a dataframe or matrix, the index of the column (1-based) which contains \code{scatter.sizes} data.}
+
+\item{scatter.sizes.as.diameter}{Whether to show the points with diameter (instead of area, which is the default) proportional to the sizes variable.}
 
 \item{scatter.colors}{Numeric, character, or categorical vector determining the color of each observation. These can alternatively be provided as a column in \code{x}.}
 
