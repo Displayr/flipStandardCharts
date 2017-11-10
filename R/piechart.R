@@ -92,6 +92,8 @@ Pie <- function(x,
     {
         x <- checkMatrixNames(x)
         x.labels <- rep(rownames(x), ncol(x))
+        if (!is.numeric(x))
+            warning("Non-numeric values coerced to numeric")
         y.values <- as.numeric(x)
         if (ncol(x) > 1)
             groups <- rep(colnames(x), each=nrow(x))
@@ -99,7 +101,11 @@ Pie <- function(x,
     else
     {
         # dataframe
+        if (!is.null(ncol(x)) && ncol(x) >= 3)
+            x <- x[order(x[,3]),]   # must be ordered by group
         x.labels <- as.character(x[,1])
+        if (!is.numeric(x[,2]))
+            warning("Non-numeric values coerced to numeric")
         y.values <- as.numeric(x[,2])
         if (!is.null(ncol(x)) && ncol(x) >= 3)
             groups <- as.character(x[,3])

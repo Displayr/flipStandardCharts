@@ -29,7 +29,11 @@ for (func in c("Area", "Bar", "Column"))
         {
             filestem <- paste("stacked", tolower(func), dat, names(opts)[ii], sep="-")
             test_that(filestem, {
-                cmd <- paste0("pp <- ", func, "(", dat, ", type = \"Stacked\", ", opts[ii], ")")
+
+                stack.str <- "\"Stacked\", "
+                if (ii %% 2 == 0)
+                    stack.str <- "\"100% Stacked\", "
+                cmd <- paste0("pp <- ", func, "(", dat, ", type = ", stack.str, opts[ii], ")")
 
                 if (grepl("missing", filestem))
                     expect_error(eval(parse(text=cmd)))

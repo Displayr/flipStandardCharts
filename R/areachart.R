@@ -412,6 +412,8 @@ Area <- function(x,
         }
         else
         {
+            fill.bound <- if (is.stacked && i > 1) "tonexty" else "tozeroy"
+            
             # plotly has bug where for stacked area charts, 
             # text and line must occur together as a single trace
             y.label <- y.labels[i]
