@@ -167,10 +167,10 @@ Area <- function(x,
         stop("100% stacked charts cannot be produced with rows that do not contain positive values.")
     if (any(is.na(as.matrix(chart.matrix))))
         warning("Missing values have been interpolated or omitted.")
-    
+
     num.notNA <- colSums(!is.na(chart.matrix))
     if (all(num.notNA < 2))
-        stop("Area is not defined for a series with only one data point.")  
+        stop("Area is not defined for a series with only one data point.")
 
     # Some minimal data cleaning
     # Assume formatting and Qtable/attribute handling already done
@@ -192,8 +192,8 @@ Area <- function(x,
     data.label.mult <- 1
     if (is.hundred.percent.stacked)
     {
-        y.tick.format.manual <- "%"
-        y.hovertext.format.manual <- "%"
+        y.tick.format <- "%"
+        y.hovertext.format <- "%"
         data.label.suffix <- "%"
         data.label.mult <- 100
     }
@@ -243,7 +243,7 @@ Area <- function(x,
     if (ncol(chart.matrix) == 1)
         legend.show <- FALSE
     legend <- setLegend(type, legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
-                        legend.border.color, legend.border.line.width, 
+                        legend.border.color, legend.border.line.width,
                         legend.position.x, legend.position.y, y.data.reversed)
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate = FALSE)
 
@@ -323,7 +323,7 @@ Area <- function(x,
             p <- add_trace(p, x = x, y = rep(min(y,na.rm=T), length(x)),
                            type = "scatter", mode = "lines",
                            hoverinfo = "none", showlegend = F, opacity = 0)
-        
+
         if (!is.stacked)
         {
             y.label <- y.labels[i]
@@ -413,8 +413,8 @@ Area <- function(x,
         else
         {
             fill.bound <- if (is.stacked && i > 1) "tonexty" else "tozeroy"
-            
-            # plotly has bug where for stacked area charts, 
+
+            # plotly has bug where for stacked area charts,
             # text and line must occur together as a single trace
             y.label <- y.labels[i]
             p <- add_trace(p,
@@ -430,7 +430,7 @@ Area <- function(x,
                            textfont = if (!data.label.show) NULL else data.label.font,
                            textposition = if (!data.label.show) NULL else data.label.position,
                            hoverinfo = if (ncol(chart.matrix) > 1) "x+y+name" else "x+y",
-                           mode = if (data.label.show) "lines+text" else "lines", 
+                           mode = if (data.label.show) "lines+text" else "lines",
                            marker = marker)
 
          }

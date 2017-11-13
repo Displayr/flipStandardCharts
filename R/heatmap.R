@@ -1,5 +1,6 @@
-#' \code{HeatMap} generates a heatmap from a table of data. This function wraps the Heatmap function
-#' in the rhtmlHeatmap package and performs additional data preparation.
+#' Generates a heatmap from a table of data.
+#'
+#' This function wraps the Heatmap function in the rhtmlHeatmap package and performs additional data preparation.
 #'
 #' @param table A matrix of data to be displayed.
 #' @param data.type Whether \code{table} values are numeric or strings.

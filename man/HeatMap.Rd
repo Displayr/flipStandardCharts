@@ -2,8 +2,7 @@
 % Please edit documentation in R/heatmap.R
 \name{HeatMap}
 \alias{HeatMap}
-\title{\code{HeatMap} generates a heatmap from a table of data. This function wraps the Heatmap function
-in the rhtmlHeatmap package and performs additional data preparation.}
+\title{Generates a heatmap from a table of data.}
 \usage{
 HeatMap(table, data.type = "Use an existing table",
   ignore.rows = "NET, Total, SUM", ignore.columns = "NET, Total, SUM",
@@ -81,6 +80,5 @@ of the heatmap.}
 of the heatmap.}
 }
 \description{
-\code{HeatMap} generates a heatmap from a table of data. This function wraps the Heatmap function
-in the rhtmlHeatmap package and performs additional data preparation.
+This function wraps the Heatmap function in the rhtmlHeatmap package and performs additional data preparation.
 }
