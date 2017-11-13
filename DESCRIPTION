@@ -16,7 +16,7 @@ Imports:
     flipData,
     flipFormat,
     flipTables (>= 2.0.0),
-    flipTime (>= 1.2.2),
+    flipTime (>= 2.0.0),
     flipTransformations (>= 1.1.2),
     Hmisc,
     plotly,

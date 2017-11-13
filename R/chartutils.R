@@ -37,10 +37,12 @@ setHoverText <- function(axis, chart.matrix, is.bar = FALSE)
 
 
 
-minPosition <- function(x, n)
+minPosition <- function(x, n = 1)
 {
-    if (is.factor(x) || is.character(x))
+    if (is.character(x))
         return(rep(x[1], n))
+    else if (is.factor(x))
+        return(rep(levels(x)[1], n))
     else
         return(rep(min(x, na.rm=T), n))
 }
@@ -294,7 +296,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
         if (axis.type == "date")
         {
             tmp.dates <- as.numeric(axisLabels$ymd) * 1000
-            diff <- min(diff(tmp.dates), na.rm=T)
+            diff <- min(abs(diff(tmp.dates)), na.rm=T)
             range <- rev(range(tmp.dates, na.rm=T)) + c(1, -1) * diff
         }
         else if (axis.type == "numeric")
@@ -315,7 +317,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
     {
         autorange <- FALSE
         tmp.dates <- as.numeric(axisLabels$ymd) * 1000
-        diff <- min(diff(tmp.dates), na.rm=T)
+        diff <- min(abs(diff(tmp.dates)), na.rm=T)
         range <- range(tmp.dates, na.rm=T) + c(-1, 1) * diff
         if (ticks$autorange == "reversed")
             range <- rev(range)

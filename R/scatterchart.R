@@ -392,7 +392,7 @@ Scatter <- function(x = NULL,
         }
         if (((is.na(x.title) || nchar(x.title) == 0) && !is.null(colnames(x))) && .isValidColumnIndex(scatter.x.column))
             x.title <- colnames(x)[scatter.x.column]
-        if (scatter.x.column <= 0 || scatter.x.column > ncol(x))
+        if (!.isValidColumnIndex(scatter.x.column))
             x <- NULL
         else
             x <- x[,scatter.x.column]
@@ -665,14 +665,27 @@ Scatter <- function(x = NULL,
             marker.obj <- list(size = tmp.size, sizemode = "diameter", opacity = opacity,
                             color = colors[ggi], line = list(width = series.marker.border.width))
 
-        # add invisisble trace to force correct order
-        if (ggi == 1 && is.factor(x))
-        p <- add_trace(p, x = levels(x), y = minPosition(y, nlevels(x)), type = "scatter",
-                       mode = "lines", hoverinfo = "none", showlegend = F, opacity = 0)
-        if (ggi == 1 && is.factor(y))
-        p <- add_trace(p, y = levels(y), x = minPosition(x, nlevels(y)), type = "scatter",
-                       mode = "lines", hoverinfo = "none", showlegend = F, opacity = 0)
+        # add invisible trace to force correct order
+        if (ggi == 1)
+        {
+            tmp.x <- NULL
+            tmp.y <- NULL
+            if (is.factor(x))
+            {
+                tmp.x <- levels(x)
+                tmp.y <- minPosition(y, nlevels(x))
+            }
+            if (is.factor(y))
+            {
+                tmp.x <- c(tmp.x, minPosition(x, nlevels(y)))
+                tmp.y <- c(tmp.y, levels(y))
+            }
 
+            if (!is.null(tmp.x))
+                p <- add_trace(p, x = tmp.x, y = tmp.y, type = "scatter",
+                       mode = "lines", hoverinfo = "none", showlegend = F, opacity = 0)
+        } 
+    
         # main trace
         p <- add_trace(p, x = x[ind], y = y[ind], name = g.list[ggi],
                 showlegend=legend.show, legendgroup = if (num.series > 1) ggi else 1,
