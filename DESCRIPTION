@@ -25,6 +25,7 @@ Imports:
     rhtmlDonut,
     rhtmlHeatmap,
     rhtmlLabeledScatter,
+    rhtmlPalmTrees,
     streamgraph,
     stringr
 Remotes:
@@ -39,6 +40,7 @@ Remotes:
     Displayr/rhtmlDonut,
     Displayr/rhtmlHeatmap,
     Displayr/rhtmlLabeledScatter,
+    Displayr/rhtmlPalmTrees,
     hrbrmstr/streamgraph,
     timelyportfolio/d3vennR,
 Suggests:
