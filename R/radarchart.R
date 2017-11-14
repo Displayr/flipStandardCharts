@@ -254,11 +254,11 @@ Radar <- function(x,
     if (y.tick.format == "")
         y.tick.decimals <- max(0, -floor(log10(min(diff(tick.vals)))))
     else
-        y.tick.decimals <- as.numeric(regmatches(y.tick.format, regexpr("\\d+", data.label.format)))
+        y.tick.decimals <- as.numeric(regmatches(y.tick.format, regexpr("\\d+", y.tick.format)))
     if (y.hovertext.format == "")
         y.hovertext.decimals <- y.tick.decimals
     else
-        y.hovertext.decimals <- as.numeric(regmatches(y.hovertext.format, regexpr("\\d+", data.label.format)))
+        y.hovertext.decimals <- as.numeric(regmatches(y.hovertext.format, regexpr("\\d+", y.hovertext.format)))
     if (data.label.format == "")
         data.label.decimals <- 2
     else
