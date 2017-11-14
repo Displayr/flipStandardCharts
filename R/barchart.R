@@ -123,7 +123,7 @@ Bar <- function(x,
                     data.label.font.family = global.font.family,
                     data.label.font.size = 10,
                     data.label.font.color = global.font.color,
-                    data.label.decimals = 2,
+                    data.label.format = "",
                     data.label.prefix = "",
                     data.label.suffix = "",
                     data.label.threshold = NULL)
@@ -149,14 +149,18 @@ Bar <- function(x,
     # Some minimal data cleaning
     # Assume formatting and Qtable/attribute handling already done
     data.label.mult <- 1
-    if(is.hundred.percent.stacked)
-    {
+    if (is.hundred.percent.stacked)
         chart.matrix <- cum.data(chart.matrix, "column.percentage")
-        x.tick.format <- "%"
-        x.hovertext.format <- "%"
-        data.label.suffix <- "%"
+
+    if (grepl("%", data.label.format, fixed = TRUE)) {
+        data.label.suffix <- paste0("%", data.label.suffix)
         data.label.mult <- 100
     }
+    if (data.label.format == "")
+        data.label.decimals <- 2
+    else
+        data.label.decimals <- as.numeric(regmatches(data.label.format, regexpr("\\d+", data.label.format)))
+
     matrix.labels <- names(dimnames(chart.matrix))
     if (nchar(y.title) == 0 && length(matrix.labels) == 2)
         y.title <- matrix.labels[1]

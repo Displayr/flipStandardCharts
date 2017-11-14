@@ -59,7 +59,7 @@ Line(x, type = "Line", fit.type = "None", fit.ignore.last = FALSE,
   tooltip.show = TRUE, modebar.show = FALSE, data.label.show = FALSE,
   data.label.font.family = global.font.family,
   data.label.font.color = global.font.color, data.label.font.size = 10,
-  data.label.decimals = 2, data.label.prefix = "", data.label.suffix = "",
+  data.label.format = "", data.label.prefix = "", data.label.suffix = "",
   data.label.position = "top middle")
 }
 \arguments{
@@ -368,7 +368,9 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{data.label.font.size}{Font size for data label.}
 
-\item{data.label.decimals}{TODO deprecate this}
+\item{data.label.format}{A string representing a d3 formatting code.
+See https://github.com/mbostock/d3/wiki/Formatting#numbers or
+https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec}
 
 \item{data.label.prefix}{Character; prefix for data values.}
 

@@ -184,7 +184,6 @@
 #' @param data.label.format A string representing a d3 formatting code.
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
 #' https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec
-#' @param data.label.decimals TODO deprecate this
 #' @param data.label.prefix Character; prefix for data values.
 #' @param data.label.suffix Character; suffix for data values.
 #' @param data.label.threshold The proportion of the total range below which
@@ -308,7 +307,6 @@ Column <- function(x,
                     data.label.font.size = 10,
                     data.label.font.color = global.font.color,
                     data.label.format = "",
-                    data.label.decimals = 0, # TODO deprecate this
                     data.label.prefix = "",
                     data.label.suffix = "",
                     data.label.threshold = NULL)
@@ -338,13 +336,13 @@ Column <- function(x,
         chart.matrix <- cum.data(chart.matrix, "column.percentage")
 
     if (grepl("%", data.label.format, fixed = TRUE)) {
-        data.label.suffix <- paste("%", data.label.suffix)
+        data.label.suffix <- paste0("%", data.label.suffix)
         data.label.mult <- 100
     }
     if (data.label.format == "")
-        data.label.decimals <- 0
+        data.label.decimals <- 2
     else
-        data.label.decimals <- as.numeric(substr(data.label.format, 2, nchar(data.label.format) - 1))
+        data.label.decimals <- as.numeric(regmatches(data.label.format, regexpr("\\d+", data.label.format)))
 
     matrix.labels <- names(dimnames(chart.matrix))
     if (nchar(x.title) == 0 && length(matrix.labels) == 2)

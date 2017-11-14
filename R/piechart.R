@@ -20,8 +20,9 @@
 #' @param data.label.font.family Character; font family for data label.
 #' @param data.label.font.size Font size for data label.
 #' @param data.label.font.color Font color for data label.
-#' @param data.label.decimals Number of decimal places to show in
-#' data labels.
+#' @param data.label.format A string representing a d3 formatting code.
+#' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
+#' https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec
 #' @param pie.values.order Order of the labels shown. Can be one of 'descending', 'alphabetical' or 'initial'.
 #' @param pie.groups.order Order of the groups shown. Can be one of 'descending', 'alphabetical' or 'initial'.
 #' @param pie.groups.font.family Character; font family for group labels.
@@ -33,8 +34,6 @@
 #' @param pie.border.color A single color for space around pie and between segments.
 #' @param pie.inner.radius The size of the inner radius of pie and
 #' donut charts as a proportion out of 100. Defaults to 70.
-#' @param as.percentages Whether to show percentages in pie and donut
-#' charts instead of original values.
 #' @param global.font.family Character; font family for all occurrences of any
 #' font attribute for the chart unless specified individually.
 #' @param global.font.color Global font color as a named color in character format
@@ -58,9 +57,9 @@ Pie <- function(x,
                      title.font.color = global.font.color,
                      pie.data.threshold = NULL,
                      pie.values.order = "initial",
+                     data.label.format = "",
                      data.label.prefix = "",
                      data.label.suffix = "",
-                     data.label.decimals = 2,
                      data.label.font.size = 10,
                      data.label.font.color = global.font.color,
                      data.label.font.family = global.font.family,
@@ -70,7 +69,6 @@ Pie <- function(x,
                      pie.groups.order = "initial",
                      pie.inner.radius = NULL,
                      pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
-                     as.percentages = FALSE,
                      global.font.family = "Arial",
                      global.font.color = rgb(44, 44, 44, maxColorValue = 255))
 {
@@ -169,6 +167,14 @@ Pie <- function(x,
         else
             pie.inner.radius <- 70
     }
+
+    # Data label formatting extract from d3 format
+    as.percentages <- grepl("%", data.label.format, fixed = TRUE)
+    if (data.label.format == "")
+        data.label.decimals <- 2
+    else
+        data.label.decimals <- as.numeric(regmatches(data.label.format, regexpr("\\d+", data.label.format)))
+
 
     # Convert pie.inner.radius to character
     inner.radius <- paste(pie.inner.radius, "%", sep = "")

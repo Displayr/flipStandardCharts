@@ -149,7 +149,7 @@ Area <- function(x,
                     data.label.font.family = global.font.family,
                     data.label.font.size = 10,
                     data.label.font.color = global.font.color,
-                    data.label.decimals = 2,
+                    data.label.format = "",
                     data.label.prefix = "",
                     data.label.suffix = "",
                     data.label.position = "top middle")
@@ -189,14 +189,17 @@ Area <- function(x,
         chart.matrix <- cum.data(chart.matrix, "cumulative.percentage")
     else if (is.stacked)
         chart.matrix <- cum.data(chart.matrix, "cumulative.sum")
+
     data.label.mult <- 1
-    if (is.hundred.percent.stacked)
-    {
-        y.tick.format <- "%"
-        y.hovertext.format <- "%"
-        data.label.suffix <- "%"
+    if (grepl("%", data.label.format, fixed = TRUE)) {
+        data.label.suffix <- paste0("%", data.label.suffix)
         data.label.mult <- 100
     }
+    if (data.label.format == "")
+        data.label.decimals <- 2
+    else
+        data.label.decimals <- as.numeric(regmatches(data.label.format, regexpr("\\d+", data.label.format)))
+
     matrix.labels <- names(dimnames(chart.matrix))
     if (nchar(x.title) == 0 && length(matrix.labels) == 2)
         x.title <- matrix.labels[1]

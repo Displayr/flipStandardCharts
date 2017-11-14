@@ -8,16 +8,15 @@ Pie(x, type = "Pie", colors = NULL, pie.subslice.colors = NULL,
   pie.subslice.colors.repeat = TRUE, title = "",
   title.font.family = global.font.family, title.font.size = 16,
   title.font.color = global.font.color, pie.data.threshold = NULL,
-  pie.values.order = "initial", data.label.prefix = "",
-  data.label.suffix = "", data.label.decimals = 2,
+  pie.values.order = "initial", data.label.format = "",
+  data.label.prefix = "", data.label.suffix = "",
   data.label.font.size = 10, data.label.font.color = global.font.color,
   data.label.font.family = global.font.family, pie.groups.font.size = 10,
   pie.groups.font.color = global.font.color,
   pie.groups.font.family = global.font.family, pie.groups.order = "initial",
   pie.inner.radius = NULL, pie.border.color = rgb(255, 255, 255,
-  maxColorValue = 255), as.percentages = FALSE,
-  global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
-  maxColorValue = 255))
+  maxColorValue = 255), global.font.family = "Arial",
+  global.font.color = rgb(44, 44, 44, maxColorValue = 255))
 }
 \arguments{
 \item{x}{Input data in the form of a vector, matrix or dataframe. If a dataframe is given, the first column is expected to contain the label names, the second column contains numeric values and the third (optional) column are the group labels.}
@@ -48,12 +47,13 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{pie.values.order}{Order of the labels shown. Can be one of 'descending', 'alphabetical' or 'initial'.}
 
+\item{data.label.format}{A string representing a d3 formatting code.
+See https://github.com/mbostock/d3/wiki/Formatting#numbers or
+https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec}
+
 \item{data.label.prefix}{Character; prefix for data values.}
 
 \item{data.label.suffix}{Character; suffix for data values.}
-
-\item{data.label.decimals}{Number of decimal places to show in
-data labels.}
 
 \item{data.label.font.size}{Font size for data label.}
 
@@ -73,9 +73,6 @@ data labels.}
 donut charts as a proportion out of 100. Defaults to 70.}
 
 \item{pie.border.color}{A single color for space around pie and between segments.}
-
-\item{as.percentages}{Whether to show percentages in pie and donut
-charts instead of original values.}
 
 \item{global.font.family}{Character; font family for all occurrences of any
 font attribute for the chart unless specified individually.}

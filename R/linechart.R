@@ -10,6 +10,7 @@
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
+#' @importFrom flipFormat FormatAsPercent
 #' @export
 Line <-   function(x,
                     type = "Line",
@@ -125,7 +126,7 @@ Line <-   function(x,
                     data.label.font.family = global.font.family,
                     data.label.font.color = global.font.color,
                     data.label.font.size = 10,
-                    data.label.decimals = 2,
+                    data.label.format = "",
                     data.label.prefix = "",
                     data.label.suffix = "",
                     data.label.position = "top middle")
@@ -188,6 +189,13 @@ Line <-   function(x,
                   "", "", x.tick.show, x.zero, x.zero.line.width, x.zero.line.color,
                   x.hovertext.format, axisFormat$labels)
 
+    # Data label formatting
+    data.label.function <- ifelse(grepl("%", data.label.format, fixed = TRUE), FormatAsPercent, FormatAsReal)
+    if (data.label.format == "")
+        data.label.decimals <- 2
+    else
+        data.label.decimals <- as.numeric(regmatches(data.label.format, regexpr("\\d+", data.label.format)))
+
     # Work out margin spacing
     margins <- list(t = 20, b = 50, r = 60, l = 80, pad = 0)
     margins <- setMarginsForAxis(margins, axisFormat, xaxis)
@@ -247,7 +255,7 @@ Line <-   function(x,
         if (data.label.show)
         {
             source.text <- paste(data.label.prefix,
-                 FormatAsReal(chart.matrix[, i], decimals = data.label.decimals),
+                 data.label.function(chart.matrix[, i], decimals = data.label.decimals),
                  data.label.suffix, sep = "")
 
             p <- add_trace(p, x = x, y = y,

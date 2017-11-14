@@ -25,10 +25,10 @@ charting.funcs <- c("Bar", "Column", "Area", "Line")
 dat.list <- c("unnamed", "named", "signed2", "gapped", "missing1", "missing124",
               "dated", "gapdated")
 opts <- c('default' = '',
-          'datalabels' = 'data.label.show = TRUE, data.label.decimals = 0',
+          'datalabels' = 'data.label.show = TRUE, data.label.format = ".0f"',
           'linearfit' = 'fit.type = "Linear", fit.ignore.last = TRUE',
           'reversefit' = 'fit.type = "Smooth", fit.ignore.last = TRUE, x.data.reversed = TRUE, y.data.reversed = TRUE',
-          'reversed' = 'x.data.reversed = TRUE, y.data.reversed = TRUE, data.label.show = TRUE, data.label.decimals = 0')
+          'reversed' = 'x.data.reversed = TRUE, y.data.reversed = TRUE, data.label.show = TRUE, data.label.format = ".0f"')
 
 # data axis of stacked area chart gets chopped off
 for (func in charting.funcs)

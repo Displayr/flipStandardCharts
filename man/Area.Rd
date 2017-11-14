@@ -58,7 +58,7 @@ Area(x, type = "Area", fit.type = "None", fit.ignore.last = FALSE,
   series.marker.border.colors = colors, series.marker.border.opacity = 1,
   tooltip.show = TRUE, modebar.show = FALSE, data.label.show = FALSE,
   data.label.font.family = global.font.family, data.label.font.size = 10,
-  data.label.font.color = global.font.color, data.label.decimals = 2,
+  data.label.font.color = global.font.color, data.label.format = "",
   data.label.prefix = "", data.label.suffix = "",
   data.label.position = "top middle")
 }
@@ -368,7 +368,9 @@ series markers as an alpha value (0 to 1).}
 in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{data.label.decimals}{TODO deprecate this}
+\item{data.label.format}{A string representing a d3 formatting code.
+See https://github.com/mbostock/d3/wiki/Formatting#numbers or
+https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec}
 
 \item{data.label.prefix}{Character; prefix for data values.}
 

@@ -26,9 +26,9 @@ opts <- c('title' = 'title = "Pie chart", global.font.family = "Courier", title.
           'border' = 'pie.border.color = rgb(1,0,0,0.5), colors = ChartColors(10, "Reds")',
           'radius' = 'pie.inner.radius = 95, pie.values.order = "alphabetical"',
           #'decreasing' = 'pie.inner.radius = 95, pie.values.order = "decreasing"',
-          'labels' = 'data.label.prefix = "<", data.label.suffix = ">", data.label.decimals = 0, data.label.font.family = "Century Gothic", pie.groups.font.family = "Arial Black", pie.groups.font.color = "red", pie.values.order = "descending", pie.groups.order = "descending"',
+          'labels' = 'data.label.prefix = "<", data.label.suffix = ">", data.label.format = ".0f", data.label.font.family = "Century Gothic", pie.groups.font.family = "Arial Black", pie.groups.font.color = "red", pie.values.order = "descending", pie.groups.order = "descending"',
           'threshold' = 'pie.data.threshold = 0.05, data.label.font.color = "red"',
-          'percentages' = 'pie.data.threshold = 0.05, as.percentages = TRUE',
+          'percentages' = 'pie.data.threshold = 0.05, data.label.format = ".2%"',
           'repeatcolor' = 'pie.subslice.colors.repeat = TRUE, colors = ChartColors(10, "Greys"), pie.subslice.colors = ChartColors(3, "Greens")',
           'norepeatcolor' = 'pie.subslice.colors.repeat = FALSE, colors = ChartColors(10, "Greys"), pie.subslice.colors = ChartColors(20, "Greens")')
 
