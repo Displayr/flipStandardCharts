@@ -75,18 +75,20 @@
 #' @param y.grid.width Width of y-grid lines in pixels; 0 = no line
 #' @param y.grid.color Color of y-grid lines as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
-#' @param y.tick.show Whether to display the y-axis tick labels 
+#' @param y.tick.show Whether to display the y-axis tick labels
 #' (i.e. radial distance from center)
 #' @param y.tick.suffix y-axis tick label suffix
 #' @param y.tick.prefix y-axis tick label prefix
-#' @param y.tick.decimals y-axis tick label decimal places
-#' @param y.hovertext.decimals y-axis hover text decimal places
+#' @param y.tick.format A string representing a d3 formatting code.
+#' See https://github.com/mbostock/d3/wiki/Formatting#numbers
+#' @param y.hovertext.format A string representing a d3 formatting code.
+#' See https://github.com/mbostock/d3/wiki/Formatting#numbers
 #' @param y.tick.font.color y-axis tick label font color as a named color
 #' in character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param y.tick.font.family Character; y-axis tick label font family
 #' @param y.tick.font.size y-axis tick label font size
-#' @param x.tick.show  Whether to display the x-axis tick labels 
+#' @param x.tick.show  Whether to display the x-axis tick labels
 #' (i.e. labels around the sides of the radar chart)
 #' @param x.tick.font.color x-axis title font color as a named color in
 #' character format (e.g. "black") or an rgb value (e.g.
@@ -111,7 +113,8 @@
 #' @param data.label.font.color Font color as a named color
 #' in character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param data.label.decimals Number of decimal places to show in data labels.
+#' @param data.label.format A string representing a d3 formatting code.
+#' See https://github.com/mbostock/d3/wiki/Formatting#numbers
 #' @param data.label.prefix Character; prefix for data values.
 #' @param data.label.suffix Character; suffix for data values.
 #' @param ... Extra arguments that are ignored.
@@ -166,8 +169,8 @@ Radar <- function(x,
                     y.tick.show = TRUE,
                     y.tick.suffix = "",
                     y.tick.prefix = "",
-                    y.tick.decimals = NULL,
-                    y.hovertext.decimals = NULL,
+                    y.tick.format = "",
+                    y.hovertext.format = "",
                     y.tick.font.color = global.font.color,
                     y.tick.font.family = global.font.family,
                     y.tick.font.size = 10,
@@ -177,7 +180,7 @@ Radar <- function(x,
                     data.label.font.family = global.font.family,
                     data.label.font.size = 10,
                     data.label.font.color = global.font.color,
-                    data.label.decimals = 2,
+                    data.label.format = "",
                     data.label.prefix = "",
                     data.label.suffix = "",
                     subtitle = "",
@@ -208,7 +211,7 @@ Radar <- function(x,
         n <- nrow(chart.matrix)
         m <- ncol(chart.matrix)
         legend.show <- FALSE
-    } 
+    }
 
     if (n <= 2)
     {
@@ -243,10 +246,23 @@ Radar <- function(x,
     tick.vals <- seq(from = 0, to = y.bounds.maximum, by = y.tick.distance)
     r.max <- y.bounds.maximum
 
-    if (is.null(y.tick.decimals))
+    # Extract formatting from d3
+    hover.format.function <- ifelse(grepl("%", y.hovertext.format, fixed = TRUE), FormatAsPercent, FormatAsReal)
+    tick.format.function <- ifelse(grepl("%", y.tick.format, fixed = TRUE), FormatAsPercent, FormatAsReal)
+    data.label.format.function <- ifelse(grepl("%", data.label.format, fixed = TRUE), FormatAsPercent, FormatAsReal)
+
+    if (y.tick.format == "")
         y.tick.decimals <- max(0, -floor(log10(min(diff(tick.vals)))))
-    if (is.null(y.hovertext.decimals))
+    else
+        y.tick.decimals <- as.numeric(regmatches(y.tick.format, regexpr("\\d+", data.label.format)))
+    if (y.hovertext.format == "")
         y.hovertext.decimals <- y.tick.decimals
+    else
+        y.hovertext.decimals <- as.numeric(regmatches(y.hovertext.format, regexpr("\\d+", data.label.format)))
+    if (data.label.format == "")
+        data.label.decimals <- 2
+    else
+        data.label.decimals <- as.numeric(regmatches(data.label.format, regexpr("\\d+", data.label.format)))
 
     # Convert data (polar) into x, y coordinates
     pos <- do.call(rbind, lapply(as.data.frame(chart.matrix), getPolarCoord))
@@ -260,9 +276,9 @@ Radar <- function(x,
 
     pos <- cbind(pos,
             HoverText=sprintf("%s%s: %s%s%s", tmp.group, pos$Name, y.tick.prefix,
-                FormatAsReal(unlist(chart.matrix), decimals = y.hovertext.decimals), y.tick.suffix),
+                hover.format.function(unlist(chart.matrix), decimals = y.hovertext.decimals), y.tick.suffix),
             DataLabels=sprintf("%s%s%s", data.label.prefix,
-                FormatAsReal(unlist(chart.matrix), decimals = data.label.decimals),
+                data.label.format.function(unlist(chart.matrix), decimals = data.label.decimals),
                 data.label.suffix))
 
 
@@ -294,7 +310,7 @@ Radar <- function(x,
     for (ggi in 1:length(g.list))
     {
         ind <- which(pos$Group == g.list[ggi])
-        p <- add_trace(p, x = pos$x[ind], y = pos$y[ind], name = g.list[ggi], 
+        p <- add_trace(p, x = pos$x[ind], y = pos$y[ind], name = g.list[ggi],
                     type = "scatter", mode = "lines", fill = "toself",
                     fillcolor = toRGB(colors[ggi], alpha = opacity),
                     legendgroup = g.list[ggi], showlegend = TRUE,
@@ -343,12 +359,12 @@ Radar <- function(x,
         xanch[which(abs(outer[,2]) < r.max/100 & sign(outer[,1]) < 0)] <- "right"
         xanch[which(abs(outer[,2]) < r.max/100 & sign(outer[,1]) > 0)] <- "left"
 
-        xlab <- autoFormatLongLabels(rownames(chart.matrix)[1:n], 
+        xlab <- autoFormatLongLabels(rownames(chart.matrix)[1:n],
                     x.tick.label.wrap, x.tick.label.wrap.nchar)
         font.asp <- fontAspectRatio(x.tick.font.family)
 
-        # X-axis label widths are fixed to avoid the chart width changing in 
-        # Standard R regression tests. We avoided fixing the x-axis range 
+        # X-axis label widths are fixed to avoid the chart width changing in
+        # Standard R regression tests. We avoided fixing the x-axis range
         # because autorange handles variation in the xaxis labels quite well
         xlab.width <- (font.asp + 0.5) * x.tick.font.size *
                         max(nchar(unlist(strsplit(split="<br>", as.character(xlab)))))
@@ -367,7 +383,7 @@ Radar <- function(x,
     if (grid.show && y.grid.width > 0 && y.tick.show && !is.null(tick.vals))
         p <- add_annotations(p, x=rep(0, length(tick.vals)), y = tick.vals,
                 font = y.tick.font, showarrow = F, xanchor = "right", xshift = -5,
-                text = paste0(y.tick.prefix, FormatAsReal(tick.vals, 
+                text = paste0(y.tick.prefix, tick.format.function(tick.vals,
                               decimals = y.tick.decimals), y.tick.suffix))
 
     p <- config(p, displayModeBar = modebar.show)

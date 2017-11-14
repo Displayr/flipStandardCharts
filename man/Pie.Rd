@@ -48,8 +48,7 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 \item{pie.values.order}{Order of the labels shown. Can be one of 'descending', 'alphabetical' or 'initial'.}
 
 \item{data.label.format}{A string representing a d3 formatting code.
-See https://github.com/mbostock/d3/wiki/Formatting#numbers or
-https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec}
+See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 
 \item{data.label.prefix}{Character; prefix for data values.}
 

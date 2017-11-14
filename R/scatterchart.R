@@ -164,11 +164,9 @@
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param x.tick.show Whether to display the x-axis tick labels
 #' @param x.tick.format A string representing a d3 formatting code.
-#' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
-#' https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec
+#' See https://github.com/mbostock/d3/wiki/Formatting#numbers
 #' @param x.hovertext.format A string representing a d3 formatting code.
-#' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
-#' https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec
+#' See https://github.com/mbostock/d3/wiki/Formatting#numbers
 #' @param x.tick.angle x-axis tick label angle in degrees.
 #' 90 = vertical; 0 = horizontal
 #' @param x.tick.font.color X-axis tick label font color as a named color in
@@ -556,7 +554,7 @@ Scatter <- function(x = NULL,
         series.marker.show
 
     type <- "Scatterplot"
-    legend <- setLegend("Scatterplot", legend.font, legend.ascending, 
+    legend <- setLegend("Scatterplot", legend.font, legend.ascending,
                         legend.fill.color, legend.fill.opacity,
                         legend.border.color, legend.border.line.width,
                         legend.position.x, legend.position.y)
@@ -564,14 +562,14 @@ Scatter <- function(x = NULL,
     {
         footer <- ""
         if (!is.null(scatter.labels.name))
-            footer <- sprintf("%sPoints labeled by '%s'; ", 
+            footer <- sprintf("%sPoints labeled by '%s'; ",
                                footer, scatter.labels.name)
         if (!is.null(scatter.colors.name))
             footer <- sprintf("%sPoints colored according to '%s'; ",
                               footer, scatter.colors.name)
         if (!is.null(scatter.sizes.name))
             footer <- sprintf("%s%s of points are proportional to absolute value of '%s'; ",
-                              footer, 
+                              footer,
                               if (scatter.sizes.as.diameter) "Diameter" else "Area",
                               scatter.sizes.name)
     }
@@ -613,8 +611,8 @@ Scatter <- function(x = NULL,
                   y.hovertext.format)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
-                  xtick, xtick.font, x.tick.angle, x.tick.mark.length, 
-                  x.tick.distance, x.tick.format, "", "", x.tick.show, 
+                  xtick, xtick.font, x.tick.angle, x.tick.mark.length,
+                  x.tick.distance, x.tick.format, "", "", x.tick.show,
                   x.zero, x.zero.line.width, x.zero.line.color,
                   x.hovertext.format, axisFormat$labels)
 
@@ -622,7 +620,7 @@ Scatter <- function(x = NULL,
         x <- AsDate(as.character(x), on.parse.failure = "silent")
     if (yaxis$type == "date")
         y <- AsDate(as.character(y), on.parse.failure = "silent")
-    
+
     # Work out margin spacing
     margins <- list(t = 20, b = 50, r = 60, l = 80, pad = 0)
     margins <- setMarginsForAxis(margins, axisFormat, xaxis)
@@ -684,8 +682,8 @@ Scatter <- function(x = NULL,
             if (!is.null(tmp.x))
                 p <- add_trace(p, x = tmp.x, y = tmp.y, type = "scatter",
                        mode = "lines", hoverinfo = "none", showlegend = F, opacity = 0)
-        } 
-    
+        }
+
         # main trace
         p <- add_trace(p, x = x[ind], y = y[ind], name = g.list[ggi],
                 showlegend=legend.show, legendgroup = if (num.series > 1) ggi else 1,

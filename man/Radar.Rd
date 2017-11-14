@@ -27,13 +27,13 @@ Radar(x, title = "", title.font.family = global.font.family,
   maxColorValue = 255), y.bounds.maximum = NULL, y.tick.distance = NULL,
   y.grid.width = 1 * grid.show, y.grid.color = rgb(225, 225, 225,
   maxColorValue = 255), y.tick.show = TRUE, y.tick.suffix = "",
-  y.tick.prefix = "", y.tick.decimals = NULL, y.hovertext.decimals = NULL,
+  y.tick.prefix = "", y.tick.format = "", y.hovertext.format = "",
   y.tick.font.color = global.font.color,
   y.tick.font.family = global.font.family, y.tick.font.size = 10,
   x.tick.label.wrap = TRUE, x.tick.label.wrap.nchar = 21,
   data.label.show = FALSE, data.label.font.family = global.font.family,
   data.label.font.size = 10, data.label.font.color = global.font.color,
-  data.label.decimals = 2, data.label.prefix = "", data.label.suffix = "",
+  data.label.format = "", data.label.prefix = "", data.label.suffix = "",
   subtitle = "", subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color, subtitle.font.size = 12,
   footer = "", footer.font.family = global.font.family,
@@ -134,7 +134,7 @@ font attribute for the chart unless specified individually.}
 \item{grid.show}{Logical; Whether to show grid lines.
 opacity as an alpha value (0 to 1).}
 
-\item{x.tick.show}{Whether to display the x-axis tick labels 
+\item{x.tick.show}{Whether to display the x-axis tick labels
 (i.e. labels around the sides of the radar chart)}
 
 \item{x.tick.font.color}{x-axis title font color as a named color in
@@ -160,16 +160,18 @@ plotting; NULL = no manual range set.  The minimum is always 0.}
 \item{y.grid.color}{Color of y-grid lines as a named color in character
 format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{y.tick.show}{Whether to display the y-axis tick labels 
+\item{y.tick.show}{Whether to display the y-axis tick labels
 (i.e. radial distance from center)}
 
 \item{y.tick.suffix}{y-axis tick label suffix}
 
 \item{y.tick.prefix}{y-axis tick label prefix}
 
-\item{y.tick.decimals}{y-axis tick label decimal places}
+\item{y.tick.format}{A string representing a d3 formatting code.
+See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 
-\item{y.hovertext.decimals}{y-axis hover text decimal places}
+\item{y.hovertext.format}{A string representing a d3 formatting code.
+See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 
 \item{y.tick.font.color}{y-axis tick label font color as a named color
 in character format (e.g. "black") or an rgb value (e.g.
@@ -193,7 +195,8 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{data.label.decimals}{Number of decimal places to show in data labels.}
+\item{data.label.format}{A string representing a d3 formatting code.
+See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 
 \item{data.label.prefix}{Character; prefix for data values.}
 

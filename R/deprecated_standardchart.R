@@ -175,12 +175,10 @@
 #' @param x.tick.prefix x-axis tick label prefix
 #' @param x.tick.decimals x-axis tick label decimal places
 #' @param x.tick.format.manual Overrides tick.prefix, suffix and decimals;
-#' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
-#' https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec
+#' See https://github.com/mbostock/d3/wiki/Formatting#numbers
 #' @param x.hovertext.decimals X.axis hover text decimal places
 #' @param x.hovertext.format.manual Overrides hovertext decimals;
-#' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
-#' https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec
+#' See https://github.com/mbostock/d3/wiki/Formatting#numbers
 #' @param x.tick.angle x-axis tick label angle in degrees.
 #' 90 = vertical; 0 = horizontal
 #' @param x.tick.font.color X-axis tick label font color as a named color in

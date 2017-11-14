@@ -5,7 +5,7 @@
 \title{\code{Venn}}
 \usage{
 Venn(x = NULL, weights = NULL, data.label.font.size = 20,
-  as.percentages = TRUE, data.label.decimals = 0)
+  data.label.format = "")
 }
 \arguments{
 \item{x}{A \link{data.frame} \code{logical} (converted to logical using >= 1 if not) or a JSON-like list.}
@@ -14,10 +14,8 @@ Venn(x = NULL, weights = NULL, data.label.font.size = 20,
 
 \item{data.label.font.size}{The font size of the labels. Defaults to 10.}
 
-\item{as.percentages}{Show percentages in the Venn diagram (without the percentage signs).
-These do not necessarily add up to 100\%. This option only applies when \code{x} is a data.frame.}
-
-\item{data.label.decimals}{Number of decimal places. This option only applies when \code{x} is a data.frame.}
+\item{data.label.format}{A string representing a d3 formatting code.
+See https://github.com/mbostock/d3/wiki/Formatting#numbers. This option only applies when \code{x} is a data.frame.}
 }
 \description{
 Venn diagram (also known as Euler diagram). Minimizes sum of squared residuals to find the best overlap. Where no diagram appears,

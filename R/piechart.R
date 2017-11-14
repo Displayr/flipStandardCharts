@@ -21,8 +21,7 @@
 #' @param data.label.font.size Font size for data label.
 #' @param data.label.font.color Font color for data label.
 #' @param data.label.format A string representing a d3 formatting code.
-#' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
-#' https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec
+#' See https://github.com/mbostock/d3/wiki/Formatting#numbers
 #' @param pie.values.order Order of the labels shown. Can be one of 'descending', 'alphabetical' or 'initial'.
 #' @param pie.groups.order Order of the groups shown. Can be one of 'descending', 'alphabetical' or 'initial'.
 #' @param pie.groups.font.family Character; font family for group labels.

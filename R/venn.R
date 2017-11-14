@@ -7,9 +7,8 @@
 #' @param x A \link{data.frame} \code{logical} (converted to logical using >= 1 if not) or a JSON-like list.
 #' @param weights An optional vector of weights, or, the name or, the name of a variable in \code{x}. It may not be an expression.
 #' @param data.label.font.size The font size of the labels. Defaults to 10.
-#' @param as.percentages Show percentages in the Venn diagram (without the percentage signs).
-#' These do not necessarily add up to 100\%. This option only applies when \code{x} is a data.frame.
-#' @param data.label.decimals Number of decimal places. This option only applies when \code{x} is a data.frame.
+#' @param data.label.format A string representing a d3 formatting code.
+#' See https://github.com/mbostock/d3/wiki/Formatting#numbers. This option only applies when \code{x} is a data.frame.
 #' @examples
 #' Venn(list(
 #'    list("sets"= list(0), "label"= "Like", "size"= 100),
@@ -26,8 +25,7 @@
 Venn <- function(x = NULL,
                         weights = NULL,
                         data.label.font.size = 20,
-                        as.percentages = TRUE,
-                        data.label.decimals = 0)
+                        data.label.format = "")
 {
     if (is.numeric(x))
     {
@@ -39,6 +37,13 @@ Venn <- function(x = NULL,
         nms = Labels(x)
         if (is.null(weights))
             weights <- rep(1, nrow(x))
+
+        as.percentages <- grepl("%", data.label.format, fixed = TRUE)
+        if (data.label.format == "")
+            data.label.decimals <- 0
+        else
+            data.label.decimals <- as.numeric(regmatches(data.label.format, regexpr("\\d+", data.label.format)))
+
         if (as.percentages)
             weights <- weights / sum(weights) * 100
         if (!is.logical(x[,1]))

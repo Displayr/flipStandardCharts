@@ -363,12 +363,10 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 \item{x.tick.prefix}{x-axis tick label prefix}
 
 \item{x.tick.format}{A string representing a d3 formatting code.
-See https://github.com/mbostock/d3/wiki/Formatting#numbers or
-https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec}
+See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 
 \item{x.hovertext.format}{A string representing a d3 formatting code.
-See https://github.com/mbostock/d3/wiki/Formatting#numbers or
-https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec}
+See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 
 \item{x.tick.angle}{x-axis tick label angle in degrees.
 90 = vertical; 0 = horizontal}

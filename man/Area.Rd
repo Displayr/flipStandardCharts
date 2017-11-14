@@ -302,12 +302,10 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 \item{x.tick.show}{Whether to display the x-axis tick labels}
 
 \item{x.tick.format}{A string representing a d3 formatting code.
-See https://github.com/mbostock/d3/wiki/Formatting#numbers or
-https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec}
+See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 
 \item{x.hovertext.format}{A string representing a d3 formatting code.
-See https://github.com/mbostock/d3/wiki/Formatting#numbers or
-https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec}
+See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 
 \item{x.tick.angle}{x-axis tick label angle in degrees.
 90 = vertical; 0 = horizontal}
@@ -362,15 +360,14 @@ series markers as an alpha value (0 to 1).}
 
 \item{data.label.font.family}{Character; font family for data label.}
 
-\item{data.label.font.size}{Font size for data label.}
+\item{data.label.font.size}{Font size for data label.px.}
 
 \item{data.label.font.color}{Font color as a named color
 in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{data.label.format}{A string representing a d3 formatting code.
-See https://github.com/mbostock/d3/wiki/Formatting#numbers or
-https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec}
+See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 
 \item{data.label.prefix}{Character; prefix for data values.}
 
