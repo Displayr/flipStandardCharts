@@ -91,7 +91,7 @@
 #' @param y.bounds.minimum Minimum of range for plotting; NULL = no manual range set.
 #' @param y.bounds.maximum Maximum of range for plotting; NULL = no manual range set.
 #' @param y.tick.distance Distance between tick marks. Requires that \code{values.bounds.minimum} and \code{values.bounds.maximum} have been set.
-#' @param y.zero Whether the y-axis should include zero. 
+#' @param y.zero Whether the y-axis should include zero.
 #' @param y.zero.line.width Width in pixels of zero line;
 #' @param y.zero.line.color Color of horizontal zero line as a named
 #' color in character format (e.g. "black") or an rgb value (e.g.
@@ -136,7 +136,7 @@
 #' @param x.tick.distance Tick mark distance in
 #' x-axis units between minimum and maximum for plotting; NULL = no manual
 #' range set.
-#' @param x.zero Whether the x-axis should include zero. 
+#' @param x.zero Whether the x-axis should include zero.
 #' @param x.zero.line.width Width in pixels of zero line.
 #' @param x.zero.line.color Color of horizontal zero (origin) line as a named
 #' color in character format (e.g. "black") or an rgb value (e.g.
@@ -181,8 +181,10 @@
 #' @param data.label.font.color Font color as a named color
 #' in character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param data.label.decimals Number of decimal places to show in
-#' data labels.
+#' @param data.label.format A string representing a d3 formatting code.
+#' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
+#' https://docs.px.hon.org/release/3.1.3/librarx.string.html#formatspec
+#' @param data.label.decimals TODO deprecate this
 #' @param data.label.prefix Character; prefix for data values.
 #' @param data.label.suffix Character; suffix for data values.
 #' @param data.label.threshold The proportion of the total range below which
@@ -305,7 +307,8 @@ Column <- function(x,
                     data.label.font.family = global.font.family,
                     data.label.font.size = 10,
                     data.label.font.color = global.font.color,
-                    data.label.decimals = 2,
+                    data.label.format = "",
+                    data.label.decimals = 0, # TODO deprecate this
                     data.label.prefix = "",
                     data.label.suffix = "",
                     data.label.threshold = NULL)
@@ -317,8 +320,8 @@ Column <- function(x,
         stop("Input data should be numeric.")
     x.labels.full <- rownames(chart.matrix)
 
-    is.stacked <- grepl("Stacked", type, fixed=T)
-    is.hundred.percent.stacked <- grepl("100% Stacked", type, fixed=T)
+    is.stacked <- grepl("Stacked", type, fixed = TRUE)
+    is.hundred.percent.stacked <- grepl("100% Stacked", type, fixed = TRUE)
     if (is.stacked && ncol(chart.matrix) < 2)
         stop(paste(type, "requires more than one series. Use Column Chart instead for this data."))
     if (is.stacked && (any(is.na(chart.matrix)) || any(chart.matrix < 0)))
@@ -332,13 +335,17 @@ Column <- function(x,
     # Assume formatting and Qtable/attribute handling already done
     data.label.mult <- 1
     if (is.hundred.percent.stacked)
-    {
         chart.matrix <- cum.data(chart.matrix, "column.percentage")
-        y.tick.format <- "%"
-        y.hovertext.format <- "%"
-        data.label.suffix <- "%"
+
+    if (grepl("%", data.label.format, fixed = TRUE)) {
+        data.label.suffix <- paste("%", data.label.suffix)
         data.label.mult <- 100
     }
+    if (data.label.format == "")
+        data.label.decimals <- 0
+    else
+        data.label.decimals <- as.numeric(substr(data.label.format, 2, nchar(data.label.format) - 1))
+
     matrix.labels <- names(dimnames(chart.matrix))
     if (nchar(x.title) == 0 && length(matrix.labels) == 2)
         x.title <- matrix.labels[1]
@@ -364,7 +371,7 @@ Column <- function(x,
     if (ncol(chart.matrix) == 1)
         legend.show <- FALSE
     legend <- setLegend(type, legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
-                        legend.border.color, legend.border.line.width, 
+                        legend.border.color, legend.border.line.width,
                         legend.position.x, legend.position.y, y.data.reversed)
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
 
@@ -442,7 +449,7 @@ Column <- function(x,
     x.labels <- axisFormat$labels
     y.labels <- colnames(chart.matrix)
     xaxis2 <- NULL
- 
+
     ## Add a trace for each col of data in the matrix
     for (i in 1:ncol(chart.matrix))
     {

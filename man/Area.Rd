@@ -368,8 +368,7 @@ series markers as an alpha value (0 to 1).}
 in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{data.label.decimals}{Number of decimal places to show in
-data labels.}
+\item{data.label.decimals}{TODO deprecate this}
 
 \item{data.label.prefix}{Character; prefix for data values.}
 
