@@ -247,22 +247,16 @@ Radar <- function(x,
     r.max <- y.bounds.maximum
 
     # Extract formatting from d3
-    hover.format.function <- ifelse(grepl("%", y.hovertext.format, fixed = TRUE), FormatAsPercent, FormatAsReal)
-    tick.format.function <- ifelse(grepl("%", y.tick.format, fixed = TRUE), FormatAsPercent, FormatAsReal)
-    data.label.format.function <- ifelse(grepl("%", data.label.format, fixed = TRUE), FormatAsPercent, FormatAsReal)
+    hover.format.function <- ifelse(percentFromD3(y.hovertext.format), FormatAsPercent, FormatAsReal)
+    tick.format.function <- ifelse(percentFromD3(y.tick.format), FormatAsPercent, FormatAsReal)
+    data.label.format.function <- ifelse(percentFromD3(data.label.format), FormatAsPercent, FormatAsReal)
 
     if (y.tick.format == "")
         y.tick.decimals <- max(0, -floor(log10(min(diff(tick.vals)))))
     else
-        y.tick.decimals <- as.numeric(regmatches(y.tick.format, regexpr("\\d+", y.tick.format)))
-    if (y.hovertext.format == "")
-        y.hovertext.decimals <- y.tick.decimals
-    else
-        y.hovertext.decimals <- as.numeric(regmatches(y.hovertext.format, regexpr("\\d+", y.hovertext.format)))
-    if (data.label.format == "")
-        data.label.decimals <- 2
-    else
-        data.label.decimals <- as.numeric(regmatches(data.label.format, regexpr("\\d+", data.label.format)))
+        y.tick.decimals <- decimalsFromD3(y.tick.format)
+    y.hovertext.decimals <- decimalsFromD3(y.hovertext.format, y.tick.decimals)
+    data.label.decimals <- decimalsFromD3(data.label.format, 2)
 
     # Convert data (polar) into x, y coordinates
     pos <- do.call(rbind, lapply(as.data.frame(chart.matrix), getPolarCoord))
@@ -276,7 +270,8 @@ Radar <- function(x,
 
     pos <- cbind(pos,
             HoverText=sprintf("%s%s: %s%s%s", tmp.group, pos$Name, y.tick.prefix,
-                hover.format.function(unlist(chart.matrix), decimals = y.hovertext.decimals), y.tick.suffix),
+                hover.format.function(unlist(chart.matrix), decimals = y.hovertext.decimals,
+                                      comma.for.thousands = commaFromD3(y.hovertext.format)), y.tick.suffix),
             DataLabels=sprintf("%s%s%s", data.label.prefix,
                 data.label.format.function(unlist(chart.matrix), decimals = data.label.decimals),
                 data.label.suffix))

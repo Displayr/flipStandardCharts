@@ -113,7 +113,8 @@
 #' @param data.label.font.color Font color as a named color
 #' in character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param data.label.decimals  Number of decimal places to show in data labels.
+#' @param data.label.format A string representing a d3 formatting code.
+#' See https://github.com/mbostock/d3/wiki/Formatting#numbers
 #' @param data.label.prefix Character; prefix for data values.
 #' @param data.label.suffix Character; suffix for data values.
 #' @param scatter.max.labels Integer; the maximum number of labels to show on a Labeled Scatterplot.
@@ -166,7 +167,7 @@ LabeledScatter <- function(x = NULL,
                                 data.label.font.family = global.font.family,
                                 data.label.font.color = global.font.color,
                                 data.label.font.size = 10,
-                                data.label.decimals = 0,
+                                data.label.format = "",
                                 data.label.prefix = "",
                                 data.label.suffix = "",
                                 legend.font.color = global.font.color,
@@ -387,7 +388,7 @@ LabeledScatter <- function(x = NULL,
     if (is.null(scatter.labels))
         scatter.labels <- rep("", n)
     if (is.numeric(scatter.labels))
-        scatter.labels <- FormatAsReal(scatter.labels, decimals = data.label.decimals)
+        scatter.labels <- FormatAsReal(scatter.labels, decimals = decimalsFromD3(data.label.format, 0))
     scatter.labels <- paste0(data.label.prefix, scatter.labels, data.label.suffix)
 
     lab.tidy <- scatter.labels
@@ -415,15 +416,8 @@ LabeledScatter <- function(x = NULL,
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
 
     # Convert d3 formatting to number of decimals
-    if (is.null(x.tick.format) || x.tick.format == "")
-        x.decimals <- decimalsToDisplay(x)
-    else
-        x.decimals <- as.numeric(substr(x.tick.format, 2, nchar(x.tick.format) - 1))
-    if (is.null(y.tick.format) || y.tick.format == "")
-        y.decimals <- decimalsToDisplay(y)
-    else
-        y.decimals <- as.numeric(substr(y.tick.format, 2, nchar(y.tick.format) - 1))
-
+    x.decimals <- decimalsFromD3(x.tick.format, decimalsToDisplay(x))
+    y.decimals <- decimalsFromD3(y.tick.format, decimalsToDisplay(y))
 
     return(rhtmlLabeledScatter::LabeledScatter(X = x[not.na],
                        Y = y[not.na],

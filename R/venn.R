@@ -38,11 +38,8 @@ Venn <- function(x = NULL,
         if (is.null(weights))
             weights <- rep(1, nrow(x))
 
-        as.percentages <- grepl("%", data.label.format, fixed = TRUE)
-        if (data.label.format == "")
-            data.label.decimals <- 0
-        else
-            data.label.decimals <- as.numeric(regmatches(data.label.format, regexpr("\\d+", data.label.format)))
+        as.percentages <- percentFromD3(data.label.format)
+        data.label.decimals <- decimalsFromD3(data.label.format, 0)
 
         if (as.percentages)
             weights <- weights / sum(weights) * 100

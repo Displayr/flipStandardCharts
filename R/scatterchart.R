@@ -199,8 +199,8 @@
 #' @param data.label.font.color Font color as a named color
 #' in character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param data.label.decimals Number of decimal places to show in
-#' data labels.
+#' @param data.label.format A string representing a d3 formatting code.
+#' See https://github.com/mbostock/d3/wiki/Formatting#numbers
 #' @param data.label.prefix Character; prefix for data values.
 #' @param data.label.suffix Character; suffix for data values.
 #' @param data.label.position Character; where to place the source data
@@ -260,7 +260,7 @@ Scatter <- function(x = NULL,
                          data.label.font.family = global.font.family,
                          data.label.font.color = global.font.color,
                          data.label.font.size = 10,
-                         data.label.decimals = 2, # Ignored in Labeled Bubble and Scatterplots
+                         data.label.format = "",
                          data.label.prefix = "",
                          data.label.suffix = "",
                          data.label.position = "top middle",
@@ -521,6 +521,7 @@ Scatter <- function(x = NULL,
     num.series <- if (scatter.colors.as.numeric) 1 else num.groups
 
     # hovertext
+    data.label.decimals <- decimalsFromD3(data.label.format, 2)
     x.str <- if (is.numeric(x)) FormatAsReal(x, decimals = data.label.decimals) else as.character(x)
     y.str <- if (is.numeric(y)) FormatAsReal(y, decimals = data.label.decimals) else as.character(y)
     source.text <- paste0(scatter.labels, " (", x.tick.prefix, x.str, x.tick.suffix, ", ",

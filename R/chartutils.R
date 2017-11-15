@@ -31,7 +31,7 @@ setHoverText <- function(axis, chart.matrix, is.bar = FALSE)
 
     if (ncol(chart.matrix) > 1)
         formatStr <- paste0("name+", formatStr)
-    
+
     return(formatStr)
 }
 
@@ -343,20 +343,20 @@ setAxis <- function(title, side, axisLabels, titlefont,
 
     return (list(title = title, side = side, type = axis.type,
                  titlefont = titlefont, tickfont = tickfont,
-                 showline = has.line, linecolor = linecolor, 
+                 showline = has.line, linecolor = linecolor,
                  linewidth = if (!has.line) NULL else linewidth,
-                 showgrid = gridwidth > 0, gridwidth = gridwidth, 
-                 gridcolor = gridcolor, tickmode = ticks$mode, 
+                 showgrid = gridwidth > 0, gridwidth = gridwidth,
+                 gridcolor = gridcolor, tickmode = ticks$mode,
                  tickvals = ticks$tickvals, ticktext = ticks$ticktext,
-                 ticks = if (has.line) "outside" else "", tickangle = tickangle, 
-                 ticklen = ticklen, tickcolor = linecolor, tickfont = tickfont, 
+                 ticks = if (has.line) "outside" else "", tickangle = tickangle,
+                 ticklen = ticklen, tickcolor = linecolor, tickfont = tickfont,
                  dtick = tickdistance, tickformat = tickformat,
-                 tickprefix = tickprefix, ticksuffix = ticksuffix, 
+                 tickprefix = tickprefix, ticksuffix = ticksuffix,
                  hoverformat = hoverformat, layer = "below traces",
-                 autorange = autorange, range = range, rangemode = rangemode, 
-                 zeroline = show.zero, zerolinewidth = zero.line.width, 
+                 autorange = autorange, range = range, rangemode = rangemode,
+                 zeroline = show.zero, zerolinewidth = zero.line.width,
                  zerolinecolor = zero.line.color,
-                 showexponent="all", showtickprefix=TRUE, showticksuffix=TRUE, 
+                 showexponent="all", showtickprefix=TRUE, showticksuffix=TRUE,
                  showticklabels=tickshow))
 }
 
@@ -640,4 +640,45 @@ evalc <- function(x, env)
     if (inherits(x, c("name", "call")))
         return(eval(x, env))
     x
+}
+
+#' Extract the number of decimal places from a d3 format string.
+#'
+#' All chart functions should accept d3 formats. This is used by functions
+#' that do not handle d3 to find the number of decimal places used to
+#' format labels and hovertext.
+#' #' @noRd
+#' @param format d3 formatting string
+#' @param default The number of decimal places if \code{format} is
+#' not provided (usually signifying automatic formatting).
+#' @return integer
+decimalsFromD3 <- function(format, default = 0)
+{
+    if (length(format) == 0 || format == "")
+        return(default)
+    return(as.numeric(regmatches(format, regexpr("\\d+", format))))
+}
+
+#' Whether to format as percentages based on a d3 format string.
+#'
+#' All chart functions should accept d3 formats. This is used by functions
+#' that do not handle d3 to determine whether to format labels and hovertext as percentages.
+#' #' @noRd
+#' @param format d3 formatting string
+#' @return logical
+percentFromD3 <- function(format)
+{
+    return(grepl("%", format, fixed = TRUE))
+}
+
+#' Whether to format numbers with comma separation of thousands based on a d3 format string.
+#'
+#' All chart functions should accept d3 formats. This is used by functions
+#' that do not handle d3 to determine how to format labels and hovertext.
+#' #' @noRd
+#' @param format d3 formatting string
+#' @return logical
+commaFromD3 <- function(format)
+{
+    return(grepl(",", format, fixed = TRUE))
 }

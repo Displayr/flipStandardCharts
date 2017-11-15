@@ -332,14 +332,11 @@ Column <- function(x,
     if (is.hundred.percent.stacked)
         chart.matrix <- cum.data(chart.matrix, "column.percentage")
 
-    if (grepl("%", data.label.format, fixed = TRUE)) {
+    if (percentFromD3(data.label.format)) {
         data.label.suffix <- paste0("%", data.label.suffix)
         data.label.mult <- 100
     }
-    if (data.label.format == "")
-        data.label.decimals <- 2
-    else
-        data.label.decimals <- as.numeric(regmatches(data.label.format, regexpr("\\d+", data.label.format)))
+    data.label.decimals <- decimalsFromD3(data.label.format)
 
     matrix.labels <- names(dimnames(chart.matrix))
     if (nchar(x.title) == 0 && length(matrix.labels) == 2)

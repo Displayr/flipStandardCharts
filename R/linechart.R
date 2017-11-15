@@ -190,11 +190,8 @@ Line <-   function(x,
                   x.hovertext.format, axisFormat$labels)
 
     # Data label formatting
-    data.label.function <- ifelse(grepl("%", data.label.format, fixed = TRUE), FormatAsPercent, FormatAsReal)
-    if (data.label.format == "")
-        data.label.decimals <- 2
-    else
-        data.label.decimals <- as.numeric(regmatches(data.label.format, regexpr("\\d+", data.label.format)))
+    data.label.function <- ifelse(percentFromD3(data.label.format), FormatAsPercent, FormatAsReal)
+    data.label.decimals <- decimalsFromD3(data.label.format, 2)
 
     # Work out margin spacing
     margins <- list(t = 20, b = 50, r = 60, l = 80, pad = 0)
