@@ -11,11 +11,10 @@
 #' @param x.title.font.size x-axis title font size
 #' @param legend.font.family Character; legend font family
 #' @param legend.font.size Legend font size
-#' @param y.axis.show Logical; whether t show the y-axis
+#' @param y.axis.show Logical; whether to show the y-axis
 #' @param tooltip.show Logical; whether to show a tooltip on hover.
 #' @param y.tick.format A string representing a d3 formatting code.
-#' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
-#' https://docs.python.org/release/3.1.3/library/string.html#formatspec
+#' See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format
 #' @param y.tick.font.family Character; y-axis tick label font family
 #' @param y.tick.font.size y-axis tick label font size
 #' @param y.title Character, y-axis title
@@ -55,11 +54,11 @@ Palm <- function(table,
                  colors = NULL) {
 
     # Convert from d3 to decimals
-    if (is.null(y.tick.format) || y.tick.format == "")
-        y.decimals <- decimalsToDisplay(table)
-    else
-        y.decimals <- as.numeric(substr(y.tick.format, 2, nchar(y.tick.format) - 1))
+    y.decimals <- decimalsFromD3(y.tick.format, decimalsToDisplay(table))
 
+    # Must have a legend
+    if (is.null(legend.font.size))
+        legend.font.size = 11
 
     palm <- rhtmlPalmTrees::PalmTrees(data = table,
                                       weights = NULL,           # Numeric vector specifying weights. Length must equal to ncol(data)
