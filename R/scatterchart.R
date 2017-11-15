@@ -197,8 +197,6 @@
 #' @param data.label.font.color Font color as a named color
 #' in character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param data.label.prefix Character; prefix for data values.
-#' @param data.label.suffix Character; suffix for data values.
 #' @param data.label.position Character; where to place the source data
 #' value in relation to the marker icon.  Can be "top left", "top center", "top
 #' right", "middle left", "middle center", "middle right", "bottom left",
@@ -256,8 +254,6 @@ Scatter <- function(x = NULL,
                          data.label.font.family = global.font.family,
                          data.label.font.color = global.font.color,
                          data.label.font.size = 10,
-                         data.label.prefix = "",
-                         data.label.suffix = "",
                          data.label.position = "top middle",
                          opacity = NULL,
                          background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
@@ -522,12 +518,12 @@ Scatter <- function(x = NULL,
                           y.tick.prefix, y.str, y.tick.suffix, ")")
     if (!is.null(scatter.colors.name))
     {
-        colors.str <- if (is.numeric(scatter.colors)) FormatAsReal(scatter.colors, decimals = data.label.decimals) else as.character(scatter.colors)
+        colors.str <- if (is.numeric(scatter.colors)) FormatAsReal(scatter.colors, decimals = decimalsFromD3(x.hovertext.format, 2)) else as.character(scatter.colors)
         source.text <- paste0(source.text, "<br>", scatter.colors.name, ": ", colors.str)
     }
     if (!is.null(scatter.sizes.name))
     {
-        sizes.str <- if (is.numeric(scatter.sizes)) FormatAsReal(scatter.sizes, decimals=data.label.decimals) else as.character(scatter.sizes)
+        sizes.str <- if (is.numeric(scatter.sizes)) FormatAsReal(scatter.sizes, decimals = decimalsFromD3(x.hovertext.format, 2)) else as.character(scatter.sizes)
         source.text <- paste0(source.text, "<br>", scatter.sizes.name, ": ", sizes.str)
     }
 
@@ -607,7 +603,7 @@ Scatter <- function(x = NULL,
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length,
-                  x.tick.distance, x.tick.format, "", "", x.tick.show,
+                  x.tick.distance, x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show,
                   x.zero, x.zero.line.width, x.zero.line.color,
                   x.hovertext.format, axisFormat$labels)
 
