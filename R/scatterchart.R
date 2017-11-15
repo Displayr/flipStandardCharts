@@ -119,11 +119,9 @@
 #' @param y.tick.suffix y-axis tick label suffix
 #' @param y.tick.prefix y-axis tick label prefix
 #' @param y.tick.format A string representing a d3 formatting code.
-#' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
-#' https://docs.python.org/release/3.1.3/library/string.html#formatspec
+#' See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format
 #' @param y.hovertext.format A string representing a d3 formatting code.
-#' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
-#' https://docs.python.org/release/3.1.3/library/string.html#formatspec
+#' See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format
 #' @param y.tick.angle y-axis tick label angle in degrees.
 #' 90 = vertical; 0 = horizontal
 #' @param y.tick.font.color y-axis tick label font color as a named color
@@ -199,8 +197,6 @@
 #' @param data.label.font.color Font color as a named color
 #' in character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param data.label.format A string representing a d3 formatting code.
-#' See https://github.com/mbostock/d3/wiki/Formatting#numbers
 #' @param data.label.prefix Character; prefix for data values.
 #' @param data.label.suffix Character; suffix for data values.
 #' @param data.label.position Character; where to place the source data
@@ -260,7 +256,6 @@ Scatter <- function(x = NULL,
                          data.label.font.family = global.font.family,
                          data.label.font.color = global.font.color,
                          data.label.font.size = 10,
-                         data.label.format = "",
                          data.label.prefix = "",
                          data.label.suffix = "",
                          data.label.position = "top middle",
@@ -521,9 +516,8 @@ Scatter <- function(x = NULL,
     num.series <- if (scatter.colors.as.numeric) 1 else num.groups
 
     # hovertext
-    data.label.decimals <- decimalsFromD3(data.label.format, 2)
-    x.str <- if (is.numeric(x)) FormatAsReal(x, decimals = data.label.decimals) else as.character(x)
-    y.str <- if (is.numeric(y)) FormatAsReal(y, decimals = data.label.decimals) else as.character(y)
+    x.str <- if (is.numeric(x)) FormatAsReal(x, decimals = decimalsFromD3(x.hovertext.format, 2)) else as.character(x)
+    y.str <- if (is.numeric(y)) FormatAsReal(y, decimals = decimalsFromD3(y.hovertext.format, 2)) else as.character(y)
     source.text <- paste0(scatter.labels, " (", x.tick.prefix, x.str, x.tick.suffix, ", ",
                           y.tick.prefix, y.str, y.tick.suffix, ")")
     if (!is.null(scatter.colors.name))
