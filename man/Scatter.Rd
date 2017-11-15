@@ -23,7 +23,7 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1, scatter.y.column = 2,
   footer.wrap = TRUE, footer.wrap.nchar = 100, data.label.show = FALSE,
   data.label.font.family = global.font.family,
   data.label.font.color = global.font.color, data.label.font.size = 10,
-  data.label.decimals = 2, data.label.prefix = "", data.label.suffix = "",
+  data.label.format = "", data.label.prefix = "", data.label.suffix = "",
   data.label.position = "top middle", opacity = NULL,
   background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
   background.fill.opacity = 1, charting.area.fill.color = rgb(255, 255, 255,
@@ -169,8 +169,8 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{data.label.font.size}{Font size for data label.}
 
-\item{data.label.decimals}{Number of decimal places to show in
-data labels.}
+\item{data.label.format}{A string representing a d3 formatting code.
+See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 
 \item{data.label.prefix}{Character; prefix for data values.}
 

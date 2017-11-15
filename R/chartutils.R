@@ -103,7 +103,20 @@ checkTableList <- function(y, trend.lines)
     return(y)
 }
 
+
+#' Returns range of axis or vector in format readable for plotly
+#'
+#' @param axis If \code{axis} object is provided and \code{range} is
+#'   specified in it (i.e. not \code{auto.range}), then this range will
+#'   be returned
+#' @param axisFormat This is the output of \code{formatLabels}. This object
+#'   contains information if the axis is a date.
+#' @param x If \code{axis$range} is not provided, and \code{axisFormat} does
+#'   not contain dates, then range is determined
+#'   from the range of the data \code{x}. Offsets are added so that 
+#'   bar and column charts are not truncated
 #' @importFrom flipTime AsDate
+#' @noRd
 getRange <- function(x, axis, axisFormat)
 {
     range <- NULL
@@ -132,6 +145,20 @@ getRange <- function(x, axis, axisFormat)
     range
 }
 
+
+#' Construct line of best fit
+#'
+#' @param x Independent (predictor) data for fitting (this is actually 
+#'   the y-axis in bar charts). May be vector of numeric, dates or factor.
+#' @param y Dependent (predicted data). This must be a numeric vector.
+#' @param fit.type May be \code{Smooth}, which creates a loess smooth, or
+#'   any other value will use a \code{Linear} regression to create the line
+#'   of best fit
+#' @param axis.type The axis type of the dependent axis. This is used 
+#'   to provide extra information about how to display the \code{x} variable.
+#' @param ignore.last Whether to ignore the last observation in \code{x}
+#'   and \code{y}.
+#' @noRd
 fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
 {
     if (!is.numeric(y))
@@ -161,7 +188,8 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
     y.fit <- predict(tmp.fit, data.frame(x = x.fit))
     if (tmp.is.factor)
         x.fit <- x
-    return(list(x = x.fit, y = y.fit))
+    ord <- order(tmp.dat$x)
+    return(list(x = x.fit[ord], y = y.fit[ord]))
 }
 
 setLegend <- function(type, font, ascending, fill.color, fill.opacity, border.color, border.line.width,
