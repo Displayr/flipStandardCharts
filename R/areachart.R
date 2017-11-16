@@ -412,6 +412,8 @@ Area <- function(x,
         }
         else
         {
+            if (fit.type != "None" && is.stacked && i == 1)
+                warning("Line of best fit not shown for stacked charts.")
             fill.bound <- if (is.stacked && i > 1) "tonexty" else "tozeroy"
 
             # plotly has bug where for stacked area charts,
