@@ -55,7 +55,11 @@ for (func in charting.funcs)
                 else if (grepl("double-linearfit", filestem))
                     expect_warning(eval(parse(text=cmd)))
                 else
+                {
                     expect_error(eval(parse(text=cmd)), NA)
+                    #print(pp)
+                    #readline(prompt=paste0(filestem, ": press [enter] to continue: "))
+                }
             })
         }
     }

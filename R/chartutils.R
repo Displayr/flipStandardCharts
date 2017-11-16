@@ -168,8 +168,9 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
     }
 
     tmp.is.factor <- axis.type != "numeric"
-    x0 <- if (!tmp.is.factor) as.numeric(x) else 1:length(x)
-    tmp.dat <- data.frame(x=x0, y=y)
+    x0 <- if (tmp.is.factor) suppressWarnings(AsNumeric(x, binary = FALSE)) 
+          else as.numeric(x)
+    tmp.dat <- data.frame(xorig=x, x=x0, y=y)
     if (ignore.last)
         tmp.dat <- tmp.dat[-which.max(tmp.dat$x),]
     if (nrow(tmp.dat) < 2)
@@ -177,23 +178,24 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
         warning("Not enough data to constuct line of best fit.")
         return(list(x = NULL, y = NULL))
     }
+    ord <- order(tmp.dat$x)
+    tmp.dat <- tmp.dat[ord,]
 
     tmp.fit <- if (fit.type == "Smooth" && nrow(tmp.dat) > 7) loess(y~I(as.numeric(x)), data=tmp.dat)
                else lm(y~x, data=tmp.dat)
 
-    x.fit <- if (tmp.is.factor) x0
+    x.fit <- if (tmp.is.factor) tmp.dat$x
              else seq(from = min(tmp.dat$x), to = max(tmp.dat$x), length = 100)
     if (!tmp.is.factor && max(x.fit) < max(tmp.dat$x))
         x.fit <- c(x.fit, max(tmp.dat$x))
     y.fit <- predict(tmp.fit, data.frame(x = x.fit))
     if (tmp.is.factor)
-        x.fit <- x
-    ord <- order(tmp.dat$x)
-    return(list(x = x.fit[ord], y = y.fit[ord]))
+        x.fit <- tmp.dat$xorig
+    return(list(x = x.fit, y = y.fit))
 }
 
 setLegend <- function(type, font, ascending, fill.color, fill.opacity, border.color, border.line.width,
-                      x.pos=1.02, y.pos=1.00, reversed = FALSE)
+                      x.pos = 1.02, y.pos = 1.00, reversed = FALSE)
 {
     if (is.na(ascending))
         ascending <- !(grepl("Stacked", type) && !reversed) || grepl("Stacked Bar", type)

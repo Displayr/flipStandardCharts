@@ -1,4 +1,5 @@
 context("Chart backgrounds")
+set.seed(3363629)
 
 # Here we are checking the behaviour of the plotly chart background and axis
 # Only checking charting functions supporting most of plotly chart axes options
@@ -57,7 +58,7 @@ for (ff in funcs)
                 if (ff == "Scatter")
                     dat <- paste0("sc.", dat)
                 cmd <- paste0("pp <- ", ff, "(", dat, ",", test.args[i], ")")
-                expect_error(eval(parse(text=cmd)), NA)
+                expect_error(suppressWarnings(eval(parse(text=cmd))), NA)
 
                 #expect_true(TestWidget(pp, filestem))
                 #print(pp)
