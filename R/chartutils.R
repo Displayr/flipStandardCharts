@@ -113,7 +113,7 @@ checkTableList <- function(y, trend.lines)
 #'   contains information if the axis is a date.
 #' @param x If \code{axis$range} is not provided, and \code{axisFormat} does
 #'   not contain dates, then range is determined
-#'   from the range of the data \code{x}. Offsets are added so that 
+#'   from the range of the data \code{x}. Offsets are added so that
 #'   bar and column charts are not truncated
 #' @importFrom flipTime AsDate
 #' @noRd
@@ -148,13 +148,13 @@ getRange <- function(x, axis, axisFormat)
 
 #' Construct line of best fit
 #'
-#' @param x Independent (predictor) data for fitting (this is actually 
+#' @param x Independent (predictor) data for fitting (this is actually
 #'   the y-axis in bar charts). May be vector of numeric, dates or factor.
 #' @param y Dependent (predicted data). This must be a numeric vector.
 #' @param fit.type May be \code{Smooth}, which creates a loess smooth, or
 #'   any other value will use a \code{Linear} regression to create the line
 #'   of best fit
-#' @param axis.type The axis type of the dependent axis. This is used 
+#' @param axis.type The axis type of the dependent axis. This is used
 #'   to provide extra information about how to display the \code{x} variable.
 #' @param ignore.last Whether to ignore the last observation in \code{x}
 #'   and \code{y}.
@@ -698,7 +698,7 @@ decimalsFromD3 <- function(format, default = 0)
 #' @return logical
 percentFromD3 <- function(format)
 {
-    return(grepl("%", format, fixed = TRUE))
+    return(substr(format, nchar(format), nchar(format)) == "%")
 }
 
 #' Whether to format numbers with comma separation of thousands based on a d3 format string.

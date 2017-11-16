@@ -30,13 +30,12 @@ determines the area of a leaf on each palm tree.}
 
 \item{legend.font.size}{Legend font size}
 
-\item{y.axis.show}{Logical; whether t show the y-axis}
+\item{y.axis.show}{Logical; whether to show the y-axis}
 
 \item{tooltip.show}{Logical; whether to show a tooltip on hover.}
 
 \item{y.tick.format}{A string representing a d3 formatting code.
-See https://github.com/mbostock/d3/wiki/Formatting#numbers or
-https://docs.python.org/release/3.1.3/library/string.html#formatspec}
+See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 
 \item{y.tick.font.family}{Character; y-axis tick label font family}
 
