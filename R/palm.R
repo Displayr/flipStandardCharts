@@ -56,6 +56,14 @@ Palm <- function(table,
     # Convert from d3 to decimals
     y.decimals <- decimalsFromD3(y.tick.format, decimalsToDisplay(table))
 
+    # User has selected percent formatting or default formatting with statistic of '%'
+    if (percentFromD3(y.tick.format) || y.tick.format == "" && identical(attr(table, "statistic"), "%")) {
+        table <- table * 100
+        y.tick.suffix <- paste("%", y.tick.suffix)
+        if (y.title == "%")
+            y.title <- NULL
+    }
+
     # Must have a legend
     if (is.null(legend.font.size))
         legend.font.size = 11
