@@ -464,7 +464,8 @@ Column <- function(x,
                        name  =  y.labels[i], legendgroup  =  tmp.group,
                        text = autoFormatLongLabels(x.labels.full, wordwrap=T, truncate=F),
                        hoverinfo  = setHoverText(xaxis, chart.matrix))
-
+        if (fit.type != "None" && is.stacked && i == 1)
+            warning("Line of best fit not shown for stacked charts.")
         if (fit.type != "None" && !is.stacked)
         {
             tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type)

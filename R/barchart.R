@@ -279,6 +279,8 @@ Bar <- function(x,
                        text = autoFormatLongLabels(x.labels.full, wordwrap=T, truncate=F),
                        hoverinfo  = setHoverText(yaxis, chart.matrix, is.bar=TRUE))
 
+        if (fit.type != "None" && is.stacked && i == 1)
+            warning("Line of best fit not shown for stacked charts.")
         if (fit.type != "None" && !is.stacked)
         {
             tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, yaxis$type)
