@@ -140,7 +140,6 @@ HeatMap <- function(table,
             stop("Left columns must be matrices and not vectors.")
         if (!is.null(right.columns) && any(sapply(sapply(right.columns, ncol), is.null)))
             stop("Right columns must be matrices and not vectors.")
-        show.y.axes.labels <- FALSE
         row.order <- if (is.null(rownames(mat)))
             seq(nrow(mat))
         else
