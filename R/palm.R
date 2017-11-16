@@ -71,9 +71,9 @@ Palm <- function(table,
                                       col.names = NULL,         # Shown on legend. Default values are colnames(data)
                                       col.font.size = legend.font.size,            # Shown in legend
                                       col.font.family = legend.font.family,        # Shown in legend
-                                      col.heading = NULL,                          # Legend heading, defaults to "Columns"
-                                      col.heading.font.size = x.title.font.size,
-                                      col.heading.font.family = legend.font.family,  # Legend heading
+                                      col.heading = "",                            # Legend heading, defaults to "Columns" if NULL
+                                      col.heading.font.size = 0,
+                                      col.heading.font.family = legend.font.family,
                                       tooltips = tooltip.show,
                                       tooltips.font.size = legend.font.size,
                                       tooltips.font.family = legend.font.family,
