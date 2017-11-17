@@ -256,7 +256,7 @@ Radar <- function(x,
     else
         y.tick.decimals <- decimalsFromD3(y.tick.format)
     y.hovertext.decimals <- decimalsFromD3(y.hovertext.format, y.tick.decimals)
-    data.label.decimals <- decimalsFromD3(data.label.format, 2)
+    data.label.decimals <- decimalsFromD3(data.label.format)
 
     # Convert data (polar) into x, y coordinates
     pos <- do.call(rbind, lapply(as.data.frame(chart.matrix), getPolarCoord))

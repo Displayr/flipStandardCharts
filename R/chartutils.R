@@ -168,7 +168,7 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
     }
 
     tmp.is.factor <- axis.type != "numeric"
-    x0 <- if (tmp.is.factor) suppressWarnings(AsNumeric(x, binary = FALSE)) 
+    x0 <- if (tmp.is.factor) suppressWarnings(AsNumeric(x, binary = FALSE))
           else as.numeric(x)
     tmp.dat <- data.frame(xorig=x, x=x0, y=y)
     if (ignore.last)
@@ -682,7 +682,7 @@ evalc <- function(x, env)
 #' @param default The number of decimal places if \code{format} is
 #' not provided (usually signifying automatic formatting).
 #' @return integer
-decimalsFromD3 <- function(format, default = 0)
+decimalsFromD3 <- function(format, default = 2)
 {
     if (length(format) == 0 || format == "")
         return(default)

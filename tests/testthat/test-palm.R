@@ -22,8 +22,10 @@ tourist <- structure(c(0.52, 0.09, 0.06, 0.36, 0.04, 0.37, 0.51, 0.07, 0.06,
                              )), statistic = "%")
 
 
-opts <- c('fonts' = 'x.title = "MY X-AXIS IS MINE", x.title.font.family = "Century Gothic", x.title.font.size = 18, legend.font.family = "Arial Black", legend.font.size = 18, y.tick.font.family = "Georgia", y.tick.font.size = 18, y.title = "MY Y-AXIS IS MINE", y.title.font.family = "Open Sans", y.title.font.size = 18')
-opts <- c('fonts' = 'x.title = "MY X-AXIS IS MINE"')
+opts <- c('fonts' = 'x.title = "MY X-AXIS IS MINE", x.title.font.family = "Century Gothic", x.title.font.size = 18, legend.font.family = "Arial Black", legend.font.size = 18, y.tick.font.family = "Georgia", y.tick.font.size = 18, y.title = "MY Y-AXIS IS MINE", y.title.font.family = "Open Sans", y.title.font.size = 18',
+          'percent' = 'y.tick.format = ".3%", y.tick.prefix = "PRE", y.tick.suffix = "SUF"',
+          'colorsnums' = 'colors = ChartColors(10, "Blues"), y.tick.format = ".1f"',
+          'titlenoaxis' = 'y.axis.show = FALSE, x.title = "something here", y.title = "something else"')
 
 dat.list <- c("dat1", "dat2", "dat3", "tourist")
 for (dat in dat.list)
@@ -37,14 +39,13 @@ for (dat in dat.list)
         test_that(filestem, {
 
             # Create command that will create widget
-            print(paste0("pp <- Palm(", dat, ",", opts[ii], ")"))
             cmd <- paste0("pp <- Palm(", dat, ",", opts[ii], ")")
 
             # Run command and check outputs
-            expect_error(eval(parse(text=cmd)), NA)
+            expect_error(suppressWarnings(eval(parse(text=cmd))), NA)
 
-            #print(pp)
-            #readline(prompt=paste0(filestem, ": press [enter] to continue: "))
+            print(pp)
+            readline(prompt=paste0(filestem, ": press [enter] to continue: "))
         })
     }
 }

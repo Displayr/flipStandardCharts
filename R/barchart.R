@@ -156,7 +156,7 @@ Bar <- function(x,
         data.label.suffix <- paste0("%", data.label.suffix)
         data.label.mult <- 100
     }
-    data.label.decimals <- decimalsFromD3(data.label.format, 2)
+    data.label.decimals <- decimalsFromD3(data.label.format)
 
     matrix.labels <- names(dimnames(chart.matrix))
     if (nchar(y.title) == 0 && length(matrix.labels) == 2)

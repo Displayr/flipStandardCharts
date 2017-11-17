@@ -191,7 +191,7 @@ Line <-   function(x,
 
     # Data label formatting
     data.label.function <- ifelse(percentFromD3(data.label.format), FormatAsPercent, FormatAsReal)
-    data.label.decimals <- decimalsFromD3(data.label.format, 2)
+    data.label.decimals <- decimalsFromD3(data.label.format)
 
     # Work out margin spacing
     margins <- list(t = 20, b = 50, r = 60, l = 80, pad = 0)

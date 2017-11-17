@@ -512,18 +512,18 @@ Scatter <- function(x = NULL,
     num.series <- if (scatter.colors.as.numeric) 1 else num.groups
 
     # hovertext
-    x.str <- if (is.numeric(x)) FormatAsReal(x, decimals = decimalsFromD3(x.hovertext.format, 2)) else as.character(x)
-    y.str <- if (is.numeric(y)) FormatAsReal(y, decimals = decimalsFromD3(y.hovertext.format, 2)) else as.character(y)
+    x.str <- if (is.numeric(x)) FormatAsReal(x, decimals = decimalsFromD3(x.hovertext.format)) else as.character(x)
+    y.str <- if (is.numeric(y)) FormatAsReal(y, decimals = decimalsFromD3(y.hovertext.format)) else as.character(y)
     source.text <- paste0(scatter.labels, " (", x.tick.prefix, x.str, x.tick.suffix, ", ",
                           y.tick.prefix, y.str, y.tick.suffix, ")")
     if (!is.null(scatter.colors.name))
     {
-        colors.str <- if (is.numeric(scatter.colors)) FormatAsReal(scatter.colors, decimals = decimalsFromD3(x.hovertext.format, 2)) else as.character(scatter.colors)
+        colors.str <- if (is.numeric(scatter.colors)) FormatAsReal(scatter.colors, decimals = decimalsFromD3(x.hovertext.format)) else as.character(scatter.colors)
         source.text <- paste0(source.text, "<br>", scatter.colors.name, ": ", colors.str)
     }
     if (!is.null(scatter.sizes.name))
     {
-        sizes.str <- if (is.numeric(scatter.sizes)) FormatAsReal(scatter.sizes, decimals = decimalsFromD3(x.hovertext.format, 2)) else as.character(scatter.sizes)
+        sizes.str <- if (is.numeric(scatter.sizes)) FormatAsReal(scatter.sizes, decimals = decimalsFromD3(x.hovertext.format)) else as.character(scatter.sizes)
         source.text <- paste0(source.text, "<br>", scatter.sizes.name, ": ", sizes.str)
     }
 

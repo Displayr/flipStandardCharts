@@ -388,7 +388,7 @@ LabeledScatter <- function(x = NULL,
     if (is.null(scatter.labels))
         scatter.labels <- rep("", n)
     if (is.numeric(scatter.labels))
-        scatter.labels <- FormatAsReal(scatter.labels, decimals = decimalsFromD3(data.label.format, 0))
+        scatter.labels <- FormatAsReal(scatter.labels, decimals = decimalsFromD3(data.label.format))
     scatter.labels <- paste0(data.label.prefix, scatter.labels, data.label.suffix)
 
     lab.tidy <- scatter.labels

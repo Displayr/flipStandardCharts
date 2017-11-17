@@ -169,7 +169,7 @@ Pie <- function(x,
 
     # Data label formatting extract from d3 format
     as.percentages <- percentFromD3(data.label.format)
-    data.label.decimals <- decimalsFromD3(data.label.format, 2)
+    data.label.decimals <- decimalsFromD3(data.label.format)
 
     # Convert pie.inner.radius to character
     inner.radius <- paste(pie.inner.radius, "%", sep = "")
