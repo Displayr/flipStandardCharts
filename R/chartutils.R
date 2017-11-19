@@ -287,7 +287,7 @@ formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, x.format, y.fo
     if (axis.type == "date")
     {
         ## currently cannot switch between US/international inputs
-        ymd <- as.POSIXct(AsDate(labels, on.parse.failure = "silent"))
+        ymd <- AsDate(labels, on.parse.failure = "silent")
         labels <- ymd
     }
     else
