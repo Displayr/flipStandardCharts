@@ -6,8 +6,8 @@
 #'
 #' @param x A \link{data.frame} \code{logical} (converted to logical using >= 1 if not) or a JSON-like list.
 #' @param weights An optional vector of weights, or, the name or, the name of a variable in \code{x}. It may not be an expression.
-#' @param data.label.font.size The font size of the labels. Defaults to 10.
-#' @param data.label.format A string representing a d3 formatting code.
+#' @param data.label.font.size The font size of the labels. Defaults to 20.
+#' @param values.hovertext.format A string representing a d3 formatting code.
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers. This option only applies when \code{x} is a data.frame.
 #' @examples
 #' Venn(list(
@@ -25,7 +25,7 @@
 Venn <- function(x = NULL,
                         weights = NULL,
                         data.label.font.size = 20,
-                        data.label.format = "")
+                        values.hovertext.format = "")
 {
     if (is.numeric(x))
     {
@@ -38,8 +38,8 @@ Venn <- function(x = NULL,
         if (is.null(weights))
             weights <- rep(1, nrow(x))
 
-        as.percentages <- percentFromD3(data.label.format)
-        data.label.decimals <- decimalsFromD3(data.label.format, 0)
+        as.percentages <- percentFromD3(values.hovertext.format)
+        data.label.decimals <- decimalsFromD3(values.hovertext.format, 0)
 
         if (as.percentages)
             weights <- weights / sum(weights) * 100
