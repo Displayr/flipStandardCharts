@@ -5,16 +5,16 @@
 \title{\code{Venn}}
 \usage{
 Venn(x = NULL, weights = NULL, data.label.font.size = 20,
-  data.label.format = "")
+  values.hovertext.format = "")
 }
 \arguments{
 \item{x}{A \link{data.frame} \code{logical} (converted to logical using >= 1 if not) or a JSON-like list.}
 
 \item{weights}{An optional vector of weights, or, the name or, the name of a variable in \code{x}. It may not be an expression.}
 
-\item{data.label.font.size}{The font size of the labels. Defaults to 10.}
+\item{data.label.font.size}{The font size of the labels. Defaults to 20.}
 
-\item{data.label.format}{A string representing a d3 formatting code.
+\item{values.hovertext.format}{A string representing a d3 formatting code.
 See https://github.com/mbostock/d3/wiki/Formatting#numbers. This option only applies when \code{x} is a data.frame.}
 }
 \description{
