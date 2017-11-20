@@ -1596,7 +1596,7 @@ Chart <-   function(y = NULL,
     x.labels <- rownames(chart.matrix)
     y.labels <- colnames(chart.matrix)
 
-    ymd <- AsDate(x.labels, us.format = us.date.format, on.parse.failure = "silent")
+    ymd <- as.POSIXct(AsDate(x.labels, us.format = us.date.format, on.parse.failure = "silent"))
     if (length(ymd) && !any(is.na(ymd)) && (is.area.or.line.chart ||
          (is.bar.chart && length(x.labels) > 6) ||
          (is.column.chart && length(x.labels) > 6)))
