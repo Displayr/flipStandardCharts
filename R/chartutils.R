@@ -95,9 +95,9 @@ checkTableList <- function(y, trend.lines)
                 stop(sprintf("Tables should have identical column names but table '%s' differs from table '%s'.",
                              y.names[i], y.names[1]))
             if (!is.null(r.names))
-                y[[i]] <- y[[i]][r.names, ]
+                y[[i]] <- y[[i]][r.names, , drop = FALSE]
             if (!is.null(c.names))
-                y[[i]] <- y[[i]][, c.names]
+                y[[i]] <- y[[i]][, c.names, drop = FALSE]
         }
     }
     return(y)
@@ -235,7 +235,7 @@ getAxisType <- function(labels, format)
     # Try to find default format based only on labels
     if (!any(is.na(suppressWarnings(as.numeric(gsub(",", "", labels))))))
         return("numeric")
-    ymd <- AsDate(labels, on.parse.failure = "silent")
+    ymd <- flipTime::AsDate(labels, on.parse.failure = "silent")
     if (all(!is.na(ymd)))
         return("date")
     else

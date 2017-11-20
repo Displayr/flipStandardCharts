@@ -27,4 +27,10 @@ test_that("Trend lines", {
     expect_error(pp <- LabeledScatter(list(dat, dat+0.5, dat+1), trend.line = TRUE), NA)
     expect_warning(pp <- LabeledScatter(list(dat, dat+0.5, dat+1), trend.line = FALSE), "Tables have been automatically assigned names")
     expect_error(pp <- LabeledScatter(list(dat, dat+rnorm(24)), trend.line = TRUE, logos = logos, logo.size = 0.2), NA)
-})
+
+    # DS-1658
+    tab3 <- structure(c(1, 2, 3, 4), .Dim = c(4L, 1L), .Dimnames = list(c("Apple", "Microsoft", "Google", "Yahoo"), "Price"))
+    tab4 <- structure(c(1, 2, 3, 4), .Dim = c(4L, 1L), .Dimnames = list(c("Apple","Microsoft", "Google", "Yahoo"), "Price"))
+    expect_warning(LabeledScatter(list(tab3, tab4)))
+
+    })

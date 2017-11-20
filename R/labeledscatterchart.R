@@ -250,6 +250,8 @@ LabeledScatter <- function(x = NULL,
         x <- checkTableList(x, trend.lines)
         groups <- rep(rownames(x[[1]]), num.tables)
         x <- do.call(rbind, x)
+        if (trend.lines)
+            scatter.sizes.column <- 0
         if (!trend.lines)
             rownames(x) <- sprintf("%s: %s", rep(table.names, n.tmp), groups)
         if (!is.null(logo.urls))
