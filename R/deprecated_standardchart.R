@@ -302,7 +302,7 @@
 #' Chart(y = z, type = "Area")
 #' @importFrom grDevices rgb
 #' @importFrom flipFormat FormatAsReal
-#' @importFrom flipTime AsDate
+#' @importFrom flipTime AsDateTime
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom flipTransformations Factor AsNumeric TextAsVector
 #' @importFrom flipData GetTidyTwoDimensionalArray
@@ -1596,7 +1596,7 @@ Chart <-   function(y = NULL,
     x.labels <- rownames(chart.matrix)
     y.labels <- colnames(chart.matrix)
 
-    ymd <- as.POSIXct(AsDate(x.labels, us.format = us.date.format, on.parse.failure = "silent"))
+    ymd <- AsDateTime(x.labels, us.format = us.date.format, on.parse.failure = "silent")
     if (length(ymd) && !any(is.na(ymd)) && (is.area.or.line.chart ||
          (is.bar.chart && length(x.labels) > 6) ||
          (is.column.chart && length(x.labels) > 6)))

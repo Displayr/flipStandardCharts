@@ -115,7 +115,7 @@ checkTableList <- function(y, trend.lines)
 #'   not contain dates, then range is determined
 #'   from the range of the data \code{x}. Offsets are added so that
 #'   bar and column charts are not truncated
-#' @importFrom flipTime AsDate
+#' @importFrom flipTime AsDateTime
 #' @noRd
 getRange <- function(x, axis, axisFormat)
 {
@@ -134,8 +134,8 @@ getRange <- function(x, axis, axisFormat)
             range <- range(x) + c(-0.5, 0.5)
         else if (all(!is.na(suppressWarnings(as.numeric(x)))))
             range <- range(as.numeric(x)) + c(-0.5, 0.5)
-        else if (all(!is.na(AsDate(x, on.parse.failure = "silent"))))
-            range <- range(AsDate(x))
+        else if (all(!is.na(AsDateTime(x, on.parse.failure = "silent"))))
+            range <- range(AsDateTime(x))
         else
             range <- c(-0.5, length(x)-0.5)
 
@@ -212,7 +212,7 @@ setLegend <- function(type, font, ascending, fill.color, fill.opacity, border.co
             traceorder = order))
 }
 
-#' @importFrom flipTime AsDate
+#' @importFrom flipTime AsDateTime
 getAxisType <- function(labels, format)
 {
     d3.type <- d3FormatType(format)
@@ -222,7 +222,7 @@ getAxisType <- function(labels, format)
 
     if (d3.type == "date")
     {
-        ymd <- AsDate(labels, on.parse.failure = "silent")
+        ymd <- AsDateTime(labels, on.parse.failure = "silent")
         if (!any(is.na(ymd)))
             return("date")
     }
@@ -235,7 +235,7 @@ getAxisType <- function(labels, format)
     # Try to find default format based only on labels
     if (!any(is.na(suppressWarnings(as.numeric(gsub(",", "", labels))))))
         return("numeric")
-    ymd <- flipTime::AsDate(labels, on.parse.failure = "silent")
+    ymd <- AsDateTime(labels, on.parse.failure = "silent")
     if (all(!is.na(ymd)))
         return("date")
     else
@@ -255,7 +255,7 @@ d3FormatType <- function(format)
         return("numeric")
 }
 
-#' @importFrom flipTime AsDate
+#' @importFrom flipTime AsDateTime
 #' @noRd
 formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, x.format, y.format)
 {
@@ -287,7 +287,7 @@ formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, x.format, y.fo
     if (axis.type == "date")
     {
         ## currently cannot switch between US/international inputs
-        ymd <- as.POSIXct(AsDate(labels, on.parse.failure = "silent"))
+        ymd <- AsDateTime(labels, on.parse.failure = "silent")
         labels <- ymd
     }
     else

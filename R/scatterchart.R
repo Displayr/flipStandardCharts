@@ -205,7 +205,7 @@
 #' @param ... Extra arguments that are ignored.
 #' @importFrom grDevices rgb
 #' @importFrom flipChartBasics ChartColors
-#' @importFrom flipTime AsDate
+#' @importFrom flipTime AsDateTime
 #' @importFrom flipTransformations AsNumeric
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
@@ -608,9 +608,9 @@ Scatter <- function(x = NULL,
                   x.hovertext.format, axisFormat$labels)
 
     if (xaxis$type == "date")
-        x <- AsDate(as.character(x), on.parse.failure = "silent")
+        x <- AsDateTime(as.character(x), on.parse.failure = "silent")
     if (yaxis$type == "date")
-        y <- AsDate(as.character(y), on.parse.failure = "silent")
+        y <- AsDateTime(as.character(y), on.parse.failure = "silent")
 
     # Work out margin spacing
     margins <- list(t = 20, b = 50, r = 60, l = 80, pad = 0)

@@ -15,7 +15,7 @@
 #' @param margin.bottom Bottom margin (default should be fine, this allows for fine-tuning plot space)
 #' @param margin.left Left margin (default should be fine, this allows for fine-tuning plot space)
 #' @importFrom streamgraph streamgraph sg_fill_manual sg_axis_x sg_axis_y
-#' @importFrom flipTime AsDate
+#' @importFrom flipTime AsDateTime
 #' @export
 Stream <- function(x,
                    colors = c("#5C9AD3", "#ED7D31", "#A5A5A5", "#FFC000",
@@ -48,7 +48,7 @@ Stream <- function(x,
     }
     else
     {
-        columns <- AsDate(columns, on.parse.failure = "silent")
+        columns <- AsDateTime(columns, on.parse.failure = "silent")
     }
     x <- round(x, hover.decimals)
     df <- data.frame(value = as.numeric(t(x)), date = columns, key = rep(rownames(x), rep(ncol(x), nrow(x))))
