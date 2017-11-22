@@ -173,7 +173,7 @@ Pie <- function(x,
     }
 
     if (pie.inner.radius < 0 || pie.inner.radius > 100)
-        stop("Pie radius should be a number between 0 and 1")
+        stop("Pie radius should be a number between 0 and 100.")
 
     # Data label formatting extract from d3 format
     as.percentages <- percentFromD3(data.label.format)
