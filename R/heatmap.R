@@ -35,9 +35,14 @@
 #' @param axis.label.font.size Font size of the axis labels.
 #' @param left.columns An optional list of vectors or matrices to be appended to the left
 #' of the heatmap.
+#' @param left.column.headings An optional comma separated string containing headings for
+#' \code{left.columns}. If not supplied, colnames of the items in \code{left.columns} are used.
 #' @param right.columns An optional list of vectors or matrices to be appended to the right
 #' of the heatmap.
+#' @param right.column.headings An optional comma separated string containing headings for
+#' \code{right.columns}. If not supplied, colnames of the items in \code{right.columns} are used.
 #' @importFrom flipFormat FormatAsReal
+#' @importFrom flipU ConvertCommaSeparatedStringToVector
 #' @importFrom flipTables Reorder Cbind TidyTabularData
 #' @importFrom stringr str_trim
 #' @export
@@ -68,7 +73,9 @@ HeatMap <- function(table,
                     value.font.size = 11,
                     axis.label.font.size = 11,
                     left.columns = NULL,
-                    right.columns = NULL) {
+                    left.column.headings = "",
+                    right.columns = NULL,
+                    right.column.headings = "") {
 
     mat <- TidyTabularData(table, row.names.to.remove = ignore.rows,
                       col.names.to.remove = ignore.columns, transpose = transpose)
@@ -135,49 +142,57 @@ HeatMap <- function(table,
     } else
         "none"
 
-    if (!is.null(left.columns) || !is.null(right.columns)) {
-        if (!is.null(left.columns) && any(sapply(sapply(left.columns, ncol), is.null)))
-            stop("Left columns must be matrices and not vectors.")
-        if (!is.null(right.columns) && any(sapply(sapply(right.columns, ncol), is.null)))
-            stop("Right columns must be matrices and not vectors.")
-        row.order <- if (is.null(rownames(mat)))
-            seq(nrow(mat))
-        else
-            str_trim(rownames(mat))
-    }
+    row.order <- if(is.null(rownames(mat))) seq(nrow(mat)) else str_trim(rownames(mat))
 
     left.columns.append <- NULL
     if (!is.null(left.columns)) {
         n <- length(left.columns)
-        mats <- rep(list(mat), n)
-        cbinds <- mapply(Cbind, mats, left.columns, SIMPLIFY = FALSE)
-        cbinds <- lapply(cbinds, '[', row.order, -seq(1:ncol(mat)), drop = FALSE)
-        left.columns.append <- do.call(cbind, cbinds)
         left.column.subtitles <- character(0)
-        # label with colnames if set or else ""
         for (i in seq(n)) {
-            if (is.null(colnames(left.columns[[i]]))) {
+            if (length(dim(left.columns[[i]])) != 2)        # coerce to 2D matrix with NULL colnames
+                left.columns[[i]] <- as.matrix(left.columns[[i]])
+            if (is.null(colnames(left.columns[[i]]))) {     # label with colnames if set or else ""
                 left.column.subtitles <- c(left.column.subtitles, rep("", ncol(left.columns[[i]])))
             } else {
                 left.column.subtitles <- c(left.column.subtitles, colnames(left.columns[[i]]))
             }
+        }
+        mats <- rep(list(mat), n)
+        cbinds <- mapply(Cbind, mats, left.columns, SIMPLIFY = FALSE)
+        cbinds <- lapply(cbinds, '[', row.order, -seq(1:ncol(mat)), drop = FALSE)
+        left.columns.append <- do.call(cbind, cbinds)
+        if (left.column.headings != "")
+        {
+            left.column.headings <- ConvertCommaSeparatedStringToVector(left.column.headings)
+            if (length(left.column.headings) != length(left.column.subtitles))
+                stop("Number of left column headings is different from number of left columns.")
+            left.column.subtitles <- left.column.headings
         }
     }
 
     right.columns.append <- NULL
     if (!is.null(right.columns)) {
         n <- length(right.columns)
-        mats <- rep(list(mat), n)
-        cbinds <- mapply(Cbind, mats, right.columns, SIMPLIFY = FALSE)
-        cbinds <- lapply(cbinds, '[', row.order, -seq(1:ncol(mat)), drop = FALSE)
-        right.columns.append <- do.call(cbind, cbinds)
         right.column.subtitles <- character(0)
         for (i in seq(n)) {
+            if (length(dim(right.columns[[i]])) != 2)
+                right.columns[[i]] <- as.matrix(right.columns[[i]])
             if (is.null(colnames(right.columns[[i]]))) {
                 right.column.subtitles <- c(right.column.subtitles, rep("", ncol(right.columns[[i]])))
             } else {
                 right.column.subtitles <- c(right.column.subtitles, colnames(right.columns[[i]]))
             }
+        }
+        mats <- rep(list(mat), n)
+        cbinds <- mapply(Cbind, mats, right.columns, SIMPLIFY = FALSE)
+        cbinds <- lapply(cbinds, '[', row.order, -seq(1:ncol(mat)), drop = FALSE)
+        right.columns.append <- do.call(cbind, cbinds)
+        if (right.column.headings != "")
+        {
+            right.column.headings <- ConvertCommaSeparatedStringToVector(right.column.headings)
+            if (length(right.column.headings) != length(right.column.subtitles))
+                stop("Number of right column headings is different from number of right columns.")
+            right.column.subtitles <- right.column.headings
         }
     }
 

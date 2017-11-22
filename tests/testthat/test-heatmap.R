@@ -66,7 +66,8 @@ t3 <- matrix(seq(901:990), nrow = 45, ncol = 2)
 test_that("HeatMap Extra Columns",
           {
           expect_error(print(HeatMap(table = three.cols, left.columns = list(t1))), NA)
-          expect_error(print(HeatMap(table = three.cols, left.columns = list(v1))), "Left columns must be matrices and not vectors.")
+          expect_error(print(HeatMap(table = three.cols, left.columns = list(v1), left.column.headings = "HEADER, HEADER2")), "Number of left column headings is different from number of left columns.")
+          expect_warning(print(HeatMap(table = three.cols, left.columns = list(v1), left.column.headings = "HEADER")), "There are no matching row.")
           expect_warning(print(HeatMap(table = three.cols, left.columns = list(v2))), "There are no matching row.")
           expect_warning(print(HeatMap(table = three.cols, left.columns = list(v2, t1))), "There are no matching row.")
           expect_warning(print(HeatMap(table = three.cols, left.columns = list(t2))), "There are no matching row.")

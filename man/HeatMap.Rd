@@ -14,7 +14,9 @@ HeatMap(table, data.type = "Use an existing table",
   font.family = "sans-serif", font.color = "#000000",
   title.font.size = 24, xaxis.title.font.size = 14,
   yaxis.title.font.size = 14, legend.font.size = 11, value.font.size = 11,
-  axis.label.font.size = 11, left.columns = NULL, right.columns = NULL)
+  axis.label.font.size = 11, left.columns = NULL,
+  left.column.headings = "", right.columns = NULL,
+  right.column.headings = "")
 }
 \arguments{
 \item{table}{A matrix of data to be displayed.}
@@ -76,8 +78,14 @@ Options are \code{"Use an existing table"} or \code{"Type or paste data"}.}
 \item{left.columns}{An optional list of vectors or matrices to be appended to the left
 of the heatmap.}
 
+\item{left.column.headings}{An optional comma separated string containing headings for
+\code{left.columns}. If not supplied, colnames of the items in \code{left.columns} are used.}
+
 \item{right.columns}{An optional list of vectors or matrices to be appended to the right
 of the heatmap.}
+
+\item{right.column.headings}{An optional comma separated string containing headings for
+\code{right.columns}. If not supplied, colnames of the items in \code{right.columns} are used.}
 }
 \description{
 This function wraps the Heatmap function in the rhtmlHeatmap package and performs additional data preparation.
