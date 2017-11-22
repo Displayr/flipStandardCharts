@@ -93,7 +93,7 @@ Pie <- function(x,
             warning("Non-numeric values coerced to numeric")
         y.values <- as.numeric(x)
         if (ncol(x) > 1)
-            groups <- rep(colnames(x), each=nrow(x))
+            groups <- rep(colnames(x), each = nrow(x))
     }
     else
     {
@@ -159,6 +159,11 @@ Pie <- function(x,
         }
     }
 
+    # Set default radius for 1d data
+    if (type == "Pie" && is.null(groups))
+        pie.inner.radius <- 0
+
+    # Set default radius in other cases
     if (is.null(pie.inner.radius))
     {
         if (type == "Pie" && is.null(groups))
@@ -166,6 +171,9 @@ Pie <- function(x,
         else
             pie.inner.radius <- 70
     }
+
+    if (pie.inner.radius < 0 || pie.inner.radius > 100)
+        stop("Pie radius should be a number between 0 and 1")
 
     # Data label formatting extract from d3 format
     as.percentages <- percentFromD3(data.label.format)
