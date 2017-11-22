@@ -5,7 +5,7 @@
 \title{Bean}
 \usage{
 Bean(x, weights = NULL, vertical = FALSE, density.color = "Green",
-  values.color = "Green", automatic.lower.density = TRUE,
+  values.color = rgb(0.6, 0.6, 0.6), automatic.lower.density = TRUE,
   global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
   maxColorValue = 255), title = "", title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
