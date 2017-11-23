@@ -9,7 +9,7 @@ missing1 <- named
 missing1[1] <- NA
 single <- c(5)
 double <- c(5, 1)
-matrix2d <- cbind('Random values' = named, 'More random values' = rpois(6, 21))
+matrix2d <- rbind('Random values' = named, 'More random values' = rpois(6, 21))
 
 # Create lists of all charting functions, data types and options to use
 # Include relevant options from test-background.R and test-vectordata.R
