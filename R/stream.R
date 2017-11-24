@@ -52,8 +52,8 @@ Stream <- function(x,
     {
         if (x.tick.format == "")
             x.tick.format = ".0f"
-        else if (d3FormatType(x.tick.format) != "numeric")
-            stop("X-axis tick format and units are incompatible.")
+        if (d3FormatType(x.tick.format) != "numeric" || getAxisType(columns, x.tick.format) != "numeric")
+            stop("x-axis tick format and units are incompatible.")
         columns <- suppressWarnings(as.integer(columns))
         if (any(is.na((columns))))
             columns <- 1:ncol(x)
@@ -62,8 +62,8 @@ Stream <- function(x,
     {
         if (x.tick.format == "")
             x.tick.format = "%d %b %y"
-        else if (d3FormatType(x.tick.format) != "date")
-            stop("X-axis tick format and units are incompatible.")
+        if (d3FormatType(x.tick.format) != "date" || getAxisType(columns, x.tick.format) != "date")
+            stop("x-axis tick format and units are incompatible.")
         columns <- AsDateTime(columns, on.parse.failure = "silent")
     }
 
