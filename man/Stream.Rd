@@ -7,8 +7,8 @@
 Stream(x, colors = c("#5C9AD3", "#ED7D31", "#A5A5A5", "#FFC000", "#4473C5",
   "#70AD46", "#255F91", "#9E480D", "#636365", "#987300", "#26408B", "#42682B"),
   y.axis.show = TRUE, y.tick.format = "", y.number.ticks = 5,
-  hover.decimals = 2, x.tick.format = "\%d \%b \%y",
-  x.tick.units = "Month", x.tick.interval = 1, margin.top = 20,
+  values.hovertext.format = "", x.tick.format = "\%d \%b \%y",
+  x.tick.units = "Automatic", x.tick.interval = 1, margin.top = 20,
   margin.left = 50, margin.bottom = 30, margin.right = 40)
 }
 \arguments{
@@ -18,15 +18,18 @@ Stream(x, colors = c("#5C9AD3", "#ED7D31", "#A5A5A5", "#FFC000", "#4473C5",
 
 \item{y.axis.show}{If FALSE, the y-axis is not shown.}
 
-\item{y.tick.format}{The number format for the y-axis.}
+\item{y.tick.format}{A string representing a d3 formatting code for the y-axis.
+See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 
 \item{y.number.ticks}{The total number of ticks on the y-axis.}
 
-\item{hover.decimals}{The number of decimals to show in hovers.}
+\item{values.hovertext.format}{A string representing a d3 formatting code for the hover text.
+See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 
-\item{x.tick.format}{number format for the x-axis.}
+\item{x.tick.format}{A string representing a d3 formatting code for the x.axis.
+See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 
-\item{x.tick.units}{"Number", "Month" or "Year".}
+\item{x.tick.units}{"Automatic", "Number", "Month" or "Year".}
 
 \item{x.tick.interval}{The frequency of ticks on the x-axis. Where the data crosses multiple years, re-starts at each year.}
 

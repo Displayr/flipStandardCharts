@@ -4,11 +4,14 @@
 #' @param x A \code{matrix}, with columns containing the dates or other numeric x-axis variable.
 #' @param colors The colors of the streams.
 #' @param y.axis.show If FALSE, the y-axis is not shown.
-#' @param y.tick.format The number format for the y-axis.
+#' @param y.tick.format A string representing a d3 formatting code for the y-axis.
+#' See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format
 #' @param y.number.ticks The total number of ticks on the y-axis.
-#' @param hover.decimals The number of decimals to show in hovers.
-#' @param x.tick.format number format for the x-axis.
-#' @param x.tick.units "Number", "Month" or "Year".
+#' @param values.hovertext.format A string representing a d3 formatting code for the hover text.
+#' See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format
+#' @param x.tick.format A string representing a d3 formatting code for the x.axis.
+#' See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format
+#' @param x.tick.units "Automatic", "Number", "Month" or "Year".
 #' @param x.tick.interval The frequency of ticks on the x-axis. Where the data crosses multiple years, re-starts at each year.
 #' @param margin.top Top margin (default should be fine, this allows for fine-tuning plot space)
 #' @param margin.right Right margin (default should be fine, this allows for fine-tuning plot space)
@@ -24,9 +27,9 @@ Stream <- function(x,
                    y.axis.show = TRUE,
                    y.tick.format = "",
                    y.number.ticks = 5,
-                   hover.decimals = 2,
+                   values.hovertext.format = "",
                    x.tick.format = "%d %b %y",
-                   x.tick.units = "Month",
+                   x.tick.units = "Automatic",
                    x.tick.interval = 1,
                    margin.top = 20,
                    margin.left = 50,
@@ -37,22 +40,36 @@ Stream <- function(x,
         stop("Stream graphs should have a tabular input (e.g., a matrix).")
     ErrorIfNotEnoughData(x)
     columns <- colnames(x)
-    if (x.tick.format == "Number")
+
+    if (x.tick.units == "Automatic") {
+        if (getAxisType(columns, x.tick.format) == "date")
+            x.tick.units <- "Month"
+        else
+            x.tick.units <- "Number"
+    }
+
+    if (x.tick.units == "Number")
     {
-        # x.tick.format = "%y"
-        # x.tick.units = "Year"
+        if (x.tick.format == "")
+            x.tick.format = ".0f"
+        else if (d3FormatType(x.tick.format) != "numeric")
+            stop("X-axis tick format and units are incompatible.")
         columns <- suppressWarnings(as.integer(columns))
         if (any(is.na((columns))))
             columns <- 1:ncol(x)
-        # columns <- as.Date(paste0(columns, "/1/1"))
     }
     else
     {
+        if (x.tick.format == "")
+            x.tick.format = "%d %b %y"
+        else if (d3FormatType(x.tick.format) != "date")
+            stop("X-axis tick format and units are incompatible.")
         columns <- AsDateTime(columns, on.parse.failure = "silent")
     }
-    x <- round(x, hover.decimals)
+
+    x <- round(x, decimalsFromD3(values.hovertext.format, 2))
     df <- data.frame(value = as.numeric(t(x)), date = columns, key = rep(rownames(x), rep(ncol(x), nrow(x))))
-    #print(df)
+
     sg <- streamgraph(data = df,
                 key = "key",
                 value = "value",
@@ -60,7 +77,7 @@ Stream <- function(x,
                 offset = "silhouette",
                 interpolate = "cardinal",
                 interactive = TRUE,
-                scale = if(x.tick.format == "Number") "continuous" else "date",
+                scale = if(x.tick.units == "Number") "continuous" else "date",
                 top = margin.top,
                 right = margin.right,
                 left = margin.left,
@@ -70,7 +87,7 @@ Stream <- function(x,
         sg <- sg_axis_y(sg, 0)
     else
         sg <- sg_axis_y(sg, tick_count = y.number.ticks, tick_format = y.tick.format)
-    sg <- sg_axis_x(sg, tick_interval = x.tick.interval, tick_units = tolower(x.tick.units), tick_format = x.tick.format)#tick_format = if (is.date) x.tick.format else NULL)
+    sg <- sg_axis_x(sg, tick_interval = x.tick.interval, tick_units = tolower(x.tick.units), tick_format = x.tick.format)
 
     sg
     }

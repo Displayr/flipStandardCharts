@@ -232,12 +232,10 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 \item{y.tick.prefix}{y-axis tick label prefix}
 
 \item{y.tick.format}{A string representing a d3 formatting code.
-See https://github.com/mbostock/d3/wiki/Formatting#numbers or
-https://docs.python.org/release/3.1.3/library/string.html#formatspec}
+See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 
 \item{y.hovertext.format}{A string representing a d3 formatting code
-See https://github.com/mbostock/d3/wiki/Formatting#numbers or
-https://docs.python.org/release/3.1.3/library/string.html#formatspec}
+See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 
 \item{y.tick.angle}{y-axis tick label angle in degrees.
 90 = vertical; 0 = horizontal}
