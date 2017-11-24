@@ -30,7 +30,7 @@ test_that("Stream", #devtools::install_github("hrbrmstr/Stream")
 
               Stream(dat, x.tick.interval = 6, x.tick.units = "", x.tick.format = "")
               Stream(dat, x.tick.interval = 6, x.tick.units = "", x.tick.format = "%Y")
-              expect_error(Stream(dat, x.tick.interval = 6, x.tick.unit = "", x.tick.format = ".2f"), "X-axis tick format and units are incompatible.")
+              expect_error(Stream(dat, x.tick.interval = 6, x.tick.unit = "", x.tick.format = ".2f"), "x-axis tick format and units are incompatible.")
 
               # Yearly data
 
@@ -90,7 +90,7 @@ test_that("Stream", #devtools::install_github("hrbrmstr/Stream")
               # Integers
 
               colnames(dat) <- 0:(ncol(dat) - 1)
-              Stream(dat, x.tick.interval = 3, x.tick.format = "", x.tick.units = "Month") # TODO SHOULD GIVE ERROR?
+              expect_error(Stream(dat, x.tick.interval = 3, x.tick.format = "", x.tick.units = "Month"),"x-axis tick format and units are incompatible.")
               Stream(dat, x.tick.interval = 3, x.tick.format = "", x.tick.units = "Number")
               Stream(dat, x.tick.interval = 3, x.tick.format = "")
               Stream(dat, x.tick.interval = 5, x.tick.format = ".0f")
