@@ -50,13 +50,7 @@ minPosition <- function(x, n = 1)
 
 checkMatrixNames <- function(x)
 {
-    # Re-structure x so that each column of x is a data-series
-    # Note that each series actually corresponds to a ROW of data from user input
-    # This necessary so that as.percentages is applied on each column of the table
     x <- as.matrix(x)
-    if (ncol(x) > 1)
-        x <- t(x)
-
     if (is.null(rownames(x)))
         rownames(x) <- 1:nrow(x)
     if (is.null(colnames(x)))
