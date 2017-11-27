@@ -253,7 +253,8 @@ LabeledScatter <- function(x = NULL,
         if (trend.lines)
             scatter.sizes.column <- 0
         if (!trend.lines)
-            rownames(x) <- sprintf("%s: %s", rep(table.names, n.tmp), groups)
+            rownames(x) <- sprintf("%s: %s", 
+                rep(table.names, each = n.tmp), groups)
         if (!is.null(logo.urls))
             logo.urls <- rep(logo.urls, num.tables)
     }
@@ -337,6 +338,8 @@ LabeledScatter <- function(x = NULL,
             not.na <- not.na & is.finite(scatter.sizes)
         }
     }
+
+    scatter.colors.raw <- scatter.colors
     if (!is.null(scatter.colors))
     {
         if (!scatter.colors.as.categorical)
@@ -346,11 +349,12 @@ LabeledScatter <- function(x = NULL,
         if (any(is.na(scatter.colors)))
         {
             warning("Some points omitted due to missing values in 'scatter.colors'")
-            not.na <- not.na & !is.na(scatter.colors)
+            not.na <- not.na & is.finite(scatter.colors)
         }
     }
     if (sum(not.na) == 0)
         stop("No non-NA points to plot.")
+    not.na <- which(not.na) # indexing makes re-ordering easier later
     if (is.finite(scatter.max.labels) && scatter.max.labels < 0)
             scatter.max.labels <- NA
 
@@ -363,21 +367,24 @@ LabeledScatter <- function(x = NULL,
         groups <- 1:n # what about mult tables?
         col.fun <- colorRamp(colors)
         scatter.colors.scaled <- (scatter.colors - min(scatter.colors, na.rm=T))/diff(range(scatter.colors, na.rm=T))
-        scatter.colors.scaled[which(!not.na)] <- 0 # removed later
-        colors <- rgb(col.fun(scatter.colors.scaled), maxColorValue=255)
+        #if (length(not.na) != length(scatter.colors))
+        #    scatter.colors.scaled[-not.na] <- 0 # removed later
+        colors <- rgb(col.fun(scatter.colors.scaled[not.na]), maxColorValue=255)
 
     } else
     {
         if (is.null(groups))
-            groups <- scatter.colors
+            groups <- scatter.colors.raw
         if (length(groups) != n)
             groups <- rep(" ", n)
 
+        groups.ord <- order(suppressWarnings(AsNumeric(groups[not.na], binary = FALSE)))
+        not.na <- not.na[groups.ord]
+
         groups <- as.character(groups)
-        g.list <- unique(groups)
+        g.list <- unique(groups[not.na])
         colors <- paste0(rep("", length(g.list)), colors)
         names(colors) <- g.list
-        colors <- colors[g.list]
     }
     colors <- StripAlphaChannel(colors)
 
@@ -425,7 +432,7 @@ LabeledScatter <- function(x = NULL,
                        Y = y[not.na],
                        Z = if (is.null(scatter.sizes)) NULL else abs(scatter.sizes[not.na]),
                        group = groups[not.na],
-                       colors = colors[not.na],
+                       colors = colors,
                        label = lab.tidy[not.na],
                        label.alt = scatter.labels[not.na],
                        fixed.aspect = FALSE,
