@@ -686,7 +686,7 @@ decimalsFromD3 <- function(format, default = 2)
 {
     if (length(format) == 0 || format == "")
         return(default)
-    return(as.numeric(regmatches(format, regexpr("\\d+", format))))
+    return(sum(as.numeric(regmatches(format, regexpr("\\d+", format)))))
 }
 
 #' Whether to format as percentages based on a d3 format string.
