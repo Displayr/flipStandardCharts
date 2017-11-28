@@ -4,6 +4,7 @@
 .RData
 inst/doc
 .Rproj.user
+dygraph.css
 
 # testthat artifact
 tests/testthat/Rplots.pdf

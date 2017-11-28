@@ -12,6 +12,7 @@ Depends: R (>= 2.10)
 LazyData: TRUE
 Imports:
     d3vennR,
+    dygraphs,
     flipChartBasics,
     flipData,
     flipFormat,
