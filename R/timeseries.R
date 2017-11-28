@@ -72,6 +72,8 @@ TimeSeries <- function(x = NULL,
     else
         stop("Data must consist of one column or 3 columns in order of low, value, high.")
 
+    names(colors) <- NULL # Named chr is ignored by dygraph
+
     # Controlling the formatting of the dygraphs via the CSS
     css <- paste0(".dygraph-title {
         color: ", title.font.color, ";

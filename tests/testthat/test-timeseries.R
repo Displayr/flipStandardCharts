@@ -48,7 +48,9 @@ stock.prices <- cbind(stock.prices - 1, stock.prices, stock.prices + 1)
 colnames(stock.prices) <- c("Low", "Close", "Open")
 
 
-opts <- c('titles' = 'title = "MY TITLE", x.title = "MY X-AXIS", y.title = "MY Y-AXIS"')
+opts <- c('titles' = 'title = "MY TITLE", x.title = "MY X-AXIS", y.title = "MY Y-AXIS"',
+          'colors' = 'colors = "FF0022", title = "MY PURPLE TITLE", title.font.color = "#8012C4"',
+          'fonts' = 'title = "The Title", title.font.family = "sans-serif", title.font.size = 30')
 
 dat.list <- c("google.trends", "stock.prices")
 for (dat in dat.list)
@@ -67,8 +69,8 @@ for (dat in dat.list)
             # Run command and check outputs
             expect_error(suppressWarnings(eval(parse(text=cmd))), NA)
 
-            print(pp)
-            readline(prompt=paste0(filestem, ": press [enter] to continue: "))
+            #print(pp)
+            #readline(prompt=paste0(filestem, ": press [enter] to continue: "))
         })
     }
 }
