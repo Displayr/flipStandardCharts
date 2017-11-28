@@ -4,16 +4,18 @@
 \alias{BarPictograph}
 \title{Create bar chart composed of icons}
 \usage{
-BarPictograph(x, fill.direction = "From left", data.label.show = FALSE,
-  data.label.position = "Next to bar", data.label.format = "",
-  data.label.prefix = "", data.label.suffix = "",
+BarPictograph(x, image = "Stickman", custom.image = NULL,
+  colors = ChartColors(length(x)), fill.direction = "From left",
+  data.label.show = FALSE, data.label.position = "Next to bar",
+  data.label.format = "", data.label.prefix = "", data.label.suffix = "",
   data.label.font.family = global.font.family,
   data.label.font.color = global.font.color, data.label.font.size = 8,
   global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
   maxColorValue = 255), categories.tick.show = TRUE,
   categories.tick.font.family = global.font.family,
   categories.tick.font.color = global.font.color,
-  categories.tick.font.size = 12, categories.tick.align = "right", ...)
+  categories.tick.font.size = 12,
+  categories.tick.align.horizontal = "right", ...)
 }
 \arguments{
 \item{x}{A \code{\link{list}}, where each vector contains data to be plotted. If the data is not numeric
@@ -21,6 +23,14 @@ it is coerced to be numeric.
 Input data may be a matrix or a vector, containing the height of the columns
 to be plotted, with the name/rownames used as the column names of the chart. Numeric and date labels
 will be parsed automatically.}
+
+\item{image}{Name of icon to use.}
+
+\item{custom.image}{URL of icon to use. If this parameter is supplied \code{image} is ignored.}
+
+\item{colors}{Character; a vector containing one or more named
+colors from grDevices OR one or more specified hex value colors OR a single
+named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 
 \item{fill.direction}{Direction in which icons are filled. One of \code{"From left", "From right", "From top", "From bottom"}.}
 
@@ -58,13 +68,18 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{categories.tick.font.size}{x-axis tick label font size}
 
-\item{categories.tick.align}{Horizontal alignment of tick labels for each bar. One of "left", "right", "middle".}
-
 \item{...}{Other arguments passed to PictographChart.}
+
+\item{categories.tick.align}{Horizontal alignment of tick labels for each bar. One of "left", "right", "middle".}
 }
 \value{
 A \code{plotly} chart.
 }
 \description{
 Create bar chart composed of icons
+}
+\examples{
+BarPictograph(1:5, image = "Sick person")
+BarPictograph(1:5,
+    custom.image = "https://upload.wikimedia.org/wikipedia/commons/a/a8/Nuvola_apps_kmoon.png")
 }
