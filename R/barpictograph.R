@@ -59,7 +59,7 @@ BarPictograph <- function(x,
                        categories.tick.font.size = 12,
                        categories.tick.align.horizontal = "right")
 {
-    if (!is.vector(x))
+    if (NCOL(x) > 1)
         stop("Input data for Bar Pictographs must be a vector.")
     x <- checkMatrixNames(x)[,1]
 
@@ -85,13 +85,14 @@ BarPictograph <- function(x,
 
     # Options: No, Above icons, Below icons, Next to bar, Above row label, Below row label
     show.label.data <- data.label.position != "No"
+    label.data.100prc <- FALSE
     if (show.label.data)
     {
         label.data.100prc <- FALSE
         if (percentFromD3(data.label.format))
         {
             data.label.suffix <- paste0("%", data.label.suffix)
-            #label.data.100prc <- TRUE
+            label.data.100prc <- TRUE
         }
         label.data.digits <- decimalsFromD3(data.label.format)
     }
@@ -100,13 +101,13 @@ BarPictograph <- function(x,
         image = image, is.custom.url = is.custom.url,
         base.image = base.image, hide.base.image = hide.base.image,
         base.icon.color = base.icon.color, scale = scale,
-        total.icons = total.icons, icon.ncol = icon.ncol, 
+        total.icons = total.icons, icon.ncol = icon.ncol,
         fix.icon.nrow = fix.icon.nrow, label.color.asIcon = label.color.asIcon,
         icon.palette = "User-specified", icon.colors = colors,
         hide.label.right = hide.label.right, hide.label.left = hide.label.left,
         show.label.data = show.label.data, label.data.position = data.label.position,
         label.data.prefix = data.label.prefix, label.data.suffix = data.label.suffix,
-        #label.data.100prc = label.data.100prc,
+        label.data.100prc = label.data.100prc,
         label.data.digits = label.data.digits,
         label.data.font.family = data.label.font.family,
         label.data.font.color = data.label.font.color,
