@@ -4,7 +4,7 @@
 \alias{TimeSeries}
 \title{TimeSeries}
 \usage{
-TimeSeries(x = NULL, colors = ChartColors(1),
+TimeSeries(x = NULL, colors = ChartColors(1), window.start = NULL,
   global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
   maxColorValue = 255), title = "", title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
@@ -21,6 +21,8 @@ TimeSeries(x = NULL, colors = ChartColors(1),
 \item{x}{Input data may be a matrix or a vector, wth dates as the rownames and data series along the columns.}
 
 \item{colors}{Character; a named color from grDevices OR a hex value color.}
+
+\item{window.start}{The number of days before the end of the data series to start the range selector window.}
 
 \item{global.font.family}{Character; font family for all occurrences of any
 font attribute for the chart unless specified individually.}
