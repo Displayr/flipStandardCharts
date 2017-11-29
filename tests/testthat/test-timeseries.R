@@ -50,7 +50,8 @@ colnames(stock.prices) <- c("Low", "Close", "Open")
 
 opts <- c('titles' = 'title = "MY TITLE", x.title = "MY X-AXIS", y.title = "MY Y-AXIS"',
           'colors' = 'colors = "FF0022", title = "MY PURPLE TITLE", title.font.color = "#8012C4"',
-          'fonts' = 'title = "The Title", title.font.family = "sans-serif", title.font.size = 30')
+          'fonts' = 'title = "The Title", title.font.family = "sans-serif", title.font.size = 30',
+          'window' = 'window.start = 20')
 
 dat.list <- c("google.trends", "stock.prices")
 for (dat in dat.list)

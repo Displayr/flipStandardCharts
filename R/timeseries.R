@@ -5,6 +5,7 @@
 #'
 #' @param x Input data may be a matrix or a vector, wth dates as the rownames and data series along the columns.
 #' @param colors Character; a named color from grDevices OR a hex value color.
+#' @param window.start The number of days before the end of the data series to start the range selector window.
 #' @param global.font.family Character; font family for all occurrences of any
 #' font attribute for the chart unless specified individually.
 #' @param global.font.color Global font color as a named color in character format
@@ -39,6 +40,7 @@
 #' @export
 TimeSeries <- function(x = NULL,
                     colors = ChartColors(1),
+                    window.start = NULL,
                     global.font.family = "Arial",
                     global.font.color = rgb(44, 44, 44, maxColorValue = 255),
                     title = "",
@@ -103,12 +105,15 @@ TimeSeries <- function(x = NULL,
         }")
 
     write(css, "dygraph.css")
-    start <- rownames(x)[length(rownames(x)) / 2]
-    end <- rownames(x)[length(rownames(x))]
+    range.end <- as.POSIXct(rownames(x)[length(rownames(x))])
+    if (is.null(window.start))
+        range.start <- as.POSIXct(rownames(x)[1])
+    else
+        range.start <- max(range.end - 60 * 60 * 24 * window.start, as.POSIXct(rownames(x)[1]))
 
     dygraph(x, main = title, xlab = x.title, ylab = y.title) %>%
     dySeries(colnames(x), label = label, color = colors)  %>%
     dyCSS("dygraph.css")  %>%
-    dyRangeSelector(fillColor = colors, dateWindow = c(as.POSIXct(start), as.POSIXct(end)))
+    dyRangeSelector(fillColor = colors, dateWindow = c(range.start, range.end))
 
 }
