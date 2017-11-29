@@ -4,8 +4,13 @@
 \alias{BarPictograph}
 \title{Create bar chart composed of icons}
 \usage{
-BarPictograph(x, fill.direction = "From left", data.label.show = FALSE,
-  data.label.position = "Next to bar", data.label.format = "",
+BarPictograph(x, image = "Stickman", custom.image = NULL, base.image = "",
+  hide.base.image = FALSE, base.icon.color = "", scale = NA,
+  total.icons = NA, icon.ncol = NA, fix.icon.nrow = TRUE,
+  label.color.asIcon = FALSE, pad.row = 2, graphic.width.inch = NA,
+  graphic.height.inch = NA, colors = ChartColors(length(x)),
+  fill.direction = "From left", data.label.show = FALSE,
+  data.label.position = "No", data.label.format = "",
   data.label.prefix = "", data.label.suffix = "",
   data.label.font.family = global.font.family,
   data.label.font.color = global.font.color, data.label.font.size = 8,
@@ -13,7 +18,8 @@ BarPictograph(x, fill.direction = "From left", data.label.show = FALSE,
   maxColorValue = 255), categories.tick.show = TRUE,
   categories.tick.font.family = global.font.family,
   categories.tick.font.color = global.font.color,
-  categories.tick.font.size = 12, categories.tick.align = "right", ...)
+  categories.tick.font.size = 12,
+  categories.tick.align.horizontal = "right")
 }
 \arguments{
 \item{x}{A \code{\link{list}}, where each vector contains data to be plotted. If the data is not numeric
@@ -22,11 +28,41 @@ Input data may be a matrix or a vector, containing the height of the columns
 to be plotted, with the name/rownames used as the column names of the chart. Numeric and date labels
 will be parsed automatically.}
 
+\item{image}{Name of icon to use.}
+
+\item{custom.image}{URL of icon to use. If this parameter is supplied \code{image} is ignored.}
+
+\item{base.image}{URL of image to use as base image. Only used if \code{is.custom.url = TRUE} and \code{hide.base.image = FALSE}.}
+
+\item{hide.base.image}{Turns off background image (on by default). In general, the base image should only be shown if the input data is a proportion.}
+
+\item{base.icon.color}{Color of base image, supplied as a hex code or string. This is only used if the built-in icons are used.}
+
+\item{scale}{Value of one icon. If \code{scale  =  0}, the value is automatically determined from the data so that the largest entry is represented by 10 icons.}
+
+\item{total.icons}{Maximum number of icons in each table cell. By default, it will be determine based on \code{ceiling(x)}.}
+
+\item{icon.ncol}{Configuration of icons in each table cell. Can be a single value or a vector with length equal to the number of columns.}
+
+\item{fix.icon.nrow}{When \code{mode="bar" and hide.base.image=T}, set to \code{FALSE} to allow the bars to contain varying number of rows.}
+
+\item{label.color.asIcon}{When set to \code{TRUE}, row and data labels are shown in the same color as the icons.}
+
+\item{pad.row}{Single numeric specifying vertical spacing between graphic cells in the table.}
+
+\item{graphic.width.inch}{Horizontal dimension of the chart output in inches. If these dimensions are not specified, the width-to-height ratio of the chart output may not match the desired dimensions.}
+
+\item{graphic.height.inch}{Verical dimension of the chart output in inches.}
+
+\item{colors}{Character; a vector containing one or more named
+colors from grDevices OR one or more specified hex value colors OR a single
+named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
+
 \item{fill.direction}{Direction in which icons are filled. One of \code{"From left", "From right", "From top", "From bottom"}.}
 
 \item{data.label.show}{Logical; whether to show data labels.}
 
-\item{data.label.position}{When \code{show.label.data}, the position of the data labels can be one of \code{"Above icons", "Below icons"} (all modes) or \code{"Next to bar", "Above row label", "Below row label"} (bar mode only). Note that the last two options will overrride \code{sublabel.left} and \code{sublabel.right}}
+\item{data.label.position}{When \code{show.label.data}, the position of the data labels can be one of \code{"Above icons", "Below icons"} (all modes) or \code{"Next to bar", "Above row label", "Below row label"} (bar mode only). Note that the last two options will overrride \code{sublabel.left} and \code{sublabel.right}.}
 
 \item{data.label.format}{A string representing a d3 formatting code.}
 
@@ -58,13 +94,16 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{categories.tick.font.size}{x-axis tick label font size}
 
-\item{categories.tick.align}{Horizontal alignment of tick labels for each bar. One of "left", "right", "middle".}
-
-\item{...}{Other arguments passed to PictographChart.}
+\item{categories.tick.align.horizontal}{Horizontal alignment of tick labels for each bar. One of "left", "right", "middle".}
 }
 \value{
 A \code{plotly} chart.
 }
 \description{
 Create bar chart composed of icons
+}
+\examples{
+BarPictograph(1:5, image = "Sick person")
+BarPictograph(1:5,
+    custom.image = "https://upload.wikimedia.org/wikipedia/commons/a/a8/Nuvola_apps_kmoon.png")
 }
