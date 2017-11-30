@@ -170,7 +170,7 @@ BarPictograph <- function(x,
                                      "\", \"font-color\":\"", data.label.font.color,
                                      "\", \"font-weight\":\"normal",
                                      "\", \"horizontal-align\":\"",
-                                     data.label.align.horizontal, "\"},")
+                                     tolower(data.label.align.horizontal), "\"},")
         }
         if (data.label.position == "Next to bar")
         {
@@ -195,7 +195,7 @@ BarPictograph <- function(x,
                 "\", \"font-size\":\"", data.label.font.size, "px\", \"",
                 pad.dir, "\": \"4em\", \"font-family\":\"", data.label.font.family,
                 "\", \"font-color\":\"", data.label.font.color, "\",\"",
-                "horizontal-align\":\"", data.label.align.horizontal,
+                "horizontal-align\":\"", tolower(data.label.align.horizontal),
                 "\", \"font-weight\":\"normal",
                 "\", \"vertical-align\":\"center\"}],")
         }
@@ -211,7 +211,7 @@ BarPictograph <- function(x,
                 gsub("From ", "", fill.direction))[1]
 
         label.str <- paste0("\"text\": \"", names(x),
-            "\" ,\"horizontal-align\": \"", categories.tick.align.horizontal,
+            "\" ,\"horizontal-align\": \"", tolower(categories.tick.align.horizontal),
             "\" ,\"font-weight\":\"normal",
             "\" ,\"font-family\": \"", categories.tick.font.family,
             "\" ,\"font-color\": \"", categories.tick.font.color,
@@ -221,7 +221,7 @@ BarPictograph <- function(x,
             if (data.label.align.horizontal == "Default")
                 data.label.align.horizontal <- categories.tick.align.horizontal
             sublabel.str <- paste0("\"text\": \"", data.label.text,
-                "\" ,\"horizontal-align\": \"", data.label.align.horizontal,
+                "\" ,\"horizontal-align\": \"", tolower(data.label.align.horizontal),
                 "\" ,\"font-weight\":\"normal",
                 "\" ,\"font-family\": \"", data.label.font.family,
                 "\" ,\"font-color\": \"", data.label.font.color,
