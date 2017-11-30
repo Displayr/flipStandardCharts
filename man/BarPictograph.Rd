@@ -7,19 +7,21 @@
 BarPictograph(x, image = "Stickman", custom.image = NULL, base.image = "",
   hide.base.image = FALSE, base.icon.color = "", scale = NA,
   total.icons = NA, icon.ncol = NA, fix.icon.nrow = TRUE,
-  label.color.asIcon = FALSE, pad.row = 2, graphic.width.inch = NA,
-  graphic.height.inch = NA, colors = ChartColors(length(x)),
-  fill.direction = "From left", data.label.show = FALSE,
-  data.label.position = "No", data.label.format = "",
-  data.label.prefix = "", data.label.suffix = "",
-  data.label.font.family = global.font.family,
-  data.label.font.color = global.font.color, data.label.font.size = 8,
+  label.color.asIcon = FALSE, colors = ChartColors(length(x)),
+  fill.direction = c("From left", "From right")[1],
   global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
-  maxColorValue = 255), categories.tick.show = TRUE,
+  maxColorValue = 255), data.label.show = FALSE, data.label.position = "No",
+  data.label.format = "", data.label.prefix = "", data.label.suffix = "",
+  data.label.bigmark = ",", data.label.font.family = global.font.family,
+  data.label.font.color = global.font.color, data.label.font.size = 8,
+  data.label.align.horizontal = "Default", categories.tick.show = TRUE,
   categories.tick.font.family = global.font.family,
   categories.tick.font.color = global.font.color,
   categories.tick.font.size = 12,
-  categories.tick.align.horizontal = "right")
+  categories.tick.align.horizontal = "Default",
+  background.fill.color = "transparent", pad.row = 2, pad.col = 2,
+  pad.icon.row = 0, pad.icon.col = 0, graphic.width.inch = NA,
+  graphic.height.inch = NA, graphic.resolution = 72, print.config = FALSE)
 }
 \arguments{
 \item{x}{A \code{\link{list}}, where each vector contains data to be plotted. If the data is not numeric
@@ -48,17 +50,17 @@ will be parsed automatically.}
 
 \item{label.color.asIcon}{When set to \code{TRUE}, row and data labels are shown in the same color as the icons.}
 
-\item{pad.row}{Single numeric specifying vertical spacing between graphic cells in the table.}
-
-\item{graphic.width.inch}{Horizontal dimension of the chart output in inches. If these dimensions are not specified, the width-to-height ratio of the chart output may not match the desired dimensions.}
-
-\item{graphic.height.inch}{Verical dimension of the chart output in inches.}
-
 \item{colors}{Character; a vector containing one or more named
 colors from grDevices OR one or more specified hex value colors OR a single
 named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 
 \item{fill.direction}{Direction in which icons are filled. One of \code{"From left", "From right", "From top", "From bottom"}.}
+
+\item{global.font.family}{Character; font family for all occurrences of any
+font attribute for the chart unless specified individually.}
+
+\item{global.font.color}{Global font color as a named color in character format
+(e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{data.label.show}{Logical; whether to show data labels.}
 
@@ -70,6 +72,8 @@ named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 
 \item{data.label.suffix}{Character; suffix for data values.}
 
+\item{data.label.bigmark}{Option to prettify large numbers. By default a comma is placed after a thousand.}
+
 \item{data.label.font.family}{Character; font family for data label.}
 
 \item{data.label.font.color}{Font color as a named color
@@ -78,13 +82,9 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{data.label.font.size}{Font size for data label.px.}
 
-\item{global.font.family}{Character; font family for all occurrences of any
-font attribute for the chart unless specified individually.}
+\item{data.label.align.horizontal}{Horizontal alignment of data labels labels. One of "left", "right", "middle" or "Default".}
 
-\item{global.font.color}{Global font color as a named color in character format
-(e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).}
-
-\item{categories.tick.show}{Logical; Whether to show tick labels for each bar}
+\item{categories.tick.show}{Logical; Whether to show tick labels for each bar (i.e. rownames).}
 
 \item{categories.tick.font.family}{Character; x-axis tick label font family}
 
@@ -94,7 +94,26 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{categories.tick.font.size}{x-axis tick label font size}
 
-\item{categories.tick.align.horizontal}{Horizontal alignment of tick labels for each bar. One of "left", "right", "middle".}
+\item{categories.tick.align.horizontal}{Horizontal alignment of tick labels for each bar. One of "left", "right", "middle" or "Default".}
+
+\item{background.fill.color}{Background color in character format
+(e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
+
+\item{pad.row}{Single numeric specifying vertical spacing between graphic cells in the table.}
+
+\item{pad.col}{Vertical spacing between cells in table.}
+
+\item{pad.icon.row}{Numeric specifying vertical spacing between icons inside each table cell. May be a single value or a numeric matrix of the same dimensions as \code{x}.}
+
+\item{pad.icon.col}{Horizontal spacing between icons inside each table cell.}
+
+\item{graphic.width.inch}{Horizontal dimension of the chart output in inches. If these dimensions are not specified, the width-to-height ratio of the chart output may not match the desired dimensions.}
+
+\item{graphic.height.inch}{Verical dimension of the chart output in inches.}
+
+\item{graphic.resolution}{Number of pixels per inch. Should not have an actual effect but rounding errors sometimes occur if this is chosen poorly.}
+
+\item{print.config}{Print configuration string based to \code{rhtmlPictographs::graphic}. This is useful for debugging.}
 }
 \value{
 A \code{plotly} chart.
