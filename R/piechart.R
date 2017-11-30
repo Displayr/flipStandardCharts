@@ -92,8 +92,7 @@ Pie <- function(x,
         if (!is.numeric(x))
             warning("Non-numeric values coerced to numeric")
         y.values <- as.numeric(x)
-        if (ncol(x) > 1)
-            groups <- rep(colnames(x), each = nrow(x))
+        groups <- rep(colnames(x), each = nrow(x))
     }
     else
     {
