@@ -71,7 +71,7 @@ BarPictograph <- function(x,
                        pad.icon.col = 0.0,
                        graphic.width.inch = NA,
                        graphic.height.inch = NA,
-                       graphic.resolution = 72, 
+                       graphic.resolution = 72,
                        print.config = FALSE)
 {
     # Ensure that input data x is a named vector
@@ -89,7 +89,7 @@ BarPictograph <- function(x,
     if (is.na(total.icons))
         total.icons <- ceiling(max(x)/scale)
     raw.x <- x
-    x <- x/scale 
+    x <- x/scale
 
     # Icon layout
     if (!is.null(custom.image) && sum(nchar(base.image)) == 0)
@@ -154,7 +154,7 @@ BarPictograph <- function(x,
         data.label.digits <- decimalsFromD3(data.label.format)
         data.label.values <- unlist(raw.x) * (1 + (99*data.label.mult100))
         data.label.text <- sprintf("%s%s%s", data.label.prefix,
-            formatC(data.label.values, digits = data.label.digits, format = "f", 
+            formatC(data.label.values, digits = data.label.digits, format = "f",
             big.mark = data.label.bigmark), data.label.suffix)
 
         if (data.label.position %in% c("Above icons", "Below icons"))
@@ -163,12 +163,13 @@ BarPictograph <- function(x,
                 data.label.align.horizontal <- "right"
             data.label.pos <- if (data.label.position == "Above icons") "header"
                               else                                      "footer"
-            data.label.str <- paste0("\"text-", data.label.pos, 
+            data.label.str <- paste0("\"text-", data.label.pos,
                                      "\":{\"text\":\"", data.label.text,
-                                     "\", \"font-size\":\"", data.label.font.size, 
+                                     "\", \"font-size\":\"", data.label.font.size,
                                      "px\",\"font-family\":\"", data.label.font.family,
-                                     "\", \"font-color\":\"", data.label.font.color, 
-                                     "\", \"horizontal-align\":\"", 
+                                     "\", \"font-color\":\"", data.label.font.color,
+                                     "\", \"font-weight\":\"normal",
+                                     "\", \"horizontal-align\":\"",
                                      data.label.align.horizontal, "\"},")
         }
         if (data.label.position == "Next to bar")
@@ -190,11 +191,12 @@ BarPictograph <- function(x,
                 data.label.align.horizontal <- ifelse(fill.direction == "From right", "right", "left")
             floating.label.position <- sprintf("%.2f:%.2f", i.pos, j.pos)
             floating.label.str <- paste0("\"floatingLabels\":[{\"position\":\"",
-                floating.label.position, "\", \"text\":\"", data.label.text, 
+                floating.label.position, "\", \"text\":\"", data.label.text,
                 "\", \"font-size\":\"", data.label.font.size, "px\", \"",
                 pad.dir, "\": \"4em\", \"font-family\":\"", data.label.font.family,
                 "\", \"font-color\":\"", data.label.font.color, "\",\"",
                 "horizontal-align\":\"", data.label.align.horizontal,
+                "\", \"font-weight\":\"normal",
                 "\", \"vertical-align\":\"center\"}],")
         }
     }
@@ -208,8 +210,9 @@ BarPictograph <- function(x,
             categories.tick.align.horizontal <- setdiff(c("left", "right"),
                 gsub("From ", "", fill.direction))[1]
 
-        label.str <- paste0("\"text\": \"", names(x), 
+        label.str <- paste0("\"text\": \"", names(x),
             "\" ,\"horizontal-align\": \"", categories.tick.align.horizontal,
+            "\" ,\"font-weight\":\"normal",
             "\" ,\"font-family\": \"", categories.tick.font.family,
             "\" ,\"font-color\": \"", categories.tick.font.color,
             "\" ,\"font-size\": \"", categories.tick.font.size, "px\"")
@@ -217,15 +220,16 @@ BarPictograph <- function(x,
         {
             if (data.label.align.horizontal == "Default")
                 data.label.align.horizontal <- categories.tick.align.horizontal
-            sublabel.str <- paste0("\"text\": \"", data.label.text, 
+            sublabel.str <- paste0("\"text\": \"", data.label.text,
                 "\" ,\"horizontal-align\": \"", data.label.align.horizontal,
+                "\" ,\"font-weight\":\"normal",
                 "\" ,\"font-family\": \"", data.label.font.family,
                 "\" ,\"font-color\": \"", data.label.font.color,
                 "\" ,\"font-size\": \"", data.label.font.size, "px\"")
             if (data.label.position == "Below row label")
-               label.str <- paste0("\"labels\": [{", label.str, "},{", sublabel.str, "}]") 
+               label.str <- paste0("\"labels\": [{", label.str, "},{", sublabel.str, "}]")
             if (data.label.position == "Above row label")
-               label.str <- paste0("\"labels\": [{", sublabel.str, "},{", label.str, "}]") 
+               label.str <- paste0("\"labels\": [{", sublabel.str, "},{", label.str, "}]")
         }
         rowlabel.cells <- paste0("{\"type\":\"label\", \"value\":{", label.str, "}}")
     }
@@ -241,14 +245,14 @@ BarPictograph <- function(x,
         base.icon.color.str <- ifelse(nchar(base.icon.color) > 0, paste0(base.icon.color, ":"), "")
         base.image.str <- ifelse(nchar(base.image) > 0, paste("\"baseImage\":\"", image.type, ":", base.icon.color.str, base.image, "\",", sep = ""), "")
     }
-        
+
     if (!is.null(custom.image))
         colors <- ""
     fill.icon.color.str <- ifelse(nchar(colors) > 0, paste0(colors, ":"), "")
     fill.direction <- gsub(" ", "", tolower(fill.direction))
 
     # Exact dimensions should not matter as long as aspect ratio is correct
-    # But rounding errors can happen if graphic.resolution is not chosen well 
+    # But rounding errors can happen if graphic.resolution is not chosen well
     dim.str <- ""
     row.height <- paste0("\"proportion:", floor(icon.nrow/sum(icon.nrow)*1000)/1000, "\"")
     column.width <- "\"flexible:graphic\""
@@ -258,7 +262,7 @@ BarPictograph <- function(x,
                          \"variableImage\":\"%s:%s%s:%s\", %s %s, %s %s
                         \"columnGutter\":%f, \"rowGutter\":%f, \"padding\":\"%f %f %f %f\"}}",
                         prop, total.icons, image.type, fill.icon.color.str, fill.direction,
-                        image.url, base.image.str, layout.str, data.label.str, 
+                        image.url, base.image.str, layout.str, data.label.str,
                         floating.label.str, pad.icon.col, pad.icon.row, 0, 0, 0, 0)
     json.cells <- matrix(json.cells, ncol = 1)
     if (fill.direction == "fromleft")
@@ -272,12 +276,12 @@ BarPictograph <- function(x,
         column.width <- cbind(column.width, "\"flexible:label\"")
     }
     if (!is.na(graphic.width.inch) && !is.na(graphic.height.inch))
-        dim.str <- paste0("\"width\":", graphic.width.inch * graphic.resolution, 
+        dim.str <- paste0("\"width\":", graphic.width.inch * graphic.resolution,
                           ", \"height\":", graphic.height.inch * graphic.resolution, ",")
 
     # Sticking everything together
     json.cells <- apply(json.cells, 1, paste, collapse = ",")
-    json.str <- paste("{", dim.str, 
+    json.str <- paste("{", dim.str,
              "\"background-color\":\"", background.fill.color, "\",",
              "\"table\":{\"rowHeights\":[", paste(row.height, collapse = ","), "],",
              "\"rowGutterLength\":", pad.row, ",\"columnGutterLength\":", pad.col, ",",
