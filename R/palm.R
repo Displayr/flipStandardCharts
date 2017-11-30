@@ -56,11 +56,17 @@ Palm <- function(table,
     # Convert from d3 to decimals
     y.decimals <- decimalsFromD3(y.tick.format, decimalsToDisplay(table))
 
-    # User has selected percent formatting or default formatting with statistic of '%'
-    if (percentFromD3(y.tick.format) || y.tick.format == "" && identical(attr(table, "statistic"), "%")) {
-        table <- table * 100
+    stat <- attr(table, "statistic")
+    # User has selected percent formatting
+    if (percentFromD3(y.tick.format)) {
+        if (is.null(stat) || !grepl("%", stat, fixed = TRUE))
+            table <- table * 100
         y.tick.suffix <- paste("%", y.tick.suffix)
-        if (y.title == "%")
+    }
+    #  Default formatting with statistic of '%'
+    if (y.tick.format == "" && !is.null(stat) && grepl("%", stat, fixed = TRUE)) {
+        y.tick.suffix <- paste("%", y.tick.suffix)
+        if (y.title == stat)
             y.title <- NULL
     }
 
