@@ -139,6 +139,12 @@ BarPictograph <- function(x,
     if (pad.icon.col < 0 || pad.icon.col >= 1)
         stop("pad.icon.col must be smaller than 1 and greater or equal to 0\n")
 
+    if (label.color.asIcon)
+    {
+        data.label.font.color <- colors
+        categories.tick.font.color <- colors
+    }
+
     # Data labels
     # Options: No, Above icons, Below icons, Next to bar, Above row label, Below row label
     data.label.str <- ""
