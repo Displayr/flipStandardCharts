@@ -21,6 +21,7 @@ Imports:
     flipTransformations (>= 1.1.2),
     flipU,
     Hmisc,
+    leaflet,
     plotly,
     pryr, 
     htmlwidgets, 
@@ -29,6 +30,7 @@ Imports:
     rhtmlLabeledScatter,
     rhtmlPalmTrees,
     rhtmlPictographs,
+    sp,
     streamgraph,
     stringr
 Remotes:
