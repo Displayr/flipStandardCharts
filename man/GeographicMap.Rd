@@ -4,20 +4,20 @@
 \alias{GeographicMap}
 \title{Geographic Map}
 \usage{
-GeographicMap(table, scale, country, high.resolution = FALSE, ...)
+GeographicMap(x, map.type, country, high.resolution = FALSE, ...)
 }
 \arguments{
-\item{table}{A matrix, two-dimensional array, table or vector, containing the
+\item{x}{A matrix, two-dimensional array, table or vector, containing the
 data to be plotted. The \code{\link{rownames}} (or \code{\link{names}} in
 the case of a vector) should contain the names of the geographic entities
 to be plotted.}
 
-\item{scale}{One of \code{"continents"}, \code{"countries"}, \code{"regions"} or \code{"states"}
+\item{map.type}{One of \code{"Continents"}, \code{"Countries"}, \code{"Regions"} or \code{"States"}
 which respectively plot a world map by continent, a world map by country, a map of USA by region,
 or a single country map by state.}
 
 \item{country}{Character string optionally stating the country that the states are from, if
-\code{scale} is \code{"states"}.}
+\code{map.type} is \code{"states"}.}
 
 \item{high.resolution}{Specifically request a high resolution map. Otherwise
 the resolution of the map is chosen automatically based on the resolution required

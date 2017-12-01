@@ -3,28 +3,29 @@
 #' Creates a map with a table as input, using shading to represent the values of
 #' countries or states on the map.
 #'
-#' @param table A matrix, two-dimensional array, table or vector, containing the
+#' @param x A matrix, two-dimensional array, table or vector, containing the
 #'   data to be plotted. The \code{\link{rownames}} (or \code{\link{names}} in
 #'   the case of a vector) should contain the names of the geographic entities
 #'   to be plotted.
-#' @param scale One of \code{"continents"}, \code{"countries"}, \code{"regions"} or \code{"states"}
+#' @param map.type One of \code{"Continents"}, \code{"Countries"}, \code{"Regions"} or \code{"States"}
 #' which respectively plot a world map by continent, a world map by country, a map of USA by region,
 #' or a single country map by state.
 #' @param country Character string optionally stating the country that the states are from, if
-#' \code{scale} is \code{"states"}.
+#' \code{map.type} is \code{"states"}.
 #' @param high.resolution Specifically request a high resolution map. Otherwise
 #' the resolution of the map is chosen automatically based on the resolution required
 #' for the requested countries or regions.
 #' @param ... Other parameters to pass to \code{BaseMap}.
 #'
 #' @export
-GeographicMap <- function(table, scale, country, high.resolution = FALSE, ...) {
+GeographicMap <- function(x, map.type, country, high.resolution = FALSE, ...) {
 
     requireNamespace("sp")
 
-    table <- cleanMapInput(table)
+    table <- cleanMapInput(x)
+    map.type <- tolower(map.type)
 
-    if (scale == "countries" || scale == "continents") {
+    if (map.type == "countries" || map.type == "continents") {
 
         # Getting geographic boundaries. If the user asks for high resolution maps
         # or any of the requested regions are missing in the low resolution map, use
@@ -45,9 +46,9 @@ GeographicMap <- function(table, scale, country, high.resolution = FALSE, ...) {
 
         BaseMap(table = table, ..., coords = coords, remove.regions = remove.regions,
                 name.map = admin0.name.map.by.name, high.resolution = high.resolution,
-                map.type = scale)
+                map.type = map.type)
     }
-    else if (scale == "states")
+    else if (map.type == "states")
     {
         # Attempt to guess the country from the rownames if not specified
         if (missing(country) || country == "")
@@ -64,13 +65,13 @@ GeographicMap <- function(table, scale, country, high.resolution = FALSE, ...) {
         BaseMap(table = table, coords = coords, ..., name.map = name.map,
                 high.resolution = high.resolution, map.type = country)
     }
-    else if (scale == "regions")
+    else if (map.type == "regions")
     {
         coords <- subset(admin1.coordinates, admin1.coordinates$admin == "United States of America")
         name.map <- admin1.name.map[["United States of America"]]
         BaseMap(table = table, coords = coords, ..., name.map = name.map,
-                high.resolution = high.resolution, map.type = scale)
+                high.resolution = high.resolution, map.type = map.type)
     }
     else
-        stop("Unrecognized scale. Please use one of continents, countries, regions or states.")
+        stop("Unrecognized map.type. Please use one of continents, countries, regions or states.")
 }
