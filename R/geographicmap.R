@@ -22,6 +22,7 @@
 #' @param legend.title The text to appear above the legend.
 #' @param mapping.package Either \code{"leaflet"} (better graphics, more country
 #' maps) or \code{"plotly"} (faster).
+#' @param legend.show Logical; Whether to display a legend with the color scale.
 #' @export
 GeographicMap <- function(x,
                           country,
@@ -30,6 +31,7 @@ GeographicMap <- function(x,
                           colors = c("#CCF3FF", "#23B0DB"),
                           ocean.color = "#DDDDDD",
                           color.NA = "#808080",
+                          legend.show = TRUE,
                           legend.title = "",
                           mapping.package = "leaflet") {
 
@@ -93,6 +95,6 @@ GeographicMap <- function(x,
     BaseMap(table = table, coords = coords, name.map = name.map,
             high.resolution = high.resolution, map.type = map.type, treat.NA.as.0 = treat.NA.as.0, colors = colors,
             ocean.color = ocean.color, color.NA = color.NA, legend.title = legend.title,
-            mapping.package = mapping.package, remove.regions = remove.regions)
+            mapping.package = mapping.package, remove.regions = remove.regions, legend.show = legend.show)
 
 }

@@ -24,6 +24,7 @@
 #' @param ocean.color The color used for oceans, used only by \code{plotly}.
 #' @param color.NA The color used to represent missing values. Not used when
 #'   \code{treat.NA.as.0}, is set to missing.
+#' @param legend.show Logical; Whether to display a legend with the color scale.
 #' @param legend.title The text to appear above the legend.
 #' @param remove.regions The regions to remove, even if they are in the table.
 #' @param unmatched.regions.is.error If there are regions in \code{table} that
@@ -63,6 +64,7 @@ BaseMap <- function(table,
                     colors = c("#CCF3FF", "#23B0DB"),
                     ocean.color = "#DDDDDD",
                     color.NA = "#808080",
+                    legend.show = TRUE,
                     legend.title = "",
                     remove.regions = NULL,
                     unmatched.regions.is.error = TRUE,
@@ -202,11 +204,14 @@ BaseMap <- function(table,
             }
         }
 
-        map <- addLegend(map, "bottomright", pal = .rev.pal, values = ~table.max,
-                         title = legend.title,
-                         labFormat = reverseLabelFormat(),
-                         opacity = opacity,
-                         na.label = ifelse(treat.NA.as.0, "0", "NA"))
+        if (legend.show)
+        {
+            map <- addLegend(map, "bottomright", pal = .rev.pal, values = ~table.max,
+                             title = legend.title,
+                             labFormat = reverseLabelFormat(),
+                             opacity = opacity,
+                             na.label = ifelse(treat.NA.as.0, "0", "NA"))
+        }
         highlight.options <- highlightOptions(weight = 5, color = "#666",
                                               dashArray = "",
                                               fillOpacity = 0.7,
@@ -325,11 +330,6 @@ BaseMap <- function(table,
                 marker = list(line = bdry)
             ) %>%
 
-            colorbar(title = legend.title,
-                     separatethousands = TRUE,
-                     x = 1
-            ) %>%
-
             config(displayModeBar = F) %>%
 
             layout(
@@ -338,6 +338,11 @@ BaseMap <- function(table,
                 margin = list(l = 0, r = 0, t = 0, b = 0, pad = 0),
                 paper_bgcolor = 'transparent'
             )
+
+        if (legend.show)
+            p <- colorbar(p, title = legend.title, separatethousands = TRUE, x = 1)
+        else
+            p <- hide_colorbar(p)
 
         p$sizingPolicy$browser$padding <- 0  # remove padding
 
