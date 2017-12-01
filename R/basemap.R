@@ -285,7 +285,7 @@ BaseMap <- function(table,
             }
         }
         else
-            stop("Only world and US state maps are available with plotly.")
+            stop("Only world and USA state or region maps are available with plotly.")
 
         if (treat.NA.as.0)  # set NA color to zero color
         {
@@ -476,7 +476,7 @@ cleanMapInput <- function(table)
     statistic <- attr(table, "statistic", exact = TRUE)
 
     table.name <- deparse(substitute(table))
-    if (is.vector(table) || length(dim(table)) == 1)
+    if (is.null(dim(table)) || length(dim(table)) == 1) # better than is.vector()
     {
         if(is.null(names(table)))
             stop(paste(table.name, "has no names."))

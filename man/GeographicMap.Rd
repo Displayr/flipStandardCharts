@@ -15,10 +15,6 @@ data to be plotted. The \code{\link{rownames}} (or \code{\link{names}} in
 the case of a vector) should contain the names of the geographic entities
 to be plotted.}
 
-\item{map.type}{One of \code{"Continents"}, \code{"Countries"}, \code{"Regions"} or \code{"States"}
-which respectively plot a world map by continent, a world map by country, a map of USA by region,
-or a single country map by state.}
-
 \item{country}{Character string optionally stating the country that the states are from, if
 \code{map.type} is \code{"states"}.}
 

@@ -7,9 +7,6 @@
 #'   data to be plotted. The \code{\link{rownames}} (or \code{\link{names}} in
 #'   the case of a vector) should contain the names of the geographic entities
 #'   to be plotted.
-#' @param map.type One of \code{"Continents"}, \code{"Countries"}, \code{"Regions"} or \code{"States"}
-#' which respectively plot a world map by continent, a world map by country, a map of USA by region,
-#' or a single country map by state.
 #' @param country Character string optionally stating the country that the states are from, if
 #' \code{map.type} is \code{"states"}.
 #' @param high.resolution Specifically request a high resolution map. Otherwise
@@ -27,7 +24,6 @@
 #' maps) or \code{"plotly"} (faster).
 #' @export
 GeographicMap <- function(x,
-                          map.type,
                           country,
                           high.resolution = FALSE,
                           treat.NA.as.0 = FALSE,
@@ -40,10 +36,18 @@ GeographicMap <- function(x,
     requireNamespace("sp")
 
     table <- cleanMapInput(x)
-    map.type <- tolower(map.type)
 
-    if (map.type == "countries" || map.type == "continents") {
+    if (any(rownames(table) %in% c("Northeast", "Midwest", "South", "West")))
+        map.type <- "regions"
+    else if (any(rownames(table) %in% c("Africa", "Asia", "Europe", "North America", "Oceania", "South America")))
+        map.type <- "continents"
+    else if (any(rownames(table) %in% GeographicRegionRowNames("name")) || all(nchar(rownames(table)) == 3))
+        map.type <- "countries"
+    else
+        map.type <- "states"
 
+    if (map.type == "countries" || map.type == "continents")
+    {
         # Getting geographic boundaries. If the user asks for high resolution maps
         # or any of the requested regions are missing in the low resolution map, use
         # the 1:50m map, otherwise use the 1:110m map.
@@ -60,12 +64,7 @@ GeographicMap <- function(x,
 
         coords <- coords[!(coords$continent %in% "Antarctica"), ]
         remove.regions <- "Antarctica"
-
-        BaseMap(table = table, coords = coords, remove.regions = remove.regions,
-                name.map = admin0.name.map.by.name, high.resolution = high.resolution,
-                map.type = map.type, treat.NA.as.0 = treat.NA.as.0, colors = colors,
-                ocean.color = ocean.color, color.NA = color.NA, legend.title = legend.title,
-                mapping.package = mapping.package)
+        name.map <- admin0.name.map.by.name
     }
     else if (map.type == "states")
     {
@@ -78,23 +77,22 @@ GeographicMap <- function(x,
             country <- tidyCountryName(country)
 
         coords <- subset(admin1.coordinates, admin1.coordinates$admin == country)
-
         name.map <- admin1.name.map[[country]]
-
-        BaseMap(table = table, coords = coords, name.map = name.map,
-                high.resolution = high.resolution, map.type = country, treat.NA.as.0 = treat.NA.as.0, colors = colors,
-                ocean.color = ocean.color, color.NA = color.NA, legend.title = legend.title,
-                mapping.package = mapping.package)
+        map.type <- country
+        remove.regions <- NULL
     }
     else if (map.type == "regions")
     {
         coords <- subset(admin1.coordinates, admin1.coordinates$admin == "United States of America")
         name.map <- admin1.name.map[["United States of America"]]
-        BaseMap(table = table, coords = coords, name.map = name.map,
-                high.resolution = high.resolution, map.type = map.type, treat.NA.as.0 = treat.NA.as.0, colors = colors,
-                ocean.color = ocean.color, color.NA = color.NA, legend.title = legend.title,
-                mapping.package = mapping.package)
+        remove.regions <- NULL
     }
     else
         stop("Unrecognized map.type. Please use one of continents, countries, regions or states.")
+
+    BaseMap(table = table, coords = coords, name.map = name.map,
+            high.resolution = high.resolution, map.type = map.type, treat.NA.as.0 = treat.NA.as.0, colors = colors,
+            ocean.color = ocean.color, color.NA = color.NA, legend.title = legend.title,
+            mapping.package = mapping.package, remove.regions = remove.regions)
+
 }
