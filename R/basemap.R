@@ -239,7 +239,7 @@ BaseMap <- function(table,
         }
 
         # Centre on the contiguous states
-        if (map.type == "United States of America")
+        if (map.type == "United States of America" || map.type == "regions")
             map <- setView(map, -96, 37.8, zoom = 4)
 
         map
@@ -290,7 +290,8 @@ BaseMap <- function(table,
             }
         }
         else
-            stop("Only world and USA state or region maps are available with plotly.")
+            stop("Only world and USA state or region maps are available with 'plotly' package.",
+                 "Change to 'leaflet' to map other types.")
 
         if (treat.NA.as.0)  # set NA color to zero color
         {

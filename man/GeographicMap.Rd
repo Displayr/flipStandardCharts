@@ -4,9 +4,9 @@
 \alias{GeographicMap}
 \title{Geographic Map}
 \usage{
-GeographicMap(x, map.type, country, high.resolution = FALSE,
-  treat.NA.as.0 = FALSE, colors = c("#CCF3FF", "#23B0DB"),
-  ocean.color = "#DDDDDD", color.NA = "#808080", legend.title = "",
+GeographicMap(x, country, high.resolution = FALSE, treat.NA.as.0 = FALSE,
+  colors = c("#CCF3FF", "#23B0DB"), ocean.color = "#DDDDDD",
+  color.NA = "#808080", legend.show = TRUE, legend.title = "",
   mapping.package = "leaflet")
 }
 \arguments{
@@ -32,6 +32,8 @@ interpolating colors.}
 
 \item{color.NA}{The color used to represent missing values. Not used when
 \code{treat.NA.as.0}, is set to missing.}
+
+\item{legend.show}{Logical; Whether to display a legend with the color scale.}
 
 \item{legend.title}{The text to appear above the legend.}
 

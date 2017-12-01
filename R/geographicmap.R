@@ -89,8 +89,6 @@ GeographicMap <- function(x,
         name.map <- admin1.name.map[["United States of America"]]
         remove.regions <- NULL
     }
-    else
-        stop("Unrecognized map.type. Please use one of continents, countries, regions or states.")
 
     BaseMap(table = table, coords = coords, name.map = name.map,
             high.resolution = high.resolution, map.type = map.type, treat.NA.as.0 = treat.NA.as.0, colors = colors,

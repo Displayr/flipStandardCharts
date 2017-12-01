@@ -8,9 +8,9 @@ BaseMap(table, coords, treat.NA.as.0 = FALSE,
   only.show.regions.in.table = FALSE, add.detail = FALSE,
   remove.last.column = FALSE, remove.last.row = FALSE,
   colors = c("#CCF3FF", "#23B0DB"), ocean.color = "#DDDDDD",
-  color.NA = "#808080", legend.title = "", remove.regions = NULL,
-  unmatched.regions.is.error = TRUE, name.map = NULL,
-  mapping.package = "leaflet", high.resolution = FALSE,
+  color.NA = "#808080", legend.show = TRUE, legend.title = "",
+  remove.regions = NULL, unmatched.regions.is.error = TRUE,
+  name.map = NULL, mapping.package = "leaflet", high.resolution = FALSE,
   map.type = "countries")
 }
 \arguments{
@@ -44,6 +44,8 @@ interpolating colors.}
 
 \item{color.NA}{The color used to represent missing values. Not used when
 \code{treat.NA.as.0}, is set to missing.}
+
+\item{legend.show}{Logical; Whether to display a legend with the color scale.}
 
 \item{legend.title}{The text to appear above the legend.}
 
