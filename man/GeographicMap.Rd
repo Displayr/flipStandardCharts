@@ -4,7 +4,10 @@
 \alias{GeographicMap}
 \title{Geographic Map}
 \usage{
-GeographicMap(x, map.type, country, high.resolution = FALSE, ...)
+GeographicMap(x, map.type, country, high.resolution = FALSE,
+  treat.NA.as.0 = FALSE, colors = c("#CCF3FF", "#23B0DB"),
+  ocean.color = "#DDDDDD", color.NA = "#808080", legend.title = "",
+  mapping.package = "leaflet")
 }
 \arguments{
 \item{x}{A matrix, two-dimensional array, table or vector, containing the
@@ -23,7 +26,21 @@ or a single country map by state.}
 the resolution of the map is chosen automatically based on the resolution required
 for the requested countries or regions.}
 
-\item{...}{Other parameters to pass to \code{BaseMap}.}
+\item{treat.NA.as.0}{Plots any \code{NA} values in the data and any
+geographical entities without data as having a zero value.}
+
+\item{colors}{A vector of two colors, which are used as endpoints in
+interpolating colors.}
+
+\item{ocean.color}{The color used for oceans, used only by \code{plotly}.}
+
+\item{color.NA}{The color used to represent missing values. Not used when
+\code{treat.NA.as.0}, is set to missing.}
+
+\item{legend.title}{The text to appear above the legend.}
+
+\item{mapping.package}{Either \code{"leaflet"} (better graphics, more country
+maps) or \code{"plotly"} (faster).}
 }
 \description{
 Creates a map with a table as input, using shading to represent the values of
