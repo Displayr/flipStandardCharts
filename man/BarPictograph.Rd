@@ -19,6 +19,7 @@ BarPictograph(x, image = "Stickman", custom.image = NULL, base.image = "",
   categories.tick.font.color = global.font.color,
   categories.tick.font.size = 12,
   categories.tick.align.horizontal = "Default",
+  categories.tick.align.vertical = "Default",
   background.fill.color = "transparent", pad.row = 2, pad.col = 2,
   pad.icon.row = 0, pad.icon.col = 0, graphic.width.inch = NA,
   graphic.height.inch = NA, graphic.resolution = 72, print.config = FALSE)
@@ -95,6 +96,8 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{categories.tick.font.size}{x-axis tick label font size}
 
 \item{categories.tick.align.horizontal}{Horizontal alignment of tick labels for each bar. One of "left", "right", "middle" or "Default".}
+
+\item{categories.tick.align.vertical}{Vertical alignment of tick labels for each bar. One of "top", "center", "bottom" or "Default".}
 
 \item{background.fill.color}{Background color in character format
 (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}

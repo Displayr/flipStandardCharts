@@ -11,6 +11,7 @@
 #' @param data.label.align.horizontal Horizontal alignment of data labels labels. One of "left", "right", "middle" or "Default".
 #' @param categories.tick.show Logical; Whether to show tick labels for each bar (i.e. rownames).
 #' @param categories.tick.align.horizontal Horizontal alignment of tick labels for each bar. One of "left", "right", "middle" or "Default".
+#' @param categories.tick.align.vertical Vertical alignment of tick labels for each bar. One of "top", "center", "bottom" or "Default".
 #' @param base.image URL of image to use as base image. Only used if \code{is.custom.url = TRUE} and \code{hide.base.image = FALSE}.
 #' @param hide.base.image Turns off background image (on by default). In general, the base image should only be shown if the input data is a proportion.
 #' @param base.icon.color Color of base image, supplied as a hex code or string. This is only used if the built-in icons are used.
@@ -64,6 +65,7 @@ BarPictograph <- function(x,
                        categories.tick.font.color = global.font.color,
                        categories.tick.font.size = 12,
                        categories.tick.align.horizontal = "Default",
+                       categories.tick.align.vertical = "Default",
                        background.fill.color = "transparent",
                        pad.row = 2,
                        pad.col = 2,
@@ -95,6 +97,8 @@ BarPictograph <- function(x,
     if (!is.null(custom.image) && sum(nchar(base.image)) == 0)
         hide.base.image <- TRUE
     icon.nrow <- NA # only icon.ncol is used for bar charts
+    if (!is.na(icon.ncol) && any(icon.ncol > total.icons))
+        icon.ncol <- max(total.icons)
     layout.str <- if (is.na(icon.ncol)) "\"numRows\": 1"
                   else paste("\"numCols\":", icon.ncol)
 
@@ -143,6 +147,11 @@ BarPictograph <- function(x,
     {
         data.label.font.color <- colors
         categories.tick.font.color <- colors
+    }
+    if (categories.tick.align.vertical == "Default")
+    {
+        categories.tick.align.vertical <- if (icon.ncol == max(total.icons)) "center"
+                                          else                               "top"
     }
 
     # Data labels
@@ -203,12 +212,11 @@ BarPictograph <- function(x,
                 "\", \"font-color\":\"", data.label.font.color, "\",\"",
                 "horizontal-align\":\"", tolower(data.label.align.horizontal),
                 "\", \"font-weight\":\"normal",
-                "\", \"vertical-align\":\"center\"}],")
+                "\", \"vertical-align\":\"", "center", "\"}],")
         }
     }
 
     # Row labels and data labels above and below row labels
-    #if (length(label.left) > 0 || length(sublabel.left) > 0)
     rowlabel.cells <- NULL
     if (categories.tick.show)
     {
@@ -237,7 +245,8 @@ BarPictograph <- function(x,
             if (data.label.position == "Above row label")
                label.str <- paste0("\"labels\": [{", sublabel.str, "},{", label.str, "}]")
         }
-        rowlabel.cells <- paste0("{\"type\":\"label\", \"value\":{", label.str, "}}")
+        rowlabel.cells <- paste0("{\"type\":\"label\", \"value\":{", label.str, 
+            ", \"vertical-align\":\"", categories.tick.align.vertical, "\"}}")
     }
 
     # Icons and color
@@ -273,12 +282,12 @@ BarPictograph <- function(x,
                         image.url, base.image.str, layout.str, data.label.str,
                         floating.label.str, pad.icon.col, pad.icon.row, 0, 0, 0, 0)
     json.cells <- matrix(json.cells, ncol = 1)
-    if (fill.direction == "fromleft")
+    if (categories.tick.show && fill.direction == "From left")
     {
         column.width <- c("\"flexible:label\"", column.width)
         json.cells <- cbind(rowlabel.cells, json.cells)
     }
-    if (fill.direction == "fromright")
+    if (categories.tick.show && fill.direction == "From right")
     {
         json.cells <- cbind(json.cells, rowlabel.cells)
         column.width <- cbind(column.width, "\"flexible:label\"")
