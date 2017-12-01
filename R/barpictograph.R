@@ -282,12 +282,12 @@ BarPictograph <- function(x,
                         image.url, base.image.str, layout.str, data.label.str,
                         floating.label.str, pad.icon.col, pad.icon.row, 0, 0, 0, 0)
     json.cells <- matrix(json.cells, ncol = 1)
-    if (categories.tick.show && fill.direction == "From left")
+    if (categories.tick.show && grepl("left", fill.direction))
     {
         column.width <- c("\"flexible:label\"", column.width)
         json.cells <- cbind(rowlabel.cells, json.cells)
     }
-    if (categories.tick.show && fill.direction == "From right")
+    if (categories.tick.show && grepl("right", fill.direction))
     {
         json.cells <- cbind(json.cells, rowlabel.cells)
         column.width <- cbind(column.width, "\"flexible:label\"")
