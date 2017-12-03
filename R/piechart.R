@@ -78,7 +78,7 @@ Pie <- function(x,
     if (length(dim(x)) == 1)
         x <- as.matrix(x)
 
-    if (is.vector(x))
+    if (is.null(dim(x)))
     {
         x.labels <- names(x)
         if (is.null(x.labels))
