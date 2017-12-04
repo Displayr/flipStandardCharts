@@ -419,10 +419,10 @@ Scatter <- function(x = NULL,
     {
         if (length(scatter.sizes) != n)
             stop("'scatter.sizes' should be a numeric vector with the same number of observations as 'x'.")
-        if (any(!is.finite(AsNumeric(scatter.sizes, binary = FALSE))))
+        if (any(!is.finite(suppressWarnings(AsNumeric(scatter.sizes, binary = FALSE)))))
         {
             warning("Some points omitted due to missing values in 'scatter.sizes'.")
-            not.na <- not.na & is.finite(AsNumeric(scatter.sizes, binary = FALSE))
+            not.na <- not.na & is.finite(suppressWarnings(AsNumeric(scatter.sizes, binary = FALSE)))
         }
     }
     if (!is.null(scatter.colors))
@@ -434,7 +434,9 @@ Scatter <- function(x = NULL,
             warning("Some points omitted due to missing values in 'scatter.colors'")
             not.na <- not.na & !is.na(scatter.colors)
         }
-    }
+    } else
+        scatter.colors.as.categorical <- FALSE
+
     if (sum(not.na) == 0)
         stop("No non-NA points to plot.")
     if (any(not.na))
@@ -635,7 +637,7 @@ Scatter <- function(x = NULL,
     subtitle.axis <- setSubtitleAxis(subtitle, subtitle.font, title, title.font)
 
     ## START PLOTTING
-    p <- plot_ly(data.frame(x=x,y=y))
+    p <- plot_ly(data.frame(x = x,y = y))
     for (ggi in 1:num.groups)
     {
         ind <- which(groups == g.list[ggi])
@@ -675,13 +677,24 @@ Scatter <- function(x = NULL,
                        mode = "lines", hoverinfo = "none", showlegend = F, opacity = 0)
         }
 
-        # main trace
+        # Main trace
+        separate.legend <- legend.show && scatter.colors.as.categorical && !is.null(scatter.sizes)
         p <- add_trace(p, x = x[ind], y = y[ind], name = g.list[ggi],
-                showlegend=legend.show, legendgroup = if (num.series > 1) ggi else 1,
+                showlegend = (legend.show && !separate.legend), 
+                legendgroup = if (num.series > 1) ggi else 1,
                 textposition = data.label.position,
                 marker = marker.obj, line = line.obj, text = source.text[ind],
                 hoverinfo = if (num.series == 1) "text" else "name+text",
                 type="scatter", mode=series.mode, symbols=series.marker.symbols)
+        
+        # Getting legend with consistently sized markers
+        if (separate.legend)
+            p <- add_trace(p, x = list(NULL), y = list(NULL), name = g.list[ggi],
+                showlegend = TRUE, legendgroup = ggi, visible = TRUE,
+                line = line.obj, marker = list(size = min(scatter.sizes.scaled), 
+                opacity = opacity, color = colors[ggi]),
+                type = "scatter", mode = series.mode, symbols = series.marker.symbols) 
+
 
         if (fit.type != "None" && num.series > 1)
         {
