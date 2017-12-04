@@ -53,6 +53,7 @@
 #' @importFrom leaflet addTiles colorNumeric addLegend labelFormat setView highlightOptions
 #' @importFrom plotly plot_geo colorbar layout add_trace %>% toRGB config
 #' @importFrom grDevices colorRamp rgb
+#' @importFrom flipFormat FormatAsPercent
 #' @export
 BaseMap <- function(table,
                     coords,
@@ -321,13 +322,19 @@ BaseMap <- function(table,
             lataxis = lataxis,
             bgcolor = toRGB("white", 0))  # transparent
 
+        # See DS-1704 regarding inability to format as percentages
+        #if (grepl("%", statistic, fixed = TRUE))
+        #    df$hovertext <- FormatAsPercent(df[, 1])
+        #else
+        #    df$hovertext <- df[, 1]
+
         p <- plot_geo(df,
                       locationmode = locationmode
             ) %>%
 
-            add_trace(
+            add_trace(#hoverinfo = "text",
                 z = df[, 1], color = df[, 1], colors = colors,
-                text = NULL, locations = rownames(df),
+                locations = rownames(df), #text = ~hovertext,
                 marker = list(line = bdry)
             ) %>%
 
@@ -505,10 +512,10 @@ cleanMapInput <- function(table)
     if (all(!is.na(suppressWarnings(as.numeric(rownames(table))))) && statistic == "Text")
         stop(paste(table.name, "contains text and has numeric row names. Did you mean to convert this table to percentages?"))
 
-    if (is.null(statistic))
+    if (!is.null(statistic))
         attr(table, "statistic") <- statistic
 
-    table
+    return(table)
 }
 
 

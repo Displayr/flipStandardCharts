@@ -66,8 +66,8 @@ for (dat in dat.list)
             # Run command and check outputs
             expect_error(suppressWarnings(eval(parse(text=cmd))), NA)
 
-            print(pp)
-            readline(prompt=paste0(filestem, ": press [enter] to continue: "))
+            #print(pp)
+            #readline(prompt=paste0(filestem, ": press [enter] to continue: "))
         })
     }
 }
