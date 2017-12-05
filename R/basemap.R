@@ -193,11 +193,15 @@ BaseMap <- function(table,
     {
         format.function <- FormatAsPercent
         decimals <- decimalsFromD3(values.hovertext.format, 0)
+        mult <- 100
+        suffix <- "%"
     }
     else
     {
         format.function <- FormatAsReal
         decimals <- decimalsFromD3(values.hovertext.format, 2)
+        mult <- 1
+        suffix <- ""
     }
 
 
@@ -216,18 +220,14 @@ BaseMap <- function(table,
         .rev.pal <- colorNumeric(palette = rev(colors), domain = c(min.value, max.range),
                              na.color = color.NA)
 
-        # reverse label ordering so high values are at top
-        reverseLabelFormat = function(...){
-            function(type = "numeric", cuts){
-                cuts <- sort(cuts, decreasing = T)
-            }
-        }
-
         if (legend.show)
         {
             map <- addLegend(map, "bottomright", pal = .rev.pal, values = ~table.max,
                              title = legend.title,
-                             labFormat = reverseLabelFormat(),
+                             # reverse label ordering so high values are at top
+                             labFormat = labelFormat(transform = function(x) sort(x * mult, decreasing = TRUE),
+                                                     digits = decimals,
+                                                     suffix = suffix),
                              opacity = opacity,
                              na.label = ifelse(treat.NA.as.0, "0", "NA"))
         }
