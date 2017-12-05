@@ -61,9 +61,9 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1, scatter.y.column = 2,
   x.tick.font.family = global.font.family, x.tick.font.size = 10,
   x.tick.label.wrap = TRUE, x.tick.label.wrap.nchar = 21,
   series.line.width = 0, series.marker.border.width = 1,
-  series.marker.size = 6, series.marker.opacity = 1,
-  series.marker.show = "none", series.marker.colors = NULL,
-  swap.x.and.y = FALSE)
+  series.marker.size = if (is.null(scatter.sizes)) 6 else 12,
+  series.marker.opacity = 1, series.marker.show = "none",
+  series.marker.colors = NULL, swap.x.and.y = FALSE)
 }
 \arguments{
 \item{x}{A numeric vector for the x-axis coordinates (which may be named); or a matrix or dataframe.}
@@ -378,7 +378,9 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{series.marker.border.width}{Width in pixels of border/line
 around series markers; 0 is no line}
 
-\item{series.marker.size}{Size in pixels of marker}
+\item{series.marker.size}{Size in pixels of marker. This is overriden
+if \code{scatter.sizes} is provided, but used for the legend
+if \code{scatter.colors.as.categorical}.}
 
 \item{series.marker.opacity}{Opacity for series markers as an alpha value (0 to 1).}
 

@@ -182,7 +182,9 @@
 #' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
 #' be reversed.
 #' @param series.marker.opacity Opacity for series markers as an alpha value (0 to 1).
-#' @param series.marker.size Size in pixels of marker
+#' @param series.marker.size Size in pixels of marker. This is overriden
+#' if \code{scatter.sizes} is provided, but used for the legend
+#' if \code{scatter.colors.as.categorical}.
 #' @param series.marker.border.width Width in pixels of border/line
 #' around series markers; 0 is no line
 #' @param tooltip.show Logical; whether to show a tooltip on hover.
@@ -332,7 +334,7 @@ Scatter <- function(x = NULL,
                          x.tick.label.wrap.nchar = 21,
                          series.line.width = 0,
                          series.marker.border.width = 1,
-                         series.marker.size = 6,
+                         series.marker.size = if (is.null(scatter.sizes)) 6 else 12,
                          series.marker.opacity = 1,
                          series.marker.show = "none", # ignored
                          series.marker.colors = NULL,
@@ -680,20 +682,20 @@ Scatter <- function(x = NULL,
         # Main trace
         separate.legend <- legend.show && scatter.colors.as.categorical && !is.null(scatter.sizes)
         p <- add_trace(p, x = x[ind], y = y[ind], name = g.list[ggi],
-                showlegend = (legend.show && !separate.legend), 
+                showlegend = (legend.show && !separate.legend),
                 legendgroup = if (num.series > 1) ggi else 1,
                 textposition = data.label.position,
                 marker = marker.obj, line = line.obj, text = source.text[ind],
                 hoverinfo = if (num.series == 1) "text" else "name+text",
                 type="scatter", mode=series.mode, symbols=series.marker.symbols)
-        
+
         # Getting legend with consistently sized markers
         if (separate.legend)
             p <- add_trace(p, x = list(NULL), y = list(NULL), name = g.list[ggi],
                 showlegend = TRUE, legendgroup = ggi, visible = TRUE,
-                line = line.obj, marker = list(size = min(scatter.sizes.scaled), 
+                line = line.obj, marker = list(size = series.marker.size,
                 opacity = opacity, color = colors[ggi]),
-                type = "scatter", mode = series.mode, symbols = series.marker.symbols) 
+                type = "scatter", mode = series.mode, symbols = series.marker.symbols)
 
 
         if (fit.type != "None" && num.series > 1)
