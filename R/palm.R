@@ -53,21 +53,20 @@ Palm <- function(table,
                  y.tick.suffix = NULL,
                  colors = NULL) {
 
-    # Convert from d3 to decimals
-    y.decimals <- decimalsFromD3(y.tick.format, decimalsToDisplay(table))
 
     stat <- attr(table, "statistic")
-    # User has selected percent formatting
-    if (percentFromD3(y.tick.format)) {
-        if (is.null(stat) || !grepl("%", stat, fixed = TRUE))
-            table <- table * 100
-        y.tick.suffix <- paste("%", y.tick.suffix)
-    }
-    #  Default formatting with statistic of '%'
+    #  Automatic formatting with statistic of '%'
     if (y.tick.format == "" && !is.null(stat) && grepl("%", stat, fixed = TRUE)) {
-        y.tick.suffix <- paste("%", y.tick.suffix)
+        y.tick.format <- ".0%"
         if (y.title == stat)
             y.title <- NULL
+    }
+
+    # Convert from d3 formatting
+    y.decimals <- decimalsFromD3(y.tick.format, decimalsToDisplay(table))
+    if (percentFromD3(y.tick.format)) {
+        table <- table * 100
+        y.tick.suffix <- paste("%", y.tick.suffix)
     }
 
     # Must have a legend

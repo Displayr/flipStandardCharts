@@ -7,7 +7,7 @@
 GeographicMap(x, country, high.resolution = FALSE, treat.NA.as.0 = FALSE,
   colors = c("#CCF3FF", "#23B0DB"), ocean.color = "#DDDDDD",
   color.NA = "#808080", legend.show = TRUE, legend.title = "",
-  mapping.package = "leaflet")
+  values.hovertext.format = "", mapping.package = "leaflet")
 }
 \arguments{
 \item{x}{A matrix, two-dimensional array, table or vector, containing the
@@ -36,6 +36,9 @@ interpolating colors.}
 \item{legend.show}{Logical; Whether to display a legend with the color scale.}
 
 \item{legend.title}{The text to appear above the legend.}
+
+\item{values.hovertext.format}{A string representing a d3 formatting code.
+See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 
 \item{mapping.package}{Either \code{"leaflet"} (better graphics, more country
 maps) or \code{"plotly"} (faster).}

@@ -20,6 +20,8 @@
 #' @param color.NA The color used to represent missing values. Not used when
 #'   \code{treat.NA.as.0}, is set to missing.
 #' @param legend.title The text to appear above the legend.
+#' @param values.hovertext.format A string representing a d3 formatting code.
+#' See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format
 #' @param mapping.package Either \code{"leaflet"} (better graphics, more country
 #' maps) or \code{"plotly"} (faster).
 #' @param legend.show Logical; Whether to display a legend with the color scale.
@@ -33,17 +35,18 @@ GeographicMap <- function(x,
                           color.NA = "#808080",
                           legend.show = TRUE,
                           legend.title = "",
+                          values.hovertext.format = "",
                           mapping.package = "leaflet") {
 
     requireNamespace("sp")
 
     table <- cleanMapInput(x)
-
-    if (any(rownames(table) %in% c("Northeast", "Midwest", "South", "West")))
+    names <- tolower(rownames(table))
+    if (any(names %in% c("northeast", "midwest", "south", "west")))
         map.type <- "regions"
-    else if (any(rownames(table) %in% c("Africa", "Asia", "Europe", "North America", "Oceania", "South America")))
+    else if (any(names %in% c("africa", "asia", "europe", "north america", "oceania", "south america")))
         map.type <- "continents"
-    else if (any(rownames(table) %in% GeographicRegionRowNames("name")) || all(nchar(rownames(table)) == 3))
+    else if (any(names %in% tolower(GeographicRegionRowNames("name"))) || all(nchar(rownames(table)) == 3))
         map.type <- "countries"
     else
         map.type <- "states"
@@ -93,6 +96,7 @@ GeographicMap <- function(x,
     BaseMap(table = table, coords = coords, name.map = name.map,
             high.resolution = high.resolution, map.type = map.type, treat.NA.as.0 = treat.NA.as.0, colors = colors,
             ocean.color = ocean.color, color.NA = color.NA, legend.title = legend.title,
-            mapping.package = mapping.package, remove.regions = remove.regions, legend.show = legend.show)
+            mapping.package = mapping.package, remove.regions = remove.regions, legend.show = legend.show,
+            values.hovertext.format = values.hovertext.format)
 
 }

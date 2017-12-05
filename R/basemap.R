@@ -26,6 +26,8 @@
 #'   \code{treat.NA.as.0}, is set to missing.
 #' @param legend.show Logical; Whether to display a legend with the color scale.
 #' @param legend.title The text to appear above the legend.
+#' @param values.hovertext.format A string representing a d3 formatting code.
+#' See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format
 #' @param remove.regions The regions to remove, even if they are in the table.
 #' @param unmatched.regions.is.error If there are regions in \code{table} that
 #'   are not found in \code{coords}, if this is \code{TRUE} it will cause an
@@ -67,6 +69,7 @@ BaseMap <- function(table,
                     color.NA = "#808080",
                     legend.show = TRUE,
                     legend.title = "",
+                    values.hovertext.format = "",
                     remove.regions = NULL,
                     unmatched.regions.is.error = TRUE,
                     name.map = NULL,
@@ -183,6 +186,21 @@ BaseMap <- function(table,
         coords$table.max[match(min.in.table.max, coords$table.max)] <- min.value
     max.range <- max(coords$table.max, na.rm = TRUE)
 
+    # Decide formatting for hovertext
+    if (values.hovertext.format == "" && grepl("%", statistic, fixed = TRUE))
+        values.hovertext.format <- ".0%"
+    if (percentFromD3(values.hovertext.format))
+    {
+        format.function <- FormatAsPercent
+        decimals <- decimalsFromD3(values.hovertext.format, 0)
+    }
+    else
+    {
+        format.function <- FormatAsReal
+        decimals <- decimalsFromD3(values.hovertext.format, 2)
+    }
+
+
     if (mapping.package == "leaflet") {
 
         # Creating the map
@@ -223,7 +241,7 @@ BaseMap <- function(table,
             map <- addPolygons(map, stroke = FALSE, smoothFactor = 0.2,
                                fillOpacity = opacity, fillColor = ~.pal(coords$table1),
                                highlightOptions = highlight.options,
-                               label = paste0(coords$name, ": ", coords$table1))
+                               label = paste0(coords$name, ": ", format.function(coords$table1, decimals = decimals)))
         }
         else
         {
@@ -233,7 +251,7 @@ BaseMap <- function(table,
                 map <- addPolygons(map, stroke = FALSE, smoothFactor = 0.2,
                                    fillOpacity = opacity, color = cl, group = categories[i],
                                    highlightOptions = highlight.options,
-                                   label = paste0(coords$name, ": ", coords[[paste("table", i, sep = "")]]))
+                                   label = paste0(coords$name, ": ", format.function(coords[[paste("table", i, sep = "")]], decimals = decimals)))
             }
             map <- addLayersControl(map, baseGroups = categories,
                                     options = layersControlOptions(collapsed = FALSE))
@@ -292,7 +310,7 @@ BaseMap <- function(table,
         }
         else
             stop("Only world and USA state or region maps are available with 'plotly' package.",
-                 "Change to 'leaflet' to map other types.")
+                 " Change to 'leaflet' to map other types.")
 
         if (treat.NA.as.0)  # set NA color to zero color
         {
@@ -322,19 +340,16 @@ BaseMap <- function(table,
             lataxis = lataxis,
             bgcolor = toRGB("white", 0))  # transparent
 
-        # See DS-1704 regarding inability to format as percentages
-        #if (grepl("%", statistic, fixed = TRUE))
-        #    df$hovertext <- FormatAsPercent(df[, 1])
-        #else
-        #    df$hovertext <- df[, 1]
-
         p <- plot_geo(df,
                       locationmode = locationmode
             ) %>%
 
-            add_trace(#hoverinfo = "text",
-                z = df[, 1], color = df[, 1], colors = colors,
-                locations = rownames(df), #text = ~hovertext,
+            add_trace(# hoverinfo = "text", should display 'text' only but causes all hovertext to disappear
+                z = df[, 1],
+                color = df[, 1],
+                colors = colors,
+                locations = rownames(df),
+                text = format.function(df[, 1], decimals = decimals),
                 marker = list(line = bdry)
             ) %>%
 
