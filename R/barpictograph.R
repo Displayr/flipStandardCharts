@@ -12,6 +12,7 @@
 #' @param categories.tick.show Logical; Whether to show tick labels for each bar (i.e. rownames).
 #' @param categories.tick.align.horizontal Horizontal alignment of tick labels for each bar. One of "left", "right", "middle" or "Default".
 #' @param categories.tick.align.vertical Vertical alignment of tick labels for each bar. One of "top", "center", "bottom" or "Default".
+#' @param categories.tick.pad Horizontal space between the row labels and the icons.
 #' @param base.image URL of image to use as base image. Only used if \code{is.custom.url = TRUE} and \code{hide.base.image = FALSE}.
 #' @param hide.base.image Turns off background image (on by default). In general, the base image should only be shown if the input data is a proportion.
 #' @param base.icon.color Color of base image, supplied as a hex code or string. This is only used if the built-in icons are used.
@@ -64,6 +65,7 @@ BarPictograph <- function(x,
                        categories.tick.font.family = global.font.family,
                        categories.tick.font.color = global.font.color,
                        categories.tick.font.size = 12,
+                       categories.tick.pad = 5,
                        categories.tick.align.horizontal = "Default",
                        categories.tick.align.vertical = "Default",
                        background.fill.color = "transparent",
@@ -220,9 +222,9 @@ BarPictograph <- function(x,
     rowlabel.cells <- NULL
     if (categories.tick.show)
     {
+        label.opp.pos <- setdiff(c("left", "right"), gsub("From ", "", fill.direction))[1]
         if (categories.tick.align.horizontal == "Default")
-            categories.tick.align.horizontal <- setdiff(c("left", "right"),
-                gsub("From ", "", fill.direction))[1]
+            categories.tick.align.horizontal <- label.opp.pos
 
         label.str <- paste0("\"text\": \"", names(x),
             "\" ,\"horizontal-align\": \"", tolower(categories.tick.align.horizontal),
@@ -245,8 +247,9 @@ BarPictograph <- function(x,
             if (data.label.position == "Above row label")
                label.str <- paste0("\"labels\": [{", sublabel.str, "},{", label.str, "}]")
         }
-        rowlabel.cells <- paste0("{\"type\":\"label\", \"value\":{", label.str, 
-            ", \"vertical-align\":\"", categories.tick.align.vertical, "\"}}")
+        rowlabel.cells <- paste0("{\"type\":\"label\", \"value\":{", label.str,
+            ", \"vertical-align\":\"", categories.tick.align.vertical,
+            "\", \"padding-", label.opp.pos, "\":", categories.tick.pad, "}}")
     }
 
     # Icons and color
