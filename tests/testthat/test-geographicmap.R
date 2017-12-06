@@ -8,22 +8,22 @@ austria.state.table <- structure(c(0.194518122589216, 0.0159799950197339, 0.6391
                                                                                       "Salzburg",
                                                                                       "Steiermark", "Tirol", "Vorarlberg", "Wien"))
 
-world.multi.series.table <- structure(c(2, 3, 4, 5, 6, 9, 15, 14, 18, 16, 100, 105, 109,
+world.multi.series.table <- structure(c(-10, 0, NA, 50, 60, 90, 150, 140, 180, 160, 1000, 1050, 2000,
                                         84, 150), .Dim = c(5L, 3L), .Dimnames = list(c("france", "germany",
                                                                                        "usa", "brazil", "malaysia"), c("age", "weight", "IQ")))
 
 country.codes <- seq(4)
 names(country.codes) <- c("AUS", "HUN", "SOM", "PAK")
 
-region.pct <- structure(c(0.17, 0.155, 0.285, 0.39), .Names = c("Midwest", "Northeast", "South", "West"), statistic = "%")
+region.pct <- structure(c(-0.17, 0.155, NA, 0.39), .Names = c("Midwest", "Northeast", "South", "West"), statistic = "%")
 
 continents <- rnorm(5) * 100
 names(continents) <- c("Asia", "Europe", "Oceania", "North America", "Africa")
 
 opts <- c('leaflet_nazero' = 'mapping.package = "leaflet", treat.NA.as.0 = TRUE, legend.show = FALSE, values.hovertext.format = ".3%"',
-          'leaflet_colors' = 'mapping.package = "leaflet", color.NA = "#f4aa42", colors = c("#301f68", "#c11d3b"), ocean.color = "#abb280", legend.title = "SUPER"',
           'plotly_nazero' = 'mapping.package = "plotly", treat.NA.as.0 = TRUE, legend.show = FALSE, values.hovertext.format = ".3%"',
-          'plotly_colors' = 'mapping.package ="plotly", color.NA = "#f4aa42", colors = c("#301f68", "#c11d3b"), ocean.color = "#abb280", legend.title = "SUPER"')
+          'leaflet_colors' = 'mapping.package = "leaflet", color.NA = "#f4aa42", colors = c("#301f68", "#c11d3b"), ocean.color = "#abb280", legend.title = "SUPER", values.hovertext.format = ",.1f"',
+          'plotly_colors' = 'mapping.package ="plotly", color.NA = "#f4aa42", colors = c("#301f68", "#c11d3b"), ocean.color = "#abb280", legend.title = "SUPER", values.hovertext.format = ",.1f"')
 
 leaflet.only <- c("austria.state.table", "continents")
 both.packages <- c("world.multi.series.table", "country.codes", "region.pct")
@@ -50,8 +50,8 @@ for (dat in dat.list)
             # Run command and check outputs
             expect_error(suppressWarnings(eval(parse(text=cmd))), NA)
 
-            #print(pp)
-            #readline(prompt=paste0(filestem, ": press [enter] to continue: "))
+            print(pp)
+            readline(prompt=paste0(filestem, ": press [enter] to continue: "))
         })
     }
 }

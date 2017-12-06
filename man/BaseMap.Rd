@@ -44,7 +44,7 @@ interpolating colors.}
 \item{ocean.color}{The color used for oceans, used only by \code{plotly}.}
 
 \item{color.NA}{The color used to represent missing values. Not used when
-\code{treat.NA.as.0}, is set to missing.}
+\code{treat.NA.as.0}, is set to \code{TRUE}.}
 
 \item{legend.show}{Logical; Whether to display a legend with the color scale.}
 

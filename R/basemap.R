@@ -23,7 +23,7 @@
 #'   interpolating colors.
 #' @param ocean.color The color used for oceans, used only by \code{plotly}.
 #' @param color.NA The color used to represent missing values. Not used when
-#'   \code{treat.NA.as.0}, is set to missing.
+#'   \code{treat.NA.as.0}, is set to \code{TRUE}.
 #' @param legend.show Logical; Whether to display a legend with the color scale.
 #' @param legend.title The text to appear above the legend.
 #' @param values.hovertext.format A string representing a d3 formatting code.
@@ -139,10 +139,10 @@ BaseMap <- function(table,
         coords <- coords[coords[[structure]] %in% rownames(table), ]
 
     # Checking to see if input data is OK.
-    if (treat.NA.as.0)
-    {
-        table <- table[apply(table, 1, max, na.rm = TRUE) > 0, , drop = FALSE]
-    }
+    #if (treat.NA.as.0)
+    #{
+    #    table <- table[apply(table, 1, max, na.rm = TRUE) > 0, , drop = FALSE]
+    #}
 
     table.names <- rownames(table)
     coords.names <- tolower(coords[[structure]])
@@ -227,7 +227,8 @@ BaseMap <- function(table,
                              # reverse label ordering so high values are at top
                              labFormat = labelFormat(transform = function(x) sort(x * mult, decreasing = TRUE),
                                                      digits = decimals,
-                                                     suffix = suffix),
+                                                     suffix = suffix,
+                                                     big.mark = ifelse(commaFromD3(values.hovertext.format), ",", "")),
                              opacity = opacity,
                              na.label = ifelse(treat.NA.as.0, "0", "NA"))
         }
@@ -241,7 +242,9 @@ BaseMap <- function(table,
             map <- addPolygons(map, stroke = FALSE, smoothFactor = 0.2,
                                fillOpacity = opacity, fillColor = ~.pal(coords$table1),
                                highlightOptions = highlight.options,
-                               label = paste0(coords$name, ": ", format.function(coords$table1, decimals = decimals)))
+                               label = paste0(coords$name, ": ", format.function(coords$table1,
+                                                                                 decimals = decimals,
+                                                                                 comma.for.thousands = commaFromD3(values.hovertext.format))))
         }
         else
         {
@@ -251,7 +254,10 @@ BaseMap <- function(table,
                 map <- addPolygons(map, stroke = FALSE, smoothFactor = 0.2,
                                    fillOpacity = opacity, color = cl, group = categories[i],
                                    highlightOptions = highlight.options,
-                                   label = paste0(coords$name, ": ", format.function(coords[[paste("table", i, sep = "")]], decimals = decimals)))
+                                   label = paste0(coords$name, ": ",
+                                                  format.function(coords[[paste("table", i, sep = "")]],
+                                                                  decimals = decimals,
+                                                                  comma.for.thousands = commaFromD3(values.hovertext.format))))
             }
             map <- addLayersControl(map, baseGroups = categories,
                                     options = layersControlOptions(collapsed = FALSE))
@@ -266,6 +272,7 @@ BaseMap <- function(table,
     } else {        # mapping.package == "plotly"
 
         df <- data.frame(table)
+        df <- df[!is.na(df[, 1]), , drop = FALSE]  # avoid warning for NA
 
         if (ncol(df) > 1)
         {
@@ -349,7 +356,7 @@ BaseMap <- function(table,
                 color = df[, 1],
                 colors = colors,
                 locations = rownames(df),
-                text = format.function(df[, 1], decimals = decimals),
+                text = format.function(df[, 1], decimals = decimals, comma.for.thousands = commaFromD3(values.hovertext.format)),
                 marker = list(line = bdry)
             ) %>%
 
@@ -363,7 +370,7 @@ BaseMap <- function(table,
             )
 
         if (legend.show)
-            p <- colorbar(p, title = legend.title, separatethousands = TRUE, x = 1)
+            p <- colorbar(p, title = legend.title, separatethousands = commaFromD3(values.hovertext.format), x = 1)
         else
             p <- hide_colorbar(p)
 
