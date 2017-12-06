@@ -64,7 +64,7 @@ Palm <- function(table,
     if (percentFromD3(y.tick.format)) {
         table <- table * 100
         y.tick.suffix <- paste("%", y.tick.suffix)
-        if (identical(y.title, stat))
+        if (identical(y.title, "%"))
             y.title <- NULL
     }
 
