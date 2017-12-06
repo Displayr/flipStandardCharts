@@ -56,17 +56,16 @@ Palm <- function(table,
 
     stat <- attr(table, "statistic")
     #  Automatic formatting with statistic of '%'
-    if (y.tick.format == "" && !is.null(stat) && grepl("%", stat, fixed = TRUE)) {
+    if (y.tick.format == "" && !is.null(stat) && grepl("%", stat, fixed = TRUE))
         y.tick.format <- ".0%"
-        if (y.title == stat)
-            y.title <- NULL
-    }
 
     # Convert from d3 formatting
     y.decimals <- decimalsFromD3(y.tick.format, decimalsToDisplay(table))
     if (percentFromD3(y.tick.format)) {
         table <- table * 100
         y.tick.suffix <- paste("%", y.tick.suffix)
+        if (identical(y.title, stat))
+            y.title <- NULL
     }
 
     # Must have a legend
