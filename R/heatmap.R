@@ -143,58 +143,8 @@ HeatMap <- function(table,
         "none"
 
     row.order <- if(is.null(rownames(mat))) seq(nrow(mat)) else str_trim(rownames(mat))
-
-    left.columns.append <- NULL
-    if (!is.null(left.columns)) {
-        n <- length(left.columns)
-        left.column.subtitles <- character(0)
-        for (i in seq(n)) {
-            if (length(dim(left.columns[[i]])) != 2)        # coerce to 2D matrix with NULL colnames
-                left.columns[[i]] <- as.matrix(left.columns[[i]])
-            if (is.null(colnames(left.columns[[i]]))) {     # label with colnames if set or else ""
-                left.column.subtitles <- c(left.column.subtitles, rep("", ncol(left.columns[[i]])))
-            } else {
-                left.column.subtitles <- c(left.column.subtitles, colnames(left.columns[[i]]))
-            }
-        }
-        mats <- rep(list(mat), n)
-        cbinds <- mapply(Cbind, mats, left.columns, SIMPLIFY = FALSE)
-        cbinds <- lapply(cbinds, '[', row.order, -seq(1:ncol(mat)), drop = FALSE)
-        left.columns.append <- do.call(cbind, cbinds)
-        if (left.column.headings != "")
-        {
-            left.column.headings <- ConvertCommaSeparatedStringToVector(left.column.headings)
-            if (length(left.column.headings) != length(left.column.subtitles))
-                stop("Number of left column headings is different from number of left columns.")
-            left.column.subtitles <- left.column.headings
-        }
-    }
-
-    right.columns.append <- NULL
-    if (!is.null(right.columns)) {
-        n <- length(right.columns)
-        right.column.subtitles <- character(0)
-        for (i in seq(n)) {
-            if (length(dim(right.columns[[i]])) != 2)
-                right.columns[[i]] <- as.matrix(right.columns[[i]])
-            if (is.null(colnames(right.columns[[i]]))) {
-                right.column.subtitles <- c(right.column.subtitles, rep("", ncol(right.columns[[i]])))
-            } else {
-                right.column.subtitles <- c(right.column.subtitles, colnames(right.columns[[i]]))
-            }
-        }
-        mats <- rep(list(mat), n)
-        cbinds <- mapply(Cbind, mats, right.columns, SIMPLIFY = FALSE)
-        cbinds <- lapply(cbinds, '[', row.order, -seq(1:ncol(mat)), drop = FALSE)
-        right.columns.append <- do.call(cbind, cbinds)
-        if (right.column.headings != "")
-        {
-            right.column.headings <- ConvertCommaSeparatedStringToVector(right.column.headings)
-            if (length(right.column.headings) != length(right.column.subtitles))
-                stop("Number of right column headings is different from number of right columns.")
-            right.column.subtitles <- right.column.headings
-        }
-    }
+    left.appended <- appendColumns(left.columns, mat, cell.decimals, left.column.headings, row.order)
+    right.appended <- appendColumns(right.columns, mat, cell.decimals, right.column.headings, row.order)
 
     heatmap <- rhtmlHeatmap::Heatmap(mat,
                        Rowv = rowv,
@@ -235,10 +185,10 @@ HeatMap <- function(table,
                        xaxis_title_font_size = xaxis.title.font.size,
                        yaxis_font_size = axis.label.font.size,
                        yaxis_title_font_size = yaxis.title.font.size,
-                       left_columns = left.columns.append,
-                       left_columns_subtitles = left.column.subtitles,
-                       right_columns = right.columns.append,
-                       right_columns_subtitles = right.column.subtitles,
+                       left_columns = left.appended$columns.append,
+                       left_columns_subtitles = left.appended$column.subtitles,
+                       right_columns = right.appended$columns.append,
+                       right_columns_subtitles = right.appended$column.subtitles,
                        left_columns_font_size = value.font.size,
                        left_columns_font_family = font.family,
                        left_columns_subtitles_font_size = axis.label.font.size,
@@ -251,4 +201,38 @@ HeatMap <- function(table,
                        right_columns_subtitles_font_color = font.color)
 }
 
+
+appendColumns <- function(to.append, mat, cell.decimals, column.headings, row.order) {
+
+    columns.append <- NULL
+    column.subtitles <- character(0)
+    if (!is.null(to.append)) {
+        n <- length(to.append)
+        for (i in seq(n)) {
+            if (length(dim(to.append[[i]])) != 2)        # coerce to 2D matrix with NULL colnames
+                to.append[[i]] <- as.matrix(to.append[[i]])
+            if (is.numeric(to.append[[i]]))              # format numeric columns with same decimals as heatmap
+                to.append[[i]] <- apply(to.append[[i]], c(1, 2), FormatAsReal, decimals = cell.decimals)
+            if (is.null(colnames(to.append[[i]]))) {     # label with colnames if set or else ""
+                column.subtitles <- c(column.subtitles, rep("", ncol(to.append[[i]])))
+            } else {
+                column.subtitles <- c(column.subtitles, colnames(to.append[[i]]))
+            }
+        }
+        # Bind each additonal item to its own copy of mat, then extract the bound columns
+        # and bind them together.
+        mats <- rep(list(mat), n)
+        cbinds <- mapply(Cbind, mats, to.append, SIMPLIFY = FALSE)
+        cbinds <- lapply(cbinds, '[', row.order, -seq(1:ncol(mat)), drop = FALSE)
+        columns.append <- do.call(cbind, cbinds)
+        if (column.headings != "")
+        {
+            column.headings <- ConvertCommaSeparatedStringToVector(column.headings)
+            if (length(column.headings) != length(column.subtitles))
+                stop("Number of additional column headings is different from number of additional columns.")
+            column.subtitles <- column.headings
+        }
+    }
+    return(list(columns.append = columns.append, column.subtitles = column.subtitles))
+}
 
