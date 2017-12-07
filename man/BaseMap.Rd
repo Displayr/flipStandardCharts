@@ -9,8 +9,9 @@ BaseMap(table, coords, treat.NA.as.0 = FALSE,
   remove.last.column = FALSE, remove.last.row = FALSE,
   colors = c("#CCF3FF", "#23B0DB"), ocean.color = "#DDDDDD",
   color.NA = "#808080", legend.show = TRUE, legend.title = "",
-  remove.regions = NULL, unmatched.regions.is.error = TRUE,
-  name.map = NULL, mapping.package = "leaflet", high.resolution = FALSE,
+  values.hovertext.format = "", remove.regions = NULL,
+  unmatched.regions.is.error = TRUE, name.map = NULL,
+  mapping.package = "leaflet", high.resolution = FALSE,
   map.type = "countries")
 }
 \arguments{
@@ -43,11 +44,14 @@ interpolating colors.}
 \item{ocean.color}{The color used for oceans, used only by \code{plotly}.}
 
 \item{color.NA}{The color used to represent missing values. Not used when
-\code{treat.NA.as.0}, is set to missing.}
+\code{treat.NA.as.0}, is set to \code{TRUE}.}
 
 \item{legend.show}{Logical; Whether to display a legend with the color scale.}
 
 \item{legend.title}{The text to appear above the legend.}
+
+\item{values.hovertext.format}{A string representing a d3 formatting code.
+See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 
 \item{remove.regions}{The regions to remove, even if they are in the table.}
 
