@@ -177,7 +177,7 @@ Pie <- function(x,
     inner.radius <- paste(pie.inner.radius, "%", sep = "")
     values.display.as <- if (as.percentages) "percentage" else "original"
     if (as.percentages)
-        data.label.suffix <- paste("%", data.label.suffix)
+        data.label.suffix <- paste0("%", data.label.suffix)
 
     Donut(values = y.values,
           labels = x.labels,

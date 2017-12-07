@@ -163,13 +163,16 @@ BarPictograph <- function(x,
     if (data.label.position != "No")
     {
         data.label.mult100 <- FALSE
+        stat <- attr(x, "statistic")
+        if (data.label.format == "" && !is.null(stat) && grepl("%", stat, fixed = TRUE))
+            data.label.format <- ".0%"
         if (percentFromD3(data.label.format))
         {
             data.label.suffix <- paste0("%", data.label.suffix)
             data.label.mult100 <- TRUE
         }
         data.label.digits <- decimalsFromD3(data.label.format)
-        data.label.values <- unlist(raw.x) * (1 + (99*data.label.mult100))
+        data.label.values <- unlist(raw.x) * (1 + (99 * data.label.mult100))
         data.label.text <- sprintf("%s%s%s", data.label.prefix,
             formatC(data.label.values, digits = data.label.digits, format = "f",
             big.mark = data.label.bigmark), data.label.suffix)

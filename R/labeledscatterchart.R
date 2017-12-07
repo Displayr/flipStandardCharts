@@ -434,12 +434,12 @@ LabeledScatter <- function(x = NULL,
     if (percentFromD3(x.tick.format))
     {
         X <- X * 100
-        x.tick.suffix <- paste("%", x.tick.suffix)
+        x.tick.suffix <- paste0("%", x.tick.suffix)
     }
     if (percentFromD3(y.tick.format))
     {
         Y <- Y * 100
-        y.tick.suffix <- paste("%", y.tick.suffix)
+        y.tick.suffix <- paste0("%", y.tick.suffix)
     }
 
     return(rhtmlLabeledScatter::LabeledScatter(X = x[not.na],
