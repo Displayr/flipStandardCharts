@@ -84,6 +84,7 @@ BarPictograph <- function(x,
         x <- t(x)
     if (NCOL(x) > 1)
         stop("Input data for Bar Pictographs must be a vector.")
+    stat <- attr(x, "statistic")
     x <- checkMatrixNames(x)[,1]
     n <- NROW(x)
 
@@ -163,7 +164,6 @@ BarPictograph <- function(x,
     if (data.label.position != "No")
     {
         data.label.mult100 <- FALSE
-        stat <- attr(x, "statistic")
         if (data.label.format == "" && !is.null(stat) && grepl("%", stat, fixed = TRUE))
             data.label.format <- ".0%"
         if (percentFromD3(data.label.format))
