@@ -2,26 +2,13 @@
 #'
 #' Pie chart
 #'
+#' @inherit Column
 #' @param x Input data in the form of a vector, matrix or dataframe. If a dataframe is given, the first column is expected to contain the label names, the second column contains numeric values and the third (optional) column are the group labels.
 #' @param type One of "Pie" or "Donut"
-#' @param colors A vector containing a hex value colors.
 #' @param pie.subslice.colors A vector containing hex value colors for the outer ring of the pie chart. If not supplied will default to the same colors as the inner ring.
 #' @param pie.subslice.colors.repeat Logical; if, when a grouped
 #' pie chart is displayed, the colors of the subslices should repeat
 #' by group, or be different throughout; defaults to TRUE.
-#' @param title Character; chart title.
-#' @param title.font.family Character; title font family. Can be "Arial Black",
-#' "Arial", "Comic Sans MS", "Courier New", "Georgia", "Impact",
-#' "Lucida Console", "Lucida Sans Unicode", "Marlett", "Symbol", "Tahoma",
-#' "Times New Roman", "Trebuchet MS", "Verdana", "Webdings"
-#' @param title.font.color Title font color as a named color in character
-#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
-#' @param title.font.size Title font size; default = 10.
-#' @param data.label.font.family Character; font family for data label.
-#' @param data.label.font.size Font size for data label.
-#' @param data.label.font.color Font color for data label.
-#' @param data.label.format A string representing a d3 formatting code.
-#' See https://github.com/mbostock/d3/wiki/Formatting#numbers
 #' @param pie.values.order Order of the labels shown. Can be one of 'descending', 'alphabetical' or 'initial'.
 #' @param pie.groups.order Order of the groups shown. Can be one of 'descending', 'alphabetical' or 'initial'.
 #' @param pie.groups.font.family Character; font family for group labels.
@@ -54,6 +41,14 @@ Pie <- function(x,
                      title.font.family = global.font.family,
                      title.font.size = 16,
                      title.font.color = global.font.color,
+                     subtitle = "",
+                     subtitle.font.family = global.font.family,
+                     subtitle.font.size = 12,
+                     subtitle.font.color = global.font.color,
+                     footer = "",
+                     footer.font.family = global.font.family,
+                     footer.font.size = 8,
+                     footer.font.color = global.font.color,
                      pie.data.threshold = NULL,
                      pie.values.order = "initial",
                      data.label.format = "",
@@ -62,9 +57,9 @@ Pie <- function(x,
                      data.label.font.size = 10,
                      data.label.font.color = global.font.color,
                      data.label.font.family = global.font.family,
-                     pie.groups.font.size = 10,
-                     pie.groups.font.color = global.font.color,
-                     pie.groups.font.family = global.font.family,
+                     pie.groups.font.size = data.label.font.size,
+                     pie.groups.font.color = data.label.font.color,
+                     pie.groups.font.family = data.label.font.family,
                      pie.groups.order = "initial",
                      pie.inner.radius = NULL,
                      pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
@@ -211,6 +206,14 @@ Pie <- function(x,
           title.font.family = title.font.family,
           title.font.size = title.font.size,
           title.font.color = title.font.color,
+          subtitle = subtitle,
+          subtitle.font.family = subtitle.font.family,
+          subtitle.font.size = subtitle.font.size,
+          subtitle.font.color = subtitle.font.color,
+          footer = footer,
+          footer.font.family = footer.font.family,
+          footer.font.size = footer.font.size,
+          footer.font.color = footer.font.color,
           prefix = data.label.prefix,
           suffix = data.label.suffix,
           border.color = StripAlphaChannel(pie.border.color),

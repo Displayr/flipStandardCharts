@@ -7,23 +7,31 @@
 Pie(x, type = "Pie", colors = NULL, pie.subslice.colors = NULL,
   pie.subslice.colors.repeat = TRUE, title = "",
   title.font.family = global.font.family, title.font.size = 16,
-  title.font.color = global.font.color, pie.data.threshold = NULL,
+  title.font.color = global.font.color, subtitle = "",
+  subtitle.font.family = global.font.family, subtitle.font.size = 12,
+  subtitle.font.color = global.font.color, footer = "",
+  footer.font.family = global.font.family, footer.font.size = 8,
+  footer.font.color = global.font.color, pie.data.threshold = NULL,
   pie.values.order = "initial", data.label.format = "",
   data.label.prefix = "", data.label.suffix = "",
   data.label.font.size = 10, data.label.font.color = global.font.color,
-  data.label.font.family = global.font.family, pie.groups.font.size = 10,
-  pie.groups.font.color = global.font.color,
-  pie.groups.font.family = global.font.family, pie.groups.order = "initial",
-  pie.inner.radius = NULL, pie.border.color = rgb(255, 255, 255,
-  maxColorValue = 255), global.font.family = "Arial",
-  global.font.color = rgb(44, 44, 44, maxColorValue = 255))
+  data.label.font.family = global.font.family,
+  pie.groups.font.size = data.label.font.size,
+  pie.groups.font.color = data.label.font.color,
+  pie.groups.font.family = data.label.font.family,
+  pie.groups.order = "initial", pie.inner.radius = NULL,
+  pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
+  global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
+  maxColorValue = 255))
 }
 \arguments{
 \item{x}{Input data in the form of a vector, matrix or dataframe. If a dataframe is given, the first column is expected to contain the label names, the second column contains numeric values and the third (optional) column are the group labels.}
 
 \item{type}{One of "Pie" or "Donut"}
 
-\item{colors}{A vector containing a hex value colors.}
+\item{colors}{Character; a vector containing one or more named
+colors from grDevices OR one or more specified hex value colors OR a single
+named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 
 \item{pie.subslice.colors}{A vector containing hex value colors for the outer ring of the pie chart. If not supplied will default to the same colors as the inner ring.}
 
@@ -43,6 +51,26 @@ by group, or be different throughout; defaults to TRUE.}
 \item{title.font.color}{Title font color as a named color in character
 format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
+\item{subtitle}{Character}
+
+\item{subtitle.font.family}{Character; subtitle font family}
+
+\item{subtitle.font.size}{subtitle font size}
+
+\item{subtitle.font.color}{subtitle font color as a named color in
+character format (e.g. "black") or an rgb value (e.g.
+rgb(0, 0, 0, maxColorValue = 255)).}
+
+\item{footer}{Character}
+
+\item{footer.font.family}{Character; footer font family}
+
+\item{footer.font.size}{footer font size}
+
+\item{footer.font.color}{footer font color as a named color in
+character format (e.g. "black") or an rgb value (e.g.
+rgb(0, 0, 0, maxColorValue = 255)).}
+
 \item{pie.data.threshold}{Labels with values smaller than the theshold are not shown.}
 
 \item{pie.values.order}{Order of the labels shown. Can be one of 'descending', 'alphabetical' or 'initial'.}
@@ -54,9 +82,11 @@ See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 
 \item{data.label.suffix}{Character; suffix for data values.}
 
-\item{data.label.font.size}{Font size for data label.}
+\item{data.label.font.size}{Font size for data label.px.}
 
-\item{data.label.font.color}{Font color for data label.}
+\item{data.label.font.color}{Font color as a named color
+in character format (e.g. "black") or an rgb value (e.g.
+rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{data.label.font.family}{Character; font family for data label.}
 
