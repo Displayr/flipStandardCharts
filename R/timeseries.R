@@ -63,7 +63,9 @@ TimeSeries <- function(x = NULL,
                     y.tick.font.size = 10
 ) {
 
-    if(ncol(x) == 1)
+    if (is.null(dim(x)) || length(dim(x)) == 1L)
+        x <- as.matrix(x)
+    if (ncol(x) == 1)
     {
         label <- colnames(x)[1]
     }
