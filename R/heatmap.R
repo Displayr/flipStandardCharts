@@ -211,8 +211,7 @@ appendColumns <- function(to.append, mat, cell.decimals, column.headings, row.or
         for (i in seq(n)) {
             if (length(dim(to.append[[i]])) != 2)        # coerce to 2D matrix with NULL colnames
                 to.append[[i]] <- as.matrix(to.append[[i]])
-            if (is.numeric(to.append[[i]]))              # format numeric columns with same decimals as heatmap
-                to.append[[i]] <- apply(to.append[[i]], c(1, 2), FormatAsReal, decimals = cell.decimals)
+            to.append[[i]] <- formatNumeric(to.append[[i]], cell.decimals)
             if (is.null(colnames(to.append[[i]]))) {     # label with colnames if set or else ""
                 column.subtitles <- c(column.subtitles, rep("", ncol(to.append[[i]])))
             } else {
@@ -234,5 +233,16 @@ appendColumns <- function(to.append, mat, cell.decimals, column.headings, row.or
         }
     }
     return(list(columns.append = columns.append, column.subtitles = column.subtitles))
+}
+
+# Format numeric columns with same decimals as heatmap
+formatNumeric <- function(x, decimals) {
+    if (is.numeric(x))
+        return(apply(x, c(1, 2), FormatAsReal, decimals = decimals))
+    if (is.data.frame(x)) {
+        numeric.cols <- sapply(x, is.numeric)
+        x[numeric.cols] <- lapply(x[numeric.cols], FormatAsReal, decimals = decimals)
+    }
+    return(x)
 }
 
