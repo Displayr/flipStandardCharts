@@ -253,7 +253,7 @@ LabeledScatter <- function(x = NULL,
         if (trend.lines)
             scatter.sizes.column <- 0
         if (!trend.lines)
-            rownames(x) <- sprintf("%s: %s", 
+            rownames(x) <- sprintf("%s: %s",
                 rep(table.names, each = n.tmp), groups)
         if (!is.null(logo.urls))
             logo.urls <- rep(logo.urls, num.tables)
@@ -396,8 +396,12 @@ LabeledScatter <- function(x = NULL,
 
     if (is.null(scatter.labels))
         scatter.labels <- rep("", n)
-    if (is.numeric(scatter.labels))
-        scatter.labels <- FormatAsReal(scatter.labels, decimals = decimalsFromD3(data.label.format))
+    if (is.numeric(scatter.labels)) {
+        if (percentFromD3(data.label.format))
+            scatter.labels <- FormatAsPercent(scatter.labels, decimals = decimalsFromD3(data.label.format))
+        else
+            scatter.labels <- FormatAsReal(scatter.labels, decimals = decimalsFromD3(data.label.format))
+    }
     scatter.labels <- paste0(data.label.prefix, scatter.labels, data.label.suffix)
 
     lab.tidy <- scatter.labels
@@ -424,9 +428,19 @@ LabeledScatter <- function(x = NULL,
     }
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
 
-    # Convert d3 formatting to number of decimals
+    # Convert d3 formatting
     x.decimals <- decimalsFromD3(x.tick.format, decimalsToDisplay(x))
     y.decimals <- decimalsFromD3(y.tick.format, decimalsToDisplay(y))
+    if (percentFromD3(x.tick.format))
+    {
+        X <- X * 100
+        x.tick.suffix <- paste("%", x.tick.suffix)
+    }
+    if (percentFromD3(y.tick.format))
+    {
+        Y <- Y * 100
+        y.tick.suffix <- paste("%", y.tick.suffix)
+    }
 
     return(rhtmlLabeledScatter::LabeledScatter(X = x[not.na],
                        Y = y[not.na],

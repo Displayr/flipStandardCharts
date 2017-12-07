@@ -38,7 +38,8 @@ Venn <- function(x = NULL,
         if (is.null(weights))
             weights <- rep(1, nrow(x))
 
-        as.percentages <- percentFromD3(values.hovertext.format)
+        stat <- attr(x, "statistic")
+        as.percentages <- percentFromD3(values.hovertext.format) || (values.hovertext.format == "" && !is.null(stat) && grepl("%", stat, fixed = TRUE))
         data.label.decimals <- decimalsFromD3(values.hovertext.format, 0)
 
         if (as.percentages)

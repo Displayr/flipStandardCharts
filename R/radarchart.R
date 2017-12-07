@@ -247,6 +247,13 @@ Radar <- function(x,
     r.max <- y.bounds.maximum
 
     # Extract formatting from d3
+    stat <- attr(x, "statistic")
+    if (!is.null(stat) && grepl("%", stat, fixed = TRUE))
+    {
+        if (hover.format.function == "") hover.format.function <- ".0%"
+        if (tick.format.function == "") tick.format.function <- ".0%"
+        if (data.label.format.function == "") data.label.format.function <- ".0%"
+    }
     hover.format.function <- ifelse(percentFromD3(y.hovertext.format), FormatAsPercent, FormatAsReal)
     tick.format.function <- ifelse(percentFromD3(y.tick.format), FormatAsPercent, FormatAsReal)
     data.label.format.function <- ifelse(percentFromD3(data.label.format), FormatAsPercent, FormatAsReal)
