@@ -74,7 +74,7 @@ TimeSeries <- function(x = NULL,
         if (ncol(x) != 3)
             stop("Data must consist of 3 columns in order of low, value, high.")
         label <- colnames(x)[2]
-        colors <- colors[2]
+        colors <- colors[1]
     }
 
     names(colors) <- NULL # Remove names because named chr is (oddly!) ignored by dygraph
