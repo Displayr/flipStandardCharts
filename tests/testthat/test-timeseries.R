@@ -47,13 +47,16 @@ stock.prices <- structure(c(72.830002, 73.050003, 74.010002, 74.769997, 73.94000
 stock.prices <- cbind(stock.prices - 1, stock.prices, stock.prices + 1)
 colnames(stock.prices) <- c("Low", "Close", "Open")
 
+google.trends.multi <- cbind(google.trends, google.trends * 2, google.trends + 20)
+colnames(google.trends.multi) <- c("alpha", "beta", "gamma")
 
 opts <- c('titles' = 'title = "MY TITLE", x.title = "MY X-AXIS", y.title = "MY Y-AXIS"',
-          'colors' = 'colors = "FF0022", title = "MY PURPLE TITLE", title.font.color = "#8012C4"',
+          'colors' = 'colors = c("#FF0022", "#BFB311", "#51a5a1"), title = "MY PURPLE TITLE", title.font.color = "#8012C4"',
           'fonts' = 'title = "The Title", title.font.family = "sans-serif", title.font.size = 30',
-          'window' = 'window.start = 20')
+          'window' = 'window.start = 20',
+          'range.bar' = 'range.bar = TRUE, colors = c("#af3c1c", "#af3c1c", "#af3c1c"), window.start = 100')
 
-dat.list <- c("google.trends", "stock.prices")
+dat.list <- c("google.trends", "google.trends.multi", "stock.prices")
 for (dat in dat.list)
 {
     for (ii in 1:length(opts))
@@ -61,6 +64,9 @@ for (dat in dat.list)
         # Create name which will appear in the error message if test fails
         # Filestem should be prefixed by test file name to avoid name conflicts
         filestem <- paste0("timeseries-", dat, "-", names(opts)[ii])
+
+        if (xor(names(opts)[ii] == "range.bar", dat == "stock.prices"))
+            next
 
         test_that(filestem, {
 

@@ -4,9 +4,10 @@
 \alias{TimeSeries}
 \title{TimeSeries}
 \usage{
-TimeSeries(x = NULL, colors = ChartColors(1), window.start = NULL,
-  global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
-  maxColorValue = 255), title = "", title.font.family = global.font.family,
+TimeSeries(x = NULL, range.bars = FALSE, colors = ChartColors(1),
+  window.start = NULL, global.font.family = "Arial",
+  global.font.color = rgb(44, 44, 44, maxColorValue = 255), title = "",
+  title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
   x.title = "", x.title.font.color = global.font.color,
   x.title.font.family = global.font.family, x.title.font.size = 12,
@@ -19,6 +20,9 @@ TimeSeries(x = NULL, colors = ChartColors(1), window.start = NULL,
 }
 \arguments{
 \item{x}{Input data may be a matrix or a vector, wth dates as the rownames and data series along the columns.}
+
+\item{range.bars}{Logical; whether the data consists of a single series with low, value, high in the columns, or
+multiple series.}
 
 \item{colors}{Character; a named color from grDevices OR a hex value color.}
 
@@ -74,6 +78,6 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{y.tick.font.size}{y-axis tick label font size}
 }
 \description{
-Plots an interactive time series. Either one column or three columns may be provided. Three columns allows a shaded range
-to be plotted around the central value. Columns must be in order of low, value, high.
+Plots interactive time series. Either multiple series may be plotted, or a single series with high and low
+range/error bars.
 }

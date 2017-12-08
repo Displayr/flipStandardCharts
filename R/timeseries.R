@@ -1,9 +1,11 @@
 #' TimeSeries
 #'
-#' Plots an interactive time series. Either one column or three columns may be provided. Three columns allows a shaded range
-#' to be plotted around the central value. Columns must be in order of low, value, high.
+#' Plots interactive time series. Either multiple series may be plotted, or a single series with high and low
+#' range/error bars.
 #'
 #' @param x Input data may be a matrix or a vector, wth dates as the rownames and data series along the columns.
+#' @param range.bars Logical; whether the data consists of a single series with low, value, high in the columns, or
+#' multiple series.
 #' @param colors Character; a named color from grDevices OR a hex value color.
 #' @param window.start The number of days before the end of the data series to start the range selector window.
 #' @param global.font.family Character; font family for all occurrences of any
@@ -36,9 +38,10 @@
 #' @param y.tick.font.family Character; y-axis tick label font family
 #' @param y.tick.font.size y-axis tick label font size
 #' @importFrom flipChartBasics ChartColors
-#' @importFrom dygraphs dygraph dySeries dyCSS dyRangeSelector %>%
+#' @importFrom dygraphs dygraph dySeries dyCSS dyRangeSelector %>% dyOptions
 #' @export
 TimeSeries <- function(x = NULL,
+                    range.bars = FALSE,
                     colors = ChartColors(1),
                     window.start = NULL,
                     global.font.family = "Arial",
@@ -65,18 +68,16 @@ TimeSeries <- function(x = NULL,
 
     if (is.null(dim(x)) || length(dim(x)) == 1L)
         x <- as.matrix(x)
-    if (ncol(x) == 1)
-    {
-        label <- colnames(x)[1]
-    }
-    else if (ncol(x) == 3)
-    {
-        label <- colnames(x)[2]
-    }
-    else
-        stop("Data must consist of one column or 3 columns in order of low, value, high.")
 
-    names(colors) <- NULL # Named chr is ignored by dygraph
+    if (range.bars)
+    {
+        if (ncol(x) != 3)
+            stop("Data must consist of 3 columns in order of low, value, high.")
+        label <- colnames(x)[2]
+        colors <- colors[2]
+    }
+
+    names(colors) <- NULL # Remove names because named chr is (oddly!) ignored by dygraph
 
     # Controlling the formatting of the dygraphs via the CSS
     css <- paste0(".dygraph-title {
@@ -113,9 +114,14 @@ TimeSeries <- function(x = NULL,
     else
         range.start <- max(range.end - 60 * 60 * 24 * window.start, as.POSIXct(rownames(x)[1]))
 
-    dygraph(x, main = title, xlab = x.title, ylab = y.title) %>%
-    dySeries(colnames(x), label = label, color = colors)  %>%
-    dyCSS("dygraph.css")  %>%
-    dyRangeSelector(fillColor = colors, dateWindow = c(range.start, range.end))
+    dg <- dygraph(x, main = title, xlab = x.title, ylab = y.title)
+    if (range.bars)
+        dg <- dySeries(dg, colnames(x), label = colnames(x)[2], color = colors)
+    else
+        dg <- dyOptions(dg, colors = colors)
+    dg <- dyCSS(dg, "dygraph.css")
 
+    if (!range.bars && ncol(x) != 1)
+        colors <- "#888888"
+    dg <- dyRangeSelector(dg, fillColor = colors, dateWindow = c(range.start, range.end))
 }
