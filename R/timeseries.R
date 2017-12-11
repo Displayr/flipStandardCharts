@@ -72,7 +72,8 @@ TimeSeries <- function(x = NULL,
     if (range.bars)
     {
         if (ncol(x) != 3)
-            stop("Data must consist of 3 columns in order of low, value, high.")
+            stop("Data must consist of 3 columns containing low, central and high values.")
+        x <- x[, order(apply(x, 2, mean, na.rm = TRUE))]
         label <- colnames(x)[2]
         colors <- colors[1]
     }
