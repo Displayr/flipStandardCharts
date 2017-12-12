@@ -39,6 +39,7 @@
 #' @param y.tick.font.size y-axis tick label font size
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom dygraphs dygraph dySeries dyCSS dyRangeSelector %>% dyOptions
+#' @importFrom flipTime AsDate
 #' @export
 TimeSeries <- function(x = NULL,
                     range.bars = FALSE,
@@ -68,6 +69,10 @@ TimeSeries <- function(x = NULL,
 
     if (is.null(dim(x)) || length(dim(x)) == 1L)
         x <- as.matrix(x)
+
+    rownames(x) <- as.character(AsDate(rownames(x), on.parse.failure = "silent"))
+    if (all(is.na(rownames(x))))
+        stop("Rownames of input cannot be parsed to dates.")
 
     if (range.bars)
     {
