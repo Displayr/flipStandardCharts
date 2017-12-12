@@ -1175,7 +1175,7 @@ Chart <-   function(y = NULL,
         if (x.title == "" || length(x.title) == 0)
             x.title <- if (swap.axes.and.data) value.title else table.axes.labels[1]
 
-        if (x.title == "FALSE" || x.title == FALSE)
+        if (length(x.title) == 0 || x.title == "FALSE" || x.title == FALSE)
             x.title <- ""
 
         if (y.title == "" || length(y.title) == 0)
