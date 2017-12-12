@@ -112,7 +112,7 @@ BaseMap <- function(table,
     {
         states <- coords[[structure]]
         regions <- us.regions$Region[match(states, us.regions$State)]
-        table <- table[match(regions, rownames(table)), , drop = FALSE]
+        table <- table[match(tolower(regions), tolower(rownames(table))), , drop = FALSE]
         rownames(table) <- states
     }
 
