@@ -4,19 +4,29 @@
 \alias{Heat}
 \title{Generates a heatmap from a table of data.}
 \usage{
-Heat(table, sort.rows = "None", sort.columns = "None", color = "Blues",
-  standardization = "None", show.cell.values = "Automatic",
-  cell.decimals = 2, show.row.labels = "Yes", show.column.labels = "Yes",
-  show.legend = TRUE, chart.title = "", x.axis.title = "",
-  y.axis.title = "", font.family = "sans-serif", font.color = "#000000",
-  title.font.size = 24, xaxis.title.font.size = 14,
-  yaxis.title.font.size = 14, legend.font.size = 11, value.font.size = 11,
-  axis.label.font.size = 11, left.columns = NULL,
+Heat(x, sort.rows = "None", sort.columns = "None", colors = c("#0066ff",
+  "#ff0000"), standardization = "None", global.font.family = "sans-serif",
+  global.font.color = "#000000", title = "",
+  title.font.family = global.font.family,
+  title.font.color = global.font.color, title.font.size = 14,
+  x.title = "", x.title.font.family = global.font.family,
+  x.title.font.color = global.font.color, x.title.font.size = 11,
+  y.title = "", y.title.font.family = global.font.family,
+  y.title.font.color = global.font.color, y.title.font.size = 11,
+  x.tick.show = TRUE, x.tick.font.family = global.font.family,
+  x.tick.font.color = global.font.color, x.tick.font.size = 11,
+  y.tick.show = TRUE, y.tick.font.family = global.font.family,
+  y.tick.font.color = global.font.color, y.tick.font.size = 11,
+  legend.show = TRUE, legend.font.family = global.font.family,
+  legend.font.color = global.font.color, legend.font.size = 11,
+  data.label.show = TRUE, data.label.font.size = 11,
+  data.label.font.family = global.font.family, data.label.format = "",
+  data.label.prefix = "", data.label.suffix = "", left.columns = NULL,
   left.column.headings = "", right.columns = NULL,
   right.column.headings = "")
 }
 \arguments{
-\item{table}{A matrix of data to be displayed.}
+\item{x}{A matrix of data to be displayed.}
 
 \item{sort.rows}{Whether to sort rows by their averages or link as a dendrogram. Options are \code{"None"},
 \code{"Sort by averages (ascending)"}, \code{"Sort by averages (descending)"} and \code{"Dendrogram"}.}
@@ -24,44 +34,74 @@ Heat(table, sort.rows = "None", sort.columns = "None", color = "Blues",
 \item{sort.columns}{Whether to sort columns by their averages or link as a dendrogram. Options are \code{"None"},
 \code{"Sort by averages (ascending)"}, \code{"Sort by averages (descending)"} and \code{"Dendrogram"}.}
 
-\item{color}{Options are \code{"Blues"}, \code{"Reds"}, \code{"Greens"}, \code{"Greys"},
-\code{"Purples"}, \code{"Oranges"}, \code{"Heat"}, \code{"Blues and reds"} or \code{"Greys and reds"}.}
+\item{colors}{A vector of 2 colors.}
 
 \item{standardization}{Whether to standardize the shading of rows or columns. Options are \code{"None"},
 \code{"Standardize rows"} and \code{"Standardize columns"}.}
 
-\item{show.cell.values}{Whether to show values in cells. Options are \code{"Yes"}, \code{"No"} or
-\code{"Automatic"} (<= 20 rows and <= 10 columns).}
+\item{global.font.family}{= "sans-serif",}
 
-\item{cell.decimals}{The number of decimal points to use for formatting cell values.}
+\item{global.font.color}{= "#000000",}
 
-\item{show.row.labels}{Whether to label the rows. \code{"Yes"} or \code{"No"}.}
+\item{title}{= "",}
 
-\item{show.column.labels}{Whether to label the columns. \code{"Yes"} or \code{"No"}.}
+\item{title.font.family}{= global.font.family,}
 
-\item{show.legend}{Whether to show the legend.}
+\item{title.font.color}{= global.font.color,}
 
-\item{chart.title}{Title of the chart.}
+\item{title.font.size}{= 14,}
 
-\item{x.axis.title}{Title of the x-axis.}
+\item{x.title}{= "",}
 
-\item{y.axis.title}{Title of the y-axis.}
+\item{x.title.font.family}{= global.font.family,}
 
-\item{font.family}{Font family to be used for all titles, axes, labels and values.}
+\item{x.title.font.color}{= global.font.color,}
 
-\item{font.color}{Font color to be used for all titles, axes and labels.}
+\item{x.title.font.size}{= 11,}
 
-\item{title.font.size}{Font size of the title.}
+\item{y.title}{= "",}
 
-\item{xaxis.title.font.size}{Font size of the x-axis title.}
+\item{y.title.font.family}{= global.font.family,}
 
-\item{yaxis.title.font.size}{Font size of the y-axis title.}
+\item{y.title.font.color}{= global.font.color,}
 
-\item{legend.font.size}{Font size of the legend.}
+\item{y.title.font.size}{= 11,}
 
-\item{value.font.size}{Font size of the cell values and tooltips.}
+\item{x.tick.show}{= TRUE,}
 
-\item{axis.label.font.size}{Font size of the axis labels.}
+\item{x.tick.font.family}{= global.font.family,}
+
+\item{x.tick.font.color}{= global.font.color,}
+
+\item{x.tick.font.size}{= 11,}
+
+\item{y.tick.show}{= TRUE,}
+
+\item{y.tick.font.family}{= global.font.family,}
+
+\item{y.tick.font.color}{= global.font.color,}
+
+\item{y.tick.font.size}{= 11,}
+
+\item{legend.show}{= TRUE,}
+
+\item{legend.font.family}{= global.font.family,}
+
+\item{legend.font.color}{= global.font.color,}
+
+\item{legend.font.size}{= 11,}
+
+\item{data.label.show}{= TRUE,}
+
+\item{data.label.font.size}{= 11,}
+
+\item{data.label.font.family}{= global.font.family,}
+
+\item{data.label.format}{= "",}
+
+\item{data.label.prefix}{= "",}
+
+\item{data.label.suffix}{= "",}
 
 \item{left.columns}{An optional list of vectors or matrices to be appended to the left
 of the heatmap.}

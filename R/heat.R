@@ -2,32 +2,46 @@
 #'
 #' This function wraps the Heatmap function in the rhtmlHeatmap package.
 #'
-#' @param table A matrix of data to be displayed.
+#' @param x A matrix of data to be displayed.
 #' @param sort.rows Whether to sort rows by their averages or link as a dendrogram. Options are \code{"None"},
 #' \code{"Sort by averages (ascending)"}, \code{"Sort by averages (descending)"} and \code{"Dendrogram"}.
 #' @param sort.columns Whether to sort columns by their averages or link as a dendrogram. Options are \code{"None"},
 #' \code{"Sort by averages (ascending)"}, \code{"Sort by averages (descending)"} and \code{"Dendrogram"}.
-#' @param color Options are \code{"Blues"}, \code{"Reds"}, \code{"Greens"}, \code{"Greys"},
-#' \code{"Purples"}, \code{"Oranges"}, \code{"Heat"}, \code{"Blues and reds"} or \code{"Greys and reds"}.
+#' @param colors A vector of 2 colors.
 #' @param standardization Whether to standardize the shading of rows or columns. Options are \code{"None"},
 #' \code{"Standardize rows"} and \code{"Standardize columns"}.
-#' @param show.cell.values Whether to show values in cells. Options are \code{"Yes"}, \code{"No"} or
-#' \code{"Automatic"} (<= 20 rows and <= 10 columns).
-#' @param cell.decimals The number of decimal points to use for formatting cell values.
-#' @param show.row.labels Whether to label the rows. \code{"Yes"} or \code{"No"}.
-#' @param show.column.labels Whether to label the columns. \code{"Yes"} or \code{"No"}.
-#' @param show.legend Whether to show the legend.
-#' @param chart.title Title of the chart.
-#' @param x.axis.title Title of the x-axis.
-#' @param y.axis.title Title of the y-axis.
-#' @param font.family Font family to be used for all titles, axes, labels and values.
-#' @param font.color Font color to be used for all titles, axes and labels.
-#' @param title.font.size Font size of the title.
-#' @param xaxis.title.font.size Font size of the x-axis title.
-#' @param yaxis.title.font.size Font size of the y-axis title.
-#' @param legend.font.size Font size of the legend.
-#' @param value.font.size Font size of the cell values and tooltips.
-#' @param axis.label.font.size Font size of the axis labels.
+#' @param global.font.family = "sans-serif",
+#' @param global.font.color = "#000000",
+#' @param title = "",
+#' @param title.font.family = global.font.family,
+#' @param title.font.color = global.font.color,
+#' @param title.font.size = 14,
+#' @param x.title = "",
+#' @param x.title.font.family = global.font.family,
+#' @param x.title.font.color = global.font.color,
+#' @param x.title.font.size = 11,
+#' @param y.title = "",
+#' @param y.title.font.family = global.font.family,
+#' @param y.title.font.color = global.font.color,
+#' @param y.title.font.size = 11,
+#' @param x.tick.show = TRUE,
+#' @param x.tick.font.family = global.font.family,
+#' @param x.tick.font.color = global.font.color,
+#' @param x.tick.font.size = 11,
+#' @param y.tick.show = TRUE,
+#' @param y.tick.font.family = global.font.family,
+#' @param y.tick.font.color = global.font.color,
+#' @param y.tick.font.size = 11,
+#' @param legend.show = TRUE,
+#' @param legend.font.family = global.font.family,
+#' @param legend.font.color = global.font.color,
+#' @param legend.font.size = 11,
+#' @param data.label.show = TRUE,
+#' @param data.label.font.size = 11,
+#' @param data.label.font.family = global.font.family,
+#' @param data.label.format = "",
+#' @param data.label.prefix = "",
+#' @param data.label.suffix = "",
 #' @param left.columns An optional list of vectors or matrices to be appended to the left
 #' of the heatmap.
 #' @param left.column.headings An optional comma separated string containing headings for
@@ -36,39 +50,55 @@
 #' of the heatmap.
 #' @param right.column.headings An optional comma separated string containing headings for
 #' \code{right.columns}. If not supplied, colnames of the items in \code{right.columns} are used.
-#' @importFrom flipFormat FormatAsReal
+#' @importFrom flipFormat FormatAsReal FormatAsPercent
 #' @importFrom flipU ConvertCommaSeparatedStringToVector
-#' @importFrom flipTables Reorder Cbind TidyTabularData
+#' @importFrom flipTables Reorder Cbind
 #' @importFrom stringr str_trim
 #' @export
 #'
-Heat <- function(table,
+Heat <- function(x,
                     sort.rows = "None",
                     sort.columns = "None",
-                    color = "Blues",
+                    colors = c("#0066ff", "#ff0000"),
                     standardization = "None",
-                    show.cell.values = "Automatic",
-                    cell.decimals = 2,
-                    show.row.labels = "Yes",
-                    show.column.labels = "Yes",
-                    show.legend = TRUE,
-                    chart.title = "",
-                    x.axis.title = "",
-                    y.axis.title = "",
-                    font.family = "sans-serif",
-                    font.color = "#000000",
-                    title.font.size = 24,
-                    xaxis.title.font.size = 14,
-                    yaxis.title.font.size = 14,
+                    global.font.family = "sans-serif",
+                    global.font.color = "#000000",
+                    title = "",
+                    title.font.family = global.font.family,
+                    title.font.color = global.font.color,
+                    title.font.size = 14,
+                    x.title = "",
+                    x.title.font.family = global.font.family,
+                    x.title.font.color = global.font.color,
+                    x.title.font.size = 11,
+                    y.title = "",
+                    y.title.font.family = global.font.family,
+                    y.title.font.color = global.font.color,
+                    y.title.font.size = 11,
+                    x.tick.show = TRUE,
+                    x.tick.font.family = global.font.family,
+                    x.tick.font.color = global.font.color,
+                    x.tick.font.size = 11,
+                    y.tick.show = TRUE,
+                    y.tick.font.family = global.font.family,
+                    y.tick.font.color = global.font.color,
+                    y.tick.font.size = 11,
+                    legend.show = TRUE,
+                    legend.font.family = global.font.family,
+                    legend.font.color = global.font.color,
                     legend.font.size = 11,
-                    value.font.size = 11,
-                    axis.label.font.size = 11,
+                    data.label.show = TRUE,
+                    data.label.font.size = 11,
+                    data.label.font.family = global.font.family,
+                    data.label.format = "",
+                    data.label.prefix = "",
+                    data.label.suffix = "",
                     left.columns = NULL,
                     left.column.headings = "",
                     right.columns = NULL,
                     right.column.headings = "") {
 
-    mat <- table
+    mat <- x
     ErrorIfNotEnoughData(mat)
     if (!is.matrix(mat)) {
         rownames <- names(mat)
@@ -78,7 +108,7 @@ Heat <- function(table,
         stop("Input must be two-dimensional.")
     }
     if (!is.numeric(mat[1, 1]))
-        stop("The input table must contain only numeric values.")
+        stop("The input data must contain only numeric values.")
 
     mat <- if (sort.rows == "Sort by averages (ascending)") {
         Reorder(mat, rows = "Ascending", columns = "None")
@@ -94,28 +124,24 @@ Heat <- function(table,
     } else
         mat
 
-    color <- if (color == "Heat") {
-        "YlOrRd"
-    } else if (color == "Blues and reds") {
-        "RdBu"
-    } else if (color == "Greys and reds") {
-        "RdGy"
-    } else
-        color
-
-    color.range <- if (color %in% c("Blues and reds", "Greys and reds") &&
-                       standardization == "None") {
-        mx <- max(abs(mat))
-        c(-mx, mx)
-    } else
-        NULL
-
     n.row <- nrow(mat)
     n.col <- ncol(mat)
-    cellnote <- apply(mat, c(1, 2), FormatAsReal, decimals = cell.decimals)
-    show.cellnote.in.cell <- (n.row <= 20 && n.col <= 10 && show.cell.values != "No") || show.cell.values == "Yes"
-    show.x.axes.labels <- show.column.labels == "Yes"
-    show.y.axes.labels <- show.row.labels == "Yes"
+
+    pct <- percentFromD3(data.label.format) || !is.null(attr(x, "statistic")) && grepl("%", attr(x, "statistic"), fixed = TRUE)
+    if (pct)
+    {
+        format.function <- FormatAsPercent
+        cell.decimals <- decimalsFromD3(data.label.format, 0)
+    }
+    else
+    {
+        format.function <- FormatAsReal
+        cell.decimals <- decimalsFromD3(data.label.format, 2)
+    }
+    cellnote <- paste0(data.label.prefix,
+                       apply(mat, c(1, 2), format.function, decimals = cell.decimals),
+                       data.label.suffix)
+    dim(cellnote) <- dim(mat)
 
     rowv <- sort.rows == "Dendrogram"
     colv <- sort.columns == "Dendrogram"
@@ -143,52 +169,57 @@ Heat <- function(table,
                                      dendrogram = dendrogram,
                                      xaxis_location = "top",
                                      yaxis_location = "left",
-                                     colors = color,
-                                     color_range = NULL,
+                                     colors = colors,
+
+                                     # Data labels
                                      cellnote = cellnote,
-                                     show_cellnote_in_cell = show.cellnote.in.cell,
-                                     xaxis_hidden = !show.x.axes.labels,
-                                     yaxis_hidden = !show.y.axes.labels,
-                                     show_legend = show.legend,
-                                     title = chart.title,
-                                     xaxis_title = x.axis.title,
-                                     yaxis_title = y.axis.title,
-                                     cell_font_family = font.family,
-                                     tip_font_family = font.family,
-                                     legend_font_family = font.family,
-                                     title_font_family = font.family,
-                                     xaxis_font_family = font.family,
-                                     xaxis_title_font_family = font.family,
-                                     yaxis_font_family = font.family,
-                                     yaxis_title_font_family = font.family,
-                                     legend_font_color = font.color,
-                                     title_font_color = font.color,
-                                     xaxis_font_color = font.color,
-                                     xaxis_title_font_color = font.color,
-                                     yaxis_font_color = font.color,
-                                     yaxis_title_font_color = font.color,
-                                     cell_font_size = value.font.size,
-                                     tip_font_size = value.font.size,
-                                     legend_font_size = legend.font.size,
-                                     title_font_size = title.font.size,
-                                     xaxis_font_size = axis.label.font.size,
-                                     xaxis_title_font_size = xaxis.title.font.size,
-                                     yaxis_font_size = axis.label.font.size,
-                                     yaxis_title_font_size = yaxis.title.font.size,
+                                     show_cellnote_in_cell = data.label.show,
+
+                                     # Left and right additional columns
                                      left_columns = left.appended$columns.append,
                                      left_columns_subtitles = left.appended$column.subtitles,
                                      right_columns = right.appended$columns.append,
                                      right_columns_subtitles = right.appended$column.subtitles,
-                                     left_columns_font_size = value.font.size,
-                                     left_columns_font_family = font.family,
-                                     left_columns_subtitles_font_size = axis.label.font.size,
-                                     left_columns_subtitles_font_family = font.family,
-                                     left_columns_subtitles_font_color = font.color,
-                                     right_columns_font_size = value.font.size,
-                                     right_columns_font_family = font.family,
-                                     right_columns_subtitles_font_size = axis.label.font.size,
-                                     right_columns_subtitles_font_family = font.family,
-                                     right_columns_subtitles_font_color = font.color)
+
+                                     # Titles and fonts
+                                     title = title,
+                                     title_font_family = title.font.family,
+                                     title_font_color = title.font.color,
+                                     title_font_size = title.font.size,
+                                     xaxis_title = x.title,
+                                     xaxis_title_font_family = x.title.font.family,
+                                     xaxis_title_font_color = x.title.font.color,
+                                     xaxis_title_font_size = x.title.font.size,
+                                     yaxis_title = y.title,
+                                     yaxis_title_font_family = y.title.font.family,
+                                     yaxis_title_font_color = y.title.font.color,
+                                     yaxis_title_font_size = y.title.font.size,
+                                     xaxis_hidden = !x.tick.show,
+                                     xaxis_font_family = x.tick.font.family,
+                                     xaxis_font_color = x.tick.font.color,
+                                     xaxis_font_size = x.tick.font.size,
+                                     yaxis_hidden = !y.tick.show,
+                                     yaxis_font_family = y.tick.font.family,
+                                     yaxis_font_color = y.tick.font.color,
+                                     yaxis_font_size = y.tick.font.size,
+                                     show_legend = legend.show,
+                                     legend_font_family = legend.font.family,
+                                     legend_font_color = legend.font.color,
+                                     legend_font_size = legend.font.size,
+                                     cell_font_family = data.label.font.family,
+                                     cell_font_size = data.label.font.size,
+                                     tip_font_family = data.label.font.family,  # hover are same as data.label
+                                     tip_font_size = data.label.font.size,
+                                     left_columns_font_size = data.label.font.size,
+                                     left_columns_font_family = data.label.font.family,
+                                     left_columns_subtitles_font_size = x.tick.font.size,
+                                     left_columns_subtitles_font_family = x.tick.font.family,
+                                     left_columns_subtitles_font_color = x.tick.font.color,
+                                     right_columns_font_size = data.label.font.size,
+                                     right_columns_font_family = data.label.font.family,
+                                     right_columns_subtitles_font_size = x.tick.font.size,
+                                     right_columns_subtitles_font_family = x.tick.font.family,
+                                     right_columns_subtitles_font_color = x.tick.font.color)
 }
 
 
@@ -202,9 +233,12 @@ appendColumns <- function(to.append, mat, cell.decimals, column.headings, row.or
             if (length(dim(to.append[[i]])) != 2)        # coerce to 2D matrix with NULL colnames
                 to.append[[i]] <- as.matrix(to.append[[i]])
             to.append[[i]] <- formatNumeric(to.append[[i]], cell.decimals)
-            if (is.null(colnames(to.append[[i]]))) {     # label with colnames if set or else ""
+            if (is.null(colnames(to.append[[i]])))    # label with colnames if set or else ""
+            {
                 column.subtitles <- c(column.subtitles, rep("", ncol(to.append[[i]])))
-            } else {
+            }
+            else
+            {
                 column.subtitles <- c(column.subtitles, colnames(to.append[[i]]))
             }
         }
@@ -225,11 +259,12 @@ appendColumns <- function(to.append, mat, cell.decimals, column.headings, row.or
     return(list(columns.append = columns.append, column.subtitles = column.subtitles))
 }
 
-# Format numeric columns with same decimals as heatmap
+# Format numeric left and right columns with same decimals as heatmap
 formatNumeric <- function(x, decimals) {
     if (is.numeric(x))
         return(apply(x, c(1, 2), FormatAsReal, decimals = decimals))
-    if (is.data.frame(x)) {
+    if (is.data.frame(x))
+    {
         numeric.cols <- sapply(x, is.numeric)
         x[numeric.cols] <- lapply(x[numeric.cols], FormatAsReal, decimals = decimals)
     }
