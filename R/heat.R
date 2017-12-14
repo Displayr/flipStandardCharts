@@ -165,7 +165,8 @@ Heat <- function(x,
     n.row <- nrow(mat)
     n.col <- ncol(mat)
 
-    pct <- percentFromD3(data.label.format) || !is.null(attr(x, "statistic")) && grepl("%", attr(x, "statistic"), fixed = TRUE)
+    stat <- ifelse(is.null(attr(x, "statistic")), "", attr(x, "statistic"))
+    pct <- percentFromD3(data.label.format) || grepl("%", stat, fixed = TRUE)
     if (pct)
     {
         format.function <- FormatAsPercent
@@ -180,6 +181,9 @@ Heat <- function(x,
                        apply(mat, c(1, 2), format.function, decimals = cell.decimals),
                        data.label.suffix)
     dim(cellnote) <- dim(mat)
+    cellnote[!is.finite(mat)] <- "NA"
+    if (y.title == stat)
+        y.title <- ""
 
     rowv <- sort.rows == "Dendrogram"
     colv <- sort.columns == "Dendrogram"
