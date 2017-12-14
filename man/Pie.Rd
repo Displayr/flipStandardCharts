@@ -46,7 +46,7 @@ by group, or be different throughout; defaults to TRUE.}
 "Lucida Console", "Lucida Sans Unicode", "Marlett", "Symbol", "Tahoma",
 "Times New Roman", "Trebuchet MS", "Verdana", "Webdings"}
 
-\item{title.font.size}{Title font size; default = 10.}
+\item{title.font.size}{Integer; Title font size; default = 10.}
 
 \item{title.font.color}{Title font color as a named color in character
 format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
@@ -55,7 +55,7 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{subtitle.font.family}{Character; subtitle font family}
 
-\item{subtitle.font.size}{subtitle font size}
+\item{subtitle.font.size}{Integer; subtitle font size}
 
 \item{subtitle.font.color}{subtitle font color as a named color in
 character format (e.g. "black") or an rgb value (e.g.
@@ -65,7 +65,7 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{footer.font.family}{Character; footer font family}
 
-\item{footer.font.size}{footer font size}
+\item{footer.font.size}{Integer; footer font size}
 
 \item{footer.font.color}{footer font color as a named color in
 character format (e.g. "black") or an rgb value (e.g.
@@ -82,7 +82,7 @@ See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 
 \item{data.label.suffix}{Character; suffix for data values.}
 
-\item{data.label.font.size}{Font size for data label.px.}
+\item{data.label.font.size}{Integer; Font size for data label.px.}
 
 \item{data.label.font.color}{Font color as a named color
 in character format (e.g. "black") or an rgb value (e.g.

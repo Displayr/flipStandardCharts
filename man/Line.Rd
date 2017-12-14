@@ -95,7 +95,7 @@ font attribute for the chart unless specified individually.}
 \item{title.font.color}{Title font color as a named color in character
 format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{title.font.size}{Title font size; default = 10.}
+\item{title.font.size}{Integer; Title font size; default = 10.}
 
 \item{subtitle}{Character}
 
@@ -105,7 +105,7 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{subtitle.font.size}{subtitle font size}
+\item{subtitle.font.size}{Integer; subtitle font size}
 
 \item{footer}{Character}
 
@@ -115,7 +115,7 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{footer.font.size}{footer font size}
+\item{footer.font.size}{Integer; footer font size}
 
 \item{footer.wrap}{Logical; whether the footer text should be wrapped.}
 
@@ -163,7 +163,7 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{legend.font.family}{Character; legend font family.}
 
-\item{legend.font.size}{Legend font size.}
+\item{legend.font.size}{Integer; Legend font size.}
 
 \item{legend.position.x}{A numeric controlling the position of the legend.
 Values range from -0.5 (left) to 1.5 (right).}
@@ -198,7 +198,7 @@ max = 255)).}
 
 \item{y.title.font.family}{Character; y-axis title font family}
 
-\item{y.title.font.size}{y-axis title font size}
+\item{y.title.font.size}{Integer; y-axis title font size}
 
 \item{y.line.width}{y-axis line width in pixels (0 = no line).}
 
@@ -249,7 +249,7 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{y.tick.font.family}{Character; y-axis tick label font family}
 
-\item{y.tick.font.size}{y-axis tick label font size}
+\item{y.tick.font.size}{Integer; y-axis tick label font size}
 
 \item{x.title}{Character, x-axis title; defaults to chart input values;
 to turn off set to "FALSE".}
@@ -260,7 +260,7 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{x.title.font.family}{Character; x-axis title font family}
 
-\item{x.title.font.size}{x-axis title font size}
+\item{x.title.font.size}{Integer; x-axis title font size}
 
 \item{x.line.width}{x-axis line in pixels, 0 = no line}
 
@@ -314,7 +314,7 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{x.tick.font.family}{Character; x-axis tick label font family}
 
-\item{x.tick.font.size}{x-axis tick label font size}
+\item{x.tick.font.size}{Integer; x-axis tick label font size}
 
 \item{x.tick.label.wrap}{Logical; whether to wrap long labels on the x-axis.}
 
@@ -362,7 +362,7 @@ series markers as an alpha value (0 to 1).}
 in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{data.label.font.size}{Font size for data label.px.}
+\item{data.label.font.size}{Integer; Font size for data label.px.}
 
 \item{data.label.format}{A string representing a d3 formatting code.
 See https://github.com/mbostock/d3/wiki/Formatting#numbers}

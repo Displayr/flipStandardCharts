@@ -18,19 +18,19 @@
 #' "Times New Roman", "Trebuchet MS", "Verdana", "Webdings"
 #' @param title.font.color Title font color as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
-#' @param title.font.size Title font size; default = 10.
+#' @param title.font.size Integer; Title font size; default = 10.
 #' @param subtitle Character
 #' @param subtitle.font.color subtitle font color as a named color in
 #' character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param subtitle.font.family Character; subtitle font family
-#' @param subtitle.font.size subtitle font size
+#' @param subtitle.font.size Integer; subtitle font size
 #' @param footer Character
 #' @param footer.font.color footer font color as a named color in
 #' character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param footer.font.family Character; footer font family
-#' @param footer.font.size footer font size
+#' @param footer.font.size Integer; footer font size
 #' @param footer.wrap Logical; whether the footer text should be wrapped.
 #' @param footer.wrap.nchar Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.
 #' @param grid.show Logical; whether to show grid lines.
@@ -66,7 +66,7 @@
 #' @param legend.font.color Legend font color as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param legend.font.family Character; legend font family.
-#' @param legend.font.size Legend font size.
+#' @param legend.font.size Integer; Legend font size.
 #' @param margin.top Margin between plot area and the top of the
 #' graphic in pixels
 #' @param margin.bottom Margin between plot area and the bottom of the
@@ -83,7 +83,7 @@
 #' character format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0,
 #' max = 255)).
 #' @param y.title.font.family Character; y-axis title font family
-#' @param y.title.font.size y-axis title font size
+#' @param y.title.font.size Integer; y-axis title font size
 #' @param y.line.width y-axis line width in pixels (0 = no line).
 #' @param y.line.color y-axis line color as a named color in character format
 #' (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
@@ -113,14 +113,14 @@
 #' in character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param y.tick.font.family Character; y-axis tick label font family
-#' @param y.tick.font.size y-axis tick label font size
+#' @param y.tick.font.size Integer; y-axis tick label font size
 #' @param x.title Character, x-axis title; defaults to chart input values;
 #' to turn off set to "FALSE".
 #' @param x.title.font.color x-axis title font color as a named color in
 #' character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param x.title.font.family Character; x-axis title font family
-#' @param x.title.font.size x-axis title font size
+#' @param x.title.font.size Integer; x-axis title font size
 #' @param x.line.width x-axis line in pixels, 0 = no line
 #' @param x.line.color x-axis line color as a named color in character format
 #' (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
@@ -154,7 +154,7 @@
 #' character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param x.tick.font.family Character; x-axis tick label font family
-#' @param x.tick.font.size x-axis tick label font size
+#' @param x.tick.font.size Integer; x-axis tick label font size
 #' @param x.tick.label.wrap Logical; whether to wrap long labels on the x-axis.
 #' @param x.tick.label.wrap.nchar Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.
 #' @param series.marker.border.width Width in pixels of border/line
@@ -173,7 +173,7 @@
 #' bar or column charts, or between each cluster of bars or columns.
 #' @param data.label.show Logical; whether to show data labels.
 #' @param data.label.font.family Character; font family for data label.
-#' @param data.label.font.size Font size for data label.px.
+#' @param data.label.font.size Integer; Font size for data label.px.
 #' @param data.label.font.color Font color as a named color
 #' in character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).

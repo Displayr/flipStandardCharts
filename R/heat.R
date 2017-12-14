@@ -2,46 +2,75 @@
 #'
 #' This function wraps the Heatmap function in the rhtmlHeatmap package.
 #'
-#' @param x A matrix of data to be displayed.
+#' @param x A matrix of data to be displayed with values in the cells and optiona row and column labels.
 #' @param sort.rows Whether to sort rows by their averages or link as a dendrogram. Options are \code{"None"},
 #' \code{"Sort by averages (ascending)"}, \code{"Sort by averages (descending)"} and \code{"Dendrogram"}.
 #' @param sort.columns Whether to sort columns by their averages or link as a dendrogram. Options are \code{"None"},
 #' \code{"Sort by averages (ascending)"}, \code{"Sort by averages (descending)"} and \code{"Dendrogram"}.
-#' @param colors A vector of 2 colors.
+#' @param colors A vector of 2 colors representing the maximum and minimum values.
 #' @param standardization Whether to standardize the shading of rows or columns. Options are \code{"None"},
 #' \code{"Standardize rows"} and \code{"Standardize columns"}.
-#' @param global.font.family = "sans-serif",
-#' @param global.font.color = "#000000",
-#' @param title = "",
-#' @param title.font.family = global.font.family,
-#' @param title.font.color = global.font.color,
-#' @param title.font.size = 14,
-#' @param x.title = "",
-#' @param x.title.font.family = global.font.family,
-#' @param x.title.font.color = global.font.color,
-#' @param x.title.font.size = 11,
-#' @param y.title = "",
-#' @param y.title.font.family = global.font.family,
-#' @param y.title.font.color = global.font.color,
-#' @param y.title.font.size = 11,
-#' @param x.tick.show = TRUE,
-#' @param x.tick.font.family = global.font.family,
-#' @param x.tick.font.color = global.font.color,
-#' @param x.tick.font.size = 11,
-#' @param y.tick.show = TRUE,
-#' @param y.tick.font.family = global.font.family,
-#' @param y.tick.font.color = global.font.color,
-#' @param y.tick.font.size = 11,
-#' @param legend.show = TRUE,
-#' @param legend.font.family = global.font.family,
-#' @param legend.font.color = global.font.color,
-#' @param legend.font.size = 11,
-#' @param data.label.show = TRUE,
-#' @param data.label.font.size = 11,
-#' @param data.label.font.family = global.font.family,
-#' @param data.label.format = "",
-#' @param data.label.prefix = "",
-#' @param data.label.suffix = "",
+#' @param global.font.family Character; font family for all occurrences of any
+#' font attribute for the chart unless specified individually.
+#' @param global.font.color Global font color as a named color in character format
+#' (e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).
+#' @param title Character; chart title.
+#' @param title.font.family Character; title font family. Can be "Arial Black",
+#' "Arial", "Comic Sans MS", "Courier New", "Georgia", "Impact",
+#' "Lucida Console", "Lucida Sans Unicode", "Marlett", "Symbol", "Tahoma",
+#' "Times New Roman", "Trebuchet MS", "Verdana", "Webdings"
+#' @param title.font.color Title font color as a named color in character
+#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
+#' @param title.font.size Integer; Title font size
+#' @param subtitle Character
+#' @param subtitle.font.color subtitle font color as a named color in
+#' character format (e.g. "black") or an rgb value (e.g.
+#' rgb(0, 0, 0, maxColorValue = 255)).
+#' @param subtitle.font.family Character; subtitle font family
+#' @param subtitle.font.size Integer; subtitle font size
+#' @param footer Character
+#' @param footer.font.color footer font color as a named color in
+#' character format (e.g. "black") or an rgb value (e.g.
+#' rgb(0, 0, 0, maxColorValue = 255)).
+#' @param footer.font.family Character; footer font family
+#' @param footer.font.size Integer; footer font size
+#' @param x.title Character, x-axis title
+#' @param x.title.font.color x-axis title font color as a named color in
+#' character format (e.g. "black") or an rgb value (e.g.
+#' rgb(0, 0, 0, maxColorValue = 255)).
+#' @param x.title.font.family Character; x-axis title font family
+#' @param x.title.font.size Integer; x-axis title font size
+#' @param y.title Character, y-axis title
+#' @param y.title.font.color y-axis title font color as a named color in
+#' character format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0,
+#' max = 255)).
+#' @param y.title.font.family Character; y-axis title font family
+#' @param y.title.font.size Integer; y-axis title font size
+#' @param x.tick.show Whether to display the x-axis tick labels
+#' @param x.tick.font.family Character; x-axis tick label font family
+#' @param x.tick.font.color X-axis tick label font color as a named color in
+#' character format (e.g. "black") or an rgb value (e.g.
+#' rgb(0, 0, 0, maxColorValue = 255)).
+#' @param x.tick.font.size Integer; x-axis tick label font size
+#' @param y.tick.show Whether to display the y-axis tick labels
+#' @param y.tick.font.family Character; y-axis tick label font family
+#' @param y.tick.font.color y-axis tick label font color as a named color in
+#' character format (e.g. "black") or an rgb value (e.g.
+#' rgb(0, 0, 0, maxColorValue = 255)).
+#' @param y.tick.font.size Integer; y-axis tick label font size
+#' @param legend.show Whether to display the legend
+#' @param legend.font.family Character; legend font family.
+#' @param legend.font.color Legend font color as a named color in character
+#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
+#' @param legend.font.size Integer; Legend font size.
+#' @param data.label.show Whether to display the data values (note that they are
+#' always shown as hover text)
+#' @param data.label.font.size Integer; Font size for data label.
+#' @param data.label.font.family Character; font family for data label.
+#' @param data.label.format A string representing a d3 formatting code.
+#' See https://github.com/mbostock/d3/wiki/Formatting#numbers
+#' @param data.label.prefix Character; prefix for data values.
+#' @param data.label.suffix Character; suffix for data values.
 #' @param left.columns An optional list of vectors or matrices to be appended to the left
 #' of the heatmap.
 #' @param left.column.headings An optional comma separated string containing headings for
@@ -50,6 +79,7 @@
 #' of the heatmap.
 #' @param right.column.headings An optional comma separated string containing headings for
 #' \code{right.columns}. If not supplied, colnames of the items in \code{right.columns} are used.
+#'
 #' @importFrom flipFormat FormatAsReal FormatAsPercent
 #' @importFrom flipU ConvertCommaSeparatedStringToVector
 #' @importFrom flipTables Reorder Cbind
@@ -67,6 +97,14 @@ Heat <- function(x,
                     title.font.family = global.font.family,
                     title.font.color = global.font.color,
                     title.font.size = 14,
+                    subtitle = "",
+                    subtitle.font.family = global.font.family,
+                    subtitle.font.color = global.font.color,
+                    subtitle.font.size = 11,
+                    footer = "",
+                    footer.font.family = global.font.family,
+                    footer.font.color = global.font.color,
+                    footer.font.size = 11,
                     x.title = "",
                     x.title.font.family = global.font.family,
                     x.title.font.color = global.font.color,
@@ -186,6 +224,14 @@ Heat <- function(x,
                                      title_font_family = title.font.family,
                                      title_font_color = title.font.color,
                                      title_font_size = title.font.size,
+                                     subtitle = subtitle,
+                                     subtitle_font_size = subtitle.font.size,
+                                     subtitle_font_family = subtitle.font.family,
+                                     subtitle_font_color = subtitle.font.color,
+                                     footer = footer,
+                                     footer_font_size = footer.font.size,
+                                     footer_font_family = footer.font.family,
+                                     footer_font_color = footer.font.color,
                                      xaxis_title = x.title,
                                      xaxis_title_font_family = x.title.font.family,
                                      xaxis_title_font_color = x.title.font.color,

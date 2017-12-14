@@ -50,8 +50,8 @@ q5cc <- structure(c(0.252327048028994, 0.312881504763389, 0.309835063713764,
 
 
 opts <- c('color' = 'colors = c("#ffffff", "#0000ff")',
-          'fonts' = 'title = "AAAA", x.title = "BBBB", y.title = "CCCC", global.font.color = "#cd0000", global.font.family = "courier"',
-          'font.sizes' = 'title = "AAAA", x.title = "BBBB", y.title = "CCCC", title.font.size = 16, x.title.font.size = 16, y.title.font.size = 16, x.tick.font.size = 16, y.tick.font.size = 16, legend.font.size = 16, data.label.font.size = 16',
+          'fonts' = 'title = "AAAA", x.title = "BBBB", y.title = "CCCC", subtitle = "DDDD", footer = "EEEE", global.font.color = "#cd0000", global.font.family = "courier"',
+          'font.sizes' = 'title = "AAAA", x.title = "BBBB", y.title = "CCCC", subtitle = "DDDD", footer = "EEEE", title.font.size = 16, subtitle.font.size = 16, footer.font.size = 16, x.title.font.size = 16, y.title.font.size = 16, x.tick.font.size = 16, y.tick.font.size = 16, legend.font.size = 16, data.label.font.size = 16',
           'extra.columns' = 'left.columns = list(matrix(seq(4), ncol = 2)), left.column.headings = "FIRST, SECOND", right.columns = list(LETTERS[1:10]), right.column.headings = "THIRD"',
           'standardization' = 'standardization = "Standardize rows", data.label.format = ".1f", data.label.prefix = "PRE", data.label.suffix = "SUF"',
           'sorting' = 'sort.rows = "Sort by averages (ascending)", sort.columns = "Sort by averages (descending)"',

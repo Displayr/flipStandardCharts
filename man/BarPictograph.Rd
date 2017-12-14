@@ -81,7 +81,7 @@ font attribute for the chart unless specified individually.}
 in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{data.label.font.size}{Font size for data label.px.}
+\item{data.label.font.size}{Integer; Font size for data label.px.}
 
 \item{data.label.align.horizontal}{Horizontal alignment of data labels labels. One of "left", "right", "middle" or "Default".}
 

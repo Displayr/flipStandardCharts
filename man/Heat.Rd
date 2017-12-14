@@ -9,6 +9,10 @@ Heat(x, sort.rows = "None", sort.columns = "None", colors = c("#0066ff",
   global.font.color = "#000000", title = "",
   title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 14,
+  subtitle = "", subtitle.font.family = global.font.family,
+  subtitle.font.color = global.font.color, subtitle.font.size = 11,
+  footer = "", footer.font.family = global.font.family,
+  footer.font.color = global.font.color, footer.font.size = 11,
   x.title = "", x.title.font.family = global.font.family,
   x.title.font.color = global.font.color, x.title.font.size = 11,
   y.title = "", y.title.font.family = global.font.family,
@@ -26,7 +30,7 @@ Heat(x, sort.rows = "None", sort.columns = "None", colors = c("#0066ff",
   right.column.headings = "")
 }
 \arguments{
-\item{x}{A matrix of data to be displayed.}
+\item{x}{A matrix of data to be displayed with values in the cells and optiona row and column labels.}
 
 \item{sort.rows}{Whether to sort rows by their averages or link as a dendrogram. Options are \code{"None"},
 \code{"Sort by averages (ascending)"}, \code{"Sort by averages (descending)"} and \code{"Dendrogram"}.}
@@ -34,74 +38,111 @@ Heat(x, sort.rows = "None", sort.columns = "None", colors = c("#0066ff",
 \item{sort.columns}{Whether to sort columns by their averages or link as a dendrogram. Options are \code{"None"},
 \code{"Sort by averages (ascending)"}, \code{"Sort by averages (descending)"} and \code{"Dendrogram"}.}
 
-\item{colors}{A vector of 2 colors.}
+\item{colors}{A vector of 2 colors representing the maximum and minimum values.}
 
 \item{standardization}{Whether to standardize the shading of rows or columns. Options are \code{"None"},
 \code{"Standardize rows"} and \code{"Standardize columns"}.}
 
-\item{global.font.family}{= "sans-serif",}
+\item{global.font.family}{Character; font family for all occurrences of any
+font attribute for the chart unless specified individually.}
 
-\item{global.font.color}{= "#000000",}
+\item{global.font.color}{Global font color as a named color in character format
+(e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{title}{= "",}
+\item{title}{Character; chart title.}
 
-\item{title.font.family}{= global.font.family,}
+\item{title.font.family}{Character; title font family. Can be "Arial Black",
+"Arial", "Comic Sans MS", "Courier New", "Georgia", "Impact",
+"Lucida Console", "Lucida Sans Unicode", "Marlett", "Symbol", "Tahoma",
+"Times New Roman", "Trebuchet MS", "Verdana", "Webdings"}
 
-\item{title.font.color}{= global.font.color,}
+\item{title.font.color}{Title font color as a named color in character
+format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{title.font.size}{= 14,}
+\item{title.font.size}{Integer; Title font size}
 
-\item{x.title}{= "",}
+\item{subtitle}{Character}
 
-\item{x.title.font.family}{= global.font.family,}
+\item{subtitle.font.family}{Character; subtitle font family}
 
-\item{x.title.font.color}{= global.font.color,}
+\item{subtitle.font.color}{subtitle font color as a named color in
+character format (e.g. "black") or an rgb value (e.g.
+rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{x.title.font.size}{= 11,}
+\item{subtitle.font.size}{Integer; subtitle font size}
 
-\item{y.title}{= "",}
+\item{footer}{Character}
 
-\item{y.title.font.family}{= global.font.family,}
+\item{footer.font.family}{Character; footer font family}
 
-\item{y.title.font.color}{= global.font.color,}
+\item{footer.font.color}{footer font color as a named color in
+character format (e.g. "black") or an rgb value (e.g.
+rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{y.title.font.size}{= 11,}
+\item{footer.font.size}{Integer; footer font size}
 
-\item{x.tick.show}{= TRUE,}
+\item{x.title}{Character, x-axis title}
 
-\item{x.tick.font.family}{= global.font.family,}
+\item{x.title.font.family}{Character; x-axis title font family}
 
-\item{x.tick.font.color}{= global.font.color,}
+\item{x.title.font.color}{x-axis title font color as a named color in
+character format (e.g. "black") or an rgb value (e.g.
+rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{x.tick.font.size}{= 11,}
+\item{x.title.font.size}{Integer; x-axis title font size}
 
-\item{y.tick.show}{= TRUE,}
+\item{y.title}{Character, y-axis title}
 
-\item{y.tick.font.family}{= global.font.family,}
+\item{y.title.font.family}{Character; y-axis title font family}
 
-\item{y.tick.font.color}{= global.font.color,}
+\item{y.title.font.color}{y-axis title font color as a named color in
+character format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0,
+max = 255)).}
 
-\item{y.tick.font.size}{= 11,}
+\item{y.title.font.size}{Integer; y-axis title font size}
 
-\item{legend.show}{= TRUE,}
+\item{x.tick.show}{Whether to display the x-axis tick labels}
 
-\item{legend.font.family}{= global.font.family,}
+\item{x.tick.font.family}{Character; x-axis tick label font family}
 
-\item{legend.font.color}{= global.font.color,}
+\item{x.tick.font.color}{X-axis tick label font color as a named color in
+character format (e.g. "black") or an rgb value (e.g.
+rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{legend.font.size}{= 11,}
+\item{x.tick.font.size}{Integer; x-axis tick label font size}
 
-\item{data.label.show}{= TRUE,}
+\item{y.tick.show}{Whether to display the y-axis tick labels}
 
-\item{data.label.font.size}{= 11,}
+\item{y.tick.font.family}{Character; y-axis tick label font family}
 
-\item{data.label.font.family}{= global.font.family,}
+\item{y.tick.font.color}{y-axis tick label font color as a named color in
+character format (e.g. "black") or an rgb value (e.g.
+rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{data.label.format}{= "",}
+\item{y.tick.font.size}{Integer; y-axis tick label font size}
 
-\item{data.label.prefix}{= "",}
+\item{legend.show}{Whether to display the legend}
 
-\item{data.label.suffix}{= "",}
+\item{legend.font.family}{Character; legend font family.}
+
+\item{legend.font.color}{Legend font color as a named color in character
+format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
+
+\item{legend.font.size}{Integer; Legend font size.}
+
+\item{data.label.show}{Whether to display the data values (note that they are
+always shown as hover text)}
+
+\item{data.label.font.size}{Integer; Font size for data label.}
+
+\item{data.label.font.family}{Character; font family for data label.}
+
+\item{data.label.format}{A string representing a d3 formatting code.
+See https://github.com/mbostock/d3/wiki/Formatting#numbers}
+
+\item{data.label.prefix}{Character; prefix for data values.}
+
+\item{data.label.suffix}{Character; suffix for data values.}
 
 \item{left.columns}{An optional list of vectors or matrices to be appended to the left
 of the heatmap.}
