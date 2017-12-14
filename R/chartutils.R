@@ -305,7 +305,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
                     ticks, tickfont, tickangle, ticklen, tickdistance,
                     tickformatmanual, tickprefix, ticksuffix, tickshow,
                     show.zero, zero.line.width, zero.line.color,
-                    hovertext.format.manual, labels = NULL)
+                    hovertext.format.manual, labels = NULL, num.series = 1)
 {
     axis.type <- if (side %in% c("bottom", "top")) axisLabels$x.axis.type else axisLabels$y.axis.type
     has.line <- !is.null(linewidth) && linewidth > 0
@@ -314,7 +314,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
          is.null(tickangle) && side %in% c("bottom", "top"))
     {
         lab.nchar <- max(c(0, nchar(unlist(strsplit(split="<br>", as.character(labels))))))
-        tickangle <- if (length(labels) > 9 && lab.nchar > 5) 90
+        tickangle <- if (length(labels) * num.series > 9 && lab.nchar > 5) 90
                           else 0
     }
 
