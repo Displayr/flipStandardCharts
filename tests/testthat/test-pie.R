@@ -59,4 +59,13 @@ for (dat in dat.list)
 
 
 
+test_that("DS-1701 Donut chart from one variable raw data",{
+    z = 1:5
+    names(z) = letters[1:5]
+    flipStandardCharts::Pie(z)
+
+    attr(z, "statistic") = "%"
+    flipStandardCharts::Pie(z)
+
+})
 
