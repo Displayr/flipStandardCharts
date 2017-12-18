@@ -11,7 +11,8 @@ Pie(x, type = "Pie", colors = NULL, pie.subslice.colors = NULL,
   subtitle.font.family = global.font.family, subtitle.font.size = 12,
   subtitle.font.color = global.font.color, footer = "",
   footer.font.family = global.font.family, footer.font.size = 8,
-  footer.font.color = global.font.color, pie.data.threshold = NULL,
+  footer.font.color = global.font.color, footer.wrap = TRUE,
+  footer.wrap.nchar = 100, pie.data.threshold = NULL,
   pie.values.order = "initial", data.label.format = "",
   data.label.prefix = "", data.label.suffix = "",
   data.label.font.size = 10, data.label.font.color = global.font.color,
@@ -70,6 +71,10 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{footer.font.color}{footer font color as a named color in
 character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
+
+\item{footer.wrap}{Logical; whether the footer text should be wrapped.}
+
+\item{footer.wrap.nchar}{Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.}
 
 \item{pie.data.threshold}{Labels with values smaller than the theshold are not shown.}
 
