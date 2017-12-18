@@ -1,4 +1,4 @@
-#' Geographic Map
+#' Plot a Geographic Map
 #'
 #' Creates a map with a table as input, using shading to represent the values of
 #' countries or states on the map.
@@ -25,6 +25,11 @@
 #' @param mapping.package Either \code{"leaflet"} (better graphics, more country
 #' maps) or \code{"plotly"} (faster).
 #' @param legend.show Logical; Whether to display a legend with the color scale.
+#' @return an HTML widget for \code{"leaflet"} or a \code{"plotly"} object.
+#' @examples
+#' data <- seq(4)
+#' names(data) <- c("France", "China", "Brazil", "Canada")
+#' GeographicMap(data)
 #' @export
 GeographicMap <- function(x,
                           country,
@@ -108,7 +113,7 @@ GeographicMap <- function(x,
     if (is.null(statistic))
         statistic <- ""
 
-    # Tidying some names.
+    # Fix unmatched names
     if (!is.null(name.map))
     {
         for (correct in names(name.map))
@@ -200,7 +205,7 @@ GeographicMap <- function(x,
         suffix <- ""
     }
 
-
+    # Pass all data to a function specific to the package
     if (mapping.package == "leaflet") {
 
         leafletMap(coords, colors, min.value, max.range, color.NA, legend.show,
@@ -218,6 +223,9 @@ GeographicMap <- function(x,
 
 
 # Helper function to plot the leaflet map
+#' @importFrom leaflet leaflet colorNumeric addLegend labelFormat highlightOptions addPolygons
+#' @importFrom leaflet addLayersControl layersControlOptions setView
+#' @importFrom stats as.formula
 leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.show,
                        legend.title, mult, decimals, suffix, values.hovertext.format,
                        treat.NA.as.0, n.categories, categories, format.function, map.type) {
@@ -283,6 +291,7 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.sh
 
 
 # Helper function to plot the plotly map
+#' @importFrom plotly plot_geo colorbar
 plotlyMap <- function(table, name.map, colors, min.value, max.range, color.NA, legend.show,
            legend.title, mult, decimals, suffix, values.hovertext.format,
            treat.NA.as.0, n.categories, categories, format.function, map.type,

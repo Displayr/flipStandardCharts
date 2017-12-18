@@ -2,7 +2,7 @@
 % Please edit documentation in R/geographicmap.R
 \name{GeographicMap}
 \alias{GeographicMap}
-\title{Geographic Map}
+\title{Plot a Geographic Map}
 \usage{
 GeographicMap(x, country, high.resolution = FALSE, treat.NA.as.0 = FALSE,
   colors = c("#CCF3FF", "#23B0DB"), ocean.color = "#DDDDDD",
@@ -43,7 +43,15 @@ See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 \item{mapping.package}{Either \code{"leaflet"} (better graphics, more country
 maps) or \code{"plotly"} (faster).}
 }
+\value{
+an HTML widget for \code{"leaflet"} or a \code{"plotly"} object.
+}
 \description{
 Creates a map with a table as input, using shading to represent the values of
 countries or states on the map.
+}
+\examples{
+data <- seq(4)
+names(data) <- c("France", "China", "Brazil", "Canada")
+GeographicMap(data)
 }
