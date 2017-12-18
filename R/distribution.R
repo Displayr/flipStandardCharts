@@ -189,7 +189,7 @@ Distribution <-   function(x,
     # Extracting and wrapping labels
     ErrorIfNotEnoughData(x, require.tidy = FALSE)
 
-    if (is.array(x) && length(dim(x) == 1))
+    if (is.array(x) && length(dim(x)) == 1)
     {
         x <- list(x)
         names(x) <- attributes(x[[1]])$name
