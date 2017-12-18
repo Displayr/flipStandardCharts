@@ -10,10 +10,11 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1, scatter.y.column = 2,
   scatter.sizes.as.diameter = FALSE, scatter.colors = NULL,
   scatter.colors.name = NULL, scatter.colors.column = 4,
   scatter.colors.as.categorical = FALSE, scatter.labels.as.hovertext = TRUE,
-  colors = ChartColors(12), fit.type = "None", fit.ignore.last = FALSE,
-  fit.line.type = "dot", fit.line.width = 1, fit.line.name = "Fitted",
-  fit.line.colors = colors, legend.show = TRUE, tooltip.show = TRUE,
-  modebar.show = FALSE, global.font.family = "Arial",
+  scatter.max.labels = 50, colors = ChartColors(12), trend.lines = FALSE,
+  logos = NULL, logo.size = 0.5, fit.type = "None",
+  fit.ignore.last = FALSE, fit.line.type = "dot", fit.line.width = 1,
+  fit.line.name = "Fitted", fit.line.colors = colors, legend.show = TRUE,
+  tooltip.show = TRUE, modebar.show = FALSE, global.font.family = "Arial",
   global.font.color = rgb(44, 44, 44, maxColorValue = 255), title = "",
   title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
@@ -67,7 +68,7 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1, scatter.y.column = 2,
   series.marker.colors = NULL, swap.x.and.y = FALSE)
 }
 \arguments{
-\item{x}{A numeric vector for the x-axis coordinates (which may be named); or a matrix or dataframe.}
+\item{x}{A numeric vector for the x-axis coordinates (which may be named); or a matrix or dataframe; or a list of matrices, where each matrix share the same row and column names}
 
 \item{y}{Optional numeric vector for the y-axis coordinates. Should contain the same number of observations as x. If not provided, will use x instead.}
 
@@ -75,7 +76,7 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1, scatter.y.column = 2,
 
 \item{scatter.y.column}{When \code{x} is a dataframe or matrix, the index of the column (1-based) which contains the y-coordinate data.}
 
-\item{scatter.labels}{Optional vector for labelling scatter points. This should be the same length as the number of observations in x andy. This is used in the hovertext and data labels.}
+\item{scatter.labels}{Optional vector for labelling scatter points. This should be the same length as the number of observations in x and y.}
 
 \item{scatter.labels.name}{Character; Used for labelling subtitles and footers.}
 
@@ -93,11 +94,20 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1, scatter.y.column = 2,
 
 \item{scatter.colors.column}{When \code{x} is a dataframe or matrix, the index of the column (1-based) which contains \code{scatter.colors} data.}
 
-\item{scatter.colors.as.categorical}{Whether to treat colors as a categorical groups, or a numeric scale.}
+\item{scatter.colors.as.categorical}{Boolean; Whether to treat colors as a categorical groups, or a numeric scale.}
 
 \item{scatter.labels.as.hovertext}{Logical; if TRUE, labels are shown has hovers; otherwise, as a labeled scatterplot.}
 
+\item{scatter.max.labels}{Integer; the maximum number of labels to show on a Labeled Scatterplot.}
+
 \item{colors}{A vector of colors to use in the chart. When \code{scatter.colors.as.categorical}, the vector of colors should have the length as the number of categories in \code{scatter.colors}. If \code{scatter.colors} is used as numeric vector, then a color ramp is constructed from the colors listed.}
+
+\item{trend.lines}{Boolean indicating whether to plot trend lines for multiple tables.}
+
+\item{logos}{Optional list of images to be used to label scatterplot instead of the row names.
+This should be input as a comma-seperated list of URLs.}
+
+\item{logo.size}{Numeric controlling the size of the logos.}
 
 \item{fit.type}{Character; type of line of best fit. Can be one of "None", "Linear" or "Smooth" (loess local polynomial fitting).}
 
@@ -251,11 +261,6 @@ character format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).}
 \item{y.line.color}{y-axis line color as a named color in character format
 (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{y.tick.marks}{Character; whether and where to show tick marks on the
-y axis.  Can be "outside", "inside", "none"}
-
-\item{y.tick.mark.length}{Length of tick marks in pixels.}
-
 \item{y.bounds.minimum}{Minimum of range for plotting;
 NULL = no manual range set.  Must be less than y.bounds.maximum}
 
@@ -273,7 +278,8 @@ shown}
 color in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{y.data.reversed}{Logical; whether to reverse y-axis or not}
+\item{y.data.reversed}{Logical; whether to reverse y-axis or not
+format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{y.grid.width}{Width of y-grid lines in pixels; 0 = no line}
 
@@ -287,7 +293,8 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 \item{y.tick.prefix}{y-axis tick label prefix}
 
 \item{y.tick.format}{A string representing a d3 formatting code.
-See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
+See https://github.com/mbostock/d3/wiki/Formatting#numbers or
+https://docs.python.org/release/3.1.3/library/string.html#formatspec}
 
 \item{y.hovertext.format}{A string representing a d3 formatting code.
 See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
@@ -318,11 +325,6 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{x.line.color}{x-axis line color as a named color in character format
 (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
-
-\item{x.tick.marks}{Character; whether and where to show tick marks on the
-x-axis.  Can be "outside", "inside", "none"}
-
-\item{x.tick.mark.length}{Length of tick marks in pixels.}
 
 \item{x.bounds.minimum}{Minimum of range for plotting;
 NULL = no manual range set.  Must be less than x.bounds.maximum}
@@ -356,7 +358,8 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 \item{x.tick.prefix}{x-axis tick label prefix}
 
 \item{x.tick.format}{A string representing a d3 formatting code.
-See https://github.com/mbostock/d3/wiki/Formatting#numbers}
+See https://github.com/mbostock/d3/wiki/Formatting#numbers or
+https://docs.python.org/release/3.1.3/library/string.html#formatspec}
 
 \item{x.hovertext.format}{A string representing a d3 formatting code.
 See https://github.com/mbostock/d3/wiki/Formatting#numbers}
@@ -364,9 +367,7 @@ See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 \item{x.tick.angle}{x-axis tick label angle in degrees.
 90 = vertical; 0 = horizontal}
 
-\item{x.tick.font.color}{X-axis tick label font color as a named color in
-character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
+\item{x.tick.font.color}{X-axis tick label font color as a named color in}
 
 \item{x.tick.font.family}{Character; x-axis tick label font family}
 
