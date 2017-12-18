@@ -9,12 +9,13 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1, scatter.y.column = 2,
   scatter.sizes.name = NULL, scatter.sizes.column = 3,
   scatter.sizes.as.diameter = FALSE, scatter.colors = NULL,
   scatter.colors.name = NULL, scatter.colors.column = 4,
-  scatter.colors.as.categorical = FALSE, colors = ChartColors(12),
-  fit.type = "None", fit.ignore.last = FALSE, fit.line.type = "dot",
-  fit.line.width = 1, fit.line.name = "Fitted", fit.line.colors = colors,
-  legend.show = TRUE, tooltip.show = TRUE, modebar.show = FALSE,
-  global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
-  maxColorValue = 255), title = "", title.font.family = global.font.family,
+  scatter.colors.as.categorical = FALSE, scatter.labels.as.hovertext = TRUE,
+  colors = ChartColors(12), fit.type = "None", fit.ignore.last = FALSE,
+  fit.line.type = "dot", fit.line.width = 1, fit.line.name = "Fitted",
+  fit.line.colors = colors, legend.show = TRUE, tooltip.show = TRUE,
+  modebar.show = FALSE, global.font.family = "Arial",
+  global.font.color = rgb(44, 44, 44, maxColorValue = 255), title = "",
+  title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
   subtitle = "", subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color, subtitle.font.size = 12,
@@ -93,6 +94,8 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1, scatter.y.column = 2,
 \item{scatter.colors.column}{When \code{x} is a dataframe or matrix, the index of the column (1-based) which contains \code{scatter.colors} data.}
 
 \item{scatter.colors.as.categorical}{Whether to treat colors as a categorical groups, or a numeric scale.}
+
+\item{scatter.labels.as.hovertext}{Logical; if TRUE, labels are shown has hovers; otherwise, as a labeled scatterplot.}
 
 \item{colors}{A vector of colors to use in the chart. When \code{scatter.colors.as.categorical}, the vector of colors should have the length as the number of categories in \code{scatter.colors}. If \code{scatter.colors} is used as numeric vector, then a color ramp is constructed from the colors listed.}
 

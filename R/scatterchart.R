@@ -15,6 +15,7 @@
 #' @param scatter.colors Numeric, character, or categorical vector determining the color of each observation. These can alternatively be provided as a column in \code{x}.
 #' @param scatter.colors.name Character; Used for labelling footers.
 #' @param scatter.colors.as.categorical Whether to treat colors as a categorical groups, or a numeric scale.
+#' @param scatter.labels.as.hovertext Logical; if TRUE, labels are shown has hovers; otherwise, as a labeled scatterplot.
 #' @param colors A vector of colors to use in the chart. When \code{scatter.colors.as.categorical}, the vector of colors should have the length as the number of categories in \code{scatter.colors}. If \code{scatter.colors} is used as numeric vector, then a color ramp is constructed from the colors listed.
 #' @param scatter.sizes.as.diameter Whether to show the points with diameter (instead of area, which is the default) proportional to the sizes variable.
 #' @param fit.type Character; type of line of best fit. Can be one of "None", "Linear" or "Smooth" (loess local polynomial fitting).
@@ -226,6 +227,7 @@ Scatter <- function(x = NULL,
                          scatter.colors.name = NULL,
                          scatter.colors.column = 4,
                          scatter.colors.as.categorical = FALSE,
+                         scatter.labels.as.hovertext = TRUE,
                          colors = ChartColors(12),
                          fit.type = "None",
                          fit.ignore.last = FALSE,
@@ -340,15 +342,28 @@ Scatter <- function(x = NULL,
                          series.marker.colors = NULL,
                          swap.x.and.y = FALSE)
 {
-    title.font=list(family=title.font.family, size=title.font.size, color=title.font.color)
-    subtitle.font=list(family=subtitle.font.family, size=subtitle.font.size, color=subtitle.font.color)
-    x.title.font=list(family=x.title.font.family, size=x.title.font.size, color=x.title.font.color)
-    y.title.font=list(family=y.title.font.family, size=y.title.font.size, color=y.title.font.color)
-    ytick.font=list(family=y.tick.font.family, size=y.tick.font.size, color=y.tick.font.color)
-    xtick.font=list(family=x.tick.font.family, size=x.tick.font.size, color=x.tick.font.color)
-    footer.font=list(family=footer.font.family, size=footer.font.size, color=footer.font.color)
-    legend.font=list(family=legend.font.family, size=legend.font.size, color=legend.font.color)
-    data.label.font=list(family=data.label.font.family, size=data.label.font.size, color=data.label.font.color)
+    # Use labeled scatterplots if multiple tables are provided
+    if (is.list(x) && !is.data.frame(x) |     # Use labeled scatterplots if labels are provided in (row)names
+         !scatter.labels.as.hovertext &&
+        (!is.null(rownames(x))|| (length(dim(x)) < 2 && !is.null(names(x)))))
+    {
+        cl <- as.list(match.call())
+        cl <- cl[-1]
+        cl$scatter.labels.as.hovertext <- NULL
+        #print(cl)
+        return(do.call(LabeledScatter, cl))
+    }
+
+    # Grouping font attributes to simplify passing to plotly
+    title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
+    subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
+    x.title.font = list(family = x.title.font.family, size = x.title.font.size, color = x.title.font.color)
+    y.title.font = list(family = y.title.font.family, size = y.title.font.size, color = y.title.font.color)
+    ytick.font = list(family = y.tick.font.family, size = y.tick.font.size, color = y.tick.font.color)
+    xtick.font = list(family = x.tick.font.family, size = x.tick.font.size, color = x.tick.font.color)
+    footer.font = list(family = footer.font.family, size = footer.font.size, color = footer.font.color)
+    legend.font = list(family = legend.font.family, size = legend.font.size, color = legend.font.color)
+    data.label.font = list(family = data.label.font.family, size=data.label.font.size, color = data.label.font.color)
 
     # Try to store name of variables
     if (!is.null(scatter.sizes) && is.null(scatter.sizes.name))
