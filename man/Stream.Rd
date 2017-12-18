@@ -42,5 +42,5 @@ See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 \item{margin.right}{Right margin (default should be fine, this allows for fine-tuning plot space)}
 }
 \description{
-Create a Streamtraph, which is an area chart centerd around the x-axis rather than on top of it.
+Create a Streamtraph, which is an area chart centered around the x-axis rather than on top of it.
 }
