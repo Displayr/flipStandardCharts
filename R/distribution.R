@@ -347,6 +347,7 @@ addDensities <- function(p, values, label, vertical, show.density, show.mirror.d
     {
         p <-add_trace(p,
                       nbinsx = maximum.bins,
+                      nbinsy = maximum.bins,
                       x = if (vertical) NULL else values,
                       y = if (vertical) values else NULL ,
                       marker = list(color = rep(density.color, max(100, maximum.bins))), # Hacking past a plotly bug
