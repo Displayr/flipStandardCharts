@@ -65,7 +65,7 @@ test_that("DS-1701 Donut chart from one variable raw data",{
     flipStandardCharts::Pie(z)
 
     attr(z, "statistic") = "%"
-    flipStandardCharts::Pie(z)
+    expect_error(Pie(z), NA)
 
 })
 

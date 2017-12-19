@@ -31,10 +31,10 @@ test_that("Histogram", {
     names(z)[1] = "A really, really, long label designed to not wrap to see what is happening with wrapping."
     Histogram(z, title = "Comparing distributions",
               values.title = "Values",
-              vertical = TRUE,
+              vertical = FALSE,
               histogram.cumulative = TRUE,
               histogram.counts = TRUE,
-              maximum.bins = 2, categories.tick.label.wrap = FALSE)
+              maximum.bins = 2, categories.tick.label.wrap = TRUE)
 
 
     t1 = structure(c(0, 8.28402366863905, 34.3195266272189, 18.0473372781065,
@@ -50,18 +50,19 @@ test_that("Histogram", {
             "Don't know", "NET"), c("male", "female", "NET")), name = "Age by Gender", questions = c("Age",
         "Gender"))
     expect_error(print(Histogram(t1)), NA)
+    expect_error(print(Histogram(as.matrix(t1))), NA)
     data(phone, package = "flipExampleData")
-    Histogram(list(phone$q4))
-    Histogram(list(Q4 = phone$q4, phone$q4))
-    Histogram(list(phone$id, phone$q4))
-    Histogram(list(Q1 = phone$q2, Q4 = phone$q4))
+    suppressWarnings(Histogram(list(phone$q4)))
+    suppressWarnings(Histogram(list(Q4 = phone$q4, phone$q4)))
+    suppressWarnings(Histogram(list(phone$id, phone$q4)))
+    suppressWarnings(Histogram(list(Q1 = phone$q2, Q4 = phone$q4)))
 
 
-        flipChart::CChart("Histogram", list(phone$q4), title = "Comparing distributions",
+        suppressWarnings(flipChart::CChart("Histogram", list(phone$q4), title = "Comparing distributions",
               values.title = "Values",
               histogram.cumulative = TRUE,
               histogram.counts = TRUE,
-              maximum.bins = 2, categories.tick.label.wrap = TRUE)
+              maximum.bins = 2, categories.tick.label.wrap = TRUE))
 
 
 

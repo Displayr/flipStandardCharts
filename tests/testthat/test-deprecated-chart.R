@@ -276,7 +276,7 @@ test_that("X-axis reversed", {
 
 
 test_that("Line of best fit", {
-    print(Chart(acquisitions[,1], fit.type="Smooth", fit.ignore.last=F))
+    expect_error(print(Chart(acquisitions[,1], fit.type="Smooth", fit.ignore.last=F)), NA)
     print(Chart(acquisitions[,1], fit.type="Smooth", fit.ignore.last=T))
 
     xx <- c(1:200 * abs(rnorm(200)),0)
@@ -331,5 +331,5 @@ test_that("Data not 'tidy'",
 test_that("Ignore rows",
 {
     xx <- c(A = 1, B = 2, C = 3, Total = 6)
-    Chart(xx, rows.to.ignore = "Total, C")
+    expect_error(Chart(xx, rows.to.ignore = "Total, C"), NA)
 })

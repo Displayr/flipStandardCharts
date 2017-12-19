@@ -8,7 +8,7 @@ test_that("Density", {
     set.seed(1223)
     z = list(Normal = rnorm(1000), "Poisson with unit lamda" = rpois(1000, 1),
              Exponential = rexp(1000))
-    Density(z[[1]])
+    expect_error(print(Density(z[[1]])), NA)
     Density(z, title = "Comparing distributions",
          values.title = "Values",
          global.font.family = "Courier",

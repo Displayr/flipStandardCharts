@@ -189,17 +189,20 @@ Distribution <-   function(x,
     # Extracting and wrapping labels
     ErrorIfNotEnoughData(x, require.tidy = FALSE)
 
-    if (is.array(x) && length(dim(x)) == 1)
-    {
-        x <- list(x)
-        names(x) <- attributes(x[[1]])$name
-    }
-    else if (!is.list(x) && is.vector(x))
-        x <- list(x)
-    else if (is.matrix(x))
+    if (is.matrix(x))
         x <- as.data.frame(x)
     else if (!is.list(x))
-        stop("Input data should be a list of numeric vectors.")
+    {
+        if (is.array(x) && length(dim(x)) == 1)
+        {
+            x <- list(x)
+            names(x) <- attributes(x[[1]])$name
+        }
+        else if (is.vector(x))
+            x <- list(x)
+    }
+    if (!is.list(x))
+        stop("Input data should be a list of numeric vectors or a matrix.")
     labels <- names(x)
     labels <- autoFormatLongLabels(labels, categories.tick.label.wrap, categories.tick.label.wrap.nchar)
     x <- AsNumeric(x, FALSE)

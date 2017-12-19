@@ -8,7 +8,7 @@ test_that("Violin", {
     set.seed(1223)
     z = list(Normal = rnorm(1000), "Poisson with unit lamda" = rpois(1000, 1),
              Exponential = rexp(1000))
-    Violin(z[[1]])
+    expect_error(print(Violin(z[[1]])), NA)
     Violin(z, title = "Comparing distributions",
            values.title = "Values",
            global.font.family = "Courier",

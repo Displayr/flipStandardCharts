@@ -200,7 +200,7 @@ test_that("Violin plots - Different data inputs and orientations", {
     # Multiple verticals
     Distribution(Normals, values.title = "Number of opens", vertical = FALSE, density.type = "Density", show.mirror.density = TRUE, show.mean = TRUE, show.median = TRUE, show.range = TRUE, show.quartiles = TRUE, show.values = FALSE)
     # Factor
-    suppressWarnings(Distribution(Phone[1:5]))
+    expect_error(suppressWarnings(Distribution(Phone[1:5])), NA)
 
     # Factors as Data Frame with weights - vector
     set.seed(1223)
@@ -221,7 +221,7 @@ test_that("Violin plots - Different data inputs and orientations", {
 
 test_that("Plots used in blog post", {
     # histogram - poor with small sample sizes
-    Distribution(TrialOpens[1], values.title = "Number of opens", vertical = FALSE, density.type = "Histogram", show.mirror.density = FALSE, show.mean = FALSE, show.median = FALSE, show.range = FALSE, show.quartiles = FALSE, show.values = FALSE)
+    expect_error(print(Distribution(TrialOpens[1], values.title = "Number of opens", vertical = FALSE, density.type = "Histogram", show.mirror.density = FALSE, show.mean = FALSE, show.median = FALSE, show.range = FALSE, show.quartiles = FALSE, show.values = FALSE)), NA)
     # Figure 2
     Distribution(TrialOpens[1], maximum.bins = 20, values.title = "Number of opens", vertical = FALSE, density.type = "Histogram", show.mirror.density = FALSE, show.mean = FALSE, show.median = FALSE, show.range = FALSE, show.quartiles = FALSE, show.values = FALSE)
     # Figure 3
@@ -255,14 +255,14 @@ y4 = c(0.75, 5.25, 5.5, 6, 6.2, 6.6, 6.80, 7.0, 7.2, 7.5, 7.5, 7.75, 8.15,
         8.15, 8.65, 8.93, 9.2, 9.5, 10, 10.25, 11.5, 12, 16, 20.90, 22.3, 23.25)) )
 
 test_that("Box plots", {
-    Distribution(z, box.points = "All", values.title = "Number of opens", vertical = TRUE, density.type = "Box",show.mirror.density = FALSE, show.mean = FALSE, show.median = FALSE, show.range = FALSE, show.quartiles = FALSE, show.values = FALSE)
+    expect_error(print(Distribution(z, box.points = "All", values.title = "Number of opens", vertical = TRUE, density.type = "Box",show.mirror.density = FALSE, show.mean = FALSE, show.median = FALSE, show.range = FALSE, show.quartiles = FALSE, show.values = FALSE)), NA)
     Distribution(z, box.points = "All", values.title = "Number of opens", vertical = FALSE, density.type = "Box",show.mirror.density = FALSE, show.mean = FALSE, show.median = FALSE, show.range = FALSE, show.quartiles = FALSE, show.values = FALSE)
     Distribution(z, box.points = "Outliers", values.title = "Number of opens", vertical = TRUE, density.type = "Box",show.mirror.density = FALSE, show.mean = FALSE, show.median = FALSE, show.range = FALSE, show.quartiles = FALSE, show.values = FALSE)
     Distribution(z, box.points = "Suspected outliers", values.title = "Number of opens", vertical = TRUE, density.type = "Box",show.mirror.density = FALSE, show.mean = FALSE, show.median = FALSE, show.range = FALSE, show.quartiles = FALSE, show.values = FALSE)
 })
 
 test_that("Histograms", {
-    Distribution(z, values.title = "Number of opens", vertical = FALSE, density.type = "Histogram", show.mirror.density = FALSE, show.mean = FALSE, show.median = FALSE, show.range = FALSE, show.quartiles = FALSE, show.values = FALSE)
+    expect_error(print(Distribution(z, values.title = "Number of opens", vertical = FALSE, density.type = "Histogram", show.mirror.density = FALSE, show.mean = FALSE, show.median = FALSE, show.range = FALSE, show.quartiles = FALSE, show.values = FALSE)), NA)
     Distribution(z, values.title = "Number of opens", maximum.bins = 100, vertical = FALSE, density.type = "Histogram", show.mirror.density = FALSE, show.mean = FALSE, show.median = FALSE, show.range = FALSE, show.quartiles = FALSE, show.values = FALSE)
     Distribution(z, values.title = "Number of opens", maximum.bins = 100, histogram.cumulative = TRUE, vertical = FALSE, density.type = "Histogram", show.mirror.density = FALSE, show.mean = FALSE, show.median = FALSE, show.range = FALSE, show.quartiles = FALSE, show.values = FALSE)
 })
@@ -275,7 +275,7 @@ test_that("Density", {
 
 
 test_that("Distribution: checking all the common parameters",{
-    Distribution(Normals[1])
+    expect_error(print(Distribution(Normals[1])), NA)
     Distribution(Normals)
     Distribution(Normals, mean.color = "pink")
     Distribution(Normals, median.color = "orange")
