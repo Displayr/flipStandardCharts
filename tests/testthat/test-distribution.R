@@ -268,7 +268,7 @@ test_that("Histograms", {
 })
 
 test_that("Density", {
-    Distribution(TrialOpens, automatic.lower.density = FALSE, values.title = "Number of opens", vertical = FALSE, density.type = "Density", show.mirror.density = FALSE, show.mean = FALSE, show.median = FALSE, show.range = FALSE, show.quartiles = FALSE, show.values = FALSE)
+    expect_error(print(Distribution(TrialOpens, automatic.lower.density = FALSE, values.title = "Number of opens", vertical = FALSE, density.type = "Density", show.mirror.density = FALSE, show.mean = FALSE, show.median = FALSE, show.range = FALSE, show.quartiles = FALSE, show.values = FALSE)), NA)
     Distribution(TrialOpens, automatic.lower.density = TRUE, values.title = "Number of opens", vertical = FALSE, density.type = "Density", show.mirror.density = FALSE, show.mean = FALSE, show.median = FALSE, show.range = FALSE, show.quartiles = FALSE, show.values = FALSE)
     Distribution(TrialOpens, automatic.lower.density = TRUE, values.title = "Number of opens", vertical = FALSE, density.type = "Density", show.mirror.density = FALSE, show.mean = FALSE, show.median = FALSE, show.range = FALSE, show.quartiles = FALSE, show.values = TRUE)
 })
