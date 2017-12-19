@@ -73,6 +73,7 @@ test_that("Histogram", {
             "Fulltime worker", "Don't know/refused", "NET")), name = "Age by Work status", questions = c("Age",
         "Work status"))
     expect_warning(print(Histogram(t2)), "The following categories contain only missing values: Don't know/refused")
+    expect_warning(print(Histogram(list(t2))), "The following categories contain only missing values: Don't know/refused")
     expect_error(Histogram(rep(NA, 100)))
 
     data(phone, package = "flipExampleData")

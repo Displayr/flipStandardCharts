@@ -204,7 +204,8 @@ Distribution <-   function(x,
 {
     # Extracting and wrapping labels
     ErrorIfNotEnoughData(x, require.tidy = FALSE)
-
+    if (length(x) == 1 && is.list(x) && NCOL(x[[1]]) > 1)
+        x <- x[[1]]
     if (is.matrix(x))
         x <- as.data.frame(x)
     else if (!is.list(x))
