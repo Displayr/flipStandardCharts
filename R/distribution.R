@@ -232,7 +232,9 @@ Distribution <-   function(x,
     # Adding in a title based on name if only 1 statistic.
     if (length(x) == 1 && values.title == "")
     {
-        table.name <- attributes(x[[1]])$name
+        table.name <- attributes(x[[1]])$label
+        if (is.null(table.name))
+            table.name <- attributes(x[[1]])$name
         if(!is.null(table.name))
             values.title <- table.name
     }
