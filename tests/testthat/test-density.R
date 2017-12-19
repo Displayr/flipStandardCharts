@@ -17,5 +17,11 @@ test_that("Density", {
          values.title = "Values",
          global.font.family = "Courier",
          global.font.color = "Red",
+         adjust = .2)
+
+    Density(z, title = "Comparing distributions",
+         values.title = "Values",
+         global.font.family = "Courier",
+         global.font.color = "Red",
          vertical = TRUE, show.values = TRUE)
 })

@@ -5,9 +5,12 @@
 \title{Bean}
 \usage{
 Bean(x, weights = NULL, vertical = FALSE, density.color = "Green",
-  values.color = rgb(0.6, 0.6, 0.6), automatic.lower.density = TRUE,
-  global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
-  maxColorValue = 255), title = "", title.font.family = global.font.family,
+  values.color = rgb(0.6, 0.6, 0.6), bw = "nrd0", adjust = 1,
+  kernel = c("gaussian", "epanechnikov", "rectangular", "triangular",
+  "biweight", "cosine", "optcosine"), n = 512, from = NULL, to = NULL,
+  cut = 3, automatic.lower.density = TRUE, global.font.family = "Arial",
+  global.font.color = rgb(44, 44, 44, maxColorValue = 255), title = "",
+  title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
   background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
   background.fill.opacity = 0,
@@ -49,7 +52,23 @@ the3 values of \code{x}, or, a vector where the weights is assumed applicable fo
 
 \item{values.color}{Defaults to "Green"}
 
-\item{automatic.lower.density}{When \code{TRUE}, which is the default, the empirical lowest value is assumed to be the lowest value when estimating the density.}
+\item{bw}{The smoothing bandwidth to be used when creating a Density,
+Bean, or Violin plot. This defaults to \code{"nrd0"}, whereas \code{"SJ"} may often be superior (see \code{\link{density}}).
+The default is to \code{"nrd0"} as \code{"SJ"} fails with trivial categorical cases.}
+
+\item{adjust}{A scaling factor for the bandwidth when creating a Density, Bean, or Violin plot. E.g., a value of 0.5 sets the bandwidth to have of that computed using \code{bw}.}
+
+\item{kernel}{The kernel used when when creating a Density, Bean, or Violin plot. One of "gaussian" (the default), "epanechnikov", "rectangular", "triangular", "biweight", "cosine", "optcosine".}
+
+\item{n}{The number of equally-sapced points at which the density is to be estimated when creating a Density, Bean, or Violin plot. If greater than 512, it is rounded to a power of 2 (see \code{link{density}}).}
+
+\item{from}{The left-most point of the grid used when creating a Density, Bean, or Violin plot.}
+
+\item{to}{The right-most point of the grid used when creating a Density, Bean, or Violin plot.}
+
+\item{cut}{By default, the values of \code{from} and \code{to} are \code{cut} bandwidths beyond the extremes of the data.}
+
+\item{automatic.lower.density}{When \code{TRUE}, which is the default, \code{from} is set to the lowest value in the data.}
 
 \item{global.font.family}{Character; font family for all occurrences of any
 font attribute for the chart unless specified individually.}

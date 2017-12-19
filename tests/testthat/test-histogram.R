@@ -51,6 +51,30 @@ test_that("Histogram", {
         "Gender"))
     expect_error(print(Histogram(t1)), NA)
     expect_error(print(Histogram(as.matrix(t1))), NA)
+
+    t2 = structure(c(0.478468899521531, 26.3157894736842, 66.0287081339713,
+        4.30622009569378, 0.478468899521531, 0.956937799043062, 0.956937799043062,
+        0.478468899521531, 0, 0, 100, 0, 1.61290322580645, 3.2258064516129,
+        9.67741935483871, 9.67741935483871, 17.741935483871, 50, 8.06451612903226,
+        0, 0, 100, 0, 0, 0, 0, 0, 0, 51.7241379310345, 17.2413793103448,
+        31.0344827586207, 0, 100, 0, 10, 25, 25, 0, 5, 35, 0, 0, 0, 100,
+        0, 5.95238095238095, 17.8571428571429, 15.4761904761905, 7.14285714285714,
+        2.38095238095238, 39.2857142857143, 10.7142857142857, 1.19047619047619,
+        0, 100, 0, 3.06122448979592, 20.0680272108844, 23.469387755102,
+        4.08163265306122, 6.46258503401361, 36.3945578231293, 5.4421768707483,
+        1.02040816326531, 0, 100, NaN, NaN, NaN, NaN, NaN, NaN, NaN,
+        NaN, NaN, NaN, NaN, 0.143266475644699, 10.3151862464183, 31.3753581661891,
+        14.6131805157593, 3.58166189111748, 5.01432664756447, 27.9369627507163,
+        5.15759312320917, 1.86246418338109, 0, 100), .Dim = c(11L, 8L
+        ), statistic = "Column %", .Dimnames = list(c("15 and under",
+        "16-19 yrs", "20-24 yrs", "25-29 yrs", "30-34 yrs", "35-44 yrs",
+        "45-54 yrs", "55-64 yrs", "65 and over", "Don't know", "NET"),
+            c("Student", "Home maker", "Retired", "Not working", "Part-time worker",
+            "Fulltime worker", "Don't know/refused", "NET")), name = "Age by Work status", questions = c("Age",
+        "Work status"))
+    expect_warning(print(Histogram(t2)), "The following categories contain only missing values: Don't know/refused")
+    expect_error(Histogram(rep(NA, 100)))
+
     data(phone, package = "flipExampleData")
     suppressWarnings(Histogram(list(phone$q4)))
     suppressWarnings(Histogram(list(Q4 = phone$q4, phone$q4)))

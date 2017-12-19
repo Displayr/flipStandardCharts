@@ -19,7 +19,16 @@
 #' @param show.values Produces a rug plot of individual values.
 #' @param density.type Plot the density as a \code{"Density"} plot, \code{"Histogram"} plot, or \code{"Box"} plot. With box plots, the
 #' 'whiskers' are drawn at the the most outlying point within 1.5 IQR (inter-quaritle range) below the first quarter and 1.5 IQR above the third quartile.
-#' @param automatic.lower.density When \code{TRUE}, which is the default, the empirical lowest value is assumed to be the lowest value when estimating the density.
+#' @param bw The smoothing bandwidth to be used when creating a Density,
+#' Bean, or Violin plot. This defaults to \code{"nrd0"}, whereas \code{"SJ"} may often be superior (see \code{\link{density}}).
+#' The default is to \code{"nrd0"} as \code{"SJ"} fails with trivial categorical cases.
+#' @param adjust A scaling factor for the bandwidth when creating a Density, Bean, or Violin plot. E.g., a value of 0.5 sets the bandwidth to have of that computed using \code{bw}.
+#' @param kernel The kernel used when when creating a Density, Bean, or Violin plot. One of "gaussian" (the default), "epanechnikov", "rectangular", "triangular", "biweight", "cosine", "optcosine".
+#' @param n The number of equally-sapced points at which the density is to be estimated when creating a Density, Bean, or Violin plot. If greater than 512, it is rounded to a power of 2 (see \code{link{density}}).
+#' @param from The left-most point of the grid used when creating a Density, Bean, or Violin plot.
+#' @param to The right-most point of the grid used when creating a Density, Bean, or Violin plot.
+#' @param cut By default, the values of \code{from} and \code{to} are \code{cut} bandwidths beyond the extremes of the data.
+#' @param automatic.lower.density When \code{TRUE}, which is the default, \code{from} is set to the lowest value in the data.
 #' @param histogram.cumulative Plots the cumulative histogram, if \code{histogram} is set to TRUE.
 #' @param histogram.counts Displays the counts in tooltips of a histogram, rather than the proportions.
 #' @param maximum.bins The maximum number of bins of the histogram. If \code{NULL}, this is generated automatically.
@@ -129,6 +138,13 @@ Distribution <-   function(x,
     show.mirror.density = TRUE,
     show.values = FALSE,
     density.type = "Density",
+    bw = "nrd0",
+    adjust = 1,
+    kernel = c("gaussian", "epanechnikov", "rectangular", "triangular", "biweight", "cosine", "optcosine"),
+    n = 512,
+    from = NULL,
+    to = NULL,
+    cut = 3,
     automatic.lower.density = TRUE,
     histogram.cumulative = FALSE,
     histogram.counts = FALSE,
@@ -203,6 +219,14 @@ Distribution <-   function(x,
     }
     if (!is.list(x))
         stop("Input data should be a list of numeric vectors or a matrix.")
+    # Checking for categories with no data.
+    all.missing <- sapply(x, function(x) all(is.na(x)))
+    if (any(all.missing))
+    {
+        warning("The following categories contain only missing values: ",
+                paste(names(all.missing)[all.missing], sep = ","))
+        x <- x[!all.missing]
+    }
     labels <- names(x)
     labels <- autoFormatLongLabels(labels, categories.tick.label.wrap, categories.tick.label.wrap.nchar)
     x <- AsNumeric(x, FALSE)
@@ -271,8 +295,8 @@ Distribution <-   function(x,
         wgt <- if (is.null(weights)) rep(1, length(values)) else
                 (if (is.list(weights)) weights[[v]] else weights)[not.missing]
 
-        density.from <- if (automatic.lower.density) rng[1] else NULL
-        p <- addDensities(p, values, labels[v], vertical, show.density, show.mirror.density, density.type, histogram.cumulative, histogram.counts, maximum.bins, box.points, category.axis, value.axis, density.color, values.color, density.from)
+        from <- if (automatic.lower.density) rng[1] else from
+        p <- addDensities(p, values, labels[v], vertical, show.density, show.mirror.density, density.type, histogram.cumulative, histogram.counts, maximum.bins, box.points, category.axis, value.axis, density.color, values.color, bw, adjust, kernel, n, from, to, cut)
         p <- addSummaryStatistics(p, values, wgt, vertical,  show.mean, show.median, show.quartiles, show.range, show.values,
                                  mean.color, median.color, quartile.color, range.color, values.color,
                                  category.axis, axisName(vertical, v, 1, TRUE), value.axis, value.axis.2)
@@ -326,10 +350,31 @@ axisName <- function(vertical, n.variables, axis.number, secondary.category = FA
 
 
 
-addDensities <- function(p, values, label, vertical, show.density, show.mirror.density, density.type, histogram.cumulative, histogram.counts, maximum.bins, box.points, category.axis, value.axis, density.color, values.color, density.from)
+addDensities <- function(p,
+                         values,
+                         label,
+                         vertical,
+                         show.density,
+                         show.mirror.density,
+                         density.type,
+                         histogram.cumulative,
+                         histogram.counts,
+                         maximum.bins,
+                         box.points,
+                         category.axis,
+                         value.axis,
+                         density.color,
+                         values.color,
+                         # Density parameters
+                         bw, adjust, kernel, n, from, to, cut)
 {
     # Comuting the density Also used in plotting other graphical elements.
-    values.density <- if (is.null(density.from)) density(values, na.rm = TRUE) else density(values, from = density.from, na.rm = TRUE)
+    d.args <- list(x = values, na.rm = TRUE, bw = bw, adjust = adjust, kernel = kernel, cut = cut)
+    if (!is.null(from))
+        d.args$from = from
+    if (!is.null(to))
+        d.args$from = to
+    values.density <- do.call(density, d.args)
     attr(p, "values.density") <- values.density
     if (!show.density && !show.mirror.density)
         return(p)

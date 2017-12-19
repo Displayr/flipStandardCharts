@@ -7,11 +7,14 @@
 Distribution(x, weights = NULL, vertical = TRUE, show.mean = TRUE,
   show.median = TRUE, show.quartiles = TRUE, show.range = TRUE,
   show.density = TRUE, show.mirror.density = TRUE, show.values = FALSE,
-  density.type = "Density", automatic.lower.density = TRUE,
-  histogram.cumulative = FALSE, histogram.counts = FALSE,
-  maximum.bins = NULL, box.points = "Suspected outliers",
-  mean.color = "White", median.color = "Black", quartile.color = "Black",
-  range.color = "Black", values.color = "Green", density.color = "Green",
+  density.type = "Density", bw = "nrd0", adjust = 1,
+  kernel = c("gaussian", "epanechnikov", "rectangular", "triangular",
+  "biweight", "cosine", "optcosine"), n = 512, from = NULL, to = NULL,
+  cut = 3, automatic.lower.density = TRUE, histogram.cumulative = FALSE,
+  histogram.counts = FALSE, maximum.bins = NULL,
+  box.points = "Suspected outliers", mean.color = "White",
+  median.color = "Black", quartile.color = "Black", range.color = "Black",
+  values.color = "Green", density.color = "Green",
   global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
   maxColorValue = 255), title = "", title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
@@ -69,7 +72,23 @@ the3 values of \code{x}, or, a vector where the weights is assumed applicable fo
 \item{density.type}{Plot the density as a \code{"Density"} plot, \code{"Histogram"} plot, or \code{"Box"} plot. With box plots, the
 'whiskers' are drawn at the the most outlying point within 1.5 IQR (inter-quaritle range) below the first quarter and 1.5 IQR above the third quartile.}
 
-\item{automatic.lower.density}{When \code{TRUE}, which is the default, the empirical lowest value is assumed to be the lowest value when estimating the density.}
+\item{bw}{The smoothing bandwidth to be used when creating a Density,
+Bean, or Violin plot. This defaults to \code{"nrd0"}, whereas \code{"SJ"} may often be superior (see \code{\link{density}}).
+The default is to \code{"nrd0"} as \code{"SJ"} fails with trivial categorical cases.}
+
+\item{adjust}{A scaling factor for the bandwidth when creating a Density, Bean, or Violin plot. E.g., a value of 0.5 sets the bandwidth to have of that computed using \code{bw}.}
+
+\item{kernel}{The kernel used when when creating a Density, Bean, or Violin plot. One of "gaussian" (the default), "epanechnikov", "rectangular", "triangular", "biweight", "cosine", "optcosine".}
+
+\item{n}{The number of equally-sapced points at which the density is to be estimated when creating a Density, Bean, or Violin plot. If greater than 512, it is rounded to a power of 2 (see \code{link{density}}).}
+
+\item{from}{The left-most point of the grid used when creating a Density, Bean, or Violin plot.}
+
+\item{to}{The right-most point of the grid used when creating a Density, Bean, or Violin plot.}
+
+\item{cut}{By default, the values of \code{from} and \code{to} are \code{cut} bandwidths beyond the extremes of the data.}
+
+\item{automatic.lower.density}{When \code{TRUE}, which is the default, \code{from} is set to the lowest value in the data.}
 
 \item{histogram.cumulative}{Plots the cumulative histogram, if \code{histogram} is set to TRUE.}
 
