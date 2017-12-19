@@ -215,11 +215,19 @@ Distribution <-   function(x,
             x <- list(x)
             names(x) <- attributes(x[[1]])$name
         }
-        else if (is.vector(x))
+        else if (NCOL(x) == 1)
             x <- list(x)
     }
     if (!is.list(x))
         stop("Input data should be a list of numeric vectors or a matrix.")
+
+    # Adding in a title based on name if only 1 statistic.
+    if (length(x) == 1 && values.title == "")
+    {
+        table.name <- attributes(x[[1]])$name
+        if(!is.null(table.name))
+            values.title <- table.name
+    }
     # Checking for categories with no data.
     all.missing <- sapply(x, function(x) all(is.na(x)))
     if (any(all.missing))

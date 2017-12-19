@@ -76,6 +76,10 @@ test_that("Histogram", {
     expect_warning(print(Histogram(list(t2))), "The following categories contain only missing values: Don't know/refused")
     expect_error(Histogram(rep(NA, 100)))
 
+    t3 <- 1:5
+    attr(t3, "name") = "dog"
+    Histogram(t3)
+
     data(phone, package = "flipExampleData")
     suppressWarnings(Histogram(list(phone$q4)))
     suppressWarnings(Histogram(list(Q4 = phone$q4, phone$q4)))
