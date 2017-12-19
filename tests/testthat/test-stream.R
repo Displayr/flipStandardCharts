@@ -1,7 +1,7 @@
 context("Stream")
 
 
-test_that("Stream", #devtools::install_github("hrbrmstr/Stream")
+test_that("Stream",
           {
               set.seed(1223)
               x <- t(apply(matrix(runif(200), nrow = 4), 1, cumsum))
@@ -16,9 +16,9 @@ test_that("Stream", #devtools::install_github("hrbrmstr/Stream")
               Stream(x, x.tick.interval = 6, y.number.ticks = 3)
               Stream(x, x.tick.interval = 6, y.number.ticks = 10)
               Stream(x, x.tick.interval = 6, y.number.ticks = 10,  values.hovertext.format = ".0f")
+
               # Testing better example
               library(dplyr)
-
               ggplot2movies::movies %>%
                   select(year, Action, Animation, Comedy, Drama, Documentary, Romance, Short)  %>%
                   group_by(year) %>% as.data.frame  -> dat

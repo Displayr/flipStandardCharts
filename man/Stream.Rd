@@ -2,7 +2,7 @@
 % Please edit documentation in R/stream.R
 \name{Stream}
 \alias{Stream}
-\title{Stream}
+\title{Plot data as a Streamgraph}
 \usage{
 Stream(x, colors = c("#5C9AD3", "#ED7D31", "#A5A5A5", "#FFC000", "#4473C5",
   "#70AD46", "#255F91", "#9E480D", "#636365", "#987300", "#26408B", "#42682B"),
@@ -14,9 +14,9 @@ Stream(x, colors = c("#5C9AD3", "#ED7D31", "#A5A5A5", "#FFC000", "#4473C5",
 \arguments{
 \item{x}{A \code{matrix}, with columns containing the dates or other numeric x-axis variable.}
 
-\item{colors}{The colors of the streams.}
+\item{colors}{A vector of colors of the streams.}
 
-\item{y.axis.show}{If FALSE, the y-axis is not shown.}
+\item{y.axis.show}{Logical; if FALSE, the y-axis is not shown.}
 
 \item{y.tick.format}{A string representing a d3 formatting code for the y-axis.
 See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
@@ -24,7 +24,7 @@ See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 \item{y.number.ticks}{The total number of ticks on the y-axis.}
 
 \item{values.hovertext.format}{A string representing a d3 formatting code for the hover text.
-See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
+Only the decimal places are used.}
 
 \item{x.tick.format}{A string representing a d3 formatting code for the x.axis.
 See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}

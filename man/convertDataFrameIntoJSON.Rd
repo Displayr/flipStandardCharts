@@ -16,5 +16,5 @@ convertDataFrameIntoJSON(x, nms, weights, data.label.decimals)
 \item{data.label.decimals}{number of decimal places.}
 }
 \description{
-Creating JSON-like list from data frane
+Creating JSON-like list from data frame
 }

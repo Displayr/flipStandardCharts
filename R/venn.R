@@ -32,6 +32,8 @@ Venn <- function(x = NULL,
         ErrorIfNotEnoughData(x)
         x <- as.data.frame(x)
     }
+
+    suffix <- ""
     if (is.data.frame(x))
     {
         nms = Labels(x)
@@ -42,24 +44,27 @@ Venn <- function(x = NULL,
         as.percentages <- percentFromD3(values.hovertext.format) || (values.hovertext.format == "" && !is.null(stat) && grepl("%", stat, fixed = TRUE))
         data.label.decimals <- decimalsFromD3(values.hovertext.format, 0)
 
-        if (as.percentages)
+        if (as.percentages) {
             weights <- weights / sum(weights) * 100
+            suffix <- "%"
+        }
         if (!is.logical(x[,1]))
             x <- as.data.frame(x >= 1)
         x <- convertDataFrameIntoJSON(x, nms, weights, data.label.decimals)
     }
     # Creating the Venn diagram
-    venn_tooltip(d3vennR(data = x, fontSize = data.label.font.size))
+    venn_tooltip(d3vennR(data = x, fontSize = data.label.font.size), suffix = suffix)
 }
 
 #' venn_tooltip
 #'
 #' Creating the tooltips
 #' @param venn The JSON-like list.
+#' @param suffix A string to append to the hovertext.
 #' @importFrom htmlwidgets JS
-venn_tooltip <- function( venn ){
+venn_tooltip <- function(venn, suffix = ""){
         venn$x$tasks[length(venn$x$tasks)+1] <- list(
-            JS('
+            JS(paste0('
                             function(){
                             var div = d3.select(this);
 
@@ -91,7 +96,7 @@ venn_tooltip <- function( venn ){
 
                             // Display a tooltip with the current size
                             tooltip.transition().duration(400).style("opacity", .9);
-                            tooltip.text(d.size);
+                            tooltip.text(d.size + "', suffix, '");
 
                             // highlight the current path
                             var selection = d3.select(this).transition("tooltip").duration(400);
@@ -115,14 +120,14 @@ venn_tooltip <- function( venn ){
                             .style("stroke-opacity", 0);
                             });
                             }
-                            ')
+                            '))
             )
         venn
     }
 
 #' convertDataFrameIntoJSON
 #'
-#' Creating JSON-like list from data frane
+#' Creating JSON-like list from data frame
 #' @param x The data.frame.
 #' @param nms The names of the labels
 #' @param weights Vector of weights

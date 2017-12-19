@@ -4,10 +4,12 @@
 \alias{venn_tooltip}
 \title{venn_tooltip}
 \usage{
-venn_tooltip(venn)
+venn_tooltip(venn, suffix = "")
 }
 \arguments{
 \item{venn}{The JSON-like list.}
+
+\item{suffix}{A string to append to the hovertext.}
 }
 \description{
 Creating the tooltips

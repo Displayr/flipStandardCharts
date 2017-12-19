@@ -1,14 +1,14 @@
-#' Stream
+#' Plot data as a Streamgraph
 #'
 #' Create a Streamtraph, which is an area chart centered around the x-axis rather than on top of it.
 #' @param x A \code{matrix}, with columns containing the dates or other numeric x-axis variable.
-#' @param colors The colors of the streams.
-#' @param y.axis.show If FALSE, the y-axis is not shown.
+#' @param colors A vector of colors of the streams.
+#' @param y.axis.show Logical; if FALSE, the y-axis is not shown.
 #' @param y.tick.format A string representing a d3 formatting code for the y-axis.
 #' See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format
 #' @param y.number.ticks The total number of ticks on the y-axis.
 #' @param values.hovertext.format A string representing a d3 formatting code for the hover text.
-#' See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format
+#' Only the decimal places are used.
 #' @param x.tick.format A string representing a d3 formatting code for the x.axis.
 #' See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format
 #' @param x.tick.units "Automatic", "Number", "Month" or "Year".
