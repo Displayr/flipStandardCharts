@@ -60,6 +60,7 @@
 #' See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format
 #' @param y.tick.angle y-axis tick label angle in degrees.
 #' 90 = vertical; 0 = horizontal
+#' @param y.tick.mark.length Length of tick marks in pixels.
 #' @param x.zero Whether the x-axis should include zero.
 #' @param x.zero.line.width Width in pixels of zero line.
 #' @param x.zero.line.color Color of horizontal zero (origo) line as a named
@@ -70,9 +71,11 @@
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers
 #' @param x.tick.angle x-axis tick label angle in degrees.
 #' 90 = vertical; 0 = horizontal
+#' @param x.tick.mark.length Length of tick marks in pixels.
 #' @param x.tick.font.color X-axis tick label font color as a named color in
 #' @param x.tick.label.wrap Logical; whether to wrap long labels on the x-axis.
-#' @param x.tick.label.wrap.nchar Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.
+#' @param x.tick.label.wrap.nchar Integer; number of characters in each
+#' line when \code{label.wrap} is \code{TRUE}.
 #' @param series.line.width Thickness, in pixels, of the series line
 #' @param series.marker.show Can be "none", "automatic" or a vector referencing
 #' the plotly symbol dictionary using either numerics or strings.
@@ -183,7 +186,6 @@ Scatter <- function(x = NULL,
                          y.title.font.size = 12,
                          y.line.width = 0,
                          y.line.color = rgb(0, 0, 0, maxColorValue = 255),
-                         y.tick.marks = "",
                          y.tick.mark.length = 5,
                          y.bounds.minimum = NULL,
                          y.bounds.maximum = NULL,
@@ -209,7 +211,6 @@ Scatter <- function(x = NULL,
                          x.title.font.size = 12,
                          x.line.width = 0,
                          x.line.color = rgb(0, 0, 0, maxColorValue = 255),
-                         x.tick.marks = "",
                          x.tick.mark.length = 5,
                          x.bounds.minimum = NULL,
                          x.bounds.maximum = NULL,

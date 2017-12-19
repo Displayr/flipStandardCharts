@@ -40,7 +40,7 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1, scatter.y.column = 2,
   y.title = "", y.title.font.color = global.font.color,
   y.title.font.family = global.font.color, y.title.font.size = 12,
   y.line.width = 0, y.line.color = rgb(0, 0, 0, maxColorValue = 255),
-  y.tick.marks = "", y.tick.mark.length = 5, y.bounds.minimum = NULL,
+  y.tick.mark.length = 5, y.bounds.minimum = NULL,
   y.bounds.maximum = NULL, y.tick.distance = NULL, y.zero = FALSE,
   y.zero.line.width = 0, y.zero.line.color = rgb(225, 225, 225,
   maxColorValue = 255), y.data.reversed = FALSE, y.grid.width = 1 *
@@ -52,7 +52,7 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1, scatter.y.column = 2,
   x.title = "", x.title.font.color = global.font.color,
   x.title.font.family = global.font.family, x.title.font.size = 12,
   x.line.width = 0, x.line.color = rgb(0, 0, 0, maxColorValue = 255),
-  x.tick.marks = "", x.tick.mark.length = 5, x.bounds.minimum = NULL,
+  x.tick.mark.length = 5, x.bounds.minimum = NULL,
   x.bounds.maximum = NULL, x.tick.distance = NULL, x.zero = FALSE,
   x.zero.line.width = 0, x.zero.line.color = rgb(225, 225, 225,
   maxColorValue = 255), x.data.reversed = FALSE, x.grid.width = 1 *
@@ -261,6 +261,8 @@ character format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).}
 \item{y.line.color}{y-axis line color as a named color in character format
 (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
+\item{y.tick.mark.length}{Length of tick marks in pixels.}
+
 \item{y.bounds.minimum}{Minimum of range for plotting;
 NULL = no manual range set.  Must be less than y.bounds.maximum}
 
@@ -326,6 +328,8 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{x.line.color}{x-axis line color as a named color in character format
 (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
+\item{x.tick.mark.length}{Length of tick marks in pixels.}
+
 \item{x.bounds.minimum}{Minimum of range for plotting;
 NULL = no manual range set.  Must be less than x.bounds.maximum}
 
@@ -375,7 +379,8 @@ See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 
 \item{x.tick.label.wrap}{Logical; whether to wrap long labels on the x-axis.}
 
-\item{x.tick.label.wrap.nchar}{Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.}
+\item{x.tick.label.wrap.nchar}{Integer; number of characters in each
+line when \code{label.wrap} is \code{TRUE}.}
 
 \item{series.line.width}{Thickness, in pixels, of the series line}
 
