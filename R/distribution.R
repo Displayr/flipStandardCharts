@@ -221,13 +221,6 @@ Distribution <-   function(x,
     if (!is.list(x))
         stop("Input data should be a list of numeric vectors or a matrix.")
 
-    # Adding in a title based on name if only 1 statistic.
-    if (length(x) == 1 && values.title == "")
-    {
-        table.name <- attributes(x[[1]])$name
-        if(!is.null(table.name))
-            values.title <- table.name
-    }
     # Checking for categories with no data.
     all.missing <- sapply(x, function(x) all(is.na(x)))
     if (any(all.missing))
@@ -236,8 +229,19 @@ Distribution <-   function(x,
                 paste(names(all.missing)[all.missing], sep = ","))
         x <- x[!all.missing]
     }
+    # Adding in a title based on name if only 1 statistic.
+    if (length(x) == 1 && values.title == "")
+    {
+        table.name <- attributes(x[[1]])$name
+        if(!is.null(table.name))
+            values.title <- table.name
+    }
+    # Extracting labels
     labels <- names(x)
-    labels <- autoFormatLongLabels(labels, categories.tick.label.wrap, categories.tick.label.wrap.nchar)
+    if (length(labels) == 1)
+        labels = ""
+    else
+        labels <- autoFormatLongLabels(labels, categories.tick.label.wrap, categories.tick.label.wrap.nchar)
     x <- AsNumeric(x, FALSE)
     if (density.type == "Box" && !is.null(weights))
     {
