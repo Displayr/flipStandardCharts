@@ -4,9 +4,9 @@ context("Stream")
 test_that("Stream",
           {
               set.seed(1223)
-              x <- t(apply(matrix(runif(200), nrow = 4), 1, cumsum))
-              rownames(x) <- c('Aardvark', 'Three toed sloth', 'Camel', 'Dog')
-              colnames(x) <- as.character(seq(as.Date("1910/1/1"), by = "month", length.out = ncol(x)))
+              x <- apply(matrix(runif(200), nrow = 4), 1, cumsum)
+              colnames(x) <- c('Aardvark', 'Three toed sloth', 'Camel', 'Dog')
+              rownames(x) <- as.character(seq(as.Date("1910/1/1"), by = "month", length.out = nrow(x)))
 
               # Testing combinations of inputs.
               Stream(x)
@@ -23,8 +23,8 @@ test_that("Stream",
                   select(year, Action, Animation, Comedy, Drama, Documentary, Romance, Short)  %>%
                   group_by(year) %>% as.data.frame  -> dat
               dat <- aggregate.data.frame(dat, list(dat$year), sum)
-              rownames(dat) <- dat[,1]
-              dat <- t(dat[, -1:-2])
+              rownames(dat) <- dat[, 1]
+              dat <- dat[, -1:-2]
 
               # Automatic formatting
 
@@ -44,12 +44,12 @@ test_that("Stream",
               Stream(dat, x.tick.interval = 20, x.tick.units = "year", x.tick.format = "%d %m %Y")
               Stream(dat, x.tick.interval = 20, x.tick.units = "year", x.tick.format = "%d %m %Y", y.tick.format = "%")
 
-              Stream(dat[,1:10], x.tick.interval = 12, x.tick.units = "month", x.tick.format = "%d %m %Y")
+              Stream(dat[1:10, ], x.tick.interval = 12, x.tick.units = "month", x.tick.format = "%d %m %Y")
 
               # Monthly data
 
-              colnames(dat) <- as.character(seq.Date(as.Date("2000/1/1"), by = "month", length.out = ncol(dat)))
-              dat = dat[, 1:80]
+              rownames(dat) <- as.character(seq.Date(as.Date("2000/1/1"), by = "month", length.out = nrow(dat)))
+              dat = dat[1:80, ]
 
               Stream(dat, x.tick.interval = 3, x.tick.units = "year", x.tick.format = "%y")
               Stream(dat, x.tick.interval = 3, x.tick.units = "year", x.tick.format = "%d %B %Y")
@@ -60,8 +60,8 @@ test_that("Stream",
 
               # Weekly data
 
-              colnames(dat) <- as.character(seq.Date(as.Date("2000/1/1"), by = "week", length.out = ncol(dat)))
-              dat = dat[, 1:80]
+              rownames(dat) <- as.character(seq.Date(as.Date("2000/1/1"), by = "week", length.out = nrow(dat)))
+              dat = dat[1:80, ]
 
               Stream(dat, x.tick.interval = 1, x.tick.units = "year", x.tick.format = "%y")
               Stream(dat, x.tick.interval = 1, x.tick.units = "year", x.tick.format = "%d %B %Y")
@@ -75,8 +75,8 @@ test_that("Stream",
 
               # Daily data
 
-              colnames(dat) <- as.character(seq.Date(as.Date("2000/1/1"), by = "day", length.out = ncol(dat)))
-              dat = dat[, 1:80]
+              rownames(dat) <- as.character(seq.Date(as.Date("2000/1/1"), by = "day", length.out = nrow(dat)))
+              dat = dat[1:80, ]
 
               Stream(dat, x.tick.interval = 1, x.tick.units = "year", x.tick.format = "%y")
               Stream(dat, x.tick.interval = 1, x.tick.units = "year", x.tick.format = "%d %B %Y")
@@ -89,7 +89,7 @@ test_that("Stream",
 
               # Integers
 
-              colnames(dat) <- 0:(ncol(dat) - 1)
+              rownames(dat) <- 0:(nrow(dat) - 1)
               expect_error(Stream(dat, x.tick.interval = 3, x.tick.format = "", x.tick.units = "Month"),"x-axis tick format and units are incompatible.")
               Stream(dat, x.tick.interval = 3, x.tick.format = "", x.tick.units = "Number")
               Stream(dat, x.tick.interval = 3, x.tick.format = "")

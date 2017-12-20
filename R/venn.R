@@ -122,6 +122,9 @@ venn_tooltip <- function(venn, suffix = ""){
                             }
                             '))
             )
+
+        # Override default where widget does not size to browser
+        venn$sizingPolicy$browser$fill <- TRUE
         venn
     }
 

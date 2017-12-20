@@ -38,6 +38,11 @@ Stream <- function(x,
 {
     if (!is.matrix(x) && !is.data.frame(x) && !is.array(x))
         stop("Stream graphs should have a tabular input (e.g., a matrix).")
+
+    # streamgraph requires dates along the columns but for consistency with Time Series, Line, Google Trennds etc
+    # CChart produces dates along the rows, hence we transpose
+    x <- t(x)
+
     ErrorIfNotEnoughData(x)
     columns <- colnames(x)
 
@@ -88,6 +93,9 @@ Stream <- function(x,
     else
         sg <- sg_axis_y(sg, tick_count = y.number.ticks, tick_format = y.tick.format)
     sg <- sg_axis_x(sg, tick_interval = x.tick.interval, tick_units = tolower(x.tick.units), tick_format = x.tick.format)
+
+    # Override default of fixed size widget
+    sg$sizingPolicy$browser$fill <- TRUE
 
     sg
     }
