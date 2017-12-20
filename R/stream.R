@@ -36,6 +36,8 @@ Stream <- function(x,
                    margin.bottom = 30,
                    margin.right = 40)
 {
+    if (is.null(dim(x)) || length(dim(x)) == 1L)
+        x <- as.matrix(x)
     if (!is.matrix(x) && !is.data.frame(x) && !is.array(x))
         stop("Stream graphs should have a tabular input (e.g., a matrix).")
 
