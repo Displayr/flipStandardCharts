@@ -86,13 +86,4 @@ test_that("Histogram", {
     suppressWarnings(Histogram(list(phone$id, phone$q4)))
     suppressWarnings(Histogram(list(Q1 = phone$q2, Q4 = phone$q4)))
 
-
-        suppressWarnings(flipChart::CChart("Histogram", list(phone$q4), title = "Comparing distributions",
-              values.title = "Values",
-              histogram.cumulative = TRUE,
-              histogram.counts = TRUE,
-              maximum.bins = 2, categories.tick.label.wrap = TRUE))
-
-
-
 })
