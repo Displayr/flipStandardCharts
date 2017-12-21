@@ -333,21 +333,22 @@ Distribution <-   function(x,
                   FALSE, values.zero.line.width, values.zero.line.color,
                   values.hovertext.format)
     hover.mode <- if (tooltip.show) "'closest'" else "FALSE"
-    txt <- paste0("p <- layout(p, autosize=TRUE,
-        font=list(size = 11),
-        hovermode=", hover.mode, ",",
-        "showlegend=FALSE,
+    txt <- paste0("p <- layout(p,
+        autosize = TRUE,
+        font = list(size = 11),
+        hovermode = ", hover.mode, ",",
+        "showlegend = FALSE,
         title = title,
         titlefont = title.font,
-        showlegend = FALSE,", violinCategoriesAxes(vertical, n.variables, labels), "
-", if (vertical) "y" else "x", "axis = values.axis,",
-violinCategoriesAxes(vertical, n.variables, values.axis), "margin = margins,
-plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
-paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
-hovermode = 'text',
-titlefont = title.font)")
+        showlegend = FALSE,",
+        violinCategoriesAxes(vertical, n.variables, labels), "
+        ", if (vertical) "y" else "x", "axis = values.axis,
+        margin = margins,
+        plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
+        paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity))")
+
     eval(parse(text = txt))
-   p
+    p
 }
 
 
@@ -531,7 +532,8 @@ addSummaryStatistics <- function(p, values, weights, vertical, show.mean, show.m
 }
 
 
-violinCategoryAxis <- function(i, label, n.variables, vertical, show.values, show.density, show.mirror.density, family, size, color)
+violinCategoryAxis <- function(i, label, n.variables, vertical, show.values, show.density, show.mirror.density, family,
+                               size, color, values.hovertext.format)
 {
     if (i > n.variables)
         return(NULL)
@@ -543,6 +545,7 @@ violinCategoryAxis <- function(i, label, n.variables, vertical, show.values, sho
         domain = c(0, 1)
     list(autorange = TRUE,
          domain =  domain / n.variables + (i - 1) / n.variables,
+         hoverformat = values.hovertext.format,
          showgrid = FALSE,
          showticklabels = FALSE,
          ticks = "",
@@ -575,7 +578,7 @@ rugCategoryAxis <- function(i, n.variables, vertical, show.density, show.mirror.
 
 violinCategoriesAxes <- function(vertical, n.variables, labels)
 {
-    standard.parameters <- "n.variables, vertical, show.values, show.density, show.mirror.density, categories.tick.font.family, categories.tick.font.size, categories.tick.font.color"
+    standard.parameters <- "n.variables, vertical, show.values, show.density, show.mirror.density, categories.tick.font.family, categories.tick.font.size, categories.tick.font.color, values.hovertext.format"
     axes <- paste0("xaxis = violinCategoryAxis(1, '", labels[1], "',", standard.parameters, "), xaxis2 = rugCategoryAxis(1, n.variables, vertical, show.density, show.mirror.density, show.values), ")
     if (n.variables > 1)
     {
