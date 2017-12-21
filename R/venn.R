@@ -51,6 +51,11 @@ Venn <- function(x = NULL,
         if (!is.logical(x[,1]))
             x <- as.data.frame(x >= 1)
         x <- convertDataFrameIntoJSON(x, nms, weights, data.label.decimals)
+
+    } else if (percentFromD3(values.hovertext.format)) {
+        suffix <- "%"
+        for (i in seq(length(x)))
+            x[[i]]$size <- x[[i]]$size * 100
     }
     # Creating the Venn diagram
     venn_tooltip(d3vennR(data = x, fontSize = data.label.font.size), suffix = suffix)
