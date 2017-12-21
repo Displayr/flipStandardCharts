@@ -47,6 +47,9 @@ Stream <- function(x,
     # CChart produces dates along the rows, hence we transpose
     x <- t(x)
 
+    if (nrow(x) == 1)
+        colors <- c(colors, colors) #  fix streamgraph bug where one color single stream is ignored and produces black chart
+
     ErrorIfNotEnoughData(x)
     columns <- colnames(x)
 
