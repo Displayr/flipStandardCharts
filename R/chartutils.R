@@ -316,8 +316,9 @@ setAxis <- function(title, side, axisLabels, titlefont,
          is.null(tickangle) && side %in% c("bottom", "top"))
     {
         lab.nchar <- max(c(0, nchar(unlist(strsplit(split="<br>", as.character(labels))))))
-        tickangle <- if (length(labels) * num.series > 9 && lab.nchar > 5) 90
-                          else 0
+        tickangle <- if (any(suppressWarnings(is.na(as.numeric(labels)))) && 
+                        length(labels) * num.series * lab.nchar > 50) 90
+                     else 0
     }
 
     autorange <- ticks$autorange
