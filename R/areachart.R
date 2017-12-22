@@ -294,6 +294,15 @@ Area <- function(x,
     y.labels <- colnames(chart.matrix)
     xaxis2 <- NULL
 
+    # Invisible trace to ensure enough space for data labels
+    # This must happen before ANY of the area traces are put in
+    # to avoid plotly bug
+    if (data.label.show)
+        p <- add_trace(p, type = plotly.type, mode = "markers", 
+                   x = x.labels, y = apply(chart.matrix, 1, max, na.rm = TRUE) * 1.01,
+                   marker = list(color = "red", opacity = 0.0),
+                   hoverinfo = "none", showlegend = FALSE)
+
     ## Add a trace for each col of data in the matrix
     for (i in 1:ncol(chart.matrix))
     {
@@ -415,7 +424,7 @@ Area <- function(x,
             if (fit.type != "None" && is.stacked && i == 1)
                 warning("Line of best fit not shown for stacked charts.")
             fill.bound <- if (is.stacked && i > 1) "tonexty" else "tozeroy"
-
+            
             # plotly has bug where for stacked area charts,
             # text and line must occur together as a single trace
             y.label <- y.labels[i]
@@ -434,7 +443,6 @@ Area <- function(x,
                            hoverinfo = if (ncol(chart.matrix) > 1) "x+y+name" else "x+y",
                            mode = if (data.label.show) "lines+text" else "lines",
                            marker = marker)
-
          }
     }
 

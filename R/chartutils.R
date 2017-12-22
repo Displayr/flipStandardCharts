@@ -309,6 +309,8 @@ setAxis <- function(title, side, axisLabels, titlefont,
 {
     axis.type <- if (side %in% c("bottom", "top")) axisLabels$x.axis.type else axisLabels$y.axis.type
     has.line <- !is.null(linewidth) && linewidth > 0
+    if (!tickshow)
+        tickfont$size <- 0
 
     if (!is.null(labels) && !is.na(labels) && any(nchar(labels) > 0) &&
          is.null(tickangle) && side %in% c("bottom", "top"))
