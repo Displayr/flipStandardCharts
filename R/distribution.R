@@ -267,11 +267,10 @@ Distribution <-   function(x,
             warning("Means, medians, quartiles, and values, will often cause problems when added to a box plot (as the box plot already shows this information).")
     }
     # Titles and footers
-    title.font=list(family=title.font.family, size=title.font.size, color=title.font.color)
-
-    values.title.font=list(family=values.title.font.family, size=values.title.font.size, color=values.title.font.color)
-    values.tick.font=list(family=values.tick.font.family, size=values.tick.font.size, color=values.tick.font.color)
-    categories.tick.font=list(family=categories.tick.font.family, size=categories.tick.font.size, color=categories.tick.font.color)
+    title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
+    values.title.font = list(family = values.title.font.family, size = values.title.font.size, color = values.title.font.color)
+    values.tick.font = list(family = values.tick.font.family, size = values.tick.font.size, color = values.tick.font.color)
+    categories.tick.font = list(family = categories.tick.font.family, size = categories.tick.font.size, color = categories.tick.font.color)
 
     # Work out margin spacing
     margins <- list(t = 20, b = 50, r = 60, l = 80, pad = 0)
@@ -429,10 +428,10 @@ addDensities <- function(p,
             p <- add_trace(p,
                y = if (vertical) values.density$x else x.product * values.density$y,
                x = if (vertical) x.product * values.density$y else values.density$x,
-               fill= if (vertical) "tozerox" else "tozeroy",
+               fill = if (vertical) "tozerox" else "tozeroy",
                fillcolor = density.color,
-               hoverinfo= "none",
-               line=list(shape = "spline", width = 0),
+               hoverinfo = "none",
+               line = list(shape = "spline", width = 0),
                mode = "lines",
                name = label,
                type = "scatter",
@@ -556,7 +555,7 @@ violinCategoryAxis <- function(i, label, n.variables, vertical, show.values, sho
 
 }
 
-rugCategoryAxis <- function(i, n.variables, vertical, show.density, show.mirror.density, show.values)
+rugCategoryAxis <- function(i, n.variables, vertical, show.density, show.mirror.density, show.values, values.hovertext.format)
 {
     if(i > n.variables ||!show.values)
         return(NULL)
@@ -570,6 +569,7 @@ rugCategoryAxis <- function(i, n.variables, vertical, show.density, show.mirror.
     list(autorange = TRUE,
          domain = domain / n.variables + (i - 1) / n.variables,
             autorange = TRUE,
+            hoverformat = values.hovertext.format,
             range = c(-1, 1),
             showgrid = FALSE,
             showticklabels = FALSE,
@@ -579,12 +579,12 @@ rugCategoryAxis <- function(i, n.variables, vertical, show.density, show.mirror.
 violinCategoriesAxes <- function(vertical, n.variables, labels)
 {
     standard.parameters <- "n.variables, vertical, show.values, show.density, show.mirror.density, categories.tick.font.family, categories.tick.font.size, categories.tick.font.color, values.hovertext.format"
-    axes <- paste0("xaxis = violinCategoryAxis(1, '", labels[1], "',", standard.parameters, "), xaxis2 = rugCategoryAxis(1, n.variables, vertical, show.density, show.mirror.density, show.values), ")
+    axes <- paste0("xaxis = violinCategoryAxis(1, '", labels[1], "',", standard.parameters, "), xaxis2 = rugCategoryAxis(1, n.variables, vertical, show.density, show.mirror.density, show.values, values.hovertext.format), ")
     if (n.variables > 1)
     {
         sq <- seq(4, n.variables * 2 , 2)
         violin <- paste0("xaxis", sq - 1, " = violinCategoryAxis(", 2:n.variables, ", '", labels[-1], "',", standard.parameters, "), ", collapse = "")
-        rug <- paste0("xaxis", sq, " = rugCategoryAxis(", 2:n.variables, ", n.variables, vertical, show.density, show.mirror.density, show.values), ", collapse = "")
+        rug <- paste0("xaxis", sq, " = rugCategoryAxis(", 2:n.variables, ", n.variables, vertical, show.density, show.mirror.density, show.values, values.hovertext.format), ", collapse = "")
         axes <- paste0(axes, violin, rug)
     }
     if (!vertical)
