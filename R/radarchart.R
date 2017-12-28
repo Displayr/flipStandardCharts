@@ -234,7 +234,7 @@ Radar <- function(x,
     {
         offset <- 1.0
         if (data.label.show)
-            offset <- 1 + data.label.font.size/100
+            offset <- 1.1 + data.label.font.size/100
         y.bounds.maximum <- offset * max(chart.matrix)
     }
     if (is.null(y.tick.distance))
@@ -330,7 +330,7 @@ Radar <- function(x,
                     marker = list(size = 1, color = toRGB(colors[ggi])), line = list(width = 0))
 
         if (data.label.show)
-            p <- add_trace(p, x = pos$x[ind]*1.12, y = pos$y[ind]*1.06,
+            p <- add_trace(p, x = pos$x[ind]*1.05, y = pos$y[ind]*1.06,
                     type = "scatter", mode = "text", legendgroup = g.list[ggi],
                     showlegend = FALSE, hoverinfo = "none", text = pos$DataLabels[ind],
                     textfont = list(family = data.label.font.family, size = data.label.font.size,
