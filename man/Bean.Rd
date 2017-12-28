@@ -43,8 +43,8 @@ Input data may be a matrix or a vector, containing the height of the columns
 to be plotted, with the name/rownames used as the column names of the chart. Numeric and date labels
 will be parsed automatically.}
 
-\item{weights}{An optional \code{\link{list}}, where each element is a vecytor containing weights corresponding to
-the3 values of \code{x}, or, a vector where the weights is assumed applicable for each element in \code{x}.}
+\item{weights}{An optional \code{\link{list}}, where each element is a vector containing weights corresponding to
+the values of \code{x}, or, a vector where the weights is assumed applicable for each element in \code{x}.}
 
 \item{vertical}{Display the densities vertically.}
 
@@ -159,12 +159,11 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{values.tick.prefix}{y-axis tick label prefix}
 
-\item{values.tick.format}{Overrides tick.prefix, suffix and decimals;
-See https://github.com/mbostock/d3/wiki/Formatting#numbers or
-https://docs.python.org/release/3.1.3/library/string.html#formatspec}
+\item{values.tick.format}{d3 formatting string applied to the tick labels.
+See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 
-\item{values.hovertext.format}{See https://github.com/mbostock/d3/wiki/Formatting#numbers or
-https://docs.python.org/release/3.1.3/library/string.html#formatspec}
+\item{values.hovertext.format}{d3 formatting string applied to the hover text.
+https://github.com/mbostock/d3/wiki/Formatting#numbers or}
 
 \item{values.tick.angle}{y-axis tick label angle in degrees.
 90 = vertical; 0 = horizontal}
