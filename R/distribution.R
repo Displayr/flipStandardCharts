@@ -7,13 +7,13 @@
 #' Input data may be a matrix or a vector, containing the height of the columns
 #' to be plotted, with the name/rownames used as the column names of the chart. Numeric and date labels
 #' will be parsed automatically.
-#' @param weights An optional \code{\link{list}}, where each element is a vecytor containing weights corresponding to
-#' the3 values of \code{x}, or, a vector where the weights is assumed applicable for each element in \code{x}.
+#' @param weights An optional \code{\link{list}}, where each element is a vector containing weights corresponding to
+#' the values of \code{x}, or, a vector where the weights is assumed applicable for each element in \code{x}.
 #' @param vertical Display the densities vertically.
 #' @param show.mean Displays the mean of the data.
 #' @param show.median Displays the median of the data.
 #' @param show.quartiles Displays the quartiles of the data.
-#' @param show.range Displays the rage of the data.
+#' @param show.range Displays the range of the data.
 #' @param show.density Show the left or top (if \code{vertical} is FALSE) of the violin plot.
 #' @param show.mirror.density Show the right or bottom (if \code{vertical} is FALSE) of the violin plot.
 #' @param show.values Produces a rug plot of individual values.
@@ -93,11 +93,10 @@
 #' @param values.tick.show Whether to display the y-axis tick labels
 #' @param values.tick.suffix y-axis tick label suffix
 #' @param values.tick.prefix y-axis tick label prefix
-#' @param values.tick.format Overrides tick.prefix, suffix and decimals;
-#' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
-#' https://docs.python.org/release/3.1.3/library/string.html#formatspec
-#' @param values.hovertext.format See https://github.com/mbostock/d3/wiki/Formatting#numbers or
-#' https://docs.python.org/release/3.1.3/library/string.html#formatspec
+#' @param values.tick.format d3 formatting string applied to the tick labels.
+#' See https://github.com/mbostock/d3/wiki/Formatting#numbers
+#' @param values.hovertext.format d3 formatting string applied to the hover text.
+#' https://github.com/mbostock/d3/wiki/Formatting#numbers or
 #' @param values.tick.angle y-axis tick label angle in degrees.
 #' 90 = vertical; 0 = horizontal
 #' @param values.tick.font.color y-axis tick label font color as a named color
@@ -310,7 +309,7 @@ Distribution <-   function(x,
                 (if (is.list(weights)) weights[[v]] else weights)[not.missing]
 
         from <- if (automatic.lower.density) rng[1] else from
-        p <- addDensities(p, values, labels[v], vertical, show.density, show.mirror.density, density.type, histogram.cumulative, histogram.counts, maximum.bins, box.points, category.axis, value.axis, density.color, values.color, bw, adjust, kernel, n, from, to, cut)
+        p <- addDensities(p, values, wgt, labels[v], vertical, show.density, show.mirror.density, density.type, histogram.cumulative, histogram.counts, maximum.bins, box.points, category.axis, value.axis, density.color, values.color, bw, adjust, kernel, n, from, to, cut)
         p <- addSummaryStatistics(p, values, wgt, vertical,  show.mean, show.median, show.quartiles, show.range, show.values,
                                  mean.color, median.color, quartile.color, range.color, values.color,
                                  category.axis, axisName(vertical, v, 1, TRUE), value.axis, value.axis.2)
@@ -322,6 +321,7 @@ Distribution <-   function(x,
     values.tick <- setTicks(values.bounds.minimum, values.bounds.maximum, values.tick.distance, FALSE)
 
     axisFormat <- formatLabels(values, "Area", categories.tick.label.wrap, categories.tick.label.wrap.nchar, "", values.tick.format) #ignored
+    #axisFormat <- NULL
     if (is.null(values.bounds.minimum))
         values.bounds.minimum <- rng[1]
     if (is.null(values.bounds.maximum))
@@ -367,6 +367,7 @@ axisName <- function(vertical, n.variables, axis.number, secondary.category = FA
 
 addDensities <- function(p,
                          values,
+                         weights,
                          label,
                          vertical,
                          show.density,
@@ -384,7 +385,7 @@ addDensities <- function(p,
                          bw, adjust, kernel, n, from, to, cut)
 {
     # Comuting the density Also used in plotting other graphical elements.
-    d.args <- list(x = values, na.rm = TRUE, bw = bw, adjust = adjust, kernel = kernel, cut = cut)
+    d.args <- list(x = values, na.rm = TRUE, bw = bw, adjust = adjust, kernel = kernel, cut = cut, weights = weights / sum(weights))
     if (!is.null(from))
         d.args$from = from
     if (!is.null(to))
@@ -555,7 +556,7 @@ violinCategoryAxis <- function(i, label, n.variables, vertical, show.values, sho
 
 }
 
-rugCategoryAxis <- function(i, n.variables, vertical, show.density, show.mirror.density, show.values, values.hovertext.format)
+rugCategoryAxis <- function(i, n.variables, vertical, show.density, show.mirror.density, show.values)
 {
     if(i > n.variables ||!show.values)
         return(NULL)
@@ -569,7 +570,7 @@ rugCategoryAxis <- function(i, n.variables, vertical, show.density, show.mirror.
     list(autorange = TRUE,
          domain = domain / n.variables + (i - 1) / n.variables,
             autorange = TRUE,
-            hoverformat = values.hovertext.format,
+            #hoverformat = values.hovertext.format, does not work with type = "category"
             range = c(-1, 1),
             showgrid = FALSE,
             showticklabels = FALSE,
@@ -579,12 +580,12 @@ rugCategoryAxis <- function(i, n.variables, vertical, show.density, show.mirror.
 violinCategoriesAxes <- function(vertical, n.variables, labels)
 {
     standard.parameters <- "n.variables, vertical, show.values, show.density, show.mirror.density, categories.tick.font.family, categories.tick.font.size, categories.tick.font.color, values.hovertext.format"
-    axes <- paste0("xaxis = violinCategoryAxis(1, '", labels[1], "',", standard.parameters, "), xaxis2 = rugCategoryAxis(1, n.variables, vertical, show.density, show.mirror.density, show.values, values.hovertext.format), ")
+    axes <- paste0("xaxis = violinCategoryAxis(1, '", labels[1], "',", standard.parameters, "), xaxis2 = rugCategoryAxis(1, n.variables, vertical, show.density, show.mirror.density, show.values), ")
     if (n.variables > 1)
     {
         sq <- seq(4, n.variables * 2 , 2)
         violin <- paste0("xaxis", sq - 1, " = violinCategoryAxis(", 2:n.variables, ", '", labels[-1], "',", standard.parameters, "), ", collapse = "")
-        rug <- paste0("xaxis", sq, " = rugCategoryAxis(", 2:n.variables, ", n.variables, vertical, show.density, show.mirror.density, show.values, values.hovertext.format), ", collapse = "")
+        rug <- paste0("xaxis", sq, " = rugCategoryAxis(", 2:n.variables, ", n.variables, vertical, show.density, show.mirror.density, show.values), ", collapse = "")
         axes <- paste0(axes, violin, rug)
     }
     if (!vertical)
