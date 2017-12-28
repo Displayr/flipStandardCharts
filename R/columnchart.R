@@ -348,15 +348,15 @@ Column <- function(x,
         opacity <- 1
     eval(colors) # not sure why, but this is necessary for bars to appear properly
 
-    title.font=list(family=title.font.family, size=title.font.size, color=title.font.color)
-    subtitle.font=list(family=subtitle.font.family, size=subtitle.font.size, color=subtitle.font.color)
-    x.title.font=list(family=x.title.font.family, size=x.title.font.size, color=x.title.font.color)
-    y.title.font=list(family=y.title.font.family, size=y.title.font.size, color=y.title.font.color)
-    ytick.font=list(family=y.tick.font.family, size=y.tick.font.size, color=y.tick.font.color)
-    xtick.font=list(family=x.tick.font.family, size=x.tick.font.size, color=x.tick.font.color)
-    footer.font=list(family=footer.font.family, size=footer.font.size, color=footer.font.color)
-    legend.font=list(family=legend.font.family, size=legend.font.size, color=legend.font.color)
-    data.label.font=list(family=data.label.font.family, size=data.label.font.size, color=data.label.font.color)
+    title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
+    subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
+    x.title.font = list(family = x.title.font.family, size = x.title.font.size, color = x.title.font.color)
+    y.title.font = list(family = y.title.font.family, size = y.title.font.size, color = y.title.font.color)
+    ytick.font = list(family = y.tick.font.family, size = y.tick.font.size, color = y.tick.font.color)
+    xtick.font = list(family = x.tick.font.family, size = x.tick.font.size, color = x.tick.font.color)
+    footer.font = list(family = footer.font.family, size = footer.font.size, color = footer.font.color)
+    legend.font = list(family = legend.font.family, size = legend.font.size, color = legend.font.color)
+    data.label.font = list(family = data.label.font.family, size = data.label.font.size, color = data.label.font.color)
 
     if (ncol(chart.matrix) == 1)
         legend.show <- FALSE

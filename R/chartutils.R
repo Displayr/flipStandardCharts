@@ -373,6 +373,8 @@ setAxis <- function(title, side, axisLabels, titlefont,
     rangemode <- "normal"
     if (axis.type == "numeric" && show.zero)
         rangemode <- "tozero"
+    if (gridwidth == 0)
+        zero.line.color <- rgb(1, 1, 1, alpha = 0) # invisible
 
     return (list(title = title, side = side, type = axis.type,
                  titlefont = titlefont, tickfont = tickfont,
@@ -495,10 +497,9 @@ setSubtitleAxis <- function(subtitle, subtitle.font, title, title.font, overlayi
         title.nline <- sum(gregexpr("<br>", title)[[1]] > -1) + 1
         subtitle.npad <- max(0, round(title.nline * subtitle.font$size/title.font$size * 0.9))
         subtitle <- paste0(paste(rep("<br>", subtitle.npad), collapse=""), subtitle)
-        res <- list(overlaying = overlaying, side="top", anchor="free", position = 1,
+        res <- list(overlaying = overlaying, side = "top", anchor = "free", position = 1,
              showline = F, zeroline = F, showgrid = F, showticklabels = F, title = subtitle,
-             domain = c(0, 1),
-             titlefont=subtitle.font)
+             domain = c(0, 1), titlefont = subtitle.font)
     }
     res
 }
