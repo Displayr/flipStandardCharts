@@ -51,9 +51,9 @@ Bar(x, type = "Bar", fit.type = "None", fit.ignore.last = FALSE,
   x.tick.angle = NULL, x.tick.font.color = global.font.color,
   x.tick.font.family = global.font.family, x.tick.font.size = 10,
   y.tick.label.wrap = TRUE, y.tick.label.wrap.nchar = 21,
-  series.marker.border.width = 1, series.marker.border.colors = colors,
-  series.marker.border.opacity = 1, tooltip.show = TRUE,
-  modebar.show = FALSE, bar.gap = 0.15, data.label.show = FALSE,
+  marker.border.width = 1, marker.border.colors = colors,
+  marker.border.opacity = 1, tooltip.show = TRUE, modebar.show = FALSE,
+  bar.gap = 0.15, data.label.show = FALSE,
   data.label.font.family = global.font.family, data.label.font.size = 10,
   data.label.font.color = global.font.color, data.label.format = "",
   data.label.prefix = "", data.label.suffix = "",
@@ -317,14 +317,14 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{y.tick.label.wrap.nchar}{Integer; number of characters in each line when \code{y.tick.label.wrap} is \code{TRUE}.}
 
-\item{series.marker.border.width}{Width in pixels of border/line
+\item{marker.border.width}{Width in pixels of border/line
 around series bars; 0 is no line}
 
-\item{series.marker.border.colors}{Character; a vector containing one or more named
+\item{marker.border.colors}{Character; a vector containing one or more named
 colors from grDevices OR one or more specified hex value colors OR a single
 named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 
-\item{series.marker.border.opacity}{Opacity of border around bars as an alpha value (0 to 1).}
+\item{marker.border.opacity}{Opacity of border around bars as an alpha value (0 to 1).}
 
 \item{tooltip.show}{Logical; whether to show a tooltip on hover.}
 

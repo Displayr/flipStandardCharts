@@ -51,13 +51,11 @@ Line(x, type = "Line", fit.type = "None", fit.ignore.last = FALSE,
   x.tick.font.color = global.font.color,
   x.tick.font.family = global.font.family, x.tick.font.size = 10,
   x.tick.label.wrap = TRUE, x.tick.label.wrap.nchar = 21,
-  series.marker.show = NULL, series.marker.colors = colors,
-  series.marker.opacity = 1, series.marker.size = 6,
-  series.line.width = 3, series.line.colors = colors,
-  series.line.opacity = 1, series.marker.border.width = 1,
-  series.marker.border.colors = colors, series.marker.border.opacity = 1,
-  tooltip.show = TRUE, modebar.show = FALSE, data.label.show = FALSE,
-  data.label.font.family = global.font.family,
+  line.thickness = 3, line.opacity = 1, marker.show = NULL,
+  marker.colors = colors, marker.opacity = 1, marker.size = 6,
+  marker.border.width = 1, marker.border.colors = colors,
+  marker.border.opacity = 1, tooltip.show = TRUE, modebar.show = FALSE,
+  data.label.show = FALSE, data.label.font.family = global.font.family,
   data.label.font.color = global.font.color, data.label.font.size = 10,
   data.label.format = "", data.label.prefix = "", data.label.suffix = "",
   data.label.position = "top middle")
@@ -320,35 +318,31 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{x.tick.label.wrap.nchar}{Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.}
 
-\item{series.marker.show}{Can be "none", "automatic" or a vector referencing
+\item{line.thickness}{Thickness, in pixels, of the series line}
+
+\item{line.opacity}{Opacity for series lines as an alpha value (0 to 1).}
+
+\item{marker.show}{Can be "none", "automatic" or a vector referencing
 the plotly symbol dictionary using either numerics or strings.}
 
-\item{series.marker.colors}{Character; a vector containing one or more named
+\item{marker.colors}{Character; a vector containing one or more named
 colors from grDevices OR one or more specified hex value colors OR a single
 named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
-be reversed. Only used if \code{series.marker.show} is \code{TRUE}.}
+be reversed. Only used if \code{marker.show} is \code{TRUE}.}
 
-\item{series.marker.opacity}{Opacity for series markers as an alpha value (0 to 1).}
+\item{marker.opacity}{Opacity for markers as an alpha value (0 to 1).}
 
-\item{series.marker.size}{Size in pixels of marker}
+\item{marker.size}{Size in pixels of marker}
 
-\item{series.line.width}{Thickness, in pixels, of the series line}
+\item{marker.border.width}{Width in pixels of border/line
+around markers; 0 is no line}
 
-\item{series.line.colors}{Character; a vector containing one or more named
+\item{marker.border.colors}{Character; a vector containing one or more named
 colors from grDevices OR one or more specified hex value colors OR a single
 named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 
-\item{series.line.opacity}{Opacity for series lines as an alpha value (0 to 1).}
-
-\item{series.marker.border.width}{Width in pixels of border/line
-around series markers; 0 is no line}
-
-\item{series.marker.border.colors}{Character; a vector containing one or more named
-colors from grDevices OR one or more specified hex value colors OR a single
-named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
-
-\item{series.marker.border.opacity}{Opacity of border/line around
-series markers as an alpha value (0 to 1).}
+\item{marker.border.opacity}{Opacity of border/line around
+markers as an alpha value (0 to 1).}
 
 \item{tooltip.show}{Logical; whether to show a tooltip on hover.}
 

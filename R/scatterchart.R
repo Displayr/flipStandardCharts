@@ -76,19 +76,19 @@
 #' @param x.tick.label.wrap Logical; whether to wrap long labels on the x-axis.
 #' @param x.tick.label.wrap.nchar Integer; number of characters in each
 #' line when \code{label.wrap} is \code{TRUE}.
-#' @param series.line.width Thickness, in pixels, of the series line
-#' @param series.marker.show Can be "none", "automatic" or a vector referencing
-#' the plotly symbol dictionary using either numerics or strings.
-#' @param series.marker.colors Character; a vector containing one or more named
-#' colors from grDevices OR one or more specified hex value colors OR a single
-#' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
-#' be reversed.
-#' @param series.marker.opacity Opacity for series markers as an alpha value (0 to 1).
-#' @param series.marker.size Size in pixels of marker. This is overriden
+#' @param line.thickness Thickness, in pixels, of the series line
+#' @param line.colors  Character; a vector containing one or more named
+#' @param marker.size Size in pixels of marker. This is overriden
 #' if \code{scatter.sizes} is provided, but used for the legend
 #' if \code{scatter.colors.as.categorical}.
-#' @param series.marker.border.width Width in pixels of border/line
-#' around series markers; 0 is no line
+#' @param marker.border.width Width in pixels of border/line
+#' @param marker.border.colors Character; a vector containing one or more named
+#' colors from grDevices OR one or more specified hex value colors OR a single
+#' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
+#' @param marker.border.opacity Opacity of border/line around
+#' markers as an alpha value (0 to 1).
+
+#' around markers; 0 is no line
 #' @param tooltip.show Logical; whether to show a tooltip on hover.
 #' @param modebar.show Logical; whether to show the zoom menu buttons or not.
 #' @param global.font.family Character; font family for all occurrences of any
@@ -232,12 +232,12 @@ Scatter <- function(x = NULL,
                          x.tick.font.size = 10,
                          x.tick.label.wrap = TRUE,
                          x.tick.label.wrap.nchar = 21,
-                         series.line.width = 0,
-                         series.marker.border.width = 1,
-                         series.marker.size = if (is.null(scatter.sizes)) 6 else 12,
-                         series.marker.opacity = 1,
-                         series.marker.show = "none", # ignored
-                         series.marker.colors = NULL,
+                         line.thickness = 0,
+                         line.colors = colors,
+                         marker.border.width = 1,
+                         marker.border.colors = colors,
+                         marker.border.opacity = 1,
+                         marker.size = if (is.null(scatter.sizes)) 6 else 12,
                          swap.x.and.y = FALSE)
 {
     # Use labeled scatterplots if multiple tables are provided
@@ -450,16 +450,11 @@ Scatter <- function(x = NULL,
     colorbar.show <- legend.show
     legend.show <- legend.show && num.series > 1
     scatter.opacity <- if (!is.null(scatter.sizes)) 0.4 else 1
-    series.mode <- if (is.null(series.line.width) || series.line.width == 0) "markers"
+    series.mode <- if (is.null(line.thickness) || line.thickness == 0) "markers"
                    else "markers+lines"
     if (data.label.show)
         series.mode <- paste0(series.mode, "+text")
-    series.marker.symbols <- if (is.null(series.marker.show) ||
-                                 series.marker.show == "automatic" ||
-                                 series.marker.show == "none")
-        rep(100, 100) # disc
-    else
-        series.marker.show
+    marker.symbols <-  rep(100, 100) # disc
 
     type <- "Scatterplot"
     legend <- setLegend("Scatterplot", legend.font, legend.ascending,
@@ -557,19 +552,22 @@ Scatter <- function(x = NULL,
     {
         ind <- which(groups == g.list[ggi])
         tmp.size <- if (!is.null(scatter.sizes)) scatter.sizes.scaled[ind]
-                 else series.marker.size
+                 else marker.size
 
         # initialise marker/line settings
-        line.obj <- if (is.null(series.line.width) || series.line.width == 0) NULL
-                    else list(width=series.line.width, color=colors[ggi])
+        line.obj <- if (is.null(line.thickness) || line.thickness == 0) NULL
+                    else list(width = line.thickness, color = line.colors[ggi])
         if (ggi == 1 && scatter.colors.as.numeric)
             marker.obj <- list(size = tmp.size, sizemode = "diameter", opacity = opacity,
-                            line = list(width = series.marker.border.width),
+                            line = list(width = marker.border.width,
+                            color = toRGB(marker.border.colors[ggi], alpha = marker.border.opacity)),
                             color = scatter.colors.labels, colorscale = col.scale,
                             showscale = colorbar.show, colorbar = colorbar)
         else
             marker.obj <- list(size = tmp.size, sizemode = "diameter", opacity = opacity,
-                            color = colors[ggi], line = list(width = series.marker.border.width))
+                            color = colors[ggi], 
+                            line = list(width = marker.border.width,
+                            color = toRGB(marker.border.colors[ggi], alpha = marker.border.opacity)))
 
         # add invisible trace to force correct order
         if (ggi == 1)
@@ -600,15 +598,15 @@ Scatter <- function(x = NULL,
                 textposition = data.label.position,
                 marker = marker.obj, line = line.obj, text = source.text[ind],
                 hoverinfo = if (num.series == 1) "text" else "name+text",
-                type="scatter", mode=series.mode, symbols=series.marker.symbols)
+                type="scatter", mode=series.mode, symbols = marker.symbols)
 
         # Getting legend with consistently sized markers
         if (separate.legend)
             p <- add_trace(p, x = list(NULL), y = list(NULL), name = g.list[ggi],
                 showlegend = TRUE, legendgroup = ggi, visible = TRUE,
-                line = line.obj, marker = list(size = series.marker.size,
+                line = line.obj, marker = list(size = marker.size,
                 opacity = opacity, color = colors[ggi]),
-                type = "scatter", mode = series.mode, symbols = series.marker.symbols)
+                type = "scatter", mode = series.mode, symbols = marker.symbols)
 
 
         if (fit.type != "None" && num.series > 1)

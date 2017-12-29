@@ -27,7 +27,7 @@ opts <- c('default' = 'colors = ChartColors(5, "Blues")',
          'categoricalcolor' = 'scatter.colors.as.categorical = TRUE, legend.font.color = "red"',
          'numericalcolor' = 'scatter.colors.as.categorical = FALSE, colors = grey(1:4/5)',
          'nolegend' = 'legend.show = FALSE, colors = "red"',
-         'markerbig' = 'series.marker.size = 20, grid.show = FALSE',
+         'markerbig' = 'marker.size = 20, grid.show = FALSE',
          'thickxgrid' = 'x.grid.width = 10, global.font.color = "red", global.font.family = "Courier"')
 
 n <- length(opts)

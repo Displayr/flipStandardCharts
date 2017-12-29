@@ -1,26 +1,26 @@
 #' Area
 #'
 #' Area chart
-#' @param series.marker.show Can be "none", "automatic" or a vector referencing
+#' @param marker.show Can be "none", "automatic" or a vector referencing
 #' the plotly symbol dictionary using either numerics or strings.
-#' @param series.marker.colors Character; a vector containing one or more named
+#' @param marker.colors Character; a vector containing one or more named
 #' colors from grDevices OR one or more specified hex value colors OR a single
 #' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
-#' be reversed. Only used if \code{series.marker.show} is \code{TRUE}.
-#' @param series.marker.opacity Opacity for series markers as an alpha value (0 to 1).
-#' @param series.marker.size Size in pixels of marker
-#' @param series.marker.border.width Width in pixels of border/line
-#' around series markers; 0 is no line
-#' @param series.marker.border.colors Character; a vector containing one or more named
+#' be reversed. Only used if \code{marker.show} is \code{TRUE}.
+#' @param marker.opacity Opacity for markers as an alpha value (0 to 1).
+#' @param marker.size Size in pixels of marker
+#' @param marker.border.width Width in pixels of border/line
+#' around markers; 0 is no line
+#' @param marker.border.colors Character; a vector containing one or more named
 #' colors from grDevices OR one or more specified hex value colors OR a single
 #' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
-#' @param series.marker.border.opacity Opacity of border/line around
-#' series markers as an alpha value (0 to 1).
-#' @param series.line.width Thickness, in pixels, of the series line
-#' @param series.line.colors  Character; a vector containing one or more named
+#' @param marker.border.opacity Opacity of border/line around
+#' markers as an alpha value (0 to 1).
+#' @param line.thickness Thickness, in pixels, of the series line
+#' @param line.colors  Character; a vector containing one or more named
 #' colors from grDevices OR one or more specified hex value colors OR a single
 #' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
-#' @param series.line.opacity Opacity for series lines as an alpha value (0 to 1).
+#' @param line.opacity Opacity for series lines as an alpha value (0 to 1).
 #' @param data.label.position Character; where to place the source data
 #' value in relation to the marker icon.  Can be "top left", "top center", "top
 #' right", "middle left", "middle center", "middle right", "bottom left",
@@ -133,16 +133,16 @@ Area <- function(x,
                     x.tick.font.size = 10,
                     x.tick.label.wrap = TRUE,
                     x.tick.label.wrap.nchar = 21,
-                    series.marker.show = NULL,
-                    series.marker.colors = colors,
-                    series.marker.opacity = 1,
-                    series.marker.size = 6,
-                    series.line.width = NULL,
-                    series.line.colors = colors,
-                    series.line.opacity = 1,
-                    series.marker.border.width = 1,
-                    series.marker.border.colors = colors,
-                    series.marker.border.opacity = 1,
+                    line.thickness = NULL,
+                    line.colors = colors,
+                    line.opacity = 1,
+                    marker.show = NULL,
+                    marker.colors = colors,
+                    marker.opacity = 1,
+                    marker.size = 6,
+                    marker.border.width = 1,
+                    marker.border.colors = colors,
+                    marker.border.opacity = 1,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
                     data.label.show = FALSE,
@@ -183,8 +183,8 @@ Area <- function(x,
         if (any(na.seq$values[-c(1,n)]))
             has.gap <- TRUE
     }
-    if (is.null(series.line.width))
-        series.line.width <- if (!has.gap || is.stacked) 0 else 3
+    if (is.null(line.thickness))
+        line.thickness <- if (!has.gap || is.stacked) 0 else 3
     if (is.hundred.percent.stacked)
         chart.matrix <- cum.data(chart.matrix, "cumulative.percentage")
     else if (is.stacked)
@@ -209,19 +209,19 @@ Area <- function(x,
     legend.group <- if (is.stacked) "grouped" else ""
     fill.bound <- if (is.stacked) "tonexty" else "tozeroy"
 
-    series.marker.symbols <- if (is.null(series.marker.show)) rep(100, ncol(chart.matrix))
-                             else series.marker.show
-    if (is.null(series.line.width))
-        series.line.width <- if (!has.gap || is.stacked) 0 else 3
+    marker.symbols <- if (is.null(marker.show)) rep(100, ncol(chart.matrix))
+                             else marker.show
+    if (is.null(line.thickness))
+        line.thickness <- if (!has.gap || is.stacked) 0 else 3
 
     series.mode <- "lines+markers"
-    if (is.null(series.marker.show))
+    if (is.null(marker.show))
         series.mode <- "lines"
-    else if (series.line.width == 0 && series.marker.show != "none")
+    else if (line.thickness == 0 && marker.show != "none")
         series.mode <- "markers"
-    else if (series.line.width >= 1 && series.marker.show == "none")
+    else if (line.thickness >= 1 && marker.show == "none")
         series.mode <- "lines"
-    else if (series.line.width == 0 && series.marker.show == "none")
+    else if (line.thickness == 0 && marker.show == "none")
         series.mode <- "lines"
 
     eval(colors) # not sure why, but this is necessary for bars to appear properly
@@ -309,17 +309,17 @@ Area <- function(x,
         y <- as.numeric(chart.matrix[, i])
         x <- x.labels
 
-        lines <- list(width = series.line.width,
-                      color = toRGB(series.line.colors[i], alpha = series.line.opacity))
+        lines <- list(width = line.thickness,
+                      color = toRGB(line.colors[i], alpha = line.opacity))
 
         marker <- NULL
         if (!is.null(series.mode) && regexpr('marker', series.mode) >= 1)
-            marker <- list(size = series.marker.size,
-                       color = toRGB(series.marker.colors[i], alpha = series.marker.opacity),
-                       symbol = series.marker.symbols[i],
-                       line = list(color = toRGB(series.marker.border.colors[i],
-                       alpha = series.marker.border.opacity),
-                       width = series.marker.border.width))
+            marker <- list(size = marker.size,
+                       color = toRGB(marker.colors[i], alpha = marker.opacity),
+                       symbol = marker.symbols[i],
+                       line = list(color = toRGB(marker.border.colors[i],
+                       alpha = marker.border.opacity),
+                       width = marker.border.width))
 
         source.text <- ""
         if (data.label.show)
@@ -354,7 +354,7 @@ Area <- function(x,
                            showlegend = FALSE)
 
            # draw line
-           if (has.gap || series.line.width > 0)
+           if (has.gap || line.thickness > 0)
                 p <- add_trace(p,
                            type = plotly.type,
                            x = x,
@@ -382,7 +382,7 @@ Area <- function(x,
                            name = y.label,
                            marker = if (!is.null(marker)) marker
                                     else list(color = toRGB(colors[i]),
-                                         size = series.marker.size),
+                                         size = marker.size),
                            hoverinfo = "skip", #if(ncol(chart.matrix) > 1) "x+y+name" else "x+y",
                            showlegend = FALSE)
             }

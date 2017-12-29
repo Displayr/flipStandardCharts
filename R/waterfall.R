@@ -122,9 +122,9 @@
 #'                                          x.tick.font.size = 10,
 #'                                          x.tick.label.wrap = TRUE,
 #'                                          x.tick.label.wrap.nchar = 21,
-#'                                          series.marker.border.width = 1,
-#'                                          series.marker.border.colors = colors,
-#'                                          series.marker.border.opacity = 1,
+#'                                          marker.border.width = 1,
+#'                                          marker.border.colors = colors,
+#'                                          marker.border.opacity = 1,
 #'                                          tooltip.show = TRUE,
 #'                                          modebar.show = FALSE,
 #'                                          bar.gap = 0.15,
@@ -366,9 +366,9 @@
 #'         y <- as.numeric(chart.matrix[, i])
 #'         x <- x.labels
 #'         marker <- list(color = toRGB(colors[i], alpha = opacity),
-#'                        line = list(color = toRGB(series.marker.border.colors[i],
-#'                                                  alpha = series.marker.border.opacity),
-#'                                    width = series.marker.border.width))
+#'                        line = list(color = toRGB(marker.border.colors[i],
+#'                                                  alpha = marker.border.opacity),
+#'                                    width = marker.border.width))
 #'
 #'         # add invisible line to force all categorical labels to be shown
 #'         if (!is.stacked && i == 1)

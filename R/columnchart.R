@@ -157,12 +157,12 @@
 #' @param x.tick.font.size Integer; x-axis tick label font size
 #' @param x.tick.label.wrap Logical; whether to wrap long labels on the x-axis.
 #' @param x.tick.label.wrap.nchar Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.
-#' @param series.marker.border.width Width in pixels of border/line
+#' @param marker.border.width Width in pixels of border/line
 #' around series bars; 0 is no line
-#' @param series.marker.border.colors Character; a vector containing one or more named
+#' @param marker.border.colors Character; a vector containing one or more named
 #' colors from grDevices OR one or more specified hex value colors OR a single
 #' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
-#' @param series.marker.border.opacity Opacity of border around bars as an alpha value (0 to 1).
+#' @param marker.border.opacity Opacity of border around bars as an alpha value (0 to 1).
 #' @param tooltip.show Logical; whether to show a tooltip on hover.
 #' @param modebar.show Logical; whether to show the zoom menu buttons or not.
 #' @param global.font.family Character; font family for all occurrences of any
@@ -291,9 +291,9 @@ Column <- function(x,
                     x.tick.font.size = 10,
                     x.tick.label.wrap = TRUE,
                     x.tick.label.wrap.nchar = 21,
-                    series.marker.border.width = 1,
-                    series.marker.border.colors = colors,
-                    series.marker.border.opacity = 1,
+                    marker.border.width = 1,
+                    marker.border.colors = colors,
+                    marker.border.opacity = 1,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
                     bar.gap = 0.15,
@@ -446,9 +446,9 @@ Column <- function(x,
         y <- as.numeric(chart.matrix[, i])
         x <- x.labels
         marker <- list(color = toRGB(colors[i], alpha = opacity),
-                      line = list(color = toRGB(series.marker.border.colors[i],
-                      alpha = series.marker.border.opacity),
-                      width = series.marker.border.width))
+                      line = list(color = toRGB(marker.border.colors[i],
+                      alpha = marker.border.opacity),
+                      width = marker.border.width))
 
         # add invisible line to force all categorical labels to be shown
         if (!is.stacked && i == 1)

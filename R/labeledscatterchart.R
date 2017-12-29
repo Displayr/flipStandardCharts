@@ -103,7 +103,7 @@
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param x.tick.font.family Character; x-axis tick label font family
 #' @param x.tick.font.size x-axis tick label font size
-#' @param series.marker.size Size in pixels of marker
+#' @param marker.size Size in pixels of marker
 #' @param global.font.family Character; font family for all occurrences of any
 #' font attribute for the chart unless specified individually.
 #' @param global.font.color Global font color as a named color in character format
@@ -212,7 +212,7 @@ LabeledScatter <- function(x = NULL,
                                 x.tick.font.color = global.font.color,
                                 x.tick.font.family = global.font.family,
                                 x.tick.font.size = 10,
-                                series.marker.size = 6,
+                                marker.size = 6,
                                 swap.x.and.y = FALSE)
 {
     if (!is.null(y))
@@ -497,7 +497,7 @@ LabeledScatter <- function(x = NULL,
                        labels.font.family = data.label.font.family,
                        labels.font.color = data.label.font.color,
                        labels.font.size = data.label.font.size,
-                       point.radius = 0.5 * series.marker.size,
+                       point.radius = 0.5 * marker.size,
                        y.bounds.maximum = y.bounds.maximum,
                        y.bounds.minimum = y.bounds.minimum,
                        y.bounds.units.major = y.tick.distance,

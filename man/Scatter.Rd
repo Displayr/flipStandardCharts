@@ -62,10 +62,9 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1, scatter.y.column = 2,
   x.tick.angle = NULL, x.tick.font.color = global.font.color,
   x.tick.font.family = global.font.family, x.tick.font.size = 10,
   x.tick.label.wrap = TRUE, x.tick.label.wrap.nchar = 21,
-  series.line.width = 0, series.marker.border.width = 1,
-  series.marker.size = if (is.null(scatter.sizes)) 6 else 12,
-  series.marker.opacity = 1, series.marker.show = "none",
-  series.marker.colors = NULL, swap.x.and.y = FALSE)
+  line.thickness = 0, line.colors = colors, marker.border.width = 1,
+  marker.border.colors = colors, marker.border.opacity = 1,
+  marker.size = if (is.null(scatter.sizes)) 6 else 12, swap.x.and.y = FALSE)
 }
 \arguments{
 \item{x}{A numeric vector for the x-axis coordinates (which may be named); or a matrix or dataframe; or a list of matrices, where each matrix share the same row and column names}
@@ -382,24 +381,23 @@ See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 \item{x.tick.label.wrap.nchar}{Integer; number of characters in each
 line when \code{label.wrap} is \code{TRUE}.}
 
-\item{series.line.width}{Thickness, in pixels, of the series line}
+\item{line.thickness}{Thickness, in pixels, of the series line}
 
-\item{series.marker.border.width}{Width in pixels of border/line
-around series markers; 0 is no line}
+\item{line.colors}{Character; a vector containing one or more named}
 
-\item{series.marker.size}{Size in pixels of marker. This is overriden
+\item{marker.border.width}{Width in pixels of border/line}
+
+\item{marker.border.colors}{Character; a vector containing one or more named
+colors from grDevices OR one or more specified hex value colors OR a single
+named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
+
+\item{marker.border.opacity}{Opacity of border/line around
+markers as an alpha value (0 to 1).
+around markers; 0 is no line}
+
+\item{marker.size}{Size in pixels of marker. This is overriden
 if \code{scatter.sizes} is provided, but used for the legend
 if \code{scatter.colors.as.categorical}.}
-
-\item{series.marker.opacity}{Opacity for series markers as an alpha value (0 to 1).}
-
-\item{series.marker.show}{Can be "none", "automatic" or a vector referencing
-the plotly symbol dictionary using either numerics or strings.}
-
-\item{series.marker.colors}{Character; a vector containing one or more named
-colors from grDevices OR one or more specified hex value colors OR a single
-named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
-be reversed.}
 
 \item{swap.x.and.y}{Swap the x and y axis around on the chart.}
 

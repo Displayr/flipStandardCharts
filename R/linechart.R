@@ -110,16 +110,15 @@ Line <-   function(x,
                     x.tick.font.size = 10,
                     x.tick.label.wrap = TRUE,
                     x.tick.label.wrap.nchar = 21,
-                    series.marker.show = NULL,
-                    series.marker.colors = colors,
-                    series.marker.opacity = 1,
-                    series.marker.size = 6,
-                    series.line.width = 3,
-                    series.line.colors = colors,
-                    series.line.opacity = 1,
-                    series.marker.border.width = 1,
-                    series.marker.border.colors = colors,
-                    series.marker.border.opacity = 1,
+                    line.thickness = 3,
+                    line.opacity = 1,
+                    marker.show = NULL,
+                    marker.colors = colors,
+                    marker.opacity = 1,
+                    marker.size = 6,
+                    marker.border.width = 1,
+                    marker.border.colors = colors,
+                    marker.border.opacity = 1,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
                     data.label.show = FALSE,
@@ -136,8 +135,8 @@ Line <-   function(x,
     # Assume formatting and Qtable/attribute handling already done
     # Find gaps which are NOT at the ends of the series
     chart.matrix <- checkMatrixNames(x)
-    if (is.null(series.line.width))
-        series.line.width <- 3
+    if (is.null(line.thickness))
+        line.thickness <- 3
     matrix.labels <- names(dimnames(chart.matrix))
     if (nchar(x.title) == 0 && length(matrix.labels) == 2)
         x.title <- matrix.labels[1]
@@ -148,10 +147,10 @@ Line <-   function(x,
     # Constants
     plotly.type <- "scatter"
     hover.mode <- if (tooltip.show) "closest" else FALSE
-    series.marker.symbols <- if (is.null(series.marker.show)) rep(100, ncol(chart.matrix))
-                             else series.marker.show
+    marker.symbols <- if (is.null(marker.show)) rep(100, ncol(chart.matrix))
+                             else marker.show
     series.mode <- "lines+markers"
-    if (is.null(series.marker.show) || series.marker.show == "none")
+    if (is.null(marker.show) || marker.show == "none")
         series.mode <- "lines"
     eval(colors) # not sure why, but this is necessary for bars to appear properly
 
@@ -228,8 +227,8 @@ Line <-   function(x,
         y <- as.numeric(chart.matrix[, i])
         x <- x.labels
 
-        lines <- list(width = series.line.width,
-                      color = toRGB(colors[i], alpha = series.line.opacity))
+        lines <- list(width = line.thickness,
+                      color = toRGB(colors[i], alpha = line.opacity))
 
         # add invisible line to force all categorical labels to be shown
         if (i == 1)
@@ -239,12 +238,12 @@ Line <-   function(x,
 
         marker <- NULL
         if (!is.null(series.mode) && regexpr('marker', series.mode) >= 1)
-            marker <- list(size = series.marker.size,
-                       color = toRGB(series.marker.colors[i], alpha = series.marker.opacity),
-                       symbol = series.marker.symbols[i],
+            marker <- list(size = marker.size,
+                       color = toRGB(marker.colors[i], alpha = marker.opacity),
+                       symbol = marker.symbols[i],
                        line = list(
-                       color = toRGB(series.marker.border.colors[i], alpha = series.marker.border.opacity),
-                       width = series.marker.border.width))
+                       color = toRGB(marker.border.colors[i], alpha = marker.border.opacity),
+                       width = marker.border.width))
         y.label <- y.labels[i]
         tmp.group <- paste("group", i)
 
@@ -296,7 +295,7 @@ Line <-   function(x,
                        name = y.label,
                        marker = if (!is.null(marker)) marker
                                 else list(color = toRGB(colors[i]),
-                                     size = series.marker.size),
+                                     size = marker.size),
                        text = autoFormatLongLabels(x.labels.full[is.single], wordwrap=T, truncate=F),
                        hoverinfo  = setHoverText(xaxis, chart.matrix),
                        showlegend = FALSE)

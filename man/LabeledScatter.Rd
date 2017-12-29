@@ -43,7 +43,7 @@ LabeledScatter(x = NULL, y = NULL, scatter.x.column = 1,
   x.tick.prefix = "", x.tick.format = "",
   x.tick.font.color = global.font.color,
   x.tick.font.family = global.font.family, x.tick.font.size = 10,
-  series.marker.size = 6, swap.x.and.y = FALSE)
+  marker.size = 6, swap.x.and.y = FALSE)
 }
 \arguments{
 \item{x}{A numeric vector for the x-axis coordinates (which may be named); or a matrix or dataframe; or a list of matrices, where each matrix share the same row and column names}
@@ -246,7 +246,7 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{x.tick.font.size}{x-axis tick label font size}
 
-\item{series.marker.size}{Size in pixels of marker}
+\item{marker.size}{Size in pixels of marker}
 
 \item{swap.x.and.y}{Swap the x and y axis around on the chart.}
 }
