@@ -7,6 +7,8 @@
 #' @param range.bars Logical; whether the data consists of a single series with low, value, high in the columns, or
 #' multiple series.
 #' @param colors Character; a named color from grDevices OR a hex value color.
+#' @param line.thickness Integer; The width of the lines connecting data points.
+#' @param legend.width Integer; Width (in pixels) of the legend.
 #' @param window.start The number of days before the end of the data series to start the range selector window.
 #' @param global.font.family Character; font family for all occurrences of any
 #' font attribute for the chart unless specified individually.
@@ -38,12 +40,14 @@
 #' @param y.tick.font.family Character; y-axis tick label font family
 #' @param y.tick.font.size y-axis tick label font size
 #' @importFrom flipChartBasics ChartColors
-#' @importFrom dygraphs dygraph dySeries dyCSS dyRangeSelector %>% dyOptions
+#' @importFrom dygraphs dygraph dySeries dyCSS dyRangeSelector %>% dyOptions dyLegend
 #' @importFrom flipTime AsDate
 #' @export
 TimeSeries <- function(x = NULL,
                     range.bars = FALSE,
                     colors = ChartColors(1),
+                    line.thickness = NULL,
+                    legend.width = 250,
                     window.start = NULL,
                     global.font.family = "Arial",
                     global.font.color = rgb(44, 44, 44, maxColorValue = 255),
@@ -122,12 +126,13 @@ TimeSeries <- function(x = NULL,
 
     dg <- dygraph(x, main = title, xlab = x.title, ylab = y.title)
     if (range.bars)
-        dg <- dySeries(dg, colnames(x), label = colnames(x)[2], color = colors)
+        dg <- dySeries(dg, colnames(x), label = colnames(x)[2], color = colors, strokeWidth = line.thickness)
     else
-        dg <- dyOptions(dg, colors = colors)
+        dg <- dyOptions(dg, colors = colors, strokeWidth = line.thickness)
     dg <- dyCSS(dg, "dygraph.css")
 
     if (!range.bars && ncol(x) != 1)
         colors <- "#888888"
     dg <- dyRangeSelector(dg, fillColor = colors, dateWindow = c(range.start, range.end))
+    dg <- dyLegend(dg, width = legend.width)
 }

@@ -419,7 +419,6 @@ addDensities <- function(p,
                       hoverinfo = if (vertical) "x" else "y",
                       cumulative = list(enabled = histogram.cumulative),
                       name = label,
-                      cumulative = list(enabled = histogram.cumulative),
                       type = "histogram",
                       xaxis = category.axis,
                       yaxis = value.axis)

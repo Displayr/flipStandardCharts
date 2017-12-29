@@ -5,9 +5,9 @@
 \title{TimeSeries}
 \usage{
 TimeSeries(x = NULL, range.bars = FALSE, colors = ChartColors(1),
-  window.start = NULL, global.font.family = "Arial",
-  global.font.color = rgb(44, 44, 44, maxColorValue = 255), title = "",
-  title.font.family = global.font.family,
+  line.thickness = NULL, legend.width = 250, window.start = NULL,
+  global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
+  maxColorValue = 255), title = "", title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
   x.title = "", x.title.font.color = global.font.color,
   x.title.font.family = global.font.family, x.title.font.size = 12,
@@ -25,6 +25,10 @@ TimeSeries(x = NULL, range.bars = FALSE, colors = ChartColors(1),
 multiple series.}
 
 \item{colors}{Character; a named color from grDevices OR a hex value color.}
+
+\item{line.thickness}{Integer; The width of the lines connecting data points.}
+
+\item{legend.width}{Integer; Width (in pixels) of the legend.}
 
 \item{window.start}{The number of days before the end of the data series to start the range selector window.}
 

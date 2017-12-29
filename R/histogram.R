@@ -1,6 +1,4 @@
-#' Density
-#'
-#' Density plot.
+#' Plots a histogram of data.
 #'
 #' @inherit Distribution
 #' @examples

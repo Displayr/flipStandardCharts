@@ -53,7 +53,7 @@ colnames(google.trends.multi) <- c("alpha", "beta", "gamma")
 opts <- c('titles' = 'title = "MY TITLE", x.title = "MY X-AXIS", y.title = "MY Y-AXIS"',
           'colors' = 'colors = c("#FF0022", "#BFB311", "#51a5a1"), title = "MY PURPLE TITLE", title.font.color = "#8012C4"',
           'fonts' = 'title = "The Title", title.font.family = "sans-serif", title.font.size = 30',
-          'window' = 'window.start = 20',
+          'window' = 'window.start = 20, line.thickness = 3, legend.width = 100',
           'range.bar' = 'range.bar = TRUE, colors = c("#af3c1c", "#af3c1c", "#af3c1c"), window.start = 100')
 
 dat.list <- c("google.trends", "google.trends.multi", "stock.prices")
@@ -65,7 +65,7 @@ for (dat in dat.list)
         # Filestem should be prefixed by test file name to avoid name conflicts
         filestem <- paste0("timeseries-", dat, "-", names(opts)[ii])
 
-        if (xor(names(opts)[ii] == "range.bar", dat == "stock.prices"))
+        if (names(opts)[ii] == "range.bar" && dat != "stock.prices")
             next
 
         test_that(filestem, {
