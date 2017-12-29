@@ -49,7 +49,7 @@ for (func in charting.funcs)
 
                 # Run command to create the widget and compare expectation
                 if (grepl("labeledscatter-.*(datalabel|fit)", filestem))
-                    expect_error(eval(parse(text=cmd)))
+                    expect_error(suppressWarnings(eval(parse(text=cmd))), NA)
                 else if (grepl("area-single", filestem))
                     expect_error(eval(parse(text=cmd)))
                 else if (grepl("missing", filestem))

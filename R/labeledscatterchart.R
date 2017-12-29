@@ -121,6 +121,7 @@
 #' @param trend.lines Boolean indicating whether to plot trend lines for multiple tables.
 #' @param logos Optional list of images to be used to label scatterplot instead of the row names.
 #' This should be input as a comma-seperated list of URLs.
+#' @param ... Other arguments which are ignored.
 #' @param logo.size Numeric controlling the size of the logos.
 #' @param swap.x.and.y Swap the x and y axis around on the chart.
 #' @importFrom grDevices rgb
@@ -213,7 +214,8 @@ LabeledScatter <- function(x = NULL,
                                 x.tick.font.family = global.font.family,
                                 x.tick.font.size = 10,
                                 marker.size = 6,
-                                swap.x.and.y = FALSE)
+                                swap.x.and.y = FALSE,
+                                ...)
 {
     if (!is.null(y))
         ErrorIfNotEnoughData(cbind(x, y))

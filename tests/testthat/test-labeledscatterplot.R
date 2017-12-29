@@ -43,3 +43,8 @@ test_that("Trend lines", {
 #    expect_error(Scatter(z, scatter.labels.as.hovertext = TRUE, logos=sprintf("https://displayrcors.azureedge.net/images/%s_grey.svg", c("apple", #"elephant", "cow", "chicken", "stickman"))), NA)
 #})
 
+test_that("Labeled Scatter accepts unused arguments",
+{
+    x <- structure(1:10, .Names = c("a", "b", "c", "d", "e", "f", "g", "h", "i", "j"))
+    expect_error(Scatter(x, scatter.labels.as.hovertext = F, fit.type = "None"), NA)
+})
