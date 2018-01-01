@@ -113,7 +113,7 @@ TimeSeries <- function(x = NULL,
         }
         .dygraph-axis-label.dygraph-axis-label-y {
         color: ", y.tick.font.color, ";
-        font-size", y.tick.font.size, "px;
+        font-size: ", y.tick.font.size, "px;
         font-family: ", y.tick.font.family, ";
         }")
 
