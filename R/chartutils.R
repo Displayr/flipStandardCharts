@@ -316,7 +316,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
          is.null(tickangle) && side %in% c("bottom", "top"))
     {
         lab.nchar <- max(c(0, nchar(unlist(strsplit(split="<br>", as.character(labels))))))
-        tickangle <- if (any(suppressWarnings(is.na(as.numeric(labels)))) && 
+        tickangle <- if (any(suppressWarnings(is.na(as.numeric(labels)))) && lab.nchar > 5 &&
                         length(labels) * num.series * lab.nchar > 50) 90
                      else 0
     }
