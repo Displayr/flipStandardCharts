@@ -367,7 +367,7 @@ LabeledScatter <- function(x = NULL,
             stop("'scatter.colors' cannot be used with multiple tables")
         legend.show <- FALSE # don't need to worry about order of groups
         groups <- 1:n # what about mult tables?
-        col.fun <- colorRamp(colors)
+        col.fun <- colorRamp(unique(colors)) # undo recycling in PrepareColors
         scatter.colors.scaled <- (scatter.colors - min(scatter.colors, na.rm=T))/diff(range(scatter.colors, na.rm=T))
         #if (length(not.na) != length(scatter.colors))
         #    scatter.colors.scaled[-not.na] <- 0 # removed later

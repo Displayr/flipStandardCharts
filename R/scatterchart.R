@@ -388,7 +388,7 @@ Scatter <- function(x = NULL,
     if (!is.null(scatter.colors) && !scatter.colors.as.categorical)
     {
         # make colorscalebar
-        col.fun <- colorRamp(colors)
+        col.fun <- colorRamp(unique(colors))  # undo recycling in PrepareColors
         c.tmp <- rgb(col.fun((0:5)/5), maxColorValue=255)
         v.tmp <- seq(from=0, to=1, length=length(c.tmp))
         col.scale <- mapply(function(a,b)c(a,b), a=v.tmp, b=c.tmp, SIMPLIFY=F)
@@ -425,6 +425,7 @@ Scatter <- function(x = NULL,
         g.list <- levels(groups) # fix legend order
     else
         g.list <- unique(groups)
+
     num.groups <- length(g.list)
     num.series <- if (scatter.colors.as.numeric) 1 else num.groups
 
@@ -565,7 +566,7 @@ Scatter <- function(x = NULL,
                             showscale = colorbar.show, colorbar = colorbar)
         else
             marker.obj <- list(size = tmp.size, sizemode = "diameter", opacity = opacity,
-                            color = colors[ggi], 
+                            color = colors[ggi],
                             line = list(width = marker.border.width,
                             color = toRGB(marker.border.colors[ggi], alpha = marker.border.opacity)))
 
@@ -592,7 +593,7 @@ Scatter <- function(x = NULL,
 
         # Main trace
         separate.legend <- legend.show && scatter.colors.as.categorical && !is.null(scatter.sizes)
-        p <- add_trace(p, x = x[ind], y = y[ind], name = g.list[ggi],
+        p <- add_trace(p, x = x[ind], y = y[ind], name = paste0(g.list[ggi], " "),
                 showlegend = (legend.show && !separate.legend),
                 legendgroup = if (num.series > 1) ggi else 1,
                 textposition = data.label.position,
