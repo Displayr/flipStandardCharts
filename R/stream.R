@@ -58,6 +58,9 @@ Stream <- function(x,
     if (!x.axis.type %in% c("date", "numeric"))
         stop("Stream requires the rownames of the input data (which form the x-axis) to be dates or numeric. ",
              "Change 'Chart type' to 'Table' to see the input data.")
+    if (!is.numeric(x))
+        stop("Stream requires numeric data to be plotted along the y-axis. ",
+             "Change 'Chart type' to 'Table' to see the input data.")
 
     if (x.tick.units == "Automatic") {
         if (x.axis.type == "date")
