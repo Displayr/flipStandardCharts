@@ -29,7 +29,7 @@ Only the decimal places are used.}
 \item{x.tick.format}{A string representing a d3 formatting code for the x.axis.
 See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 
-\item{x.tick.units}{"Automatic", "Number", "Month" or "Year".}
+\item{x.tick.units}{"Automatic", "Number", "Day", "Month" or "Year".}
 
 \item{x.tick.interval}{The frequency of ticks on the x-axis. Where the data crosses multiple years, re-starts at each year.}
 

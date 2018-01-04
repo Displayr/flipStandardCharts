@@ -11,7 +11,7 @@
 #' Only the decimal places are used.
 #' @param x.tick.format A string representing a d3 formatting code for the x.axis.
 #' See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format
-#' @param x.tick.units "Automatic", "Number", "Month" or "Year".
+#' @param x.tick.units "Automatic", "Number", "Day", "Month" or "Year".
 #' @param x.tick.interval The frequency of ticks on the x-axis. Where the data crosses multiple years, re-starts at each year.
 #' @param margin.top Top margin (default should be fine, this allows for fine-tuning plot space)
 #' @param margin.right Right margin (default should be fine, this allows for fine-tuning plot space)
@@ -42,6 +42,8 @@ Stream <- function(x,
     }
     if (!is.matrix(x) && !is.data.frame(x) && !is.array(x))
         stop("Stream graphs should have a tabular input (e.g., a matrix).")
+    if (!x.tick.units %in% c("Automatic", "Number", "Day", "Month", "Year"))
+        stop("x.tick.units must be one of 'Automatic', 'Number', 'Day', 'Month' or 'Year'.")
 
     # streamgraph requires dates along the columns but for consistency with Time Series, Line, Google Trends etc
     # CChart produces dates along the rows, hence we transpose
@@ -52,9 +54,13 @@ Stream <- function(x,
 
     ErrorIfNotEnoughData(x)
     columns <- colnames(x)
+    x.axis.type <- getAxisType(columns, x.tick.format)
+    if (!x.axis.type %in% c("date", "numeric"))
+        stop("Stream requires the rownames of the input data (which form the x-axis) to be dates or numeric. ",
+             "Change 'Chart type' to 'Table' to see the input data.")
 
     if (x.tick.units == "Automatic") {
-        if (getAxisType(columns, x.tick.format) == "date")
+        if (x.axis.type == "date")
             x.tick.units <- "Month"
         else
             x.tick.units <- "Number"
@@ -64,7 +70,7 @@ Stream <- function(x,
     {
         if (x.tick.format == "")
             x.tick.format = ".0f"
-        if (d3FormatType(x.tick.format) != "numeric" || getAxisType(columns, x.tick.format) != "numeric")
+        if (d3FormatType(x.tick.format) != "numeric" || x.axis.type != "numeric")
             stop("x-axis tick format and units are incompatible.")
         columns <- suppressWarnings(as.integer(columns))
         if (any(is.na((columns))))
@@ -74,7 +80,7 @@ Stream <- function(x,
     {
         if (x.tick.format == "")
             x.tick.format = "%d %b %y"
-        if (d3FormatType(x.tick.format) != "date" || getAxisType(columns, x.tick.format) != "date")
+        if (d3FormatType(x.tick.format) != "date" || x.axis.type != "date")
             stop("x-axis tick format and units are incompatible.")
         columns <- AsDateTime(columns, on.parse.failure = "silent")
     }
