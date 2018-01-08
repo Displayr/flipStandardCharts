@@ -1,10 +1,11 @@
+#' Histogram.
+
 #' Plots a histogram of data.
 #'
 #' @inherit Distribution
 #' @examples
 #' Histogram(rnorm(100))
 #' Histogram(list(rnorm(100), rexp(100)))
-
 #' @export
 Histogram <- function(x,
                  weights = NULL,

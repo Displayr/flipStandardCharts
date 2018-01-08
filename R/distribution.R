@@ -244,11 +244,22 @@ Distribution <-   function(x,
     else
         labels <- autoFormatLongLabels(labels, categories.tick.label.wrap, categories.tick.label.wrap.nchar)
     x <- AsNumeric(x, FALSE)
-    if (density.type == "Box" && !is.null(weights))
+    # Warnings for chart types that cannot deal with weights.
+    if (!is.null(weights))
     {
-        warning("Weights are ignored in box plots.")
+        if (density.type == "Box")
+        {
+            warning("Weights are ignored in box plots.")
+        }
+        else if (density.type == "Histogram")
+        {
+            if (sd(weights) != 0)
+                warning("Weights are ignored in histograms. To create a weighted histogram, either (1), ",
+                        "create a Histogram Chart in Q or Displayr from the menus or R by code, or (2) ",
+                        "manually create the categories and create a column chart.")
+        }
     }
-    # weights <- createWeights(x, weights)
+
     # Checking inputs.
     if (density.type != "Density" && show.mirror.density)
     {
@@ -302,12 +313,16 @@ Distribution <-   function(x,
         category.axis.2 <- axisName(vertical, v, 1, TRUE)
         value.axis.2 <- axisName(vertical, v, 2, TRUE)
         values <- x[[v]]
+        wgt <- if (is.null(weights)) rep(1, length(values)) else
+                (if (is.list(weights)) weights[[v]] else weights)
+        if (length(wgt) != length(values))
+            stop("The data and the weights do not have the same number of observations.")
+        # Removing missing values
         # Removing missing values
         not.missing <- !is.na(values)
         values <- values[not.missing]
-        wgt <- if (is.null(weights)) rep(1, length(values)) else
-                (if (is.list(weights)) weights[[v]] else weights)[not.missing]
-
+        wgt <- wgt[not.missing]
+        wgt <- prop.table(wgt) # Rebasing the weight (Required by the density function)
         from <- if (automatic.lower.density) rng[1] else from
         p <- addDensities(p, values, wgt, labels[v], vertical, show.density, show.mirror.density, density.type, histogram.cumulative, histogram.counts, maximum.bins, box.points, category.axis, value.axis, density.color, values.color, bw, adjust, kernel, n, from, to, cut)
         p <- addSummaryStatistics(p, values, wgt, vertical,  show.mean, show.median, show.quartiles, show.range, show.values,
@@ -385,7 +400,7 @@ addDensities <- function(p,
                          bw, adjust, kernel, n, from, to, cut)
 {
     # Comuting the density Also used in plotting other graphical elements.
-    d.args <- list(x = values, na.rm = TRUE, bw = bw, adjust = adjust, kernel = kernel, cut = cut, weights = weights / sum(weights))
+    d.args <- list(x = values, na.rm = TRUE, bw = bw, adjust = adjust, kernel = kernel, cut = cut, weights = weights)
     if (!is.null(from))
         d.args$from = from
     if (!is.null(to))

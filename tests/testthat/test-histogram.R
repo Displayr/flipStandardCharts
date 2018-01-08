@@ -86,4 +86,12 @@ test_that("Histogram", {
     suppressWarnings(Histogram(list(phone$id, phone$q4)))
     suppressWarnings(Histogram(list(Q1 = phone$q2, Q4 = phone$q4)))
 
+        # Weights
+    dt = list(suppressWarnings(flipTransformations::AsNumeric(phone$q4, binary = FALSE)))
+    expect_warning(Histogram(dt, weights = NULL), NA)
+    expect_error(suppressWarnings(Histogram(dt, weights = 1:3)), "The data and the weights do not have the same number of observations.")
+    expect_warning(Histogram(dt, weights = runif(length(dt[[1]]))), "Weights are ignored in histograms.")
+
+
+
 })
