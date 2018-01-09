@@ -363,7 +363,7 @@ Column <- function(x,
     legend <- setLegend(type, legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
                         legend.border.color, legend.border.line.width,
                         legend.position.x, legend.position.y, y.data.reversed)
-    footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
+    footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate = FALSE)
 
     # Format axis labels
     # Turn off autorange if data labels are shown
@@ -402,21 +402,10 @@ Column <- function(x,
     margins <- setMarginsForAxis(margins, axisFormat, xaxis)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
-    margins <- setMarginsForLegend(margins, legend.show, legend)
-    if (!is.null(margin.top))
-        margins$t <- margin.top
-    if (!is.null(margin.bottom))
-        margins$b <- margin.bottom
-    if (!is.null(margin.left))
-        margins$l <- margin.left
-    if (!is.null(margin.right))
-        margins$r <- margin.right
-    if (!is.null(margin.inner.pad))
-        margins$pad <- margin.inner.pad
-
-    # Finalise text in margins
+    margins <- setMarginsForLegend(margins, legend.show, legend, colnames(chart.matrix))
+    margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left, 
+                    margin.right, margin.inner.pad)
     footer.axis <- setFooterAxis(footer, footer.font, margins)
-    subtitle.axis <- setSubtitleAxis(subtitle, subtitle.font, title, title.font)
 
     # Data label annotations
     data.annotations <- NULL
@@ -491,7 +480,7 @@ Column <- function(x,
                       showlegend = FALSE, legendgroup = tmp.group)
         }
     }
-
+    p <- addSubtitle(p, subtitle, subtitle.font, margins)
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
@@ -500,7 +489,6 @@ Column <- function(x,
         legend = legend,
         yaxis = yaxis,
         xaxis4 = footer.axis,
-        xaxis3 = subtitle.axis,
         xaxis2 = xaxis2,
         xaxis = xaxis,
         margin = margins,

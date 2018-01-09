@@ -248,7 +248,6 @@ Scatter <- function(x = NULL,
         cl <- as.list(match.call())
         cl <- cl[-1]
         cl$scatter.labels.as.hovertext <- NULL
-        #print(cl)
         return(do.call(LabeledScatter, cl))
     }
 
@@ -531,21 +530,11 @@ Scatter <- function(x = NULL,
     margins <- setMarginsForAxis(margins, ylab.tmp, yaxis)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
-    margins <- setMarginsForLegend(margins, legend.show, legend)
-    if (!is.null(margin.top))
-        margins$t <- margin.top
-    if (!is.null(margin.bottom))
-        margins$b <- margin.bottom
-    if (!is.null(margin.left))
-        margins$l <- margin.left
-    if (!is.null(margin.right))
-        margins$r <- margin.right
-    if (!is.null(margin.inner.pad))
-        margins$pad <- margin.inner.pad
-
-    # Finalise text in margins
+    margins <- setMarginsForLegend(margins, legend.show || scatter.colors.as.numeric, 
+                    legend, scatter.colors)
+    margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left, 
+                    margin.right, margin.inner.pad)
     footer.axis <- setFooterAxis(footer, footer.font, margins)
-    subtitle.axis <- setSubtitleAxis(subtitle, subtitle.font, title, title.font)
 
     ## START PLOTTING
     p <- plot_ly(data.frame(x = x,y = y))
@@ -627,6 +616,7 @@ Scatter <- function(x = NULL,
                     name = fit.line.name, showlegend = F, line = list(dash = fit.line.type,
                     width = fit.line.width, color = fit.line.colors[1], shape = 'spline'))
     }
+    p <- addSubtitle(p, subtitle, subtitle.font, margins)
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
@@ -635,7 +625,6 @@ Scatter <- function(x = NULL,
         legend = legend,
         yaxis = yaxis,
         xaxis4 = footer.axis,
-        xaxis3 = subtitle.axis,
         xaxis = xaxis,
         margin = margins,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),

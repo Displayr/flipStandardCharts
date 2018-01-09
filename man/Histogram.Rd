@@ -2,7 +2,8 @@
 % Please edit documentation in R/histogram.R
 \name{Histogram}
 \alias{Histogram}
-\title{Plots a histogram of data.}
+\title{Histogram.
+Plots a histogram of data.}
 \usage{
 Histogram(x, weights = NULL, vertical = FALSE, density.color = "Green",
   values.color = "Green", show.values = FALSE,
@@ -183,6 +184,7 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 A \code{plotly} chart.
 }
 \description{
+Histogram.
 Plots a histogram of data.
 }
 \examples{

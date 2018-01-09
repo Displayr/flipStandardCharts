@@ -48,6 +48,21 @@
 #' @param title.font.color Title font color as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param title.font.size Title font size; default = 10.
+#' @param subtitle Character
+#' @param subtitle.font.color subtitle font color as a named color in
+#' character format (e.g. "black") or an rgb value (e.g.
+#' rgb(0, 0, 0, maxColorValue = 255)).
+#' @param subtitle.font.family Character; subtitle font family
+#' @param subtitle.font.size Integer; subtitle font size
+#' @param footer Character
+#' @param footer.font.color footer font color as a named color in
+#' character format (e.g. "black") or an rgb value (e.g.
+#' rgb(0, 0, 0, maxColorValue = 255)).
+#' @param footer.font.family Character; footer font family
+#' @param footer.font.size Integer; footer font size
+#' @param footer.wrap Logical; whether the footer text should be wrapped.
+#' @param footer.wrap.nchar Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.
+
 #' @param grid.show Logical; whether to show grid lines.
 #' @param background.fill.color Background color in character format
 #' (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
@@ -123,7 +138,7 @@
 #' Distribution(list(rnorm(100), rexp(100)))
 #' @importFrom grDevices rgb
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
-#' @importFrom stats loess loess.control lm predict
+#' @importFrom stats loess loess.control lm predict sd
 #' @importFrom flipTransformations AsNumeric
 #' @export
 Distribution <-   function(x,
@@ -161,6 +176,16 @@ Distribution <-   function(x,
     title.font.family = global.font.family,
     title.font.color = global.font.color,
     title.font.size = 16,
+    subtitle = "",
+    subtitle.font.family = global.font.family,
+    subtitle.font.color = global.font.color,
+    subtitle.font.size = 12,
+    footer = "",
+    footer.font.family = global.font.family,
+    footer.font.color = global.font.color,
+    footer.font.size = 8,
+    footer.wrap = TRUE,
+    footer.wrap.nchar = 100,
     background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
     background.fill.opacity = 0,
     charting.area.fill.color = background.fill.color,
@@ -278,20 +303,20 @@ Distribution <-   function(x,
     }
     # Titles and footers
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
+    subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
+    footer.font = list(family = footer.font.family, size = footer.font.size, color = footer.font.color)
     values.title.font = list(family = values.title.font.family, size = values.title.font.size, color = values.title.font.color)
     values.tick.font = list(family = values.tick.font.family, size = values.tick.font.size, color = values.tick.font.color)
     categories.tick.font = list(family = categories.tick.font.family, size = categories.tick.font.size, color = categories.tick.font.color)
+    footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate = FALSE)
 
     # Work out margin spacing
     margins <- list(t = 20, b = 50, r = 60, l = 80, pad = 0)
-    if (!is.null(margin.top))
-        margins$t <- margin.top
-    if (!is.null(margin.bottom))
-        margins$b <- margin.bottom
-    if (!is.null(margin.left))
-        margins$l <- margin.left
-    if (!is.null(margin.right))
-        margins$r <- margin.right
+    margins <- setMarginsForText(margins, title, "abc", "abc", title.font.size,
+                                 10, 10)
+    margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left, 
+                    margin.right, 0)
+    footer.axis <- setFooterAxis(footer, footer.font, margins)
 
     ## Initiate plotly object
     p <- plot_ly()
@@ -347,6 +372,7 @@ Distribution <-   function(x,
                   FALSE, values.zero.line.width, values.zero.line.color,
                   values.hovertext.format)
     hover.mode <- if (tooltip.show) "'closest'" else "FALSE"
+    p <- addSubtitle(p, subtitle, subtitle.font, margins)
     txt <- paste0("p <- layout(p,
         autosize = TRUE,
         font = list(size = 11),
@@ -354,6 +380,7 @@ Distribution <-   function(x,
         "showlegend = FALSE,
         title = title,
         titlefont = title.font,
+        xaxis4 = footer.axis,
         showlegend = FALSE,",
         violinCategoriesAxes(vertical, n.variables, labels), "
         ", if (vertical) "y" else "x", "axis = values.axis,

@@ -207,8 +207,8 @@ setLegend <- function(type, font, ascending, fill.color, fill.opacity, border.co
             font = font,
             xanchor = "left",
             yanchor = "auto",
-            y = y.pos,
-            x = x.pos,
+            y = max(0.0, min(1.0, y.pos)),
+            x = max(0.0, min(1.0, x.pos)),
             traceorder = order))
 }
 
@@ -315,7 +315,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
     if (!is.null(labels) && !is.na(labels) && any(nchar(labels) > 0) &&
          is.null(tickangle) && side %in% c("bottom", "top"))
     {
-        lab.nchar <- max(c(0, nchar(unlist(strsplit(split="<br>", as.character(labels))))))
+        lab.nchar <- max(c(0, nchar(unlist(strsplit(split = "<br>", as.character(labels))))))
         tickangle <- if (any(suppressWarnings(is.na(as.numeric(labels)))) && lab.nchar > 2 &&
                         length(labels) * num.series * lab.nchar > 50) 90
                      else 0
@@ -329,8 +329,8 @@ setAxis <- function(title, side, axisLabels, titlefont,
         if (axis.type == "date")
         {
             tmp.dates <- as.numeric(axisLabels$ymd) * 1000
-            diff <- min(abs(diff(tmp.dates)), na.rm=T)
-            range <- rev(range(tmp.dates, na.rm=T)) + c(1, -1) * diff
+            diff <- min(abs(diff(tmp.dates)), na.rm = T)
+            range <- rev(range(tmp.dates, na.rm = T)) + c(1, -1) * diff
         }
         else if (axis.type == "numeric")
         {
@@ -470,8 +470,10 @@ setMarginsForText <- function(margins, title, subtitle, footer,
     }
     if (nchar(subtitle) > 0)
     {
+        # We leave twice the space for subtitles, because titles are always
+        # positioned halfway down the top margin
         subtitle.nline <- sum(gregexpr("<br>", subtitle)[[1]] > -1) + 1.5
-        margins$t <- margins$t + (subtitle.font.size * subtitle.nline * 1.25)
+        margins$t <- margins$t + (subtitle.font.size * subtitle.nline) * 0.8 * 2
     }
     if (nchar(footer) > 0)
     {
@@ -481,27 +483,41 @@ setMarginsForText <- function(margins, title, subtitle, footer,
     margins
 }
 
-setMarginsForLegend <- function(margins, showlegend, legend)
+setMarginsForLegend <- function(margins, showlegend, legend, text)
 {
-    if (!showlegend && legend$x > 1)
+    if (showlegend)
+    {
+        len <- if (is.factor(text)) nchar(levels(text))
+               else                 nchar(text)
+        margins$r <- margins$r + (legend$font$size * max(0, len))
+    } else
         margins$r <- 20
     margins
 }
 
-# No wordwrap - subtitles should not be too long
-setSubtitleAxis <- function(subtitle, subtitle.font, title, title.font, overlaying = "x")
+setCustomMargins <- function(margins, margin.top, margin.bottom, margin.left,
+    margin.right, margin.inner.pad)
 {
-    res <- NULL
-    if (nchar(subtitle) > 0)
-    {
-        title.nline <- sum(gregexpr("<br>", title)[[1]] > -1) + 1
-        subtitle.npad <- max(0, round(title.nline * subtitle.font$size/title.font$size * 0.9))
-        subtitle <- paste0(paste(rep("<br>", subtitle.npad), collapse=""), subtitle)
-        res <- list(overlaying = overlaying, side = "top", anchor = "free", position = 1,
-             showline = F, zeroline = F, showgrid = F, showticklabels = F, title = subtitle,
-             domain = c(0, 1), titlefont = subtitle.font)
-    }
-    res
+    if (!is.null(margin.top))
+        margins$t <- margin.top
+    if (!is.null(margin.bottom))
+        margins$b <- margin.bottom
+    if (!is.null(margin.left))
+        margins$l <- margin.left
+    if (!is.null(margin.right))
+        margins$r <- margin.right
+    if (!is.null(margin.inner.pad))
+        margins$pad <- margin.inner.pad
+    margins
+}
+
+addSubtitle <- function(p, subtitle, subtitle.font, margins)
+{
+    if (sum(nchar(subtitle)) > 0)
+        p <- add_annotations(p, text = subtitle, font = subtitle.font,
+                xref = "paper", x = 0.5, xshift = (margins$r - margins$l)/2,
+                yref = "paper", y = 1.0, yanchor = "bottom", showarrow = FALSE)
+    p
 }
 
 # footer.font and margins are lists
@@ -514,10 +530,12 @@ setFooterAxis <- function(footer, footer.font, margins)
     {
         footer.nline <- sum(gregexpr("<br>", footer)[[1]] > -1) + 1
         footer.npad <- max(0, ceiling(margins$b/footer.font$size/1.25) - footer.nline - 2)
-        footer <- paste0(paste(rep("<br>", footer.npad), collapse=""), footer)
-        res <- list(overlaying="x", side = "bottom", anchor="free", position=0,
-             visible=T, showline=F, zeroline=F, showgrid=F, tickfont=footer.font,
-             range=c(0,1), tickvals=c(0.5), ticktext=c(footer), tickangle=0)
+        footer <- paste0(paste(rep("<br>", footer.npad), collapse = ""), footer)
+        res <- list(overlaying = FALSE, side = "bottom", anchor = "free",
+             position = 0, domain = c(0,1.0), visible = TRUE,
+             showline = FALSE, zeroline = FALSE, showgrid = FALSE,
+             tickfont = footer.font, ticktext = c(footer), tickangle = 0,
+             range = c(0,1), tickvals = c(0.5))
     }
     res
 }

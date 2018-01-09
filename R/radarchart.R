@@ -289,22 +289,13 @@ Radar <- function(x,
     margins <- list(b = 20, l = 0, r = 0, t = 20, inner = 0)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
-    subtitle.axis <- setSubtitleAxis(subtitle, subtitle.font, title, title.font)
     footer.axis <- setFooterAxis(footer, footer.font, margins)
     xaxis = list(title = "", showgrid = F, zeroline = F, showticklabels = F,
                categoryorder = "array", categoryarray = unique(pos$Group))
-    yaxis = list(title = "", showgrid = F, zeroline = F, showticklabels = F,
-               domain = c(0, 0.95+(0.05*is.null(subtitle.axis))))
-    if (!is.null(margin.top))
-        margins$t <- margin.top
-    if (!is.null(margin.left))
-        margins$l <- margin.left
-    if (!is.null(margin.bottom))
-        margins$b <- margin.bottom
-    if (!is.null(margin.right))
-        margins$r <- margin.right
-    if (!is.null(margin.inner.pad))
-        margins$pad <- margin.inner.pad
+    yaxis = list(title = "", showgrid = F, zeroline = F, showticklabels = F)
+    margins <- setMarginsForLegend(margins, legend.show, legend, colnames(chart.matrix))
+    margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left, 
+                    margin.right, margin.inner.pad)
 
     # Initialise plot
     p <- plot_ly(pos)
@@ -379,15 +370,16 @@ Radar <- function(x,
             plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
             paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
             hovermode = if (tooltip.show) "closest" else FALSE,
-            xaxis2 = footer.axis, xaxis3 = subtitle.axis, xaxis = xaxis, yaxis = yaxis,
+            xaxis2 = footer.axis, xaxis = xaxis, yaxis = yaxis,
             legend = legend, showlegend = legend.show, shapes = grid, annotations = xlabels)
 
     if (grid.show && y.grid.width > 0 && y.tick.show && !is.null(tick.vals))
-        p <- add_annotations(p, x=rep(0, length(tick.vals)), y = tick.vals,
+        p <- add_annotations(p, x = rep(0, length(tick.vals)), y = tick.vals,
                 font = y.tick.font, showarrow = F, xanchor = "right", xshift = -5,
                 text = paste0(y.tick.prefix, tick.format.function(tick.vals,
                               decimals = y.tick.decimals), y.tick.suffix))
 
+    p <- addSubtitle(p, subtitle, subtitle.font, margins)
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
     result <- list(plotly.plot = p)

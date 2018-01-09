@@ -10,6 +10,11 @@ Box(x, weights = NULL, vertical = TRUE, show.values = FALSE,
   global.font.color = rgb(44, 44, 44, maxColorValue = 255), title = "",
   title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
+  subtitle = "", subtitle.font.family = global.font.family,
+  subtitle.font.color = global.font.color, subtitle.font.size = 12,
+  footer = "", footer.font.family = global.font.family,
+  footer.font.color = global.font.color, footer.font.size = 8,
+  footer.wrap = TRUE, footer.wrap.nchar = 100,
   background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
   background.fill.opacity = 0,
   charting.area.fill.color = background.fill.color,
@@ -72,6 +77,30 @@ font attribute for the chart unless specified individually.}
 format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{title.font.size}{Title font size; default = 10.}
+
+\item{subtitle}{Character}
+
+\item{subtitle.font.family}{Character; subtitle font family}
+
+\item{subtitle.font.color}{subtitle font color as a named color in
+character format (e.g. "black") or an rgb value (e.g.
+rgb(0, 0, 0, maxColorValue = 255)).}
+
+\item{subtitle.font.size}{Integer; subtitle font size}
+
+\item{footer}{Character}
+
+\item{footer.font.family}{Character; footer font family}
+
+\item{footer.font.color}{footer font color as a named color in
+character format (e.g. "black") or an rgb value (e.g.
+rgb(0, 0, 0, maxColorValue = 255)).}
+
+\item{footer.font.size}{Integer; footer font size}
+
+\item{footer.wrap}{Logical; whether the footer text should be wrapped.}
+
+\item{footer.wrap.nchar}{Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.}
 
 \item{background.fill.color}{Background color in character format
 (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}

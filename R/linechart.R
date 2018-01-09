@@ -197,21 +197,10 @@ Line <-   function(x,
     margins <- setMarginsForAxis(margins, axisFormat, xaxis)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
-    margins <- setMarginsForLegend(margins, legend.show, legend)
-    if (!is.null(margin.top))
-        margins$t <- margin.top
-    if (!is.null(margin.bottom))
-        margins$b <- margin.bottom
-    if (!is.null(margin.left))
-        margins$l <- margin.left
-    if (!is.null(margin.right))
-        margins$r <- margin.right
-    if (!is.null(margin.inner.pad))
-        margins$pad <- margin.inner.pad
-
-    # Finalise text in margins
+    margins <- setMarginsForLegend(margins, legend.show, legend, colnames(chart.matrix))
+    margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left, 
+                    margin.right, margin.inner.pad)
     footer.axis <- setFooterAxis(footer, footer.font, margins)
-    subtitle.axis <- setSubtitleAxis(subtitle, subtitle.font, title, title.font)
 
     ## Initiate plotly object
     p <- plot_ly(as.data.frame(chart.matrix))
@@ -311,7 +300,7 @@ Line <-   function(x,
                       color=fit.line.colors[i], shape='spline'))
         }
     }
-
+    p <- addSubtitle(p, subtitle, subtitle.font, margins)
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
@@ -320,7 +309,6 @@ Line <-   function(x,
         legend = legend,
         yaxis = yaxis,
         xaxis4 = footer.axis,
-        xaxis3 = subtitle.axis,
         xaxis2 = xaxis2,
         xaxis = xaxis,
         margin = margins,
