@@ -316,7 +316,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
          is.null(tickangle) && side %in% c("bottom", "top"))
     {
         lab.nchar <- max(c(0, nchar(unlist(strsplit(split = "<br>", as.character(labels))))))
-        tickangle <- if (any(suppressWarnings(is.na(as.numeric(labels)))) && lab.nchar > 2 &&
+        tickangle <- if (any(suppressWarnings(is.na(as.numeric(gsub(",", "", labels))))) && lab.nchar > 2 &&
                         length(labels) * num.series * lab.nchar > 50) 90
                      else 0
     }
@@ -448,7 +448,7 @@ setMarginsForAxis <- function(margins, labels, axis)
     else if (axis$side == "bottom")
     {
         # tickangle is changed in function setAxis
-        lab.nchar <- max(c(0,nchar(unlist(strsplit(split="<br>", as.character(labels))))))
+        lab.nchar <- max(c(0,nchar(unlist(strsplit(split = "<br>", as.character(labels))))))
         if (is.null(axis$tickangle))
             axis$tickangle <- 0
         if (axis$tickangle != 0)

@@ -521,7 +521,8 @@ addSummaryStatistics <- function(p, values, weights, vertical, show.mean, show.m
     ### Box plot
     if (show.median || show.quartiles || show.range)
     {
-        five.num <- wtd.quantile(values, weights = weights, type = "i/(n+1)")
+        #five.num <- wtd.quantile(values, weights = weights, type = "i/(n+1)")
+        five.num <- wtd.quantile(values, weights = weights * length(weights), type = "i/(n+1)")
         names(five.num) <- c("Minimum:", "Lower quartile:", "Median:", "Upper quartile:", "Maximum:")
 
     }
