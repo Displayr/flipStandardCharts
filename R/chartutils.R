@@ -485,7 +485,7 @@ setMarginsForText <- function(margins, title, subtitle, footer,
 
 setMarginsForLegend <- function(margins, showlegend, legend, text, type = "")
 {
-    if (showlegend)
+    if (showlegend && legend$x > 0.99)
     {
         len <- if (is.factor(text)) nchar(levels(text))
                else                 nchar(text)
