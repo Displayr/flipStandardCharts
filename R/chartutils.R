@@ -523,16 +523,19 @@ addSubtitle <- function(p, subtitle, subtitle.font, margins)
 # footer.font and margins are lists
 # footer.font = list(family, size, color)
 # margins = list(top, bottom, left, right, inner)
-setFooterAxis <- function(footer, footer.font, margins)
+setFooterAxis <- function(footer, footer.font, margins, overlay = "x")
 {
+    # overlay = FALSE is needed for the distribution chart with no x axis
+    # but in other cases, setting to FALSE may do ugly things with transparencies
+
     res <- NULL
     if (nchar(footer) > 0)
     {
         footer.nline <- sum(gregexpr("<br>", footer)[[1]] > -1) + 1
         footer.npad <- max(0, ceiling(margins$b/footer.font$size/1.25) - footer.nline - 2)
         footer <- paste0(paste(rep("<br>", footer.npad), collapse = ""), footer)
-        res <- list(overlaying = FALSE, side = "bottom", anchor = "free",
-             position = 0, domain = c(0,1.0), visible = TRUE,
+        res <- list(overlaying = overlay, side = "bottom", anchor = "free",
+             position = 0, domain = c(0,1.0), visible = TRUE, layer = "below traces",
              showline = FALSE, zeroline = FALSE, showgrid = FALSE,
              tickfont = footer.font, ticktext = c(footer), tickangle = 0,
              range = c(0,1), tickvals = c(0.5))

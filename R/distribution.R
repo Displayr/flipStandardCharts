@@ -314,9 +314,9 @@ Distribution <-   function(x,
     margins <- list(t = 20, b = 50, r = 60, l = 80, pad = 0)
     margins <- setMarginsForText(margins, title, "abc", "abc", title.font.size,
                                  10, 10)
-    margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left, 
+    margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, 0)
-    footer.axis <- setFooterAxis(footer, footer.font, margins)
+    footer.axis <- setFooterAxis(footer, footer.font, margins, overlay = FALSE)
 
     ## Initiate plotly object
     p <- plot_ly()
