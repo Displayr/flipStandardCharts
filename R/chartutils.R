@@ -208,7 +208,7 @@ setLegend <- function(type, font, ascending, fill.color, fill.opacity, border.co
             xanchor = "left",
             yanchor = "auto",
             y = max(0.0, min(1.0, y.pos)),
-            x = max(0.0, min(1.0, x.pos)),
+            x = max(0.0, min(1.02, x.pos)),
             traceorder = order))
 }
 
@@ -483,14 +483,14 @@ setMarginsForText <- function(margins, title, subtitle, footer,
     margins
 }
 
-setMarginsForLegend <- function(margins, showlegend, legend, text)
+setMarginsForLegend <- function(margins, showlegend, legend, text, type = "")
 {
     if (showlegend)
     {
         len <- if (is.factor(text)) nchar(levels(text))
                else                 nchar(text)
-        margins$r <- margins$r + (legend$font$size * max(0, len))
-    } else
+        margins$r <- min(300, 70 + (legend$font$size * max(0, len) * 0.7))
+    } else if (type != "radar")
         margins$r <- 20
     margins
 }
