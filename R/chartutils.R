@@ -286,10 +286,7 @@ formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, x.format, y.fo
     axis.type <- if (is.bar) y.axis.type else x.axis.type
     if (axis.type == "date")
     {
-        ## currently cannot switch between US/international inputs
-        # No warnings as these will be given in PrepareData
-        # Also, Chart has no arguments to silence warnings
-        ymd <- suppressWarnings(AsDateTime(labels, on.parse.failure = "silent"))
+        ymd <- AsDateTime(labels, on.parse.failure = "silent")
         labels <- ymd
     }
     else
@@ -318,7 +315,6 @@ setAxis <- function(title, side, axisLabels, titlefont,
          is.null(tickangle) && side %in% c("bottom", "top"))
     {
         lab.nchar <- max(c(0, nchar(unlist(strsplit(split = "<br>", as.character(labels))))))
-        #tickangle <- if (any(suppressWarnings(is.na(as.numeric(gsub(",", "", labels))))) && lab.nchar > 2 &&
         tickangle <- if ((!axis.type %in% c("numeric", "linear", "date")) && lab.nchar > 2 &&
                         length(labels) * num.series * lab.nchar > 50) 90
                      else 0
