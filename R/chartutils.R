@@ -134,7 +134,7 @@ getRange <- function(x, axis, axisFormat)
             range <- range(x) + c(-0.5, 0.5)
         else if (all(!is.na(suppressWarnings(as.numeric(x)))))
             range <- range(as.numeric(x)) + c(-0.5, 0.5)
-        else if (all(!is.na(AsDateTime(x, on.parse.failure = "silent"))))
+        else if (all(!is.na(suppressWarnings(AsDateTime(x, on.parse.failure = "silent")))))
             range <- range(AsDateTime(x))
         else
             range <- c(-0.5, length(x)-0.5)
@@ -222,7 +222,7 @@ getAxisType <- function(labels, format)
 
     if (d3.type == "date")
     {
-        ymd <- AsDateTime(labels, on.parse.failure = "silent")
+        ymd <- suppressWarnings(AsDateTime(labels, on.parse.failure = "silent"))
         if (!any(is.na(ymd)))
             return("date")
     }
@@ -235,7 +235,7 @@ getAxisType <- function(labels, format)
     # Try to find default format based only on labels
     if (!any(is.na(suppressWarnings(as.numeric(gsub(",", "", labels))))))
         return("numeric")
-    ymd <- AsDateTime(labels, on.parse.failure = "silent")
+    ymd <- suppressWarnings(AsDateTime(labels, on.parse.failure = "silent"))
     if (all(!is.na(ymd)))
         return("date")
     else
@@ -287,7 +287,9 @@ formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, x.format, y.fo
     if (axis.type == "date")
     {
         ## currently cannot switch between US/international inputs
-        ymd <- AsDateTime(labels, on.parse.failure = "silent")
+        # No warnings as these will be given in PrepareData
+        # Also, Chart has no arguments to silence warnings
+        ymd <- suppressWarnings(AsDateTime(labels, on.parse.failure = "silent"))
         labels <- ymd
     }
     else
@@ -316,7 +318,8 @@ setAxis <- function(title, side, axisLabels, titlefont,
          is.null(tickangle) && side %in% c("bottom", "top"))
     {
         lab.nchar <- max(c(0, nchar(unlist(strsplit(split = "<br>", as.character(labels))))))
-        tickangle <- if (any(suppressWarnings(is.na(as.numeric(gsub(",", "", labels))))) && lab.nchar > 2 &&
+        #tickangle <- if (any(suppressWarnings(is.na(as.numeric(gsub(",", "", labels))))) && lab.nchar > 2 &&
+        tickangle <- if ((!axis.type %in% c("numeric", "linear", "date")) && lab.nchar > 2 &&
                         length(labels) * num.series * lab.nchar > 50) 90
                      else 0
     }
@@ -330,7 +333,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
         {
             tmp.dates <- as.numeric(axisLabels$ymd) * 1000
             diff <- min(abs(diff(tmp.dates)), na.rm = T)
-            range <- rev(range(tmp.dates, na.rm = T)) + c(1, -1) * diff
+            range <- rev(range(tmp.dates, na.rm = T)) + c(0.1, -1) * diff
         }
         else if (axis.type == "numeric")
         {
@@ -351,7 +354,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
         autorange <- FALSE
         tmp.dates <- as.numeric(axisLabels$ymd) * 1000
         diff <- min(abs(diff(tmp.dates)), na.rm=T)
-        range <- range(tmp.dates, na.rm=T) + c(-1, 1) * diff
+        range <- range(tmp.dates, na.rm=T) + c(-1, 0.1) * diff
         if (ticks$autorange == "reversed")
             range <- rev(range)
     }
