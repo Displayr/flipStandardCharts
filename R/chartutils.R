@@ -343,7 +343,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
     {
         autorange <- FALSE
         if (axis.type == "date")
-            range <- getDateAxisRange(axisLabels$ymd)
+            range <- rev(getDateAxisRange(axisLabels$ymd))
         else if (axis.type == "numeric")
         {
             range <- rev(range(as.numeric(axisLabels$labels))) + c(0.5, -0.5)
