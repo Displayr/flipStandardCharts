@@ -299,6 +299,22 @@ formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, x.format, y.fo
                 x.axis.type = x.axis.type, y.axis.type = y.axis.type))
 }
 
+getDateAxisRange <- function(label.dates)
+{
+    tmp.dates <- as.numeric(label.dates) * 1000
+    day.len <- 60 * 60 * 24 * 1000  # length of days in seconds
+    diff <- min(abs(diff(tmp.dates)), na.rm = T)
+
+    # plotly handles different time-scales differently
+    if (diff < day.len)
+        range <- range(tmp.dates, na.rm = T) - day.len*11/24 + c(-0.5, 0.5) * diff
+    else if (diff < 5 * day.len)
+        range <- range(tmp.dates, na.rm = T) + c(-1.0, 0.1) * day.len
+    else
+        range <- range(tmp.dates, na.rm = T) + c(-0.5, 0.5) * diff
+    range
+}
+
 setAxis <- function(title, side, axisLabels, titlefont,
                     linecolor, linewidth, gridwidth, gridcolor,
                     ticks, tickfont, tickangle, ticklen, tickdistance,
@@ -322,15 +338,12 @@ setAxis <- function(title, side, axisLabels, titlefont,
 
     autorange <- ticks$autorange
     range <- ticks$range
+    day.len <- 60 * 60 * 24 * 1000
     if ((!axisLabels$labels.on.x) && side %in% c("left","right"))
     {
         autorange <- FALSE
         if (axis.type == "date")
-        {
-            tmp.dates <- as.numeric(axisLabels$ymd) * 1000
-            diff <- min(abs(diff(tmp.dates)), na.rm = T)
-            range <- rev(range(tmp.dates, na.rm = T)) + c(0.1, -1) * diff
-        }
+            range <- getDateAxisRange(axisLabels$ymd)
         else if (axis.type == "numeric")
         {
             range <- rev(range(as.numeric(axisLabels$labels))) + c(0.5, -0.5)
@@ -341,16 +354,14 @@ setAxis <- function(title, side, axisLabels, titlefont,
             }
         }
         else
-            range <- c(length(axisLabels$labels)-0.5, -0.5)
+            range <- c(length(axisLabels$labels) - 0.5, -0.5)
         if (ticks$autorange != "reversed")
             range <- rev(range)
     }
     else if (axis.type == "date" && !is.null(axisLabels$ymd))
     {
         autorange <- FALSE
-        tmp.dates <- as.numeric(axisLabels$ymd) * 1000
-        diff <- min(abs(diff(tmp.dates)), na.rm=T)
-        range <- range(tmp.dates, na.rm=T) + c(-1, 0.1) * diff
+        range <- getDateAxisRange(axisLabels$ymd)
         if (ticks$autorange == "reversed")
             range <- rev(range)
     }
