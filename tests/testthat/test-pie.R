@@ -69,3 +69,9 @@ test_that("DS-1701 Donut chart from one variable raw data",{
 
 })
 
+test_that("DS-1768: One-column matrix", {
+    dat <- structure(list(Score = c(20, 30, 50)), .Names = "Score", row.names = c("Cat",
+"Dog", "Pigeon"), class = "data.frame")
+    expect_error(Pie(dat), NA)
+})
+

@@ -82,7 +82,7 @@ Pie <- function(x,
             x.labels <- as.character(1:length(x))
         y.values <- as.numeric(x)
     }
-    else if (is.matrix(x) && is.numeric(x))
+    else if (is.matrix(x) && is.numeric(x) || all(unlist(lapply(x, is.numeric))))
     {
         x <- checkMatrixNames(x)
         x.labels <- rep(rownames(x), ncol(x))
@@ -93,7 +93,7 @@ Pie <- function(x,
     }
     else
     {
-        # dataframe
+        # dataframe (with group data)
         if (!is.null(ncol(x)) && ncol(x) >= 3)
             x <- x[order(x[,3]),]   # must be ordered by group
         x.labels <- as.character(x[,1])
