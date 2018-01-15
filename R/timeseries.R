@@ -74,9 +74,9 @@ TimeSeries <- function(x = NULL,
     if (is.null(dim(x)) || length(dim(x)) == 1L)
         x <- as.matrix(x)
 
-    rownames(x) <- as.character(AsDate(rownames(x), on.parse.failure = "silent"))
+    rownames(x) <- as.character(AsDateTime(rownames(x), on.parse.failure = "silent"))
     if (all(is.na(rownames(x))))
-        stop("Rownames of input cannot be parsed to dates.")
+        stop("Rownames of input cannot be parsed to date.")
 
     if (range.bars)
     {
