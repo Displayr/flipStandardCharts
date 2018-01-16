@@ -59,6 +59,9 @@ Palm <- function(table,
     if (y.tick.format == "" && !is.null(stat) && grepl("%", stat, fixed = TRUE))
         y.tick.format <- ".0%"
 
+    if (is.null(dim(table)) || length(dim(table)) == 1L)
+        table <- as.matrix(table)
+
     # Convert from d3 formatting
     y.decimals <- decimalsFromD3(y.tick.format, decimalsToDisplay(table))
     if (percentFromD3(y.tick.format)) {
