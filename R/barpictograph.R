@@ -93,7 +93,7 @@ BarPictograph <- function(x,
 
     # Set default values
     if (is.na(scale))
-        scale <- 10^{floor(log10(max(x)))}
+        scale <- 10^{floor(log10(min(x)))}
     if (is.na(total.icons))
         total.icons <- ceiling(max(x)/scale)
     raw.x <- x
