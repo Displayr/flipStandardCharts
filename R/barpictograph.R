@@ -80,17 +80,20 @@ BarPictograph <- function(x,
 {
     # Ensure that input data x is a named vector
     # Transpose if data is the wrong way around
-    if (NCOL(x) > 1)
+    stat <- attr(x, "statistic")
+    if (NROW(x) == 1 && NCOL(x) > 1)
         x <- t(x)
     if (NCOL(x) > 1)
-        stop("Input data for Bar Pictographs must be a vector.")
-    stat <- attr(x, "statistic")
+    {
+        warning("Only the first series will be shown.")
+        x <- x[,1]
+    }
     x <- checkMatrixNames(x)[,1]
     n <- NROW(x)
 
     # Set default values
     if (is.na(scale))
-        scale <- 10^{round(log10(max(x)) - 1)}
+        scale <- 10^{floor(log10(max(x)))}
     if (is.na(total.icons))
         total.icons <- ceiling(max(x)/scale)
     raw.x <- x
