@@ -132,13 +132,15 @@ getRange <- function(x, axis, axisFormat)
         }
         else if (is.numeric(x)) # this can contain NAs
         {
-            diff <- abs(min(diff(sort(x)), na.rm = TRUE))
+            diff <- if (length(x) == 1) 1
+                    else abs(min(diff(sort(x)), na.rm = TRUE))
             range <- range(x) + c(-0.5, 0.5) * diff
         }
         else if (all(!is.na(suppressWarnings(as.numeric(x)))))
         {
             tmp <- as.numeric(x)
-            diff <- abs(min(diff(sort(tmp)), na.rm = TRUE))
+            diff <- if (length(x) == 1) 1
+                    else abs(min(diff(sort(tmp)), na.rm = TRUE))
             range <- range(tmp) + c(-0.5, 0.5) * diff
         }
         else if (all(!is.na(suppressWarnings(AsDateTime(x, on.parse.failure = "silent")))))
