@@ -130,10 +130,17 @@ getRange <- function(x, axis, axisFormat)
             diff <- min(diff(tmp.dates), na.rm=T)
             range <- range(tmp.dates) + c(-1, 1) * diff
         }
-        else if (is.numeric(x))
-            range <- range(x) + c(-0.5, 0.5)
+        else if (is.numeric(x)) # this can contain NAs
+        {
+            diff <- abs(min(diff(sort(x)), na.rm = TRUE))
+            range <- range(x) + c(-0.5, 0.5) * diff
+        }
         else if (all(!is.na(suppressWarnings(as.numeric(x)))))
-            range <- range(as.numeric(x)) + c(-0.5, 0.5)
+        {
+            tmp <- as.numeric(x)
+            diff <- abs(min(diff(sort(tmp)), na.rm = TRUE))
+            range <- range(tmp) + c(-0.5, 0.5) * diff
+        }
         else if (all(!is.na(suppressWarnings(AsDateTime(x, on.parse.failure = "silent")))))
             range <- range(AsDateTime(x))
         else
@@ -346,7 +353,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
             range <- rev(getDateAxisRange(axisLabels$ymd))
         else if (axis.type == "numeric")
         {
-            range <- rev(range(as.numeric(axisLabels$labels))) + c(0.5, -0.5)
+            range <- rev(getRange(axisLabels$labels, NULL, NULL))
             if (show.zero)
             {
                 range[2] <- min(range[2], 0)
