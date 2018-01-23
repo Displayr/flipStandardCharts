@@ -46,9 +46,9 @@ Area(x, type = "Area", fit.type = "None", fit.ignore.last = FALSE,
   x.zero.line.width = 0, x.zero.line.color = rgb(225, 225, 225,
   maxColorValue = 255), x.data.reversed = FALSE, x.grid.width = 0 *
   grid.show, x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
-  x.tick.show = TRUE, x.tick.format = "",
-  x.hovertext.format = x.tick.format, x.tick.angle = NULL,
-  x.tick.font.color = global.font.color,
+  x.tick.show = TRUE, x.tick.suffix = "", x.tick.prefix = "",
+  x.tick.format = "", x.hovertext.format = x.tick.format,
+  x.tick.angle = NULL, x.tick.font.color = global.font.color,
   x.tick.font.family = global.font.family, x.tick.font.size = 10,
   x.tick.label.wrap = TRUE, x.tick.label.wrap.nchar = 21,
   line.thickness = NULL, line.colors = colors, line.opacity = 1,
@@ -296,6 +296,10 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{x.tick.show}{Whether to display the x-axis tick labels}
+
+\item{x.tick.suffix}{x-axis tick label suffix}
+
+\item{x.tick.prefix}{x-axis tick label prefix}
 
 \item{x.tick.format}{A string representing a d3 formatting code.
 See https://github.com/mbostock/d3/wiki/Formatting#numbers}

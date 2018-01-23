@@ -144,6 +144,8 @@
 #' @param x.grid.color Color of y-grid lines as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param x.tick.show Whether to display the x-axis tick labels
+#' @param x.tick.suffix x-axis tick label suffix
+#' @param x.tick.prefix x-axis tick label prefix
 #' @param x.tick.format A string representing a d3 formatting code.
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers
 #' @param x.hovertext.format A string representing a d3 formatting code.
@@ -283,6 +285,8 @@ Column <- function(x,
                     x.grid.width = 0 * grid.show,
                     x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                     x.tick.show = TRUE,
+                    x.tick.suffix = "",
+                    x.tick.prefix = "",
                     x.tick.format = "",
                     x.hovertext.format = x.tick.format,
                     x.tick.angle = NULL,
@@ -394,7 +398,7 @@ Column <- function(x,
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, x.tick.format,
-                  "", "", x.tick.show, x.zero, x.zero.line.width, x.zero.line.color,
+                  x.tick.prefix, x.tick.suffix, x.tick.show, x.zero, x.zero.line.width, x.zero.line.color,
                   x.hovertext.format, axisFormat$labels, num.series = NCOL(chart.matrix))
 
     # Work out margin spacing
@@ -403,7 +407,7 @@ Column <- function(x,
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
     margins <- setMarginsForLegend(margins, legend.show, legend, colnames(chart.matrix))
-    margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left, 
+    margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
     footer.axis <- setFooterAxis(footer, footer.font, margins)
 
