@@ -125,6 +125,8 @@ Area <- function(x,
                     x.grid.width = 0 * grid.show,
                     x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                     x.tick.show = TRUE,
+                    x.tick.suffix = "",
+                    x.tick.prefix = "",
                     x.tick.format = "",
                     x.hovertext.format = x.tick.format,
                     x.tick.angle = NULL,
@@ -262,7 +264,7 @@ Area <- function(x,
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance,
-                  x.tick.format, "", "", x.tick.show, x.zero, x.zero.line.width, x.zero.line.color,
+                  x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show, x.zero, x.zero.line.width, x.zero.line.color,
                   x.hovertext.format, axisFormat$labels)
 
     # Work out margin spacing
@@ -271,7 +273,7 @@ Area <- function(x,
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
     margins <- setMarginsForLegend(margins, legend.show, legend, colnames(chart.matrix))
-    margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left, 
+    margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
     footer.axis <- setFooterAxis(footer, footer.font, margins)
 
@@ -287,7 +289,7 @@ Area <- function(x,
     # This must happen before ANY of the area traces are put in
     # to avoid plotly bug
     if (data.label.show)
-        p <- add_trace(p, type = plotly.type, mode = "markers", 
+        p <- add_trace(p, type = plotly.type, mode = "markers",
                    x = x.labels, y = apply(chart.matrix, 1, max, na.rm = TRUE) * 1.01,
                    marker = list(color = "red", opacity = 0.0),
                    hoverinfo = "none", showlegend = FALSE)
@@ -413,7 +415,7 @@ Area <- function(x,
             if (fit.type != "None" && is.stacked && i == 1)
                 warning("Line of best fit not shown for stacked charts.")
             fill.bound <- if (is.stacked && i > 1) "tonexty" else "tozeroy"
-            
+
             # plotly has bug where for stacked area charts,
             # text and line must occur together as a single trace
             y.label <- y.labels[i]

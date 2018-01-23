@@ -79,6 +79,8 @@ Bar <- function(x,
                     y.grid.width = 0 * grid.show,
                     y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                     y.tick.show = TRUE,
+                    y.tick.suffix = "",
+                    y.tick.prefix = "",
                     y.tick.format= "",
                     y.hovertext.format= y.tick.format,
                     y.tick.angle = NULL,
@@ -200,7 +202,7 @@ Bar <- function(x,
     yaxis <- setAxis(y.title, "left", axisFormat, y.title.font,
                   y.line.color, y.line.width, y.grid.width * grid.show, y.grid.color,
                   ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance,
-                  y.tick.format, "", "", y.tick.show,
+                  y.tick.format, y.tick.prefix, y.tick.suffix, y.tick.show,
                   y.zero, y.zero.line.width, y.zero.line.color,
                   y.hovertext.format)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
@@ -217,7 +219,7 @@ Bar <- function(x,
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
     margins <- setMarginsForLegend(margins, legend.show, legend, colnames(chart.matrix))
-    margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left, 
+    margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
     footer.axis <- setFooterAxis(footer, footer.font, margins)
 

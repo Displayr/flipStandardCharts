@@ -34,9 +34,9 @@ Bar(x, type = "Bar", fit.type = "None", fit.ignore.last = FALSE,
   y.zero.line.width = 0, y.zero.line.color = rgb(225, 225, 225,
   maxColorValue = 255), y.data.reversed = FALSE, y.grid.width = 0 *
   grid.show, y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
-  y.tick.show = TRUE, y.tick.format = "",
-  y.hovertext.format = y.tick.format, y.tick.angle = NULL,
-  y.tick.font.color = global.font.color,
+  y.tick.show = TRUE, y.tick.suffix = "", y.tick.prefix = "",
+  y.tick.format = "", y.hovertext.format = y.tick.format,
+  y.tick.angle = NULL, y.tick.font.color = global.font.color,
   y.tick.font.family = global.font.family, y.tick.font.size = 10,
   x.title = "", x.title.font.color = global.font.color,
   x.title.font.family = global.font.family, x.title.font.size = 12,
@@ -226,6 +226,10 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{y.tick.show}{Whether to display the y-axis tick labels}
+
+\item{y.tick.suffix}{y-axis tick label suffix}
+
+\item{y.tick.prefix}{y-axis tick label prefix}
 
 \item{y.tick.format}{A string representing a d3 formatting code.
 See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
