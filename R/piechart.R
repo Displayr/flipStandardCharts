@@ -177,11 +177,10 @@ Pie <- function(x,
 
     # Convert pie.inner.radius to character
     inner.radius <- paste(pie.inner.radius, "%", sep = "")
-    values.display.as <- if (as.percentages) "percentage" else "original"
     if (as.percentages)
     {
         data.label.suffix <- paste0("%", data.label.suffix)
-        #y.values <- y.values * 100
+        y.values <- y.values * 100
     }
 
     Donut(values = y.values,
@@ -191,7 +190,7 @@ Pie <- function(x,
           values.font.family = data.label.font.family,
           values.font.size = data.label.font.size,
           values.decimal.places = data.label.decimals,
-          values.display.as = values.display.as,
+          values.display.as = "original",
           values.display.thres = pie.data.threshold * 100,
           labels.font.family = data.label.font.family,
           labels.font.color = data.label.font.color,
