@@ -13,7 +13,8 @@ dat <- structure(c(0, 22, 18, 15, 16, 19, 13, 18, 27, 12, 0, 22, 21,
 filler.text <- "Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
 
 # Pie charts do not yet have title/subtitle/footers
-funcs <- c("Column", "Bar", "Area", "Line", "Scatter", "LabeledScatter", "Radar")
+dist.funcs <- c("Box", "Bean", "Density", "Histogram", "Violin")
+funcs <- c("Column", "Bar", "Area", "Line", "Scatter", "LabeledScatter", "Radar", "Pie", dist.funcs)
 test.cases <- c('footer' = 'dat, footer = filler.text',
                 'footer-size5' = 'dat, footer = filler.text, footer.font.size = 5, footer.font.color = "red"',
                 'footer-xtitle' = 'dat, footer = filler.text, x.title = "Some label<br>which goes over two lines", x.title.font.size=20, footer.wrap.nchar = 150',
@@ -24,15 +25,17 @@ for (ff in funcs)
     for (i in 1:length(test.cases))
     {
         filestem <- paste0("margin-", tolower(ff), "-", names(test.cases)[i])
+        if (grepl("footer-xtitle", filestem) && ff %in% c(dist.funcs, "Pie", "Radar"))
+            next
+        if (filestem == "margin-radar-footer-xtitle")
+            next
         test_that(filestem, {
 
             cmd <- paste0("pp <-", ff, "(", test.cases[i], ")")
-            if (filestem == "margin-radar-footer-xtitle")
-                expect_error(eval(parse(text=cmd)))
-            #else if (grepl("scatter", filestem))
-            #    expect_warning(eval(parse(text=cmd)))
-            else
-                expect_error(eval(parse(text=cmd)), NA)
+            expect_error(eval(parse(text=cmd)), NA)
+
+            #print(pp)
+            #readline(prompt=paste0(filestem, ": press [enter] to continue: "))
         })
     }
 }
