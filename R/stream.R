@@ -63,12 +63,8 @@ Stream <- function(x,
         stop("Stream requires numeric data to be plotted along the y-axis. ",
              "Change 'Chart type' to 'Table' to see the input data.")
 
-    if (x.tick.units == "Automatic") {
-        if (x.axis.type == "date")
-            x.tick.units <- "Month"
-        else
-            x.tick.units <- "Number"
-    }
+    if (x.tick.units == "Automatic" && x.axis.type != "date")
+        x.tick.units <- "Number"
 
     if (x.tick.units == "Number")
     {
@@ -80,7 +76,7 @@ Stream <- function(x,
         if (any(is.na((columns))))
             columns <- 1:ncol(x)
 
-        # convert x.tick.interval to a number of ticks since that is how it is treated for numeric axes
+        # convert x.tick.interval to a number of ticks as required in sg_axis_x for numeric axes
         if (x.tick.interval == 0)
             x.tick.interval <- 5
         else
@@ -97,7 +93,26 @@ Stream <- function(x,
             stop("x-axis tick format and units are incompatible.")
         columns <- AsDateTime(columns, on.parse.failure = "silent")
         if (x.tick.interval == 0)
-            x.tick.interval <- 3
+        {
+            r <- range(columns)
+            day.range <- r[2] - r[1]
+            if (x.tick.units == "Automatic")
+            {
+                if (day.range < 90)
+                    x.tick.units <- "Day"
+                else if (day.range < 367)
+                    x.tick.units <- "Month"
+                else
+                    x.tick.units <- "Year"
+            }
+            if (x.tick.units == "Day")
+                x.tick.interval <- day.range / 5
+            else if (x.tick.units == "Month")
+                x.tick.interval <- day.range / 30 / 5
+            else
+                x.tick.interval <- day.range / 365 / 5
+        }
+        x.tick.interval <- as.integer(x.tick.interval)
     }
 
     x <- round(x, decimalsFromD3(values.hovertext.format, 2))
