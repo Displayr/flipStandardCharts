@@ -78,6 +78,10 @@ Stream <- function(x,
         columns <- suppressWarnings(as.integer(columns))
         if (any(is.na((columns))))
             columns <- 1:ncol(x)
+
+        # convert x.tick.interval to a number of ticks since that is how it is treated for numeric axes
+        r <- range(columns)
+        x.tick.interval <- (r[2] - r[1]) / (x.tick.interval)
     }
     else
     {
