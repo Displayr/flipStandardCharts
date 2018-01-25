@@ -38,7 +38,7 @@ test_that("Stream",
 
               # Automatic formatting
 
-              Stream(dat, x.tick.interval = 6, x.tick.units = "Automatic", x.tick.format = "")
+              Stream(dat, x.tick.interval = 0, x.tick.units = "Automatic", x.tick.format = "")
               Stream(dat, x.tick.interval = 6, x.tick.units = "Automatic", x.tick.format = "%Y")
 
               # Yearly data
@@ -101,7 +101,7 @@ test_that("Stream",
               rownames(dat) <- 0:(nrow(dat) - 1)
               expect_error(Stream(dat, x.tick.interval = 3, x.tick.format = "", x.tick.units = "Month"),"x-axis tick format and units are incompatible.")
               Stream(dat, x.tick.interval = 3, x.tick.format = "", x.tick.units = "Number")
-              Stream(dat, x.tick.interval = 3, x.tick.format = "")
+              Stream(dat, x.tick.interval = 0, x.tick.format = "")
               Stream(dat, x.tick.interval = 5, x.tick.format = ".0f")
               Stream(dat, x.tick.interval = 10, x.tick.format = ".2f")
               Stream(dat, x.tick.interval = 12, x.tick.format = ",.0f")
