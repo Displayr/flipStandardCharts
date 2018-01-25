@@ -312,7 +312,7 @@ Distribution <-   function(x,
 
     # Work out margin spacing
     margins <- list(t = 20, b = 50, r = 60, l = 80, pad = 0)
-    margins <- setMarginsForText(margins, title, "abc", "abc", title.font.size,
+    margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  10, 10)
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, 0)
