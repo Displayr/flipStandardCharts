@@ -92,19 +92,19 @@ Stream <- function(x,
         if (d3FormatType(x.tick.format) != "date" || x.axis.type != "date")
             stop("x-axis tick format and units are incompatible.")
         columns <- AsDateTime(columns, on.parse.failure = "silent")
+        r <- range(columns)
+        day.range <- r[2] - r[1]
+        if (x.tick.units == "Automatic")
+        {
+            if (day.range < 90)
+                x.tick.units <- "Day"
+            else if (day.range < 367)
+                x.tick.units <- "Month"
+            else
+                x.tick.units <- "Year"
+        }
         if (x.tick.interval == 0)
         {
-            r <- range(columns)
-            day.range <- r[2] - r[1]
-            if (x.tick.units == "Automatic")
-            {
-                if (day.range < 90)
-                    x.tick.units <- "Day"
-                else if (day.range < 367)
-                    x.tick.units <- "Month"
-                else
-                    x.tick.units <- "Year"
-            }
             if (x.tick.units == "Day")
                 x.tick.interval <- day.range / 5
             else if (x.tick.units == "Month")
