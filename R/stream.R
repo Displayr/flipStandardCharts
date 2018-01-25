@@ -112,7 +112,7 @@ Stream <- function(x,
             else
                 x.tick.interval <- day.range / 365 / 5
         }
-        x.tick.interval <- as.integer(x.tick.interval)
+        x.tick.interval <- ceiling(x.tick.interval)
     }
 
     x <- round(x, decimalsFromD3(values.hovertext.format, 2))
