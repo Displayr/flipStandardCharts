@@ -13,6 +13,7 @@
 #' See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format
 #' @param x.tick.units "Automatic", "Number", "Day", "Month" or "Year".
 #' @param x.tick.interval The frequency of ticks on the x-axis. Where the data crosses multiple years, re-starts at each year.
+#' If this is zero, it is determined from the data.
 #' @param margin.top Top margin (default should be fine, this allows for fine-tuning plot space)
 #' @param margin.right Right margin (default should be fine, this allows for fine-tuning plot space)
 #' @param margin.bottom Bottom margin (default should be fine, this allows for fine-tuning plot space)
@@ -80,8 +81,13 @@ Stream <- function(x,
             columns <- 1:ncol(x)
 
         # convert x.tick.interval to a number of ticks since that is how it is treated for numeric axes
-        r <- range(columns)
-        x.tick.interval <- (r[2] - r[1]) / (x.tick.interval)
+        if (x.tick.interval == 0)
+            x.tick.interval <- 5
+        else
+        {
+            r <- range(columns)
+            x.tick.interval <- (r[2] - r[1]) / (x.tick.interval)
+        }
     }
     else
     {
@@ -90,6 +96,8 @@ Stream <- function(x,
         if (d3FormatType(x.tick.format) != "date" || x.axis.type != "date")
             stop("x-axis tick format and units are incompatible.")
         columns <- AsDateTime(columns, on.parse.failure = "silent")
+        if (x.tick.interval == 0)
+            x.tick.interval <- 3
     }
 
     x <- round(x, decimalsFromD3(values.hovertext.format, 2))
