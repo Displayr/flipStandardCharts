@@ -76,7 +76,7 @@ Stream <- function(x,
             x.tick.format = ".0f"
         if (d3FormatType(x.tick.format) != "numeric" || x.axis.type != "numeric")
             stop("x-axis tick format and units are incompatible.")
-        columns <- suppressWarnings(as.integer(columns))
+        columns <- suppressWarnings(as.numeric(columns))
         if (any(is.na((columns))))
             columns <- 1:ncol(x)
 
