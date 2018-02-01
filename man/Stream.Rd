@@ -31,7 +31,8 @@ See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 
 \item{x.tick.units}{"Automatic", "Number", "Day", "Month" or "Year".}
 
-\item{x.tick.interval}{The frequency of ticks on the x-axis. Where the data crosses multiple years, re-starts at each year.}
+\item{x.tick.interval}{The frequency of ticks on the x-axis. Where the data crosses multiple years, re-starts at each year.
+If this is zero, it is determined from the data.}
 
 \item{margin.top}{Top margin (default should be fine, this allows for fine-tuning plot space)}
 

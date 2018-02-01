@@ -122,7 +122,7 @@ Scatter <- function(x = NULL,
                          scatter.colors = NULL,
                          scatter.colors.name = NULL,
                          scatter.colors.column = 4,
-                         scatter.colors.as.categorical = FALSE,
+                         scatter.colors.as.categorical = TRUE,
                          scatter.labels.as.hovertext = TRUE,
                          scatter.max.labels = 50,
                          colors = ChartColors(12),
@@ -242,13 +242,17 @@ Scatter <- function(x = NULL,
 {
     # Use labeled scatterplots if multiple tables are provided
     if (is.list(x) && !is.data.frame(x) |     # Use labeled scatterplots if labels are provided in (row)names
-         !scatter.labels.as.hovertext &&
-        (!is.null(rownames(x))|| (length(dim(x)) < 2 && !is.null(names(x)))))
+         !scatter.labels.as.hovertext)
     {
-        cl <- as.list(match.call())
-        cl <- cl[-1]
-        cl$scatter.labels.as.hovertext <- NULL
-        return(do.call(LabeledScatter, cl))
+        if (!is.null(rownames(x))|| (length(dim(x)) < 2 && !is.null(names(x))))
+        {
+            cl <- as.list(match.call())
+            cl <- cl[-1]
+            cl$scatter.labels.as.hovertext <- NULL
+            return(do.call(LabeledScatter, cl))
+        }
+        else if (!scatter.labels.as.hovertext)
+            warning("Labels not provided.")
     }
 
     # Grouping font attributes to simplify passing to plotly
@@ -302,6 +306,12 @@ Scatter <- function(x = NULL,
     }
     if (is.null(scatter.labels) && !is.null(names(x)))
         scatter.labels <- names(x)
+
+    # Warning if non-default selected but corresponding data is missing
+    if (is.null(scatter.sizes) && scatter.sizes.as.diameter)
+        warning("'Sizes' variable not provided.")
+    if (is.null(scatter.colors) && !scatter.colors.as.categorical)
+        warning("'Colors' variable not provided.")
 
     # Basic data checking
     if (is.null(x) && is.null(y))
