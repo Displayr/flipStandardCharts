@@ -663,9 +663,16 @@ lineBreakEveryN <- function(x, n = 21)
 
 autoFormatLongLabels <- function(x, wordwrap = FALSE, n = 21, truncate = TRUE)
 {
-    output.text <- if (truncate) output.text <- sapply(x, function(x)
+    tmp <- NULL
+    if (truncate)
+    {
+        tmp <- sapply(x, function(x)
                         {ifelse(nchar(x) > 60, paste(substr(x, 1, 57),"...", sep = ""), x)})
-                   else x
+        if (anyDuplicated(tmp))
+            tmp <- NULL
+    }
+    output.text <- if (!is.null(tmp)) tmp
+                   else               x
 
     if (wordwrap && length(output.text) > 0)
         output.text <- sapply(output.text, function(x) lineBreakEveryN(x, n))
