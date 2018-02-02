@@ -1,29 +1,40 @@
-#' \code{GeographicRegionRowNames} Names of geographic regions.
+#' \code{CountriesOrContinents} Names of geographic regions.
 #'
 #' Returns the list of unique geographic names that can be used when creating a
 #' WorldMap.
 #'
-#' @param type The name of the geographic region type. See
+#' @param type The name of the geographic region type or "country". See
 #'   \code{\link{GeographicRegionTypes}}
 #'
 #' @examples
-#' GeographicRegionRowNames("name")
-#' GeographicRegionRowNames("continent")
+#' CountriesOrContinents("country")
+#' CountriesOrContinents("continent")
 #'
 #' @export
-GeographicRegionRowNames <- function(type)
+CountriesOrContinents <- function(type)
 {
-    #data("map.coordinates.50", package = "flipGeographicCoordinates")
-    # Make sure the dataset gets loaded
-    #invisible(map.coordinates.50)
-
     requireNamespace("sp")
+    if (type == "country")
+        type <- "name"
+
     type.names <- map.coordinates.50[[type]]
 
     if (is.factor(type.names))
         levels(type.names)
     else
         unique(type.names)
+}
+
+#' \code{GeographicRegionRowNames} Names of geographic regions.
+#'
+#' Deprecated - use \code{\link{CountriesOrContinents}}
+#'
+#' @param type The name of the geographic region type. See
+#'   \code{\link{GeographicRegionTypes}}
+#' @export
+GeographicRegionRowNames <- function(type)
+{
+    return(CountriesOrContinents(type))
 }
 
 
@@ -41,11 +52,6 @@ GeographicRegionTypes <- function()
     requireNamespace("sp")
     names(map.coordinates.50)
 }
-# # Reading the coordinates.
-# getCoordinates <- function()
-# {
-#     return(rgdal::readOGR("https://raw.github.com/datasets/geo-boundaries-world-110m/master/countries.geojson", "OGRGeoJSON"))
-# }
 
 
 #' Get the states in a country
@@ -56,7 +62,7 @@ GeographicRegionTypes <- function()
 #'
 #' @param country The country to look at
 #' @export
-#' @seealso \code{\link{GeographicRegionRowNames}}
+#' @seealso \code{\link{CountriesOrContinents}}
 StatesInCountry <- function(country)
 {
     country <- tidyCountryName(country)
@@ -87,6 +93,7 @@ tidyCountryName <- function(country)
         rm(admin)
     }
 
+    #if (!(country %in% names(admin0.name.map.by.admin)))
     if (!(country %in% levels(admin1.coordinates$admin)))
         stop("Country '", country, "' not found.")
 

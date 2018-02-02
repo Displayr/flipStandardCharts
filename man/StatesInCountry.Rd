@@ -15,5 +15,5 @@ You can use this function to look up the correct names of the states for the
 country that you are interested in.
 }
 \seealso{
-\code{\link{GeographicRegionRowNames}}
+\code{\link{CountriesOrContinents}}
 }
