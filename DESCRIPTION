@@ -32,7 +32,8 @@ Imports:
     rhtmlPictographs,
     sp,
     streamgraph,
-    stringr
+    stringr,
+    xts
 Remotes:
     Displayr/flipU,
     Displayr/flipChartBasics,

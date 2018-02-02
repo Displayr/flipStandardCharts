@@ -41,7 +41,8 @@
 #' @param y.tick.font.size y-axis tick label font size
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom dygraphs dygraph dySeries dyCSS dyRangeSelector %>% dyOptions dyLegend
-#' @importFrom flipTime AsDate
+#' @importFrom flipTime AsDate AsDateTime
+#' @importFrom xts xts
 #' @export
 TimeSeries <- function(x = NULL,
                     range.bars = FALSE,
@@ -89,6 +90,16 @@ TimeSeries <- function(x = NULL,
 
     names(colors) <- NULL # Remove names because named chr is (oddly!) ignored by dygraph
 
+    range.end <- as.POSIXct(rownames(x)[length(rownames(x))])
+    if (is.null(window.start))
+        range.start <- as.POSIXct(rownames(x)[1])
+    else
+        range.start <- max(range.end - 60 * 60 * 24 * window.start, as.POSIXct(rownames(x)[1]))
+
+    # Convert to an xts object with timezone, or else this is done within dygraph and takes the
+    # system timezone, which causes a difference between the data and the output.
+    x <- xts(x, order.by = AsDateTime(rownames(x)), tzone = "UTC")
+
     # Controlling the formatting of the dygraphs via the CSS
     css <- paste0(".dygraph-title {
         color: ", title.font.color, ";
@@ -118,17 +129,12 @@ TimeSeries <- function(x = NULL,
         }")
 
     write(css, "dygraph.css")
-    range.end <- as.POSIXct(rownames(x)[length(rownames(x))])
-    if (is.null(window.start))
-        range.start <- as.POSIXct(rownames(x)[1])
-    else
-        range.start <- max(range.end - 60 * 60 * 24 * window.start, as.POSIXct(rownames(x)[1]))
 
     dg <- dygraph(x, main = title, xlab = x.title, ylab = y.title)
     if (range.bars)
         dg <- dySeries(dg, colnames(x), label = colnames(x)[2], color = colors, strokeWidth = line.thickness)
     else
-        dg <- dyOptions(dg, colors = colors, strokeWidth = line.thickness)
+        dg <- dyOptions(dg, colors = colors, strokeWidth = line.thickness, useDataTimezone = TRUE)
     dg <- dyCSS(dg, "dygraph.css")
 
     if (!range.bars && ncol(x) != 1)
