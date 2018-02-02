@@ -361,8 +361,8 @@ Radar <- function(x,
         # X-axis label widths are fixed to avoid the chart width changing in
         # Standard R regression tests. We avoided fixing the x-axis range
         # because autorange handles variation in the xaxis labels quite well
-        xlab.width <- (font.asp + 0.5) * x.tick.font.size *
-                        max(nchar(unlist(strsplit(split="<br>", as.character(xlab)))))
+        xlab.width <- min(500,(font.asp + 0.5) * x.tick.font.size *
+                        max(nchar(unlist(strsplit(split="<br>", as.character(xlab))))))
         xlabels <- list(x = outer[,1], y = outer[,2], text = xlab,
                     width = xlab.width, font = x.tick.font,
                     showarrow = F, yshift = outer[1:n,2]/r.max * 15,
