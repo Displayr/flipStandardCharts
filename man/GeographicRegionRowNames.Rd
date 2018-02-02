@@ -11,11 +11,5 @@ GeographicRegionRowNames(type)
 \code{\link{GeographicRegionTypes}}}
 }
 \description{
-Returns the list of unique geographic names that can be used when creating a
-WorldMap.
-}
-\examples{
-GeographicRegionRowNames("name")
-GeographicRegionRowNames("continent")
-
+Deprecated - use \code{\link{CountriesOrContinents}}
 }
