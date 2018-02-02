@@ -395,14 +395,18 @@ setAxis <- function(title, side, axisLabels, titlefont,
     if (gridwidth == 0)
         zero.line.color <- rgb(1, 1, 1, alpha = 0) # invisible
 
+    # Specify max number of ticks but not for distribution charts
+    nticks <- NULL
+    if (!(length(axisLabels$labels) == 1 && axisLabels$labels[1] == 0))
+        nticks <- length(axisLabels$labels) + 1
+
     return (list(title = title, side = side, type = axis.type,
                  titlefont = titlefont, tickfont = tickfont,
                  showline = has.line, linecolor = linecolor,
                  linewidth = if (!has.line) NULL else linewidth,
                  showgrid = gridwidth > 0, gridwidth = gridwidth,
-                 gridcolor = gridcolor, tickmode = ticks$mode,
+                 gridcolor = gridcolor, tickmode = ticks$mode, nticks = nticks,
                  tickvals = ticks$tickvals, ticktext = ticks$ticktext, 
-                 nticks = length(axisLabels$labels) + 1, 
                  ticks = if (has.line) "outside" else "", tickangle = tickangle,
                  ticklen = ticklen, tickcolor = linecolor, tickfont = tickfont,
                  dtick = tickdistance, tickformat = tickformat,
