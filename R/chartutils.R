@@ -398,7 +398,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
     # Specify max number of ticks but not for distribution charts
     nticks <- NULL
     if (!(length(axisLabels$labels) == 1 && axisLabels$labels[1] == 0))
-        nticks <- length(axisLabels$labels) + 1
+        nticks <- min(length(axisLabels$labels) + 1, 20)
 
     return (list(title = title, side = side, type = axis.type,
                  titlefont = titlefont, tickfont = tickfont,
@@ -406,7 +406,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
                  linewidth = if (!has.line) NULL else linewidth,
                  showgrid = gridwidth > 0, gridwidth = gridwidth,
                  gridcolor = gridcolor, tickmode = ticks$mode, nticks = nticks,
-                 tickvals = ticks$tickvals, ticktext = ticks$ticktext, 
+                 tickvals = ticks$tickvals, ticktext = ticks$ticktext,
                  ticks = if (has.line) "outside" else "", tickangle = tickangle,
                  ticklen = ticklen, tickcolor = linecolor, tickfont = tickfont,
                  dtick = tickdistance, tickformat = tickformat,
