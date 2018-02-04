@@ -136,10 +136,10 @@ TimeSeries <- function(x = NULL,
     if (range.bars)
     {
         dg <- dySeries(dg, colnames(x), label = colnames(x)[2], color = colors, strokeWidth = line.thickness)
-        dg <- dyOptions(dg, useDataTimezone = TRUE)
+        dg <- dyOptions(dg, useDataTimezone = is.time)
     }
     else
-        dg <- dyOptions(dg, colors = colors, strokeWidth = line.thickness, useDataTimezone = TRUE)
+        dg <- dyOptions(dg, colors = colors, strokeWidth = line.thickness, useDataTimezone = is.time)
     dg <- dyCSS(dg, "dygraph.css")
 
     if (!range.bars && ncol(x) != 1)
