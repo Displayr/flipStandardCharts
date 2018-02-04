@@ -75,10 +75,11 @@ TimeSeries <- function(x = NULL,
     if (is.null(dim(x)) || length(dim(x)) == 1L)
         x <- as.matrix(x)
 
-    is.time <- !all(strftime(rownames(x), format = "%H:%M:%S") == "00:00:00")
-    rownames(x) <- as.character(AsDateTime(rownames(x), on.parse.failure = "silent"))
-    if (all(is.na(rownames(x))))
+    row.names <- AsDateTime(rownames(x), on.parse.failure = "silent")
+    if (all(is.na(row.names)))
         stop("Rownames of input cannot be parsed to date.")
+    is.time <- !all(format(row.names, format = "%H:%M:%S") == "00:00:00")
+    rownames(x) <- as.character(row.names)
 
     if (range.bars)
     {
