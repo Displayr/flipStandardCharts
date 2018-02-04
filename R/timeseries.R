@@ -75,6 +75,7 @@ TimeSeries <- function(x = NULL,
     if (is.null(dim(x)) || length(dim(x)) == 1L)
         x <- as.matrix(x)
 
+    is.time <- !all(strftime(rownames(x), format = "%H:%M:%S") == "00:00:00")
     rownames(x) <- as.character(AsDateTime(rownames(x), on.parse.failure = "silent"))
     if (all(is.na(rownames(x))))
         stop("Rownames of input cannot be parsed to date.")
@@ -96,9 +97,10 @@ TimeSeries <- function(x = NULL,
     else
         range.start <- max(range.end - 60 * 60 * 24 * window.start, as.POSIXct(rownames(x)[1]))
 
-    # Convert to an xts object with timezone, or else this is done within dygraph and takes the
-    # system timezone, which causes a difference between the data and the output.
-    x <- xts(x, order.by = AsDateTime(rownames(x)), tzone = "UTC")
+    # Convert to an xts object with UTC timezone, or else this is done within dygraph which takes the
+    # system timezone, which causes a difference between the data times and the x-axis times.
+    if (is.time)
+        x <- xts(x, order.by = AsDateTime(rownames(x)), tzone = "UTC")
 
     # Controlling the formatting of the dygraphs via the CSS
     css <- paste0(".dygraph-title {
@@ -132,7 +134,10 @@ TimeSeries <- function(x = NULL,
 
     dg <- dygraph(x, main = title, xlab = x.title, ylab = y.title)
     if (range.bars)
+    {
         dg <- dySeries(dg, colnames(x), label = colnames(x)[2], color = colors, strokeWidth = line.thickness)
+        dg <- dyOptions(dg, useDataTimezone = TRUE)
+    }
     else
         dg <- dyOptions(dg, colors = colors, strokeWidth = line.thickness, useDataTimezone = TRUE)
     dg <- dyCSS(dg, "dygraph.css")
