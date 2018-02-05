@@ -397,8 +397,8 @@ setAxis <- function(title, side, axisLabels, titlefont,
 
     # Specify max number of ticks but not for distribution charts
     nticks <- NULL
-    if (!(length(axisLabels$labels) == 1 && axisLabels$labels[1] == 0))
-        nticks <- min(length(axisLabels$labels) + 1, 20)
+    if (!(length(axisLabels$labels) == 1 && is.numeric(axisLabels$labels)))
+        nticks <- min(length(axisLabels$labels) + 1, 11)
 
     return (list(title = title, side = side, type = axis.type,
                  titlefont = titlefont, tickfont = tickfont,
