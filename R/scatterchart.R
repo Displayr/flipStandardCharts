@@ -241,10 +241,9 @@ Scatter <- function(x = NULL,
                          swap.x.and.y = FALSE)
 {
     # Use labeled scatterplots if multiple tables are provided
-    if (is.list(x) && !is.data.frame(x) |     # Use labeled scatterplots if labels are provided in (row)names
-         !scatter.labels.as.hovertext)
+    if ((is.list(x) && !is.data.frame(x)) || !scatter.labels.as.hovertext)
     {
-        if (!is.null(rownames(x))|| (length(dim(x)) < 2 && !is.null(names(x))))
+        if (is.list(x) || !is.null(rownames(x))|| (length(dim(x)) < 2 && !is.null(names(x))))
         {
             cl <- as.list(match.call())
             cl <- cl[-1]
