@@ -71,11 +71,7 @@ Pie <- function(x,
     ErrorIfNotEnoughData(x)
     groups <- NULL
 
-    # Convert tables to matrices and retain names
-    if (length(dim(x)) == 1)
-        x <- as.matrix(x)
-
-    if (is.null(dim(x)))
+    if (is.null(dim(x)) || length(dim(x)) == 1)
     {
         x.labels <- names(x)
         if (is.null(x.labels))
