@@ -95,8 +95,6 @@ Palm <- function(table,
                                       tooltips.heading.font.size = x.title.font.size,
                                       tooltips.heading.font.family = legend.font.family,
                                       y.show = y.axis.show,
-                                      y.prefix = NULL,                 # prefix of y axis ticks, overridden by prefix
-                                      y.suffix = NULL,                 # suffix of y axis ticks. overridden by suffix
                                       y.digits = y.decimals,           # number of decimal places of the y axis
                                       y.font.size = y.tick.font.size,
                                       y.font.family = y.tick.font.family,
@@ -105,7 +103,6 @@ Palm <- function(table,
                                       y.lab.font.family = y.title.font.family,
                                       prefix = y.tick.prefix,                   # prefix of numbers in the tooltips and y axis
                                       suffix = y.tick.suffix,                   # suffix of numbers in the tooltips and y axis
-                                      column.as.heights = NULL,        # not exposed - which column to use as tree heights
                                       colors = colors,          # colors of the leaves
                                       digits = y.decimals,      # number of decimal places in the tooltips
                                       order = "original")       # not exposed since user can change by amending input data
