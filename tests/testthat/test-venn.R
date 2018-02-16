@@ -1,7 +1,4 @@
 context("Venn")
-#devtools::install_github("timelyportfolio/d3vennR")
-#library(d3vennR)
-#?d3vennR
 
 test_that("Venn",
           {
@@ -146,5 +143,7 @@ test_that("Venn",
                 expect_error(Venn(x[,1:6]))
                 # Numeric input - 1D
                 expect_error(Venn(x[,1]))
+                # Factor input
+                expect_error(Venn(data.frame(sapply(x, as.factor))))
           })
 

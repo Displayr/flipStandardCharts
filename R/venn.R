@@ -36,6 +36,10 @@ Venn <- function(x = NULL,
     suffix <- ""
     if (is.data.frame(x))
     {
+        if (any(sapply(x, is.factor)))
+            stop("Data must consist of numeric (0 or 1) or logical (TRUE or FALSE) values ",
+                 "indicating which cases (rows) are included in which sets (columns).")
+
         nms = Labels(x)
         if (is.null(weights))
             weights <- rep(1, nrow(x))
