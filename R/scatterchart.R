@@ -532,13 +532,10 @@ Scatter <- function(x = NULL,
         x <- AsDateTime(as.character(x), on.parse.failure = "silent")
     if (yaxis$type == "date")
         y <- AsDateTime(as.character(y), on.parse.failure = "silent")
-    if (xaxis$type == "category")
-    {
-        x.levels <- if (is.factor(x)) levels(x)
-                    else              as.character(unique(x))
-        x <- autoFormatLongLabels(as.character(x), x.tick.label.wrap, x.tick.label.wrap.nchar)
-        x.levels <- autoFormatLongLabels(x.levels, x.tick.label.wrap, x.tick.label.wrap.nchar)
-    }
+    if (is.factor(x))
+        levels(x) <- autoFormatLongLabels(levels(x), x.tick.label.wrap, x.tick.label.wrap.nchar)
+    if (is.character(x))
+        x <- autoFormatLongLabels(x, x.tick.label.wrap, x.tick.label.wrap.nchar)
 
     # Work out margin spacing
     margins <- list(t = 20, b = 50, r = 60, l = 80, pad = 0)
@@ -582,15 +579,14 @@ Scatter <- function(x = NULL,
             tmp.y <- NULL
             if (is.factor(x))
             {
-                tmp.x <- x.levels
-                tmp.y <- minPosition(y, length(x.levels))
+                tmp.x <- levels(x)
+                tmp.y <- minPosition(y, nlevels(x))
             }
             if (is.factor(y))
             {
                 tmp.x <- c(tmp.x, minPosition(x, nlevels(y)))
                 tmp.y <- c(tmp.y, levels(y))
             }
-
             if (!is.null(tmp.x))
                 p <- add_trace(p, x = tmp.x, y = tmp.y, type = "scatter",
                        mode = "lines", hoverinfo = "none", showlegend = F, opacity = 0)
