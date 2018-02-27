@@ -533,7 +533,7 @@ Scatter <- function(x = NULL,
     if (yaxis$type == "date")
         y <- AsDateTime(as.character(y), on.parse.failure = "silent")
     if (xaxis$type == "category")
-        x <- axisFormat$labels
+        x <- autoFormatLongLabels(as.character(x), x.tick.label.wrap, x.tick.label.wrap.nchar)
 
     # Work out margin spacing
     margins <- list(t = 20, b = 50, r = 60, l = 80, pad = 0)
