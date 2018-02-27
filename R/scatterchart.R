@@ -533,7 +533,12 @@ Scatter <- function(x = NULL,
     if (yaxis$type == "date")
         y <- AsDateTime(as.character(y), on.parse.failure = "silent")
     if (xaxis$type == "category")
+    {
+        x.levels <- if (is.factor(x)) levels(x)
+                    else              as.character(unique(x))
         x <- autoFormatLongLabels(as.character(x), x.tick.label.wrap, x.tick.label.wrap.nchar)
+        x.levels <- autoFormatLongLabels(x.levels, x.tick.label.wrap, x.tick.label.wrap.nchar)
+    }
 
     # Work out margin spacing
     margins <- list(t = 20, b = 50, r = 60, l = 80, pad = 0)
@@ -577,8 +582,8 @@ Scatter <- function(x = NULL,
             tmp.y <- NULL
             if (is.factor(x))
             {
-                tmp.x <- levels(x)
-                tmp.y <- minPosition(y, nlevels(x))
+                tmp.x <- x.levels
+                tmp.y <- minPosition(y, length(x.levels))
             }
             if (is.factor(y))
             {
