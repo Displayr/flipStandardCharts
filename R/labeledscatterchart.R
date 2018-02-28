@@ -233,6 +233,7 @@ LabeledScatter <- function(x = NULL,
     }
 
     # Try to store name of variables
+    scatter.mult.yvals <- isTRUE(attr(x, "scatter.mult.yvals"))
     if (!is.null(scatter.sizes) && is.null(scatter.sizes.name))
         scatter.sizes.name <- deparse(substitute(scatter.sizes))
     if (!is.null(scatter.labels) && is.null(scatter.labels.name))
@@ -422,9 +423,9 @@ LabeledScatter <- function(x = NULL,
         footer <- ""
         if (!is.null(scatter.labels.name))
             footer <- sprintf("%sPoints labeled by '%s'; ", footer, scatter.labels.name)
-        if (!is.null(scatter.colors.name))
+        if (!is.null(scatter.colors.name) && !scatter.mult.yvals)
             footer <- sprintf("%sPoints colored according to '%s'; ", footer, scatter.colors.name)
-        if (!is.null(scatter.sizes.name))
+        if (!is.null(scatter.sizes.name) && !scatter.mult.yvals)
             footer <- sprintf("%sArea of points are proportional to absolute value of '%s'; ",
                               footer, scatter.sizes.name)
     }
