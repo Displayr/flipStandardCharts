@@ -281,7 +281,7 @@ Scatter <- function(x = NULL,
             scatter.labels <- rownames(x)
         if (is.null(y) && .isValidColumnIndex(scatter.y.column))
         {
-            if ((is.na(y.title) || nchar(y.title) == 0) && !is.null(colnames(x)))
+            if (sum(nchar(y.title), na.rm = TRUE) == 0 && !is.null(colnames(x)) && !scatter.mult.yvals)
                 y.title <- colnames(x)[scatter.y.column]
             y <- x[,scatter.y.column]
         }
@@ -297,7 +297,8 @@ Scatter <- function(x = NULL,
                 scatter.colors.name <- colnames(x)[scatter.colors.column]
             scatter.colors <- x[,scatter.colors.column]
         }
-        if (((is.na(x.title) || nchar(x.title) == 0) && !is.null(colnames(x))) && .isValidColumnIndex(scatter.x.column))
+        if (sum(nchar(x.title), na.rm = TRUE) == 0 && (!is.null(colnames(x))) &&
+            .isValidColumnIndex(scatter.x.column) && !scatter.mult.yvals)
             x.title <- colnames(x)[scatter.x.column]
         if (!.isValidColumnIndex(scatter.x.column))
             x <- NULL
@@ -443,12 +444,12 @@ Scatter <- function(x = NULL,
     y.str <- if (is.numeric(y)) FormatAsReal(y, decimals = decimalsFromD3(y.hovertext.format)) else as.character(y)
     source.text <- paste0(scatter.labels, " (", x.tick.prefix, x.str, x.tick.suffix, ", ",
                           y.tick.prefix, y.str, y.tick.suffix, ")")
-    if (!is.null(scatter.colors.name))
+    if (!is.null(scatter.colors.name) && !scatter.mult.yvals)
     {
         colors.str <- if (is.numeric(scatter.colors)) FormatAsReal(scatter.colors, decimals = decimalsFromD3(x.hovertext.format)) else as.character(scatter.colors)
         source.text <- paste0(source.text, "<br>", scatter.colors.name, ": ", colors.str)
     }
-    if (!is.null(scatter.sizes.name))
+    if (!is.null(scatter.sizes.name) && !scatter.mult.yvals)
     {
         sizes.str <- if (is.numeric(scatter.sizes)) FormatAsReal(scatter.sizes, decimals = decimalsFromD3(x.hovertext.format)) else as.character(scatter.sizes)
         source.text <- paste0(source.text, "<br>", scatter.sizes.name, ": ", sizes.str)

@@ -269,7 +269,7 @@ LabeledScatter <- function(x = NULL,
             scatter.labels <- rownames(x)
         if (is.null(y) && .isValidColumnIndex(scatter.y.column))
         {
-            if ((is.na(y.title) || nchar(y.title) == 0) && !is.null(colnames(x)))
+            if (sum(nchar(y.title), na.rm = TRUE) == 0 && !is.null(colnames(x)) && !scatter.mult.yvals)
                 y.title <- colnames(x)[scatter.y.column]
             y <- x[,scatter.y.column]
         }
@@ -285,7 +285,8 @@ LabeledScatter <- function(x = NULL,
                 scatter.colors.name <- colnames(x)[scatter.colors.column]
             scatter.colors <- x[,scatter.colors.column]
         }
-        if (((is.na(x.title) || nchar(x.title) == 0) && !is.null(colnames(x))) && .isValidColumnIndex(scatter.x.column))
+        if (sum(nchar(x.title), na.rm = TRUE) == 0 && (!is.null(colnames(x))) &&
+            .isValidColumnIndex(scatter.x.column) && !scatter.mult.yvals)
             x.title <- colnames(x)[scatter.x.column]
         if (!.isValidColumnIndex(scatter.x.column))
             x <- NULL
