@@ -222,6 +222,14 @@ LabeledScatter <- function(x = NULL,
     else
         ErrorIfNotEnoughData(x, require.tidy = FALSE)
 
+    # Adjust some of the the default default tick formats
+    tmp.stat <- attr(x, "statistic")
+    if (!is.null(tmp.stat) && grepl("%$", tmp.stat))
+    {
+        if (nchar(x.tick.format) == 0 || grepl("[0-9]$", x.tick.format))
+            x.tick.format = paste0(x.tick.format, "%")
+    }
+
     logo.urls <- NULL
     if (!is.null(logos) && any(nchar(logos) != 0))
     {

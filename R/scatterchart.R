@@ -254,6 +254,14 @@ Scatter <- function(x = NULL,
             warning("Labels not provided.")
     }
 
+    # Adjust some of the the default default tick formats
+    tmp.stat <- attr(x, "statistic")
+    if (!is.null(tmp.stat) && grepl("%$", tmp.stat))
+    {
+        if (nchar(x.tick.format) == 0 || grepl("[0-9]$", x.tick.format))
+            x.tick.format = paste0(x.tick.format, "%")
+    }
+
     # Grouping font attributes to simplify passing to plotly
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
     subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
