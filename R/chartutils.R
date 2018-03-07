@@ -339,7 +339,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
     if (!is.null(labels) && !is.na(labels) && any(nchar(labels) > 0) &&
          is.null(tickangle) && side %in% c("bottom", "top"))
     {
-        lab.nchar <- max(c(0, nchar(unlist(strsplit(split = "<br>", as.character(labels))))))
+        lab.nchar <- max(c(0, nchar(unlist(strsplit(split = "<br>", as.character(labels))))), na.rm = TRUE)
         tickangle <- if ((!axis.type %in% c("numeric", "linear", "date")) && lab.nchar > 2 &&
                         length(labels) * num.series * lab.nchar > 50) 90
                      else 0
@@ -451,11 +451,11 @@ setMarginsForAxis <- function(margins, labels, axis)
     lab.nline <- 0
     lab.nchar <- 1
 
-    lab.nchar <- max(c(0,nchar(unlist(strsplit(split="<br>", as.character(labels))))))
+    lab.nchar <- max(c(0, nchar(unlist(strsplit(split="<br>", as.character(labels))))), na.rm = TRUE)
     font.asp <- fontAspectRatio(axis$tickfont$family)
     lab.len <- font.asp * axis$tickfont$size * lab.nchar * 1.25
     lab.nline <- if (is.character(labels)) max(sapply(gregexpr("<br>", labels),
-                     function(x){sum(x > -1)}))
+                     function(x){sum(x > -1)}), na.rm = TRUE)
                  else 0
 
     new.margin <- 0
@@ -474,7 +474,7 @@ setMarginsForAxis <- function(margins, labels, axis)
     else if (axis$side == "bottom")
     {
         # tickangle is changed in function setAxis
-        lab.nchar <- max(c(0,nchar(unlist(strsplit(split = "<br>", as.character(labels))))))
+        lab.nchar <- max(c(0,nchar(unlist(strsplit(split = "<br>", as.character(labels))))), na.rm = TRUE)
         if (is.null(axis$tickangle))
             axis$tickangle <- 0
         if (axis$tickangle != 0)
