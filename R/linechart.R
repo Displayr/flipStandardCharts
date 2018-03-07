@@ -198,7 +198,7 @@ Line <-   function(x,
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
     margins <- setMarginsForLegend(margins, legend.show, legend, colnames(chart.matrix))
-    margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left, 
+    margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
     footer.axis <- setFooterAxis(footer, footer.font, margins)
 
@@ -255,8 +255,9 @@ Line <-   function(x,
                    showlegend = FALSE)
         }
 
-       # Draw line - main trace
-        p <- add_trace(p,
+        # Draw line - main trace
+        if (any(!is.na(y)))
+            p <- add_trace(p,
                    type = plotly.type,
                    x = x,
                    y = y,

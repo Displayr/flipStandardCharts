@@ -345,7 +345,7 @@ Area <- function(x,
                            showlegend = FALSE)
 
            # draw line
-           if (has.gap || line.thickness > 0)
+           if (any(!is.na(y)) && (has.gap || line.thickness > 0))
                 p <- add_trace(p,
                            type = plotly.type,
                            x = x,
@@ -382,7 +382,8 @@ Area <- function(x,
             # We need to do this separately because connectgaps = FALSE
             # has strange behaviour with single points
             # This is done last, to retain the hovertext
-            p <- add_trace(p,
+            if (any(!is.na(y)))
+                p <- add_trace(p,
                            type = plotly.type,
                            x = x,
                            y = y,
