@@ -767,7 +767,7 @@ formatByD3 <- function(x, format, prefix = "", suffix = "")
     if (is.numeric(x))
     {
         if (percentFromD3(format))
-            x.str <- paste0(FormatAsReal(x/100, decimals = decimalsFromD3(format)), "%")
+            x.str <- paste0(FormatAsReal(x*100, decimals = decimalsFromD3(format)), "%")
         else
             x.str <- FormatAsReal(x, decimals = decimalsFromD3(format))
     }

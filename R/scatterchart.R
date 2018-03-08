@@ -453,7 +453,7 @@ Scatter <- function(x = NULL,
 
     # hovertext
     source.text <- paste0(scatter.labels, " (", formatByD3(x, x.hovertext.format, x.tick.prefix, x.tick.suffix), ", ",
-                          formatByD3(x, y.hovertext.format, y.tick.prefix, y.tick.suffix), ")")
+                          formatByD3(y, y.hovertext.format, y.tick.prefix, y.tick.suffix), ")")
     if (!is.null(scatter.colors.name) && !scatter.mult.yvals)
     {
         colors.str <- if (is.numeric(scatter.colors)) FormatAsReal(scatter.colors, decimals = decimalsFromD3(x.hovertext.format)) else as.character(scatter.colors)
