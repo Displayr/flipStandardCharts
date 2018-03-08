@@ -753,6 +753,28 @@ percentFromD3 <- function(format)
     return(substr(format, nchar(format), nchar(format)) == "%")
 }
 
+#' Output data in D3-formatting
+#'
+#' Returns a strings according to the d3 format specified
+#' @noRd
+#' @param x Input data (may be a vector) to format
+#' @param format d3 formatting string
+#' @param prefix Optional string to prepend to output
+#' @param suffix Optional string to append to output
+formatByD3 <- function(x, format, prefix = "", suffix = "")
+{
+    x.str <- as.character(x)
+    if (is.numeric(x))
+    {
+        if (percentFromD3(format))
+            x.str <- paste0(FormatAsReal(x/100, decimals = decimalsFromD3(format)), "%")
+        else
+            x.str <- FormatAsReal(x, decimals = decimalsFromD3(format))
+    }
+    x.str <- paste0(prefix, x.str, suffix)
+    return(x.str)
+}
+
 #' Whether to format numbers with comma separation of thousands based on a d3 format string.
 #'
 #' All chart functions should accept d3 formats. This is used by functions

@@ -200,7 +200,7 @@ Scatter <- function(x = NULL,
                          y.tick.suffix = "",
                          y.tick.prefix = "",
                          y.tick.format = "",
-                         y.hovertext.format = y.tick.format,
+                         y.hovertext.format = "",
                          y.tick.angle = NULL,
                          y.tick.font.color = global.font.color,
                          y.tick.font.family = global.font.family,
@@ -225,7 +225,7 @@ Scatter <- function(x = NULL,
                          x.tick.suffix = "",
                          x.tick.prefix = "",
                          x.tick.format = "",
-                         x.hovertext.format = x.tick.format,
+                         x.hovertext.format = "",
                          x.tick.angle = NULL,
                          x.tick.font.color = global.font.color,
                          x.tick.font.family = global.font.family,
@@ -261,6 +261,10 @@ Scatter <- function(x = NULL,
         if (nchar(x.tick.format) == 0 || grepl("[0-9]$", x.tick.format))
             x.tick.format = paste0(x.tick.format, "%")
     }
+    if (sum(nchar(x.hovertext.format)) == 0)
+        x.hovertext.format <- x.tick.format
+    if (sum(nchar(y.hovertext.format)) == 0)
+        y.hovertext.format <- y.tick.format
 
     # Grouping font attributes to simplify passing to plotly
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
@@ -448,10 +452,8 @@ Scatter <- function(x = NULL,
     num.series <- if (scatter.colors.as.numeric) 1 else num.groups
 
     # hovertext
-    x.str <- if (is.numeric(x)) FormatAsReal(x, decimals = decimalsFromD3(x.hovertext.format)) else as.character(x)
-    y.str <- if (is.numeric(y)) FormatAsReal(y, decimals = decimalsFromD3(y.hovertext.format)) else as.character(y)
-    source.text <- paste0(scatter.labels, " (", x.tick.prefix, x.str, x.tick.suffix, ", ",
-                          y.tick.prefix, y.str, y.tick.suffix, ")")
+    source.text <- paste0(scatter.labels, " (", formatByD3(x, x.hovertext.format, x.tick.prefix, x.tick.suffix), ", ",
+                          formatByD3(x, y.hovertext.format, y.tick.prefix, y.tick.suffix), ")")
     if (!is.null(scatter.colors.name) && !scatter.mult.yvals)
     {
         colors.str <- if (is.numeric(scatter.colors)) FormatAsReal(scatter.colors, decimals = decimalsFromD3(x.hovertext.format)) else as.character(scatter.colors)
