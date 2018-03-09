@@ -40,7 +40,7 @@ Venn <- function(x = NULL,
             stop("Data must consist of numeric (0 or 1) or logical (TRUE or FALSE) values ",
                  "indicating which cases (rows) are included in which sets (columns).")
 
-        nms = Labels(x)
+        nms <- colnames(x)
         if (is.null(weights))
             weights <- rep(1, nrow(x))
 

@@ -382,7 +382,7 @@ Distribution <-   function(x,
         titlefont = title.font,
         xaxis4 = footer.axis,
         showlegend = FALSE,",
-        violinCategoriesAxes(vertical, n.variables, labels), "
+        violinCategoriesAxes(vertical, n.variables, gsub("'", "\\\\'", labels)), "
         ", if (vertical) "y" else "x", "axis = values.axis,
         margin = margins,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
