@@ -734,7 +734,7 @@ evalc <- function(x, env)
 #' @param default The number of decimal places if \code{format} is
 #' not provided (usually signifying automatic formatting).
 #' @return integer
-decimalsFromD3 <- function(format, default = 2)
+decimalsFromD3 <- function(format, default = 0)
 {
     if (length(format) == 0 || format == "")
         return(default)

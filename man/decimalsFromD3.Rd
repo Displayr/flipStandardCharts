@@ -4,7 +4,7 @@
 \alias{decimalsFromD3}
 \title{Extract the number of decimal places from a d3 format string.}
 \usage{
-decimalsFromD3(format, default = 2)
+decimalsFromD3(format, default = 0)
 }
 \arguments{
 \item{format}{d3 formatting string}
