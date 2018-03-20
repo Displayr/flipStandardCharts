@@ -457,7 +457,7 @@ setMarginsForAxis <- function(margins, labels, axis)
     lab.nline <- if (is.character(labels)) max(sapply(gregexpr("<br>", labels),
                      function(x){sum(x > -1)}), na.rm = TRUE)
                  else 0
-
+    
     new.margin <- 0
     if (lab.len > 2 || (!is.null(lab.nline) && lab.nline > 0))
         new.margin <- lab.len
@@ -480,7 +480,7 @@ setMarginsForAxis <- function(margins, labels, axis)
         if (axis$tickangle != 0)
             margins$b <- margins$b + new.margin * 0.5 + title.pad
         else
-            margins$b <- margins$b + 1.25*axis$tickfont$size*floor(lab.nline) + title.pad
+            margins$b <- margins$b + axis$tickfont$size*(floor(lab.nline)+0.8) + title.pad
     }
     return(margins)
 }

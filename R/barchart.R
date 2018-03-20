@@ -215,7 +215,7 @@ Bar <- function(x,
     # Work out margin spacing
     margins <- list(t = 20, b = 50, r = 60, l = 80, pad = 0)
     margins <- setMarginsForAxis(margins, axisFormat, yaxis)
-    margins <- setMarginsForAxis(margins, axisFormat, xaxis)
+    margins <- setMarginsForAxis(margins, as.character(range(x)), xaxis)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
     margins <- setMarginsForLegend(margins, legend.show, legend, colnames(chart.matrix))
