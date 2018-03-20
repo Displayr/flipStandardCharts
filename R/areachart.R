@@ -208,7 +208,6 @@ Area <- function(x,
     plotly.type <- "scatter"
     hover.mode <- if (tooltip.show) "closest" else FALSE
     barmode <- if (is.stacked) "stack" else ""
-    legend.group <- if (is.stacked) "grouped" else ""
     fill.bound <- if (is.stacked) "tonexty" else "tozeroy"
 
     marker.symbols <- if (is.null(marker.show)) rep(100, ncol(chart.matrix))
@@ -327,7 +326,6 @@ Area <- function(x,
         if (!is.stacked)
         {
             y.label <- y.labels[i]
-            tmp.group <- if (legend.group == "") paste("group", i) else legend.group
 
             # Need to add data labels first otherwise it will override hovertext in area chart
             if (data.label.show)
@@ -336,7 +334,7 @@ Area <- function(x,
                            mode = "text",
                            x = x,
                            y = y,
-                           legendgroup = tmp.group,
+                           legendgroup = i,
                            name = y.label,
                            text = source.text,
                            textfont = data.label.font,
@@ -354,7 +352,7 @@ Area <- function(x,
                            line = lines,
                            name = y.label,
                            showlegend = FALSE,
-                           legendgroup = tmp.group,
+                           legendgroup = i,
                            hoverinfo = "skip",
                            marker = marker,
                            mode = series.mode)
@@ -369,7 +367,7 @@ Area <- function(x,
                            mode = "markers",
                            x = x[is.single],
                            y = y[is.single],
-                           legendgroup = tmp.group,
+                           legendgroup = i,
                            name = y.label,
                            marker = if (!is.null(marker)) marker
                                     else list(color = toRGB(colors[i]),
@@ -392,7 +390,7 @@ Area <- function(x,
                            connectgaps = TRUE,
                            line = list(width = 0),
                            name = y.label,
-                           legendgroup = tmp.group,
+                           legendgroup = i,
                            hoverlabel = list(bgcolor=colors[i]),
                            text = autoFormatLongLabels(x.labels.full, wordwrap=T, truncate=F),
                            hoverinfo = setHoverText(xaxis, chart.matrix),
@@ -406,7 +404,7 @@ Area <- function(x,
                          else sprintf("%s: %s", fit.line.name, y.labels[i])
                 tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type)
                 p <- add_trace(p, x=tmp.fit$x, y=tmp.fit$y, type='scatter', mode="lines",
-                          name=tmp.fname, legendgroup=tmp.group, showlegend=F,
+                          name=tmp.fname, legendgroup=i, showlegend=F,
                           line=list(dash=fit.line.type, width=fit.line.width,
                           color=fit.line.colors[i], shape='spline'))
             }
@@ -428,7 +426,7 @@ Area <- function(x,
                            fillcolor = toRGB(colors[i], alpha = opacity),
                            line = lines,
                            name = y.label,
-                           legendgroup = legend.group,
+                           legendgroup = i,
                            text = if (!data.label.show) NULL else source.text,
                            textfont = if (!data.label.show) NULL else data.label.font,
                            textposition = if (!data.label.show) NULL else data.label.position,

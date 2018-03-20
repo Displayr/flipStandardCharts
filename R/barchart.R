@@ -168,7 +168,6 @@ Bar <- function(x,
     # Constants
     hover.mode <- if (tooltip.show) "closest" else FALSE
     barmode <- if (is.stacked) "stack" else ""
-    legend.group <- if (is.stacked) "grouped" else ""
     if (is.null(opacity))
         opacity <- 1
     eval(colors) # not sure why, but this is necessary for bars to appear properly
@@ -264,9 +263,8 @@ Bar <- function(x,
                            hoverinfo="none", showlegend=F, opacity=0)
 
         # this is the main trace for each data series
-        tmp.group <- if (legend.group == "") paste("group", i) else legend.group
         p <- add_trace(p, x = y, y = x, type = "bar", orientation = "h", marker = marker,
-                       name  =  y.labels[i], legendgroup  =  tmp.group,
+                       name  =  y.labels[i], legendgroup  =  i,
                        text = autoFormatLongLabels(x.labels.full, wordwrap=T, truncate=F),
                        hoverinfo  = setHoverText(yaxis, chart.matrix, is.bar=TRUE))
 
@@ -278,7 +276,7 @@ Bar <- function(x,
             tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                          else sprintf("%s: %s", fit.line.name, y.labels[i])
             p <- add_trace(p, x = tmp.fit$y, y = tmp.fit$x, type = 'scatter', mode = "lines",
-                      name = tmp.fname, legendgroup = tmp.group, showlegend = F,
+                      name = tmp.fname, legendgroup = i, showlegend = F,
                       line = list(dash = fit.line.type, width = fit.line.width,
                       color = fit.line.colors[i], shape = 'spline'))
         }
@@ -296,7 +294,7 @@ Bar <- function(x,
                       text = data.annotations$text[,i],
                       textposition = ifelse(x.sign >= 0, "middle right", "middle left"),
                       textfont = data.label.font, hoverinfo = "none",
-                      showlegend = FALSE, legendgroup = tmp.group)
+                      showlegend = FALSE, legendgroup = i)
         }
     }
     p <- addSubtitle(p, subtitle, subtitle.font, margins)
