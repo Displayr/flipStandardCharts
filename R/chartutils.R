@@ -672,6 +672,15 @@ autoFormatLongLabels <- function(x, wordwrap = FALSE, n = 21, truncate = FALSE)
 {
     if (truncate)
         warning("autoFormatLongLabels: truncate not longer does anything.")
+
+    # Check for zero-length strings which are ignored by plotly
+    if (length(x) > 0)
+    {
+        ind <- which(sapply(x, nchar) == 0)
+        if (length(ind) > 0)
+            x[ind] <- " "
+    }
+
     output.text <- x
     if (wordwrap && length(output.text) > 0)
         output.text <- sapply(output.text, function(x) lineBreakEveryN(x, n))
