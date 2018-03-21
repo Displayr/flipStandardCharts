@@ -478,7 +478,7 @@ setMarginsForAxis <- function(margins, labels, axis)
         if (is.null(axis$tickangle))
             axis$tickangle <- 0
         if (axis$tickangle != 0)
-            margins$b <- margins$b + new.margin + title.pad
+            margins$b <- margins$b + 0.5 * new.margin + title.pad
         else
             margins$b <- margins$b + 1.25 * axis$tickfont$size*(floor(lab.nline)+1) + title.pad
     }
