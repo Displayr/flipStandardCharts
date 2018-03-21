@@ -49,7 +49,7 @@ Remotes:
     Displayr/rhtmlLabeledScatter,
     Displayr/rhtmlPalmTrees,
     hrbrmstr/streamgraph,
-    timelyportfolio/d3vennR,
+    Displayr/d3vennR,
 Suggests:
     dplyr,
     flipExampleData,
