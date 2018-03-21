@@ -674,7 +674,7 @@ autoFormatLongLabels <- function(x, wordwrap = FALSE, n = 21, truncate = FALSE)
         warning("autoFormatLongLabels: truncate not longer does anything.")
 
     # Check for zero-length strings which are ignored by plotly
-    if (length(x) > 0)
+    if (length(x) > 1)
     {
         ind <- which(sapply(x, nchar) == 0)
         if (length(ind) > 0)
