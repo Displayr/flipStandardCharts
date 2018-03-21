@@ -550,7 +550,7 @@ Scatter <- function(x = NULL,
         x <- autoFormatLongLabels(x, x.tick.label.wrap, x.tick.label.wrap.nchar)
 
     # Work out margin spacing
-    margins <- list(t = 20, b = 50, r = 60, l = 80, pad = 0)
+    margins <- list(t = 20, b = 20, r = 60, l = 80, pad = 0)
     margins <- setMarginsForAxis(margins, axisFormat, xaxis)
     margins <- setMarginsForAxis(margins, ylab.tmp, yaxis)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
