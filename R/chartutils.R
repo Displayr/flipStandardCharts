@@ -465,7 +465,7 @@ setMarginsForAxis <- function(margins, labels, axis)
     title.nline <- 0
     if (nchar(axis$title) > 0)
         title.nline <- sum(gregexpr("<br>", axis$title)[[1]] > -1) + 1
-    title.pad <- axis$titlefont$size * title.nline * 1.25
+    title.pad <- axis$titlefont$size * title.nline * 2
 
     if (axis$side == "right")
         margins$r <- max(margins$r, new.margin + title.pad)
@@ -478,10 +478,9 @@ setMarginsForAxis <- function(margins, labels, axis)
         if (is.null(axis$tickangle))
             axis$tickangle <- 0
         if (axis$tickangle != 0)
-            margins$b <- margins$b + new.margin * 0.8 + title.pad
+            margins$b <- margins$b + new.margin + title.pad
         else
-            margins$b <- margins$b - 12.5 +
-                         1.25 * axis$tickfont$size*(floor(lab.nline)+1) + title.pad
+            margins$b <- margins$b + 1.25 * axis$tickfont$size*(floor(lab.nline)+1) + title.pad
     }
     return(margins)
 }
@@ -504,7 +503,7 @@ setMarginsForText <- function(margins, title, subtitle, footer,
     }
     if (nchar(footer) > 0)
     {
-        footer.nline <- sum(gregexpr("<br>", footer)[[1]] > -1) + 2
+        footer.nline <- sum(gregexpr("<br>", footer)[[1]] > -1) + 3
         margins$b <- margins$b + (footer.font.size * footer.nline * 1.25)
     }
     margins
