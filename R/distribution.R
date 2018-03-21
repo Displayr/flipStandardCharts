@@ -302,6 +302,8 @@ Distribution <-   function(x,
             warning("Means, medians, quartiles, and values, will often cause problems when added to a box plot (as the box plot already shows this information).")
     }
     # Titles and footers
+    if (sum(nchar(values.title), na.rm = TRUE) == 0)
+        values.title.font.size = 0
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
     subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
     footer.font = list(family = footer.font.family, size = footer.font.size, color = footer.font.color)
@@ -311,7 +313,13 @@ Distribution <-   function(x,
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate = FALSE)
 
     # Work out margin spacing
-    margins <- list(t = 20, b = 50, r = 60, l = 80, pad = 0)
+    if (vertical)
+        margins <- list(t = 20, b = 40 + categories.tick.font.size, r = 60, 
+                        l = 60 + values.title.font.size, pad = 0)
+    else
+        margins <- list(t = 20, b = 30 + values.tick.font.size + values.title.font.size,
+                        r = 60, l = 80, pad = 0)
+
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  10, 10)
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
