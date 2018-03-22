@@ -313,8 +313,9 @@ Distribution <-   function(x,
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate = FALSE)
 
     # Work out margin spacing
+    labels.nline <- max(sapply(gregexpr("<br>", labels), function(x){sum(x > -1)}), na.rm = TRUE) + 1
     if (vertical)
-        margins <- list(t = 20, b = 40 + categories.tick.font.size, r = 60,
+        margins <- list(t = 20, b = 40 + categories.tick.font.size * labels.nline, r = 60,
                         l = 60 + values.title.font.size, pad = 0)
     else
         margins <- list(t = 20, b = 30 + values.tick.font.size + values.title.font.size,
