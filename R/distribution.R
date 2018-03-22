@@ -314,10 +314,10 @@ Distribution <-   function(x,
 
     # Work out margin spacing
     if (vertical)
-        margins <- list(t = 20, b = categories.tick.font.size, r = 60, 
+        margins <- list(t = 20, b = 40 + categories.tick.font.size, r = 60,
                         l = 60 + values.title.font.size, pad = 0)
     else
-        margins <- list(t = 20, b = 10 + values.tick.font.size + values.title.font.size,
+        margins <- list(t = 20, b = 30 + values.tick.font.size + values.title.font.size,
                         r = 60, l = 80, pad = 0)
 
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
