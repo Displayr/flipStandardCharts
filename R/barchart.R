@@ -212,7 +212,8 @@ Bar <- function(x,
                   x.hovertext.format)
 
     # Work out margin spacing
-    margins <- list(t = 20, b = 20, r = 60, l = 80, pad = 0)
+    r.pad <- 10 * !is.stacked * data.label.show
+    margins <- list(t = 20, b = 20, r = 60 + r.pad, l = 80, pad = 0)
     margins <- setMarginsForAxis(margins, axisFormat, yaxis)
     margins <- setMarginsForAxis(margins, as.character(range(x)), xaxis)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
