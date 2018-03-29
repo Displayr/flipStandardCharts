@@ -596,13 +596,13 @@ setTicks <- function(minimum, maximum, distance, reversed = FALSE,
         if (is.null(maximum))
             maximum <- max(data, na.rm = TRUE)
 
-        # Add horizontal space for data labels in column charts
+        # Add horizontal space for data labels in bar charts
         pad <- 0
         lab.len <- 1
         if (!is.null(labels))
         {
             lab.len <- max(nchar(as.character(unlist(labels)))) * label.font.size/10
-            pad <- (maximum - minimum) * (0.05 * lab.len/4 + (0.1 * is.bar))
+            pad <- (maximum - minimum) * (0.05 * lab.len/4 + (0.15 * is.bar))
         }
         if (!is.bar || min(data, na.rm = TRUE) < 0)
             minimum <- minimum - pad
