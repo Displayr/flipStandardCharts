@@ -374,21 +374,9 @@ setAxis <- function(title, side, axisLabels, titlefont,
         if (ticks$autorange == "reversed")
             range <- rev(range)
     }
-
-    tickformat <- ""
-    if (sum(nchar(tickformatmanual)) > 0 && d3FormatType(tickformatmanual) %in% c("", axis.type))
-        tickformat <- tickformatmanual
-    else if (sum(nchar(tickformatmanual)) > 0)
-        warning("Axis label format of type '", d3FormatType(tickformatmanual),
-                "' incompatible with axis type '", axis.type, "'")
-
-    hoverformat <- ""
-    if (sum(nchar(hovertext.format.manual)) > 0 && d3FormatType(hovertext.format.manual) %in% c("", axis.type))
-        hoverformat <- hovertext.format.manual
-    else if (sum(nchar(hovertext.format.manual)))
-        warning("Hovertext label format of type '", d3FormatType(hovertext.format.manual),
-                "' incompatible with axis type '", axis.type, "'")
-
+    tickformat <- checkD3Format(tickformatmanual, axis.type)
+    hoverformat <- checkD3Format(hovertext.format.manual, axis.type, "Hovertext")
+    
     rangemode <- "normal"
     if (axis.type == "numeric" && show.zero)
         rangemode <- "tozero"
@@ -795,3 +783,26 @@ commaFromD3 <- function(format)
 {
     return(grepl(",", format, fixed = TRUE))
 }
+
+
+# Gives a warning if the axis.type is incompatible 
+# Will also specify a numeric format if none is supplied
+checkD3Format <- function(format, axis.type, warning.type = "Axis label")
+{
+    if (sum(nchar(format), na.rm = TRUE) == 0)
+        return("")
+    if (substr(format, nchar(format), nchar(format)) %in% c("", 0:9)) # automatic formatting
+    {
+        if (axis.type == "numeric")
+            return(paste0(format, "f"))
+        else
+            return(format)
+    }
+    if (d3FormatType(format) != axis.type)
+        warning(warning.type, " format of type '", d3FormatType(format), 
+                "' incompatible with axis type '", axis.type, "'")
+    return(format)
+}
+
+
+
