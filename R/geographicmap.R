@@ -53,7 +53,7 @@ GeographicMap <- function(x,
         map.type <- "regions"
     else if (any(names %in% c("africa", "asia", "europe", "north america", "oceania", "south america")))
         map.type <- "continents"
-    else if (any(names %in% tolower(CountriesOrContinents("name"))) || all(nchar(rownames(table)) == 3))
+    else if (any(names %in% tolower(CountriesOrContinents("country"))) || all(nchar(rownames(table)) == 3))
         map.type <- "countries"
     else
         map.type <- "states"
@@ -77,7 +77,7 @@ GeographicMap <- function(x,
 
         coords <- coords[!(coords$continent %in% "Antarctica"), ]
         remove.regions <- "Antarctica"
-        name.map <- admin0.name.map.by.name
+        name.map <- admin0.name.map.by.admin
     }
     else if (map.type == "states")
     {
@@ -126,7 +126,8 @@ GeographicMap <- function(x,
         }
     }
 
-    structure <- ifelse(map.type == "continents", "continent", "name")
+    # TODO delete structure <- ifelse(map.type == "continents", "continent", "admin")
+    structure <- switch(map.type, continents = "continent", countries = "admin", "name")
     coords[[structure]] <- as.character(coords[[structure]])
 
     if (!is.null(remove.regions) && remove.regions != "")
@@ -178,7 +179,7 @@ GeographicMap <- function(x,
     if (treat.NA.as.0 && nrow(table) < nrow(coords))
         min.value <- min(0, min.value)
 
-    coords$table.max <- apply(table, 1, max)[country.lookup]
+    coords$table.max <- apply(table, 1, max, na.rm = TRUE)[country.lookup]
     if (treat.NA.as.0)
         coords$table.max[is.na(coords$table.max)] <- 0
 
@@ -368,7 +369,7 @@ plotlyMap <- function(table, name.map, colors, min.value, max.range, color.NA, l
         oceancolor = ocean.color,
         showlakes = TRUE,
         lakecolor = ocean.color,
-        projection = list(type = 'Mercator'),
+        projection = list(type = 'mercator'),
         resolution = ifelse(high.resolution, 50, 110),
         lataxis = lataxis,
         bgcolor = toRGB("white", 0))  # transparent

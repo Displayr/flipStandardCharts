@@ -12,6 +12,7 @@ Depends: R (>= 2.10)
 LazyData: TRUE
 Imports:
     d3vennR,
+    devtools,
     dygraphs,
     flipChartBasics,
     flipData,
@@ -21,10 +22,12 @@ Imports:
     flipTransformations (>= 1.1.2),
     flipU,
     Hmisc,
+    httr,
     leaflet,
     plotly,
     pryr, 
-    htmlwidgets, 
+    htmlwidgets,
+    rgdal,
     rhtmlDonut,
     rhtmlHeatmap,
     rhtmlLabeledScatter,
@@ -33,6 +36,7 @@ Imports:
     sp,
     streamgraph,
     stringr,
+    XML,
     xts
 Remotes:
     Displayr/flipU,

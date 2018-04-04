@@ -13,16 +13,11 @@
 #' @export
 CountriesOrContinents <- function(type)
 {
-    requireNamespace("sp")
-    if (type == "country")
-        type <- "name"
+    #requireNamespace("sp")
+    if (type == "country" || type == "name")
+        return(names(admin0.name.map.by.admin))
 
-    type.names <- map.coordinates.50[[type]]
-
-    if (is.factor(type.names))
-        levels(type.names)
-    else
-        unique(type.names)
+    return(levels(map.coordinates.50[["continent"]]))
 }
 
 #' \code{GeographicRegionRowNames} Names of geographic regions.
@@ -93,7 +88,6 @@ tidyCountryName <- function(country)
         rm(admin)
     }
 
-    #if (!(country %in% names(admin0.name.map.by.admin)))
     if (!(country %in% levels(admin1.coordinates$admin)))
         stop("Country '", country, "' not found.")
 
@@ -144,7 +138,7 @@ cleanMapInput <- function(table)
     if (is.null(dim(table)) || length(dim(table)) == 1) # better than is.vector()
     {
         if(is.null(names(table)))
-            stop(paste(table.name, "has no names."))
+            stop(paste(table.name, "has no names. The names are required to match known geographic entitites."))
 
         table <- as.matrix(table)
     }
