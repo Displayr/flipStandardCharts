@@ -127,7 +127,7 @@
 #
 #
 # # Mapping of states to alternative names
-# admin1.coordinates <- data.frame(admin1.coordinates)
+# admin1.df <- data.frame(admin1.coordinates)
 #
 # ISO_3166_1$Country <- rep(NA, nrow(ISO_3166_1))
 # for (i in seq_len(nrow(ISO_3166_1)))
@@ -158,24 +158,24 @@
 # iso.3166$Code[!grepl("^[[:alpha:]]+$", iso.3166$Code)] <- NA
 #
 # admin1.name.map <- list()
-# for (i in seq_len(nrow(admin1.coordinates)))
+# for (i in seq_len(nrow(admin1.df)))
 # {
-#     state <- as.character(admin1.coordinates$name[i])
+#     state <- as.character(admin1.df$name[i])
 #     if (is.na(state))
 #         next
 #
-#     country <- as.character(admin1.coordinates$admin[i])
+#     country <- as.character(admin1.df$admin[i])
 #     country.name.map <- admin1.name.map[[country]]
 #     if (is.null(country.name.map))
 #         country.name.map <- list()
 #
 #     columns <- c("abbrev", "postal", "woe_name", "gn_name")
-#     all.names <- as.character(unlist(admin1.coordinates[i, columns]))
+#     all.names <- as.character(unlist(admin1.df[i, columns]))
 #     all.names[all.names == "-99"] <- NA
 #
-#     name.alt <- as.character(admin1.coordinates$name_alt[i])
+#     name.alt <- as.character(admin1.df$name_alt[i])
 #     all.names <- c(all.names, strsplit(name.alt, "|", fixed = TRUE)[[1]])
-#     name.local <- as.character(admin1.coordinates$name_local[i])
+#     name.local <- as.character(admin1.df$name_local[i])
 #     all.names <- c(all.names, strsplit(name.local, "|", fixed = TRUE)[[1]])
 #
 #     iso.code <- iso.3166$Code[iso.3166$Country == country & iso.3166$Name == state]
