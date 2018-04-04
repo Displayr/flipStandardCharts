@@ -13,7 +13,7 @@
 #' @export
 CountriesOrContinents <- function(type)
 {
-    #requireNamespace("sp")
+    requireNamespace("sp")
     if (type == "country" || type == "name")
         return(names(admin0.name.map.by.admin))
 
