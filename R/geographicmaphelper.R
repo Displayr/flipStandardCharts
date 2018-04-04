@@ -88,7 +88,7 @@ tidyCountryName <- function(country)
         rm(admin)
     }
 
-    if (!(country %in% levels(admin1.coordinates$admin)))
+    if (!(country %in% names(admin0.name.map.by.admin)))
         stop("Country '", country, "' not found.")
 
     return(country)

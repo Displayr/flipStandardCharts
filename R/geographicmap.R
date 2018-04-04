@@ -179,7 +179,10 @@ GeographicMap <- function(x,
     if (treat.NA.as.0 && nrow(table) < nrow(coords))
         min.value <- min(0, min.value)
 
-    coords$table.max <- apply(table, 1, max, na.rm = TRUE)[country.lookup]
+    coords$table.max <- if(ncol(table) != 1)
+        apply(table, 1, max, na.rm = TRUE)[country.lookup]
+    else
+        table[, 1][country.lookup]
     if (treat.NA.as.0)
         coords$table.max[is.na(coords$table.max)] <- 0
 
@@ -369,7 +372,7 @@ plotlyMap <- function(table, name.map, colors, min.value, max.range, color.NA, l
         oceancolor = ocean.color,
         showlakes = TRUE,
         lakecolor = ocean.color,
-        projection = list(type = 'mercator'),
+        projection = list(type = 'Mercator'),
         resolution = ifelse(high.resolution, 50, 110),
         lataxis = lataxis,
         bgcolor = toRGB("white", 0))  # transparent
