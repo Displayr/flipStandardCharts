@@ -20,6 +20,8 @@
 #'
 #' To load in the existing "sysdata.rda" file, use setwd("C:/Users/jake.NUMDOM2/Git packages/flipStandardCharts/R") and load("sysdata.rda")
 #'
+#' TODO - compression of postcodes with and dave with either use_data(internal == TRUE) or load() https://thepracticalr.wordpress.com/2017/04/27/load-save-and-rda-files/
+#'
 #' TO RUN THE SCRIPT AND UPDATE THE .RDA FILE, UNCOMMENT ALL LINES BELOW HERE
 
 
@@ -294,8 +296,8 @@
 #          map.coordinates.110,
 #          ISO_3166_1,
 #          ISO_3166_2,
-#          us.regions,
-#          us.postcodes,
-#          uk.postcodes,
+#          #us.regions,
+#          #us.postcodes,
+#          #uk.postcodes,
 #          australia.postcodes,
 #          internal = TRUE, overwrite = TRUE)
