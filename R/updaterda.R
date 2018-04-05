@@ -1,26 +1,30 @@
-#' Read and process the various definitions of geographic regions
-#' to update the sysdata.rda file (for use in mapping functions)
+#' This script reads and processes the various definitions of geographic regions
+#' and updates the sysdata.rda file (for use in mapping functions).
 #'
-#' @return NULL. Updates an rda file with the following components
-#' \itemize{
-#' \item \code{missing110} - a \code{\link{list}} of strings of the names and
-#'       alternative names of countries that are in \code{map.coordinates.110} but not \code{map.coordinates.50}
-#' \item \code{admin1.name.map} - a named \code{\link{list}} of countries, where each item is a named \code{\link{list}}
-#'       of states, within which each item is a \code{\link{vector}} of alternative names of that state.
-#' \item \code{admin0.name.map.by.admin} - a named \code{\link{list}} of countries, where each item is a \code{\link{vector}}
-#'       of alternative names and abbreviations of that country.
-#' \item \code{admin1.coordinates} - a \code{\link{SpatialPolygonsDataFrame}} of regional data and polygons.
-#' \item \code{map.coordinates.50} - a \code{\link{SpatialPolygonsDataFrame}} of country data and polygons at the
-#'       higher resolution of 1:50,000,000
-#' \item \code{map.coordinates.110} - a \code{\link{SpatialPolygonsDataFrame}} of country data and polygons at the
-#'       higher resolution of 1:110,000,000
-#' \item \code{country.coordinates} - NOT USED.
-#' \item \code{ISO_3166_1} - a \code{\link{data.frame}} of country names.
-#' \item \code{ISO_3166_2} - a \code{\link{data.frame}} of region names.
-#' \item \code{country.center.coords} - a \code{\link{data.frame}} of the latitude and longitude of the center of each country.
-#' \item \code{us.regions} - a \code{\link{data.frame}} of the us.states and regions.
-#' }
-#
+#' sysdata.rda is defined as follows:
+#' missing110 - a list of strings of the names and alternative names of countries that are in
+#'     map.coordinates.110 but not map.coordinates.50.
+#' admin1.name.map - a named list of countries, where each item is a named list
+#'     of states, within which each item is a vector of alternative names of that state.
+#' admin0.name.map.by.admin - a named list of countries, where each item is a vector
+#'     of alternative names and abbreviations of that country.
+#' admin1.coordinates - a SpatialPolygonsDataFrame of regional data and polygons.
+#' map.coordinates.50 - a SpatialPolygonsDataFrame of country data and polygons at the
+#'     higher resolution of 1:50,000,000
+#' map.coordinates.110} - a SpatialPolygonsDataFrame of country data and polygons at the
+#'     lower resolution of 1:110,000,000
+#' ISO_3166_1 - a data.frame of country names
+#' ISO_3166_2 - a data.frame of region names
+#' country.center.coords - a data.frame of the latitude and longitude of the center of each country
+#' us.regions - a data.frame of the us.states and regions
+#'
+#' To load in the existing "sysdata.rda" file, use setwd("C:/Users/jake.NUMDOM2/Git packages/flipStandardCharts/R") and load("sysdata.rda")
+#'
+#' TO RUN THE SCRIPT AND UPDATE THE .RDA FILE, UNCOMMENT ALL LINES BELOW HERE
+
+
+
+
 # library(httr)
 # library(XML)
 # library(devtools)
@@ -125,6 +129,34 @@
 #     admin0.name.map.by.admin[[country.name]] <- all.names
 # }
 #
+# # Some mappings are duplicated, so manually remove the less common ones
+#
+# all.names <- unlist(admin0.name.map.by.admin)
+# duplicates <- length(all.names) - length(unique(all.names))
+# print(paste0(duplicates, " duplicates in country alternative names before processing."))
+#
+# remove.from <- c("Anguilla", "Aland", "Ashmore and Cartier Islands", "Indian Ocean Territories", "Ashmore and Cartier Islands",
+#                  "Northern Cyprus", "Northern Cyprus", "British Indian Ocean Territory", "Israel", "Guernsey",
+#                  "Guernsey", "Jamaica", "Jordan", "Western Sahara", "Siachen Glacier",
+#                  "Saint Lucia", "Somaliland", "Somaliland", "Sint Maarten", "Samoa")
+# to.remove <- c("Ang.", "AI", "AUS", "AUS", "AU",
+#                "CN", "CYP", "IOT", "IS", "JG",
+#                "CHI", "J", "J", "MAR", "SG",
+#                "S.L.", "SL", "SOM", "St. M.", "WS")
+# for (i in seq(length(remove.from)))
+# {
+#     country <- remove.from[i]
+#     abbreviation <- to.remove[i]
+#     admin0.name.map.by.admin[[country]] <- admin0.name.map.by.admin[[country]][admin0.name.map.by.admin[[country]] != abbreviation]
+# }
+#
+# # Add missing mappings
+# admin0.name.map.by.admin[["United Kingdom"]] <- c("UK", admin0.name.map.by.admin[["United Kingdom"]])
+# # Check that there are no more duplicates
+# all.names <- unlist(admin0.name.map.by.admin)
+# duplicates <- length(all.names) - length(unique(all.names))
+# print(paste0(duplicates, " duplicates in country alternative names after processing."))
+#
 #
 # # Mapping of states to alternative names
 # admin1.df <- data.frame(admin1.coordinates)
@@ -206,53 +238,52 @@
 # url <- "https://developers.google.com/public-data/docs/canonical/countries_csv"
 # country.center.coords <- readHTMLTable(doc = content(GET(url), "text"))[[1]]
 #
-# us.regions <- structure(list(RegionNumber = structure(c(1L, 1L, 1L, 1L, 1L,
-#                                           1L, 1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L,
-#                                           3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L,
-#                                           3L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L), .Label = c("1",
-#                                                                                                               "2", "3", "4"), class = "factor"), DivisionNumber = structure(c(1L,
-#                                                                                                                                                                               1L, 1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L, 4L, 4L, 4L,
-#                                                                                                                                                                               4L, 4L, 4L, 4L, 5L, 5L, 5L, 5L, 5L, 5L, 5L, 5L, 5L, 6L, 6L, 6L,
-#                                                                                                                                                                               6L, 7L, 7L, 7L, 7L, 8L, 8L, 8L, 8L, 8L, 8L, 8L, 8L, 9L, 9L, 9L,
-#                                                                                                                                                                               9L, 9L), .Label = c("1", "2", "3", "4", "5", "6", "7", "8", "9"
-#                                                                                                                                                                               ), class = "factor"), Region = structure(c(2L, 2L, 2L, 2L, 2L,
-#                                                                                                                                                                                                                          2L, 2L, 2L, 2L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L,
-#                                                                                                                                                                                                                          3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L,
-#                                                                                                                                                                                                                          3L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L), .Label = c("Midwest",
-#                                                                                                                                                                                                                                                                                              "Northeast", "South", "West"), class = "factor"), Division = structure(c(5L,
-#                                                                                                                                                                                                                                                                                                                                                                       5L, 5L, 5L, 5L, 5L, 3L, 3L, 3L, 1L, 1L, 1L, 1L, 1L, 8L, 8L, 8L,
-#                                                                                                                                                                                                                                                                                                                                                                       8L, 8L, 8L, 8L, 7L, 7L, 7L, 7L, 7L, 7L, 7L, 7L, 7L, 2L, 2L, 2L,
-#                                                                                                                                                                                                                                                                                                                                                                       2L, 9L, 9L, 9L, 9L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 6L, 6L, 6L,
-#                                                                                                                                                                                                                                                                                                                                                                       6L, 6L), .Label = c("East North Central", "East South Central",
-#                                                                                                                                                                                                                                                                                                                                                                                           "Mid-Atlantic", "Mountain", "New England", "Pacific", "South Atlantic",
-#                                                                                                                                                                                                                                                                                                                                                                                           "West North Central", "West South Central"), class = "factor"),
-#                State = structure(c(7L, 20L, 22L, 30L, 40L, 46L, 31L, 33L,
-#                                    39L, 14L, 15L, 23L, 36L, 50L, 16L, 17L, 24L, 26L, 28L, 35L,
-#                                    42L, 8L, 10L, 11L, 21L, 34L, 41L, 47L, 9L, 49L, 1L, 18L,
-#                                    25L, 43L, 4L, 19L, 37L, 44L, 3L, 6L, 13L, 27L, 29L, 32L,
-#                                    45L, 51L, 2L, 5L, 12L, 38L, 48L), .Label = c("Alabama", "Alaska",
-#                                                                                 "Arizona", "Arkansas", "California", "Colorado", "Connecticut",
-#                                                                                 "Delaware", "District of Columbia", "Florida", "Georgia",
-#                                                                                 "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas",
-#                                                                                 "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts",
-#                                                                                 "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana",
-#                                                                                 "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico",
-#                                                                                 "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma",
-#                                                                                 "Oregon", "Pennsylvania", "Rhode Island", "South Carolina",
-#                                                                                 "South Dakota", "Tennessee", "Texas", "Utah", "Vermont",
-#                                                                                 "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"
-#                                    ), class = "factor"), Code = structure(c(7L, 21L, 19L, 30L,
-#                                                                             39L, 46L, 31L, 34L, 38L, 21L, 15L, 22L, 35L, 48L, 13L, 16L,
-#                                                                             23L, 24L, 29L, 28L, 41L, 9L, 10L, 11L, 20L, 27L, 40L, 45L,
-#                                                                             8L, 49L, 2L, 17L, 25L, 42L, 3L, 18L, 36L, 43L, 4L, 6L, 14L,
-#                                                                             26L, 33L, 32L, 44L, 50L, 1L, 5L, 12L, 37L, 47L), .Label = c("AK",
-#                                                                                                                                         "AL", "AR", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA",
-#                                                                                                                                         "HI", "IA", "ID", "IN", "KS", "KY", "LA", "MA", "MD", "ME",
-#                                                                                                                                         "MI", "MN", "MO", "MS", "MT", "NC", "ND", "NE", "NH", "NJ",
-#                                                                                                                                         "NM", "NV", "NY", "OH", "OK", "OR", "PA", "RI", "SC", "SD",
-#                                                                                                                                         "TN", "TX", "UT", "VA", "VT", "WA", "WI", "WV", "WY"), class = "factor")), .Names = c("RegionNumber",
-#                                                                                                                                                                                                                               "DivisionNumber", "Region", "Division", "State", "Code"), row.names = c(NA,
-#                                                                                                                                                                                                                                                                                                       51L), class = "data.frame")
+# us.regions <- structure(list(RegionNumber = structure(c(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L,
+#                                             3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L),
+#                                             .Label = c("1", "2", "3", "4"), class = "factor"),
+#                             DivisionNumber = structure(c(1L, 1L, 1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 5L, 5L, 5L,
+#                                             5L, 5L, 5L, 5L, 5L, 5L, 6L, 6L, 6L, 6L, 7L, 7L, 7L, 7L, 8L, 8L, 8L, 8L, 8L, 8L, 8L, 8L, 9L, 9L, 9L, 9L, 9L),
+#                                             .Label = c("1", "2", "3", "4", "5", "6", "7", "8", "9"), class = "factor"),
+#                             Region = structure(c(2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L,
+#                                             3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L),
+#                                             .Label = c("Midwest", "Northeast", "South", "West"), class = "factor"),
+#                             Division = structure(c(5L, 5L, 5L, 5L, 5L, 5L, 3L, 3L, 3L, 1L, 1L, 1L, 1L, 1L, 8L, 8L, 8L, 8L, 8L, 8L, 8L, 7L, 7L, 7L, 7L,
+#                                             7L, 7L, 7L, 7L, 7L, 2L, 2L, 2L, 2L, 9L, 9L, 9L, 9L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 6L, 6L, 6L, 6L, 6L),
+#                                             .Label = c("East North Central", "East South Central", "Mid-Atlantic", "Mountain", "New England", "Pacific", "South Atlantic", "West North Central", "West South Central"), class = "factor"),
+#                             State = structure(c(7L, 20L, 22L, 30L, 40L, 46L, 31L, 33L, 39L, 14L, 15L, 23L, 36L, 50L, 16L, 17L, 24L, 26L, 28L, 35L,
+#                                             42L, 8L, 10L, 11L, 21L, 34L, 41L, 47L, 9L, 49L, 1L, 18L, 25L, 43L, 4L, 19L, 37L, 44L, 3L, 6L, 13L, 27L, 29L, 32L, 45L, 51L, 2L, 5L, 12L, 38L, 48L),
+#                                             .Label = c("Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "District of Columbia", "Florida", "Georgia",
+#                                             "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland", "Massachusetts",
+#                                             "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico",
+#                                             "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina",
+#                                             "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"), class = "factor"),
+#                             Code = structure(c(7L, 21L, 19L, 30L, 39L, 46L, 31L, 34L, 38L, 21L, 15L, 22L, 35L, 48L, 13L, 16L, 23L, 24L, 29L, 28L, 41L, 9L, 10L,
+#                                             11L, 20L, 27L, 40L, 45L, 8L, 49L, 2L, 17L, 25L, 42L, 3L, 18L, 36L, 43L, 4L, 6L, 14L, 26L, 33L, 32L, 44L, 50L, 1L, 5L, 12L, 37L, 47L),
+#                                             .Label = c("AK","AL", "AR", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA", "HI", "IA", "ID", "IN", "KS", "KY", "LA", "MA", "MD", "ME",
+#                                             "MI", "MN", "MO", "MS", "MT", "NC", "ND", "NE", "NH", "NJ", "NM", "NV", "NY", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VA", "VT", "WA", "WI", "WV", "WY"), class = "factor")),
+#                         .Names = c("RegionNumber", "DivisionNumber", "Region", "Division", "State", "Code"), row.names = c(NA, 51L), class = "data.frame")
+#
+# # USA zip codes
+# download.file(file.path('http://www2.census.gov/geo/tiger/GENZ2016/shp/cb_2016_us_zcta510_500k.zip'),
+#              f <- tempfile())
+# unzip(f, exdir = tempdir())
+# us.postcodes <- readOGR(tempdir(), "cb_2016_us_zcta510_500k")
+#
+# # UK postcodes
+# # Note terms and conditions - http://www.opendoorlogistics.com/downloads/
+# # Mote distinction between sector eg "LS25 5", district (eg "LS25") and area (eg "LS")
+# download.file(file.path('http://www.opendoorlogistics.com/wp-content/uploads/Data/UK-postcode-boundaries-Jan-2015.zip'),
+#               f <- tempfile())
+# unzip(f, files = "Distribution/Sectors", exdir = tempdir())
+# uk.postcodes <- readOGR(paste0(tempdir(), "\\Distribution"), "Sectors")
+#
+# # Australia post codes
+# # http://www.abs.gov.au/AUSSTATS/abs@.nsf/DetailsPage/1270.0.55.003July%202016?OpenDocument
+# download.file(file.path('http://www.abs.gov.au/ausstats/subscriber.nsf/log?openagent&1270055003_poa_2016_aust_shape.zip&1270.0.55.003&Data%20Cubes&4FB811FA48EECA7ACA25802C001432D0&0&July%202016&13.09.2016&Latest'),
+#               f <- tempfile(),
+#               mode = "wb")
+# unzip(f, exdir = tempdir())
+# australia.postcodes <- readOGR(tempdir(), "POA_2016_AUST")
 #
 # # Save everything into sysdata.rda
 # use_data(missing110,
@@ -264,40 +295,7 @@
 #          ISO_3166_1,
 #          ISO_3166_2,
 #          us.regions,
+#          us.postcodes,
+#          uk.postcodes,
+#          australia.postcodes,
 #          internal = TRUE, overwrite = TRUE)
-
-
-
-
-
-
-# # This can be used to load in the existing "sysdata.rda" file, modify it and save it again.
-#
-# # load existing .rda file
-# setwd("C:/Users/jake.NUMDOM2/Git packages/flipStandardCharts/R")
-# load("sysdata.rda")
-#
-# # do something to manipualte/correct/extend data
-#
-# # e.g. extract table with HTTP GET
-# library(httr)
-# library(XML)
-# url <- "https://developers.google.com/public-data/docs/canonical/countries_csv"
-# r <- GET(url)
-# country.center.coords <- readHTMLTable(doc = content(r, "text"))[[1]]
-#
-# # save back rda file with all (possibly updated) objects
-# devtools::use_data(missing110,
-#                    admin1.name.map,
-#                    admin0.name.map.by.name,
-#                    admin0.name.map.by.admin,
-#                    admin1.coordinates,
-#                    map.coordinates.50,
-#                    map.coordinates.110,
-#                    country.coordinates,
-#                    ISO_3166_1,
-#                    ISO_3166_2,
-#                    country.center.coords,
-#                    us.regions,
-#                    internal = TRUE, overwrite = TRUE)
-
