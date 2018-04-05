@@ -376,7 +376,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
     }
     tickformat <- checkD3Format(tickformatmanual, axis.type)
     hoverformat <- checkD3Format(hovertext.format.manual, axis.type, "Hovertext")
-    
+
     rangemode <- "normal"
     if (axis.type == "numeric" && show.zero)
         rangemode <- "tozero"
@@ -587,10 +587,10 @@ setTicks <- function(minimum, maximum, distance, reversed = FALSE,
         # Add horizontal space for data labels in bar charts
         pad <- 0
         lab.len <- 1
-        if (!is.null(labels))
+        if (!is.null(labels) && is.bar)
         {
-            lab.len <- max(nchar(as.character(unlist(labels)))) * label.font.size/10
-            pad <- (maximum - minimum) * (0.05 * lab.len/4 + (0.15 * is.bar))
+            lab.len <- max(nchar(as.character(unlist(labels))))
+            pad <- (maximum - minimum) * (lab.len+2) * label.font.size / 200
         }
         if (!is.bar || min(data, na.rm = TRUE) < 0)
             minimum <- minimum - pad
@@ -785,7 +785,7 @@ commaFromD3 <- function(format)
 }
 
 
-# Gives a warning if the axis.type is incompatible 
+# Gives a warning if the axis.type is incompatible
 # Will also specify a numeric format if none is supplied
 checkD3Format <- function(format, axis.type, warning.type = "Axis label")
 {
@@ -799,7 +799,7 @@ checkD3Format <- function(format, axis.type, warning.type = "Axis label")
             return(format)
     }
     if (d3FormatType(format) != axis.type)
-        warning(warning.type, " format of type '", d3FormatType(format), 
+        warning(warning.type, " format of type '", d3FormatType(format),
                 "' incompatible with axis type '", axis.type, "'")
     return(format)
 }
