@@ -93,7 +93,7 @@ BarPictograph <- function(x,
 
     # Set default values
     if (is.na(scale))
-        scale <- 10^{floor(log10(min(x)))}
+        scale <- 10^(floor(log10(min(x[x != 0]))))
     if (is.na(total.icons))
         total.icons <- ceiling(max(x)/scale)
     raw.x <- x
@@ -139,7 +139,7 @@ BarPictograph <- function(x,
     if (!is.na(total.icons) && total.icons <= 0)
         stop("Total icons must be greater than zero\n")
     if (!is.na(scale) && scale <= 0)
-        stop("Scale must be grater than zero\n")
+        stop("Scale must be greater than zero\n")
     if (length(icon.nrow) != 1 && length(icon.nrow) != n)
         stop("icon.nrow should be a single integer or a vector of length ", n, "\n")
     if (length(icon.ncol) != 1)
