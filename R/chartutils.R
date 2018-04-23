@@ -216,8 +216,8 @@ setLegend <- function(type, font, ascending, fill.color, fill.opacity, border.co
             font = font,
             xanchor = "left",
             yanchor = "auto",
-            y = max(0.0, min(1.0, y.pos)),
-            x = max(0.0, min(1.02, x.pos)),
+            y = max(-0.5, min(1.0, y.pos)),
+            x = max(-0.5, min(1.02, x.pos)),
             traceorder = order))
 }
 
