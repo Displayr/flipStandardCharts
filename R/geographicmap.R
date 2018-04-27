@@ -126,7 +126,6 @@ GeographicMap <- function(x,
         }
     }
 
-    # TODO delete structure <- ifelse(map.type == "continents", "continent", "admin")
     structure <- switch(map.type, continents = "continent", countries = "admin", "name")
     coords[[structure]] <- as.character(coords[[structure]])
 
@@ -234,6 +233,11 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.sh
                        legend.title, mult, decimals, suffix, values.hovertext.format,
                        treat.NA.as.0, n.categories, categories, format.function, map.type) {
 
+
+    max.values <- unique(coords$table.max[!is.na(coords$table.max)])
+    if (length(max.values) == 1)
+        max.values <- c(max.values, max.values * 1.1)
+
     # Creating the map
     map <- leaflet(coords)
     opacity <- 1
@@ -244,7 +248,7 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.sh
 
     if (legend.show)
     {
-        map <- addLegend(map, "bottomright", pal = .rev.pal, values = ~table.max,
+        map <- addLegend(map, "bottomright", pal = .rev.pal, values = max.values,
                          title = legend.title,
                          # reverse label ordering so high values are at top
                          labFormat = labelFormat(transform = function(x) sort(x * mult, decreasing = TRUE),

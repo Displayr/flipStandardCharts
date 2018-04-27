@@ -226,6 +226,10 @@
 #     admin1.name.map[[country]] <- country.name.map
 # }
 #
+# # Manual amendments to state aletrnative names
+# admin1.name.map[["Australia"]]$`Jervis Bay Territory` <- admin1.name.map[["Australia"]]$`Lord Howe Island` <- NULL
+#
+#
 # # The file at 1:110m is missing a few small countries compared to the 1:50m data,
 # # notably Singapore and Hong Kong
 # missing110 <- local({
@@ -296,8 +300,8 @@
 #          map.coordinates.110,
 #          ISO_3166_1,
 #          ISO_3166_2,
-#          #us.regions,
+#          us.regions,
 #          #us.postcodes,
 #          #uk.postcodes,
-#          australia.postcodes,
+#          #australia.postcodes,
 #          internal = TRUE, overwrite = TRUE)
