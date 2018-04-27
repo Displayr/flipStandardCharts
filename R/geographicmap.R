@@ -41,8 +41,8 @@ GeographicMap <- function(x,
                           legend.show = TRUE,
                           legend.title = "",
                           values.hovertext.format = "",
-                          mapping.package = "leaflet") {
-
+                          mapping.package = "leaflet")
+{
     requireNamespace("sp")
 
     table <- cleanMapInput(x)
@@ -211,17 +211,21 @@ GeographicMap <- function(x,
     # Pass all data to a function specific to the package
     if (mapping.package == "leaflet") {
 
-        leafletMap(coords, colors, min.value, max.range, color.NA, legend.show,
+        map <- leafletMap(coords, colors, min.value, max.range, color.NA, legend.show,
                    legend.title, mult, decimals, suffix, values.hovertext.format,
                    treat.NA.as.0, n.categories, categories, format.function, map.type)
 
     } else {        # mapping.package == "plotly"
 
-        plotlyMap(table, name.map, colors, min.value, max.range, color.NA, legend.show,
+        map <- plotlyMap(table, name.map, colors, min.value, max.range, color.NA, legend.show,
                    legend.title, mult, decimals, suffix, values.hovertext.format,
                    treat.NA.as.0, n.categories, categories, format.function, map.type,
                   ocean.color, high.resolution)
     }
+
+    result <- list(htmlwidget = map)
+    class(result) <- "StandardChart"
+    result
 }
 
 

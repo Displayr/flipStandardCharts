@@ -384,7 +384,7 @@ Radar <- function(x,
     p <- addSubtitle(p, subtitle, subtitle.font, margins)
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
-    result <- list(plotly.plot = p)
+    result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     result
 }

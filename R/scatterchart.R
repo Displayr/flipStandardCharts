@@ -658,7 +658,7 @@ Scatter <- function(x = NULL,
         titlefont = title.font,
         font = data.label.font
     )
-    result <- list(plotly.plot = p)
+    result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     result
 }

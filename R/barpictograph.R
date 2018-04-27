@@ -319,5 +319,9 @@ BarPictograph <- function(x,
 
     if (print.config)
         cat(json.str, "\n")
-    return(graphic(json.str))
+
+    result <- list(htmlwidget = graphic(json.str))
+    class(result) <- "StandardChart"
+    result
+
 }

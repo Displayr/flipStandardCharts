@@ -272,6 +272,9 @@ Heat <- function(x,
                                      right_columns_subtitles_font_size = x.tick.font.size,
                                      right_columns_subtitles_font_family = x.tick.font.family,
                                      right_columns_subtitles_font_color = x.tick.font.color)
+    result <- list(htmlwidget = heatmap)
+    class(result) <- "StandardChart"
+    result
 }
 
 

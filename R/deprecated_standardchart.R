@@ -2674,14 +2674,8 @@ Chart <-   function(y = NULL,
         barmode = barmode
     )
 
-    result <- list(plotly.plot = p)
+    result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     result
 }
 
-#' @export
-#' @method print StandardChart
-print.StandardChart <- function(x, ...)
-{
-    return(print(x$plotly.plot))
-}

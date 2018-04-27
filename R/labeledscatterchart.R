@@ -454,7 +454,7 @@ LabeledScatter <- function(x = NULL,
         y.tick.suffix <- paste0("%", y.tick.suffix)
     }
 
-    return(rhtmlLabeledScatter::LabeledScatter(X = x[not.na],
+    p <- rhtmlLabeledScatter::LabeledScatter(X = x[not.na],
                        Y = y[not.na],
                        Z = if (is.null(scatter.sizes)) NULL else abs(scatter.sizes[not.na]),
                        group = groups[not.na],
@@ -522,7 +522,11 @@ LabeledScatter <- function(x = NULL,
                        title = title,
                        trend.lines.show = trend.lines,
                        labels.logo.scale = logo.size,
-                       debug.mode = grepl("DEBUG_MODE_ON", title)))
+                       debug.mode = grepl("DEBUG_MODE_ON", title))
+
+    result <- list(htmlwidget = p)
+    class(result) <- "StandardChart"
+    result
 }
 
 

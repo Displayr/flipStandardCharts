@@ -147,4 +147,8 @@ TimeSeries <- function(x = NULL,
         colors <- "#888888"
     dg <- dyRangeSelector(dg, fillColor = colors, dateWindow = c(range.start, range.end))
     dg <- dyLegend(dg, width = legend.width)
+
+    result <- list(htmlwidget = dg)
+    class(result) <- "StandardChart"
+    result
 }

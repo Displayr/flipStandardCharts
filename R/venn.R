@@ -62,7 +62,10 @@ Venn <- function(x = NULL,
             x[[i]]$size <- x[[i]]$size * 100
     }
     # Creating the Venn diagram
-    venn_tooltip(d3vennR(data = x, fontSize = data.label.font.size), suffix = suffix)
+    venn <- venn_tooltip(d3vennR(data = x, fontSize = data.label.font.size), suffix = suffix)
+    result <- list(htmlwidget = venn)
+    class(result) <- "StandardChart"
+    result
 }
 
 #' venn_tooltip
@@ -219,5 +222,9 @@ convertDataFrameIntoJSON <- function(x, nms, weights, data.label.decimals)
             list("sets"= list(0, 1, 2, 3, 4), "size"= .sum(c(0, 1, 2, 3, 4))))
     else
         stop(error.msg)
-    return(x)
+
+    result <- list(htmlwidget = x)
+    class(result) <- "StandardChart"
+    result
+
 }

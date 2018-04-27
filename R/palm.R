@@ -106,6 +106,10 @@ Palm <- function(table,
                                       colors = colors,          # colors of the leaves
                                       digits = y.decimals,      # number of decimal places in the tooltips
                                       order = "original")       # not exposed since user can change by amending input data
+
+    result <- list(htmlwidget = palm)
+    class(result) <- "StandardChart"
+    result
 }
 
 

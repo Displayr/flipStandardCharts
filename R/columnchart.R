@@ -503,7 +503,7 @@ Column <- function(x,
         bargap = bar.gap,
         barmode = barmode
     )
-    result <- list(plotly.plot = p)
+    result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     result
 }

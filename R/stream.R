@@ -140,5 +140,7 @@ Stream <- function(x,
     # Override default of fixed size widget
     sg$sizingPolicy$browser$fill <- TRUE
 
-    sg
-    }
+    result <- list(htmlwidget = sg)
+    class(result) <- "StandardChart"
+    result
+}

@@ -396,9 +396,11 @@ Distribution <-   function(x,
         margin = margins,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity))")
-
     eval(parse(text = txt))
-    p
+
+    result <- list(htmlwidget = p)
+    class(result) <- "StandardChart"
+    result
 }
 
 
