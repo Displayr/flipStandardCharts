@@ -6,6 +6,11 @@
 \usage{
 \method{print}{StandardChart}(x, ...)
 }
+\arguments{
+\item{x}{Object of class \code{StandardChart}}
+
+\item{...}{Not used}
+}
 \description{
 All objects of class \code{StandardChart} are
    expected to contain a component called htmlwidget is the

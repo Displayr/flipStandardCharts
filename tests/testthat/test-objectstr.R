@@ -83,3 +83,10 @@ test_that("Object structure of Stream",
     expect_true(!is.null(pp$htmlwidget))
 })
 
+# Check error message for invalid object
+xx <- list(A=1, plotly.plot = 1:10)
+class(xx) <- "StandardChart"
+test_that("Invalid object",
+{
+    expect_error(print(xx), "StandardChart object does not contain htmlwidget")
+})
