@@ -62,8 +62,8 @@ Venn <- function(x = NULL,
             x[[i]]$size <- x[[i]]$size * 100
     }
     # Creating the Venn diagram
-    venn <- venn_tooltip(d3vennR(data = x, fontSize = data.label.font.size), suffix = suffix)
-    result <- list(htmlwidget = venn)
+    vv <- venn_tooltip(d3vennR(data = x, fontSize = data.label.font.size), suffix = suffix)
+    result <- list(htmlwidget = vv)
     class(result) <- "StandardChart"
     result
 }
