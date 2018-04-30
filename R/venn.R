@@ -222,9 +222,4 @@ convertDataFrameIntoJSON <- function(x, nms, weights, data.label.decimals)
             list("sets"= list(0, 1, 2, 3, 4), "size"= .sum(c(0, 1, 2, 3, 4))))
     else
         stop(error.msg)
-
-    result <- list(htmlwidget = x)
-    class(result) <- "StandardChart"
-    result
-
 }
