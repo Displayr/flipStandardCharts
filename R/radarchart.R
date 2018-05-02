@@ -279,7 +279,7 @@ Radar <- function(x,
             HoverText=sprintf("%s%s: %s%s%s", tmp.group, pos$Name, y.tick.prefix,
                 hover.format.function(unlist(chart.matrix), decimals = y.hovertext.decimals,
                                       comma.for.thousands = commaFromD3(y.hovertext.format)), y.tick.suffix),
-            DataLabels=sprintf("%s%s%s", data.label.prefix,
+            DataLabels=sprintf("%s: %s%s%s", rownames(chart.matrix), data.label.prefix,
                 data.label.format.function(unlist(chart.matrix), decimals = data.label.decimals),
                 data.label.suffix))
 
@@ -317,17 +317,22 @@ Radar <- function(x,
     for (ggi in 1:length(g.list))
     {
         ind <- which(pos$Group == g.list[ggi])
+        ind <- ind[-length(ind)] # remove last duplicated point
         p <- add_trace(p, x = pos$x[ind], y = pos$y[ind], type = "scatter", mode = "markers+lines", fill = "none",
                     name = g.list[ggi], legendgroup = g.list[ggi],
                     showlegend = FALSE, hoverinfo = "text", text = pos$HoverText[ind],
                     marker = list(size = 1, color = toRGB(colors[ggi])), line = list(width = 0))
 
         if (data.label.show)
-            p <- add_trace(p, x = pos$x[ind]*1.05, y = pos$y[ind]*1.06,
+        {
+            x.offset <- sign(pos$x[ind]) * 0.1 * abs(max(pos$x[ind]))
+            y.offset <- sign(pos$y[ind]) * 0.1 * abs(max(pos$y[ind]))
+            p <- add_trace(p, x = pos$x[ind] + x.offset, y = pos$y[ind] + y.offset,
                     type = "scatter", mode = "text", legendgroup = g.list[ggi],
                     showlegend = FALSE, hoverinfo = "none", text = pos$DataLabels[ind],
                     textfont = list(family = data.label.font.family, size = data.label.font.size,
                     color = data.label.font.color))
+        }
     }
 
     # Radial grid lines
