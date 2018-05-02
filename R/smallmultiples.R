@@ -12,7 +12,11 @@
 #' @param titles.wrap Logical; whether the panel titles should be wrapped.
 #' @param titles.wrap.nchar Number of characters (approximately) in each line
 #'     of the panel titles when \code{titles.wordwrap} \code{TRUE}.
-#' @param pad Numeric; spacing between each panel in the chart.
+#' @param legend.show Ignored except for with \code{GeographicMap}.
+#' @param pad.top Numeric in [0,1]; Spacing above chart (between panels)
+#' @param pad.bottom Numeric in [0,1]; Spacing below chart (between panels)
+#' @param pad.left Numeric in [0,1]; Spacing to the left of chart (between panels)
+#' @param pad.right Numeric in [0,1]; Spacing to the right chart (between panels)
 #' @param ... Extra arguments passed to the charting function
 #' @inherit Column
 #' @importFrom plotly subplot
@@ -20,6 +24,10 @@
 SmallMultiples <- function(x,
                            chart.type = "Area",
                            nrows = 2,
+                           pad.left = 0.01,
+                           pad.right = 0.01,
+                           pad.top = 0.01,
+                           pad.bottom = 0.01,
                            x.order = NULL,
                            average.show = FALSE,
                            average.color = rgb(80, 80, 80, maxColorValue = 255),
@@ -39,7 +47,7 @@ SmallMultiples <- function(x,
                            grid.show = TRUE,
                            x.tick.show = TRUE,
                            data.label.show = FALSE,
-                           pad = 0.01,
+                           legend.show = FALSE,
                            margin.left = NULL,
                            margin.right = NULL,
                            margin.top = NULL,
@@ -85,18 +93,30 @@ SmallMultiples <- function(x,
     if (npanels <= 1)
         stop("Multiple series are required for Small Multiples.")
     ncols <- ceiling(npanels/nrows)
-    tmp <- (nrows:1)/nrows
-    if (nrows >= 2)
-        tmp <- tmp + c(pad, rep(0, nrows - 2), -pad)/nrows
-    title.ypos <- rep(tmp, each = ncols)[1:npanels]
-    tmp <- (1:ncols - 0.5)/ncols
-    if (ncols >= 2)
-        tmp <- tmp + c(-pad, rep(0, ncols - 2), pad)
-    title.xpos <- rep(tmp, nrows)[1:npanels]
+    title.ypos <- rep((nrows:1)/nrows, each = ncols)[1:npanels]
+    title.xpos <- rep((1:ncols - 0.5)/ncols, nrows)[1:npanels]
+
+    h.offset <- c(pad.top, rep(0, max(0, nrows - 2)), pad.bottom)[1:nrows]
+    w.offset <- c(pad.left, rep(0, max(0, ncols - 2)), pad.right)[1:ncols]
+    if (any(h.offset > 1/nrows))
+        stop("'pad.top' and 'pad.bottom' should be between 0 and 1/nrows (", round(1/nrows, 4), ")")
+    if (any(w.offset > 1/ncols))
+        stop("'pad.left' and 'pad.bottom' should be between 0 and 1/ncols (", round(1/ncols, 4), ")")
+
+    # Construct charts
+    .bind_mean <- function(a, b, rev = FALSE)
+    {
+        if (is.null(b))
+            return(a)
+        else if (rev)
+            return(cbind(Mean = b, a))
+        else
+            return(cbind(a, Mean = b))
+    }
 
     if (chart.type == "Radar")
     {
-        plot.list <- lapply(1:npanels, function(i){chart(cbind(Mean = average.series, x[,i, drop = FALSE]),
+        plot.list <- lapply(1:npanels, function(i){chart(.bind_mean(x[,i, drop = FALSE], average.series, rev = TRUE),
                                                      colors = c(average.color, colors[i]),
                                                      grid.show = FALSE, x.tick.show = FALSE,
                                                      data.label.show = data.label.show,
@@ -105,18 +125,19 @@ SmallMultiples <- function(x,
         margin.right <- 0
         margin.bottom <- 0
     }
-    #else if (chart.type == "GeographicMap")
-    #{
-    #     plot.list <- lapply(1:npanels, function(i){chart(x[,i, drop = FALSE],
-    #                                                 colors = c(average.color, colors[i]),
-    #                                                 mapping.package = "plotly",
-    #                                                 ...)$htmlwidget})
-    #    margin.left <- 0
-    #    margin.right <- 0
-    #    margin.bottom <- 0
-    #}
+    else if (chart.type == "GeographicMap")
+    {
+         plot.list <- lapply(1:npanels, function(i){chart(x[,i, drop = FALSE],
+                                                     colors = colors,
+                                                     mapping.package = "plotly",
+                                                     legend.show = legend.show && (i == 1),
+                                                     ...)$htmlwidget})
+        margin.left <- 0
+        margin.right <- 0
+        margin.bottom <- 0
+    }
     else
-        plot.list <- lapply(1:npanels, function(i){chart(cbind(x[,i, drop = FALSE], Mean = average.series),
+        plot.list <- lapply(1:npanels, function(i){chart(.bind_mean(x[,i, drop = FALSE], average.series),
                                                      colors = c(colors[i], average.color),
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
@@ -124,12 +145,15 @@ SmallMultiples <- function(x,
                                                      x.tick.show = x.tick.show,
                                                      data.label.show = FALSE,
                                                      ...)$htmlwidget})
-    res <- subplot(plot.list, nrows = nrows, margin = pad,
-                   titleX = TRUE, titleY = TRUE, shareX = TRUE, shareY = TRUE)
-    res <- layout(res,
+
+    is.geo <- chart.type == "GeographicMap"
+    res <- subplot(plot.list, nrows = nrows, margin = c(pad.left,pad.right,pad.top,pad.bottom),
+                   heights = rep(1/nrows, nrows) - h.offset, # compensate for plotly bug
+                   widths = rep(1/ncols, ncols) - w.offset,
+                   titleX = TRUE, titleY = TRUE, shareX = !is.geo, shareY = !is.geo)
+    res <- layout(res, title = title, showlegend = is.geo,
                   annotations = list(text = title.list, x = title.xpos, y = title.ypos, showarrow = FALSE,
                                      xanchor = "center", yanchor = "top", xref = 'paper', yref = 'paper'),
-                  showlegend = FALSE, title = title,
                   titlefont = list(family = title.font.family, color = title.font.color, size = title.font.size),
                   margin = list(l = margin.left, r = margin.right, b = margin.bottom, t = margin.top))
     res

@@ -4,7 +4,8 @@
 \alias{SmallMultiples}
 \title{Plotting data as a small multiples}
 \usage{
-SmallMultiples(x, chart.type = "Area", nrows = 2, x.order = NULL,
+SmallMultiples(x, chart.type = "Area", nrows = 2, pad.left = 0.01,
+  pad.right = 0.01, pad.top = 0.01, pad.bottom = 0.01, x.order = NULL,
   average.show = FALSE, average.color = rgb(80, 80, 80, maxColorValue =
   255), titles.wrap = TRUE, titles.wrap.nchar = 20,
   colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
@@ -13,8 +14,13 @@ SmallMultiples(x, chart.type = "Area", nrows = 2, x.order = NULL,
   title.font.color = global.font.color, title.font.size = 16,
   x.title = "", x.title.font.size = 12, y.title = "",
   y.title.font.size = 12, grid.show = TRUE, x.tick.show = TRUE,
-  data.label.show = FALSE, pad = 0.01, margin.left = NULL,
-  margin.right = NULL, margin.top = NULL, margin.bottom = NULL, ...)
+  data.label.show = FALSE, legend.show = FALSE, margin.left = NULL,
+  margin.right = NULL, margin.top = NULL, margin.bottom = NULL,
+  subtitle = "", subtitle.font.family = global.font.family,
+  subtitle.font.color = global.font.color, subtitle.font.size = 12,
+  footer = "", footer.font.family = global.font.family,
+  footer.font.color = global.font.color, footer.font.size = 8,
+  footer.wrap = TRUE, footer.wrap.nchar = 100, ...)
 }
 \arguments{
 \item{x}{Input data as a matrix or dataframe}
@@ -22,6 +28,14 @@ SmallMultiples(x, chart.type = "Area", nrows = 2, x.order = NULL,
 \item{chart.type}{Can be one of "Area", "Column", "Bar" or "Line"}
 
 \item{nrows}{Integer; Number of rows to arrange the charts in}
+
+\item{pad.left}{Numeric in [0,1]; Spacing to the left of chart (between panels)}
+
+\item{pad.right}{Numeric in [0,1]; Spacing to the right chart (between panels)}
+
+\item{pad.top}{Numeric in [0,1]; Spacing above chart (between panels)}
+
+\item{pad.bottom}{Numeric in [0,1]; Spacing below chart (between panels)}
 
 \item{x.order}{A vector containing the list index of the columns in the order which they are to be shown}
 
@@ -73,7 +87,7 @@ to turn off set to "FALSE".}
 
 \item{data.label.show}{Logical; whether to show data labels.}
 
-\item{pad}{Numeric; spacing between each panel in the chart.}
+\item{legend.show}{Ignored except for with \code{GeographicMap}.}
 
 \item{margin.left}{Margin between plot area and the left of the
 graphic in pixels}
@@ -86,6 +100,32 @@ graphic in pixels}
 
 \item{margin.bottom}{Margin between plot area and the bottom of the
 graphic in pixels}
+
+\item{subtitle}{Character}
+
+\item{subtitle.font.family}{Character; subtitle font family}
+
+\item{subtitle.font.color}{subtitle font color as a named color in
+character format (e.g. "black") or an rgb value (e.g.
+rgb(0, 0, 0, maxColorValue = 255)).}
+
+\item{subtitle.font.size}{Integer; subtitle font size}
+
+\item{footer}{Character}
+
+\item{footer.font.family}{Character; footer font family}
+
+\item{footer.font.color}{footer font color as a named color in
+character format (e.g. "black") or an rgb value (e.g.
+rgb(0, 0, 0, maxColorValue = 255)).}
+
+\item{footer.font.size}{Integer; footer font size}
+
+\item{footer.wrap}{Logical; whether the footer text should be wrapped.}
+
+\item{footer.wrap.nchar}{Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.}
+
+\item{...}{Extra arguments passed to the charting function}
 }
 \description{
 A small multiple (sometimes called trellis chart, lattice chart,
