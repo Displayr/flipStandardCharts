@@ -3,15 +3,19 @@
 #'    grid chart, or panel chart) is a series of similar graphs or charts using
 #'    the same scale and axes, allowing them to be easily compared.
 #' @param x Input data as a matrix or dataframe
-#' @param chart.type Can be one of "Area", "Column", "Bar" or "Line"
+#' @param chart.type Can be one of "Area", "Column", "Bar", "Line", "Radar" or "Geographic Map".
 #' @param nrows Integer; Number of rows to arrange the charts in
 #' @param x.order A vector containing the list index of the columns in the order which they are to be shown
 #' @param average.show Logical; whether to show a second series in each panel containing
 #'     the data averaged across all series.
 #' @param average.color The color in which the average series should be displayed
-#' @param titles.wrap Logical; whether the panel titles should be wrapped.
-#' @param titles.wrap.nchar Number of characters (approximately) in each line
-#'     of the panel titles when \code{titles.wordwrap} \code{TRUE}.
+#' @param paneltitle.show Logical; whether to show a title for each panel.
+#' @param paneltitle.font.family Font family of panel titles.
+#' @param paneltitle.font.color Font color of panel titles.
+#' @param paneltitle.font.size Font size of panel titles.
+#' @param paneltitle.wrap Logical; whether the panel title should be wrapped.
+#' @param paneltitle.wrap.nchar Number of characters (approximately) in each line
+#'     of the panel title when \code{paneltitle.wordwrap} \code{TRUE}.
 #' @param legend.show Ignored except for with \code{GeographicMap}.
 #' @param pad.top Numeric in [0,1]; Spacing above chart (between panels)
 #' @param pad.bottom Numeric in [0,1]; Spacing below chart (between panels)
@@ -32,8 +36,6 @@ SmallMultiples <- function(x,
                            x.order = NULL,
                            average.show = FALSE,
                            average.color = rgb(80, 80, 80, maxColorValue = 255),
-                           titles.wrap = TRUE,
-                           titles.wrap.nchar = 20,
                            colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
                            global.font.family = "Arial",
                            global.font.color = rgb(44, 44, 44, maxColorValue = 255),
@@ -41,6 +43,12 @@ SmallMultiples <- function(x,
                            title.font.family = global.font.family,
                            title.font.color = global.font.color,
                            title.font.size = 16,
+                           paneltitle.show = TRUE,
+                           paneltitle.font.family = global.font.family,
+                           paneltitle.font.color = global.font.color,
+                           paneltitle.font.size = 14,
+                           paneltitle.wrap = TRUE,
+                           paneltitle.wrap.nchar = 20,
                            x.title = "",
                            x.title.font.size = 12,
                            y.title = "",
@@ -81,7 +89,6 @@ SmallMultiples <- function(x,
         if (is.numeric(x.order) && length(x.order) > 0)
             x <- x[, x.order]
     }
-    title.list <- autoFormatLongLabels(colnames(x), titles.wrap, titles.wrap.nchar)
     average.series <- NULL
     if (average.show)
         average.series <- apply(x, 1, mean)
@@ -102,15 +109,25 @@ SmallMultiples <- function(x,
     if (npanels <= 1)
         stop("Multiple series are required for Small Multiples.")
     ncols <- ceiling(npanels/nrows)
-    title.ypos <- rep((nrows:1)/nrows, each = ncols)[1:npanels]
-    title.xpos <- rep((1:ncols - 0.5)/ncols, nrows)[1:npanels]
-
     h.offset <- c(pad.top, rep(0, max(0, nrows - 2)), pad.bottom)[1:nrows]
     w.offset <- c(pad.left, rep(0, max(0, ncols - 2)), pad.right)[1:ncols]
     if (any(h.offset > 1/nrows))
         stop("'pad.top' and 'pad.bottom' should be between 0 and 1/nrows (", round(1/nrows, 4), ")")
     if (any(w.offset > 1/ncols))
         stop("'pad.left' and 'pad.bottom' should be between 0 and 1/ncols (", round(1/ncols, 4), ")")
+
+    # Position titles for each panel
+    paneltitles <- NULL
+    title.list <- autoFormatLongLabels(colnames(x), paneltitle.wrap, paneltitle.wrap.nchar)
+    if (paneltitle.show && length(title.list) > 0)
+    {
+        titles.ypos <- rep((nrows:1)/nrows, each = ncols)[1:npanels]
+        titles.xpos <- rep((1:ncols - 0.5)/ncols, nrows)[1:npanels]
+        paneltitles <- list(text = title.list, x = titles.xpos, y = titles.ypos,
+                            showarrow = FALSE, xanchor = "center", yanchor = "top",
+                            font = list(family = paneltitle.font.family, color = paneltitle.font.color,
+                            size = paneltitle.font.size), xref = 'paper', yref = 'paper')
+    }
 
     # Construct charts
     .bind_mean <- function(a, b, rev = FALSE)
@@ -158,9 +175,7 @@ SmallMultiples <- function(x,
                    heights = rep(1/nrows, nrows) - h.offset, # compensate for plotly bug
                    widths = rep(1/ncols, ncols) - w.offset,
                    titleX = TRUE, titleY = TRUE, shareX = !is.geo, shareY = !is.geo)
-    res <- layout(res, title = title, showlegend = is.geo,
-                  annotations = list(text = title.list, x = title.xpos, y = title.ypos, showarrow = FALSE,
-                                     xanchor = "center", yanchor = "top", xref = 'paper', yref = 'paper'),
+    res <- layout(res, title = title, showlegend = is.geo, annotations = paneltitles,
                   titlefont = list(family = title.font.family, color = title.font.color, size = title.font.size),
                   margin = list(l = margin.left, r = margin.right, b = margin.bottom, t = margin.top))
     res

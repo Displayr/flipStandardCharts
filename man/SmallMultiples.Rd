@@ -7,15 +7,17 @@
 SmallMultiples(x, chart.type = "Area", nrows = 2, pad.left = 0.01,
   pad.right = 0.01, pad.top = 0.01, pad.bottom = 0.01, x.order = NULL,
   average.show = FALSE, average.color = rgb(80, 80, 80, maxColorValue =
-  255), titles.wrap = TRUE, titles.wrap.nchar = 20,
-  colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
+  255), colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
   global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
   maxColorValue = 255), title = "", title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
-  x.title = "", x.title.font.size = 12, y.title = "",
-  y.title.font.size = 12, grid.show = TRUE, x.tick.show = TRUE,
-  legend.show = FALSE, margin.left = NULL, margin.right = NULL,
-  margin.top = NULL, margin.bottom = NULL, subtitle = "",
+  paneltitle.show = TRUE, paneltitle.font.family = global.font.family,
+  paneltitle.font.color = global.font.color, paneltitle.font.size = 14,
+  paneltitle.wrap = TRUE, paneltitle.wrap.nchar = 20, x.title = "",
+  x.title.font.size = 12, y.title = "", y.title.font.size = 12,
+  grid.show = TRUE, x.tick.show = TRUE, legend.show = FALSE,
+  margin.left = NULL, margin.right = NULL, margin.top = NULL,
+  margin.bottom = NULL, subtitle = "",
   subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color, subtitle.font.size = 12,
   footer = "", footer.font.family = global.font.family,
@@ -26,7 +28,7 @@ SmallMultiples(x, chart.type = "Area", nrows = 2, pad.left = 0.01,
 \arguments{
 \item{x}{Input data as a matrix or dataframe}
 
-\item{chart.type}{Can be one of "Area", "Column", "Bar" or "Line"}
+\item{chart.type}{Can be one of "Area", "Column", "Bar", "Line", "Radar" or "Geographic Map".}
 
 \item{nrows}{Integer; Number of rows to arrange the charts in}
 
@@ -44,11 +46,6 @@ SmallMultiples(x, chart.type = "Area", nrows = 2, pad.left = 0.01,
 the data averaged across all series.}
 
 \item{average.color}{The color in which the average series should be displayed}
-
-\item{titles.wrap}{Logical; whether the panel titles should be wrapped.}
-
-\item{titles.wrap.nchar}{Number of characters (approximately) in each line
-of the panel titles when \code{titles.wordwrap} \code{TRUE}.}
 
 \item{colors}{Character; a vector containing one or more named
 colors from grDevices OR one or more specified hex value colors OR a single
@@ -71,6 +68,19 @@ font attribute for the chart unless specified individually.}
 format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{title.font.size}{Integer; Title font size; default = 10.}
+
+\item{paneltitle.show}{Logical; whether to show title for each panel.}
+
+\item{paneltitle.font.family}{Font family of panel titles.}
+
+\item{paneltitle.font.color}{Font color of panel titles.}
+
+\item{paneltitle.font.size}{Font size of panel titles.}
+
+\item{paneltitle.wrap}{Logical; whether the panel paneltitle should be wrapped.}
+
+\item{paneltitle.wrap.nchar}{Number of characters (approximately) in each line
+of the panel paneltitle when \code{paneltitle.wordwrap} \code{TRUE}.}
 
 \item{x.title}{Character, x-axis title; defaults to chart input values;
 to turn off set to "FALSE".}
