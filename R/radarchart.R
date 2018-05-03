@@ -170,6 +170,7 @@ Radar <- function(x,
                     y.tick.suffix = "",
                     y.tick.prefix = "",
                     y.tick.format = "",
+                    hovertext.show = TRUE,
                     y.hovertext.format = "",
                     y.tick.font.color = global.font.color,
                     y.tick.font.family = global.font.family,
@@ -233,7 +234,7 @@ Radar <- function(x,
     if (is.null(y.bounds.maximum))
     {
         offset <- 1.0
-        if (data.label.show)
+        if (any(data.label.show))
             offset <- 1.1 + data.label.font.size/100
         y.bounds.maximum <- offset * max(chart.matrix)
     }
@@ -302,6 +303,8 @@ Radar <- function(x,
     # Initialise plot
     p <- plot_ly(pos)
     g.list <- unique(pos$Group)
+    series.line.width <- rep(1, length(g.list)) * series.line.width
+    hovertext.show <- rep(TRUE, length(g.list)) & hovertext.show
     for (ggi in 1:length(g.list))
     {
         ind <- which(pos$Group == g.list[ggi])
@@ -309,21 +312,23 @@ Radar <- function(x,
                     type = "scatter", mode = "lines", fill = "toself",
                     fillcolor = toRGB(colors[ggi], alpha = opacity),
                     legendgroup = g.list[ggi], showlegend = TRUE,
-                    hoverinfo = "all+text", text = pos$HoverText[ind],
-                    line = list(width = series.line.width, color = toRGB(colors[ggi])))
+                    hoverinfo = if (hovertext.show[ggi]) "all+text" else "skip", text = pos$HoverText[ind],
+                    line = list(width = series.line.width[ggi], color = toRGB(colors[ggi])))
     }
 
     # Markers are added as a separate trace to allow overlapping hoverinfo
-    for (ggi in 1:length(g.list))
+    data.label.show <- suppressWarnings(rep(TRUE, length(g.list)) & data.label.show)
+    for (ggi in length(g.list):1)
     {
         ind <- which(pos$Group == g.list[ggi])
         ind <- ind[-length(ind)] # remove last duplicated point
         p <- add_trace(p, x = pos$x[ind], y = pos$y[ind], type = "scatter", mode = "markers+lines", fill = "none",
                     name = g.list[ggi], legendgroup = g.list[ggi],
-                    showlegend = FALSE, hoverinfo = "text", text = pos$HoverText[ind],
+                    showlegend = FALSE, #hoverinfo = "text", text = pos$HoverText[ind],
+                    hoverinfo = if (hovertext.show[ggi]) "all+text" else "skip", text = pos$HoverText[ind],
                     marker = list(size = 1, color = toRGB(colors[ggi])), line = list(width = 0))
 
-        if (data.label.show)
+        if (data.label.show[ggi])
         {
             x.offset <- sign(pos$x[ind]) * 0.1 * abs(max(pos$x[ind]))
             y.offset <- sign(pos$y[ind]) * 0.1 * abs(max(pos$y[ind]))

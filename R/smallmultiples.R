@@ -53,6 +53,7 @@ SmallMultiples <- function(x,
                            x.title.font.size = 12,
                            y.title = "",
                            y.title.font.size = 12,
+                           data.label.show = FALSE,
                            grid.show = TRUE,
                            x.tick.show = TRUE,
                            legend.show = FALSE,
@@ -89,8 +90,12 @@ SmallMultiples <- function(x,
         if (is.numeric(x.order) && length(x.order) > 0)
             x <- x[, x.order]
     }
+    values.max = max(x, na.rm = TRUE)
+    if (chart.type == "Radar")
+        max.series <- apply(x, 1, max)
+
     average.series <- NULL
-    if (average.show)
+    if (chart.type != "GeographicMap" && average.show)
         average.series <- apply(x, 1, mean)
     else
         average.color <- NULL
@@ -135,16 +140,19 @@ SmallMultiples <- function(x,
         if (is.null(b))
             return(a)
         else if (rev)
-            return(cbind(Mean = b, a))
+            return(cbind(Average = b, a))
         else
-            return(cbind(a, Mean = b))
+            return(cbind(a, Average = b))
     }
 
     if (chart.type == "Radar")
     {
-        plot.list <- lapply(1:npanels, function(i){chart(.bind_mean(x[,i, drop = FALSE], average.series, rev = TRUE),
-                                                     colors = c(average.color, colors[i]),
+        plot.list <- lapply(1:npanels, function(i){chart(cbind(.bind_mean(x[,i, drop = FALSE], average.series), max.series),
+                                                     hovertext.show = c(TRUE, FALSE, FALSE),
+                                                     colors = c(colors[i], average.color),
                                                      grid.show = FALSE, x.tick.show = FALSE,
+                                                     data.label.show = c(data.label.show, FALSE, FALSE),
+                                                     series.line.width = c(3,0,0),
                                                      ...)$htmlwidget})
         margin.left <- 0
         margin.right <- 0
@@ -155,7 +163,7 @@ SmallMultiples <- function(x,
          plot.list <- lapply(1:npanels, function(i){chart(x[,i, drop = FALSE],
                                                      colors = colors,
                                                      mapping.package = "plotly",
-                                                     legend.show = legend.show, # && (i == 1),
+                                                     legend.show = legend.show && (i == 1),
                                                      ...)$htmlwidget})
         margin.left <- 0
         margin.right <- 0
@@ -166,7 +174,7 @@ SmallMultiples <- function(x,
                                                      colors = c(colors[i], average.color),
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
-                                                     grid.show = grid.show,
+                                                     grid.show = grid.show, data.label.show = data.label.show,
                                                      x.tick.show = x.tick.show,
                                                      ...)$htmlwidget})
 

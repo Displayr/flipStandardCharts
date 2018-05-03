@@ -15,9 +15,9 @@ SmallMultiples(x, chart.type = "Area", nrows = 2, pad.left = 0.01,
   paneltitle.font.color = global.font.color, paneltitle.font.size = 14,
   paneltitle.wrap = TRUE, paneltitle.wrap.nchar = 20, x.title = "",
   x.title.font.size = 12, y.title = "", y.title.font.size = 12,
-  grid.show = TRUE, x.tick.show = TRUE, legend.show = FALSE,
-  margin.left = NULL, margin.right = NULL, margin.top = NULL,
-  margin.bottom = NULL, subtitle = "",
+  data.label.show = FALSE, grid.show = TRUE, x.tick.show = TRUE,
+  legend.show = FALSE, margin.left = NULL, margin.right = NULL,
+  margin.top = NULL, margin.bottom = NULL, subtitle = "",
   subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color, subtitle.font.size = 12,
   footer = "", footer.font.family = global.font.family,
@@ -69,7 +69,7 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{title.font.size}{Integer; Title font size; default = 10.}
 
-\item{paneltitle.show}{Logical; whether to show title for each panel.}
+\item{paneltitle.show}{Logical; whether to show a title for each panel.}
 
 \item{paneltitle.font.family}{Font family of panel titles.}
 
@@ -77,10 +77,10 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{paneltitle.font.size}{Font size of panel titles.}
 
-\item{paneltitle.wrap}{Logical; whether the panel paneltitle should be wrapped.}
+\item{paneltitle.wrap}{Logical; whether the panel title should be wrapped.}
 
 \item{paneltitle.wrap.nchar}{Number of characters (approximately) in each line
-of the panel paneltitle when \code{paneltitle.wordwrap} \code{TRUE}.}
+of the panel title when \code{paneltitle.wordwrap} \code{TRUE}.}
 
 \item{x.title}{Character, x-axis title; defaults to chart input values;
 to turn off set to "FALSE".}
@@ -91,6 +91,8 @@ to turn off set to "FALSE".}
 to turn off set to "FALSE".}
 
 \item{y.title.font.size}{Integer; y-axis title font size}
+
+\item{data.label.show}{Logical; whether to show data labels.}
 
 \item{grid.show}{Logical; whether to show grid lines.}
 
