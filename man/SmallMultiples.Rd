@@ -14,13 +14,14 @@ SmallMultiples(x, chart.type = "Area", nrows = 2, pad.left = 0.01,
   title.font.color = global.font.color, title.font.size = 16,
   x.title = "", x.title.font.size = 12, y.title = "",
   y.title.font.size = 12, grid.show = TRUE, x.tick.show = TRUE,
-  data.label.show = FALSE, legend.show = FALSE, margin.left = NULL,
-  margin.right = NULL, margin.top = NULL, margin.bottom = NULL,
-  subtitle = "", subtitle.font.family = global.font.family,
+  legend.show = FALSE, margin.left = NULL, margin.right = NULL,
+  margin.top = NULL, margin.bottom = NULL, subtitle = "",
+  subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color, subtitle.font.size = 12,
   footer = "", footer.font.family = global.font.family,
   footer.font.color = global.font.color, footer.font.size = 8,
-  footer.wrap = TRUE, footer.wrap.nchar = 100, ...)
+  footer.wrap = TRUE, footer.wrap.nchar = 100, mapping.package = "plotly",
+  ...)
 }
 \arguments{
 \item{x}{Input data as a matrix or dataframe}
@@ -85,8 +86,6 @@ to turn off set to "FALSE".}
 
 \item{x.tick.show}{Whether to display the x-axis tick labels}
 
-\item{data.label.show}{Logical; whether to show data labels.}
-
 \item{legend.show}{Ignored except for with \code{GeographicMap}.}
 
 \item{margin.left}{Margin between plot area and the left of the
@@ -124,6 +123,8 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{footer.wrap}{Logical; whether the footer text should be wrapped.}
 
 \item{footer.wrap.nchar}{Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.}
+
+\item{mapping.package}{Not used.}
 
 \item{...}{Extra arguments passed to the charting function}
 }

@@ -17,6 +17,7 @@
 #' @param pad.bottom Numeric in [0,1]; Spacing below chart (between panels)
 #' @param pad.left Numeric in [0,1]; Spacing to the left of chart (between panels)
 #' @param pad.right Numeric in [0,1]; Spacing to the right chart (between panels)
+#' @param mapping.package Not used.
 #' @param ... Extra arguments passed to the charting function
 #' @inherit Column
 #' @importFrom plotly subplot
@@ -46,7 +47,6 @@ SmallMultiples <- function(x,
                            y.title.font.size = 12,
                            grid.show = TRUE,
                            x.tick.show = TRUE,
-                           data.label.show = FALSE,
                            legend.show = FALSE,
                            margin.left = NULL,
                            margin.right = NULL,
@@ -62,6 +62,7 @@ SmallMultiples <- function(x,
                            footer.font.size = 8,
                            footer.wrap = TRUE,
                            footer.wrap.nchar = 100,
+                           mapping.package = "plotly", # discarded
                            ...)
 {
     # Subplot has problems with the placement of GeographicMap and Radar
@@ -76,7 +77,8 @@ SmallMultiples <- function(x,
             x.order <- as.numeric(TextAsVector(x.order))
         if (any(is.na(x.order)) || any(x.order > ncol(x)))
             stop("x.order should be a comma separated list of indices (between 1 and ", ncol(x), ")")
-        x <- x[, x.order]
+        if (is.numeric(x.order) && length(x.order) > 0)
+            x <- x[, x.order]
     }
     title.list <- autoFormatLongLabels(colnames(x), titles.wrap, titles.wrap.nchar)
     average.series <- NULL
@@ -125,7 +127,6 @@ SmallMultiples <- function(x,
         plot.list <- lapply(1:npanels, function(i){chart(.bind_mean(x[,i, drop = FALSE], average.series, rev = TRUE),
                                                      colors = c(average.color, colors[i]),
                                                      grid.show = FALSE, x.tick.show = FALSE,
-                                                     data.label.show = data.label.show,
                                                      ...)$htmlwidget})
         margin.left <- 0
         margin.right <- 0
@@ -136,7 +137,7 @@ SmallMultiples <- function(x,
          plot.list <- lapply(1:npanels, function(i){chart(x[,i, drop = FALSE],
                                                      colors = colors,
                                                      mapping.package = "plotly",
-                                                     legend.show = legend.show && (i == 1),
+                                                     legend.show = legend.show, # && (i == 1),
                                                      ...)$htmlwidget})
         margin.left <- 0
         margin.right <- 0
@@ -149,7 +150,6 @@ SmallMultiples <- function(x,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
                                                      grid.show = grid.show,
                                                      x.tick.show = x.tick.show,
-                                                     data.label.show = FALSE,
                                                      ...)$htmlwidget})
 
     is.geo <- chart.type == "GeographicMap"
