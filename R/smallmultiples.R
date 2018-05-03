@@ -67,7 +67,8 @@ SmallMultiples <- function(x,
 {
     # Subplot has problems with the placement of GeographicMap and Radar
     # Arguments which also cannot be used: data labels, subtitle, footer
-    chart <- get0(chart.type)
+    chart.type <- gsub(" ", "", chart.type)
+    chart <- get0(chart.type, mode = "function")
     eval(colors)
 
     # Data manipulation
