@@ -6,8 +6,11 @@
 \usage{
 SmallMultiples(x, chart.type = "Area", nrows = 2, pad.left = 0.01,
   pad.right = 0.01, pad.top = 0.01, pad.bottom = 0.01, x.order = NULL,
-  average.show = FALSE, average.color = rgb(80, 80, 80, maxColorValue =
-  255), colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
+  average.show = FALSE, average.color = rgb(230, 230, 230, maxColorValue =
+  255), y.bounds.maximum = NULL, y.bounds.minimum = NULL,
+  x.bounds.maximum = NULL, x.bounds.minimum = NULL,
+  values.bounds.maximum = NULL, values.bounds.minimum = NULL,
+  colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
   global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
   maxColorValue = 255), title = "", title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
@@ -46,6 +49,23 @@ SmallMultiples(x, chart.type = "Area", nrows = 2, pad.left = 0.01,
 the data averaged across all series.}
 
 \item{average.color}{The color in which the average series should be displayed}
+
+\item{y.bounds.maximum}{Maximum of range for plotting; NULL = no manual range set.}
+
+\item{y.bounds.minimum}{Minimum of range for plotting; NULL = no manual range set.}
+
+\item{x.bounds.maximum}{Maximum of range for
+plotting; NULL = no manual range set.  Must be greater than x.bounds.minimum}
+
+\item{x.bounds.minimum}{Minimum of range for plotting;
+NULL = no manual range set.  Must be less than x.bounds.maximum}
+
+\item{values.bounds.maximum}{Numeric; specifies the maximum value in the colorscale.}
+
+\item{values.bounds.minimum}{Numeric; specifies the minimum value in the colorscale.
+If not specified, this will be automatically determined from the data.
+If the value specified is larger than the minimum in the data then
+the specified value will be ignored.}
 
 \item{colors}{Character; a vector containing one or more named
 colors from grDevices OR one or more specified hex value colors OR a single
@@ -139,6 +159,9 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{mapping.package}{Not used.}
 
 \item{...}{Extra arguments passed to the charting function}
+}
+\value{
+an HTML widget for \code{"leaflet"} or a \code{"plotly"} object.
 }
 \description{
 A small multiple (sometimes called trellis chart, lattice chart,

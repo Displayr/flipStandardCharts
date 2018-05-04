@@ -191,7 +191,8 @@ Bar <- function(x,
     # Format axis labels
     tmp.label <- sprintf(paste0("%s%.", data.label.decimals, "f%s"),
                 data.label.prefix, max(chart.matrix), data.label.suffix)
-    xtick <- setTicks(x.bounds.minimum, x.bounds.maximum, x.tick.distance, x.data.reversed,
+    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, chart.matrix, is.null(x.tick.distance))
+    xtick <- setTicks(x.range$min, x.range$max, x.tick.distance, x.data.reversed,
                   data = if (data.label.show && !is.stacked) chart.matrix else NULL, type = type,
                   labels = tmp.label, label.font.size = data.label.font.size)
     ytick <- setTicks(y.bounds.minimum, y.bounds.maximum, y.tick.distance, !y.data.reversed)

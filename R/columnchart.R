@@ -382,8 +382,9 @@ Column <- function(x,
             x.bounds.maximum <- max(0, x.bounds.maximum)
         }
     }
+    y.range <- setValRange(y.bounds.minimum, y.bounds.maximum, chart.matrix, is.null(y.tick.distance))
+    ytick <- setTicks(y.range$min, y.range$max, y.tick.distance, y.data.reversed)
     xtick <- setTicks(x.bounds.minimum, x.bounds.maximum, x.tick.distance, x.data.reversed)
-    ytick <- setTicks(y.bounds.minimum, y.bounds.maximum, y.tick.distance, y.data.reversed)
 
     axisFormat <- formatLabels(chart.matrix, type, x.tick.label.wrap, x.tick.label.wrap.nchar,
                         x.tick.format, y.tick.format)

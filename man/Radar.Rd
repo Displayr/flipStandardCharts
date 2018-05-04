@@ -27,8 +27,8 @@ Radar(x, title = "", title.font.family = global.font.family,
   maxColorValue = 255), y.bounds.maximum = NULL, y.tick.distance = NULL,
   y.grid.width = 1 * grid.show, y.grid.color = rgb(225, 225, 225,
   maxColorValue = 255), y.tick.show = TRUE, y.tick.suffix = "",
-  y.tick.prefix = "", y.tick.format = "", y.hovertext.format = "",
-  y.tick.font.color = global.font.color,
+  y.tick.prefix = "", y.tick.format = "", hovertext.show = TRUE,
+  y.hovertext.format = "", y.tick.font.color = global.font.color,
   y.tick.font.family = global.font.family, y.tick.font.size = 10,
   x.tick.label.wrap = TRUE, x.tick.label.wrap.nchar = 21,
   data.label.show = FALSE, data.label.font.family = global.font.family,
@@ -169,6 +169,8 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{y.tick.format}{A string representing a d3 formatting code.
 See https://github.com/mbostock/d3/wiki/Formatting#numbers}
+
+\item{hovertext.show}{Logical; whether to show hovertext.}
 
 \item{y.hovertext.format}{A string representing a d3 formatting code.
 See https://github.com/mbostock/d3/wiki/Formatting#numbers}

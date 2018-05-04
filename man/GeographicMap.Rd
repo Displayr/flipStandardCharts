@@ -7,7 +7,8 @@
 GeographicMap(x, country, high.resolution = FALSE, treat.NA.as.0 = FALSE,
   colors = c("#CCF3FF", "#23B0DB"), ocean.color = "#DDDDDD",
   color.NA = "#808080", legend.show = TRUE, legend.title = "",
-  values.hovertext.format = "", mapping.package = "leaflet")
+  values.hovertext.format = "", values.bounds.minimum = NULL,
+  values.bounds.maximum = NULL, mapping.package = "leaflet")
 }
 \arguments{
 \item{x}{A matrix, two-dimensional array, table or vector, containing the
@@ -39,6 +40,13 @@ interpolating colors.}
 
 \item{values.hovertext.format}{A string representing a d3 formatting code.
 See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
+
+\item{values.bounds.minimum}{Numeric; specifies the minimum value in the colorscale.
+If not specified, this will be automatically determined from the data.
+If the value specified is larger than the minimum in the data then
+the specified value will be ignored.}
+
+\item{values.bounds.maximum}{Numeric; specifies the maximum value in the colorscale.}
 
 \item{mapping.package}{Either \code{"leaflet"} (better graphics, more country
 maps) or \code{"plotly"} (faster).}

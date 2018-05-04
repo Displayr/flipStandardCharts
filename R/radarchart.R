@@ -59,6 +59,7 @@
 #' @param legend.font.size Legend font size.
 #' @param legend.ascending Logical; TRUE for ascending, FALSE for descending.
 #' By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.
+#' @param hovertext.show Logical; whether to show hovertext.
 #' @param margin.top Margin between plot area and the top of the
 #' graphic in pixels
 #' @param margin.bottom Margin between plot area and the bottom of the
@@ -286,6 +287,7 @@ Radar <- function(x,
 
 
     # Set margins
+    g.list <- unique(pos$Group)
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate = FALSE)
     margins <- list(b = 20, l = 0, r = 0, t = 20, inner = 0)
     if (sum(nchar(subtitle)) > 0)
@@ -294,54 +296,19 @@ Radar <- function(x,
                                  subtitle.font.size, footer.font.size)
     footer.axis <- setFooterAxis(footer, footer.font, margins)
     xaxis = list(title = "", showgrid = F, zeroline = F, showticklabels = F,
-               categoryorder = "array", categoryarray = unique(pos$Group))
+               categoryorder = "array", categoryarray = g.list)
     yaxis = list(title = "", showgrid = F, zeroline = F, showticklabels = F)
     margins <- setMarginsForLegend(margins, legend.show, legend, colnames(chart.matrix), type = "radar")
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
 
-    # Initialise plot
+    # Initialise plot (ensure chart area reaches y.bounds.maximum)
     p <- plot_ly(pos)
-    g.list <- unique(pos$Group)
-    series.line.width <- rep(1, length(g.list)) * series.line.width
-    hovertext.show <- rep(TRUE, length(g.list)) & hovertext.show
-    for (ggi in 1:length(g.list))
-    {
-        ind <- which(pos$Group == g.list[ggi])
-        p <- add_trace(p, x = pos$x[ind], y = pos$y[ind], name = g.list[ggi],
-                    type = "scatter", mode = "lines", fill = "toself",
-                    fillcolor = toRGB(colors[ggi], alpha = opacity),
-                    legendgroup = g.list[ggi], showlegend = TRUE,
-                    hoverinfo = if (hovertext.show[ggi]) "all+text" else "skip", text = pos$HoverText[ind],
-                    line = list(width = series.line.width[ggi], color = toRGB(colors[ggi])))
-    }
-
-    # Markers are added as a separate trace to allow overlapping hoverinfo
-    data.label.show <- suppressWarnings(rep(TRUE, length(g.list)) & data.label.show)
-    for (ggi in length(g.list):1)
-    {
-        ind <- which(pos$Group == g.list[ggi])
-        ind <- ind[-length(ind)] # remove last duplicated point
-        p <- add_trace(p, x = pos$x[ind], y = pos$y[ind], type = "scatter", mode = "markers+lines", fill = "none",
-                    name = g.list[ggi], legendgroup = g.list[ggi],
-                    showlegend = FALSE, #hoverinfo = "text", text = pos$HoverText[ind],
-                    hoverinfo = if (hovertext.show[ggi]) "all+text" else "skip", text = pos$HoverText[ind],
-                    marker = list(size = 1, color = toRGB(colors[ggi])), line = list(width = 0))
-
-        if (data.label.show[ggi])
-        {
-            x.offset <- sign(pos$x[ind]) * 0.1 * abs(max(pos$x[ind]))
-            y.offset <- sign(pos$y[ind]) * 0.1 * abs(max(pos$y[ind]))
-            p <- add_trace(p, x = pos$x[ind] + x.offset, y = pos$y[ind] + y.offset,
-                    type = "scatter", mode = "text", legendgroup = g.list[ggi],
-                    showlegend = FALSE, hoverinfo = "none", text = pos$DataLabels[ind],
-                    textfont = list(family = data.label.font.family, size = data.label.font.size,
-                    color = data.label.font.color))
-        }
-    }
+    outer <- getPolarCoord(rep(r.max, n))
+    p <- add_trace(p, x = outer[,1], y = outer[,2], name = "Outer", showlegend = FALSE,
+                   type = "scatter", mode = "markers", opacity = 0, hoverinfo = "none")
 
     # Radial grid lines
-    outer <- getPolarCoord(rep(r.max, n))
     grid <- apply(outer, 1, function(zz){
         return(list(type = "line", x0 = 0, y0 = 0, x1 = zz[1], y1 = zz[2], layer = "below",
                     line = list(width = x.grid.width * grid.show, color = x.grid.color)))})
@@ -378,6 +345,44 @@ Radar <- function(x,
                     showarrow = F, yshift = outer[1:n,2]/r.max * 15,
                     xanchor = xanch, xshift = outer[1:n,1]/r.max)
     }
+
+    # Main trace
+    series.line.width <- rep(1, length(g.list)) * series.line.width
+    hovertext.show <- rep(TRUE, length(g.list)) & hovertext.show
+    for (ggi in 1:length(g.list))
+    {
+        ind <- which(pos$Group == g.list[ggi])
+        p <- add_trace(p, x = pos$x[ind], y = pos$y[ind], name = g.list[ggi],
+                    type = "scatter", mode = "lines", fill = "toself",
+                    fillcolor = toRGB(colors[ggi], alpha = opacity),
+                    legendgroup = g.list[ggi], showlegend = TRUE, hoverinfo = "skip",
+                    line = list(width = series.line.width[ggi], color = toRGB(colors[ggi])))
+    }
+
+    # Markers are added as a separate trace to allow overlapping hoverinfo
+    data.label.show <- suppressWarnings(rep(TRUE, length(g.list)) & data.label.show)
+    for (ggi in length(g.list):1)
+    {
+        ind <- which(pos$Group == g.list[ggi])
+        ind <- ind[-length(ind)] # remove last duplicated point
+        p <- add_trace(p, x = pos$x[ind], y = pos$y[ind], type = "scatter", mode = "markers",
+                    name = g.list[ggi], legendgroup = g.list[ggi], opacity = 0,
+                    showlegend = FALSE, text = pos$HoverText[ind],
+                    hoverinfo = if (hovertext.show[ggi]) "all+text" else "skip",
+                    marker = list(size = 5, color = toRGB(colors[ggi])))
+
+        if (data.label.show[ggi])
+        {
+            x.offset <- sign(pos$x[ind]) * 0.1 * (r.max + abs(max(pos$x[ind])))/2
+            y.offset <- sign(pos$y[ind]) * 0.1 * (r.max + abs(max(pos$y[ind])))/2
+            p <- add_trace(p, x = pos$x[ind] + x.offset, y = pos$y[ind] + y.offset,
+                    type = "scatter", mode = "text", legendgroup = g.list[ggi],
+                    showlegend = FALSE, hoverinfo = "skip", text = pos$DataLabels[ind],
+                    textfont = list(family = data.label.font.family, size = data.label.font.size,
+                    color = data.label.font.color))
+        }
+    }
+
     p <- layout(p, margin = margins, title = title, titlefont = title.font,
             plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
             paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),

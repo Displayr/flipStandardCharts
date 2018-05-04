@@ -22,6 +22,11 @@
 #' @param legend.title The text to appear above the legend.
 #' @param values.hovertext.format A string representing a d3 formatting code.
 #' See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format
+#' @param values.bounds.minimum Numeric; specifies the minimum value in the colorscale.
+#'          If not specified, this will be automatically determined from the data.
+#'          If the value specified is larger than the minimum in the data then
+#'          the specified value will be ignored.
+#' @param values.bounds.maximum Numeric; specifies the maximum value in the colorscale.
 #' @param mapping.package Either \code{"leaflet"} (better graphics, more country
 #' maps) or \code{"plotly"} (faster).
 #' @param legend.show Logical; Whether to display a legend with the color scale.
@@ -41,6 +46,8 @@ GeographicMap <- function(x,
                           legend.show = TRUE,
                           legend.title = "",
                           values.hovertext.format = "",
+                          values.bounds.minimum = NULL,
+                          values.bounds.maximum = NULL,
                           mapping.package = "leaflet")
 {
     requireNamespace("sp")
@@ -207,17 +214,20 @@ GeographicMap <- function(x,
         mult <- 1
         suffix <- ""
     }
+    values.bounds.minimum <- min(values.bounds.minimum, min.value)
+    values.bounds.maximum <- max(values.bounds.maximum, max.range)
 
     # Pass all data to a function specific to the package
     if (mapping.package == "leaflet") {
 
-        map <- leafletMap(coords, colors, min.value, max.range, color.NA, legend.show,
-                   legend.title, mult, decimals, suffix, values.hovertext.format,
+        map <- leafletMap(coords, colors, values.bounds.minimum, values.bounds.maximum,
+                   color.NA, legend.show, legend.title, mult, decimals, suffix,
+                   values.hovertext.format,
                    treat.NA.as.0, n.categories, categories, format.function, map.type)
 
     } else {        # mapping.package == "plotly"
 
-        map <- plotlyMap(table, name.map, colors, min.value, max.range, color.NA, legend.show,
+        map <- plotlyMap(table, name.map, colors, values.bounds.minimum, values.bounds.maximum, color.NA, legend.show,
                    legend.title, mult, decimals, suffix, values.hovertext.format,
                    treat.NA.as.0, n.categories, categories, format.function, map.type,
                   ocean.color, high.resolution)
@@ -235,9 +245,8 @@ GeographicMap <- function(x,
 #' @importFrom stats as.formula
 leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.show,
                        legend.title, mult, decimals, suffix, values.hovertext.format,
-                       treat.NA.as.0, n.categories, categories, format.function, map.type) {
-
-
+                       treat.NA.as.0, n.categories, categories, format.function, map.type)
+{
     max.values <- unique(coords$table.max[!is.na(coords$table.max)])
     if (length(max.values) == 1)
         max.values <- c(max.values, max.values * 1.1)
@@ -252,7 +261,7 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.sh
 
     if (legend.show)
     {
-        map <- addLegend(map, "bottomright", pal = .rev.pal, values = max.values,
+        map <- addLegend(map, "bottomright", pal = .rev.pal, values = c(min.value, max.range),
                          title = legend.title,
                          # reverse label ordering so high values are at top
                          labFormat = labelFormat(transform = function(x) sort(x * mult, decreasing = TRUE),
@@ -307,8 +316,8 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.sh
 plotlyMap <- function(table, name.map, colors, min.value, max.range, color.NA, legend.show,
            legend.title, mult, decimals, suffix, values.hovertext.format,
            treat.NA.as.0, n.categories, categories, format.function, map.type,
-           ocean.color, high.resolution) {
-
+           ocean.color, high.resolution)
+{
     df <- data.frame(table)
     df <- df[!is.na(df[, 1]), , drop = FALSE]  # avoid warning for NA
 
@@ -391,6 +400,8 @@ plotlyMap <- function(table, name.map, colors, min.value, max.range, color.NA, l
 
         add_trace(# hoverinfo = "text", should display 'text' only but causes all hovertext to disappear
             z = df[, 1],
+            zmin = min.value,
+            zmax = max.range,
             color = df[, 1],
             colors = colors,
             locations = rownames(df),

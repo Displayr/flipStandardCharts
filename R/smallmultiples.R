@@ -24,6 +24,7 @@
 #' @param mapping.package Not used.
 #' @param ... Extra arguments passed to the charting function
 #' @inherit Column
+#' @inherit GeographicMap
 #' @importFrom plotly subplot
 #' @export
 SmallMultiples <- function(x,
@@ -35,7 +36,13 @@ SmallMultiples <- function(x,
                            pad.bottom = 0.01,
                            x.order = NULL,
                            average.show = FALSE,
-                           average.color = rgb(80, 80, 80, maxColorValue = 255),
+                           average.color = rgb(230, 230, 230, maxColorValue = 255),
+                           y.bounds.maximum = NULL,
+                           y.bounds.minimum = NULL,
+                           x.bounds.maximum = NULL,
+                           x.bounds.minimum = NULL,
+                           values.bounds.maximum = NULL,
+                           values.bounds.minimum = NULL,
                            colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
                            global.font.family = "Arial",
                            global.font.color = rgb(44, 44, 44, maxColorValue = 255),
@@ -90,9 +97,20 @@ SmallMultiples <- function(x,
         if (is.numeric(x.order) && length(x.order) > 0)
             x <- x[, x.order]
     }
-    values.max = max(x, na.rm = TRUE)
-    if (chart.type == "Radar")
-        max.series <- apply(x, 1, max)
+    values.max = max(unlist(x), na.rm = TRUE)
+    values.min = min(0, unlist(x), na.rm = TRUE)
+    if (chart.type == "Bar" && is.null(x.bounds.maximum))
+        x.bounds.maximum <- values.max
+    if (chart.type != "Bar" && is.null(y.bounds.maximum))
+        y.bounds.maximum <- values.max
+    if (chart.type == "Bar" && is.null(x.bounds.minimum))
+        x.bounds.minimum <- values.min
+    if (chart.type != "Bar" && is.null(y.bounds.minimum))
+        y.bounds.minimum <- values.min
+    if (chart.type == "GeographicMap" && is.null(values.bounds.maximum))
+        values.bounds.maximum <- values.max
+    if (chart.type == "GeographicMap" && is.null(values.bounds.minimum))
+        values.bounds.minimum <- values.min
 
     average.series <- NULL
     if (chart.type != "GeographicMap" && average.show)
@@ -147,12 +165,13 @@ SmallMultiples <- function(x,
 
     if (chart.type == "Radar")
     {
-        plot.list <- lapply(1:npanels, function(i){chart(cbind(.bind_mean(x[,i, drop = FALSE], average.series), max.series),
-                                                     hovertext.show = c(TRUE, FALSE, FALSE),
+        plot.list <- lapply(1:npanels, function(i){chart(.bind_mean(x[,i, drop = FALSE], average.series),
+                                                     hovertext.show = c(TRUE, TRUE),
                                                      colors = c(colors[i], average.color),
                                                      grid.show = FALSE, x.tick.show = FALSE,
-                                                     data.label.show = c(data.label.show, FALSE, FALSE),
-                                                     series.line.width = c(3,0,0),
+                                                     data.label.show = c(data.label.show, FALSE),
+                                                     series.line.width = c(3,0),
+                                                     y.bounds.maximum = y.bounds.maximum,
                                                      ...)$htmlwidget})
         margin.left <- 0
         margin.right <- 0
@@ -164,6 +183,8 @@ SmallMultiples <- function(x,
                                                      colors = colors,
                                                      mapping.package = "plotly",
                                                      legend.show = legend.show && (i == 1),
+                                                     values.bounds.maximum = values.bounds.maximum,
+                                                     values.bounds.minimum = values.bounds.minimum,
                                                      ...)$htmlwidget})
         margin.left <- 0
         margin.right <- 0
@@ -176,6 +197,10 @@ SmallMultiples <- function(x,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
                                                      grid.show = grid.show, data.label.show = data.label.show,
                                                      x.tick.show = x.tick.show,
+                                                     y.bounds.maximum = y.bounds.maximum,
+                                                     y.bounds.minimum = y.bounds.minimum,
+                                                     x.bounds.maximum = x.bounds.maximum,
+                                                     x.bounds.minimum = x.bounds.minimum,
                                                      ...)$htmlwidget})
 
     is.geo <- chart.type == "GeographicMap"

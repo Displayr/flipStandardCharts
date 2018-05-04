@@ -557,6 +557,20 @@ setFooterAxis <- function(footer, footer.font, margins, overlay = "x")
     res
 }
 
+# This is only applied to the values axis which is always numeric
+setValRange <- function(min, max, values, use.defaults = TRUE)
+{
+    # If no range is specified, then use defaults
+    if (use.defaults && is.null(min) && is.null(max))
+        return(list(min = NULL, max = NULL))
+    if  (is.null(min))
+        min <- min(unlist(values), na.rm = TRUE)
+    if  (is.null(max))
+        max <- max(unlist(values), na.rm = TRUE)
+    return(list(min = min, max = max))
+}
+
+
 setTicks <- function(minimum, maximum, distance, reversed = FALSE,
                 data = NULL, labels = NULL, type="scatter", label.font.size = 10)
 {
