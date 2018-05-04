@@ -19,6 +19,14 @@
 #' @param ocean.color The color used for oceans, used only by \code{plotly}.
 #' @param color.NA The color used to represent missing values. Not used when
 #'   \code{treat.NA.as.0}, is set to missing.
+#' @param global.font.family Character; font family for all occurrences of any
+#' font attribute for the chart unless specified individually.
+#' @param global.font.color Global font color as a named color in character format
+#' (e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).
+#' @param legend.font.color Legend font color as a named color in character
+#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
+#' @param legend.font.family Character; legend font family.
+#' @param legend.font.size Integer; Legend font size.
 #' @param legend.title The text to appear above the legend.
 #' @param values.hovertext.format A string representing a d3 formatting code.
 #' See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format
@@ -30,6 +38,9 @@
 #' @param mapping.package Either \code{"leaflet"} (better graphics, more country
 #' maps) or \code{"plotly"} (faster).
 #' @param legend.show Logical; Whether to display a legend with the color scale.
+#' @param legend.font.family; Font family of legend. Only used with \code{plotly} object.
+#' @param legend.font.color; Font color of legend. Only used with \code{plotly} object.
+#' @param legend.font.size; Font size of legend. Only used with \code{plotly} object.
 #' @return an HTML widget for \code{"leaflet"} or a \code{"plotly"} object.
 #' @examples
 #' data <- seq(4)
@@ -43,8 +54,13 @@ GeographicMap <- function(x,
                           colors = c("#CCF3FF", "#23B0DB"),
                           ocean.color = "#DDDDDD",
                           color.NA = "#808080",
+                          global.font.family = "Arial",
+                          global.font.color = rgb(44, 44, 44, maxColorValue = 255),
                           legend.show = TRUE,
                           legend.title = "",
+                          legend.font.family = global.font.family,
+                          legend.font.color = global.font.color,
+                          legend.font.size = 10,
                           values.hovertext.format = "",
                           values.bounds.minimum = NULL,
                           values.bounds.maximum = NULL,
@@ -227,10 +243,13 @@ GeographicMap <- function(x,
 
     } else {        # mapping.package == "plotly"
 
-        map <- plotlyMap(table, name.map, colors, values.bounds.minimum, values.bounds.maximum, color.NA, legend.show,
+        font <- list(family = legend.font.family, color = legend.font.color,
+                     size = legend.font.size)
+        map <- plotlyMap(table, name.map, colors, values.bounds.minimum,
+                   values.bounds.maximum, color.NA, legend.show,
                    legend.title, mult, decimals, suffix, values.hovertext.format,
                    treat.NA.as.0, n.categories, categories, format.function, map.type,
-                  ocean.color, high.resolution)
+                  ocean.color, high.resolution, font)
     }
 
     result <- list(htmlwidget = map)
@@ -316,7 +335,7 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.sh
 plotlyMap <- function(table, name.map, colors, min.value, max.range, color.NA, legend.show,
            legend.title, mult, decimals, suffix, values.hovertext.format,
            treat.NA.as.0, n.categories, categories, format.function, map.type,
-           ocean.color, high.resolution)
+           ocean.color, high.resolution, font)
 {
     df <- data.frame(table)
     df <- df[!is.na(df[, 1]), , drop = FALSE]  # avoid warning for NA
@@ -419,7 +438,8 @@ plotlyMap <- function(table, name.map, colors, min.value, max.range, color.NA, l
         )
 
     if (legend.show)
-        p <- colorbar(p, title = legend.title, separatethousands = commaFromD3(values.hovertext.format), x = 1)
+        p <- colorbar(p, title = legend.title, tickfont = font, titlefont = font,
+                separatethousands = commaFromD3(values.hovertext.format), x = 1)
     else
         p <- hide_colorbar(p)
 

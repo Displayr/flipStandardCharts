@@ -6,7 +6,11 @@
 \usage{
 GeographicMap(x, country, high.resolution = FALSE, treat.NA.as.0 = FALSE,
   colors = c("#CCF3FF", "#23B0DB"), ocean.color = "#DDDDDD",
-  color.NA = "#808080", legend.show = TRUE, legend.title = "",
+  color.NA = "#808080", global.font.family = "Arial",
+  global.font.color = rgb(44, 44, 44, maxColorValue = 255),
+  legend.show = TRUE, legend.title = "",
+  legend.font.family = global.font.family,
+  legend.font.color = global.font.color, legend.font.size = 10,
   values.hovertext.format = "", values.bounds.minimum = NULL,
   values.bounds.maximum = NULL, mapping.package = "leaflet")
 }
@@ -34,9 +38,22 @@ interpolating colors.}
 \item{color.NA}{The color used to represent missing values. Not used when
 \code{treat.NA.as.0}, is set to missing.}
 
+\item{global.font.family}{Character; font family for all occurrences of any
+font attribute for the chart unless specified individually.}
+
+\item{global.font.color}{Global font color as a named color in character format
+(e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).}
+
 \item{legend.show}{Logical; Whether to display a legend with the color scale.}
 
 \item{legend.title}{The text to appear above the legend.}
+
+\item{legend.font.family}{Character; legend font family.}
+
+\item{legend.font.color}{Legend font color as a named color in character
+format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
+
+\item{legend.font.size}{Integer; Legend font size.}
 
 \item{values.hovertext.format}{A string representing a d3 formatting code.
 See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
@@ -50,6 +67,12 @@ the specified value will be ignored.}
 
 \item{mapping.package}{Either \code{"leaflet"} (better graphics, more country
 maps) or \code{"plotly"} (faster).}
+
+\item{legend.font.family;}{Font family of legend. Only used with \code{plotly} object.}
+
+\item{legend.font.color;}{Font color of legend. Only used with \code{plotly} object.}
+
+\item{legend.font.size;}{Font size of legend. Only used with \code{plotly} object.}
 }
 \value{
 an HTML widget for \code{"leaflet"} or a \code{"plotly"} object.

@@ -172,6 +172,8 @@ SmallMultiples <- function(x,
                                                      data.label.show = c(data.label.show, FALSE),
                                                      series.line.width = c(3,0),
                                                      y.bounds.maximum = y.bounds.maximum,
+                                                     global.font.family = global.font.family,
+                                                     global.font.color = global.font.color,
                                                      ...)$htmlwidget})
         margin.left <- 0
         margin.right <- 0
@@ -185,6 +187,8 @@ SmallMultiples <- function(x,
                                                      legend.show = legend.show && (i == 1),
                                                      values.bounds.maximum = values.bounds.maximum,
                                                      values.bounds.minimum = values.bounds.minimum,
+                                                     global.font.family = global.font.family,
+                                                     global.font.color = global.font.color,
                                                      ...)$htmlwidget})
         margin.left <- 0
         margin.right <- 0
@@ -201,6 +205,8 @@ SmallMultiples <- function(x,
                                                      y.bounds.minimum = y.bounds.minimum,
                                                      x.bounds.maximum = x.bounds.maximum,
                                                      x.bounds.minimum = x.bounds.minimum,
+                                                     global.font.family = global.font.family,
+                                                     global.font.color = global.font.color,
                                                      ...)$htmlwidget})
 
     is.geo <- chart.type == "GeographicMap"
