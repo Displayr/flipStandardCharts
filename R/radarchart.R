@@ -232,7 +232,12 @@ Radar <- function(x,
 
     # Figure out positions of y-ticks (i.e. radial axis)
     tick.vals <- NULL
-    if (is.null(y.bounds.maximum))
+    if (is.character(y.bounds.maximum))
+    {
+        y.bounds.maximum <- suppressWarnings(as.numeric(gsub("[ ,]", "", y.bounds.maximum)))
+        y.bounds.maximum <- y.bounds.maximum[!is.na(y.bounds.maximum)]
+    }
+    if (length(y.bounds.maximum) == 0)
     {
         offset <- 1.0
         if (any(data.label.show))
