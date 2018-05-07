@@ -6,6 +6,7 @@
 #' @param chart.type Can be one of "Area", "Column", "Bar", "Line", "Radar" or "Geographic Map".
 #' @param nrows Integer; Number of rows to arrange the charts in
 #' @param x.order A vector containing the list index of the columns in the order which they are to be shown
+#' @param share.axes Force range of the plot to be the same across all panels.
 #' @param average.show Logical; whether to show a second series in each panel containing
 #'     the data averaged across all series.
 #' @param average.color The color in which the average series should be displayed
@@ -30,6 +31,7 @@
 SmallMultiples <- function(x,
                            chart.type = "Area",
                            nrows = 2,
+                           share.axes = TRUE,
                            pad.left = 0.01,
                            pad.right = 0.01,
                            pad.top = 0.01,
@@ -99,17 +101,17 @@ SmallMultiples <- function(x,
     }
     values.max = max(unlist(x), na.rm = TRUE)
     values.min = min(0, unlist(x), na.rm = TRUE)
-    if (chart.type == "Bar" && is.null(x.bounds.maximum))
+    if (share.axes && chart.type == "Bar" && is.null(x.bounds.maximum))
         x.bounds.maximum <- values.max
-    if (chart.type != "Bar" && is.null(y.bounds.maximum))
+    if (share.axes && chart.type != "Bar" && is.null(y.bounds.maximum))
         y.bounds.maximum <- values.max
-    if (chart.type == "Bar" && is.null(x.bounds.minimum))
+    if (share.axes && chart.type == "Bar" && is.null(x.bounds.minimum))
         x.bounds.minimum <- values.min
-    if (chart.type != "Bar" && is.null(y.bounds.minimum))
+    if (share.axes && chart.type != "Bar" && is.null(y.bounds.minimum))
         y.bounds.minimum <- values.min
-    if (chart.type == "GeographicMap" && is.null(values.bounds.maximum))
+    if (share.axes && chart.type == "GeographicMap" && is.null(values.bounds.maximum))
         values.bounds.maximum <- values.max
-    if (chart.type == "GeographicMap" && is.null(values.bounds.minimum))
+    if (share.axes && chart.type == "GeographicMap" && is.null(values.bounds.minimum))
         values.bounds.minimum <- values.min
 
     average.series <- NULL
@@ -228,8 +230,8 @@ SmallMultiples <- function(x,
     is.geo <- chart.type == "GeographicMap"
     res <- subplot(plot.list, nrows = nrows, margin = c(pad.left,pad.right,pad.top,pad.bottom),
                    heights = rep(1/nrows, nrows) - h.offset, # compensate for plotly bug
-                   widths = rep(1/ncols, ncols) - w.offset,
-                   titleX = TRUE, titleY = TRUE, shareX = !is.geo, shareY = !is.geo)
+                   widths = rep(1/ncols, ncols) - w.offset, titleX = TRUE, titleY = TRUE,
+                   shareX = share.axes && !is.geo, shareY = share.axes && !is.geo)
     res <- layout(res, title = title, showlegend = is.geo, annotations = paneltitles,
                   titlefont = list(family = title.font.family, color = title.font.color, size = title.font.size),
                   margin = list(l = margin.left, r = margin.right, b = margin.bottom, t = margin.top))

@@ -4,10 +4,10 @@
 \alias{SmallMultiples}
 \title{Plotting data as a small multiples}
 \usage{
-SmallMultiples(x, chart.type = "Area", nrows = 2, pad.left = 0.01,
-  pad.right = 0.01, pad.top = 0.01, pad.bottom = 0.01, x.order = NULL,
-  average.show = FALSE, average.color = rgb(230, 230, 230, maxColorValue =
-  255), y.bounds.maximum = NULL, y.bounds.minimum = NULL,
+SmallMultiples(x, chart.type = "Area", nrows = 2, share.axes = TRUE,
+  pad.left = 0.01, pad.right = 0.01, pad.top = 0.01, pad.bottom = 0.01,
+  x.order = NULL, average.show = FALSE, average.color = rgb(230, 230, 230,
+  maxColorValue = 255), y.bounds.maximum = NULL, y.bounds.minimum = NULL,
   x.bounds.maximum = NULL, x.bounds.minimum = NULL,
   values.bounds.maximum = NULL, values.bounds.minimum = NULL,
   colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
@@ -34,6 +34,8 @@ SmallMultiples(x, chart.type = "Area", nrows = 2, pad.left = 0.01,
 \item{chart.type}{Can be one of "Area", "Column", "Bar", "Line", "Radar" or "Geographic Map".}
 
 \item{nrows}{Integer; Number of rows to arrange the charts in}
+
+\item{share.axes}{Force range of the plot to be the same across all panels.}
 
 \item{pad.left}{Numeric in [0,1]; Spacing to the left of chart (between panels)}
 
