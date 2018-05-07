@@ -48,12 +48,11 @@ font attribute for the chart unless specified individually.}
 
 \item{legend.title}{The text to appear above the legend.}
 
-\item{legend.font.family}{Character; legend font family.}
+\item{legend.font.family}{Font family of legend. Only used with \code{plotly} object.}
 
-\item{legend.font.color}{Legend font color as a named color in character
-format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
+\item{legend.font.color}{Font color of legend. Only used with \code{plotly} object.}
 
-\item{legend.font.size}{Integer; Legend font size.}
+\item{legend.font.size}{Font size of legend. Only used with \code{plotly} object.}
 
 \item{values.hovertext.format}{A string representing a d3 formatting code.
 See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
@@ -67,12 +66,6 @@ the specified value will be ignored.}
 
 \item{mapping.package}{Either \code{"leaflet"} (better graphics, more country
 maps) or \code{"plotly"} (faster).}
-
-\item{legend.font.family;}{Font family of legend. Only used with \code{plotly} object.}
-
-\item{legend.font.color;}{Font color of legend. Only used with \code{plotly} object.}
-
-\item{legend.font.size;}{Font size of legend. Only used with \code{plotly} object.}
 }
 \value{
 an HTML widget for \code{"leaflet"} or a \code{"plotly"} object.
