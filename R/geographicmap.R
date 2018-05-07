@@ -187,6 +187,12 @@ GeographicMap <- function(x,
     country.lookup <- match(coords.names, tolower(table.names))
     categories <- colnames(table)
     n.categories <- length(categories)
+    if (mapping.package == "plotly" && n.categories > 1)
+    {
+        n.categories <- 1
+        table <- table[, 1, drop = FALSE]
+        warning("Only the first series will be shown when package is 'plotly'. Change to 'leaflet' to show multiple series.")
+    }
     for (i in 1:n.categories)
     {
         new.var <- table[country.lookup, i]
@@ -342,10 +348,6 @@ plotlyMap <- function(table, name.map, colors, min.value, max.range, color.NA, l
     df <- data.frame(table)
     df <- df[!is.na(df[, 1]), , drop = FALSE]  # avoid warning for NA
 
-    if (ncol(df) > 1)
-    {
-        warning("Only the first series will be shown when package is 'plotly'. Change to 'leaflet' to show multiple series.")
-    }
     lataxis <- NULL
     if (map.type == "countries")
     {
