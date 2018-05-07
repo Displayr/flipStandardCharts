@@ -290,6 +290,7 @@
 #               mode = "wb")
 # unzip(f, exdir = tempdir())
 # australia.postcodes <- readOGR(tempdir(), "POA_2016_AUST")
+# colnames(australia.postcodes@data)[2] <- "name"
 #
 # # Save everything into sysdata.rda
 # use_data(missing110,

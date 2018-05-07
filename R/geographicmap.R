@@ -126,6 +126,7 @@ GeographicMap <- function(x,
     else if (map.type == "aus_postcodes")
     {
         coords <- australia.postcodes
+        remove.regions <- name.map <- NULL
     }
 
 
@@ -149,7 +150,8 @@ GeographicMap <- function(x,
         }
     }
 
-    structure <- switch(map.type, continents = "continent", countries = "admin", "name")
+    structure <- switch(map.type, continents = "continent", countries = "admin",
+                                aus_postcodes = "POA_CODE16", "name")
     coords[[structure]] <- as.character(coords[[structure]])
 
     if (!is.null(remove.regions) && remove.regions != "")
