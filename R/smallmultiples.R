@@ -193,7 +193,23 @@ SmallMultiples <- function(x,
         margin.left <- 0
         margin.right <- 0
         margin.bottom <- 0
-    }
+    } else if (chart.type == "Bar" || chart.type == "Column")
+        plot.list <- lapply(1:npanels, function(i){chart(x[,i, drop = FALSE],
+                                                     colors = colors[i],
+                                                     average.series = average.series,
+                                                     average.color = average.color,
+                                                     x.title = x.title, x.title.font.size = x.title.font.size,
+                                                     y.title = y.title, y.title.font.size = y.title.font.size,
+                                                     grid.show = grid.show, data.label.show = data.label.show,
+                                                     x.tick.show = x.tick.show,
+                                                     y.bounds.maximum = y.bounds.maximum,
+                                                     y.bounds.minimum = y.bounds.minimum,
+                                                     x.bounds.maximum = x.bounds.maximum,
+                                                     x.bounds.minimum = x.bounds.minimum,
+                                                     global.font.family = global.font.family,
+                                                     global.font.color = global.font.color,
+                                                     ...)$htmlwidget})
+
     else
         plot.list <- lapply(1:npanels, function(i){chart(.bind_mean(x[,i, drop = FALSE], average.series),
                                                      colors = c(colors[i], average.color),

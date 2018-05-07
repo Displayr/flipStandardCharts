@@ -6,6 +6,8 @@
 #' to be plotted, with the name/rownames used as the column names of the chart. Numeric and date labels
 #' will be parsed automatically.
 #' @param type One of "Column", "Stacked Column" or "100\% Stacked Column"
+#' @param average.series y-values of additional data series which is shown as a line. Used by \code{SmallMultiples}.
+#' @param average.color Color of the \code{average.series} as a hex code or string
 #' @param fit.type Character; type of line of best fit. Can be one of "None", "Linear" or "Smooth" (loess local polynomial fitting).
 #' @param fit.ignore.last Logical; whether to ignore the last data point in the fit.
 #' @param fit.line.type Character; One of "solid", "dot", "dash, "dotdash", or length of dash "2px", "5px".
@@ -308,7 +310,9 @@ Column <- function(x,
                     data.label.format = "",
                     data.label.prefix = "",
                     data.label.suffix = "",
-                    data.label.threshold = NULL)
+                    data.label.threshold = NULL,
+                    average.series = NULL,
+                    average.color = rgb(230, 230, 230, maxColorValue = 255))
 {
     ErrorIfNotEnoughData(x)
     # Data checking
@@ -466,6 +470,13 @@ Column <- function(x,
                       line = list(dash = fit.line.type, width = fit.line.width,
                       color = fit.line.colors[i], shape = 'spline'))
         }
+            
+        # Only used for small multiples
+        if (!is.null(average.series))
+            p <- add_trace(p, x = x, y = average.series, name = "Average",
+                    type = "scatter", mode = "lines", showlegend = FALSE,
+                    line = list(color = average.color)) 
+
 
         if (data.label.show && !is.stacked)
         {

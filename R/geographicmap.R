@@ -23,10 +23,6 @@
 #' font attribute for the chart unless specified individually.
 #' @param global.font.color Global font color as a named color in character format
 #' (e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param legend.font.color Legend font color as a named color in character
-#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
-#' @param legend.font.family Character; legend font family.
-#' @param legend.font.size Integer; Legend font size.
 #' @param legend.title The text to appear above the legend.
 #' @param values.hovertext.format A string representing a d3 formatting code.
 #' See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format
@@ -38,9 +34,9 @@
 #' @param mapping.package Either \code{"leaflet"} (better graphics, more country
 #' maps) or \code{"plotly"} (faster).
 #' @param legend.show Logical; Whether to display a legend with the color scale.
-#' @param legend.font.family; Font family of legend. Only used with \code{plotly} object.
-#' @param legend.font.color; Font color of legend. Only used with \code{plotly} object.
-#' @param legend.font.size; Font size of legend. Only used with \code{plotly} object.
+#' @param legend.font.family Font family of legend. Only used with \code{plotly} object.
+#' @param legend.font.color Font color of legend. Only used with \code{plotly} object.
+#' @param legend.font.size Font size of legend. Only used with \code{plotly} object.
 #' @return an HTML widget for \code{"leaflet"} or a \code{"plotly"} object.
 #' @examples
 #' data <- seq(4)
@@ -201,7 +197,7 @@ GeographicMap <- function(x,
     if (treat.NA.as.0 && nrow(table) < nrow(coords))
         min.value <- min(0, min.value)
 
-    coords$table.max <- if(ncol(table) != 1)
+    coords$table.max <- if(NCOL(table) != 1 && mapping.package != "plotly")
         apply(table, 1, max, na.rm = TRUE)[country.lookup]
     else
         table[, 1][country.lookup]

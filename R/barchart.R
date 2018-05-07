@@ -128,7 +128,9 @@ Bar <- function(x,
                     data.label.format = "",
                     data.label.prefix = "",
                     data.label.suffix = "",
-                    data.label.threshold = NULL)
+                    data.label.threshold = NULL,
+                    average.series = NULL,
+                    average.color = rgb(230, 230, 230, maxColorValue = 255))
 {
     # Data checking
     ErrorIfNotEnoughData(x)
@@ -281,6 +283,14 @@ Bar <- function(x,
                       line = list(dash = fit.line.type, width = fit.line.width,
                       color = fit.line.colors[i], shape = 'spline'))
         }
+
+        # Only used for small multiples
+        if (!is.null(average.series))
+            p <- add_trace(p, y = x, x = average.series, name = "Average",
+                    type = "scatter", mode = "lines", showlegend = FALSE,
+                    line = list(color = average.color)) 
+
+
 
         if (data.label.show && !is.stacked)
         {

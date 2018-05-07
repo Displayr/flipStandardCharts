@@ -57,7 +57,8 @@ Bar(x, type = "Bar", fit.type = "None", fit.ignore.last = FALSE,
   data.label.font.family = global.font.family, data.label.font.size = 10,
   data.label.font.color = global.font.color, data.label.format = "",
   data.label.prefix = "", data.label.suffix = "",
-  data.label.threshold = NULL)
+  data.label.threshold = NULL, average.series = NULL,
+  average.color = rgb(230, 230, 230, maxColorValue = 255))
 }
 \arguments{
 \item{x}{Input data may be a matrix or a vector, containing the height of the columns
@@ -357,6 +358,10 @@ See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 \item{data.label.threshold}{The proportion of the total range below which
 data labels should not be displayed. Only applicable for pie, bar and column
 charts.}
+
+\item{average.series}{y-values of additional data series which is shown as a line. Used by \code{SmallMultiples}.}
+
+\item{average.color}{Color of the \code{average.series} as a hex code or string}
 }
 \description{
 Bar Chart
