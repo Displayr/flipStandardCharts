@@ -155,7 +155,7 @@ cleanMapInput <- function(table)
     if (is.null(rownames(table)))
         stop(paste(table.name, "has no row names. The row names are required to match known geographic entitites."))
 
-    if (all(!is.na(suppressWarnings(as.numeric(rownames(table))))) && statistic == "Text")
+    if (all(!is.na(suppressWarnings(as.numeric(rownames(table))))) && !is.null(statistic) && statistic == "Text")
         stop(paste(table.name, "contains text and has numeric row names. Did you mean to convert this table to percentages?"))
 
     if (!is.null(statistic))
@@ -165,5 +165,10 @@ cleanMapInput <- function(table)
 }
 
 
+postcodesOrStates <- function(names) {
 
+    if (all(!is.na(as.numeric(names))) && all(sapply(as.character(names), nchar) == 4))
+        return("aus_postcodes")
+    return("states")
+}
 

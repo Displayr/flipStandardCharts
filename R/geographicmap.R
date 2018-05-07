@@ -75,7 +75,7 @@ GeographicMap <- function(x,
     else if (any(names %in% tolower(CountriesOrContinents("country"))) || all(nchar(rownames(table)) == 3))
         map.type <- "countries"
     else
-        map.type <- "states"
+        map.type <- postcodesOrStates(names)
 
     # Get the coordinate and name data
     if (map.type == "countries" || map.type == "continents")
@@ -122,6 +122,10 @@ GeographicMap <- function(x,
         regions <- us.regions$Region[match(states, us.regions$State)]
         table <- table[match(tolower(regions), tolower(rownames(table))), , drop = FALSE]
         rownames(table) <- states
+    }
+    else if (map.type == "aus_postcodes")
+    {
+        coords <- australia.postcodes
     }
 
 
@@ -276,7 +280,7 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.sh
 
     if (legend.show)
     {
-        map <- addLegend(map, "bottomright", pal = .rev.pal, values = c(min.value, max.range),
+        map <- addLegend(map, "bottomright", pal = .rev.pal, values = c(min.value, max.values),
                          title = legend.title,
                          # reverse label ordering so high values are at top
                          labFormat = labelFormat(transform = function(x) sort(x * mult, decreasing = TRUE),
