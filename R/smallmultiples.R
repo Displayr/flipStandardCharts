@@ -109,10 +109,10 @@ SmallMultiples <- function(x,
         x.bounds.minimum <- values.min
     if (share.axes && chart.type != "Bar" && is.null(y.bounds.minimum))
         y.bounds.minimum <- values.min
-    if (share.axes && chart.type == "GeographicMap" && is.null(values.bounds.maximum))
-        values.bounds.maximum <- values.max
-    if (share.axes && chart.type == "GeographicMap" && is.null(values.bounds.minimum))
-        values.bounds.minimum <- values.min
+    if (share.axes && chart.type == "GeographicMap")
+        values.bounds.maximum <- max(values.bounds.maximum, values.max)
+    if (share.axes && chart.type == "GeographicMap")
+        values.bounds.minimum <- min(values.bounds.minimum, values.min)
 
     average.series <- NULL
     if (chart.type != "GeographicMap" && average.show)
@@ -134,12 +134,17 @@ SmallMultiples <- function(x,
     if (npanels <= 1)
         stop("Multiple series are required for Small Multiples.")
     ncols <- ceiling(npanels/nrows)
+    h.offset <- 0
+    w.offset <- 0
+    if (chart.type != "Radar")
+    {
+        w.offset <- c(pad.left, rep(0, max(0, ncols - 2)), pad.right)[1:ncols]
+        if (any(w.offset > 1/ncols))
+            stop("'pad.left' and 'pad.bottom' should be between 0 and 1/ncols (", round(1/ncols, 4), ")")
+    }
     h.offset <- c(pad.top, rep(0, max(0, nrows - 2)), pad.bottom)[1:nrows]
-    w.offset <- c(pad.left, rep(0, max(0, ncols - 2)), pad.right)[1:ncols]
     if (any(h.offset > 1/nrows))
         stop("'pad.top' and 'pad.bottom' should be between 0 and 1/nrows (", round(1/nrows, 4), ")")
-    if (any(w.offset > 1/ncols))
-        stop("'pad.left' and 'pad.bottom' should be between 0 and 1/ncols (", round(1/ncols, 4), ")")
 
     # Position titles for each panel
     paneltitles <- NULL
@@ -176,6 +181,7 @@ SmallMultiples <- function(x,
                                                      y.bounds.maximum = y.bounds.maximum,
                                                      global.font.family = global.font.family,
                                                      global.font.color = global.font.color,
+                                                     pad.left = pad.left, pad.right = pad.right,
                                                      ...)$htmlwidget})
         margin.left <- 0
         margin.right <- 0
@@ -228,7 +234,8 @@ SmallMultiples <- function(x,
                                                      ...)$htmlwidget})
 
     is.geo <- chart.type == "GeographicMap"
-    res <- subplot(plot.list, nrows = nrows, margin = c(pad.left,pad.right,pad.top,pad.bottom),
+    is.radar <- chart.type == "Radar"
+    res <- subplot(plot.list, nrows = nrows, margin = c(pad.left * !is.radar, pad.right * !is.radar, pad.top, pad.bottom),
                    heights = rep(1/nrows, nrows) - h.offset, # compensate for plotly bug
                    widths = rep(1/ncols, ncols) - w.offset, titleX = TRUE, titleY = TRUE,
                    shareX = share.axes && !is.geo, shareY = share.axes && !is.geo)

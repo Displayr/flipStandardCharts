@@ -151,6 +151,8 @@ Radar <- function(x,
                     margin.left = NULL,
                     margin.right = NULL,
                     margin.inner.pad = NULL,
+                    pad.left = 0,
+                    pad.right = 0,
                     series.line.width = 3,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
@@ -310,7 +312,10 @@ Radar <- function(x,
     # Initialise plot (ensure chart area reaches y.bounds.maximum)
     p <- plot_ly(pos)
     outer <- getPolarCoord(rep(r.max, n))
-    p <- add_trace(p, x = outer[,1], y = outer[,2], name = "Outer", showlegend = FALSE,
+    x.offset <- rep(0, nrow(outer))
+    x.offset[which.min(outer[,1])] <- -pad.left
+    x.offset[which.max(outer[,1])] <- pad.right
+    p <- add_trace(p, x = outer[,1] + x.offset, y = outer[,2], name = "Outer", showlegend = FALSE,
                    type = "scatter", mode = "markers", opacity = 0, hoverinfo = "none")
 
     # Radial grid lines

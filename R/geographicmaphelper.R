@@ -167,7 +167,7 @@ cleanMapInput <- function(table)
 
 postcodesOrStates <- function(names) {
 
-    if (all(!is.na(as.numeric(names))) && all(sapply(as.character(names), nchar) == 4))
+    if (suppressWarnings(all(!is.na(as.numeric(names)))) && all(sapply(as.character(names), nchar) == 4))
         return("aus_postcodes")
     return("states")
 }
