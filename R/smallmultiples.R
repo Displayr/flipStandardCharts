@@ -109,10 +109,10 @@ SmallMultiples <- function(x,
         x.bounds.minimum <- values.min
     if (share.axes && chart.type != "Bar" && is.null(y.bounds.minimum))
         y.bounds.minimum <- values.min
-    if (share.axes && chart.type == "GeographicMap" && is.null(values.bounds.maximum))
-        values.bounds.maximum <- values.max
-    if (share.axes && chart.type == "GeographicMap" && is.null(values.bounds.minimum))
-        values.bounds.minimum <- values.min
+    if (share.axes && chart.type == "GeographicMap")
+        values.bounds.maximum <- max(values.bounds.maximum, values.max)
+    if (share.axes && chart.type == "GeographicMap")
+        values.bounds.minimum <- min(values.bounds.minimum, values.min)
 
     average.series <- NULL
     if (chart.type != "GeographicMap" && average.show)
