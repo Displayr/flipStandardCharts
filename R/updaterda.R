@@ -32,6 +32,7 @@
 # library(devtools)
 # library(rgdal)
 # library(utils)
+# library(rmapshaper)
 #
 # # ISO codes of countries and regions
 # data("ISO_3166_1",  package = "ISOcodes", envir = environment())
@@ -274,6 +275,8 @@
 #              f <- tempfile())
 # unzip(f, exdir = tempdir())
 # us.postcodes <- readOGR(tempdir(), "cb_2016_us_zcta510_500k")
+# colnames(us.postcodes@data)[3] <- "name"
+# us.postcodes <- ms_simplify(us.postcodes, keep = 0.02, keep_shapes = TRUE)
 #
 # # UK postcodes
 # # Note terms and conditions - http://www.opendoorlogistics.com/downloads/
@@ -291,6 +294,8 @@
 # unzip(f, exdir = tempdir())
 # australia.postcodes <- readOGR(tempdir(), "POA_2016_AUST")
 # colnames(australia.postcodes@data)[2] <- "name"
+# # Simplify polygons to reduce size
+# australia.postcodes <- ms_simplify(australia.postcodes, keep = 0.02, keep_shapes = TRUE)
 #
 # # Save everything into sysdata.rda
 # use_data(missing110,
@@ -302,7 +307,7 @@
 #          ISO_3166_1,
 #          ISO_3166_2,
 #          us.regions,
-#          #us.postcodes,
+#          us.postcodes,
 #          #uk.postcodes,
 #          australia.postcodes,
 #          internal = TRUE, overwrite = TRUE)
