@@ -557,25 +557,31 @@ setFooterAxis <- function(footer, footer.font, margins, overlay = "x")
     res
 }
 
+# This differs from as.numeric in that it returns NULL
+# instead of NA if there is no valid output
+# Also so basic substitution such as removing commas
+charToNumeric <- function(x)
+{
+    if (!is.character(x))
+        return(x)
+    
+    x <- gsub(" ", "", x)
+    x <- gsub(",", "", x) # e.g. '5,000'
+    xnum <- suppressWarnings(as.numeric(x))
+    xnum <- xnum[!is.na(xnum)]
+    if (length(xnum) != 1)
+        return(NULL)
+    return(xnum)
+}
+
 # This is only applied to the values axis which is always numeric
 setValRange <- function(min, max, values, use.defaults = TRUE)
 {
     # Some parsing may be needed
     .parse <- function(x)
-    {
-        if (!is.character(x))
-            return(x)
-        
-        x <- gsub(" ", "", x)
-        x <- gsub(",", "", x) # e.g. '5,000'
-        xnum <- suppressWarnings(as.numeric(x))
-        xnum <- xnum[!is.na(xnum)]
-        if (length(xnum) != 1)
-            return(NULL)
-        return(xnum)
-    }    
-    min <- .parse(min)
-    max <- .parse(max)
+    
+    min <- charToNumeric(min)
+    max <- charToNumeric(max)
     
     # If no range is specified, then use defaults
     if (use.defaults && is.null(min) && is.null(max))

@@ -63,6 +63,8 @@ GeographicMap <- function(x,
                           mapping.package = "leaflet")
 {
     requireNamespace("sp")
+    values.bounds.minimum <- charToNumeric(values.bounds.minimum)
+    values.bounds.maximum <- charToNumeric(values.bounds.maximum)
 
     table <- cleanMapInput(x)
 
