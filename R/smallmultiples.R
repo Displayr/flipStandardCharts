@@ -121,13 +121,13 @@ SmallMultiples <- function(x,
         average.color <- NULL
 
     # Layout and positioning
-    if (is.null(margin.top))
+    if (is.null(margin.top) || is.na(margin.top))
         margin.top <- 20 + title.font.size * (sum(nchar(title) > 0, na.rm = TRUE))
-    if (is.null(margin.bottom))
+    if (is.null(margin.bottom) || is.na(margin.bottom))
         margin.bottom <- 30 + x.title.font.size * (sum(nchar(x.title) > 0, na.rm = TRUE))
-    if (is.null(margin.left))
+    if (is.null(margin.left) || is.na(margin.left))
         margin.left <- 30 + y.title.font.size * (sum(nchar(y.title) > 0, na.rm = TRUE))
-    if (is.null(margin.right))
+    if (is.null(margin.right) || is.na(margin.right))
         margin.right <- 20
 
     npanels <- ncol(x)

@@ -17,8 +17,9 @@ Radar(x, title = "", title.font.family = global.font.family,
   legend.font.family = global.font.family, legend.font.size = 10,
   legend.ascending = NA, legend.position.y = 1, legend.position.x = 1.02,
   margin.top = NULL, margin.bottom = NULL, margin.left = NULL,
-  margin.right = NULL, margin.inner.pad = NULL, series.line.width = 3,
-  tooltip.show = TRUE, modebar.show = FALSE, global.font.family = "Arial",
+  margin.right = NULL, margin.inner.pad = NULL, pad.left = 0,
+  pad.right = 0, series.line.width = 3, tooltip.show = TRUE,
+  modebar.show = FALSE, global.font.family = "Arial",
   global.font.color = rgb(44, 44, 44, maxColorValue = 255),
   grid.show = TRUE, x.tick.show = TRUE,
   x.tick.font.color = global.font.color,
@@ -118,6 +119,10 @@ graphic in pixels}
 
 \item{margin.inner.pad}{Padding in pixels between plot proper
 and axis lines}
+
+\item{pad.left}{Spacing on the left of the chart. Mainly used by SmallMultiples.}
+
+\item{pad.right}{Spacing on the right of the chart. Mainly used by SmallMultiples.}
 
 \item{series.line.width}{Width of outline of radar polygons.}
 

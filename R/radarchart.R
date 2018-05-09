@@ -60,6 +60,8 @@
 #' @param legend.ascending Logical; TRUE for ascending, FALSE for descending.
 #' By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.
 #' @param hovertext.show Logical; whether to show hovertext.
+#' @param pad.left Spacing on the left of the chart. Mainly used by SmallMultiples.
+#' @param pad.right Spacing on the right of the chart. Mainly used by SmallMultiples.
 #' @param margin.top Margin between plot area and the top of the
 #' graphic in pixels
 #' @param margin.bottom Margin between plot area and the bottom of the
