@@ -170,7 +170,7 @@ postcodesOrStates <- function(names) {
     if (suppressWarnings(all(!is.na(as.numeric(names)))) && all(sapply(as.character(names), nchar) == 4))
         return("aus_postcodes")
 
-    if (all(!is.na(as.numeric(names))) && all(sapply(as.character(names), nchar) == 5))
+    if (suppressWarnings(all(!is.na(as.numeric(names)))) && all(sapply(as.character(names), nchar) == 5))
         return("us_postcodes")
 
     return("states")

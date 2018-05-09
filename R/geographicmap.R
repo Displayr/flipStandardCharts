@@ -243,9 +243,9 @@ GeographicMap <- function(x,
         suffix <- ""
     }
     if (!is.null(values.bounds.minimum) && values.bounds.minimum > min.value)
-        warning("Minimum value is too large.")
+        warning("Minimum value must be smaller than ", min.value, ".")
     if (!is.null(values.bounds.maximum) && values.bounds.maximum < max.range)
-        warning("Maximum value is too small.")
+        warning("Maximum value must be larger than ", max.range, ".")
     values.bounds.minimum <- min(values.bounds.minimum, min.value)
     values.bounds.maximum <- max(values.bounds.maximum, max.range)
 
