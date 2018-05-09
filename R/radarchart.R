@@ -400,7 +400,8 @@ Radar <- function(x,
             paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
             hovermode = if (tooltip.show) "closest" else FALSE,
             xaxis2 = footer.axis, xaxis = xaxis, yaxis = yaxis,
-            legend = legend, showlegend = legend.show, shapes = grid, annotations = xlabels)
+            legend = legend, showlegend = legend.show, annotations = xlabels,
+            shapes = if (grid.show) grid else NULL)
 
     if (grid.show && y.grid.width > 0 && y.tick.show && !is.null(tick.vals))
         p <- add_annotations(p, x = rep(0, length(tick.vals)), y = tick.vals,
