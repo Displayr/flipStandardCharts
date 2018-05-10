@@ -363,6 +363,8 @@ Radar <- function(x,
                     xanchor = xanch, xshift = outer[1:n,1]/r.max)
     }
 
+    if (is.null(line.thickness))
+        line.thickness <- 3
     if (length(data.label.show) > 1 && length(g.list) == 2) # small multiples
     {
         line.thickness <- c(line.thickness, 0)
