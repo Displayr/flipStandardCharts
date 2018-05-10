@@ -14,6 +14,7 @@
 #' for the requested countries or regions.
 #' @param treat.NA.as.0 Plots any \code{NA} values in the data and any
 #'   geographical entities without data as having a zero value.
+#' @param postcode TODO TODO TODO temp different postcode plots
 #' @param colors A vector of two colors, which are used as endpoints in
 #'   interpolating colors.
 #' @param ocean.color The color used for oceans, used only by \code{plotly}.
@@ -50,6 +51,7 @@ GeographicMap <- function(x,
                           colors = c("#CCF3FF", "#23B0DB"),
                           ocean.color = "#DDDDDD",
                           color.NA = "#808080",
+                          postcode = "show.na",
                           global.font.family = "Arial",
                           global.font.color = rgb(44, 44, 44, maxColorValue = 255),
                           legend.show = TRUE,
@@ -256,8 +258,8 @@ GeographicMap <- function(x,
 
         map <- leafletMap(coords, colors, values.bounds.minimum, values.bounds.maximum,
                    color.NA, legend.show, legend.title, mult, decimals, suffix,
-                   values.hovertext.format,
-                   treat.NA.as.0, n.categories, categories, format.function, map.type)
+                   values.hovertext.format, treat.NA.as.0, n.categories, categories,
+                   format.function, map.type, postcode)
 
     } else {        # mapping.package == "plotly"
 
@@ -278,18 +280,25 @@ GeographicMap <- function(x,
 
 # Helper function to plot the leaflet map
 #' @importFrom leaflet leaflet colorNumeric addLegend labelFormat highlightOptions addPolygons
-#' @importFrom leaflet addLayersControl layersControlOptions setView
+#' @importFrom leaflet addLayersControl layersControlOptions setView addTiles
+#' @importFrom sp proj4string spTransform
 #' @importFrom stats as.formula
 leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.show,
                        legend.title, mult, decimals, suffix, values.hovertext.format,
-                       treat.NA.as.0, n.categories, categories, format.function, map.type)
+                       treat.NA.as.0, n.categories, categories, format.function, map.type, postcode)
 {
     max.values <- unique(coords$table.max[!is.na(coords$table.max)])
     if (length(max.values) == 1)
         max.values <- c(max.values, max.values * 1.1)
 
+    # Remove NAs
+    if (!treat.NA.as.0 && postcode != "show.na")
+        coords <- coords[!is.na(coords@data$table1), ]
+
     # Creating the map
     map <- leaflet(coords)
+    if (postcode == "tile")
+        map <- addTiles(map, attribution = "Source: Australian Bureau of Statistics") # need to add a tile to be able to add attribution
     opacity <- 1
     .pal <- colorNumeric(palette = colors, domain = c(min.value, max.range),
                          na.color = color.NA)
@@ -312,6 +321,18 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.sh
                                           dashArray = "",
                                           fillOpacity = 0.7,
                                           bringToFront = TRUE)
+
+    if(postcode == "outline")
+    {
+        country <- switch(map.type, aus_postcodes = "Australia",
+                          us_postcodes = "United States of America",
+                          uk_postcodes = "United Kingdom")
+        country.coords <- spTransform(map.coordinates.50[map.coordinates.50$name == country, ], proj4string(coords))
+        country.coords$color <- NA
+        map <- addPolygons(map, stroke = FALSE, smoothFactor = 0.2,
+                       fillOpacity = opacity, fillColor = ~.pal(country.coords$color),
+                       data = country.coords)
+    }
 
     if (n.categories == 1)
     {
@@ -431,7 +452,7 @@ plotlyMap <- function(table, name.map, colors, min.value, max.range, color.NA, l
                   locationmode = locationmode
     ) %>%
 
-        add_trace(# hoverinfo = "text", should display 'text' only but causes all hovertext to disappear
+        add_trace(#hoverinfo = "text", # should display 'text' only but causes all hovertext to disappear
             z = df[, 1],
             zmin = min.value,
             zmax = max.range,
