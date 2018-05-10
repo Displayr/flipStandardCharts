@@ -363,18 +363,25 @@ Radar <- function(x,
                     xanchor = xanch, xshift = outer[1:n,1]/r.max)
     }
 
-    # Main trace
-    if (length(data.label.show) > 1)
-        line.thickness <- c(line.thickness, rep(0, length(g.list)-1)) # small multiples
+    if (length(data.label.show) > 1 && length(g.list) == 2) # small multiples
+    {
+        line.thickness <- c(line.thickness, 0)
+        opacity <- c(opacity, if (opacity == 0.0) 0.2 else opacity)
+    }
     else
+    {
         line.thickness <- rep(1, length(g.list)) * line.thickness
+        opacity <- rep(1, length(g.list)) * opacity
+    }
     hovertext.show <- rep(TRUE, length(g.list)) & hovertext.show
+
+    # Main trace
     for (ggi in 1:length(g.list))
     {
         ind <- which(pos$Group == g.list[ggi])
         p <- add_trace(p, x = pos$x[ind], y = pos$y[ind], name = g.list[ggi],
                     type = "scatter", mode = "lines", fill = "toself",
-                    fillcolor = toRGB(colors[ggi], alpha = opacity),
+                    fillcolor = toRGB(colors[ggi], alpha = opacity[ggi]),
                     legendgroup = g.list[ggi], showlegend = TRUE, hoverinfo = "skip",
                     line = list(width = line.thickness[ggi], color = toRGB(colors[ggi])))
     }
