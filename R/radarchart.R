@@ -320,19 +320,24 @@ Radar <- function(x,
     p <- add_trace(p, x = outer[,1] + x.offset, y = outer[,2], name = "Outer", showlegend = FALSE,
                    type = "scatter", mode = "markers", opacity = 0, hoverinfo = "none")
 
-    # Radial grid lines
-    grid <- apply(outer, 1, function(zz){
+    # Grid lines
+    grid <- NULL
+    if (grid.show)
+    {
+        # Spokes
+        grid <- apply(outer, 1, function(zz){
         return(list(type = "line", x0 = 0, y0 = 0, x1 = zz[1], y1 = zz[2], layer = "below",
                     line = list(width = x.grid.width * grid.show, color = x.grid.color)))})
 
-    # Hexagonal grid
-    for (tt in tick.vals)
-    {
-        gpos <- getPolarCoord(rep(tt, n))
-        for (i in 1:n)
-            grid[[length(grid)+1]] <- list(type = "line", layer = "below",
-                 x0 = gpos[i,1], x1 = gpos[i+1,1], y0 = gpos[i,2], y1 = gpos[i+1,2],
-                 line = list(width = y.grid.width * grid.show, dash = "dot", color = y.grid.color))
+        # Hexagonal grid
+        for (tt in tick.vals)
+        {
+            gpos <- getPolarCoord(rep(tt, n))
+            for (i in 1:n)
+                grid[[length(grid)+1]] <- list(type = "line", layer = "below",
+                     x0 = gpos[i,1], x1 = gpos[i+1,1], y0 = gpos[i,2], y1 = gpos[i+1,2],
+                     line = list(width = y.grid.width * grid.show, dash = "dot", color = y.grid.color))
+        }
     }
 
     # Position of labels (x-axis)
@@ -399,9 +404,8 @@ Radar <- function(x,
             plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
             paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
             hovermode = if (tooltip.show) "closest" else FALSE,
-            xaxis2 = footer.axis, xaxis = xaxis, yaxis = yaxis,
-            legend = legend, showlegend = legend.show, annotations = xlabels,
-            shapes = if (grid.show) grid else NULL)
+            xaxis2 = footer.axis, xaxis = xaxis, yaxis = yaxis, shapes = grid,
+            legend = legend, showlegend = legend.show, annotations = xlabels)
 
     if (grid.show && y.grid.width > 0 && y.tick.show && !is.null(tick.vals))
         p <- add_annotations(p, x = rep(0, length(tick.vals)), y = tick.vals,

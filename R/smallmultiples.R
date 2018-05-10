@@ -103,6 +103,10 @@ SmallMultiples <- function(x,
     values.min = min(0, unlist(x), na.rm = TRUE)
     values.bounds.minimum <- charToNumeric(values.bounds.minimum)
     values.bounds.maximum <- charToNumeric(values.bounds.maximum)
+    x.bounds.minimum <- charToNumeric(x.bounds.minimum)
+    x.bounds.maximum <- charToNumeric(x.bounds.maximum)
+    y.bounds.minimum <- charToNumeric(y.bounds.minimum)
+    y.bounds.maximum <- charToNumeric(y.bounds.maximum)
     if (share.axes && chart.type == "Bar" && is.null(x.bounds.maximum))
         x.bounds.maximum <- values.max
     if (share.axes && chart.type != "Bar" && is.null(y.bounds.maximum))
