@@ -103,7 +103,7 @@
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param x.tick.label.wrap Logical; whether to wrap long labels on the x-axis.
 #' @param x.tick.label.wrap.nchar Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.
-#' @param series.line.width Width of outline of radar polygons.
+#' @param line.thickness Thickness of outline of radar polygons.
 #' @param tooltip.show Logical; whether to show a tooltip on hover.
 #' @param modebar.show Logical; whether to show the zoom menu buttons or not.
 #' @param global.font.family Character; font family for all occurrences of any
@@ -155,7 +155,7 @@ Radar <- function(x,
                     margin.inner.pad = NULL,
                     pad.left = 0,
                     pad.right = 0,
-                    series.line.width = 3,
+                    line.thickness = 3,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
                     global.font.family = "Arial",
@@ -364,7 +364,10 @@ Radar <- function(x,
     }
 
     # Main trace
-    series.line.width <- rep(1, length(g.list)) * series.line.width
+    if (length(data.label.show) > 1)
+        line.thickness <- c(line.thickness, rep(0, length(g.list)-1)) # small multiples
+    else
+        line.thickness <- rep(1, length(g.list)) * line.thickness
     hovertext.show <- rep(TRUE, length(g.list)) & hovertext.show
     for (ggi in 1:length(g.list))
     {
@@ -373,7 +376,7 @@ Radar <- function(x,
                     type = "scatter", mode = "lines", fill = "toself",
                     fillcolor = toRGB(colors[ggi], alpha = opacity),
                     legendgroup = g.list[ggi], showlegend = TRUE, hoverinfo = "skip",
-                    line = list(width = series.line.width[ggi], color = toRGB(colors[ggi])))
+                    line = list(width = line.thickness[ggi], color = toRGB(colors[ggi])))
     }
 
     # Markers are added as a separate trace to allow overlapping hoverinfo
