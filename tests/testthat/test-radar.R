@@ -27,7 +27,7 @@ opts <- c('default' = '',
           'legendbg' = 'legend.fill.color="blue", legend.fill.opacity=0.5, legend.border.color="red", legend.border.line.width=2',
           'margins' = 'margin.left=0, margin.right=0, margin.top=0, margin.inner.pad=10, charting.area.fill.color="red", legend.show=FALSE, grid.show=FALSE',
           'font' = 'global.font.family="Courier", global.font.color="red"',
-          'nooutline' = 'series.line.width=0, x.tick.font.color="green"',
+          'nooutline' = 'line.thickness=0, x.tick.font.color="green"',
           'opacity' = 'opacity = 0.9',
           'modebar' = 'modebar.show = TRUE')
 

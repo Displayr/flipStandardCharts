@@ -18,7 +18,7 @@ Radar(x, title = "", title.font.family = global.font.family,
   legend.ascending = NA, legend.position.y = 1, legend.position.x = 1.02,
   margin.top = NULL, margin.bottom = NULL, margin.left = NULL,
   margin.right = NULL, margin.inner.pad = NULL, pad.left = 0,
-  pad.right = 0, series.line.width = 3, tooltip.show = TRUE,
+  pad.right = 0, line.thickness = 3, tooltip.show = TRUE,
   modebar.show = FALSE, global.font.family = "Arial",
   global.font.color = rgb(44, 44, 44, maxColorValue = 255),
   grid.show = TRUE, x.tick.show = TRUE,
@@ -124,7 +124,7 @@ and axis lines}
 
 \item{pad.right}{Spacing on the right of the chart. Mainly used by SmallMultiples.}
 
-\item{series.line.width}{Width of outline of radar polygons.}
+\item{line.thickness}{Thickness of outline of radar polygons.}
 
 \item{tooltip.show}{Logical; whether to show a tooltip on hover.}
 

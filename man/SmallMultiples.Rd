@@ -6,7 +6,7 @@
 \usage{
 SmallMultiples(x, chart.type = "Area", nrows = 2, share.axes = TRUE,
   pad.left = 0.01, pad.right = 0.01, pad.top = 0.01, pad.bottom = 0.01,
-  x.order = NULL, average.show = FALSE, average.color = rgb(230, 230, 230,
+  x.order = NULL, average.show = FALSE, average.color = rgb(153, 153, 153,
   maxColorValue = 255), y.bounds.maximum = NULL, y.bounds.minimum = NULL,
   x.bounds.maximum = NULL, x.bounds.minimum = NULL,
   values.bounds.maximum = NULL, values.bounds.minimum = NULL,
