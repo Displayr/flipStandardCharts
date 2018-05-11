@@ -564,7 +564,7 @@ charToNumeric <- function(x)
 {
     if (!is.character(x))
         return(x)
-    
+
     x <- gsub(" ", "", x)
     x <- gsub(",", "", x) # e.g. '5,000'
     xnum <- suppressWarnings(as.numeric(x))
@@ -577,12 +577,9 @@ charToNumeric <- function(x)
 # This is only applied to the values axis which is always numeric
 setValRange <- function(min, max, values, use.defaults = TRUE)
 {
-    # Some parsing may be needed
-    .parse <- function(x)
-    
     min <- charToNumeric(min)
     max <- charToNumeric(max)
-    
+
     # If no range is specified, then use defaults
     if (use.defaults && is.null(min) && is.null(max))
         return(list(min = NULL, max = NULL))
