@@ -80,6 +80,7 @@ SmallMultiples <- function(x,
                            footer.font.size = 8,
                            footer.wrap = TRUE,
                            footer.wrap.nchar = 100,
+                           fit.line.colors = NULL, # discarded
                            mapping.package = "plotly", # discarded
                            ...)
 {
@@ -211,6 +212,7 @@ SmallMultiples <- function(x,
                                                      colors = colors[i],
                                                      average.series = average.series,
                                                      average.color = average.color,
+                                                     fit.line.colors = colors[i],
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
                                                      grid.show = grid.show, data.label.show = data.label.show,
@@ -226,6 +228,7 @@ SmallMultiples <- function(x,
     else
         plot.list <- lapply(1:npanels, function(i){chart(.bind_mean(x[,i, drop = FALSE], average.series),
                                                      colors = c(colors[i], average.color),
+                                                     fit.line.colors = c(colors[i], average.color),
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
                                                      grid.show = grid.show, data.label.show = data.label.show,
