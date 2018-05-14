@@ -20,8 +20,6 @@
 #'
 #' To load in the existing "sysdata.rda" file, use setwd("C:/Users/jake.NUMDOM2/Git packages/flipStandardCharts/R") and load("sysdata.rda")
 #'
-#' TODO - compression of postcodes with either use_data(internal == TRUE) or load() https://thepracticalr.wordpress.com/2017/04/27/load-save-and-rda-files/
-#'
 #' TO RUN THE SCRIPT AND UPDATE THE .RDA FILE, UNCOMMENT ALL LINES BELOW HERE
 
 
@@ -280,11 +278,12 @@
 #
 # # UK postcodes
 # # Note terms and conditions - http://www.opendoorlogistics.com/downloads/
-# # Mote distinction between sector eg "LS25 5", district (eg "LS25") and area (eg "LS")
+# # Note distinction between sector eg "LS25 5", district (eg "LS25") and area (eg "LS")
 # download.file(file.path('http://www.opendoorlogistics.com/wp-content/uploads/Data/UK-postcode-boundaries-Jan-2015.zip'),
 #               f <- tempfile())
-# unzip(f, files = "Distribution/Sectors", exdir = tempdir())
-# uk.postcodes <- readOGR(paste0(tempdir(), "\\Distribution"), "Sectors")
+# unzip(f, exdir = tempdir())
+# uk.postcodes <- readOGR(paste0(tempdir(), "\\Distribution"), "Districts")
+#
 #
 # # Australia post codes
 # # http://www.abs.gov.au/AUSSTATS/abs@.nsf/DetailsPage/1270.0.55.003July%202016?OpenDocument
@@ -308,6 +307,6 @@
 #          ISO_3166_2,
 #          us.regions,
 #          us.postcodes,
-#          #uk.postcodes,
+#          uk.postcodes,
 #          australia.postcodes,
 #          internal = TRUE, overwrite = TRUE)

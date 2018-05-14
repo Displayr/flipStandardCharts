@@ -1,7 +1,7 @@
 #' \code{CountriesOrContinents} Names of geographic regions.
 #'
 #' Returns the list of unique geographic names that can be used when creating a
-#' WorldMap.
+#' world map.
 #'
 #' @param type The name of the geographic region type or "country". See
 #'   \code{\link{GeographicRegionTypes}}
@@ -51,11 +51,11 @@ GeographicRegionTypes <- function()
 
 #' Get the states in a country
 #'
-#' When mapping sthe states of a country you need to match the state names exactly.
+#' When mapping the states of a country you need to match the state names exactly.
 #' You can use this function to look up the correct names of the states for the
 #' country that you are interested in.
 #'
-#' @param country The country to look at
+#' @param country Character; name of the country
 #' @export
 #' @seealso \code{\link{CountriesOrContinents}}
 StatesInCountry <- function(country)
@@ -63,6 +63,25 @@ StatesInCountry <- function(country)
     country <- tidyCountryName(country)
     levels(droplevels(subset(admin1.coordinates, admin1.coordinates$admin == country)$name))
 }
+
+
+#' Get the zip/post codes in a country
+#'
+#' When mapping the zip or postcodes of a country you need to match the codes exactly.
+#' You can use this function to look up the full list of codes from USA, UK, or Australia.
+#'
+#' @param country Character; name of the country
+#' @export
+#' @seealso \code{\link{CountriesOrContinents}}
+ZipcodesInCountry <- function(country)
+{
+    country <- tidyCountryName(country)
+    data <- switch(country, Australia = australia.postcodes$name,
+                   `United Kingdom` = uk.postcodes$name,
+                   `United States of America` = us.postcodes$name)
+    sort(unique(as.character(data)))
+}
+
 
 #' Standardize country name
 #'
@@ -172,6 +191,12 @@ postcodesOrStates <- function(names) {
 
     if (suppressWarnings(all(!is.na(as.numeric(names)))) && all(sapply(as.character(names), nchar) == 5))
         return("us_postcodes")
+
+    # Check if first part (before any space) <= 4 chars, starts with a letter and contains a digit.
+    split.names <- strsplit(names, " ", fixed = FALSE)
+    first.words <- sapply(split.names, function (x) x[1])
+    if (all(grepl("^[A-z]+[0-9]+", first.words)) && all(sapply(first.words, length) <= 4))
+        return("uk_postcodes")
 
     return("states")
 }

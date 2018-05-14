@@ -7,10 +7,10 @@
 StatesInCountry(country)
 }
 \arguments{
-\item{country}{The country to look at}
+\item{country}{Character; name of the country}
 }
 \description{
-When mapping sthe states of a country you need to match the state names exactly.
+When mapping the states of a country you need to match the state names exactly.
 You can use this function to look up the correct names of the states for the
 country that you are interested in.
 }

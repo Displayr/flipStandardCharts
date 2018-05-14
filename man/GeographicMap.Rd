@@ -6,13 +6,14 @@
 \usage{
 GeographicMap(x, country, high.resolution = FALSE, treat.NA.as.0 = FALSE,
   colors = c("#CCF3FF", "#23B0DB"), ocean.color = "#DDDDDD",
-  color.NA = "#808080", postcode = "show.na",
-  global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
-  maxColorValue = 255), legend.show = TRUE, legend.title = "",
+  color.NA = "#808080", global.font.family = "Arial",
+  global.font.color = rgb(44, 44, 44, maxColorValue = 255),
+  legend.show = TRUE, legend.title = "",
   legend.font.family = global.font.family,
   legend.font.color = global.font.color, legend.font.size = 10,
   values.hovertext.format = "", values.bounds.minimum = NULL,
-  values.bounds.maximum = NULL, mapping.package = "leaflet")
+  values.bounds.maximum = NULL, mapping.package = "leaflet",
+  background = FALSE)
 }
 \arguments{
 \item{x}{A matrix, two-dimensional array, table or vector, containing the
@@ -37,8 +38,6 @@ interpolating colors.}
 
 \item{color.NA}{The color used to represent missing values. Not used when
 \code{treat.NA.as.0}, is set to missing.}
-
-\item{postcode}{TODO TODO TODO temp different postcode plots}
 
 \item{global.font.family}{Character; font family for all occurrences of any
 font attribute for the chart unless specified individually.}
@@ -66,8 +65,11 @@ the specified value will be ignored.}
 
 \item{values.bounds.maximum}{Numeric; specifies the maximum value in the colorscale.}
 
-\item{mapping.package}{Either \code{"leaflet"} (better graphics, more country
+\item{mapping.package}{Either \code{"leaflet"} (better graphics, wider range of
 maps) or \code{"plotly"} (faster).}
+
+\item{background}{If \code{"mapping.package"} is \code{"leaflet"}, add a background
+tile from opensteetmaps.}
 }
 \value{
 an HTML widget for \code{"leaflet"} or a \code{"plotly"} object.

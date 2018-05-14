@@ -14,7 +14,6 @@
 #' for the requested countries or regions.
 #' @param treat.NA.as.0 Plots any \code{NA} values in the data and any
 #'   geographical entities without data as having a zero value.
-#' @param postcode TODO TODO TODO temp different postcode plots
 #' @param colors A vector of two colors, which are used as endpoints in
 #'   interpolating colors.
 #' @param ocean.color The color used for oceans, used only by \code{plotly}.
@@ -32,8 +31,10 @@
 #'          If the value specified is larger than the minimum in the data then
 #'          the specified value will be ignored.
 #' @param values.bounds.maximum Numeric; specifies the maximum value in the colorscale.
-#' @param mapping.package Either \code{"leaflet"} (better graphics, more country
+#' @param mapping.package Either \code{"leaflet"} (better graphics, wider range of
 #' maps) or \code{"plotly"} (faster).
+#' @param background If \code{"mapping.package"} is \code{"leaflet"}, add a background
+#' tile from opensteetmaps.
 #' @param legend.show Logical; Whether to display a legend with the color scale.
 #' @param legend.font.family Font family of legend. Only used with \code{plotly} object.
 #' @param legend.font.color Font color of legend. Only used with \code{plotly} object.
@@ -51,7 +52,6 @@ GeographicMap <- function(x,
                           colors = c("#CCF3FF", "#23B0DB"),
                           ocean.color = "#DDDDDD",
                           color.NA = "#808080",
-                          postcode = "show.na",
                           global.font.family = "Arial",
                           global.font.color = rgb(44, 44, 44, maxColorValue = 255),
                           legend.show = TRUE,
@@ -62,7 +62,8 @@ GeographicMap <- function(x,
                           values.hovertext.format = "",
                           values.bounds.minimum = NULL,
                           values.bounds.maximum = NULL,
-                          mapping.package = "leaflet")
+                          mapping.package = "leaflet",
+                          background = FALSE)
 {
     requireNamespace("sp")
     values.bounds.minimum <- charToNumeric(values.bounds.minimum)
@@ -135,6 +136,11 @@ GeographicMap <- function(x,
     else if (map.type == "us_postcodes")
     {
         coords <- us.postcodes
+        remove.regions <- name.map <- NULL
+    }
+    else if (map.type == "uk_postcodes")
+    {
+        coords <- uk.postcodes
         remove.regions <- name.map <- NULL
     }
 
@@ -259,7 +265,7 @@ GeographicMap <- function(x,
         map <- leafletMap(coords, colors, values.bounds.minimum, values.bounds.maximum,
                    color.NA, legend.show, legend.title, mult, decimals, suffix,
                    values.hovertext.format, treat.NA.as.0, n.categories, categories,
-                   format.function, map.type, postcode)
+                   format.function, map.type, background)
 
     } else {        # mapping.package == "plotly"
 
@@ -280,25 +286,26 @@ GeographicMap <- function(x,
 
 # Helper function to plot the leaflet map
 #' @importFrom leaflet leaflet colorNumeric addLegend labelFormat highlightOptions addPolygons
-#' @importFrom leaflet addLayersControl layersControlOptions setView addTiles
+#' @importFrom leaflet addLayersControl layersControlOptions setView addTiles tileOptions
 #' @importFrom sp proj4string spTransform
 #' @importFrom stats as.formula
 leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.show,
                        legend.title, mult, decimals, suffix, values.hovertext.format,
-                       treat.NA.as.0, n.categories, categories, format.function, map.type, postcode)
+                       treat.NA.as.0, n.categories, categories, format.function, map.type, background)
 {
     max.values <- unique(coords$table.max[!is.na(coords$table.max)])
     if (length(max.values) == 1)
         max.values <- c(max.values, max.values * 1.1)
 
-    # Remove NAs
-    if (!treat.NA.as.0 && postcode != "show.na")
-        coords <- coords[!is.na(coords@data$table1), ]
-
     # Creating the map
     map <- leaflet(coords)
-    if (postcode == "tile")
-        map <- addTiles(map, attribution = "Source: Australian Bureau of Statistics") # need to add a tile to be able to add attribution
+
+    # Attribution requires background, whic may be transparent
+    attribution <- switch(map.type, aus_postcodes = "Based on ABS data",
+                            uk_postcodes = "<a href='www.opendoorlogistics.com'>opendoorlogistics.com</a>",
+                            NULL)
+    map <- addTiles(map, attribution = attribution, options = tileOptions(opacity = as.numeric(background)))
+
     opacity <- 1
     .pal <- colorNumeric(palette = colors, domain = c(min.value, max.range),
                          na.color = color.NA)
@@ -321,18 +328,15 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.sh
                                           dashArray = "",
                                           fillOpacity = 0.7,
                                           bringToFront = TRUE)
-
-    if(postcode == "outline")
-    {
-        country <- switch(map.type, aus_postcodes = "Australia",
-                          us_postcodes = "United States of America",
-                          uk_postcodes = "United Kingdom")
-        country.coords <- spTransform(map.coordinates.50[map.coordinates.50$name == country, ], proj4string(coords))
-        country.coords$color <- NA
-        map <- addPolygons(map, stroke = FALSE, smoothFactor = 0.2,
-                       fillOpacity = opacity, fillColor = ~.pal(country.coords$color),
-                       data = country.coords)
-    }
+    # # add an outline of a country
+    # country <- switch(map.type, aus_postcodes = "Australia",
+    #                   us_postcodes = "United States of America",
+    #                   uk_postcodes = "United Kingdom")
+    # country.coords <- spTransform(map.coordinates.50[map.coordinates.50$name == country, ], proj4string(coords))
+    # country.coords$color <- NA
+    # map <- addPolygons(map, stroke = FALSE, smoothFactor = 0.2,
+    #                fillOpacity = opacity, fillColor = ~.pal(country.coords$color),
+    #                data = country.coords)
 
     if (n.categories == 1)
     {

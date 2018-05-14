@@ -12,7 +12,7 @@ CountriesOrContinents(type)
 }
 \description{
 Returns the list of unique geographic names that can be used when creating a
-WorldMap.
+world map.
 }
 \examples{
 CountriesOrContinents("country")
