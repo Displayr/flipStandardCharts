@@ -300,10 +300,10 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.sh
     # Creating the map
     map <- leaflet(coords)
 
-    # Attribution requires background, whic may be transparent
+    # Attribution requires background, which may be transparent
     attribution <- switch(map.type, aus_postcodes = "Based on ABS data",
                             uk_postcodes = "<a href='www.opendoorlogistics.com'>opendoorlogistics.com</a>",
-                            NULL)
+                            "")
     map <- addTiles(map, attribution = attribution, options = tileOptions(opacity = as.numeric(background)))
 
     opacity <- 1

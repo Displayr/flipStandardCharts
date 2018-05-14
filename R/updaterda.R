@@ -274,6 +274,7 @@
 # unzip(f, exdir = tempdir())
 # us.postcodes <- readOGR(tempdir(), "cb_2016_us_zcta510_500k")
 # colnames(us.postcodes@data)[3] <- "name"
+# # Simplify polygons to reduce size
 # us.postcodes <- ms_simplify(us.postcodes, keep = 0.02, keep_shapes = TRUE)
 #
 # # UK postcodes
@@ -283,7 +284,11 @@
 #               f <- tempfile())
 # unzip(f, exdir = tempdir())
 # uk.postcodes <- readOGR(paste0(tempdir(), "\\Distribution"), "Districts")
-#
+# # Simplify polygons to reduce size - error if this is done in one go so 3 chunks
+# uk.compress <- ms_simplify(uk.postcodes[1:700, ], keep_shapes = TRUE)
+# uk.compress2 <- ms_simplify(uk.postcodes[701:750, ], keep_shapes = TRUE)
+# uk.compress3 <- ms_simplify(uk.postcodes[751:2880, ], keep_shapes = TRUE)
+# uk.postcodes <- rbind(uk.compress, uk.compress2, uk.compress3)
 #
 # # Australia post codes
 # # http://www.abs.gov.au/AUSSTATS/abs@.nsf/DetailsPage/1270.0.55.003July%202016?OpenDocument
@@ -293,7 +298,6 @@
 # unzip(f, exdir = tempdir())
 # australia.postcodes <- readOGR(tempdir(), "POA_2016_AUST")
 # colnames(australia.postcodes@data)[2] <- "name"
-# # Simplify polygons to reduce size
 # australia.postcodes <- ms_simplify(australia.postcodes, keep = 0.02, keep_shapes = TRUE)
 #
 # # Save everything into sysdata.rda
