@@ -25,8 +25,8 @@ SmallMultiples(x, chart.type = "Area", nrows = 2, share.axes = TRUE,
   subtitle.font.color = global.font.color, subtitle.font.size = 12,
   footer = "", footer.font.family = global.font.family,
   footer.font.color = global.font.color, footer.font.size = 8,
-  footer.wrap = TRUE, footer.wrap.nchar = 100, mapping.package = "plotly",
-  ...)
+  footer.wrap = TRUE, footer.wrap.nchar = 100, fit.line.colors = NULL,
+  mapping.package = "plotly", ...)
 }
 \arguments{
 \item{x}{Input data as a matrix or dataframe}
@@ -157,6 +157,10 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{footer.wrap}{Logical; whether the footer text should be wrapped.}
 
 \item{footer.wrap.nchar}{Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.}
+
+\item{fit.line.colors}{Character; a vector containing one or more named
+colors from grDevices OR one or more specified hex value colors OR a single
+named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 
 \item{mapping.package}{Not used.}
 
