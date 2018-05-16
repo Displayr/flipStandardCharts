@@ -13,7 +13,7 @@ GeographicMap(x, country, high.resolution = FALSE, treat.NA.as.0 = FALSE,
   legend.font.color = global.font.color, legend.font.size = 10,
   values.hovertext.format = "", values.bounds.minimum = NULL,
   values.bounds.maximum = NULL, mapping.package = "leaflet",
-  background = FALSE)
+  background = FALSE, zip.country = "Automatic")
 }
 \arguments{
 \item{x}{A matrix, two-dimensional array, table or vector, containing the
@@ -34,7 +34,7 @@ geographical entities without data as having a zero value.}
 \item{colors}{A vector of two colors, which are used as endpoints in
 interpolating colors.}
 
-\item{ocean.color}{The color used for oceans, used only by \code{plotly}.}
+\item{ocean.color}{The color used for oceans, used only by \code{"plotly"}.}
 
 \item{color.NA}{The color used to represent missing values. Not used when
 \code{treat.NA.as.0}, is set to missing.}
@@ -70,6 +70,9 @@ maps) or \code{"plotly"} (faster).}
 
 \item{background}{If \code{"mapping.package"} is \code{"leaflet"}, add a background
 tile from opensteetmaps.}
+
+\item{zip.country}{One of \code{"Automatic"}, \code{"USA"}, \code{"UK"} or \code{"Australia."}
+If \code{"Automatic"} an attempt is made to infer the country from the data.}
 }
 \value{
 an HTML widget for \code{"leaflet"} or a \code{"plotly"} object.

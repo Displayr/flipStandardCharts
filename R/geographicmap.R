@@ -16,7 +16,7 @@
 #'   geographical entities without data as having a zero value.
 #' @param colors A vector of two colors, which are used as endpoints in
 #'   interpolating colors.
-#' @param ocean.color The color used for oceans, used only by \code{plotly}.
+#' @param ocean.color The color used for oceans, used only by \code{"plotly"}.
 #' @param color.NA The color used to represent missing values. Not used when
 #'   \code{treat.NA.as.0}, is set to missing.
 #' @param global.font.family Character; font family for all occurrences of any
@@ -35,6 +35,8 @@
 #' maps) or \code{"plotly"} (faster).
 #' @param background If \code{"mapping.package"} is \code{"leaflet"}, add a background
 #' tile from opensteetmaps.
+#' @param zip.country One of \code{"Automatic"}, \code{"USA"}, \code{"UK"} or \code{"Australia."}
+#' If \code{"Automatic"} an attempt is made to infer the country from the data.
 #' @param legend.show Logical; Whether to display a legend with the color scale.
 #' @param legend.font.family Font family of legend. Only used with \code{plotly} object.
 #' @param legend.font.color Font color of legend. Only used with \code{plotly} object.
@@ -63,7 +65,8 @@ GeographicMap <- function(x,
                           values.bounds.minimum = NULL,
                           values.bounds.maximum = NULL,
                           mapping.package = "leaflet",
-                          background = FALSE)
+                          background = FALSE,
+                          zip.country = "Automatic")
 {
     requireNamespace("sp")
     values.bounds.minimum <- charToNumeric(values.bounds.minimum)
@@ -80,7 +83,8 @@ GeographicMap <- function(x,
     else if (any(names %in% tolower(CountriesOrContinents("country"))) || all(nchar(rownames(table)) == 3))
         map.type <- "countries"
     else
-        map.type <- postcodesOrStates(names)
+        map.type <- postcodesOrStates(names, zip.country)
+    rownames(table) <- tidyPostcodes(names, map.type)
 
     # Get the coordinate and name data
     if (map.type == "countries" || map.type == "continents")

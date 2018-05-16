@@ -184,12 +184,15 @@ cleanMapInput <- function(table)
 }
 
 
-postcodesOrStates <- function(names) {
+postcodesOrStates <- function(names, zip.country) {
 
-    if (suppressWarnings(all(!is.na(as.numeric(names)))) && all(sapply(as.character(names), nchar) == 4))
+    if (zip.country != "Automatic")
+        return(switch(zip.country, Australia = "aus_postocdes", USA = "us_postcodes", UK = "uk_postcodes"))
+
+    if (suppressWarnings(all(!is.na(as.numeric(names)))) && max(sapply(as.character(names), nchar)) == 4)
         return("aus_postcodes")
 
-    if (suppressWarnings(all(!is.na(as.numeric(names)))) && all(sapply(as.character(names), nchar) == 5))
+    if (suppressWarnings(all(!is.na(as.numeric(names)))) && max(sapply(as.character(names), nchar)) == 5)
         return("us_postcodes")
 
     # Check if first part (before any space) <= 4 chars, starts with a letter and contains a digit.
@@ -199,5 +202,20 @@ postcodesOrStates <- function(names) {
         return("uk_postcodes")
 
     return("states")
+}
+
+# Adds leading zeros to standardize length of postcodes
+tidyPostcodes <- function(names, map.type) {
+    if (map.type == "aus_postcodes")
+        return(sapply(names, padWithZeros, 4))
+
+    if (map.type == "us_postcodes")
+        return(sapply(names, padWithZeros, 5))
+
+    return(names)
+}
+
+padWithZeros <- function(s, len) {
+    return(paste0(paste0(rep("0", max(len - nchar(s), 0)), collapse = ""), s))
 }
 
