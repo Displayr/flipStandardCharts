@@ -84,7 +84,8 @@ GeographicMap <- function(x,
         map.type <- "countries"
     else
         map.type <- postcodesOrStates(names, zip.country)
-    rownames(table) <- tidyPostcodes(names, map.type)
+    if (grepl("postcode", map.type, fixed = TRUE))
+        rownames(table) <- tidyPostcodes(names, map.type)
 
     # Get the coordinate and name data
     if (map.type == "countries" || map.type == "continents")
