@@ -186,6 +186,9 @@ cleanMapInput <- function(table)
 
 postcodesOrStates <- function(names, zip.country) {
 
+    if (is.null(zip.country) || zip.country == "")
+        zip.country <- "Automatic"
+
     if (zip.country != "Automatic")
         return(switch(zip.country, Australia = "aus_postocdes", USA = "us_postcodes", UK = "uk_postcodes"))
 
