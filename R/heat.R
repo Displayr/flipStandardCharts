@@ -138,6 +138,9 @@ Heat <- function(x,
 
     mat <- x
     ErrorIfNotEnoughData(mat)
+    if (nrow(mat) > 1000)
+        stop("Heatmap cannot be plotted with more than 1000 rows.")
+
     if (!is.matrix(mat)) {
         rownames <- names(mat)
         mat <- matrix(mat) # create single column matrix from vector
