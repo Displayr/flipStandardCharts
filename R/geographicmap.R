@@ -308,7 +308,7 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.sh
     # Attribution requires background, which may be transparent
     attribution <- switch(map.type, aus_postcodes = "Based on ABS data",
                             uk_postcodes = "<a href='www.opendoorlogistics.com'>opendoorlogistics.com</a>",
-                            "")
+                           "")
     map <- addTiles(map, attribution = attribution, options = tileOptions(opacity = as.numeric(background)))
 
     opacity <- 1
@@ -333,15 +333,17 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.sh
                                           dashArray = "",
                                           fillOpacity = 0.7,
                                           bringToFront = TRUE)
-    # # add an outline of a country
-    # country <- switch(map.type, aus_postcodes = "Australia",
-    #                   us_postcodes = "United States of America",
-    #                   uk_postcodes = "United Kingdom")
-    # country.coords <- spTransform(map.coordinates.50[map.coordinates.50$name == country, ], proj4string(coords))
-    # country.coords$color <- NA
-    # map <- addPolygons(map, stroke = FALSE, smoothFactor = 0.2,
-    #                fillOpacity = opacity, fillColor = ~.pal(country.coords$color),
-    #                data = country.coords)
+
+    # Add an outline of USA to fill gaps in zip code areas
+    if (map.type == "us_postcodes")
+    {
+        country <- "United States of America"
+        country.coords <- spTransform(map.coordinates.50[map.coordinates.50$name == country, ], proj4string(coords))
+        country.coords$color <- NA
+        map <- addPolygons(map, stroke = FALSE, smoothFactor = 0.2,
+                            fillOpacity = opacity, fillColor = ~.pal(country.coords$color),
+                            data = country.coords)
+    }
 
     if (n.categories == 1)
     {
