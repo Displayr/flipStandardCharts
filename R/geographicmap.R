@@ -339,7 +339,7 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.sh
     {
         country <- "United States of America"
         country.coords <- spTransform(map.coordinates.50[map.coordinates.50$name == country, ], proj4string(coords))
-        country.coords$color <- NA
+        country.coords$color <- ifelse(treat.NA.as.0, 0, NA)
         map <- addPolygons(map, stroke = FALSE, smoothFactor = 0.2,
                             fillOpacity = opacity, fillColor = ~.pal(country.coords$color),
                             data = country.coords)
