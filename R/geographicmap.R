@@ -225,7 +225,7 @@ GeographicMap <- function(x,
 
     # Creating a variable for use in scaling the legend.
     min.value <- min(table, na.rm = TRUE)
-    if (treat.NA.as.0 && nrow(table) < nrow(coords))
+    if (treat.NA.as.0)
         min.value <- min(0, min.value)
 
     coords$table.max <- if(NCOL(table) != 1 && mapping.package != "plotly")
@@ -330,7 +330,6 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.sh
                          na.label = ifelse(treat.NA.as.0, "0", "NA"))
     }
     highlight.options <- highlightOptions(weight = 5, color = "#666",
-                                          dashArray = "",
                                           fillOpacity = 0.7,
                                           bringToFront = TRUE)
 

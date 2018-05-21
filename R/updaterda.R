@@ -275,7 +275,7 @@
 # us.postcodes <- readOGR(tempdir(), "cb_2016_us_zcta510_500k")
 # colnames(us.postcodes@data)[3] <- "name"
 # # Simplify polygons to reduce size
-# us.postcodes <- ms_simplify(us.postcodes, keep = 0.02, keep_shapes = TRUE)
+# us.postcodes <- ms_simplify(us.postcodes, keep = 0.01, keep_shapes = TRUE)
 #
 # # UK postcodes
 # # Note terms and conditions - http://www.opendoorlogistics.com/downloads/
