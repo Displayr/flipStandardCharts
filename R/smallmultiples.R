@@ -96,11 +96,15 @@ SmallMultiples <- function(x,
     if (is.null(fit.line.colors))
         fit.line.colors <- colors
 
+    npanels <- ncol(x)
+    if (is.null(npanels) || npanels <= 1)
+        stop("Small Multiples can only be used for data containing multiple series.")
+
     # Data manipulation
     if (!is.null(x.order))
     {
         if (!is.numeric(x.order))
-            x.order <- as.numeric(TextAsVector(x.order))
+            x.order <- suppressWarnings(as.numeric(TextAsVector(x.order)))
         if (any(is.na(x.order)) || any(x.order > ncol(x)))
             stop("'Order' should be a comma separated list of indices (between 1 and ", ncol(x), ")")
         if (is.numeric(x.order) && length(x.order) > 0)
@@ -147,9 +151,6 @@ SmallMultiples <- function(x,
     if (is.null(margin.right) || is.na(margin.right))
         margin.right <- 20
 
-    npanels <- ncol(x)
-    if (is.null(npanels) || npanels <= 1)
-        stop("Small Multiples can only be used for data containing multiple series.")
     ncols <- ceiling(npanels/nrows)
     h.offset <- 0
     w.offset <- 0
