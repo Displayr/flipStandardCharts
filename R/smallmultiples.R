@@ -65,6 +65,7 @@ SmallMultiples <- function(x,
                            data.label.show = FALSE,
                            grid.show = TRUE,
                            x.tick.show = TRUE,
+                           x.tick.angle = NULL,
                            legend.show = FALSE,
                            margin.left = NULL,
                            margin.right = NULL,
@@ -96,7 +97,7 @@ SmallMultiples <- function(x,
         if (!is.numeric(x.order))
             x.order <- as.numeric(TextAsVector(x.order))
         if (any(is.na(x.order)) || any(x.order > ncol(x)))
-            stop("x.order should be a comma separated list of indices (between 1 and ", ncol(x), ")")
+            stop("'Order' should be a comma separated list of indices (between 1 and ", ncol(x), ")")
         if (is.numeric(x.order) && length(x.order) > 0)
             x <- x[, x.order]
     }
@@ -121,6 +122,10 @@ SmallMultiples <- function(x,
     if (share.axes && chart.type == "GeographicMap")
         values.bounds.minimum <- min(values.bounds.minimum, values.min)
 
+    if (is.null(x.tick.angle) && chart.type %in% c("Column", "Area", "Line") &&
+        max(nchar(rownames(x))) > 5)
+        x.tick.angle <- 45
+
     average.series <- NULL
     if (chart.type != "GeographicMap" && average.show)
         average.series <- apply(x, 1, mean)
@@ -138,8 +143,8 @@ SmallMultiples <- function(x,
         margin.right <- 20
 
     npanels <- ncol(x)
-    if (npanels <= 1)
-        stop("Multiple series are required for Small Multiples.")
+    if (is.null(npanels) || npanels <= 1)
+        stop("Small Multiples can only be used for data containing multiple series.")
     ncols <- ceiling(npanels/nrows)
     h.offset <- 0
     w.offset <- 0
@@ -216,7 +221,7 @@ SmallMultiples <- function(x,
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
                                                      grid.show = grid.show, data.label.show = data.label.show,
-                                                     x.tick.show = x.tick.show,
+                                                     x.tick.show = x.tick.show, x.tick.angle = x.tick.angle,
                                                      y.bounds.maximum = y.bounds.maximum,
                                                      y.bounds.minimum = y.bounds.minimum,
                                                      x.bounds.maximum = x.bounds.maximum,
@@ -232,7 +237,7 @@ SmallMultiples <- function(x,
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
                                                      grid.show = grid.show, data.label.show = data.label.show,
-                                                     x.tick.show = x.tick.show,
+                                                     x.tick.show = x.tick.show, x.tick.angle = x.tick.angle,
                                                      y.bounds.maximum = y.bounds.maximum,
                                                      y.bounds.minimum = y.bounds.minimum,
                                                      x.bounds.maximum = x.bounds.maximum,

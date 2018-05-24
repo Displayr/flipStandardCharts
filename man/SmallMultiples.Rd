@@ -19,9 +19,9 @@ SmallMultiples(x, chart.type = "Area", nrows = 2, share.axes = TRUE,
   paneltitle.wrap = TRUE, paneltitle.wrap.nchar = 20, x.title = "",
   x.title.font.size = 12, y.title = "", y.title.font.size = 12,
   data.label.show = FALSE, grid.show = TRUE, x.tick.show = TRUE,
-  legend.show = FALSE, margin.left = NULL, margin.right = NULL,
-  margin.top = NULL, margin.bottom = NULL, subtitle = "",
-  subtitle.font.family = global.font.family,
+  x.tick.angle = NULL, legend.show = FALSE, margin.left = NULL,
+  margin.right = NULL, margin.top = NULL, margin.bottom = NULL,
+  subtitle = "", subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color, subtitle.font.size = 12,
   footer = "", footer.font.family = global.font.family,
   footer.font.color = global.font.color, footer.font.size = 8,
@@ -119,6 +119,9 @@ to turn off set to "FALSE".}
 \item{grid.show}{Logical; whether to show grid lines.}
 
 \item{x.tick.show}{Whether to display the x-axis tick labels}
+
+\item{x.tick.angle}{x-axis tick label angle in degrees.
+90 = vertical; 0 = horizontal}
 
 \item{legend.show}{Ignored except for with \code{GeographicMap}.}
 
