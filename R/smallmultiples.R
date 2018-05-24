@@ -93,6 +93,8 @@ SmallMultiples <- function(x,
     chart.type <- gsub(" ", "", chart.type)
     chart <- get0(chart.type, mode = "function")
     eval(colors)
+    if (is.null(fit.line.colors))
+        fit.line.colors <- colors
 
     # Data manipulation
     if (!is.null(x.order))
