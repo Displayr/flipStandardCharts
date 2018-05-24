@@ -28,6 +28,9 @@
 #' @inherit GeographicMap
 #' @importFrom plotly subplot
 #' @export
+#' @examples
+#' x <- matrix(1:21, 7, 3, dimnames = list(letters[1:7], LETTERS[1:3]))
+#' SmallMultiples(x, "Column", colors=c("red","green","blue"))
 SmallMultiples <- function(x,
                            chart.type = "Area",
                            nrows = 2,
@@ -124,7 +127,7 @@ SmallMultiples <- function(x,
 
     if (is.null(x.tick.angle) && chart.type %in% c("Column", "Area", "Line") &&
         max(nchar(rownames(x))) > 5)
-        x.tick.angle <- 45
+        x.tick.angle <- 90
 
     average.series <- NULL
     if (chart.type != "GeographicMap" && average.show)

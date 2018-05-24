@@ -177,3 +177,7 @@ A small multiple (sometimes called trellis chart, lattice chart,
    grid chart, or panel chart) is a series of similar graphs or charts using
    the same scale and axes, allowing them to be easily compared.
 }
+\examples{
+x <- matrix(1:21, 7, 3, dimnames = list(letters[1:7], LETTERS[1:3]))
+SmallMultiples(x, "Column", colors=c("red","green","blue"))
+}
