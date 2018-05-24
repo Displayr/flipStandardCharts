@@ -84,7 +84,7 @@ SmallMultiples <- function(x,
                            footer.font.size = 8,
                            footer.wrap = TRUE,
                            footer.wrap.nchar = 100,
-                           fit.line.colors = NULL, # discarded
+                           fit.line.colors = NULL,
                            mapping.package = "plotly", # discarded
                            ...)
 {
@@ -126,7 +126,7 @@ SmallMultiples <- function(x,
         values.bounds.minimum <- min(values.bounds.minimum, values.min)
 
     if (is.null(x.tick.angle) && chart.type %in% c("Column", "Area", "Line") &&
-        max(nchar(rownames(x))) > 5)
+        max(nchar(rownames(x))) > 3)
         x.tick.angle <- 90
 
     average.series <- NULL
@@ -154,11 +154,11 @@ SmallMultiples <- function(x,
     if (chart.type != "Radar")
     {
         w.offset <- c(pad.left, rep(0, max(0, ncols - 2)), pad.right)[1:ncols]
-        if (any(w.offset > 1/ncols))
+        if (any(w.offset >= 1/ncols))
             stop("'pad.left' and 'pad.bottom' should be between 0 and 1/ncols (", round(1/ncols, 4), ")")
     }
     h.offset <- c(pad.top, rep(0, max(0, nrows - 2)), pad.bottom)[1:nrows]
-    if (any(h.offset > 1/nrows))
+    if (any(h.offset >= 1/nrows))
         stop("'pad.top' and 'pad.bottom' should be between 0 and 1/nrows (", round(1/nrows, 4), ")")
 
     # Position titles for each panel
@@ -220,7 +220,7 @@ SmallMultiples <- function(x,
                                                      colors = colors[i],
                                                      average.series = average.series,
                                                      average.color = average.color,
-                                                     fit.line.colors = colors[i],
+                                                     fit.line.colors = fit.line.colors[i],
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
                                                      grid.show = grid.show, data.label.show = data.label.show,
@@ -236,7 +236,7 @@ SmallMultiples <- function(x,
     else
         plot.list <- lapply(1:npanels, function(i){chart(.bind_mean(x[,i, drop = FALSE], average.series),
                                                      colors = c(colors[i], average.color),
-                                                     fit.line.colors = c(colors[i], average.color),
+                                                     fit.line.colors = c(fit.line.colors[i], average.color),
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
                                                      grid.show = grid.show, data.label.show = data.label.show,
