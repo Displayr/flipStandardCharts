@@ -35,7 +35,7 @@
 #' maps) or \code{"plotly"} (faster).
 #' @param background If \code{"mapping.package"} is \code{"leaflet"}, add a background
 #' tile from opensteetmaps.
-#' @param zip.country One of \code{"Automatic"}, \code{"USA"}, \code{"UK"} or \code{"Australia."}
+#' @param zip.country One of \code{"Automatic"}, \code{"USA"}, \code{"UK"} or \code{"Australia"}.
 #' If \code{"Automatic"} an attempt is made to infer the country from the data.
 #' @param legend.show Logical; Whether to display a legend with the color scale.
 #' @param legend.font.family Font family of legend. Only used with \code{plotly} object.

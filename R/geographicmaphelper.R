@@ -190,7 +190,7 @@ postcodesOrStates <- function(names, zip.country) {
         zip.country <- "Automatic"
 
     if (zip.country != "Automatic")
-        return(switch(zip.country, Australia = "aus_postocdes", USA = "us_postcodes", UK = "uk_postcodes"))
+        return(switch(zip.country, Australia = "aus_postcodes", USA = "us_postcodes", UK = "uk_postcodes"))
 
     if (suppressWarnings(all(!is.na(as.numeric(names)))) && max(sapply(as.character(names), nchar)) == 4)
         return("aus_postcodes")
