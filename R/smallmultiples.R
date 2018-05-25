@@ -96,8 +96,7 @@ SmallMultiples <- function(x,
     if (is.null(fit.line.colors))
         fit.line.colors <- colors
 
-    npanels <- ncol(x)
-    if (is.null(npanels) || npanels <= 1)
+    if (is.null(ncol(x)) || ncol(x) <= 1)
         stop("Small Multiples can only be used for data containing multiple series.")
 
     # Data manipulation
@@ -151,6 +150,7 @@ SmallMultiples <- function(x,
     if (is.null(margin.right) || is.na(margin.right))
         margin.right <- 20
 
+    npanels <- ncol(x)
     ncols <- ceiling(npanels/nrows)
     h.offset <- 0
     w.offset <- 0
