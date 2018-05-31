@@ -109,7 +109,7 @@ SmallMultiples <- function(x,
         if (is.numeric(x.order) && length(x.order) > 0)
             x <- x[, x.order]
     }
-    values.max = max(unlist(x), na.rm = TRUE)
+    values.max = max(0, unlist(x), na.rm = TRUE)
     values.min = min(0, unlist(x), na.rm = TRUE)
     values.bounds.minimum <- charToNumeric(values.bounds.minimum)
     values.bounds.maximum <- charToNumeric(values.bounds.maximum)
@@ -131,7 +131,7 @@ SmallMultiples <- function(x,
         values.bounds.minimum <- min(values.bounds.minimum, values.min)
 
     if (is.null(x.tick.angle) && chart.type %in% c("Column", "Area", "Line") &&
-        max(nchar(rownames(x))) > 3)
+        max(nchar(rownames(x)), 0) > 3)
         x.tick.angle <- 90
 
     average.series <- NULL
