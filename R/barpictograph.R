@@ -93,7 +93,12 @@ BarPictograph <- function(x,
 
     # Set default values
     if (is.na(scale))
+    {
         scale <- 10^(floor(log10(min(x[x != 0]))))
+        # ensure we don't get so many icons that we crash
+        while (max(x)/scale > 500)
+            scale <- scale * 10
+    }
     if (is.na(total.icons))
         total.icons <- ceiling(max(x)/scale)
     raw.x <- x
