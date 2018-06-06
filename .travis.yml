@@ -46,6 +46,6 @@ notifications:
 # Warning notifications and downstream package builds are implemented
 # by calling R functions so they can be updated in this package without
 # committing a new change to .travis.yml in each repository
-after_success:
+after_success: 
   - Rscript -e "require(flipDevTools); NotifyWarnings(); TriggerDownstreamBuilds()"
   - travis_wait Rscript -e "flipDevTools::CheckCoverage()"
