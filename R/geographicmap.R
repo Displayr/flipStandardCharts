@@ -80,6 +80,8 @@ GeographicMap <- function(x,
         map.type <- "regions"
     else if (any(names %in% c("africa", "asia", "europe", "north america", "oceania", "south america")))
         map.type <- "continents"
+    else if (any(names %in% tolower(australia.areas$name)))
+        map.type <- "aus_areas"
     else if (any(names %in% tolower(CountriesOrContinents("country"))) || all(nchar(rownames(table)) == 3))
         map.type <- "countries"
     else
@@ -148,7 +150,13 @@ GeographicMap <- function(x,
         coords <- uk.postcodes
         remove.regions <- name.map <- NULL
     }
-
+    else if (map.type == "aus_areas")
+    {
+        coords <- australia.areas
+        remove.regions <- name.map <- NULL
+    }
+    else
+        stop("Unrecognized map.type")
 
     if (treat.NA.as.0)
         table[is.na(table)] <- 0
@@ -307,6 +315,7 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.sh
 
     # Attribution requires background, which may be transparent
     attribution <- switch(map.type, aus_postcodes = "Based on ABS data",
+                            aus_areas = "Based on ABS data",
                             uk_postcodes = "<a href='www.opendoorlogistics.com'>opendoorlogistics.com</a>",
                            "")
     map <- addTiles(map, attribution = attribution, options = tileOptions(opacity = as.numeric(background)))

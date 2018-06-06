@@ -300,6 +300,15 @@
 # colnames(australia.postcodes@data)[2] <- "name"
 # australia.postcodes <- ms_simplify(australia.postcodes, keep = 0.02, keep_shapes = TRUE)
 #
+# # Australia SA4 areas
+# url <- "http://www.abs.gov.au/AUSSTATS/subscriber.nsf/log?openagent&1270055001_sa4_2016_aust_shape.zip&1270.0.55.001&Data%20Cubes&C65BC89E549D1CA3CA257FED0013E074&0&July%202016&12.07.2016&Latest"
+# download.file(file.path(url),
+#               f <- tempfile(),
+#               mode = "wb")
+# unzip(f, exdir = tempdir())
+# australia.areas <- readOGR(tempdir(), "SA4_2016_AUST")
+# colnames(australia.areas@data)[2] <- "name"
+#
 # # Save everything into sysdata.rda
 # use_data(missing110,
 #          admin1.name.map,
@@ -313,4 +322,5 @@
 #          us.postcodes,
 #          uk.postcodes,
 #          australia.postcodes,
+#          australia.areas,
 #          internal = TRUE, overwrite = TRUE)
