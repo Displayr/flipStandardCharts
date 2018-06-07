@@ -237,7 +237,7 @@ GeographicMap <- function(x,
         min.value <- min(0, min.value)
 
     coords$table.max <- if(NCOL(table) != 1 && mapping.package != "plotly")
-        apply(table, 1, max, na.rm = TRUE)[country.lookup]
+        apply(table, 1, function(x) ifelse(!all(is.na(x)), max(x, na.rm = TRUE), NA))[country.lookup]
     else
         table[, 1][country.lookup]
     if (treat.NA.as.0)

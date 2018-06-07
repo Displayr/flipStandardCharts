@@ -180,6 +180,8 @@ cleanMapInput <- function(table)
     if (!is.null(statistic))
         attr(table, "statistic") <- statistic
 
+    table[!is.finite(table)] <- NA       # convert NaN, inf etc to NA
+
     return(table)
 }
 
