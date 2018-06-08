@@ -12,6 +12,8 @@
 #' @param high.resolution Specifically request a high resolution map. Otherwise
 #' the resolution of the map is chosen automatically based on the resolution required
 #' for the requested countries or regions.
+#' @param show.missing.regions Logical; Whether to plot regions not included in
+#'    \code{x} with values of \code{NA}. Used only by \code{"leaflet"}.
 #' @param treat.NA.as.0 Plots any \code{NA} values in the data and any
 #'   geographical entities without data as having a zero value.
 #' @param colors A vector of two colors, which are used as endpoints in
@@ -50,6 +52,7 @@
 GeographicMap <- function(x,
                           country,
                           high.resolution = FALSE,
+                          show.missing.regions = TRUE,
                           treat.NA.as.0 = FALSE,
                           colors = c("#CCF3FF", "#23B0DB"),
                           ocean.color = "#DDDDDD",
@@ -153,7 +156,8 @@ GeographicMap <- function(x,
     else if (map.type == "aus_areas")
     {
         coords <- australia.areas
-        remove.regions <- name.map <- NULL
+        remove.regions <- NULL
+        name.map <- australiaAreasNameMap()
     }
     else
         stop("Unrecognized map.type")
@@ -247,6 +251,10 @@ GeographicMap <- function(x,
     if (min.value < min.in.table.max) #Replacing the minimum with the global minimum.
         coords$table.max[match(min.in.table.max, coords$table.max)] <- min.value
     max.range <- max(coords$table.max, na.rm = TRUE)
+
+    # Remove regions not in input data
+    if (!show.missing.regions)
+        coords <- coords[!is.na(country.lookup), ]
 
     # Decide formatting for hovertext
     if (values.hovertext.format == "" && grepl("%", statistic, fixed = TRUE))

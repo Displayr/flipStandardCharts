@@ -4,7 +4,8 @@
 \alias{GeographicMap}
 \title{Plot a Geographic Map}
 \usage{
-GeographicMap(x, country, high.resolution = FALSE, treat.NA.as.0 = FALSE,
+GeographicMap(x, country, high.resolution = FALSE,
+  show.missing.regions = TRUE, treat.NA.as.0 = FALSE,
   colors = c("#CCF3FF", "#23B0DB"), ocean.color = "#DDDDDD",
   color.NA = "#808080", global.font.family = "Arial",
   global.font.color = rgb(44, 44, 44, maxColorValue = 255),
@@ -27,6 +28,9 @@ to be plotted.}
 \item{high.resolution}{Specifically request a high resolution map. Otherwise
 the resolution of the map is chosen automatically based on the resolution required
 for the requested countries or regions.}
+
+\item{show.missing.regions}{Logical; Whether to plot regions not included in
+\code{x} with values of \code{NA}. Used only by \code{"leaflet"}.}
 
 \item{treat.NA.as.0}{Plots any \code{NA} values in the data and any
 geographical entities without data as having a zero value.}

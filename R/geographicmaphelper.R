@@ -224,3 +224,12 @@ padWithZeros <- function(s, len) {
     return(paste0(paste0(rep("0", max(len - nchar(s), 0)), collapse = ""), s))
 }
 
+australiaAreasNameMap <- function() {
+    nms <- australia.areas$name
+    mat <- cbind(gsub(" ", "", nms, fixed = TRUE),
+                 gsub("-", ":", nms, fixed = TRUE),
+                 gsub(" - ", ":", nms, fixed = TRUE))
+    map <- split(mat, 1:nrow(mat))
+    names(map) <- nms
+    map
+}
