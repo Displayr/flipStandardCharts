@@ -211,7 +211,7 @@ GeographicMap <- function(x,
     if (any(incorrect.names))
     {
         msg <- paste("Unmatched region names:", paste(table.names[incorrect.names], collapse = ", "))
-        stop(msg)
+        warning(msg)
     }
 
     # Splicing data onto coordinate data.frame.
