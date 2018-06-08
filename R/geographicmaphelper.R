@@ -231,5 +231,17 @@ australiaAreasNameMap <- function() {
                  gsub(" - ", ":", nms, fixed = TRUE))
     map <- split(mat, 1:nrow(mat))
     names(map) <- nms
+    map$`Coffs Harbour - Grafton` <- c(map$`Coffs Harbour - Grafton`, "Coffs Harbor", "Grafton")
+    map$`Hunter Valley exc Newcastle` <- c(map$`Hunter Valley exc Newcastle`, "Hunter Valley")
+    map$`New England and North West` <- c(map$`New England and North West`, "New England")
+    map$`Newcastle and Lake Macquarie` <- c(map$`Newcastle and Lake Macquarie`, "Newcastle")
+    map$`Richmond - Tweed` <- c(map$`Richmond - Tweed`, "Richmond", "Tweed")
+    map$`Southern Highlands and Shoalhaven` <- c(map$`Southern Highlands and Shoalhaven`, "Southern Highlands", "Shoalhaven")
+    map$`Latrobe - Gippsland` <- c(map$`Latrobe - Gippsland`, "Latrobe", "Gippsland")
+    map$`Warrnambool and South West` <- c(map$`Warrnambool and South West`, "Warrnambool")
+    map$`Darling Downs - Maranoa` <- c(map$`Darling Downs - Maranoa`, "Darling Downs", "Maranoa")
+    map$`Logan - Beaudesert` <- c(map$`Logan - Beaudesert`, "Logan", "Beaudesert")
+    map$`Mackay - Isaac - Whitsunday` <- c(map$`Mackay - Isaac - Whitsunday`, "Mackay", "Isaac", "Whitsunday")
+    map$`Barossa - Yorke - Mid North` <- c(map$`Barossa - Yorke - Mid North`, "Barossa", "Yorke")
     map
 }

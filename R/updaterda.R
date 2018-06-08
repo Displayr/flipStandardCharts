@@ -308,7 +308,7 @@
 # unzip(f, exdir = tempdir())
 # australia.areas <- readOGR(tempdir(), "SA4_2016_AUST")
 # colnames(australia.areas@data)[2] <- "name"
-# australia.areas <- ms_simplify(australia.areas, keep = 0.01, keep_shapes = TRUE)
+# australia.areas <- ms_simplify(australia.areas, keep = 0.005, keep_shapes = TRUE)
 #
 # # Save everything into sysdata.rda
 # use_data(missing110,
