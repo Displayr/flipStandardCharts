@@ -83,7 +83,7 @@ GeographicMap <- function(x,
         map.type <- "regions"
     else if (any(names %in% c("africa", "asia", "europe", "north america", "oceania", "south america")))
         map.type <- "continents"
-    else if (any(names %in% tolower(australia.areas$name)))
+    else if (any(names %in% tolower(australia.areas$name)[1:87]))
         map.type <- "aus_areas"
     else if (any(names %in% tolower(CountriesOrContinents("country"))) || all(nchar(rownames(table)) == 3))
         map.type <- "countries"
