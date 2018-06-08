@@ -213,6 +213,8 @@ GeographicMap <- function(x,
         msg <- paste("Unmatched region names:", paste(table.names[incorrect.names], collapse = ", "))
         warning(msg)
     }
+    if (all(incorrect.names) && zip.country != "Automatic")
+        stop("No names in the data were matched to zip codes in your selected country.")
 
     # Splicing data onto coordinate data.frame.
     country.lookup <- match(coords.names, tolower(table.names))
