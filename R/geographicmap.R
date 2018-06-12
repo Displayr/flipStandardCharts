@@ -396,16 +396,16 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.sh
         map <- setView(map, -96, 37.8, zoom = 4)
 
     # Set the background color
-    map <- browsable(
-        tagList(list(
-            tags$head(
-                tags$style(
-                    paste0(".leaflet-container {background: ", ocean.color, ";}")
-                )
-            ),
-            map
-        ))
-    )
+    # map <- browsable(
+    #    tagList(list(
+    #        tags$head(
+    #            tags$style(
+    #                paste0(".leaflet-container {background: ", ocean.color, ";}")
+    #            )
+    #        ),
+    #        map
+    #    ))
+    # )
     map
 }
 
