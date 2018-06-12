@@ -190,16 +190,16 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
     ord <- order(tmp.dat$x)
     tmp.dat <- tmp.dat[ord,]
 
-    if (grepl("[friedman|super]", fit.type, ignore.case = TRUE))
+    if (grepl("(friedman|super)", fit.type, ignore.case = TRUE))
     {
         tmp.fit <- supsmu(tmp.dat$x, tmp.dat$y)
         return(list(x = x[ord], y = tmp.fit$y))
     }
-    else if (grepl("[smooth|loess]", fit.type, ignore.case = TRUE) && nrow(tmp.dat) > 7)
+    else if (grepl("(smooth|loess)", fit.type, ignore.case = TRUE) && nrow(tmp.dat) > 7)
         tmp.fit <- loess(y~x, data=tmp.dat)
-    else 
+    else
         tmp.fit <- lm(y~x, data=tmp.dat)
-    
+
     x.fit <- if (tmp.is.factor) tmp.dat$x
              else seq(from = min(tmp.dat$x), to = max(tmp.dat$x), length = 100)
     if (!tmp.is.factor && max(x.fit) < max(tmp.dat$x))
