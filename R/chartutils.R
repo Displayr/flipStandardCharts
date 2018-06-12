@@ -179,7 +179,7 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
     tmp.is.factor <- axis.type != "numeric"
     x0 <- if (tmp.is.factor) suppressWarnings(AsNumeric(x, binary = FALSE))
           else as.numeric(x)
-    tmp.dat <- data.frame(xorig=x, x=x0, y=y)
+    tmp.dat <- data.frame(xorig = x, x = x0, y = y)
     if (ignore.last)
         tmp.dat <- tmp.dat[-which.max(tmp.dat$x),]
     if (nrow(tmp.dat) < 2)
@@ -190,9 +190,16 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
     ord <- order(tmp.dat$x)
     tmp.dat <- tmp.dat[ord,]
 
-    tmp.fit <- if (fit.type == "Smooth" && nrow(tmp.dat) > 7) loess(y~I(as.numeric(x)), data=tmp.dat)
-               else lm(y~x, data=tmp.dat)
-
+    if (grepl("[friedman|super]", fit.type, ignore.case = TRUE))
+    {
+        tmp.fit <- supsmu(tmp.dat$x, tmp.dat$y)
+        return(list(x = x[ord], y = tmp.fit$y))
+    }
+    else if (grepl("[smooth|loess]", fit.type, ignore.case = TRUE) && nrow(tmp.dat) > 7)
+        tmp.fit <- loess(y~x, data=tmp.dat)
+    else 
+        tmp.fit <- lm(y~x, data=tmp.dat)
+    
     x.fit <- if (tmp.is.factor) tmp.dat$x
              else seq(from = min(tmp.dat$x), to = max(tmp.dat$x), length = 100)
     if (!tmp.is.factor && max(x.fit) < max(tmp.dat$x))
