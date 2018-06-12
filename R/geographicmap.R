@@ -18,7 +18,7 @@
 #'   geographical entities without data as having a zero value.
 #' @param colors A vector of two colors, which are used as endpoints in
 #'   interpolating colors.
-#' @param ocean.color The color used for oceans, used only by \code{"plotly"}.
+#' @param ocean.color The color used for oceans (or background).
 #' @param color.NA The color used to represent missing values. Not used when
 #'   \code{treat.NA.as.0}, is set to missing.
 #' @param global.font.family Character; font family for all occurrences of any
@@ -288,7 +288,7 @@ GeographicMap <- function(x,
         map <- leafletMap(coords, colors, values.bounds.minimum, values.bounds.maximum,
                    color.NA, legend.show, legend.title, mult, decimals, suffix,
                    values.hovertext.format, treat.NA.as.0, n.categories, categories,
-                   format.function, map.type, background)
+                   format.function, map.type, background, ocean.color)
 
     } else {        # mapping.package == "plotly"
 
@@ -312,9 +312,11 @@ GeographicMap <- function(x,
 #' @importFrom leaflet addLayersControl layersControlOptions setView addTiles tileOptions
 #' @importFrom sp proj4string spTransform
 #' @importFrom stats as.formula
+#' @importFrom htmltools browsable tagList tags
 leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.show,
                        legend.title, mult, decimals, suffix, values.hovertext.format,
-                       treat.NA.as.0, n.categories, categories, format.function, map.type, background)
+                       treat.NA.as.0, n.categories, categories, format.function, map.type,
+                       background, ocean.color)
 {
     max.values <- unique(coords$table.max[!is.na(coords$table.max)])
     if (length(max.values) == 1)
@@ -393,8 +395,18 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.sh
     if (map.type == "United States of America" || map.type == "regions")
         map <- setView(map, -96, 37.8, zoom = 4)
 
+    # Set the background color
+    # map <- browsable(
+    #    tagList(list(
+    #        tags$head(
+    #            tags$style(
+    #                paste0(".leaflet-container {background: ", ocean.color, ";}")
+    #            )
+    #        ),
+    #        map
+    #    ))
+    # )
     map
-
 }
 
 
