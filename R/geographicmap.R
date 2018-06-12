@@ -406,7 +406,7 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.sh
             map
         ))
     )
-
+    map
 }
 
 
