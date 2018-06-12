@@ -38,7 +38,7 @@ geographical entities without data as having a zero value.}
 \item{colors}{A vector of two colors, which are used as endpoints in
 interpolating colors.}
 
-\item{ocean.color}{The color used for oceans, used only by \code{"plotly"}.}
+\item{ocean.color}{The color used for oceans (or background).}
 
 \item{color.NA}{The color used to represent missing values. Not used when
 \code{treat.NA.as.0}, is set to missing.}

@@ -36,8 +36,8 @@ uk.post <- structure(c(0.0904847530182451, 0.978746091481298, 0.25075147789903,
                                                                                              "GU51", "G22", "BA2", "L25", "TQ6", "WD5", "E77", "EX22", "G14"
                        ))
 
-opts <- c('leaflet_nazero' = 'mapping.package = "leaflet", treat.NA.as.0 = TRUE, legend.show = FALSE, values.hovertext.format = ".3%"',
-          'plotly_nazero' = 'mapping.package = "plotly", treat.NA.as.0 = TRUE, legend.show = FALSE, values.hovertext.format = ".3%", background = TRUE',
+opts <- c('leaflet_nazero' = 'mapping.package = "leaflet", treat.NA.as.0 = TRUE, legend.show = FALSE, values.hovertext.format = ".3%", show.missing.regions = FALSE',
+          'plotly_nazero' = 'mapping.package = "plotly", treat.NA.as.0 = TRUE, legend.show = FALSE, values.hovertext.format = ".3%", background = TRUE, show.missing.regions = FALSE',
           'leaflet_colors' = 'mapping.package = "leaflet", color.NA = "#f4aa42", colors = c("#301f68", "#c11d3b"), ocean.color = "#abb280", legend.title = "SUPER", values.hovertext.format = ",.1f"',
           'plotly_colors' = 'mapping.package ="plotly", color.NA = "#f4aa42", colors = c("#301f68", "#c11d3b"), ocean.color = "#abb280", legend.title = "SUPER", values.hovertext.format = ",.1f"')
 
@@ -80,4 +80,8 @@ test_that ("Postcodes by country", {
     expect_error(sapply(c("US", "UK", "Australia"), ZipcodesInCountry), NA)
 })
 
+names(country.codes)[1] <- "XXX"
+test_that ("Postcodes by country", {
+    expect_warning(GeographicMap(country.codes), "Unmatched region names: XXX")
+})
 
