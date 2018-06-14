@@ -406,6 +406,9 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.sh
     #        map
     #    ))
     # )
+    js <- paste0("document.querySelector('.leaflet-container').style.backgroundColor = '",
+                 ocean.color, "'")
+    map <- onRender(map, js)
     map
 }
 
