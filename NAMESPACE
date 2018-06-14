@@ -2,6 +2,7 @@
 
 S3method(print,StandardChart)
 export(Area)
+export(AreasInCountry)
 export(Bar)
 export(BarPictograph)
 export(Bean)

@@ -80,6 +80,14 @@ test_that ("Postcodes by country", {
     expect_error(sapply(c("US", "UK", "Australia"), ZipcodesInCountry), NA)
 })
 
+test_that ("No zip codes", {
+    expect_error(ZipcodesInCountry("Portugal"), "Zip code or postcode mapping data is not avaialble for this country.")
+})
+
+test_that ("Areas in Australia", {
+    expect_error(AreasInCountry("Australia"), NA)
+})
+
 names(country.codes)[1] <- "XXX"
 test_that ("Postcodes by country", {
     expect_warning(GeographicMap(country.codes), "Unmatched region names: XXX")

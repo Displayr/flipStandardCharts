@@ -15,4 +15,6 @@ You can use this function to look up the full list of codes from USA, UK, or Aus
 }
 \seealso{
 \code{\link{CountriesOrContinents}}
+
+\code{\link{StatesInCountry}}
 }

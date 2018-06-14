@@ -16,4 +16,6 @@ country that you are interested in.
 }
 \seealso{
 \code{\link{CountriesOrContinents}}
+
+\code{\link{ZipcodesInCountry}}
 }
