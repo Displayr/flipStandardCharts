@@ -190,6 +190,9 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
     tmp.dat <- data.frame(xorig = x, x = x0, y = y)
     if (ignore.last)
         tmp.dat <- tmp.dat[-which.max(tmp.dat$x),]
+    ind.na <- which(is.na(tmp.dat$x) | is.na(tmp.dat$y))
+    if (length(ind.na) > 0)
+        tmp.dat <- tmp.dat[-ind.na,]
     if (nrow(tmp.dat) < 2)
     {
         warning("Not enough data to constuct line of best fit.")
