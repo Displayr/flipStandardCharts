@@ -212,13 +212,15 @@ Line <-   function(x,
     xaxis2 <- NULL
 
     ## Add a trace for each col of data in the matrix
+    line.thickness <- line.thickness * rep(1, ncol(chart.matrix))
+    line.opacity <- line.opacity * rep(1, ncol(chart.matrix))
     for (i in 1:ncol(chart.matrix))
     {
         y <- as.numeric(chart.matrix[, i])
         x <- x.labels
 
-        lines <- list(width = line.thickness,
-                      color = toRGB(colors[i], alpha = line.opacity))
+        lines <- list(width = line.thickness[i],
+                      color = toRGB(colors[i], alpha = line.opacity[i]))
 
         # add invisible line to force all categorical labels to be shown
         if (i == 1)

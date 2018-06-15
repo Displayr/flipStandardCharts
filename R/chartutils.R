@@ -50,6 +50,14 @@ minPosition <- function(x, n = 1)
 
 checkMatrixNames <- function(x)
 {
+    tInfo <- attr(x, "tsp")
+    if (length(tInfo) == 3)    # time-series object
+    {
+        t.seq <- seq(from = tInfo[1], to = tInfo[2], by = 1/tInfo[3])
+        x <- as.matrix(x)
+        rownames(x) <- t.seq
+        return(x)
+    }
     x <- as.matrix(x)
     if (is.null(rownames(x)))
         rownames(x) <- 1:nrow(x)
