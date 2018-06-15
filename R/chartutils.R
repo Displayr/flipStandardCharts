@@ -175,6 +175,7 @@ getRange <- function(x, axis, axisFormat)
 #'   to provide extra information about how to display the \code{x} variable.
 #' @param ignore.last Whether to ignore the last observation in \code{x}
 #'   and \code{y}.
+#' @importFrom stats supsmu
 #' @noRd
 fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
 {
