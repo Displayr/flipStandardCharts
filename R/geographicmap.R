@@ -313,6 +313,7 @@ GeographicMap <- function(x,
 #' @importFrom sp proj4string spTransform
 #' @importFrom stats as.formula
 #' @importFrom htmltools browsable tagList tags
+#' @importFrom htmlwidgets onRender
 leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.show,
                        legend.title, mult, decimals, suffix, values.hovertext.format,
                        treat.NA.as.0, n.categories, categories, format.function, map.type,
@@ -406,6 +407,9 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.sh
     #        map
     #    ))
     # )
+    js <- paste0("document.querySelector('.leaflet-container').style.backgroundColor = '",
+                 ocean.color, "'")
+    map <- onRender(map, js)
     map
 }
 

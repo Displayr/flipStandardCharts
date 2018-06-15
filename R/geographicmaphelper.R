@@ -58,6 +58,7 @@ GeographicRegionTypes <- function()
 #' @param country Character; name of the country
 #' @export
 #' @seealso \code{\link{CountriesOrContinents}}
+#' @seealso \code{\link{ZipcodesInCountry}}
 StatesInCountry <- function(country)
 {
     country <- tidyCountryName(country)
@@ -73,12 +74,34 @@ StatesInCountry <- function(country)
 #' @param country Character; name of the country
 #' @export
 #' @seealso \code{\link{CountriesOrContinents}}
+#' @seealso \code{\link{StatesInCountry}}
 ZipcodesInCountry <- function(country)
 {
     country <- tidyCountryName(country)
     data <- switch(country, Australia = australia.postcodes$name,
                    `United Kingdom` = uk.postcodes$name,
                    `United States of America` = us.postcodes$name)
+    if (is.null(data))
+        stop("Zip code or postcode mapping data is not avaialble for this country.")
+    sort(unique(as.character(data)))
+}
+
+#' Get the areas codes in a country
+#'
+#' When mapping the areas of a country you need to match the areas exactly.
+#' You can use this function to look up the full list of areas in Australia.
+#'
+#' @param country Character; name of the country
+#' @export
+#' @seealso \code{\link{CountriesOrContinents}}
+#' @seealso \code{\link{StatesInCountry}}
+#' @seealso \code{\link{ZipcodesInCountry}}
+AreasInCountry <- function(country)
+{
+    country <- tidyCountryName(country)
+    data <- switch(country, Australia = australia.areas$name)
+    if (is.null(data))
+        stop("Area mapping data is not avaialble for this country.")
     sort(unique(as.character(data)))
 }
 
