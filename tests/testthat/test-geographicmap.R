@@ -93,3 +93,8 @@ test_that ("Postcodes by country", {
     expect_warning(GeographicMap(country.codes), "Unmatched region names: XXX")
 })
 
+test_that ("Ambiguous names DS-2016", {
+    ambiguous <- seq(3)
+    names(ambiguous) <- c("Georgia", "Indiana", "Virginia")
+    expect_error(GeographicMap(ambiguous), NA)
+})
