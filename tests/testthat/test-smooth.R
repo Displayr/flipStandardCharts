@@ -14,9 +14,14 @@ search.share <- structure(c(1.47058823529412, 14.2857142857143, 22.2222222222222
                                 "31 n:0", "32 n:0", "33 n:0", "34 n:0", "35 n:0", "36 n:0", "37 n:0",
                                 "38 n:0", "39 n:0", "40 n:0"))
 
+dup.values <- structure(c(6L, 5L, 3L, 3L, 3L, 2L, 4L, 2L, 9L, 2L, 6L, 4L, 7L,
+    6L, 10L, 7L, 6L, 2L, 3L, 5L), .Dim = c(10L, 2L), .Dimnames = list(
+    c("A", "B", "C", "A", "B", "C", "D", "D", "D", "D"), NULL))
+
 test_that("line-of-best-fit",
 {
     expect_warning(Column(search.share, fit.type = "Friedman"), "Missing values have been set to zero")
     expect_warning(Column(search.share, fit.type = "LOESS"), "Missing values have been set to zero")
     expect_warning(Column(search.share, fit.type = "Linear"), "Missing values have been set to zero")
+    expect_warning(Scatter(dup.values, fit.type = "Friedman"), "Multiple points at the same x-coordinate ignored for estimating line of best fit.")
 })
