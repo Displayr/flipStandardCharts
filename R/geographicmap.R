@@ -79,16 +79,27 @@ GeographicMap <- function(x,
 
     # Find map.type from rownames
     names <- tolower(rownames(table))
-    if (any(names %in% c("northeast", "midwest", "south", "west")))
-        map.type <- "regions"
-    else if (any(names %in% c("africa", "asia", "europe", "north america", "oceania", "south america")))
-        map.type <- "continents"
-    else if (any(names %in% tolower(australia.areas$name)[1:87]))
-        map.type <- "aus_areas"
-    else if (any(names %in% tolower(CountriesOrContinents("country"))) || all(nchar(rownames(table)) == 3))
-        map.type <- "countries"
-    else
-        map.type <- postcodesOrStates(names, zip.country)
+
+    # Check for defined formats first or if country or zip.country are specified.
+    map.type <- definedFormatMapTypes(names, zip.country)
+    if (!missing(country) && country != "")
+    {
+        map.type <- "states"
+        country <- tidyCountryName(country)
+    }
+
+    if (map.type == "unknown")
+    {
+        types <- list(regions = c("northeast", "midwest", "south", "west"),
+                      continents = c("africa", "asia", "europe", "north america", "oceania", "south america"),
+                      aus_areas = tolower(australia.areas$name),
+                      countries = tolower(CountriesOrContinents("country")))
+        match.counts <- lapply(types, function(x) length(intersect(x, names)))
+        country <- FindCountryFromRegions(names)
+        match.counts[["states"]] <- attr(country, "matches")
+        map.type <- names(which.max(match.counts))
+    }
+
     if (grepl("postcode", map.type, fixed = TRUE))
         rownames(table) <- tidyPostcodes(names, map.type)
 
@@ -115,14 +126,6 @@ GeographicMap <- function(x,
     }
     else if (map.type == "states")
     {
-        # Attempt to guess the country from the rownames if not specified
-        if (missing(country) || country == "")
-            country <- FindCountryFromRegions(rownames(table))
-
-        # If the country is not an exact match, search wider for it
-        else
-            country <- tidyCountryName(country)
-
         coords <- subset(admin1.coordinates, admin1.coordinates$admin == country)
         name.map <- admin1.name.map[[country]]
         map.type <- country
@@ -397,19 +400,10 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.sh
         map <- setView(map, -96, 37.8, zoom = 4)
 
     # Set the background color
-    # map <- browsable(
-    #    tagList(list(
-    #        tags$head(
-    #            tags$style(
-    #                paste0(".leaflet-container {background: ", ocean.color, ";}")
-    #            )
-    #        ),
-    #        map
-    #    ))
-    # )
     js <- paste0("document.querySelector('.leaflet-container').style.backgroundColor = '",
                  ocean.color, "'")
     map <- onRender(map, js)
+
     map
 }
 

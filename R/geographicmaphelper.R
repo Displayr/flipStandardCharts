@@ -159,13 +159,16 @@ FindCountryFromRegions <- function(states) {
             country.matches[[current]] <- matches
     }
 
-    if (length(country.matches) == 0)
-        stop("Could not guess country from rownames.")
+    if (length(country.matches) == 0) {
+        country <- "unknown"
+        attr(country, "matches") <- 0
+        return(country)
+    }
 
     # In the case of ties this will choose the first one.
     max.match <- which.max(country.matches)
     country <- names(max.match)
-    message("Country '", country, "' was automatically chosen from the rownames.")
+    attr(country, "matches") <- country.matches[[max.match]]
     return(country)
 }
 
@@ -209,7 +212,10 @@ cleanMapInput <- function(table)
 }
 
 
-postcodesOrStates <- function(names, zip.country) {
+definedFormatMapTypes <- function(names, zip.country) {
+
+    if (all(nchar(names) == 3))
+        return("countries")
 
     if (is.null(zip.country) || zip.country == "")
         zip.country <- "Automatic"
@@ -229,7 +235,7 @@ postcodesOrStates <- function(names, zip.country) {
     if (all(grepl("^[A-z]+[0-9]+", first.words)) && all(sapply(first.words, length) <= 4))
         return("uk_postcodes")
 
-    return("states")
+    return("unknown")
 }
 
 # Adds leading zeros to standardize length of postcodes
