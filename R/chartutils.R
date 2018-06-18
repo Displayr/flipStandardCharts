@@ -204,8 +204,11 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
 
     if (grepl("(friedman|super)", fit.type, ignore.case = TRUE))
     {
-        tmp.fit <- supsmu(tmp.dat$x, tmp.dat$y)
-        return(list(x = x[ord], y = tmp.fit$y))
+        indU <- which(!duplicated(tmp.dat$x))
+        if (length(indU) < nrow(tmp.dat))
+            warning("Multiple points at the same x-coordinate ignored for estimating line of best fit.\n")
+        tmp.fit <- supsmu(tmp.dat$x[indU], tmp.dat$y[indU])
+        return(list(x = x[ord[indU]], y = tmp.fit$y))
     }
     else if (grepl("(smooth|loess)", fit.type, ignore.case = TRUE) && nrow(tmp.dat) > 7)
         tmp.fit <- loess(y~x, data=tmp.dat)
