@@ -56,8 +56,9 @@ opts <- c('color' = 'colors = c("#ffffff", "#0000ff")',
           'standardization' = 'standardization = "Standardize rows", data.label.format = ".1f", data.label.prefix = "PRE", data.label.suffix = "SUF"',
           'sorting' = 'sort.rows = "Sort by averages (ascending)", sort.columns = "Sort by averages (descending)"',
           'dendro' = 'sort.rows = "Dendrogram", sort.columns = "Dendrogram"')
+df <- data.frame(A = 1:5, B = 2:6, C = 3:7)
 
-dat.list <- c("dat1", "dat2", "dat3", "tourist", "q5cc")
+dat.list <- c("dat1", "dat2", "dat3", "tourist", "q5cc", "df")
 
 for (dat in dat.list)
 {

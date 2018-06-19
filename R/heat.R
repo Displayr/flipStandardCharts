@@ -219,7 +219,7 @@ Heat <- function(x,
                                      colors = colors,
 
                                      # Data labels
-                                     cellnote = cellnote,
+                                     #cellnote = matrix(cellnote, NROW(mat), NCOL(mat)),
                                      show_cellnote_in_cell = data.label.show,
 
                                      # Left and right additional columns
