@@ -136,7 +136,7 @@ Heat <- function(x,
                     right.columns = NULL,
                     right.column.headings = "") {
 
-    mat <- x
+    mat <- checkMatrixNames(x, assign.col.names = FALSE)
     ErrorIfNotEnoughData(mat)
 
     if (!is.matrix(mat)) {
