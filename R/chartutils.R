@@ -48,7 +48,7 @@ minPosition <- function(x, n = 1)
 }
 
 
-checkMatrixNames <- function(x)
+checkMatrixNames <- function(x, assign.col.names = TRUE)
 {
     tInfo <- attr(x, "tsp")
     if (length(tInfo) == 3)    # time-series object
@@ -61,7 +61,7 @@ checkMatrixNames <- function(x)
     x <- as.matrix(x)
     if (is.null(rownames(x)))
         rownames(x) <- 1:nrow(x)
-    if (is.null(colnames(x)))
+    if (is.null(colnames(x)) && assign.col.names)
         colnames(x) <- sprintf("Series %d", 1:ncol(x))
     if (any(duplicated(rownames(x))))
         stop("Row names of the input table must be unique.")
