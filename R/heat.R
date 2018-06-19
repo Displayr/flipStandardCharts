@@ -138,8 +138,6 @@ Heat <- function(x,
 
     mat <- x
     ErrorIfNotEnoughData(mat)
-    if (nrow(mat) > 500 || ncol(mat) > 500)
-        stop("Heatmap cannot be plotted with more than 500 rows or columns.")
 
     if (!is.matrix(mat)) {
         rownames <- names(mat)
@@ -148,6 +146,10 @@ Heat <- function(x,
         # Until VIS-362 is fixed, rhtmlHeatmap cannot handle vectors
         stop("Input must be two-dimensional.")
     }
+
+    if (nrow(mat) > 500 || ncol(mat) > 500)
+        stop("Heatmap cannot be plotted with more than 500 rows or columns.")
+
     if (!is.numeric(mat[1, 1]))
         stop("The input data must contain only numeric values.")
 
