@@ -47,7 +47,7 @@ minPosition <- function(x, n = 1)
         return(rep(min(x, na.rm=T), n))
 }
 
-
+#' @importFrom flipU CopyAttributes
 checkMatrixNames <- function(x, assign.col.names = TRUE)
 {
     tInfo <- attr(x, "tsp")
@@ -58,7 +58,7 @@ checkMatrixNames <- function(x, assign.col.names = TRUE)
         rownames(x) <- t.seq
         return(x)
     }
-    x <- as.matrix(x)
+    x <- CopyAttributes(as.matrix(x), x)
     if (is.null(rownames(x)))
         rownames(x) <- 1:nrow(x)
     if (is.null(colnames(x)) && assign.col.names)
