@@ -10,7 +10,7 @@
 #' @param fit.line.type Character; One of "solid", "dot", "dash, "dotdash", or length of dash "2px", "5px".
 #' @param fit.line.width Numeric; Line width of line of best fit.
 #' @param fit.line.name Character; Name of the line of best fit, which will appear in the hovertext.
-#' @param opacity Opacity of area fill colors as an alpha value (0 to 1).
+#' @param opacity Opacity of scatter points colors as an alpha value (0 to 1).
 #' @param fit.line.colors Character; a vector containing one or more named
 #' colors from grDevices OR one or more specified hex value colors OR a single
 #' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
@@ -236,7 +236,7 @@ Scatter <- function(x = NULL,
                          line.colors = colors,
                          marker.border.width = 1,
                          marker.border.colors = colors,
-                         marker.border.opacity = 1,
+                         marker.border.opacity = NULL,
                          marker.size = if (is.null(scatter.sizes)) 6 else 12,
                          swap.x.and.y = FALSE)
 {
@@ -390,7 +390,6 @@ Scatter <- function(x = NULL,
             scatter.colors <- scatter.colors[which(not.na)]
     }
 
-    opacity <- 1
     n <- sum(not.na)
     if (!is.null(scatter.sizes))
     {
@@ -401,8 +400,13 @@ Scatter <- function(x = NULL,
             scatter.sizes.scaled <- (sc.tmp - min(sc.tmp, na.rm=T))/diff(range(sc.tmp, na.rm=T)) * 50
         else
             scatter.sizes.scaled <- sc.tmp/max(sc.tmp, na.rm=T) * 50
-        opacity <- 0.4
+        if (is.null(opacity))
+            opacity <- 0.4
     }
+    if (is.null(opacity))
+        opacity <- 1
+    if (is.null(marker.border.opacity))
+        marker.border.opacity <- opacity
 
     scatter.colors.as.numeric <- 0
     colorbar <- NULL
@@ -433,7 +437,7 @@ Scatter <- function(x = NULL,
 
         scatter.colors.as.numeric <- 1
         groups <- 1:n
-        opacity <- 1
+        #opacity <- 1
         col.tmp <- AsNumeric(scatter.colors, binary=FALSE)
         scatter.colors.scaled <- (col.tmp - min(col.tmp, na.rm=T))/diff(range(col.tmp, na.rm=T))
         scatter.colors.labels <- col.tmp
@@ -470,7 +474,6 @@ Scatter <- function(x = NULL,
     hover.mode <- if (tooltip.show) "closest" else FALSE
     colorbar.show <- legend.show
     legend.show <- legend.show && num.series > 1
-    scatter.opacity <- if (!is.null(scatter.sizes)) 0.4 else 1
     series.mode <- if (is.null(line.thickness) || line.thickness == 0) "markers"
                    else "markers+lines"
     if (data.label.show)

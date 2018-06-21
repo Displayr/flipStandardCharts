@@ -36,7 +36,7 @@
 #' @param footer.wrap Logical; whether the footer text should be wrapped.
 #' @param footer.wrap.nchar Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.
 #' @param grid.show Logical; whether to show grid lines.
-#' @param opacity Opacity of area fill colors as an alpha value (0 to 1).
+#' @param opacity Opacity of bars as an alpha value (0 to 1).
 #' @param colors Character; a vector containing one or more named
 #' colors from grDevices OR one or more specified hex value colors OR a single
 #' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
@@ -299,7 +299,7 @@ Column <- function(x,
                     x.tick.label.wrap.nchar = 21,
                     marker.border.width = 1,
                     marker.border.colors = colors,
-                    marker.border.opacity = 1,
+                    marker.border.opacity = NULL,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
                     bar.gap = 0.15,
@@ -353,6 +353,8 @@ Column <- function(x,
     barmode <- if (is.stacked) "stack" else ""
     if (is.null(opacity))
         opacity <- 1
+    if (is.null(marker.border.opacity))
+        marker.border.opacity <- opacity
     eval(colors) # not sure why, but this is necessary for bars to appear properly
 
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)

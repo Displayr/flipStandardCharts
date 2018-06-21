@@ -40,7 +40,7 @@ Bar <- function(x,
                     footer.wrap.nchar = 100,
                     colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
                     fit.line.colors = colors,
-                    opacity = 1,
+                    opacity = NULL,
                     background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
                     background.fill.opacity = 0,
                     charting.area.fill.color = background.fill.color,
@@ -117,7 +117,7 @@ Bar <- function(x,
                     y.tick.label.wrap.nchar = 21,
                     marker.border.width = 1,
                     marker.border.colors = colors,
-                    marker.border.opacity = 1,
+                    marker.border.opacity = opacity,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
                     bar.gap = 0.15,
@@ -172,6 +172,8 @@ Bar <- function(x,
     barmode <- if (is.stacked) "stack" else ""
     if (is.null(opacity))
         opacity <- 1
+    if (is.null(marker.border.opacity))
+        marker.border.opacity <- opacity
     eval(colors) # not sure why, but this is necessary for bars to appear properly
 
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)

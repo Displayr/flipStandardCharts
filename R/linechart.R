@@ -37,7 +37,7 @@ Line <-   function(x,
                     footer.wrap.nchar = 100,
                     colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
                     fit.line.colors = colors,
-                    opacity = 1,
+                    opacity = NULL,
                     grid.show = TRUE,
                     background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
                     background.fill.opacity = 0,
@@ -111,14 +111,13 @@ Line <-   function(x,
                     x.tick.label.wrap = TRUE,
                     x.tick.label.wrap.nchar = 21,
                     line.thickness = 3,
-                    line.opacity = 1,
                     marker.show = NULL,
                     marker.colors = colors,
-                    marker.opacity = 1,
+                    marker.opacity = NULL,
                     marker.size = 6,
                     marker.border.width = 1,
                     marker.border.colors = colors,
-                    marker.border.opacity = 1,
+                    marker.border.opacity = NULL,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
                     data.label.show = FALSE,
@@ -152,6 +151,12 @@ Line <-   function(x,
     series.mode <- "lines+markers"
     if (is.null(marker.show) || marker.show == "none")
         series.mode <- "lines"
+    if (is.null(opacity))
+        opacity <- 1
+    if (is.null(marker.opacity))
+        marker.opacity <- opacity
+    if (is.null(marker.border.opacity))
+        marker.border.opacity <- marker.opacity
     eval(colors) # not sure why, but this is necessary for bars to appear properly
 
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
@@ -213,14 +218,14 @@ Line <-   function(x,
 
     ## Add a trace for each col of data in the matrix
     line.thickness <- line.thickness * rep(1, ncol(chart.matrix))
-    line.opacity <- line.opacity * rep(1, ncol(chart.matrix))
+    opacity <- opacity * rep(1, ncol(chart.matrix))
     for (i in 1:ncol(chart.matrix))
     {
         y <- as.numeric(chart.matrix[, i])
         x <- x.labels
 
         lines <- list(width = line.thickness[i],
-                      color = toRGB(colors[i], alpha = line.opacity[i]))
+                      color = toRGB(colors[i], alpha = opacity[i]))
 
         # add invisible line to force all categorical labels to be shown
         if (i == 1)
