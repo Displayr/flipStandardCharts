@@ -352,7 +352,7 @@ LabeledScatter <- function(x = NULL,
             not.na <- not.na & is.finite(scatter.sizes)
         }
         if (is.null(opacity))
-            opacity <- 0.8
+            opacity <- 0.4
     }
     if (is.null(opacity))
         opacity <- 1
