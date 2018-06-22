@@ -14,7 +14,7 @@ Bar(x, type = "Bar", fit.type = "None", fit.ignore.last = FALSE,
   footer = "", footer.font.family = global.font.family,
   footer.font.color = global.font.color, footer.font.size = 8,
   footer.wrap = TRUE, footer.wrap.nchar = 100, colors = ChartColors(max(1,
-  ncol(x), na.rm = TRUE)), fit.line.colors = colors, opacity = 1,
+  ncol(x), na.rm = TRUE)), fit.line.colors = colors, opacity = NULL,
   background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
   background.fill.opacity = 0,
   charting.area.fill.color = background.fill.color,
@@ -52,8 +52,8 @@ Bar(x, type = "Bar", fit.type = "None", fit.ignore.last = FALSE,
   x.tick.font.family = global.font.family, x.tick.font.size = 10,
   y.tick.label.wrap = TRUE, y.tick.label.wrap.nchar = 21,
   marker.border.width = 1, marker.border.colors = colors,
-  marker.border.opacity = 1, tooltip.show = TRUE, modebar.show = FALSE,
-  bar.gap = 0.15, data.label.show = FALSE,
+  marker.border.opacity = opacity, tooltip.show = TRUE,
+  modebar.show = FALSE, bar.gap = 0.15, data.label.show = FALSE,
   data.label.font.family = global.font.family, data.label.font.size = 10,
   data.label.font.color = global.font.color, data.label.format = "",
   data.label.prefix = "", data.label.suffix = "",
@@ -127,7 +127,7 @@ named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 colors from grDevices OR one or more specified hex value colors OR a single
 named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 
-\item{opacity}{Opacity of area fill colors as an alpha value (0 to 1).}
+\item{opacity}{Opacity of bars as an alpha value (0 to 1).}
 
 \item{background.fill.color}{Background color in character format
 (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}

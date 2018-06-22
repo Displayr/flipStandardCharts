@@ -14,7 +14,7 @@ Line(x, type = "Line", fit.type = "None", fit.ignore.last = FALSE,
   footer = "", footer.font.family = global.font.family,
   footer.font.color = global.font.color, footer.font.size = 8,
   footer.wrap = TRUE, footer.wrap.nchar = 100, colors = ChartColors(max(1,
-  ncol(x), na.rm = TRUE)), fit.line.colors = colors, opacity = 1,
+  ncol(x), na.rm = TRUE)), fit.line.colors = colors, opacity = NULL,
   grid.show = TRUE, background.fill.color = rgb(255, 255, 255, maxColorValue
   = 255), background.fill.opacity = 0,
   charting.area.fill.color = background.fill.color,
@@ -51,11 +51,11 @@ Line(x, type = "Line", fit.type = "None", fit.ignore.last = FALSE,
   x.tick.font.color = global.font.color,
   x.tick.font.family = global.font.family, x.tick.font.size = 10,
   x.tick.label.wrap = TRUE, x.tick.label.wrap.nchar = 21,
-  line.thickness = 3, line.opacity = 1, marker.show = NULL,
-  marker.colors = colors, marker.opacity = 1, marker.size = 6,
-  marker.border.width = 1, marker.border.colors = colors,
-  marker.border.opacity = 1, tooltip.show = TRUE, modebar.show = FALSE,
-  data.label.show = FALSE, data.label.font.family = global.font.family,
+  line.thickness = 3, marker.show = NULL, marker.colors = colors,
+  marker.opacity = NULL, marker.size = 6, marker.border.width = 1,
+  marker.border.colors = colors, marker.border.opacity = NULL,
+  tooltip.show = TRUE, modebar.show = FALSE, data.label.show = FALSE,
+  data.label.font.family = global.font.family,
   data.label.font.color = global.font.color, data.label.font.size = 10,
   data.label.format = "", data.label.prefix = "", data.label.suffix = "",
   data.label.position = "top middle")
@@ -127,7 +127,7 @@ named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 colors from grDevices OR one or more specified hex value colors OR a single
 named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 
-\item{opacity}{Opacity of area fill colors as an alpha value (0 to 1).}
+\item{opacity}{Opacity of bars as an alpha value (0 to 1).}
 
 \item{grid.show}{Logical; whether to show grid lines.}
 
@@ -319,8 +319,6 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{x.tick.label.wrap.nchar}{Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.}
 
 \item{line.thickness}{Thickness, in pixels, of the series line}
-
-\item{line.opacity}{Opacity for series lines as an alpha value (0 to 1).}
 
 \item{marker.show}{Can be "none", "automatic" or a vector referencing
 the plotly symbol dictionary using either numerics or strings.}

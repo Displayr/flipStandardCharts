@@ -10,9 +10,10 @@ LabeledScatter(x = NULL, y = NULL, scatter.x.column = 1,
   scatter.sizes.column = 3, scatter.colors = NULL,
   scatter.colors.name = NULL, scatter.colors.column = 4,
   scatter.colors.as.categorical = TRUE, trend.lines = FALSE, logos = NULL,
-  logo.size = 0.5, colors = ChartColors(12), legend.show = TRUE,
-  global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
-  maxColorValue = 255), title = "", title.font.family = global.font.family,
+  logo.size = 0.5, colors = ChartColors(12), opacity = NULL,
+  legend.show = TRUE, global.font.family = "Arial",
+  global.font.color = rgb(44, 44, 44, maxColorValue = 255), title = "",
+  title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
   subtitle = "", subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color, subtitle.font.size = 12,
@@ -79,6 +80,8 @@ This should be input as a comma-seperated list of URLs.}
 \item{logo.size}{Numeric controlling the size of the logos.}
 
 \item{colors}{A vector of colors to use in the chart. When \code{scatter.colors.as.categorical}, the vector of colors should have the length as the number of categories in \code{scatter.colors}. If \code{scatter.colors} is used as numeric vector, then a color ramp is constructed from the colors listed.}
+
+\item{opacity}{Opacity of scatter points colors as an alpha value (0 to 1).}
 
 \item{legend.show}{Logical; show the legend.}
 

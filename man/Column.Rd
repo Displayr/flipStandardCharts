@@ -52,7 +52,7 @@ Column(x, type = "Column", fit.type = "None", fit.ignore.last = FALSE,
   x.tick.font.family = global.font.family, x.tick.font.size = 10,
   x.tick.label.wrap = TRUE, x.tick.label.wrap.nchar = 21,
   marker.border.width = 1, marker.border.colors = colors,
-  marker.border.opacity = 1, tooltip.show = TRUE, modebar.show = FALSE,
+  marker.border.opacity = NULL, tooltip.show = TRUE, modebar.show = FALSE,
   bar.gap = 0.15, data.label.show = FALSE,
   data.label.font.family = global.font.family, data.label.font.size = 10,
   data.label.font.color = global.font.color, data.label.format = "",
@@ -127,7 +127,7 @@ named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 colors from grDevices OR one or more specified hex value colors OR a single
 named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 
-\item{opacity}{Opacity of area fill colors as an alpha value (0 to 1).}
+\item{opacity}{Opacity of bars as an alpha value (0 to 1).}
 
 \item{background.fill.color}{Background color in character format
 (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}

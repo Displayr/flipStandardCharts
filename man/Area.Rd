@@ -127,7 +127,7 @@ named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 colors from grDevices OR one or more specified hex value colors OR a single
 named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 
-\item{opacity}{Opacity of area fill colors as an alpha value (0 to 1).}
+\item{opacity}{Opacity of bars as an alpha value (0 to 1).}
 
 \item{background.fill.color}{Background color in character format
 (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}

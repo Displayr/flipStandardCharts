@@ -63,7 +63,7 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1, scatter.y.column = 2,
   x.tick.font.family = global.font.family, x.tick.font.size = 10,
   x.tick.label.wrap = TRUE, x.tick.label.wrap.nchar = 21,
   line.thickness = 0, line.colors = colors, marker.border.width = 1,
-  marker.border.colors = colors, marker.border.opacity = 1,
+  marker.border.colors = colors, marker.border.opacity = NULL,
   marker.size = if (is.null(scatter.sizes)) 6 else 12, swap.x.and.y = FALSE)
 }
 \arguments{
@@ -185,7 +185,7 @@ value in relation to the marker icon.  Can be "top left", "top center", "top
 right", "middle left", "middle center", "middle right", "bottom left",
 "bottom center", "bottom right". Only applicable for line and area charts.}
 
-\item{opacity}{Opacity of area fill colors as an alpha value (0 to 1).}
+\item{opacity}{Opacity of scatter points colors as an alpha value (0 to 1).}
 
 \item{background.fill.color}{Background color in character format
 (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
