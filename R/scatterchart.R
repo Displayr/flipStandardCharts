@@ -415,9 +415,16 @@ Scatter <- function(x = NULL,
     {
         # make colorscalebar
         col.fun <- colorRamp(unique(colors))  # undo recycling in PrepareColors
-        c.tmp <- rgb(col.fun((0:5)/5), maxColorValue=255)
-        v.tmp <- seq(from=0, to=1, length=length(c.tmp))
-        col.scale <- mapply(function(a,b)c(a,b), a=v.tmp, b=c.tmp, SIMPLIFY=F)
+        cc.orig <- rgb(col.fun((0:5)/5), maxColorValue = 255) # hex values of opaque colors
+        cc.rgb <- col2rgb(cc.orig)
+        bg.rgb <- c(255, 255, 255)
+        conv.alpha <- function(xx, alpha) {                   # fake alpha transparency
+            yy <- (xx * alpha) + (bg.rgb * (1 - alpha))
+            return(rgb(yy[1], yy[2], yy[3], max = 255))}
+        bg.rgb <- col2rgb(conv.alpha(col2rgb(background.fill.color), background.fill.opacity))
+        cc.alpha <- apply(cc.rgb, 2, conv.alpha, alpha = opacity)
+        cc.vals <- seq(from = 0, to = 1, length = length(cc.orig))
+        col.scale <- mapply(function(a,b)c(a,b), a = cc.vals, b = toRGB(cc.alpha), SIMPLIFY = FALSE)
 
         # getting labels for all types
         if (is.character(scatter.colors))
@@ -579,7 +586,7 @@ Scatter <- function(x = NULL,
             marker.obj <- list(size = tmp.size, sizemode = "diameter", opacity = opacity,
                             line = list(width = marker.border.width,
                             color = toRGB(marker.border.colors[ggi], alpha = marker.border.opacity)),
-                            color = scatter.colors.labels, colorscale = col.scale,
+                            color = colors[ggi], colorscale = col.scale,
                             showscale = colorbar.show, colorbar = colorbar)
         else
             marker.obj <- list(size = tmp.size, sizemode = "diameter", opacity = opacity,
