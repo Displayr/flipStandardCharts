@@ -425,10 +425,12 @@ Scatter <- function(x = NULL,
         cc.alpha <- apply(cc.rgb, 2, conv.alpha, alpha = opacity)
         cc.vals <- seq(from = 0, to = 1, length = length(cc.orig))
         col.scale <- mapply(function(a,b)c(a,b), a = cc.vals, b = toRGB(cc.alpha), SIMPLIFY = FALSE)
-
+        
         # getting labels for all types
         if (is.character(scatter.colors))
             scatter.colors <- as.factor(scatter.colors)
+        cmin <- 0
+        cmax <- 1
         if (any(class(scatter.colors) %in% c("Date", "POSIXct", "POSIXt")))
         {
             tmp.seq <- seq(0, 1, length=5)
@@ -437,15 +439,21 @@ Scatter <- function(x = NULL,
                              outlinewidth=0, tickfont=legend.font)
         }
         else if (any(class(scatter.colors) == "factor"))
-            colorbar <- list(tickmode="array", tickvals=seq(0, 1, length=nlevels(scatter.colors)),
+        {
+            tmp.seq <- seq(from = 0, to = 1, length = nlevels(scatter.colors))
+            colorbar <- list(tickmode="array", tickvals = tmp.seq,
                              ticktext=levels(scatter.colors), outlinewidth=0, tickfont=legend.font)
+        }
         else
+        {
             colorbar <- list(outlinewidth = 0, tickfont=legend.font)
+            cmin <- min(scatter.colors, na.rm = TRUE)
+            cmax <- max(scatter.colors, na.rm = TRUE)
+        }
 
         scatter.colors.as.numeric <- 1
         groups <- 1:n
-        #opacity <- 1
-        col.tmp <- AsNumeric(scatter.colors, binary=FALSE)
+        col.tmp <- AsNumeric(scatter.colors, binary = FALSE)
         scatter.colors.scaled <- (col.tmp - min(col.tmp, na.rm=T))/diff(range(col.tmp, na.rm=T))
         scatter.colors.labels <- col.tmp
         if (any(class(scatter.colors) == "factor") || any(class(scatter.colors) %in% c("Date", "POSIXct", "POSIXt")))
@@ -586,7 +594,7 @@ Scatter <- function(x = NULL,
             marker.obj <- list(size = tmp.size, sizemode = "diameter", opacity = opacity,
                             line = list(width = marker.border.width,
                             color = toRGB(marker.border.colors[ggi], alpha = marker.border.opacity)),
-                            color = colors[ggi], colorscale = col.scale,
+                            color = colors[ggi], colorscale = col.scale, cmin = cmin, cmax = cmax,
                             showscale = colorbar.show, colorbar = colorbar)
         else
             marker.obj <- list(size = tmp.size, sizemode = "diameter", opacity = opacity,
