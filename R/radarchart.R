@@ -132,7 +132,7 @@ Radar <- function(x,
                     title.font.color = global.font.color,
                     title.font.size = 16,
                     colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
-                    opacity = 0.4,
+                    opacity = NULL,
                     background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
                     background.fill.opacity = 0,
                     charting.area.fill.color = background.fill.color,
@@ -224,6 +224,8 @@ Radar <- function(x,
         warning("Radar chart only has two or less spokes. ",
                 "It may be more appropriate to use another chart type.")
     }
+    if (is.null(opacity))
+        opacity <- 0.4
 
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
     subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)

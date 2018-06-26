@@ -37,11 +37,18 @@
 #' @export
 Area <- function(x,
                     type = "Area",
+                    colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
+                    opacity = NULL,
+                    fit.line.colors = colors,
                     fit.type = "None", # can be "Smooth" or anything else
                     fit.ignore.last = FALSE,
                     fit.line.type = "dot",
                     fit.line.width = 1,
                     fit.line.name = "Fitted",
+                    fit.line.opacity = 1,
+                    fit.CI.show = FALSE,
+                    fit.CI.opacity = 0.4,
+                    fit.CI.colors = colors,
                     global.font.family = "Arial",
                     global.font.color = rgb(44, 44, 44, maxColorValue = 255),
                     title = "",
@@ -58,9 +65,6 @@ Area <- function(x,
                     footer.font.size = 8,
                     footer.wrap = TRUE,
                     footer.wrap.nchar = 100,
-                    colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
-                    fit.line.colors = colors,
-                    opacity = NULL,
                     background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
                     background.fill.opacity = 0,
                     charting.area.fill.color = background.fill.color,
@@ -403,11 +407,14 @@ Area <- function(x,
             {
                 tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                          else sprintf("%s: %s", fit.line.name, y.labels[i])
-                tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type)
+                tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type, fit.CI.show)
                 p <- add_trace(p, x=tmp.fit$x, y=tmp.fit$y, type='scatter', mode="lines",
                           name=tmp.fname, legendgroup=i, showlegend=F,
                           line=list(dash=fit.line.type, width=fit.line.width,
-                          color=fit.line.colors[i], shape='spline'))
+                          color=fit.line.colors[i], shape='spline'), opacity=fit.line.opacity)
+                if (fit.CI.show && !is.null(tmp.fit$lb))
+                    p <- add_ribbons(p, x = tmp.fit$x, ymin = tmp.fit$lb, ymax = tmp.fit$ub, name = "95% CI",
+                        line = list(color = fit.CI.colors[i], width = 0), opacity = fit.CI.opacity) 
             }
         }
         else

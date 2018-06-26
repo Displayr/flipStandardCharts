@@ -176,8 +176,9 @@ getRange <- function(x, axis, axisFormat)
 #' @param ignore.last Whether to ignore the last observation in \code{x}
 #'   and \code{y}.
 #' @importFrom stats supsmu
+#' @importFrom mgcv gam
 #' @noRd
-fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
+fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE)
 {
     if (!is.numeric(y))
     {
@@ -202,8 +203,10 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
     ord <- order(tmp.dat$x)
     tmp.dat <- tmp.dat[ord,]
 
-    if (grepl("(friedman|super)", fit.type, ignore.case = TRUE))
+    if (grepl("(friedman|super|supsmu)", fit.type, ignore.case = TRUE))
     {
+        if (CI.show)
+            warning("Confidence intervals cannot be computed for trend lines of this type.")
         indU <- which(!duplicated(tmp.dat$x))
         if (length(indU) < nrow(tmp.dat))
             warning("Multiple points at the same x-coordinate ignored for estimating line of best fit.\n")
@@ -211,7 +214,9 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
         return(list(x = x[ord[indU]], y = tmp.fit$y))
     }
     else if (grepl("(smooth|loess)", fit.type, ignore.case = TRUE) && nrow(tmp.dat) > 7)
-        tmp.fit <- loess(y~x, data=tmp.dat)
+        tmp.fit <- loess(y~x, data = tmp.dat)
+    else if (grepl("(cubic|spline|gam)", fit.type, ignore.case = TRUE))
+        tmp.fit <- gam(y~s(x, bs = "cr"), data = tmp.dat)
     else
         tmp.fit <- lm(y~x, data=tmp.dat)
 
@@ -219,9 +224,16 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
              else seq(from = min(tmp.dat$x), to = max(tmp.dat$x), length = 100)
     if (!tmp.is.factor && max(x.fit) < max(tmp.dat$x))
         x.fit <- c(x.fit, max(tmp.dat$x))
-    y.fit <- predict(tmp.fit, data.frame(x = x.fit))
+    y.fit <- if ("gam" %in% class(tmp.fit)) predict(tmp.fit, data.frame(x = x.fit), se = CI.show, type = "response")
+             else                           predict(tmp.fit, data.frame(x = x.fit), se = CI.show)
     if (tmp.is.factor)
         x.fit <- tmp.dat$xorig
+    if (CI.show)
+    {
+        lb <- as.numeric(y.fit$fit - (1.96 * y.fit$se))
+        ub <- as.numeric(y.fit$fit + (1.96 * y.fit$se))
+        return(list(x = x.fit, y = y.fit$fit, lb = lb, ub = ub))
+    }
     return(list(x = x.fit, y = y.fit))
 }
 

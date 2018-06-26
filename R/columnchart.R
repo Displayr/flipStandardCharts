@@ -8,11 +8,19 @@
 #' @param type One of "Column", "Stacked Column" or "100\% Stacked Column"
 #' @param average.series y-values of additional data series which is shown as a line. Used by \code{SmallMultiples}.
 #' @param average.color Color of the \code{average.series} as a hex code or string
-#' @param fit.type Character; type of line of best fit. Can be one of "None", "Linear" or "Smooth" (loess local polynomial fitting).
+#' @param fit.type Character; type of line of best fit. Can be one of "None", "Linear", "LOESS",
+#'          "Friedman's super smoother" or "Cubic spline".
 #' @param fit.ignore.last Logical; whether to ignore the last data point in the fit.
 #' @param fit.line.type Character; One of "solid", "dot", "dash, "dotdash", or length of dash "2px", "5px".
 #' @param fit.line.width Numeric; Line width of line of best fit.
 #' @param fit.line.name Character; Name of the line of best fit, which will appear in the hovertext.
+#' @param fit.line.opacity Opacity of trend line as an alpha value (0 to 1).
+#' @param fit.CI.show Show 95\% confidence interval.
+#' @param fit.CI.opacity Opacity of confidence interval ribbon as an alpha value (0 to 1).
+#' @param fit.CI.colors Character; a vector containing one or more named
+#' colors from grDevices OR one or more specified hex value colors OR a single
+#' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
+
 #' @param title Character; chart title.
 #' @param title.font.family Character; title font family. Can be "Arial Black",
 #' "Arial", "Comic Sans MS", "Courier New", "Georgia", "Impact",
@@ -204,6 +212,10 @@ Column <- function(x,
                     fit.line.type = "dot",
                     fit.line.width = 1,
                     fit.line.name = "Fitted",
+                    fit.line.opacity = 1,
+                    fit.CI.show = FALSE,
+                    fit.CI.colors = colors,
+                    fit.CI.opacity = 0.4,
                     global.font.family = "Arial",
                     global.font.color = rgb(44, 44, 44, maxColorValue = 255),
                     title = "",
@@ -464,13 +476,17 @@ Column <- function(x,
             warning("Line of best fit not shown for stacked charts.")
         if (fit.type != "None" && !is.stacked)
         {
-            tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type)
+            tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type, fit.CI.show)
             tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                          else sprintf("%s: %s", fit.line.name, y.labels[i])
             p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$y, type = 'scatter', mode = "lines",
-                      name = tmp.fname, legendgroup = i, showlegend = F,
+                      name = tmp.fname, legendgroup = i, showlegend = F, opacity = fit.line.opacity,
                       line = list(dash = fit.line.type, width = fit.line.width,
-                      color = fit.line.colors[i], shape = 'spline'))
+                      color = fit.line.colors[i], shape = 'spline'), opacity = fit.line.opacity)
+            if (fit.CI.show && !is.null(tmp.fit$lb))
+                p <- add_ribbons(p, x = tmp.fit$x, ymin = tmp.fit$lb, ymax = tmp.fit$ub, name = "95% CI",
+                     line = list(color = fit.CI.colors[i], width = 0), opacity = fit.CI.opacity) 
+
         }
             
         # Only used for small multiples

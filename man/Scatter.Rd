@@ -13,8 +13,10 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1, scatter.y.column = 2,
   scatter.max.labels = 50, colors = ChartColors(12), trend.lines = FALSE,
   logos = NULL, logo.size = 0.5, fit.type = "None",
   fit.ignore.last = FALSE, fit.line.type = "dot", fit.line.width = 1,
-  fit.line.name = "Fitted", fit.line.colors = colors, legend.show = TRUE,
-  tooltip.show = TRUE, modebar.show = FALSE, global.font.family = "Arial",
+  fit.line.name = "Fitted", fit.line.colors = colors,
+  fit.line.opacity = 1, fit.CI.show = FALSE, fit.CI.colors = colors,
+  fit.CI.opacity = 0.4, legend.show = TRUE, tooltip.show = TRUE,
+  modebar.show = FALSE, global.font.family = "Arial",
   global.font.color = rgb(44, 44, 44, maxColorValue = 255), title = "",
   title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
@@ -108,7 +110,8 @@ This should be input as a comma-seperated list of URLs.}
 
 \item{logo.size}{Numeric controlling the size of the logos.}
 
-\item{fit.type}{Character; type of line of best fit. Can be one of "None", "Linear" or "Smooth" (loess local polynomial fitting).}
+\item{fit.type}{Character; type of line of best fit. Can be one of "None", "Linear", "LOESS",
+"Friedman's super smoother" or "Cubic spline".}
 
 \item{fit.ignore.last}{Boolean; whether to ignore the last data point in the fit.}
 
@@ -121,6 +124,16 @@ This should be input as a comma-seperated list of URLs.}
 \item{fit.line.colors}{Character; a vector containing one or more named
 colors from grDevices OR one or more specified hex value colors OR a single
 named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
+
+\item{fit.line.opacity}{Opacity of trend line as an alpha value (0 to 1).}
+
+\item{fit.CI.show}{Show 95\% confidence interval.}
+
+\item{fit.CI.colors}{Character; a vector containing one or more named
+colors from grDevices OR one or more specified hex value colors OR a single
+named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
+
+\item{fit.CI.opacity}{Opacity of confidence interval ribbon as an alpha value (0 to 1).}
 
 \item{legend.show}{Logical; show the legend.}
 
@@ -185,7 +198,7 @@ value in relation to the marker icon.  Can be "top left", "top center", "top
 right", "middle left", "middle center", "middle right", "bottom left",
 "bottom center", "bottom right". Only applicable for line and area charts.}
 
-\item{opacity}{Opacity of scatter points colors as an alpha value (0 to 1).}
+\item{opacity}{Opacity of scatter points as an alpha value (0 to 1).}
 
 \item{background.fill.color}{Background color in character format
 (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}

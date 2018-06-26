@@ -6,8 +6,10 @@
 \usage{
 Bar(x, type = "Bar", fit.type = "None", fit.ignore.last = FALSE,
   fit.line.type = "dot", fit.line.width = 1, fit.line.name = "Fitted",
-  global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
-  maxColorValue = 255), title = "", title.font.family = global.font.family,
+  fit.line.opacity = 1, fit.CI.show = FALSE, fit.CI.colors = colors,
+  fit.CI.opacity = 0.4, global.font.family = "Arial",
+  global.font.color = rgb(44, 44, 44, maxColorValue = 255), title = "",
+  title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
   subtitle = "", subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color, subtitle.font.size = 12,
@@ -67,7 +69,8 @@ will be parsed automatically.}
 
 \item{type}{One of "Column", "Stacked Column" or "100\% Stacked Column"}
 
-\item{fit.type}{Character; type of line of best fit. Can be one of "None", "Linear" or "Smooth" (loess local polynomial fitting).}
+\item{fit.type}{Character; type of line of best fit. Can be one of "None", "Linear", "LOESS",
+"Friedman's super smoother" or "Cubic spline".}
 
 \item{fit.ignore.last}{Logical; whether to ignore the last data point in the fit.}
 
@@ -76,6 +79,16 @@ will be parsed automatically.}
 \item{fit.line.width}{Numeric; Line width of line of best fit.}
 
 \item{fit.line.name}{Character; Name of the line of best fit, which will appear in the hovertext.}
+
+\item{fit.line.opacity}{Opacity of trend line as an alpha value (0 to 1).}
+
+\item{fit.CI.show}{Show 95\% confidence interval.}
+
+\item{fit.CI.colors}{Character; a vector containing one or more named
+colors from grDevices OR one or more specified hex value colors OR a single
+named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
+
+\item{fit.CI.opacity}{Opacity of confidence interval ribbon as an alpha value (0 to 1).}
 
 \item{global.font.family}{Character; font family for all occurrences of any
 font attribute for the chart unless specified individually.}

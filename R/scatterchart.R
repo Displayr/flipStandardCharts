@@ -5,13 +5,20 @@
 #' @inherit LabeledScatter
 #' @param scatter.labels.as.hovertext Logical; if TRUE, labels are shown has hovers; otherwise, as a labeled scatterplot.
 #' @param scatter.sizes.as.diameter Whether to show the points with diameter (instead of area, which is the default) proportional to the sizes variable.
-#' @param fit.type Character; type of line of best fit. Can be one of "None", "Linear" or "Smooth" (loess local polynomial fitting).
+#' @param fit.type Character; type of line of best fit. Can be one of "None", "Linear", "LOESS",
+#'          "Friedman's super smoother" or "Cubic spline".
 #' @param fit.ignore.last Boolean; whether to ignore the last data point in the fit.
 #' @param fit.line.type Character; One of "solid", "dot", "dash, "dotdash", or length of dash "2px", "5px".
 #' @param fit.line.width Numeric; Line width of line of best fit.
 #' @param fit.line.name Character; Name of the line of best fit, which will appear in the hovertext.
-#' @param opacity Opacity of scatter points colors as an alpha value (0 to 1).
+#' @param opacity Opacity of scatter points as an alpha value (0 to 1).
 #' @param fit.line.colors Character; a vector containing one or more named
+#' colors from grDevices OR one or more specified hex value colors OR a single
+#' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
+#' @param fit.line.opacity Opacity of trend line as an alpha value (0 to 1).
+#' @param fit.CI.show Show 95\% confidence interval.
+#' @param fit.CI.opacity Opacity of confidence interval ribbon as an alpha value (0 to 1).
+#' @param fit.CI.colors Character; a vector containing one or more named
 #' colors from grDevices OR one or more specified hex value colors OR a single
 #' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
 #' @param background.fill.color Background color in character format
@@ -102,11 +109,11 @@
 #' "bottom center", "bottom right". Only applicable for line and area charts.
 #' @param swap.x.and.y Swap the x and y axis around on the chart.
 #' @param ... Extra arguments that are ignored.
-#' @importFrom grDevices rgb
+#' @importFrom grDevices rgb col2rgb
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom flipTime AsDateTime
 #' @importFrom flipTransformations AsNumeric
-#' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
+#' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar add_ribbons
 #' @importFrom stats loess loess.control lm predict
 #' @export
 Scatter <- function(x = NULL,
@@ -135,6 +142,10 @@ Scatter <- function(x = NULL,
                          fit.line.width = 1,
                          fit.line.name = "Fitted",
                          fit.line.colors = colors,
+                         fit.line.opacity = 1,
+                         fit.CI.show = FALSE,
+                         fit.CI.colors = colors,
+                         fit.CI.opacity = 0.4,
                          legend.show = TRUE,
                          tooltip.show = TRUE,
                          modebar.show = FALSE,
@@ -420,7 +431,7 @@ Scatter <- function(x = NULL,
         bg.rgb <- c(255, 255, 255)
         conv.alpha <- function(xx, alpha) {                   # fake alpha transparency
             yy <- (xx * alpha) + (bg.rgb * (1 - alpha))
-            return(rgb(yy[1], yy[2], yy[3], max = 255))}
+            return(rgb(yy[1], yy[2], yy[3], maxColorValue = 255))}
         bg.rgb <- col2rgb(conv.alpha(col2rgb(background.fill.color), background.fill.opacity))
         cc.alpha <- apply(cc.rgb, 2, conv.alpha, alpha = opacity)
         cc.vals <- seq(from = 0, to = 1, length = length(cc.orig))
@@ -643,20 +654,27 @@ Scatter <- function(x = NULL,
 
         if (fit.type != "None" && num.series > 1)
         {
-            tmp.fit <- fitSeries(x[ind], y[ind], fit.type, fit.ignore.last, xaxis$type)
+            tmp.fit <- fitSeries(x[ind], y[ind], fit.type, fit.ignore.last, xaxis$type, fit.CI.show)
             tmp.fname <- sprintf("%s: %s", fit.line.name, g.list[ggi])
             p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$y, type = 'scatter', mode = "lines",
-                      name = tmp.fname, legendgroup = ggi, showlegend = F,
+                      name = tmp.fname, legendgroup = ggi, showlegend = F, shape = 'spline',
                       line = list(dash = fit.line.type, width = fit.line.width,
-                      color = fit.line.colors[ggi], shape = 'spline'))
+                      color = fit.line.colors[ggi]), opacity = fit.line.opacity)
+            if (fit.CI.show && !is.null(tmp.fit$lb))
+                p <- add_ribbons(p, x = tmp.fit$x, ymin = tmp.fit$lb, ymax = tmp.fit$ub, name = "95% CI",
+                     line = list(color = fit.CI.colors[ggi], width = 0), opacity = fit.CI.opacity) 
         }
     }
     if (fit.type != "None" && num.series == 1)
     {
-        tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type)
+        tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type, fit.CI.show)
         p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$y, type = 'scatter', mode = 'lines',
                     name = fit.line.name, showlegend = F, line = list(dash = fit.line.type,
-                    width = fit.line.width, color = fit.line.colors[1], shape = 'spline'))
+                    width = fit.line.width, shape = 'spline',
+                    color = fit.line.colors[1]), opacity = fit.line.opacity)
+        if (fit.CI.show && !is.null(tmp.fit$lb))
+            p <- add_ribbons(p, x = tmp.fit$x, ymin = tmp.fit$lb, ymax = tmp.fit$ub, name = "95% CI",
+                     line = list(color = fit.CI.colors[1], width = 0), opacity = fit.CI.opacity) 
     }
     p <- addSubtitle(p, subtitle, subtitle.font, margins)
     p <- config(p, displayModeBar = modebar.show)

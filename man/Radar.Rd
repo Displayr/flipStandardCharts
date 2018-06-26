@@ -6,7 +6,7 @@
 \usage{
 Radar(x, title = "", title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
-  colors = ChartColors(max(1, ncol(x), na.rm = TRUE)), opacity = 0.4,
+  colors = ChartColors(max(1, ncol(x), na.rm = TRUE)), opacity = NULL,
   background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
   background.fill.opacity = 0,
   charting.area.fill.color = background.fill.color,

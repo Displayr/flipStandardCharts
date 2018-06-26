@@ -22,6 +22,10 @@ Bar <- function(x,
                     fit.line.type = "dot",
                     fit.line.width = 1,
                     fit.line.name = "Fitted",
+                    fit.line.opacity = 1,
+                    fit.CI.show = FALSE,
+                    fit.CI.colors = colors,
+                    fit.CI.opacity = 0.4,
                     global.font.family = "Arial",
                     global.font.color = rgb(44, 44, 44, maxColorValue = 255),
                     title = "",
@@ -283,7 +287,7 @@ Bar <- function(x,
             p <- add_trace(p, x = tmp.fit$y, y = tmp.fit$x, type = 'scatter', mode = "lines",
                       name = tmp.fname, legendgroup = i, showlegend = F,
                       line = list(dash = fit.line.type, width = fit.line.width,
-                      color = fit.line.colors[i], shape = 'spline'))
+                      color = fit.line.colors[i], shape = 'spline'), opacity = fit.line.opacity)
         }
 
         # Only used for small multiples
