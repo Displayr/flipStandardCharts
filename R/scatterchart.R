@@ -702,7 +702,7 @@ Scatter <- function(x = NULL,
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
         margin = margins,
-        #xaxis4 = footer.axis,
+        xaxis4 = footer.axis,
         title = title,
         showlegend = legend.show,
         legend = legend,
