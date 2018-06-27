@@ -108,6 +108,11 @@
 #' right", "middle left", "middle center", "middle right", "bottom left",
 #' "bottom center", "bottom right". Only applicable for line and area charts.
 #' @param swap.x.and.y Swap the x and y axis around on the chart.
+#' @param footer.show Hide footer text. This is required by SmallMultiples
+#' @param sz.min Parameter to control scaling of scatter.sizes, used by SmallMultiples
+#' @param sz.max Parameter to control scaling of scatter.sizes, used by SmallMultiples
+#' @param col.min Parameter to control scaling of scatter.colors, used by SmallMultiples
+#' @param col.max Parameter to control scaling of scatter.colors, used by SmallMultiples
 #' @param ... Extra arguments that are ignored.
 #' @importFrom grDevices rgb col2rgb
 #' @importFrom flipChartBasics ChartColors
@@ -249,7 +254,12 @@ Scatter <- function(x = NULL,
                          marker.border.colors = colors,
                          marker.border.opacity = NULL,
                          marker.size = if (is.null(scatter.sizes)) 6 else 12,
-                         swap.x.and.y = FALSE)
+                         swap.x.and.y = FALSE,
+                         footer.show = FALSE,     # for small multiples
+                         sz.min = NULL,
+                         sz.max = NULL,
+                         col.min = NULL,
+                         col.max = NULL)
 {
     # Use labeled scatterplots if multiple tables are provided
     if ((is.list(x) && !is.data.frame(x)) || !scatter.labels.as.hovertext)
@@ -332,9 +342,9 @@ Scatter <- function(x = NULL,
         scatter.labels <- names(x)
 
     # Warning if non-default selected but corresponding data is missing
-    if (is.null(scatter.sizes) && scatter.sizes.as.diameter)
+    if (footer.show && is.null(scatter.sizes) && scatter.sizes.as.diameter)
         warning("'Sizes' variable not provided.")
-    if (is.null(scatter.colors) && !scatter.colors.as.categorical)
+    if (footer.show && is.null(scatter.colors) && !scatter.colors.as.categorical)
         warning("'Colors' variable not provided.")
 
     # Basic data checking
@@ -407,10 +417,14 @@ Scatter <- function(x = NULL,
         sc.tmp <- abs(AsNumeric(scatter.sizes, binary = FALSE))
         if (!scatter.sizes.as.diameter)
             sc.tmp <- sqrt(sc.tmp)
+        if (!is.null(sz.min))
+            sz.min <- min(sc.tmp, na.rm = TRUE)
+        if (!is.null(sz.max))
+            sz.max <- max(sc.tmp, na.rm = TRUE)
         if (any(class(scatter.sizes) %in% c("Date", "POSIXct", "POSIXt")))
-            scatter.sizes.scaled <- (sc.tmp - min(sc.tmp, na.rm=T))/diff(range(sc.tmp, na.rm=T)) * 50
+            scatter.sizes.scaled <- (sc.tmp - sz.min)/(sz.max - sz.min) * 50
         else
-            scatter.sizes.scaled <- sc.tmp/max(sc.tmp, na.rm=T) * 50
+            scatter.sizes.scaled <- sc.tmp/sz.max * 50
         if (is.null(opacity))
             opacity <- 0.4
     }
@@ -436,14 +450,29 @@ Scatter <- function(x = NULL,
         cc.alpha <- apply(cc.rgb, 2, conv.alpha, alpha = opacity)
         cc.vals <- seq(from = 0, to = 1, length = length(cc.orig))
         col.scale <- mapply(function(a,b)c(a,b), a = cc.vals, b = toRGB(cc.alpha), SIMPLIFY = FALSE)
-        
+
         # getting labels for all types
         if (is.character(scatter.colors))
             scatter.colors <- as.factor(scatter.colors)
-        cmin <- 0
-        cmax <- 1
+
+        scatter.colors.as.numeric <- 1
+        groups <- 1:n
+        col.tmp <- AsNumeric(scatter.colors, binary = FALSE)
+        if (is.null(col.min))
+            col.min <- min(col.tmp, na.rm = TRUE)
+        if (is.null(col.max))
+            col.max <- max(col.tmp, na.rm = TRUE)
+        scatter.colors.scaled <- (col.tmp - col.min)/(col.max - col.min)
+        scatter.colors.labels <- col.tmp
+        if (any(class(scatter.colors) == "factor") ||
+            any(class(scatter.colors) %in% c("Date", "POSIXct", "POSIXt")))
+                scatter.colors.labels <- scatter.colors.scaled
+        colors <- rgb(col.fun(scatter.colors.scaled), maxColorValue=255)
+
         if (any(class(scatter.colors) %in% c("Date", "POSIXct", "POSIXt")))
         {
+            col.min <- 0
+            col.max <- 1
             tmp.seq <- seq(0, 1, length=5)
             colorbar <- list(tickmode="array", tickvals=tmp.seq,
                              ticktext=c(min(scatter.colors) + diff(range(scatter.colors)) * tmp.seq),
@@ -451,26 +480,16 @@ Scatter <- function(x = NULL,
         }
         else if (any(class(scatter.colors) == "factor"))
         {
+            col.min <- 0
+            col.max <- 1
             tmp.seq <- seq(from = 0, to = 1, length = nlevels(scatter.colors))
             colorbar <- list(tickmode="array", tickvals = tmp.seq,
                              ticktext=levels(scatter.colors), outlinewidth=0, tickfont=legend.font)
         }
         else
-        {
             colorbar <- list(outlinewidth = 0, tickfont=legend.font)
-            cmin <- min(scatter.colors, na.rm = TRUE)
-            cmax <- max(scatter.colors, na.rm = TRUE)
-        }
-
-        scatter.colors.as.numeric <- 1
-        groups <- 1:n
-        col.tmp <- AsNumeric(scatter.colors, binary = FALSE)
-        scatter.colors.scaled <- (col.tmp - min(col.tmp, na.rm=T))/diff(range(col.tmp, na.rm=T))
-        scatter.colors.labels <- col.tmp
-        if (any(class(scatter.colors) == "factor") || any(class(scatter.colors) %in% c("Date", "POSIXct", "POSIXt")))
-            scatter.colors.labels <- scatter.colors.scaled
-        colors <- rgb(col.fun(scatter.colors.scaled), maxColorValue=255)
     }
+
     if (!is.null(scatter.colors) && scatter.colors.as.categorical)
         groups <- as.factor(scatter.colors)
     if (is.factor(groups))
@@ -588,7 +607,9 @@ Scatter <- function(x = NULL,
                     legend, scatter.colors)
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
-    footer.axis <- setFooterAxis(footer, footer.font, margins)
+    footer.axis <- NULL
+    if (footer.show)
+        footer.axis <- setFooterAxis(footer, footer.font, margins)
 
     ## START PLOTTING
     p <- plot_ly(data.frame(x = x,y = y))
@@ -605,7 +626,7 @@ Scatter <- function(x = NULL,
             marker.obj <- list(size = tmp.size, sizemode = "diameter", opacity = opacity,
                             line = list(width = marker.border.width,
                             color = toRGB(marker.border.colors[ggi], alpha = marker.border.opacity)),
-                            color = colors[ggi], colorscale = col.scale, cmin = cmin, cmax = cmax,
+                            color = colors[ggi], colorscale = col.scale, cmin = col.min, cmax = col.max,
                             showscale = colorbar.show, colorbar = colorbar)
         else
             marker.obj <- list(size = tmp.size, sizemode = "diameter", opacity = opacity,
@@ -641,7 +662,7 @@ Scatter <- function(x = NULL,
                 textposition = data.label.position,
                 marker = marker.obj, line = line.obj, text = source.text[ind],
                 hoverinfo = if (num.series == 1) "text" else "name+text",
-                type="scatter", mode=series.mode, symbols = marker.symbols)
+                type="scatter", mode = series.mode, symbols = marker.symbols)
 
         # Getting legend with consistently sized markers
         if (separate.legend)
@@ -662,7 +683,7 @@ Scatter <- function(x = NULL,
                       color = fit.line.colors[ggi]), opacity = fit.line.opacity)
             if (fit.CI.show && !is.null(tmp.fit$lb))
                 p <- add_ribbons(p, x = tmp.fit$x, ymin = tmp.fit$lb, ymax = tmp.fit$ub, name = "95% CI",
-                     line = list(color = fit.CI.colors[ggi], width = 0), opacity = fit.CI.opacity) 
+                     line = list(color = fit.CI.colors[ggi], width = 0), opacity = fit.CI.opacity)
         }
     }
     if (fit.type != "None" && num.series == 1)
@@ -674,14 +695,14 @@ Scatter <- function(x = NULL,
                     color = fit.line.colors[1]), opacity = fit.line.opacity)
         if (fit.CI.show && !is.null(tmp.fit$lb))
             p <- add_ribbons(p, x = tmp.fit$x, ymin = tmp.fit$lb, ymax = tmp.fit$ub, name = "95% CI",
-                     line = list(color = fit.CI.colors[1], width = 0), opacity = fit.CI.opacity) 
+                     line = list(color = fit.CI.colors[1], width = 0), opacity = fit.CI.opacity)
     }
     p <- addSubtitle(p, subtitle, subtitle.font, margins)
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
         margin = margins,
-        xaxis4 = footer.axis,
+        #xaxis4 = footer.axis,
         title = title,
         showlegend = legend.show,
         legend = legend,

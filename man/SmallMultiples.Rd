@@ -11,6 +11,7 @@ SmallMultiples(x, chart.type = "Area", nrows = 2, share.axes = TRUE,
   x.bounds.maximum = NULL, x.bounds.minimum = NULL,
   values.bounds.maximum = NULL, values.bounds.minimum = NULL,
   colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
+  fit.line.colors = colors, fit.CI.colors = colors,
   global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
   maxColorValue = 255), title = "", title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
@@ -19,14 +20,16 @@ SmallMultiples(x, chart.type = "Area", nrows = 2, share.axes = TRUE,
   paneltitle.wrap = TRUE, paneltitle.wrap.nchar = 20, x.title = "",
   x.title.font.size = 12, y.title = "", y.title.font.size = 12,
   data.label.show = FALSE, grid.show = TRUE, x.tick.show = TRUE,
-  x.tick.angle = NULL, legend.show = FALSE, margin.left = NULL,
+  x.tick.angle = NULL, legend.show = TRUE, margin.left = NULL,
   margin.right = NULL, margin.top = NULL, margin.bottom = NULL,
   subtitle = "", subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color, subtitle.font.size = 12,
   footer = "", footer.font.family = global.font.family,
   footer.font.color = global.font.color, footer.font.size = 8,
-  footer.wrap = TRUE, footer.wrap.nchar = 100, fit.line.colors = NULL,
-  mapping.package = "plotly", ...)
+  footer.wrap = TRUE, footer.wrap.nchar = 100, mapping.package = "plotly",
+  scatter.x.column = 1, scatter.y.column = 2, scatter.sizes.column = 0,
+  scatter.colors.column = 0, scatter.groups.column = NULL,
+  scatter.colors.as.categorical = TRUE, ...)
 }
 \arguments{
 \item{x}{Input data as a matrix or dataframe}
@@ -70,6 +73,14 @@ If the value specified is larger than the minimum in the data then
 the specified value will be ignored.}
 
 \item{colors}{Character; a vector containing one or more named
+colors from grDevices OR one or more specified hex value colors OR a single
+named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
+
+\item{fit.line.colors}{Character; a vector containing one or more named
+colors from grDevices OR one or more specified hex value colors OR a single
+named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
+
+\item{fit.CI.colors}{Character; a vector containing one or more named
 colors from grDevices OR one or more specified hex value colors OR a single
 named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 
@@ -161,11 +172,20 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{footer.wrap.nchar}{Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.}
 
-\item{fit.line.colors}{Character; a vector containing one or more named
-colors from grDevices OR one or more specified hex value colors OR a single
-named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
-
 \item{mapping.package}{Not used.}
+
+\item{scatter.x.column}{When \code{x} is a dataframe or matrix, the index of the column (1-based) which contains the x-coordinate data.}
+
+\item{scatter.y.column}{When \code{x} is a dataframe or matrix, the index of the column (1-based) which contains the y-coordinate data.}
+
+\item{scatter.sizes.column}{When \code{x} is a dataframe or matrix, the index of the column (1-based) which contains \code{scatter.sizes} data.}
+
+\item{scatter.colors.column}{When \code{x} is a dataframe or matrix, the index of the column (1-based) which contains \code{scatter.colors} data.}
+
+\item{scatter.groups.column}{The column of \code{x} which is used to aggregate
+the data for small multiples. By default this is the last column in \code{x}}
+
+\item{scatter.colors.as.categorical}{Boolean; Whether to treat colors as a categorical groups, or a numeric scale.}
 
 \item{...}{Extra arguments passed to the charting function}
 }

@@ -22,9 +22,12 @@
 #' @param pad.bottom Numeric in [0,1]; Spacing below chart (between panels)
 #' @param pad.left Numeric in [0,1]; Spacing to the left of chart (between panels)
 #' @param pad.right Numeric in [0,1]; Spacing to the right chart (between panels)
+#' @param scatter.groups.column The column of \code{x} which is used to aggregate
+#'   the data for small multiples. By default this is the last column in \code{x}
 #' @param mapping.package Not used.
 #' @param ... Extra arguments passed to the charting function
 #' @inherit Column
+#' @inherit Scatter
 #' @inherit GeographicMap
 #' @importFrom plotly subplot
 #' @export
@@ -49,6 +52,8 @@ SmallMultiples <- function(x,
                            values.bounds.maximum = NULL,
                            values.bounds.minimum = NULL,
                            colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
+                           fit.line.colors = colors,
+                           fit.CI.colors = colors,
                            global.font.family = "Arial",
                            global.font.color = rgb(44, 44, 44, maxColorValue = 255),
                            title = "",
@@ -69,7 +74,7 @@ SmallMultiples <- function(x,
                            grid.show = TRUE,
                            x.tick.show = TRUE,
                            x.tick.angle = NULL,
-                           legend.show = FALSE,
+                           legend.show = TRUE,
                            margin.left = NULL,
                            margin.right = NULL,
                            margin.top = NULL,
@@ -84,8 +89,13 @@ SmallMultiples <- function(x,
                            footer.font.size = 8,
                            footer.wrap = TRUE,
                            footer.wrap.nchar = 100,
-                           fit.line.colors = NULL,
                            mapping.package = "plotly", # discarded
+                           scatter.x.column = 1,
+                           scatter.y.column = 2,
+                           scatter.sizes.column = 0,
+                           scatter.colors.column = 0,
+                           scatter.groups.column = NULL,
+                           scatter.colors.as.categorical = TRUE,
                            ...)
 {
     # Subplot has problems with the placement of GeographicMap and Radar
@@ -96,7 +106,27 @@ SmallMultiples <- function(x,
     if (is.null(fit.line.colors))
         fit.line.colors <- colors
 
-    if (is.null(ncol(x)) || ncol(x) <= 1)
+    if (chart.type == "Scatter")
+    {
+        if (is.null(scatter.groups.column))
+        {
+            if (scatter.colors.as.categorical)
+            {
+                scatter.groups.column <- scatter.colors.column
+                scatter.colors.column <- 0
+            }
+            if (is.null(scatter.groups.column) || scatter.groups.column < 1)
+                scatter.groups.column <- NCOL(x)
+        }
+        if (NCOL(x) < scatter.groups.column)
+            stop("'scatter.groups.column' must be smaller than ", NCOL(x), ".\n")
+        indexes <- tapply(1:nrow(x), x[,scatter.groups.column], function(ii) ii)
+        npanels <- length(indexes)
+
+    } else
+        npanels <- NCOL(x)
+
+    if (npanels <= 1)
         stop("Small Multiples can only be used for data containing multiple series.")
 
     # Data manipulation
@@ -104,10 +134,15 @@ SmallMultiples <- function(x,
     {
         if (!is.numeric(x.order))
             x.order <- suppressWarnings(as.numeric(TextAsVector(x.order)))
-        if (any(is.na(x.order)) || any(x.order > ncol(x)))
-            stop("'Order' should be a comma separated list of indices (between 1 and ", ncol(x), ")")
+        if (any(is.na(x.order)) || any(x.order > npanels))
+            stop("'Order' should be a comma separated list of indices (between 1 and ", npanels, ")")
         if (is.numeric(x.order) && length(x.order) > 0)
-            x <- x[, x.order]
+        {
+            if (chart.type == "Scatter")
+                indexes <- indexes[x.order]
+            else
+                x <- x[, x.order]
+        }
     }
     values.max = max(0, unlist(x), na.rm = TRUE)
     values.min = min(0, unlist(x), na.rm = TRUE)
@@ -150,7 +185,6 @@ SmallMultiples <- function(x,
     if (is.null(margin.right) || is.na(margin.right))
         margin.right <- 20
 
-    npanels <- ncol(x)
     ncols <- ceiling(npanels/nrows)
     h.offset <- 0
     w.offset <- 0
@@ -166,9 +200,11 @@ SmallMultiples <- function(x,
 
     # Position titles for each panel
     paneltitles <- NULL
-    if (paneltitle.show && !is.null(colnames(x)))
+    titles <- if (chart.type == "Scatter") names(indexes)
+              else                         colnames(x)
+    if (paneltitle.show && !is.null(titles))
     {
-        title.list <- autoFormatLongLabels(colnames(x), paneltitle.wrap, paneltitle.wrap.nchar)
+        title.list <- autoFormatLongLabels(titles, paneltitle.wrap, paneltitle.wrap.nchar)
         titles.ypos <- rep((nrows:1)/nrows, each = ncols)[1:npanels]
         titles.xpos <- rep((1:ncols - 0.5)/ncols, nrows)[1:npanels]
         paneltitles <- list(text = title.list, x = titles.xpos, y = titles.ypos,
@@ -188,7 +224,56 @@ SmallMultiples <- function(x,
             return(cbind(a, Average = b))
     }
 
-    if (chart.type == "Radar")
+
+    if (chart.type == "Scatter")
+    {
+        if (average.show)
+            warning("Averages cannot be shown for small multiples with scatterplot.")
+        sz.min <- NULL
+        sz.max <- NULL
+        if (scatter.sizes.column > 0 && scatter.sizes.column <= NCOL(x))
+        {
+            sc.tmp <- abs(AsNumeric(x[,scatter.sizes.column], binary = FALSE))
+            sz.min <- min(sc.tmp, na.rm = TRUE)
+            sz.max <- max(sc.tmp, na.rm = TRUE)
+        }
+        col.min <- NULL
+        col.max <- NULL
+        if (scatter.colors.column > 0 && scatter.colors.column <= NCOL(x))
+        {
+            col.tmp <- AsNumeric(x[,scatter.colors.column], binary = FALSE)
+            col.min <- min(col.tmp, na.rm = TRUE)
+            col.max <- max(col.tmp, na.rm = TRUE)
+            colors <- rep(list(colors), npanels) # use the whole palette in each panel
+        } else
+            colors <- as.list(colors)
+
+        plot.list <- lapply(1:npanels, function(i){chart(x[indexes[[i]],],
+                                                     scatter.x.column = scatter.x.column,
+                                                     scatter.y.column = scatter.y.column,
+                                                     scatter.sizes.column = scatter.sizes.column,
+                                                     scatter.colors.column = scatter.colors.column,
+                                                     scatter.colors.as.categorical = FALSE,
+                                                     colors = colors[[i]],
+                                                     fit.line.colors = fit.line.colors[i],
+                                                     fit.CI.colors = fit.line.colors[i],
+                                                     x.title = x.title, x.title.font.size = x.title.font.size,
+                                                     y.title = y.title, y.title.font.size = y.title.font.size,
+                                                     grid.show = grid.show, data.label.show = data.label.show,
+                                                     x.tick.show = x.tick.show, x.tick.angle = x.tick.angle,
+                                                     y.bounds.maximum = y.bounds.maximum,
+                                                     y.bounds.minimum = y.bounds.minimum,
+                                                     x.bounds.maximum = x.bounds.maximum,
+                                                     x.bounds.minimum = x.bounds.minimum,
+                                                     global.font.family = global.font.family,
+                                                     global.font.color = global.font.color,
+                                                     legend.show = legend.show && (i == 1),
+                                                     footer.show = FALSE,
+                                                     sz.min = sz.min, sz.max = sz.max,
+                                                     col.min = col.min, col.max = col.max,
+                                                    ...)$htmlwidget})
+    }
+    else if (chart.type == "Radar")
     {
         plot.list <- lapply(1:npanels, function(i){chart(.bind_mean(x[,i, drop = FALSE], average.series),
                                                      hovertext.show = c(TRUE, TRUE),
@@ -224,6 +309,7 @@ SmallMultiples <- function(x,
                                                      average.series = average.series,
                                                      average.color = average.color,
                                                      fit.line.colors = fit.line.colors[i],
+                                                     fit.CI.colors = fit.CI.colors[i],
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
                                                      grid.show = grid.show, data.label.show = data.label.show,
@@ -240,6 +326,7 @@ SmallMultiples <- function(x,
         plot.list <- lapply(1:npanels, function(i){chart(.bind_mean(x[,i, drop = FALSE], average.series),
                                                      colors = c(colors[i], average.color),
                                                      fit.line.colors = c(fit.line.colors[i], average.color),
+                                                     fit.CI.colors = c(fit.CI.colors[i], average.color),
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
                                                      grid.show = grid.show, data.label.show = data.label.show,

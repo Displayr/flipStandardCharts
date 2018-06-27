@@ -66,7 +66,9 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1, scatter.y.column = 2,
   x.tick.label.wrap = TRUE, x.tick.label.wrap.nchar = 21,
   line.thickness = 0, line.colors = colors, marker.border.width = 1,
   marker.border.colors = colors, marker.border.opacity = NULL,
-  marker.size = if (is.null(scatter.sizes)) 6 else 12, swap.x.and.y = FALSE)
+  marker.size = if (is.null(scatter.sizes)) 6 else 12, swap.x.and.y = FALSE,
+  footer.show = FALSE, sz.min = NULL, sz.max = NULL, col.min = NULL,
+  col.max = NULL)
 }
 \arguments{
 \item{x}{A numeric vector for the x-axis coordinates (which may be named); or a matrix or dataframe; or a list of matrices, where each matrix share the same row and column names}
@@ -413,6 +415,16 @@ if \code{scatter.sizes} is provided, but used for the legend
 if \code{scatter.colors.as.categorical}.}
 
 \item{swap.x.and.y}{Swap the x and y axis around on the chart.}
+
+\item{footer.show}{Hide footer text. This is required by SmallMultiples}
+
+\item{sz.min}{Parameter to control scaling of scatter.sizes, used by SmallMultiples}
+
+\item{sz.max}{Parameter to control scaling of scatter.sizes, used by SmallMultiples}
+
+\item{col.min}{Parameter to control scaling of scatter.colors, used by SmallMultiples}
+
+\item{col.max}{Parameter to control scaling of scatter.colors, used by SmallMultiples}
 
 \item{legend.fill}{Same as \code{legend.fill.color}. Retained for backwards compatibility.}
 
