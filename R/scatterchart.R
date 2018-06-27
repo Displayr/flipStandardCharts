@@ -255,7 +255,7 @@ Scatter <- function(x = NULL,
                          marker.border.opacity = NULL,
                          marker.size = if (is.null(scatter.sizes)) 6 else 12,
                          swap.x.and.y = FALSE,
-                         footer.show = FALSE,     # for small multiples
+                         footer.show = TRUE,     # for small multiples
                          sz.min = NULL,
                          sz.max = NULL,
                          col.min = NULL,
@@ -417,9 +417,9 @@ Scatter <- function(x = NULL,
         sc.tmp <- abs(AsNumeric(scatter.sizes, binary = FALSE))
         if (!scatter.sizes.as.diameter)
             sc.tmp <- sqrt(sc.tmp)
-        if (!is.null(sz.min))
+        if (is.null(sz.min))
             sz.min <- min(sc.tmp, na.rm = TRUE)
-        if (!is.null(sz.max))
+        if (is.null(sz.max))
             sz.max <- max(sc.tmp, na.rm = TRUE)
         if (any(class(scatter.sizes) %in% c("Date", "POSIXct", "POSIXt")))
             scatter.sizes.scaled <- (sc.tmp - sz.min)/(sz.max - sz.min) * 50
