@@ -145,26 +145,40 @@ SmallMultiples <- function(x,
             npanels <- length(x.order)
         }
     }
-    values.max = max(0, unlist(x), na.rm = TRUE)
-    values.min = min(0, unlist(x), na.rm = TRUE)
+
+    all.values <- if (chart.type == "Scatter") x[,scatter.y.column]
+                  else unlist(x)
+    values.max = max(0, all.values, na.rm = TRUE)
+    values.min = min(0, all.values, na.rm = TRUE)
     values.bounds.minimum <- charToNumeric(values.bounds.minimum)
     values.bounds.maximum <- charToNumeric(values.bounds.maximum)
     x.bounds.minimum <- charToNumeric(x.bounds.minimum)
     x.bounds.maximum <- charToNumeric(x.bounds.maximum)
     y.bounds.minimum <- charToNumeric(y.bounds.minimum)
     y.bounds.maximum <- charToNumeric(y.bounds.maximum)
-    if (share.axes && chart.type == "Bar" && is.null(x.bounds.maximum))
-        x.bounds.maximum <- values.max
-    if (share.axes && chart.type != "Bar" && is.null(y.bounds.maximum))
-        y.bounds.maximum <- values.max
-    if (share.axes && chart.type == "Bar" && is.null(x.bounds.minimum))
-        x.bounds.minimum <- values.min
-    if (share.axes && chart.type != "Bar" && is.null(y.bounds.minimum))
-        y.bounds.minimum <- values.min
-    if (share.axes && chart.type == "GeographicMap")
-        values.bounds.maximum <- max(values.bounds.maximum, values.max)
-    if (share.axes && chart.type == "GeographicMap")
-        values.bounds.minimum <- min(values.bounds.minimum, values.min)
+
+    if (share.axes)
+    {
+        if (chart.type == "GeographicMap")
+        {
+            values.bounds.maximum <- max(values.bounds.maximum, values.max)
+            values.bounds.minimum <- min(values.bounds.minimum, values.min)
+        }
+        else if (chart.type == "Bar")
+        {
+            if (is.null(x.bounds.maximum))
+                x.bounds.maximum <- values.max
+            if (is.null(x.bounds.minimum))
+                x.bounds.minimum <- values.min
+        }
+        else
+        {
+            if (is.null(y.bounds.maximum))
+                y.bounds.maximum <- values.max
+            if (is.null(y.bounds.minimum))
+                y.bounds.minimum <- values.min
+        }
+    }
 
     if (is.null(x.tick.angle) && chart.type %in% c("Column", "Area", "Line") &&
         max(nchar(rownames(x)), 0) > 3)
