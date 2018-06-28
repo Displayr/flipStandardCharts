@@ -232,7 +232,8 @@ SmallMultiples <- function(x,
             warning("Averages cannot be shown for small multiples with scatterplot.")
         sz.min <- NULL
         sz.max <- NULL
-        if (scatter.sizes.column > 0 && scatter.sizes.column <= NCOL(x))
+        if (!is.null(scatter.sizes.column) && !is.na(scatter.sizes.column) &&
+            scatter.sizes.column > 0 && scatter.sizes.column <= NCOL(x))
         {
             sc.tmp <- abs(AsNumeric(x[,scatter.sizes.column], binary = FALSE))
             sz.min <- min(sc.tmp, na.rm = TRUE)
