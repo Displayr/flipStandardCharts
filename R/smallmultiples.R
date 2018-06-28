@@ -143,6 +143,7 @@ SmallMultiples <- function(x,
             else
                 x <- x[, x.order]
         }
+        npanels <- length(x.order)
     }
     values.max = max(0, unlist(x), na.rm = TRUE)
     values.min = min(0, unlist(x), na.rm = TRUE)
