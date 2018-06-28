@@ -142,6 +142,7 @@ SmallMultiples <- function(x,
                 indexes <- indexes[x.order]
             else
                 x <- x[, x.order]
+            npanels <- length(x.order)
         }
     }
     values.max = max(0, unlist(x), na.rm = TRUE)

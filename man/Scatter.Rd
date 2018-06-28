@@ -67,7 +67,7 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1, scatter.y.column = 2,
   line.thickness = 0, line.colors = colors, marker.border.width = 1,
   marker.border.colors = colors, marker.border.opacity = NULL,
   marker.size = if (is.null(scatter.sizes)) 6 else 12, swap.x.and.y = FALSE,
-  footer.show = FALSE, sz.min = NULL, sz.max = NULL, col.min = NULL,
+  footer.show = TRUE, sz.min = NULL, sz.max = NULL, col.min = NULL,
   col.max = NULL)
 }
 \arguments{
