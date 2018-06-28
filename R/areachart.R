@@ -408,13 +408,14 @@ Area <- function(x,
                 tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                          else sprintf("%s: %s", fit.line.name, y.labels[i])
                 tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type, fit.CI.show)
-                p <- add_trace(p, x=tmp.fit$x, y=tmp.fit$y, type='scatter', mode="lines",
-                          name=tmp.fname, legendgroup=i, showlegend=F,
-                          line=list(dash=fit.line.type, width=fit.line.width,
-                          color=fit.line.colors[i], shape='spline'), opacity=fit.line.opacity)
+                p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$y, type = 'scatter', mode = "lines",
+                          name = tmp.fname, legendgroup = i, showlegend = FALSE,
+                          line = list(dash = fit.line.type, width = fit.line.width,
+                          color = fit.line.colors[i], shape = 'spline'), opacity = fit.line.opacity)
                 if (fit.CI.show && !is.null(tmp.fit$lb))
-                    p <- add_ribbons(p, x = tmp.fit$x, ymin = tmp.fit$lb, ymax = tmp.fit$ub, name = "95% CI",
-                        line = list(color = fit.CI.colors[i], width = 0), opacity = fit.CI.opacity) 
+                    p <- add_ribbons(p, x = tmp.fit$x, ymin = tmp.fit$lb, ymax = tmp.fit$ub,
+                          name = "95% CI", legendgroups = i, showlegend = FALSE ,
+                          line = list(color = fit.CI.colors[i], width = 0), opacity = fit.CI.opacity)
             }
         }
         else

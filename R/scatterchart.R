@@ -678,24 +678,26 @@ Scatter <- function(x = NULL,
             tmp.fit <- fitSeries(x[ind], y[ind], fit.type, fit.ignore.last, xaxis$type, fit.CI.show)
             tmp.fname <- sprintf("%s: %s", fit.line.name, g.list[ggi])
             p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$y, type = 'scatter', mode = "lines",
-                      name = tmp.fname, legendgroup = ggi, showlegend = F, shape = 'spline',
-                      line = list(dash = fit.line.type, width = fit.line.width,
+                      name = tmp.fname, legendgroup = ggi, showlegend = FALSE,
+                      line = list(dash = fit.line.type, width = fit.line.width, shape = 'spline',
                       color = fit.line.colors[ggi]), opacity = fit.line.opacity)
             if (fit.CI.show && !is.null(tmp.fit$lb))
-                p <- add_ribbons(p, x = tmp.fit$x, ymin = tmp.fit$lb, ymax = tmp.fit$ub, name = "95% CI",
-                     line = list(color = fit.CI.colors[ggi], width = 0), opacity = fit.CI.opacity)
+                p <- add_ribbons(p, x = tmp.fit$x, ymin = tmp.fit$lb, ymax = tmp.fit$ub,
+                      name = "95% CI", legendgroup = ggi, showlegend = FALSE,
+                      line = list(color = fit.CI.colors[ggi], width = 0), opacity = fit.CI.opacity)
         }
     }
     if (fit.type != "None" && num.series == 1)
     {
         tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type, fit.CI.show)
         p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$y, type = 'scatter', mode = 'lines',
-                    name = fit.line.name, showlegend = F, line = list(dash = fit.line.type,
+                    name = fit.line.name, showlegend = FALSE, line = list(dash = fit.line.type,
                     width = fit.line.width, shape = 'spline',
                     color = fit.line.colors[1]), opacity = fit.line.opacity)
         if (fit.CI.show && !is.null(tmp.fit$lb))
-            p <- add_ribbons(p, x = tmp.fit$x, ymin = tmp.fit$lb, ymax = tmp.fit$ub, name = "95% CI",
-                     line = list(color = fit.CI.colors[1], width = 0), opacity = fit.CI.opacity)
+            p <- add_ribbons(p, x = tmp.fit$x, ymin = tmp.fit$lb, ymax = tmp.fit$ub,
+                    name = "95% CI", showlegend = FALSE,
+                    line = list(color = fit.CI.colors[1], width = 0), opacity = fit.CI.opacity)
     }
     p <- addSubtitle(p, subtitle, subtitle.font, margins)
     p <- config(p, displayModeBar = modebar.show)

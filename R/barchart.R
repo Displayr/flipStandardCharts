@@ -267,15 +267,15 @@ Bar <- function(x,
 
         # add invisible line to force all categorical labels to be shown
         if (!is.stacked && i == 1)
-            p <- add_trace(p, x=rep(min(y,na.rm=T), length(y)), y=x,
-                           type="scatter", mode="lines",
-                           hoverinfo="none", showlegend=F, opacity=0)
+            p <- add_trace(p, x = rep(min(y,na.rm = TRUE), length(y)), y = x,
+                           type = "scatter", mode = "lines",
+                           hoverinfo = "none", showlegend = FALSE, opacity = 0)
 
         # this is the main trace for each data series
         p <- add_trace(p, x = y, y = x, type = "bar", orientation = "h", marker = marker,
                        name  =  y.labels[i], legendgroup  =  i,
-                       text = autoFormatLongLabels(x.labels.full, wordwrap=T, truncate=F),
-                       hoverinfo  = setHoverText(yaxis, chart.matrix, is.bar=TRUE))
+                       text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE, truncate = FALSE),
+                       hoverinfo  = setHoverText(yaxis, chart.matrix, is.bar = TRUE))
 
         if (fit.type != "None" && is.stacked && i == 1)
             warning("Line of best fit not shown for stacked charts.")
@@ -285,7 +285,7 @@ Bar <- function(x,
             tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                          else sprintf("%s: %s", fit.line.name, y.labels[i])
             p <- add_trace(p, x = tmp.fit$y, y = tmp.fit$x, type = 'scatter', mode = "lines",
-                      name = tmp.fname, legendgroup = i, showlegend = F,
+                      name = tmp.fname, legendgroup = i, showlegend = FALSE,
                       line = list(dash = fit.line.type, width = fit.line.width,
                       color = fit.line.colors[i], shape = 'spline'), opacity = fit.line.opacity)
         }
@@ -294,7 +294,7 @@ Bar <- function(x,
         if (!is.null(average.series))
             p <- add_trace(p, y = x, x = average.series, name = "Average",
                     type = "scatter", mode = "lines", showlegend = FALSE,
-                    line = list(color = average.color)) 
+                    line = list(color = average.color))
 
 
 
