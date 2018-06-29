@@ -14,14 +14,17 @@
 #' @export
 Line <-   function(x,
                     type = "Line",
+                    colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
+                    opacity = NULL,
                     fit.type = "None", # can be "Smooth" or anything else
+                    fit.line.colors = colors,
                     fit.ignore.last = FALSE,
                     fit.line.type = "dot",
                     fit.line.width = 1,
                     fit.line.name = "Fitted",
                     fit.line.opacity = 1,
                     fit.CI.show = FALSE,
-                    fit.CI.colors = colors,
+                    fit.CI.colors = fit.line.colors,
                     fit.CI.opacity = 0.4,
                     global.font.family = "Arial",
                     global.font.color = rgb(44, 44, 44, maxColorValue = 255),
@@ -39,9 +42,6 @@ Line <-   function(x,
                     footer.font.size = 8,
                     footer.wrap = TRUE,
                     footer.wrap.nchar = 100,
-                    colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
-                    fit.line.colors = colors,
-                    opacity = NULL,
                     grid.show = TRUE,
                     background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
                     background.fill.opacity = 0,
@@ -156,7 +156,7 @@ Line <-   function(x,
     if (is.null(marker.show) || marker.show == "none")
         series.mode <- "lines"
     if (is.null(opacity))
-        opacity <- 1
+        opacity <- if (fit.type == "None") 1 else 0.6
     if (is.null(marker.opacity))
         marker.opacity <- opacity
     if (is.null(marker.border.opacity))

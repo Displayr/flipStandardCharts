@@ -257,6 +257,8 @@ SmallMultiples <- function(x,
         col.max <- NULL
         if (scatter.colors.column > 0 && scatter.colors.column <= NCOL(x))
         {
+            if (!is.numeric(x[,scatter.colors.column]))
+                x[,scatter.colors.column] <- as.factor(x[,scatter.colors.column])
             col.tmp <- AsNumeric(x[,scatter.colors.column], binary = FALSE)
             col.min <- min(col.tmp, na.rm = TRUE)
             col.max <- max(col.tmp, na.rm = TRUE)

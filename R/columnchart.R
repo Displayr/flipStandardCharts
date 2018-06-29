@@ -206,15 +206,18 @@
 #' @importFrom stats loess loess.control lm predict
 #' @export
 Column <- function(x,
+                    colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
+                    opacity = NULL,
                     type = "Column",
                     fit.type = "None", # can be "Smooth" or anything else
+                    fit.line.colors = colors,
                     fit.ignore.last = FALSE,
                     fit.line.type = "dot",
                     fit.line.width = 1,
                     fit.line.name = "Fitted",
                     fit.line.opacity = 1,
                     fit.CI.show = FALSE,
-                    fit.CI.colors = colors,
+                    fit.CI.colors = fit.line.colors,
                     fit.CI.opacity = 0.4,
                     global.font.family = "Arial",
                     global.font.color = rgb(44, 44, 44, maxColorValue = 255),
@@ -232,9 +235,6 @@ Column <- function(x,
                     footer.font.size = 8,
                     footer.wrap = TRUE,
                     footer.wrap.nchar = 100,
-                    colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
-                    fit.line.colors = colors,
-                    opacity = NULL,
                     background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
                     background.fill.opacity = 0,
                     charting.area.fill.color = background.fill.color,
@@ -364,7 +364,7 @@ Column <- function(x,
     hover.mode <- if (tooltip.show) "closest" else FALSE
     barmode <- if (is.stacked) "stack" else ""
     if (is.null(opacity))
-        opacity <- 1
+        opacity <- if (fit.type == "None") 1 else 0.6
     if (is.null(marker.border.opacity))
         marker.border.opacity <- opacity
     eval(colors) # not sure why, but this is necessary for bars to appear properly

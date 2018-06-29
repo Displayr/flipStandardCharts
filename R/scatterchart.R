@@ -149,7 +149,7 @@ Scatter <- function(x = NULL,
                          fit.line.colors = colors,
                          fit.line.opacity = 1,
                          fit.CI.show = FALSE,
-                         fit.CI.colors = colors,
+                         fit.CI.colors = fit.line.colors,
                          fit.CI.opacity = 0.4,
                          legend.show = TRUE,
                          tooltip.show = TRUE,
@@ -429,7 +429,7 @@ Scatter <- function(x = NULL,
             opacity <- 0.4
     }
     if (is.null(opacity))
-        opacity <- 1
+        opacity <- if (fit.type == "None") 1 else 0.4
     if (is.null(marker.border.opacity))
         marker.border.opacity <- opacity
 

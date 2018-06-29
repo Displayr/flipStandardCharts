@@ -48,7 +48,7 @@ Area <- function(x,
                     fit.line.opacity = 1,
                     fit.CI.show = FALSE,
                     fit.CI.opacity = 0.4,
-                    fit.CI.colors = colors,
+                    fit.CI.colors = fit.line.colors,
                     global.font.family = "Arial",
                     global.font.color = rgb(44, 44, 44, maxColorValue = 255),
                     title = "",
@@ -231,7 +231,7 @@ Area <- function(x,
 
     eval(colors) # not sure why, but this is necessary for bars to appear properly
     if (is.null(opacity))
-        opacity <- if (!is.stacked) 0.4 else 1
+        opacity <- if (!is.stacked || fit.type != "None") 0.4 else 1
     if (opacity == 1 && !is.stacked && ncol(chart.matrix) > 1)
         warning("Displaying this chart with opacity set to 1 will make it difficult to read as some data series may be obscured.")
 

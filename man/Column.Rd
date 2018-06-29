@@ -4,19 +4,20 @@
 \alias{Column}
 \title{Column}
 \usage{
-Column(x, type = "Column", fit.type = "None", fit.ignore.last = FALSE,
+Column(x, colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
+  opacity = NULL, type = "Column", fit.type = "None",
+  fit.line.colors = colors, fit.ignore.last = FALSE,
   fit.line.type = "dot", fit.line.width = 1, fit.line.name = "Fitted",
-  fit.line.opacity = 1, fit.CI.show = FALSE, fit.CI.colors = colors,
-  fit.CI.opacity = 0.4, global.font.family = "Arial",
-  global.font.color = rgb(44, 44, 44, maxColorValue = 255), title = "",
-  title.font.family = global.font.family,
+  fit.line.opacity = 1, fit.CI.show = FALSE,
+  fit.CI.colors = fit.line.colors, fit.CI.opacity = 0.4,
+  global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
+  maxColorValue = 255), title = "", title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
   subtitle = "", subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color, subtitle.font.size = 12,
   footer = "", footer.font.family = global.font.family,
   footer.font.color = global.font.color, footer.font.size = 8,
-  footer.wrap = TRUE, footer.wrap.nchar = 100, colors = ChartColors(max(1,
-  ncol(x), na.rm = TRUE)), fit.line.colors = colors, opacity = NULL,
+  footer.wrap = TRUE, footer.wrap.nchar = 100,
   background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
   background.fill.opacity = 0,
   charting.area.fill.color = background.fill.color,
@@ -67,10 +68,20 @@ Column(x, type = "Column", fit.type = "None", fit.ignore.last = FALSE,
 to be plotted, with the name/rownames used as the column names of the chart. Numeric and date labels
 will be parsed automatically.}
 
+\item{colors}{Character; a vector containing one or more named
+colors from grDevices OR one or more specified hex value colors OR a single
+named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
+
+\item{opacity}{Opacity of bars as an alpha value (0 to 1).}
+
 \item{type}{One of "Column", "Stacked Column" or "100\% Stacked Column"}
 
 \item{fit.type}{Character; type of line of best fit. Can be one of "None", "Linear", "LOESS",
 "Friedman's super smoother" or "Cubic spline".}
+
+\item{fit.line.colors}{Character; a vector containing one or more named
+colors from grDevices OR one or more specified hex value colors OR a single
+named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 
 \item{fit.ignore.last}{Logical; whether to ignore the last data point in the fit.}
 
@@ -131,16 +142,6 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{footer.wrap}{Logical; whether the footer text should be wrapped.}
 
 \item{footer.wrap.nchar}{Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.}
-
-\item{colors}{Character; a vector containing one or more named
-colors from grDevices OR one or more specified hex value colors OR a single
-named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
-
-\item{fit.line.colors}{Character; a vector containing one or more named
-colors from grDevices OR one or more specified hex value colors OR a single
-named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
-
-\item{opacity}{Opacity of bars as an alpha value (0 to 1).}
 
 \item{background.fill.color}{Background color in character format
 (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
