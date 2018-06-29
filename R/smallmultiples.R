@@ -92,8 +92,8 @@ SmallMultiples <- function(x,
                            mapping.package = "plotly", # discarded
                            scatter.x.column = 1,
                            scatter.y.column = 2,
-                           scatter.sizes.column = 0,
-                           scatter.colors.column = 0,
+                           scatter.sizes.column = 3,
+                           scatter.colors.column = 4,
                            scatter.groups.column = NULL,
                            scatter.colors.as.categorical = TRUE,
                            ...)
@@ -108,18 +108,15 @@ SmallMultiples <- function(x,
 
     if (chart.type == "Scatter")
     {
-        if (is.null(scatter.groups.column))
-        {
-            if (scatter.colors.as.categorical)
-            {
-                scatter.groups.column <- scatter.colors.column
-                scatter.colors.column <- 0
-            }
-            if (is.null(scatter.groups.column) || scatter.groups.column < 1)
-                scatter.groups.column <- NCOL(x)
-        }
+        if (sum(scatter.groups.column, na.rm = TRUE) <= 0)
+            scatter.groups.column <- NCOL(x)
+
         if (NCOL(x) < scatter.groups.column)
             stop("'scatter.groups.column' must be smaller than ", NCOL(x), ".\n")
+        if (scatter.colors.column == scatter.groups.column)
+            scatter.colors.column <- 0
+        if (scatter.sizes.column == scatter.groups.column)
+            scatter.sizes.column <- 0
         indexes <- tapply(1:nrow(x), x[,scatter.groups.column], function(ii) ii)
         npanels <- length(indexes)
 
