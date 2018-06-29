@@ -11,8 +11,15 @@ dat <- structure(c(0.778425656, 0.402332362, 0.250728863, 0.361516035,
 "Fresh", "Quality"), c("Aldi", "Costco", "Coles", "Woolworths",
 "Harris Farm", "Foodland", "IGA")), assigned.rownames = TRUE)
 
+dat2 <- structure(list(Length = c(1, 2, 4, 5, 7), Width = c(6, 2, 4,
+2, 4), Random = c(1, 2, 3, 4, 5), Class = c("X", "X", "Y", "Y",
+"Y")), .Names = c("Length", "Width", "Random", "Class"), row.names = c("a",
+"b", "c", "d", "e"), scatter.variable.indices = structure(c(1,
+2, 3, 4), .Names = c("x", "y", "sizes", "colors")), class = "data.frame")
+
 test_that("Small Multiples",
 {
     expect_error(SmallMultiples(dat, "Area", x.order="2,1,3,4,5,6"), NA) # only 6 out 7 columns shown
     expect_error(SmallMultiples(dat, "Area", x.order=""), NA)
+    expect_error(SmallMultiples(dat2, "Scatter", scatter.sizes.column = NA))
 })

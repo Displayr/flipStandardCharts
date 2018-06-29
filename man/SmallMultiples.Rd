@@ -27,8 +27,8 @@ SmallMultiples(x, chart.type = "Area", nrows = 2, share.axes = TRUE,
   footer = "", footer.font.family = global.font.family,
   footer.font.color = global.font.color, footer.font.size = 8,
   footer.wrap = TRUE, footer.wrap.nchar = 100, mapping.package = "plotly",
-  scatter.x.column = 1, scatter.y.column = 2, scatter.sizes.column = 0,
-  scatter.colors.column = 0, scatter.groups.column = NULL,
+  scatter.x.column = 1, scatter.y.column = 2, scatter.sizes.column = 3,
+  scatter.colors.column = 4, scatter.groups.column = NULL,
   scatter.colors.as.categorical = TRUE, ...)
 }
 \arguments{
