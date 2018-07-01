@@ -21,5 +21,5 @@ test_that("Small Multiples",
 {
     expect_error(SmallMultiples(dat, "Area", x.order="2,1,3,4,5,6"), NA) # only 6 out 7 columns shown
     expect_error(SmallMultiples(dat, "Area", x.order=""), NA)
-    expect_error(SmallMultiples(dat2, "Scatter", scatter.sizes.column = NA))
+    expect_error(SmallMultiples(dat2, "Scatter", scatter.sizes.column = NA), NA)
 })
