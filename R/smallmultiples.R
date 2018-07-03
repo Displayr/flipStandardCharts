@@ -111,8 +111,8 @@ SmallMultiples <- function(x,
         if (sum(scatter.groups.column, na.rm = TRUE) <= 0)
             scatter.groups.column <- NCOL(x)
 
-        if (NCOL(x) < scatter.groups.column)
-            stop("'scatter.groups.column' must be smaller than ", NCOL(x), ".\n")
+        if (sum(scatter.groups.column, na.rm = TRUE) <= 0 || NCOL(x) < scatter.groups.column)
+            scatter.groups.column <- NCOL(x)
         if (isTRUE(unname(scatter.colors.column == scatter.groups.column)))
             scatter.colors.column <- 0
         if (isTRUE(unname(scatter.sizes.column == scatter.groups.column)))
@@ -142,6 +142,8 @@ SmallMultiples <- function(x,
             npanels <- length(x.order)
         }
     }
+    if (length(colors) < npanels)
+        colors <- paste0(rep("", npanels), colors)
 
     all.values <- if (chart.type == "Scatter") x[,scatter.y.column]
                   else unlist(x)
