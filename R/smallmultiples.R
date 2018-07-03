@@ -156,6 +156,14 @@ SmallMultiples <- function(x,
 
     if (share.axes)
     {
+        if (chart.type == "Scatter")
+        {
+            xvals <- x[,scatter.x.column]
+            if (is.null(x.bounds.minimum))
+                x.bounds.minimum <- min(xvals, na.rm = TRUE)
+            if (is.null(x.bounds.maximum))
+                x.bounds.maximum <- max(xvals, na.rm = TRUE)
+        }
         if (chart.type == "GeographicMap")
         {
             values.bounds.maximum <- max(values.bounds.maximum, values.max)
