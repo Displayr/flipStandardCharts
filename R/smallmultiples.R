@@ -252,7 +252,8 @@ SmallMultiples <- function(x,
         }
         col.min <- NULL
         col.max <- NULL
-        if (scatter.colors.column > 0 && scatter.colors.column <= NCOL(x))
+        if (!is.null(scatter.colors.column) && !is.na(scatter.colors.column) &&
+            scatter.colors.column > 0 && scatter.colors.column <= NCOL(x))
         {
             if (!is.numeric(x[,scatter.colors.column]))
                 x[,scatter.colors.column] <- as.factor(x[,scatter.colors.column])
