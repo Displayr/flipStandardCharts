@@ -156,7 +156,7 @@ SmallMultiples <- function(x,
 
     if (share.axes)
     {
-        if (chart.type == "Scatter")
+        if (chart.type == "Scatter" && is.numeric(x[,scatter.x.column]))
         {
             xvals <- x[,scatter.x.column]
             if (is.null(x.bounds.minimum))
