@@ -113,9 +113,9 @@ SmallMultiples <- function(x,
 
         if (NCOL(x) < scatter.groups.column)
             stop("'scatter.groups.column' must be smaller than ", NCOL(x), ".\n")
-        if (isTRUE(scatter.colors.column == scatter.groups.column))
+        if (isTRUE(unname(scatter.colors.column == scatter.groups.column)))
             scatter.colors.column <- 0
-        if (isTRUE(scatter.sizes.column == scatter.groups.column))
+        if (isTRUE(unname(scatter.sizes.column == scatter.groups.column)))
             scatter.sizes.column <- 0
         indexes <- tapply(1:nrow(x), x[,scatter.groups.column], function(ii) ii)
         npanels <- length(indexes)
