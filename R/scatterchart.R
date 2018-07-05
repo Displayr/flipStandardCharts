@@ -111,6 +111,7 @@
 #' @param footer.show Hide footer text. This is required by SmallMultiples
 #' @param sz.min Parameter to control scaling of scatter.sizes, used by SmallMultiples
 #' @param sz.max Parameter to control scaling of scatter.sizes, used by SmallMultiples
+#' @param sz.scale Parameter to control scaling of scatter.sizes, used by SmallMultiples
 #' @param col.min Parameter to control scaling of scatter.colors, used by SmallMultiples
 #' @param col.max Parameter to control scaling of scatter.colors, used by SmallMultiples
 #' @param ... Extra arguments that are ignored.
@@ -258,6 +259,7 @@ Scatter <- function(x = NULL,
                          footer.show = TRUE,     # for small multiples
                          sz.min = NULL,
                          sz.max = NULL,
+                         sz.scale = 50,
                          col.min = NULL,
                          col.max = NULL)
 {
@@ -422,9 +424,10 @@ Scatter <- function(x = NULL,
         if (is.null(sz.max))
             sz.max <- max(sc.tmp, na.rm = TRUE)
         if (any(class(scatter.sizes) %in% c("Date", "POSIXct", "POSIXt")))
-            scatter.sizes.scaled <- (sc.tmp - sz.min)/(sz.max - sz.min) * 50
+            scatter.sizes.scaled <- (sc.tmp - sz.min)/(sz.max - sz.min) * sz.scale
         else
-            scatter.sizes.scaled <- sc.tmp/sz.max * 50
+            scatter.sizes.scaled <- sc.tmp/sz.max * sz.scale
+
         if (is.null(opacity))
             opacity <- 0.4
     }

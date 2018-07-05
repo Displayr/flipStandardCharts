@@ -96,6 +96,7 @@ SmallMultiples <- function(x,
                            scatter.colors.column = 4,
                            scatter.groups.column = NULL,
                            scatter.colors.as.categorical = TRUE,
+                           sz.scale = 300,
                            ...)
 {
     # Subplot has problems with the placement of GeographicMap and Radar
@@ -295,7 +296,7 @@ SmallMultiples <- function(x,
                                                      global.font.color = global.font.color,
                                                      legend.show = legend.show && (i == 1),
                                                      footer.show = FALSE,
-                                                     sz.min = sz.min, sz.max = sz.max,
+                                                     sz.min = sz.min, sz.max = sz.max, sz.scale = sz.scale,
                                                      col.min = col.min, col.max = col.max,
                                                     ...)$htmlwidget})
     }
