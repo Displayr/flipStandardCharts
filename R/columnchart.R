@@ -484,10 +484,17 @@ Column <- function(x,
                       line = list(dash = fit.line.type, width = fit.line.width,
                       color = fit.line.colors[i], shape = 'spline'), opacity = fit.line.opacity)
             if (fit.CI.show && !is.null(tmp.fit$lb))
-                p <- add_ribbons(p, x = tmp.fit$x, ymin = tmp.fit$lb, ymax = tmp.fit$ub,
-                      name = "95% CI", legendgroup = i, showlegend = FALSE,
-                      line = list(color = fit.CI.colors[i], width = 0), opacity = fit.CI.opacity)
-
+            {
+                p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$lb, type = 'scatter',
+                        mode = 'lines', name = "Lower bound of 95%CI",
+                        showlegend = FALSE, legendgroup = i,
+                        line=list(color=fit.CI.colors[i], width=0, shape='spline'))
+                p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$ub, type = 'scatter',
+                        mode = 'lines', name = "Upper bound of 95% CI",
+                        fill = "tonexty", fillcolor = toRGB(fit.CI.colors[i], alpha = fit.CI.opacity),
+                        showlegend = FALSE, legendgroup = i,
+                        line = list(color=fit.CI.colors[i], width=0, shape='spline'))
+            }
         }
 
         # Only used for small multiples
@@ -507,7 +514,7 @@ Column <- function(x,
             xaxis2 <- list(overlaying = "x", visible = FALSE, range = x.range)
             p <- add_text(p, xaxis = "x2", x = data.annotations$x[,i],
                       y = data.annotations$y[,i],# + y.diff,
-                      text = data.annotations$text[,i],
+                      text = data.annotations$text[,i], cliponaxis = FALSE,
                       textposition = ifelse(y.sign >= 0, "top center", "bottom center"),
                       textfont = data.label.font, hoverinfo = "none",
                       showlegend = FALSE, legendgroup = i)

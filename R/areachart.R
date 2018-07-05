@@ -344,6 +344,7 @@ Area <- function(x,
                            text = source.text,
                            textfont = data.label.font,
                            textposition = data.label.position,
+                           cliponaxis = FALSE,
                            hoverinfo = "none",
                            showlegend = FALSE)
 
@@ -411,11 +412,19 @@ Area <- function(x,
                 p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$y, type = 'scatter', mode = "lines",
                           name = tmp.fname, legendgroup = i, showlegend = FALSE,
                           line = list(dash = fit.line.type, width = fit.line.width,
-                          color = fit.line.colors[i], shape = 'spline'), opacity = fit.line.opacity)
+                          color = fit.line.colors[i], shape = 'spline'), opacity = fit.line.opacity)    
                 if (fit.CI.show && !is.null(tmp.fit$lb))
-                    p <- add_ribbons(p, x = tmp.fit$x, ymin = tmp.fit$lb, ymax = tmp.fit$ub,
-                          name = "95% CI", legendgroups = i, showlegend = FALSE ,
-                          line = list(color = fit.CI.colors[i], width = 0), opacity = fit.CI.opacity)
+                {
+                    p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$lb, type = 'scatter',
+                            mode = 'lines', name = "Lower bound of 95%CI",
+                            showlegend = FALSE, legendgroup = i,
+                            line=list(color=fit.CI.colors[i], width=0, shape='spline'))
+                    p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$ub, type = 'scatter',
+                            mode = 'lines', name = "Upper bound of 95% CI",
+                            fill = "tonexty", fillcolor = toRGB(fit.CI.colors[i], alpha = fit.CI.opacity),
+                            showlegend = FALSE, legendgroup = i,
+                            line = list(color=fit.CI.colors[i], width=0, shape='spline'))
+                }
             }
         }
         else

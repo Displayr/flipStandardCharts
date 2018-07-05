@@ -118,7 +118,7 @@
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom flipTime AsDateTime
 #' @importFrom flipTransformations AsNumeric
-#' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar add_ribbons
+#' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
 #' @export
 Scatter <- function(x = NULL,
@@ -683,9 +683,17 @@ Scatter <- function(x = NULL,
                       line = list(dash = fit.line.type, width = fit.line.width, shape = 'spline',
                       color = fit.line.colors[ggi]), opacity = fit.line.opacity)
             if (fit.CI.show && !is.null(tmp.fit$lb))
-                p <- add_ribbons(p, x = tmp.fit$x, ymin = tmp.fit$lb, ymax = tmp.fit$ub,
-                      name = "95% CI", legendgroup = ggi, showlegend = FALSE,
-                      line = list(color = fit.CI.colors[ggi], width = 0), opacity = fit.CI.opacity)
+            {
+                p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$lb, type = 'scatter',
+                        mode = 'lines', name = "Lower bound of 95%CI",
+                        showlegend = FALSE, legendgroup = ggi,
+                        line=list(color=fit.CI.colors[ggi], width=0, shape='spline'))
+                p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$ub, type = 'scatter',
+                        mode = 'lines', name = "Upper bound of 95% CI",
+                        fill = "tonexty", fillcolor = toRGB(fit.CI.colors[ggi], alpha = fit.CI.opacity),
+                        showlegend = FALSE, legendgroup = ggi,
+                        line = list(color=fit.CI.colors[ggi], width=0, shape='spline'))
+            }
         }
     }
     if (fit.type != "None" && num.series == 1)
@@ -696,9 +704,15 @@ Scatter <- function(x = NULL,
                     width = fit.line.width, shape = 'spline',
                     color = fit.line.colors[1]), opacity = fit.line.opacity)
         if (fit.CI.show && !is.null(tmp.fit$lb))
-            p <- add_ribbons(p, x = tmp.fit$x, ymin = tmp.fit$lb, ymax = tmp.fit$ub,
-                    name = "95% CI", showlegend = FALSE,
-                    line = list(color = fit.CI.colors[1], width = 0), opacity = fit.CI.opacity)
+        {
+            p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$lb, type = 'scatter',
+                    mode = 'lines', name = "Lower bound of 95%CI", showlegend = FALSE,
+                    line=list(color=fit.CI.colors[1], width=0, shape='spline'))
+            p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$ub, type = 'scatter',
+                    mode = 'lines', name = "Upper bound of 95% CI", showlegend = FALSE,
+                    fill = "tonexty", fillcolor = toRGB(fit.CI.colors[1], alpha = fit.CI.opacity),
+                    line = list(color=fit.CI.colors[1], width=0, shape='spline'))
+        }
     }
     p <- addSubtitle(p, subtitle, subtitle.font, margins)
     p <- config(p, displayModeBar = modebar.show)
