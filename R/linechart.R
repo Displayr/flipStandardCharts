@@ -255,16 +255,10 @@ Line <-   function(x,
                  data.label.function(chart.matrix[, i], decimals = data.label.decimals),
                  data.label.suffix, sep = "")
 
-            p <- add_trace(p, x = x, y = y,
-                   type = "scatter",
-                   mode = "text", cliponaxis = FALSE,
-                   legendgroup = tmp.group,
-                   name = y.label,
-                   text = source.text,
-                   textfont = data.label.font,
-                   textposition = data.label.position,
-                   hoverinfo = "none",
-                   showlegend = FALSE)
+            p <- add_trace(p, x = x, y = y, type = "scatter", mode = "text", name = y.label,
+                   cliponaxis = is_clipped(xaxis), text = source.text,
+                   textfont = data.label.font, textposition = data.label.position,
+                   hoverinfo = "none", showlegend = FALSE, legendgroup = tmp.group)
         }
 
         # Draw line - main trace

@@ -662,8 +662,7 @@ Scatter <- function(x = NULL,
         p <- add_trace(p, x = x[ind], y = y[ind], name = paste0(g.list[ggi], " "),
                 showlegend = (legend.show && !separate.legend),
                 legendgroup = if (num.series > 1) ggi else 1,
-                textposition = data.label.position,
-                cliponaxis = !(xaxis$type == "numeric" && yaxis$type == "numeric"), # avoid plotly bug #2002
+                textposition = data.label.position, cliponaxis = is_clipped(xaxis),
                 marker = marker.obj, line = line.obj, text = source.text[ind],
                 hoverinfo = if (num.series == 1) "text" else "name+text",
                 type="scatter", mode = series.mode, symbols = marker.symbols)

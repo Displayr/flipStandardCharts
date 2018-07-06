@@ -344,7 +344,7 @@ Area <- function(x,
                            text = source.text,
                            textfont = data.label.font,
                            textposition = data.label.position,
-                           cliponaxis = FALSE,
+                           cliponaxis = is_clipped(xaxis),
                            hoverinfo = "none",
                            showlegend = FALSE)
 

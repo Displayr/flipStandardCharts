@@ -872,5 +872,18 @@ checkD3Format <- function(format, axis.type, warning.type = "Axis label")
     return(format)
 }
 
-
+# Mostly, we want markers and data labels to have cliponaxis to be set to FALSE
+# But for certain types of axis, this will render the whole trace to be missing
+is_clipped <- function(axis)
+{
+    if (!(axis$type %in% c("numeric", "linear")))
+        return(TRUE)
+    if (axis$autorange == "reversed")
+        return(TRUE)
+    if (length(axis$range) == 2 && axis$range[1] > axis$range[2])
+        return(TRUE)
+    else
+        return(FALSE)
+}
+    
 

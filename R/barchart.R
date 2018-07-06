@@ -273,7 +273,7 @@ Bar <- function(x,
 
         # this is the main trace for each data series
         p <- add_trace(p, x = y, y = x, type = "bar", orientation = "h", marker = marker,
-                       name  =  y.labels[i], legendgroup  =  i,
+                       name  =  y.labels[i], legendgroup = i, 
                        text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE, truncate = FALSE),
                        hoverinfo  = setHoverText(yaxis, chart.matrix, is.bar = TRUE))
 

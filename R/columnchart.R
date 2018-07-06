@@ -510,14 +510,12 @@ Column <- function(x,
             y.sign <- sign(data.annotations$y[,i])
             if (y.data.reversed)
                 y.sign <- -1 * (y.sign)
-            #y.diff <- -10 * (y.sign < 0) * diff(range(data.annotations$y))/200
             xaxis2 <- list(overlaying = "x", visible = FALSE, range = x.range)
             p <- add_text(p, xaxis = "x2", x = data.annotations$x[,i],
-                      y = data.annotations$y[,i],# + y.diff,
-                      text = data.annotations$text[,i], cliponaxis = FALSE,
+                      y = data.annotations$y[,i], cliponaxis = is_clipped(xaxis),
+                      text = data.annotations$text[,i], textfont = data.label.font,
                       textposition = ifelse(y.sign >= 0, "top center", "bottom center"),
-                      textfont = data.label.font, hoverinfo = "none",
-                      showlegend = FALSE, legendgroup = i)
+                      showlegend = FALSE, legendgroup = i, hoverinfo = "none")
         }
     }
     p <- addSubtitle(p, subtitle, subtitle.font, margins)
