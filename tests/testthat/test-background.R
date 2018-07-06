@@ -44,8 +44,7 @@ for (ff in funcs)
 {
     for (dat in dat.list)
     {
-        #for (i in 1:length(test.args))
-        for (i in 6)
+        for (i in 1:length(test.args))
         {
             # filestem is both the name of the image in accepted-snapshots
             # and the error msg expected on the output of devtools::test()
@@ -62,8 +61,8 @@ for (ff in funcs)
                 expect_error(suppressWarnings(eval(parse(text=cmd))), NA)
 
                 #expect_true(TestWidget(pp, filestem))
-                print(pp)
-                readline(prompt=paste0(filestem, ": press [enter] to continue: "))
+                #print(pp)
+                #readline(prompt=paste0(filestem, ": press [enter] to continue: "))
             })
         }
     }
