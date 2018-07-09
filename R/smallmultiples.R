@@ -96,7 +96,7 @@ SmallMultiples <- function(x,
                            scatter.colors.column = 4,
                            scatter.groups.column = NULL,
                            scatter.colors.as.categorical = TRUE,
-                           sz.scale = 300,
+                           sz.scale = 50,
                            ...)
 {
     # Subplot has problems with the placement of GeographicMap and Radar
@@ -257,7 +257,14 @@ SmallMultiples <- function(x,
         if (!is.null(scatter.sizes.column) && !is.na(scatter.sizes.column) &&
             scatter.sizes.column > 0 && scatter.sizes.column <= NCOL(x))
         {
-            sc.tmp <- abs(AsNumeric(x[,scatter.sizes.column], binary = FALSE))
+            notNA.ind <- 1:nrow(x)
+            if (sum(scatter.x.column, na.rm = TRUE) > 0)
+                notNA.ind <- intersect(notNA.ind, which(!is.na(x[,scatter.x.column])))
+            if (sum(scatter.y.column, na.rm = TRUE) > 0)
+                notNA.ind <- intersect(notNA.ind, which(!is.na(x[,scatter.y.column])))
+            if (sum(scatter.colors.column, na.rm = TRUE) > 0)
+                notNA.ind <- intersect(notNA.ind, which(!is.na(x[,scatter.colors.column])))
+            sc.tmp <- abs(AsNumeric(x[notNA.ind, scatter.sizes.column], binary = FALSE))
             sz.min <- min(sc.tmp, na.rm = TRUE)
             sz.max <- max(sc.tmp, na.rm = TRUE)
         }

@@ -29,7 +29,7 @@ SmallMultiples(x, chart.type = "Area", nrows = 2, share.axes = TRUE,
   footer.wrap = TRUE, footer.wrap.nchar = 100, mapping.package = "plotly",
   scatter.x.column = 1, scatter.y.column = 2, scatter.sizes.column = 3,
   scatter.colors.column = 4, scatter.groups.column = NULL,
-  scatter.colors.as.categorical = TRUE, sz.scale = 300, ...)
+  scatter.colors.as.categorical = TRUE, sz.scale = 50, ...)
 }
 \arguments{
 \item{x}{Input data as a matrix or dataframe}
