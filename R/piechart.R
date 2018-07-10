@@ -179,7 +179,7 @@ Pie <- function(x,
         y.values <- y.values * 100
     }
 
-    donut <- Donut(values = y.values,
+    donut <- rhtmlDonut::Donut(values = y.values,
                   labels = x.labels,
                   values.color = pie.values.colors,
                   values.order = pie.values.order,

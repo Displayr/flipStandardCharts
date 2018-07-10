@@ -10,7 +10,7 @@ positives <- abs(random)
 
 # Create lists of all charting functions, and data types and options to use
 # Functions excluded: Waterfall, Venn, Stream, HeatMap
-charting.funcs <- c("Column", "Bar", "Area", "Line", "Pie", "Radar",
+charting.funcs <- c("Column", "Bar", "Area", "Line", "Pie", "Donut", "Radar",
                     "Scatter", "LabeledScatter", "Box", "Bean", "Distribution",
                     "Density", "Violin")
 dat.list <- c("random", "positives")
@@ -42,7 +42,7 @@ for (func in charting.funcs)
             {
                 # These can be grouped together using suppressWarning
                 # But this is more informative
-                if (filestem == "basicexample-pie-random")
+                if (filestem == "basicexample-pie-random" || filestem == "basicexample-donut-random")
                     expect_warning(eval(parse(text=cmd)))
                 else
                     expect_error(eval(parse(text=cmd)), NA)
