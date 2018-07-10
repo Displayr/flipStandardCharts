@@ -416,17 +416,22 @@ Scatter <- function(x = NULL,
     n <- sum(not.na)
     if (!is.null(scatter.sizes))
     {
-        sc.tmp <- abs(AsNumeric(scatter.sizes, binary = FALSE))
-        if (!scatter.sizes.as.diameter)
-            sc.tmp <- sqrt(sc.tmp)
+        sz.tmp <- abs(AsNumeric(scatter.sizes, binary = FALSE))
         if (is.null(sz.min))
-            sz.min <- min(sc.tmp, na.rm = TRUE)
+            sz.min <- min(sz.tmp, na.rm = TRUE)
         if (is.null(sz.max))
-            sz.max <- max(sc.tmp, na.rm = TRUE)
+            sz.max <- max(sz.tmp, na.rm = TRUE)
+        if (!scatter.sizes.as.diameter)
+        {
+            sz.tmp <- sqrt(sz.tmp)
+            sz.min <- sqrt(sz.min)
+            sz.max <- sqrt(sz.max)
+        }
+
         if (any(class(scatter.sizes) %in% c("Date", "POSIXct", "POSIXt")))
-            scatter.sizes.scaled <- (sc.tmp - sz.min)/(sz.max - sz.min) * sz.scale
+            scatter.sizes.scaled <- (sz.tmp - sz.min)/(sz.max - sz.min) * sz.scale
         else
-            scatter.sizes.scaled <- sc.tmp/sz.max * sz.scale
+            scatter.sizes.scaled <- sz.tmp/sz.max * sz.scale
 
         if (is.null(opacity))
             opacity <- 0.4
