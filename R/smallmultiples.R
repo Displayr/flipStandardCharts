@@ -142,8 +142,8 @@ SmallMultiples <- function(x,
             npanels <- length(x.order)
         }
     }
-    if (npanels > 50)
-        stop("Small multiples cannot show more than 100 panels (current dataset contains ", npanels, "series).\n")
+    if (npanels > 100)
+        stop("Small multiples cannot show more than 100 panels (current dataset contains ", npanels, " series).\n")
     if (length(colors) < npanels)
         colors <- paste0(rep("", npanels), colors)
 
