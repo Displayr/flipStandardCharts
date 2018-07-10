@@ -36,11 +36,13 @@ Donut <- function(x,
                   global.font.family = "Arial",
                   global.font.color = rgb(44, 44, 44, maxColorValue = 255))
 {
-    cl <- as.list(match.call())
+    cl <- match.call()
+    cl <- c(cl[1], lapply(cl[-1], evalc, env = parent.frame()))
+    cl <- as.call(cl)
     cl <- cl[-1]
     cl$type <- "Donut"
     if (is.null(cl$pie.inner.radius))
         cl$pie.inner.radius <- 70
-    return(do.call(Pie, cl))
+    return(do.call(Pie, as.list(cl)))
 }
 
