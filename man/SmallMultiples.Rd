@@ -29,7 +29,7 @@ SmallMultiples(x, chart.type = "Area", nrows = 2, share.axes = TRUE,
   footer.wrap = TRUE, footer.wrap.nchar = 100, mapping.package = "plotly",
   scatter.x.column = 1, scatter.y.column = 2, scatter.sizes.column = 3,
   scatter.colors.column = 4, scatter.groups.column = NULL,
-  scatter.colors.as.categorical = TRUE, sz.scale = 50, ...)
+  scatter.colors.as.categorical = TRUE, ...)
 }
 \arguments{
 \item{x}{Input data as a matrix or dataframe}
@@ -186,8 +186,6 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 the data for small multiples. By default this is the last column in \code{x}}
 
 \item{scatter.colors.as.categorical}{Boolean; Whether to treat colors as a categorical groups, or a numeric scale.}
-
-\item{sz.scale}{Parameter to control scaling of scatter.sizes, used by SmallMultiples}
 
 \item{...}{Extra arguments passed to the charting function}
 }

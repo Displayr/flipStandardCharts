@@ -96,7 +96,6 @@ SmallMultiples <- function(x,
                            scatter.colors.column = 4,
                            scatter.groups.column = NULL,
                            scatter.colors.as.categorical = TRUE,
-                           sz.scale = 50,
                            ...)
 {
     # Subplot has problems with the placement of GeographicMap and Radar
@@ -143,6 +142,8 @@ SmallMultiples <- function(x,
             npanels <- length(x.order)
         }
     }
+    if (npanels > 50)
+        stop("Small multiples cannot show more than 100 panels (current dataset contains ", npanels, "series).\n")
     if (length(colors) < npanels)
         colors <- paste0(rep("", npanels), colors)
 
@@ -215,11 +216,11 @@ SmallMultiples <- function(x,
     {
         w.offset <- c(pad.left, rep(0, max(0, ncols - 2)), pad.right)[1:ncols]
         if (any(w.offset >= 1/ncols))
-            stop("'pad.left' and 'pad.bottom' should be between 0 and 1/ncols (", round(1/ncols, 4), ")")
+            stop("'Left padding' and 'Right padding' should be between 0 and 1/ncols (", round(1/ncols, 4), ")")
     }
     h.offset <- c(pad.top, rep(0, max(0, nrows - 2)), pad.bottom)[1:nrows]
     if (any(h.offset >= 1/nrows))
-        stop("'pad.top' and 'pad.bottom' should be between 0 and 1/nrows (", round(1/nrows, 4), ")")
+        stop("'Top padding' and 'Bottom padding' should be between 0 and 1/nrows (", round(1/nrows, 4), ")")
 
     # Position titles for each panel
     paneltitles <- NULL
@@ -303,7 +304,7 @@ SmallMultiples <- function(x,
                                                      global.font.color = global.font.color,
                                                      legend.show = legend.show && (i == 1),
                                                      footer.show = FALSE,
-                                                     sz.min = sz.min, sz.max = sz.max, sz.scale = sz.scale,
+                                                     sz.min = sz.min, sz.max = sz.max,
                                                      col.min = col.min, col.max = col.max,
                                                     ...)$htmlwidget})
     }
