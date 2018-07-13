@@ -153,6 +153,8 @@ BarPictograph <- function(x,
         stop("pad.icon.row must be smaller than 1 and greater or equal to 0\n")
     if (pad.icon.col < 0 || pad.icon.col >= 1)
         stop("pad.icon.col must be smaller than 1 and greater or equal to 0\n")
+    if (length(colors) > 1 && length(colors) != n)
+        colors <- paste0(colors, rep("", n))[1:n]
 
     if (label.color.asIcon)
     {
