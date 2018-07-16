@@ -89,7 +89,7 @@ test_that ("Areas in Australia", {
 })
 
 names(country.codes)[1] <- "XXX"
-test_that ("Postcodes by country", {
+test_that ("Unmatched warning", {
     expect_warning(GeographicMap(country.codes), "Unmatched region names: XXX")
 })
 

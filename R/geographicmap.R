@@ -207,17 +207,19 @@ GeographicMap <- function(x,
         table <- table[!(rownames(table) %in% remove.regions), , drop = FALSE]
     }
 
-    table.names <- rownames(table)
     coords.names <- tolower(coords[[structure]])
-    incorrect.names <- !tolower(table.names) %in% coords.names
+    incorrect.names <- !tolower(rownames(table)) %in% coords.names
 
     if (any(incorrect.names))
     {
-        msg <- paste("Unmatched region names:", paste(table.names[incorrect.names], collapse = ", "))
+        msg <- paste("Unmatched region names:", paste(rownames(table)[incorrect.names], collapse = ", "))
         warning(msg)
     }
     if (all(incorrect.names) && zip.country != "Automatic")
         stop("No names in the data were matched to zip codes in your selected country.")
+
+    table <- table[!incorrect.names, , drop = FALSE]
+    table.names <- rownames(table)
 
     # Splicing data onto coordinate data.frame.
     country.lookup <- match(coords.names, tolower(table.names))
