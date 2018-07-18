@@ -86,9 +86,9 @@ Pyramid <- function(x,
                     x.tick.font.size = 10,
                     y.tick.label.wrap = TRUE,
                     y.tick.label.wrap.nchar = 21,
-                    marker.border.width = 0,
+                    marker.border.width = 1,
                     marker.border.colors = colors,
-                    marker.border.opacity = opacity,
+                    marker.border.opacity = NULL,
                     data.label.show = FALSE,
                     data.label.font.family = global.font.family,
                     data.label.font.size = 10,
@@ -115,8 +115,10 @@ Pyramid <- function(x,
     hover.mode <- if (tooltip.show) "closest" else FALSE
     if (is.null(opacity))
         opacity <- 1
-    if (is.null(marker.border.opacity))
+    if (is.null(marker.border.opacity) && opacity > 0.85)
         marker.border.opacity <- opacity
+    else if (is.null(marker.border.opacity)) # trying to hide gap in the middle
+        marker.border.opacity <- opacity/(4 + 3*(opacity < 0.7))
     colors <- paste0(rep("", nrow(chart.matrix)), colors)
 
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
@@ -129,7 +131,7 @@ Pyramid <- function(x,
     data.label.font = list(family = data.label.font.family, size = data.label.font.size, color = data.label.font.color)
 
     type <- "Bar"
-    tmp.label <- formatByD3(max(chart.matrix), data.label.format, 
+    tmp.label <- formatByD3(max(chart.matrix), data.label.format,
                  data.label.prefix, data.label.suffix)
     x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, chart.matrix, is.null(x.tick.distance))
     xtick <- setTicks(x.range$min, x.range$max, x.tick.distance, x.data.reversed,
@@ -183,7 +185,7 @@ Pyramid <- function(x,
     {
         source.text <- formatByD3(chart.matrix[,1], data.label.format,
                data.label.prefix, data.label.suffix)
-        p <- add_trace(p, y = x, x = rep(0, length(x)), 
+        p <- add_trace(p, y = x, x = rep(0, length(x)),
                type = "scatter", mode = "text", text = source.text,
                textfont = data.label.font, textposition = "middle center",
                hoverinfo = "none", showlegend = FALSE)
