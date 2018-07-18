@@ -356,7 +356,18 @@ SmallMultiples <- function(x,
                                                      global.font.family = global.font.family,
                                                      global.font.color = global.font.color,
                                                      ...)$htmlwidget})
-
+    else if (chart.type == "Pyramid")
+        plot.list <- lapply(1:npanels, function(i){chart(x[,i, drop = FALSE],
+                                                     colors = colors,
+                                                     x.title = x.title, x.title.font.size = x.title.font.size,
+                                                     y.title = y.title, y.title.font.size = y.title.font.size,
+                                                     grid.show = FALSE, data.label.show = data.label.show,
+                                                     x.tick.show = FALSE, x.tick.angle = x.tick.angle,
+                                                     x.bounds.maximum = x.bounds.maximum,
+                                                     x.bounds.minimum = x.bounds.minimum,
+                                                     global.font.family = global.font.family,
+                                                     global.font.color = global.font.color,
+                                                     ...)$htmlwidget})
     else
         plot.list <- lapply(1:npanels, function(i){chart(.bind_mean(x[,i, drop = FALSE], average.series),
                                                      colors = c(colors[i], average.color),
