@@ -101,8 +101,17 @@ Pyramid <- function(x,
                     modebar.show = FALSE,
                     bar.gap = 0.15)
 {
-    if (length(dim(x)) > 1 && all(dim(x)) > 1)
-        stop("Input data 'x' must be a vector or 1-dimensional table")
+    if (length(dim(x)) > 1)
+    {
+        if (NROW(x) == 1 && NCOL(x) > 1)
+            x <- t(x)
+        if (NCOL(x) > 1)
+        {
+            warning("'Pyramid' charts can only show a single series (column). ",
+                    "Consider using Small Multiples or changing the chart type to 'Bar'.")
+            x <- x[,1]
+        }
+    }
     if (any(sign(x) * sign(x)[1] < 0))
         stop("'Pyramid' charts cannot show a mixture of positive and negative values.")
     chart.matrix <- checkMatrixNames(x)
