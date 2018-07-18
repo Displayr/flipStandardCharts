@@ -107,13 +107,6 @@ Pyramid <- function(x,
         stop("'Pyramid' charts cannot show a mixture of positive and negative values.")
     chart.matrix <- checkMatrixNames(x)
 
-    data.label.mult <- 1
-    if (percentFromD3(data.label.format)) {
-        data.label.suffix <- paste0("%", data.label.suffix)
-        data.label.mult <- 100
-    }
-    data.label.decimals <- decimalsFromD3(data.label.format)
-
     matrix.labels <- names(dimnames(chart.matrix))
     if (nchar(y.title) == 0 && length(matrix.labels) == 2)
         y.title <- matrix.labels[1]
@@ -125,7 +118,6 @@ Pyramid <- function(x,
     if (is.null(marker.border.opacity))
         marker.border.opacity <- opacity
     colors <- paste0(rep("", nrow(chart.matrix)), colors)
-    #eval(colors) # not sure why, but this is necessary for bars to appear properly
 
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
     subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
@@ -137,8 +129,8 @@ Pyramid <- function(x,
     data.label.font = list(family = data.label.font.family, size = data.label.font.size, color = data.label.font.color)
 
     type <- "Bar"
-    tmp.label <- sprintf(paste0("%s%.", data.label.decimals, "f%s"),
-                data.label.prefix, max(chart.matrix), data.label.suffix)
+    tmp.label <- formatByD3(max(chart.matrix), data.label.format, 
+                 data.label.prefix, data.label.suffix)
     x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, chart.matrix, is.null(x.tick.distance))
     xtick <- setTicks(x.range$min, x.range$max, x.tick.distance, x.data.reversed,
                   data = NULL, type = type,
@@ -166,24 +158,9 @@ Pyramid <- function(x,
     margins <- setMarginsForAxis(margins, as.character(range(x)), xaxis)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
-    #margins <- setMarginsForLegend(margins, legend.show, legend, colnames(chart.matrix))
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
     footer.axis <- setFooterAxis(footer, footer.font, margins)
-
-    # Data label annotations
-    # Also used for hovertext
-    data.annotations <- dataLabelPositions(chart.matrix = chart.matrix,
-                        annotations = NULL,
-                        data.label.mult = data.label.mult,
-                        bar.decimals = data.label.decimals,
-                        bar.prefix = data.label.prefix,
-                        bar.suffix = data.label.suffix,
-                        barmode = "",
-                        swap.axes.and.data = TRUE,
-                        bar.gap = bar.gap,
-                        display.threshold = data.label.threshold,
-                        dates = axisFormat$ymd)
 
     x <- axisFormat$labels
     y <- as.numeric(chart.matrix[,1])
@@ -202,21 +179,14 @@ Pyramid <- function(x,
                        text = formatByD3(y[i], x.hovertext.format), hoverinfo  = "name+text")
     }
 
-    yaxis2 <- NULL
     if (data.label.show)
     {
-        y.range <- getRange(x, yaxis, axisFormat)
-        yaxis2 <- list(overlaying = "y", visible = FALSE, range = y.range)
-        x.sign <- sign(data.annotations$x[,1])
-        if (x.data.reversed)
-            x.sign <- -1 * x.sign
-        x.diff <- x.sign * diff(range(data.annotations$x))/100
-        p <- add_text(p, yaxis = "y2", x = rep(0, nrow(chart.matrix)),
-                  y = data.annotations$y[,1],
-                  text = data.annotations$text[,1],
-                  textposition = "middle center",
-                  textfont = data.label.font, hoverinfo = "none",
-                  showlegend = FALSE, legendgroup = i)
+        source.text <- formatByD3(chart.matrix[,1], data.label.format,
+               data.label.prefix, data.label.suffix)
+        p <- add_trace(p, y = x, x = rep(0, length(x)), 
+               type = "scatter", mode = "text", text = source.text,
+               textfont = data.label.font, textposition = "middle center",
+               hoverinfo = "none", showlegend = FALSE)
     }
 
     p <- addSubtitle(p, subtitle, subtitle.font, margins)
@@ -227,7 +197,6 @@ Pyramid <- function(x,
         showlegend = FALSE,
         yaxis = yaxis,
         xaxis4 = footer.axis,
-        yaxis2 = yaxis2,
         xaxis = xaxis,
         margin = margins,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
