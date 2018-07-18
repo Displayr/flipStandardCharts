@@ -107,8 +107,8 @@ Pyramid <- function(x,
             x <- t(x)
         if (NCOL(x) > 1)
         {
-            warning("'Pyramid' charts can only show a single series (column). ",
-                    "Consider using Small Multiples or changing the chart type to 'Bar'.")
+            warning("'Pyramid' showing only the first column of the input data. ",
+                    "To show multiple series, use Small Multiples or change the chart type to 'Bar'.")
             x <- x[,1]
         }
     }
