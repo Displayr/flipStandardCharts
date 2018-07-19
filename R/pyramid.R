@@ -176,6 +176,7 @@ Pyramid <- function(x,
     x <- axisFormat$labels
     y <- as.numeric(chart.matrix[,1])
     p <- plot_ly(as.data.frame(chart.matrix))
+    p <- add_trace(p, x = rep(0, length(x)), y = x, type = "bar", orientation = "h")
     for (i in 1:nrow(chart.matrix))
     {
         marker <- list(color = toRGB(colors[i], alpha = opacity),
