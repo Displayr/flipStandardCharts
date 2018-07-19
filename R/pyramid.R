@@ -182,10 +182,14 @@ Pyramid <- function(x,
                       line = list(color = toRGB(marker.border.colors[i],
                       alpha = marker.border.opacity),
                       width = marker.border.width))
-        p <- add_trace(p, x = y[i]/2, y = x[i], type = "bar", orientation = "h",
+        ind <- if (i == 1) 2:1 else i+(-1:0) # plotly doesn't like vectors of length 1
+        if (length(x) < 2)
+            ind <- 1
+
+        p <- add_trace(p, x = c(0, y[i]/2), y = x[ind], type = "bar", orientation = "h",
                        marker = marker, name  =  x[i],
                        text = formatByD3(y[i], x.hovertext.format), hoverinfo  = "name+text")
-        p <- add_trace(p, x = -y[i]/2, y = x[i], type = "bar", orientation = "h",
+        p <- add_trace(p, x = -c(0, y[i]/2), y = x[ind], type = "bar", orientation = "h",
                        marker = marker, name  =  x[i],
                        text = formatByD3(y[i], x.hovertext.format), hoverinfo  = "name+text")
     }
