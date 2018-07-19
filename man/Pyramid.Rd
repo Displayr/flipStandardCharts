@@ -39,17 +39,17 @@ Pyramid(x, colors = ChartColors(max(1, length(x))), opacity = NULL,
   maxColorValue = 255), x.data.reversed = FALSE, x.grid.width = 0,
   x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
   x.tick.show = FALSE, x.tick.suffix = "", x.tick.prefix = "",
-  x.tick.format = "", x.hovertext.format = x.tick.format,
-  x.tick.angle = NULL, x.tick.font.color = global.font.color,
+  x.tick.format = "", x.tick.angle = NULL,
+  x.tick.font.color = global.font.color,
   x.tick.font.family = global.font.family, x.tick.font.size = 10,
   y.tick.label.wrap = TRUE, y.tick.label.wrap.nchar = 21,
-  marker.border.width = 0, marker.border.colors = colors,
-  marker.border.opacity = opacity, data.label.show = FALSE,
+  marker.border.width = 1, marker.border.colors = colors,
+  marker.border.opacity = NULL, data.label.show = FALSE,
   data.label.font.family = global.font.family, data.label.font.size = 10,
   data.label.font.color = global.font.color, data.label.format = "",
   data.label.prefix = "", data.label.suffix = "",
-  data.label.threshold = NULL, tooltip.show = TRUE, modebar.show = FALSE,
-  bar.gap = 0.15)
+  data.label.threshold = NULL, x.hovertext.format = data.label.format,
+  tooltip.show = TRUE, modebar.show = FALSE, bar.gap = 0.15)
 }
 \arguments{
 \item{x}{Input data may be a matrix or a vector, containing the height of the columns
@@ -248,9 +248,6 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 \item{x.tick.format}{A string representing a d3 formatting code.
 See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 
-\item{x.hovertext.format}{A string representing a d3 formatting code.
-See https://github.com/mbostock/d3/wiki/Formatting#numbers}
-
 \item{x.tick.angle}{x-axis tick label angle in degrees.
 90 = vertical; 0 = horizontal}
 
@@ -295,6 +292,9 @@ See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 \item{data.label.threshold}{The proportion of the total range below which
 data labels should not be displayed. Only applicable for pie, bar and column
 charts.}
+
+\item{x.hovertext.format}{A string representing a d3 formatting code.
+See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 
 \item{tooltip.show}{Logical; whether to show a tooltip on hover.}
 

@@ -10,13 +10,13 @@
 #' @param average.show Logical; whether to show a second series in each panel containing
 #'     the data averaged across all series.
 #' @param average.color The color in which the average series should be displayed
-#' @param paneltitle.show Logical; whether to show a title for each panel.
-#' @param paneltitle.font.family Font family of panel titles.
-#' @param paneltitle.font.color Font color of panel titles.
-#' @param paneltitle.font.size Font size of panel titles.
-#' @param paneltitle.wrap Logical; whether the panel title should be wrapped.
-#' @param paneltitle.wrap.nchar Number of characters (approximately) in each line
-#'     of the panel title when \code{paneltitle.wordwrap} \code{TRUE}.
+#' @param panel.title.show Logical; whether to show a title for each panel.
+#' @param panel.title.font.family Font family of panel titles.
+#' @param panel.title.font.color Font color of panel titles.
+#' @param panel.title.font.size Font size of panel titles.
+#' @param panel.title.wrap Logical; whether the panel title should be wrapped.
+#' @param panel.title.wrap.nchar Number of characters (approximately) in each line
+#'     of the panel title when \code{panel.title.wordwrap} \code{TRUE}.
 #' @param legend.show Ignored except for with \code{GeographicMap}.
 #' @param pad.top Numeric in [0,1]; Spacing above chart (between panels)
 #' @param pad.bottom Numeric in [0,1]; Spacing below chart (between panels)
@@ -60,12 +60,12 @@ SmallMultiples <- function(x,
                            title.font.family = global.font.family,
                            title.font.color = global.font.color,
                            title.font.size = 16,
-                           paneltitle.show = TRUE,
-                           paneltitle.font.family = global.font.family,
-                           paneltitle.font.color = global.font.color,
-                           paneltitle.font.size = 14,
-                           paneltitle.wrap = TRUE,
-                           paneltitle.wrap.nchar = 20,
+                           panel.title.show = TRUE,
+                           panel.title.font.family = global.font.family,
+                           panel.title.font.color = global.font.color,
+                           panel.title.font.size = 14,
+                           panel.title.wrap = TRUE,
+                           panel.title.wrap.nchar = 20,
                            x.title = "",
                            x.title.font.size = 12,
                            y.title = "",
@@ -223,18 +223,18 @@ SmallMultiples <- function(x,
         stop("'Top padding' and 'Bottom padding' should be between 0 and 1/nrows (", round(1/nrows, 4), ")")
 
     # Position titles for each panel
-    paneltitles <- NULL
+    panel.titles <- NULL
     titles <- if (chart.type == "Scatter") names(indexes)
               else                         colnames(x)
-    if (paneltitle.show && !is.null(titles))
+    if (panel.title.show && !is.null(titles))
     {
-        title.list <- autoFormatLongLabels(titles, paneltitle.wrap, paneltitle.wrap.nchar)
+        title.list <- autoFormatLongLabels(titles, panel.title.wrap, panel.title.wrap.nchar)
         titles.ypos <- rep((nrows:1)/nrows, each = ncols)[1:npanels]
         titles.xpos <- rep((1:ncols - 0.5)/ncols, nrows)[1:npanels]
-        paneltitles <- list(text = title.list, x = titles.xpos, y = titles.ypos,
+        panel.titles <- list(text = title.list, x = titles.xpos, y = titles.ypos,
                             showarrow = FALSE, xanchor = "center", yanchor = "top",
-                            font = list(family = paneltitle.font.family, color = paneltitle.font.color,
-                            size = paneltitle.font.size), xref = 'paper', yref = 'paper')
+                            font = list(family = panel.title.font.family, color = panel.title.font.color,
+                            size = panel.title.font.size), xref = 'paper', yref = 'paper')
     }
 
     # Construct charts
@@ -391,7 +391,7 @@ SmallMultiples <- function(x,
                    heights = rep(1/nrows, nrows) - h.offset, # compensate for plotly bug
                    widths = rep(1/ncols, ncols) - w.offset, titleX = TRUE, titleY = TRUE,
                    shareX = share.axes && !is.geo, shareY = share.axes && !is.geo)
-    res <- layout(res, title = title, showlegend = is.geo, annotations = paneltitles,
+    res <- layout(res, title = title, showlegend = is.geo, annotations = panel.titles,
                   titlefont = list(family = title.font.family, color = title.font.color, size = title.font.size),
                   margin = list(l = margin.left, r = margin.right, b = margin.bottom, t = margin.top))
     res

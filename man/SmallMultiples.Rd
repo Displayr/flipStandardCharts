@@ -15,9 +15,9 @@ SmallMultiples(x, chart.type = "Area", nrows = 2, share.axes = TRUE,
   global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
   maxColorValue = 255), title = "", title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
-  paneltitle.show = TRUE, paneltitle.font.family = global.font.family,
-  paneltitle.font.color = global.font.color, paneltitle.font.size = 14,
-  paneltitle.wrap = TRUE, paneltitle.wrap.nchar = 20, x.title = "",
+  panel.title.show = TRUE, panel.title.font.family = global.font.family,
+  panel.title.font.color = global.font.color, panel.title.font.size = 14,
+  panel.title.wrap = TRUE, panel.title.wrap.nchar = 20, x.title = "",
   x.title.font.size = 12, y.title = "", y.title.font.size = 12,
   data.label.show = FALSE, grid.show = TRUE, x.tick.show = TRUE,
   x.tick.angle = NULL, legend.show = TRUE, margin.left = NULL,
@@ -102,18 +102,18 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{title.font.size}{Integer; Title font size; default = 10.}
 
-\item{paneltitle.show}{Logical; whether to show a title for each panel.}
+\item{panel.title.show}{Logical; whether to show a title for each panel.}
 
-\item{paneltitle.font.family}{Font family of panel titles.}
+\item{panel.title.font.family}{Font family of panel titles.}
 
-\item{paneltitle.font.color}{Font color of panel titles.}
+\item{panel.title.font.color}{Font color of panel titles.}
 
-\item{paneltitle.font.size}{Font size of panel titles.}
+\item{panel.title.font.size}{Font size of panel titles.}
 
-\item{paneltitle.wrap}{Logical; whether the panel title should be wrapped.}
+\item{panel.title.wrap}{Logical; whether the panel title should be wrapped.}
 
-\item{paneltitle.wrap.nchar}{Number of characters (approximately) in each line
-of the panel title when \code{paneltitle.wordwrap} \code{TRUE}.}
+\item{panel.title.wrap.nchar}{Number of characters (approximately) in each line
+of the panel title when \code{panel.title.wordwrap} \code{TRUE}.}
 
 \item{x.title}{Character, x-axis title; defaults to chart input values;
 to turn off set to "FALSE".}
