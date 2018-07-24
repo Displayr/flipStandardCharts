@@ -134,7 +134,7 @@ radarChart <- function(chart.matrix,
     {
         ind <- which(pos$Group == g.list[ggi])
         p <- add_trace(p, x=pos$x[ind], y=pos$y[ind], type="scatter", mode="lines", fill="toself",
-                    name=g.list[ggi], legendgroup=g.list[ggi],
+                    name=g.list[ggi], legendgroup=g.list[ggi], fillcolor=toRGB(series.marker.colors[ggi], alpha=0.4),
                     showlegend=TRUE, hoverinfo="skip", #evaluation=TRUE,
                     line=list(width=series.line.width, color=toRGB(series.marker.colors[ggi])))
     }

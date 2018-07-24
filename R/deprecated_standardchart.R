@@ -2160,7 +2160,8 @@ Chart <-   function(y = NULL,
                                 showscale = T, colorscale=scatterplot.data$color.scale,
                                 colorbar = list(title=colorbar.title, outlinewidth=0))
             else
-                marker.obj <- list(size=sizes, sizemode="diameter", line=list(width=series.marker.border.width),
+                marker.obj <- list(size=sizes, sizemode="diameter",
+                                line=list(width=series.marker.border.width, color=scatterplot.data$colors[ggi]),
                                 color=scatterplot.data$colors[ggi], opacity=scatter.opacity)
 
             p <- add_trace(p, x=scatterplot.data$x[ind], y=scatterplot.data$y[ind],
