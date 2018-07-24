@@ -286,7 +286,6 @@ Area <- function(x,
         rownames(chart.matrix) <- 1:nrow(chart.matrix)
     x.labels <- axisFormat$labels
     y.labels <- colnames(chart.matrix)
-    xaxis2 <- NULL
 
     # Invisible trace to ensure enough space for data labels
     # This must happen before ANY of the area traces are put in
@@ -461,7 +460,6 @@ Area <- function(x,
         showlegend = legend.show,
         legend = legend,
         yaxis = yaxis,
-        xaxis2 = xaxis2,
         xaxis = xaxis,
         margin = margins,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),

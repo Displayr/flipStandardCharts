@@ -575,8 +575,7 @@ addFooter <- function(p, footer, footer.font, margins)
         footer.nline <- sum(gregexpr("<br>", footer)[[1]] > -1) + 1
         footer.npad <- max(0, ceiling(margins$b/footer.font$size/1.25) - footer.nline - 2)
         footer <- paste0("&nbsp;", paste(rep("<br>", footer.npad), collapse = ""), footer)
-        p <- add_annotations(p, text = footer,
-                font = list(size = footer.font$size),
+        p <- add_annotations(p, text = footer, font = footer.font,
                 xref = "paper", x = 0.5, yref = "paper", y = 0.0,
                 yanchor = "top", xanchor = "center", showarrow = FALSE)
     }
