@@ -2155,13 +2155,13 @@ Chart <-   function(y = NULL,
                         else list(width=series.line.width, color=scatterplot.data$colors[ggi])
             marker.obj <- NULL
             if (ggi == 1 && !is.null(scatterplot.data$color.scale))
-                marker.obj <- list(size=sizes, sizemode="diameter", line=list(width=series.marker.border.width),
+                marker.obj <- list(size=sizes, sizemode="diameter", line=list(width=0),
                                 color=scatterplot.data$color.values, opacity=scatter.opacity,
                                 showscale = T, colorscale=scatterplot.data$color.scale,
                                 colorbar = list(title=colorbar.title, outlinewidth=0))
             else
                 marker.obj <- list(size=sizes, sizemode="diameter",
-                                line=list(width=series.marker.border.width, color=scatterplot.data$colors[ggi]),
+                                line=list(width=0),
                                 color=scatterplot.data$colors[ggi], opacity=scatter.opacity)
 
             p <- add_trace(p, x=scatterplot.data$x[ind], y=scatterplot.data$y[ind],
