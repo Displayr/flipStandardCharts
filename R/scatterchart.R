@@ -615,9 +615,6 @@ Scatter <- function(x = NULL,
                     legend, scatter.colors)
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
-    footer.axis <- NULL
-    if (footer.show)
-        footer.axis <- setFooterAxis(footer, footer.font, margins)
 
     ## START PLOTTING
     p <- plot_ly(data.frame(x = x,y = y))
@@ -722,11 +719,11 @@ Scatter <- function(x = NULL,
         }
     }
     p <- addSubtitle(p, subtitle, subtitle.font, margins)
+    p <- addFooter(p, footer, footer.font, margins)
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
         margin = margins,
-        xaxis4 = footer.axis,
         title = title,
         showlegend = legend.show,
         legend = legend,

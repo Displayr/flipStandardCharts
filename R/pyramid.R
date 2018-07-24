@@ -171,7 +171,6 @@ Pyramid <- function(x,
                                  subtitle.font.size, footer.font.size)
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
-    footer.axis <- setFooterAxis(footer, footer.font, margins)
 
     x <- axisFormat$labels
     y <- as.numeric(chart.matrix[,1])
@@ -206,13 +205,13 @@ Pyramid <- function(x,
     }
 
     p <- addSubtitle(p, subtitle, subtitle.font, margins)
+    p <- addFooter(p, footer, footer.font, margins)
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
         title = title,
         showlegend = FALSE,
         yaxis = yaxis,
-        xaxis4 = footer.axis,
         xaxis = xaxis,
         margin = margins,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),

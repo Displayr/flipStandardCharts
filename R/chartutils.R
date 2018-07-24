@@ -568,28 +568,20 @@ addSubtitle <- function(p, subtitle, subtitle.font, margins)
     p
 }
 
-# footer.font and margins are lists
-# footer.font = list(family, size, color)
-# margins = list(top, bottom, left, right, inner)
-setFooterAxis <- function(footer, footer.font, margins, overlay = "x")
+addFooter <- function(p, footer, footer.font, margins)
 {
-    # overlay = FALSE is needed for the distribution chart with no x axis
-    # but in other cases, setting to FALSE may do ugly things with transparencies
-
-    res <- NULL
-    if (nchar(footer) > 0)
+    if (sum(nchar(footer)) > 0)
     {
         footer.nline <- sum(gregexpr("<br>", footer)[[1]] > -1) + 1
         footer.npad <- max(0, ceiling(margins$b/footer.font$size/1.25) - footer.nline - 2)
-        footer <- paste0(paste(rep("<br>", footer.npad), collapse = ""), footer)
-        res <- list(overlaying = overlay, side = "bottom", anchor = "free",
-             position = 0, domain = c(0,1.0), visible = TRUE, layer = "below traces",
-             showline = FALSE, zeroline = FALSE, showgrid = FALSE,
-             tickfont = footer.font, ticktext = c(footer), tickangle = 0,
-             range = c(0,1), tickvals = c(0.5))
+        footer <- paste0("&nbsp;", paste(rep("<br>", footer.npad), collapse = ""), footer)
+        p <- add_annotations(p, text = footer, font = footer.font,
+                xref = "paper", x = 0.5, yref = "paper", y = 0.0,
+                yanchor = "top", xanchor = "center", showarrow = FALSE)
     }
-    res
+    p
 }
+
 
 # This differs from as.numeric in that it returns NULL
 # instead of NA if there is no valid output
@@ -876,13 +868,13 @@ checkD3Format <- function(format, axis.type, warning.type = "Axis label")
 # But for certain types of axis, this will render the whole trace to be missing
 is_clipped <- function(axis)
 {
-    if (!(axis$type %in% c("numeric", "linear")))
-        return(TRUE)
-    if (axis$autorange == "reversed")
-        return(TRUE)
-    if (length(axis$range) == 2 && axis$range[1] > axis$range[2])
-        return(TRUE)
-    else
+    #if (!(axis$type %in% c("numeric", "linear")))
+    #    return(TRUE)
+    #if (axis$autorange == "reversed")
+    #    return(TRUE)
+    #if (length(axis$range) == 2 && axis$range[1] > axis$range[2])
+    #    return(TRUE)
+    #else
         return(FALSE)
 }
     

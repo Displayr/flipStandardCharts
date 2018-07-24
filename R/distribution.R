@@ -325,7 +325,6 @@ Distribution <-   function(x,
                                  10, 10)
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, 0)
-    footer.axis <- setFooterAxis(footer, footer.font, margins, overlay = FALSE)
 
     ## Initiate plotly object
     p <- plot_ly()
@@ -382,6 +381,7 @@ Distribution <-   function(x,
                   values.hovertext.format)
     hover.mode <- if (tooltip.show) "'closest'" else "FALSE"
     p <- addSubtitle(p, subtitle, subtitle.font, margins)
+    p <- addFooter(p, footer, footer.font, margins)
     txt <- paste0("p <- layout(p,
         autosize = TRUE,
         font = list(size = 11),
@@ -389,7 +389,6 @@ Distribution <-   function(x,
         "showlegend = FALSE,
         title = title,
         titlefont = title.font,
-        xaxis4 = footer.axis,
         showlegend = FALSE,",
         violinCategoriesAxes(vertical, n.variables, gsub("'", "\\\\'", labels)), "
         ", if (vertical) "y" else "x", "axis = values.axis,

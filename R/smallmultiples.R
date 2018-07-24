@@ -60,6 +60,16 @@ SmallMultiples <- function(x,
                            title.font.family = global.font.family,
                            title.font.color = global.font.color,
                            title.font.size = 16,
+                           subtitle = "",
+                           subtitle.font.family = global.font.family,
+                           subtitle.font.color = global.font.color,
+                           subtitle.font.size = 12,
+                           footer = "",
+                           footer.font.family = global.font.family,
+                           footer.font.color = global.font.color,
+                           footer.font.size = 8,
+                           footer.wrap = TRUE,
+                           footer.wrap.nchar = 100,
                            panel.title.show = TRUE,
                            panel.title.font.family = global.font.family,
                            panel.title.font.color = global.font.color,
@@ -79,16 +89,6 @@ SmallMultiples <- function(x,
                            margin.right = NULL,
                            margin.top = NULL,
                            margin.bottom = NULL,
-                           subtitle = "", # parameters to discard
-                           subtitle.font.family = global.font.family,
-                           subtitle.font.color = global.font.color,
-                           subtitle.font.size = 12,
-                           footer = "",
-                           footer.font.family = global.font.family,
-                           footer.font.color = global.font.color,
-                           footer.font.size = 8,
-                           footer.wrap = TRUE,
-                           footer.wrap.nchar = 100,
                            mapping.package = "plotly", # discarded
                            scatter.x.column = 1,
                            scatter.y.column = 2,
@@ -98,8 +98,6 @@ SmallMultiples <- function(x,
                            scatter.colors.as.categorical = TRUE,
                            ...)
 {
-    # Subplot has problems with the placement of GeographicMap and Radar
-    # Arguments which also cannot be used: data labels, subtitle, footer
     chart.type <- gsub(" ", "", chart.type)
     chart <- get0(chart.type, mode = "function")
     eval(colors)
@@ -391,8 +389,19 @@ SmallMultiples <- function(x,
                    heights = rep(1/nrows, nrows) - h.offset, # compensate for plotly bug
                    widths = rep(1/ncols, ncols) - w.offset, titleX = TRUE, titleY = TRUE,
                    shareX = share.axes && !is.geo, shareY = share.axes && !is.geo)
-    res <- layout(res, title = title, showlegend = is.geo, annotations = panel.titles,
-                  titlefont = list(family = title.font.family, color = title.font.color, size = title.font.size),
-                  margin = list(l = margin.left, r = margin.right, b = margin.bottom, t = margin.top))
+
+    # Margins and text
+    title.font <- list(family = title.font.family, size = title.font.size, color = title.font.color)
+    subtitle.font <- list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
+    footer.font <- list(family = footer.font.family, size = footer.font.size, color = footer.font.color)
+    footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate = FALSE)
+    margins <- list(l = margin.left, r = margin.right, b = margin.bottom, t = margin.top)
+    margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
+                                 subtitle.font.size, footer.font.size)
+
+    res <- addSubtitle(res, subtitle, subtitle.font, margins)
+    res <- addFooter(res, footer, footer.font, margins)
+    res <- layout(res, title = title, showlegend = is.geo, annotations = panel.titles, margin = margins,
+                  titlefont = list(family = title.font.family, color = title.font.color, size = title.font.size))
     res
 }

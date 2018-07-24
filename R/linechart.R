@@ -210,7 +210,6 @@ Line <-   function(x,
     margins <- setMarginsForLegend(margins, legend.show, legend, colnames(chart.matrix))
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
-    footer.axis <- setFooterAxis(footer, footer.font, margins)
 
     ## Initiate plotly object
     p <- plot_ly(as.data.frame(chart.matrix))
@@ -320,6 +319,7 @@ Line <-   function(x,
         }
     }
     p <- addSubtitle(p, subtitle, subtitle.font, margins)
+    p <- addFooter(p, footer, footer.font, margins)
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
@@ -327,7 +327,6 @@ Line <-   function(x,
         showlegend = legend.show,
         legend = legend,
         yaxis = yaxis,
-        xaxis4 = footer.axis,
         xaxis2 = xaxis2,
         xaxis = xaxis,
         margin = margins,

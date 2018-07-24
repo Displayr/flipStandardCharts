@@ -305,7 +305,6 @@ Radar <- function(x,
         subtitle <- paste0("<br>&nbsp;", subtitle, "<br>&nbsp;") # extra vertical space
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
-    footer.axis <- setFooterAxis(footer, footer.font, margins)
     xaxis = list(title = "", showgrid = F, zeroline = F, showticklabels = F,
                categoryorder = "array", categoryarray = g.list)
     yaxis = list(title = "", showgrid = F, zeroline = F, showticklabels = F)
@@ -419,7 +418,7 @@ Radar <- function(x,
             plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
             paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
             hovermode = if (tooltip.show) "closest" else FALSE,
-            xaxis2 = footer.axis, xaxis = xaxis, yaxis = yaxis, shapes = grid,
+            xaxis = xaxis, yaxis = yaxis, shapes = grid,
             legend = legend, showlegend = legend.show, annotations = xlabels)
 
     if (grid.show && y.grid.width > 0 && y.tick.show && !is.null(tick.vals))
@@ -429,6 +428,7 @@ Radar <- function(x,
                               decimals = y.tick.decimals), y.tick.suffix))
 
     p <- addSubtitle(p, subtitle, subtitle.font, margins)
+    p <- addFooter(p, footer, footer.font, margins)
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
     result <- list(htmlwidget = p)

@@ -15,21 +15,21 @@ SmallMultiples(x, chart.type = "Area", nrows = 2, share.axes = TRUE,
   global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
   maxColorValue = 255), title = "", title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
-  panel.title.show = TRUE, panel.title.font.family = global.font.family,
+  subtitle = "", subtitle.font.family = global.font.family,
+  subtitle.font.color = global.font.color, subtitle.font.size = 12,
+  footer = "", footer.font.family = global.font.family,
+  footer.font.color = global.font.color, footer.font.size = 8,
+  footer.wrap = TRUE, footer.wrap.nchar = 100, panel.title.show = TRUE,
+  panel.title.font.family = global.font.family,
   panel.title.font.color = global.font.color, panel.title.font.size = 14,
   panel.title.wrap = TRUE, panel.title.wrap.nchar = 20, x.title = "",
   x.title.font.size = 12, y.title = "", y.title.font.size = 12,
   data.label.show = FALSE, grid.show = TRUE, x.tick.show = TRUE,
   x.tick.angle = NULL, legend.show = TRUE, margin.left = NULL,
   margin.right = NULL, margin.top = NULL, margin.bottom = NULL,
-  subtitle = "", subtitle.font.family = global.font.family,
-  subtitle.font.color = global.font.color, subtitle.font.size = 12,
-  footer = "", footer.font.family = global.font.family,
-  footer.font.color = global.font.color, footer.font.size = 8,
-  footer.wrap = TRUE, footer.wrap.nchar = 100, mapping.package = "plotly",
-  scatter.x.column = 1, scatter.y.column = 2, scatter.sizes.column = 3,
-  scatter.colors.column = 4, scatter.groups.column = NULL,
-  scatter.colors.as.categorical = TRUE, ...)
+  mapping.package = "plotly", scatter.x.column = 1, scatter.y.column = 2,
+  scatter.sizes.column = 3, scatter.colors.column = 4,
+  scatter.groups.column = NULL, scatter.colors.as.categorical = TRUE, ...)
 }
 \arguments{
 \item{x}{Input data as a matrix or dataframe}
@@ -102,6 +102,30 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{title.font.size}{Integer; Title font size; default = 10.}
 
+\item{subtitle}{Character}
+
+\item{subtitle.font.family}{Character; subtitle font family}
+
+\item{subtitle.font.color}{subtitle font color as a named color in
+character format (e.g. "black") or an rgb value (e.g.
+rgb(0, 0, 0, maxColorValue = 255)).}
+
+\item{subtitle.font.size}{Integer; subtitle font size}
+
+\item{footer}{Character}
+
+\item{footer.font.family}{Character; footer font family}
+
+\item{footer.font.color}{footer font color as a named color in
+character format (e.g. "black") or an rgb value (e.g.
+rgb(0, 0, 0, maxColorValue = 255)).}
+
+\item{footer.font.size}{Integer; footer font size}
+
+\item{footer.wrap}{Logical; whether the footer text should be wrapped.}
+
+\item{footer.wrap.nchar}{Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.}
+
 \item{panel.title.show}{Logical; whether to show a title for each panel.}
 
 \item{panel.title.font.family}{Font family of panel titles.}
@@ -147,30 +171,6 @@ graphic in pixels}
 
 \item{margin.bottom}{Margin between plot area and the bottom of the
 graphic in pixels}
-
-\item{subtitle}{Character}
-
-\item{subtitle.font.family}{Character; subtitle font family}
-
-\item{subtitle.font.color}{subtitle font color as a named color in
-character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
-
-\item{subtitle.font.size}{Integer; subtitle font size}
-
-\item{footer}{Character}
-
-\item{footer.font.family}{Character; footer font family}
-
-\item{footer.font.color}{footer font color as a named color in
-character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
-
-\item{footer.font.size}{Integer; footer font size}
-
-\item{footer.wrap}{Logical; whether the footer text should be wrapped.}
-
-\item{footer.wrap.nchar}{Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.}
 
 \item{mapping.package}{Not used.}
 
