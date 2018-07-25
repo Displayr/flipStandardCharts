@@ -289,7 +289,7 @@ Area <- function(x,
     # Invisible trace to ensure enough space for data labels
     # and that tick bounds are shown properly
     # This must happen before ANY of the area traces are put in
-    if (data.label.show || !yaxis$autorange)
+    if (data.label.show || (!isTRUE(yaxis$autorange) && length(yaxis$range) > 0 && yaxis$range[1] > 0))
         p <- add_trace(p, type = "scatter", mode = "markers",
            x = x.labels, y = apply(chart.matrix, 1, max, na.rm = TRUE) * 1.01,
            marker = list(color = "red", opacity = 0.0),
