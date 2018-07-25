@@ -243,7 +243,8 @@ Bar <- function(x,
                             swap.axes.and.data = TRUE,
                             bar.gap = bar.gap,
                             display.threshold = data.label.threshold,
-                            dates = axisFormat$ymd)
+                            dates = axisFormat$ymd,
+                            font = data.label.font)
 
     ## Initiate plotly object
     p <- plot_ly(as.data.frame(chart.matrix))
@@ -326,8 +327,13 @@ Bar <- function(x,
                       showlegend = FALSE, legendgroup = i)
         }
     }
-    p <- addSubtitle(p, subtitle, subtitle.font, margins)
-    p <- addFooter(p, footer, footer.font, margins)
+    annotations <- NULL
+    if (data.label.show && is.stacked)
+        annotations <- data.annotations
+    n <- length(annotations)
+    annotations[[n+1]] <- setFooter(footer, footer.font, margins)
+    annotations[[n+2]] <- setSubtitle(subtitle, subtitle.font, margins)
+
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
@@ -343,7 +349,7 @@ Bar <- function(x,
         hovermode = hover.mode,
         titlefont = title.font,
         font = data.label.font,
-        annotations = if (is.stacked) data.annotations else NULL,
+        annotations =  annotations,
         bargap = bar.gap,
         barmode = barmode
     )

@@ -380,8 +380,6 @@ Distribution <-   function(x,
                   FALSE, values.zero.line.width, values.zero.line.color,
                   values.hovertext.format)
     hover.mode <- if (tooltip.show) "'closest'" else "FALSE"
-    p <- addSubtitle(p, subtitle, subtitle.font, margins)
-    p <- addFooter(p, footer, footer.font, margins)
     txt <- paste0("p <- layout(p,
         autosize = TRUE,
         font = list(size = 11),
@@ -393,6 +391,8 @@ Distribution <-   function(x,
         violinCategoriesAxes(vertical, n.variables, gsub("'", "\\\\'", labels)), "
         ", if (vertical) "y" else "x", "axis = values.axis,
         margin = margins,
+        annotations = list(setSubtitle(subtitle, subtitle.font, margins),
+                           setFooter(footer, footer.font, margins)),
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity))")
     eval(parse(text = txt))

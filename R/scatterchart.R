@@ -664,7 +664,7 @@ Scatter <- function(x = NULL,
         p <- add_trace(p, x = x[ind], y = y[ind], name = paste0(g.list[ggi], " "),
                 showlegend = (legend.show && !separate.legend),
                 legendgroup = if (num.series > 1) ggi else 1,
-                textposition = data.label.position, cliponaxis = is_clipped(xaxis),
+                textposition = data.label.position, cliponaxis = FALSE,
                 marker = marker.obj, line = line.obj, text = source.text[ind],
                 hoverinfo = if (num.series == 1) "text" else "name+text",
                 type="scatter", mode = series.mode, symbols = marker.symbols)
@@ -718,8 +718,6 @@ Scatter <- function(x = NULL,
                     line = list(color=fit.CI.colors[1], width=0, shape='spline'))
         }
     }
-    p <- addSubtitle(p, subtitle, subtitle.font, margins)
-    p <- addFooter(p, footer, footer.font, margins)
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
@@ -732,6 +730,8 @@ Scatter <- function(x = NULL,
         margin = margins,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
+        annotations = list(setSubtitle(subtitle, subtitle.font, margins),
+                           if (footer.show) setFooter(footer, footer.font, margins) else NULL),
         hovermode = hover.mode,
         titlefont = title.font,
         font = data.label.font

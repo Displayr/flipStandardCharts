@@ -29,7 +29,8 @@ SmallMultiples(x, chart.type = "Area", nrows = 2, share.axes = TRUE,
   margin.right = NULL, margin.top = NULL, margin.bottom = NULL,
   mapping.package = "plotly", scatter.x.column = 1, scatter.y.column = 2,
   scatter.sizes.column = 3, scatter.colors.column = 4,
-  scatter.groups.column = NULL, scatter.colors.as.categorical = TRUE, ...)
+  scatter.groups.column = NULL, scatter.colors.as.categorical = TRUE,
+  scatter.sizes.as.diameter = FALSE, ...)
 }
 \arguments{
 \item{x}{Input data as a matrix or dataframe}
@@ -186,6 +187,8 @@ graphic in pixels}
 the data for small multiples. By default this is the last column in \code{x}}
 
 \item{scatter.colors.as.categorical}{Boolean; Whether to treat colors as a categorical groups, or a numeric scale.}
+
+\item{scatter.sizes.as.diameter}{Whether to show the points with diameter (instead of area, which is the default) proportional to the sizes variable.}
 
 \item{...}{Extra arguments passed to the charting function}
 }

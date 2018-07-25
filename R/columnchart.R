@@ -442,7 +442,8 @@ Column <- function(x,
                             bar.gap = bar.gap,
                             display.threshold = data.label.threshold,
                             dates = axisFormat$ymd,
-                            reversed = y.data.reversed)
+                            reversed = y.data.reversed,
+                            font = data.label.font)
 
     ## Initiate plotly object
     p <- plot_ly(as.data.frame(chart.matrix))
@@ -511,14 +512,19 @@ Column <- function(x,
                 y.sign <- -1 * (y.sign)
             xaxis2 <- list(overlaying = "x", visible = FALSE, range = x.range)
             p <- add_text(p, xaxis = "x2", x = data.annotations$x[,i],
-                      y = data.annotations$y[,i], cliponaxis = is_clipped(xaxis),
+                      y = data.annotations$y[,i], cliponaxis = FALSE,
                       text = data.annotations$text[,i], textfont = data.label.font,
                       textposition = ifelse(y.sign >= 0, "top center", "bottom center"),
                       showlegend = FALSE, legendgroup = i, hoverinfo = "none")
         }
     }
-    p <- addSubtitle(p, subtitle, subtitle.font, margins)
-    p <- addFooter(p, footer, footer.font, margins)
+    annotations <- NULL
+    if (data.label.show && is.stacked)
+        annotations <- data.annotations
+    n <- length(annotations)
+    annotations[[n+1]] <- setFooter(footer, footer.font, margins)
+    annotations[[n+2]] <- setSubtitle(subtitle, subtitle.font, margins)
+    
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
@@ -534,7 +540,7 @@ Column <- function(x,
         hovermode = hover.mode,
         titlefont = title.font,
         font = data.label.font,
-        annotations = if (is.stacked) data.annotations else NULL,
+        annotations =  annotations,
         bargap = bar.gap,
         barmode = barmode
     )

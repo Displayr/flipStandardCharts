@@ -559,29 +559,27 @@ setCustomMargins <- function(margins, margin.top, margin.bottom, margin.left,
     margins
 }
 
-addSubtitle <- function(p, subtitle, subtitle.font, margins)
+setSubtitle <- function(subtitle, subtitle.font, margins)
 {
-    if (sum(nchar(subtitle)) > 0)
-        p <- add_annotations(p, text = subtitle, font = subtitle.font,
+    if (sum(nchar(subtitle)) == 0)
+        return(NULL)
+    return(list(text = subtitle, font = subtitle.font,
                 xref = "paper", x = 0.5, xshift = (margins$r - margins$l)/2,
-                yref = "paper", y = 1.0, yanchor = "bottom", showarrow = FALSE)
-    p
+                yref = "paper", y = 1.0, yanchor = "bottom", showarrow = FALSE))
 }
 
-addFooter <- function(p, footer, footer.font, margins)
+setFooter <- function(footer, footer.font, margins)
 {
-    if (sum(nchar(footer)) > 0)
-    {
-        footer.nline <- sum(gregexpr("<br>", footer)[[1]] > -1) + 1
-        footer.npad <- max(0, ceiling(margins$b/footer.font$size/1.25) - footer.nline - 2)
-        footer <- paste0("&nbsp;", paste(rep("<br>", footer.npad), collapse = ""), footer)
-        p <- add_annotations(p, text = footer, font = footer.font,
-                xref = "paper", x = 0.5, yref = "paper", y = 0.0,
-                yanchor = "top", xanchor = "center", showarrow = FALSE)
-    }
-    p
+    if (sum(nchar(footer)) == 0)
+        return(NULL)
+    
+    footer.nline <- sum(gregexpr("<br>", footer)[[1]] > -1) + 1
+    footer.npad <- max(0, ceiling(margins$b/footer.font$size/1.25) - footer.nline - 2)
+    footer <- paste0("&nbsp;", paste(rep("<br>", footer.npad), collapse = ""), footer)
+    return(list(text = footer, font = footer.font,
+            xref = "paper", x = 0.5, yref = "paper", y = 0.0,
+                yanchor = "top", xanchor = "center", showarrow = FALSE))
 }
-
 
 # This differs from as.numeric in that it returns NULL
 # instead of NA if there is no valid output
@@ -863,19 +861,3 @@ checkD3Format <- function(format, axis.type, warning.type = "Axis label")
                 "' incompatible with axis type '", axis.type, "'")
     return(format)
 }
-
-# Mostly, we want markers and data labels to have cliponaxis to be set to FALSE
-# But for certain types of axis, this will render the whole trace to be missing
-is_clipped <- function(axis)
-{
-    #if (!(axis$type %in% c("numeric", "linear")))
-    #    return(TRUE)
-    #if (axis$autorange == "reversed")
-    #    return(TRUE)
-    #if (length(axis$range) == 2 && axis$range[1] > axis$range[2])
-    #    return(TRUE)
-    #else
-        return(FALSE)
-}
-
-

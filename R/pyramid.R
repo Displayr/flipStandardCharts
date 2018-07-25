@@ -204,8 +204,6 @@ Pyramid <- function(x,
                hoverinfo = "none", showlegend = FALSE)
     }
 
-    p <- addSubtitle(p, subtitle, subtitle.font, margins)
-    p <- addFooter(p, footer, footer.font, margins)
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
@@ -216,6 +214,8 @@ Pyramid <- function(x,
         margin = margins,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
+        annotations = list(setSubtitle(subtitle, subtitle.font, margins),
+                           setFooter(footer, footer.font, margins)),
         hovermode = hover.mode,
         titlefont = title.font,
         font = data.label.font,

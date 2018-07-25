@@ -255,7 +255,7 @@ Line <-   function(x,
                  data.label.suffix, sep = "")
 
             p <- add_trace(p, x = x, y = y, type = "scatter", mode = "text", name = y.label,
-                   cliponaxis = is_clipped(xaxis), text = source.text,
+                   cliponaxis = FALSE, text = source.text,
                    textfont = data.label.font, textposition = data.label.position,
                    hoverinfo = "none", showlegend = FALSE, legendgroup = tmp.group)
         }
@@ -318,8 +318,6 @@ Line <-   function(x,
             }
         }
     }
-    p <- addSubtitle(p, subtitle, subtitle.font, margins)
-    p <- addFooter(p, footer, footer.font, margins)
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
@@ -332,6 +330,8 @@ Line <-   function(x,
         margin = margins,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
+        annotations = list(setSubtitle(subtitle, subtitle.font, margins),
+                           setFooter(footer, footer.font, margins)),
         hovermode = hover.mode,
         titlefont = title.font,
         font = data.label.font

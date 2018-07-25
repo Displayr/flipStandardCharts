@@ -120,10 +120,9 @@
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers
 #' @param data.label.prefix Character; prefix for data values.
 #' @param data.label.suffix Character; suffix for data values.
-#' @param ... Extra arguments that are ignored.
 #' @importFrom grDevices rgb
 #' @importFrom flipChartBasics ChartColors
-#' @importFrom plotly plot_ly layout config add_annotations
+#' @importFrom plotly plot_ly layout config
 #' @importFrom flipFormat FormatAsReal
 #' @export
 Radar <- function(x,
@@ -335,14 +334,15 @@ Radar <- function(x,
         {
             gpos <- getPolarCoord(rep(tt, n))
             for (i in 1:n)
-                grid[[length(grid)+1]] <- list(type = "line", layer = "below",
+                grid[[length(grid)+1]] <- list(type = "line", layer = "below", 
                      x0 = gpos[i,1], x1 = gpos[i+1,1], y0 = gpos[i,2], y1 = gpos[i+1,2],
-                     line = list(width = y.grid.width * grid.show, dash = "dot", color = y.grid.color))
+                     line = list(width = y.grid.width * grid.show, dash = "dot",
+                     xref = "x", yref = "y", color = y.grid.color))
         }
     }
 
     # Position of labels (x-axis)
-    xlabels <- NULL
+    annotations <- NULL
     if (x.tick.show)
     {
         xanch <- rep("center", n)
@@ -358,10 +358,11 @@ Radar <- function(x,
         # because autorange handles variation in the xaxis labels quite well
         xlab.width <- min(500,(font.asp + 0.5) * x.tick.font.size *
                         max(nchar(unlist(strsplit(split="<br>", as.character(xlab))))))
-        xlabels <- list(x = outer[,1], y = outer[,2], text = xlab,
-                    width = xlab.width, font = x.tick.font,
-                    showarrow = F, yshift = outer[1:n,2]/r.max * 15,
-                    xanchor = xanch, xshift = outer[1:n,1]/r.max)
+        annotations <- lapply(1:n, function(ii) list(text = xlab[ii],
+                        x = outer[ii,1], y = outer[ii,2], xref = "x", yref = "y",
+                        width = xlab.width, font = x.tick.font,
+                        showarrow = FALSE, yshift = outer[ii,2]/r.max * 15,
+                        xanchor = xanch[ii], xshift = outer[ii,1]/r.max))
     }
 
     if (is.null(line.thickness))
@@ -413,22 +414,26 @@ Radar <- function(x,
                     color = data.label.font.color))
         }
     }
-
+    annot.len <- length(annotations)
+    annotations[[annot.len + 1]] <- setSubtitle(subtitle, subtitle.font, margins)
+    annotations[[annot.len + 2]] <- setFooter(footer, footer.font, margins)
+    if (grid.show && y.grid.width > 0 && y.tick.show && !is.null(tick.vals))
+    {
+        for (i in 1:length(tick.vals))
+            annotations[[annot.len+2+i]] <- list(x = 0, y = tick.vals[i],
+                font = y.tick.font, showarrow = FALSE, xanchor = "right", 
+                xshift = -5, xref = "x", yref = "y",
+                text = paste0(y.tick.prefix, tick.format.function(tick.vals[i],
+                             decimals = y.tick.decimals), y.tick.suffix))
+    }
     p <- layout(p, margin = margins, title = title, titlefont = title.font,
             plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
             paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
             hovermode = if (tooltip.show) "closest" else FALSE,
-            xaxis = xaxis, yaxis = yaxis, shapes = grid,
-            legend = legend, showlegend = legend.show, annotations = xlabels)
+            xaxis = xaxis, yaxis = yaxis, shapes = grid, annotations = annotations,
+            legend = legend, showlegend = legend.show)
 
-    if (grid.show && y.grid.width > 0 && y.tick.show && !is.null(tick.vals))
-        p <- add_annotations(p, x = rep(0, length(tick.vals)), y = tick.vals,
-                font = y.tick.font, showarrow = F, xanchor = "right", xshift = -5,
-                text = paste0(y.tick.prefix, tick.format.function(tick.vals,
-                              decimals = y.tick.decimals), y.tick.suffix))
 
-    p <- addSubtitle(p, subtitle, subtitle.font, margins)
-    p <- addFooter(p, footer, footer.font, margins)
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
     result <- list(htmlwidget = p)

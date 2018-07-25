@@ -232,8 +232,6 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{footer.wrap}{Logical; whether the footer text should be wrapped.}
 
 \item{footer.wrap.nchar}{Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.}
-
-\item{...}{Extra arguments that are ignored.}
 }
 \description{
 Radar chart, also known as web chart, spider chart, star chart, star plot, cobweb chart, irregular polygon, polar chart, or Kiviat diagram

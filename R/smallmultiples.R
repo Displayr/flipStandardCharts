@@ -96,6 +96,7 @@ SmallMultiples <- function(x,
                            scatter.colors.column = 4,
                            scatter.groups.column = NULL,
                            scatter.colors.as.categorical = TRUE,
+                           scatter.sizes.as.diameter = FALSE,
                            ...)
 {
     chart.type <- gsub(" ", "", chart.type)
@@ -218,22 +219,9 @@ SmallMultiples <- function(x,
     }
     h.offset <- c(pad.top, rep(0, max(0, nrows - 2)), pad.bottom)[1:nrows]
     if (any(h.offset >= 1/nrows))
-        stop("'Top padding' and 'Bottom padding' should be between 0 and 1/nrows (", round(1/nrows, 4), ")")
+        stop("'Top padding' and 'Bottom padding' should be between 0 and 1/nrows (", 
+             round(1/nrows, 4), ")")
 
-    # Position titles for each panel
-    panel.titles <- NULL
-    titles <- if (chart.type == "Scatter") names(indexes)
-              else                         colnames(x)
-    if (panel.title.show && !is.null(titles))
-    {
-        title.list <- autoFormatLongLabels(titles, panel.title.wrap, panel.title.wrap.nchar)
-        titles.ypos <- rep((nrows:1)/nrows, each = ncols)[1:npanels]
-        titles.xpos <- rep((1:ncols - 0.5)/ncols, nrows)[1:npanels]
-        panel.titles <- list(text = title.list, x = titles.xpos, y = titles.ypos,
-                            showarrow = FALSE, xanchor = "center", yanchor = "top",
-                            font = list(family = panel.title.font.family, color = panel.title.font.color,
-                            size = panel.title.font.size), xref = 'paper', yref = 'paper')
-    }
 
     # Construct charts
     .bind_mean <- function(a, b, rev = FALSE)
@@ -251,6 +239,7 @@ SmallMultiples <- function(x,
     {
         if (average.show)
             warning("Averages cannot be shown for small multiples with scatterplot.")
+        empty.footer <- length(footer) == 0 || nchar(footer) == 0
         sz.min <- NULL
         sz.max <- NULL
         if (!is.null(scatter.sizes.column) && !is.na(scatter.sizes.column) &&
@@ -266,6 +255,11 @@ SmallMultiples <- function(x,
             sc.tmp <- abs(AsNumeric(x[notNA.ind, scatter.sizes.column], binary = FALSE))
             sz.min <- min(sc.tmp, na.rm = TRUE)
             sz.max <- max(sc.tmp, na.rm = TRUE)
+            if (empty.footer)
+                footer <- sprintf("%s%s of points are proportional to absolute value of '%s'; ",
+                              footer, if (scatter.sizes.as.diameter) "Diameter" else "Area",
+                              colnames(x)[scatter.sizes.column])
+
         }
         col.min <- NULL
         col.max <- NULL
@@ -278,6 +272,9 @@ SmallMultiples <- function(x,
             col.min <- min(col.tmp, na.rm = TRUE)
             col.max <- max(col.tmp, na.rm = TRUE)
             colors <- rep(list(colors), npanels) # use the whole palette in each panel
+            if (empty.footer)
+                footer <- sprintf("%sPoints colored according to '%s'; ",
+                              footer, colnames(x)[scatter.colors.column])
         } else
             colors <- as.list(colors)
 
@@ -286,6 +283,7 @@ SmallMultiples <- function(x,
                                                      scatter.y.column = scatter.y.column,
                                                      scatter.sizes.column = scatter.sizes.column,
                                                      scatter.colors.column = scatter.colors.column,
+                                                     scatter.sizes.as.diameter = scatter.sizes.as.diameter,
                                                      scatter.colors.as.categorical = FALSE,
                                                      colors = colors[[i]],
                                                      fit.line.colors = fit.line.colors[i],
@@ -390,18 +388,34 @@ SmallMultiples <- function(x,
                    widths = rep(1/ncols, ncols) - w.offset, titleX = TRUE, titleY = TRUE,
                    shareX = share.axes && !is.geo, shareY = share.axes && !is.geo)
 
-    # Margins and text
+    # Titles and margin text
     title.font <- list(family = title.font.family, size = title.font.size, color = title.font.color)
-    subtitle.font <- list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
+    panel.title.font <- list(family = panel.title.font.family, color = panel.title.font.color,
+                             size = panel.title.font.size)
+    subtitle.font <- list(family = subtitle.font.family, size = subtitle.font.size,
+                          color = subtitle.font.color)
     footer.font <- list(family = footer.font.family, size = footer.font.size, color = footer.font.color)
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate = FALSE)
     margins <- list(l = margin.left, r = margin.right, b = margin.bottom, t = margin.top)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
+    annotations <- list(setSubtitle(subtitle, subtitle.font, margins),
+                        setFooter(footer, footer.font, margins))
+    titles <- if (chart.type == "Scatter") names(indexes)
+              else                         colnames(x)
+    if (panel.title.show && !is.null(titles))
+    {
+        title.list <- autoFormatLongLabels(titles, panel.title.wrap, panel.title.wrap.nchar)
+        titles.ypos <- rep((nrows:1)/nrows, each = ncols)[1:npanels]
+        titles.xpos <- rep((1:ncols - 0.5)/ncols, nrows)[1:npanels]
+        for (i in 1:npanels)
+            annotations[[i+2]] <- list(text = title.list[i], showarrow = FALSE,
+                            x = titles.xpos[i], y = titles.ypos[i], font = panel.title.font,
+                            xanchor = "center", yanchor = "top", xref = 'paper', yref = 'paper')
+    }
 
-    res <- addSubtitle(res, subtitle, subtitle.font, margins)
-    res <- addFooter(res, footer, footer.font, margins)
-    res <- layout(res, title = title, showlegend = is.geo, annotations = panel.titles, margin = margins,
-                  titlefont = list(family = title.font.family, color = title.font.color, size = title.font.size))
+
+    res <- layout(res, title = title, showlegend = is.geo, margin = margins,
+                  annotations = annotations, titlefont = title.font)
     res
 }
