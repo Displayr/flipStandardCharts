@@ -104,6 +104,12 @@ SmallMultiples <- function(x,
     eval(colors)
     if (is.null(fit.line.colors))
         fit.line.colors <- colors
+    if (is.null(footer.font.family))
+        footer.font.family <- global.font.family
+    if (is.null(footer.font.colors))
+        footer.font.color <- global.font.color
+    if (is.null(footer.font.size))
+        footer.font.size <- 8
 
     if (chart.type == "Scatter")
     {

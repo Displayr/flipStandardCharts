@@ -461,15 +461,16 @@ Column <- function(x,
                       alpha = marker.border.opacity),
                       width = marker.border.width))
 
-        # add invisible line to force all categorical labels to be shown
+        # Add invisible line to force all categorical labels to be shown
+        # Also ensures y-axis tick bounds are treated properly
         if (!is.stacked && i == 1)
             p <- add_trace(p, x = x, y = rep(min(y,na.rm = T), length(x)),
-                           type = "scatter", mode = "lines",
+                           type = "scatter", mode = "markers", cliponaxis = FALSE,
                            hoverinfo = "none", showlegend = F, opacity = 0)
 
         # this is the main trace for each data series
         p <- add_trace(p, x = x, y = y, type = "bar", orientation = "v", marker = marker,
-                       name  =  y.labels[i], legendgroup  =  i,
+                       name  =  y.labels[i], legendgroup = i,
                        text = autoFormatLongLabels(x.labels.full, wordwrap=T, truncate=F),
                        hoverinfo  = setHoverText(xaxis, chart.matrix))
         if (fit.type != "None" && is.stacked && i == 1)

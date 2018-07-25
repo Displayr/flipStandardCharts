@@ -209,7 +209,6 @@ Area <- function(x,
     x.labels.full <- rownames(chart.matrix)
 
     # Constants
-    plotly.type <- "scatter"
     hover.mode <- if (tooltip.show) "closest" else FALSE
     barmode <- if (is.stacked) "stack" else ""
     fill.bound <- if (is.stacked) "tonexty" else "tozeroy"
@@ -288,13 +287,12 @@ Area <- function(x,
     y.labels <- colnames(chart.matrix)
 
     # Invisible trace to ensure enough space for data labels
+    # and that tick bounds are shown properly
     # This must happen before ANY of the area traces are put in
-    # to avoid plotly bug
-    if (data.label.show)
-        p <- add_trace(p, type = plotly.type, mode = "markers",
-                   x = x.labels, y = apply(chart.matrix, 1, max, na.rm = TRUE) * 1.01,
-                   marker = list(color = "red", opacity = 0.0),
-                   hoverinfo = "none", showlegend = FALSE)
+    p <- add_trace(p, type = "scatter", mode = "markers",
+       x = x.labels, y = apply(chart.matrix, 1, max, na.rm = TRUE) * 1.01,
+       marker = list(color = "red", opacity = 0.0),
+       hoverinfo = "none", showlegend = FALSE, cliponaxis = FALSE)
 
     ## Add a trace for each col of data in the matrix
     for (i in 1:ncol(chart.matrix))
@@ -349,7 +347,7 @@ Area <- function(x,
            # draw line
            if (any(!is.na(y)) && (has.gap || line.thickness > 0))
                 p <- add_trace(p,
-                           type = plotly.type,
+                           type = "scatter",
                            x = x,
                            y = y,
                            connectgaps = FALSE,
@@ -386,7 +384,7 @@ Area <- function(x,
             # This is done last, to retain the hovertext
             if (any(!is.na(y)))
                 p <- add_trace(p,
-                           type = plotly.type,
+                           type = "scatter",
                            x = x,
                            y = y,
                            fill = fill.bound,
@@ -435,7 +433,7 @@ Area <- function(x,
             # text and line must occur together as a single trace
             y.label <- y.labels[i]
             p <- add_trace(p,
-                           type = plotly.type,
+                           type = "scatter",
                            x = x,
                            y = y,
                            fill = fill.bound,
