@@ -71,7 +71,7 @@ Pie <- function(x,
     ErrorIfNotEnoughData(x)
     groups <- NULL
 
-    if (is.null(dim(x)) || length(dim(x)) == 1 || is.data.frame(x) && min(dim(x)) == 1)
+    if (is.null(dim(x)) || length(dim(x)) == 1 || is.data.frame(x) && nrow(x) == 1)
     {
         x.labels <- names(x)
         if (is.null(x.labels))
