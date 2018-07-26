@@ -315,10 +315,8 @@ Bar <- function(x,
         {
             y.range <- getRange(x, yaxis, axisFormat)
             yaxis2 <- list(overlaying = "y", visible = FALSE, range = y.range)
-            x.sign <- sign(data.annotations$x[,i])
-            if (x.data.reversed)
-                x.sign <- -1 * x.sign
-            x.diff <- x.sign * diff(range(data.annotations$x))/100
+            x.sign <- getSign(data.annotations$x[,i], xaxis)
+            x.diff <- diff(range(data.annotations$x))/100
             p <- add_text(p, yaxis = "y2", x = data.annotations$x[,i] + x.diff,
                       y = data.annotations$y[,i],
                       text = data.annotations$text[,i],

@@ -442,7 +442,7 @@ Column <- function(x,
                             bar.gap = bar.gap,
                             display.threshold = data.label.threshold,
                             dates = axisFormat$ymd,
-                            reversed = y.data.reversed,
+                            reversed = (getSign(chart.matrix[1,1], yaxis) < 0),
                             font = data.label.font)
 
     ## Initiate plotly object
@@ -510,9 +510,7 @@ Column <- function(x,
         if (data.label.show && !is.stacked)
         {
             x.range <- getRange(x, xaxis, axisFormat)
-            y.sign <- sign(data.annotations$y[,i])
-            if (y.data.reversed)
-                y.sign <- -1 * (y.sign)
+            y.sign <- getSign(data.annotations$y[,i], yaxis)
             xaxis2 <- list(overlaying = "x", visible = FALSE, range = x.range)
             p <- add_text(p, xaxis = "x2", x = data.annotations$x[,i],
                       y = data.annotations$y[,i], cliponaxis = FALSE,

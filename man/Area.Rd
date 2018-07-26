@@ -59,8 +59,7 @@ Area(x, type = "Area", colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
   marker.border.opacity = 1, tooltip.show = TRUE, modebar.show = FALSE,
   data.label.show = FALSE, data.label.font.family = global.font.family,
   data.label.font.size = 10, data.label.font.color = global.font.color,
-  data.label.format = "", data.label.prefix = "", data.label.suffix = "",
-  data.label.position = "top middle")
+  data.label.format = "", data.label.prefix = "", data.label.suffix = "")
 }
 \arguments{
 \item{x}{Input data may be a matrix or a vector, containing the height of the columns
@@ -385,11 +384,6 @@ See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 \item{data.label.prefix}{Character; prefix for data values.}
 
 \item{data.label.suffix}{Character; suffix for data values.}
-
-\item{data.label.position}{Character; where to place the source data
-value in relation to the marker icon.  Can be "top left", "top center", "top
-right", "middle left", "middle center", "middle right", "bottom left",
-"bottom center", "bottom right".}
 }
 \description{
 Area chart

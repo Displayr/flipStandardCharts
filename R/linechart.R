@@ -130,8 +130,7 @@ Line <-   function(x,
                     data.label.font.size = 10,
                     data.label.format = "",
                     data.label.prefix = "",
-                    data.label.suffix = "",
-                    data.label.position = "top middle")
+                    data.label.suffix = "")
 {
     ErrorIfNotEnoughData(x)
     # Some minimal data cleaning
@@ -256,7 +255,7 @@ Line <-   function(x,
 
             p <- add_trace(p, x = x, y = y, type = "scatter", mode = "text", name = y.label,
                    cliponaxis = FALSE, text = source.text,
-                   textfont = data.label.font, textposition = data.label.position,
+                   textfont = data.label.font, textposition = "top middle",
                    hoverinfo = "none", showlegend = FALSE, legendgroup = tmp.group)
         }
 

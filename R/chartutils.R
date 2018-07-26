@@ -866,3 +866,14 @@ notAutoRange <- function(axis)
 {
     return(!isTRUE(axis$autorange) && length(axis$range) > 0 && min(abs(axis$range)) > 0)
 }
+
+getSign <- function(values, axis)
+{
+    res <- sign(values)
+    if (length(axis$range) >= 2 && axis$range[2] < axis$range[1])
+        res <- -res
+    else if (axis$autorange == "reversed")
+        res <- -res
+    return(res)
+}
+

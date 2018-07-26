@@ -21,10 +21,6 @@
 #' colors from grDevices OR one or more specified hex value colors OR a single
 #' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
 #' @param line.opacity Opacity for series lines as an alpha value (0 to 1).
-#' @param data.label.position Character; where to place the source data
-#' value in relation to the marker icon.  Can be "top left", "top center", "top
-#' right", "middle left", "middle center", "middle right", "bottom left",
-#' "bottom center", "bottom right".
 #' @inherit Column
 #' @examples
 #' z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L),
@@ -157,8 +153,7 @@ Area <- function(x,
                     data.label.font.color = global.font.color,
                     data.label.format = "",
                     data.label.prefix = "",
-                    data.label.suffix = "",
-                    data.label.position = "top middle")
+                    data.label.suffix = "")
 {
     # Data checking
     ErrorIfNotEnoughData(x)
@@ -315,9 +310,18 @@ Area <- function(x,
 
         source.text <- ""
         if (data.label.show)
+        {
             source.text <- paste(data.label.prefix,
                  FormatAsReal(chart.matrix[, i] * data.label.mult, decimals = data.label.decimals),
                  data.label.suffix, sep = "")
+            y.sign <- getSign(chart.matrix[,i], yaxis)
+            if (is.stacked)
+                y.sign <- -y.sign
+            data.label.position <- ifelse(y.sign >= 0, "top middle", "bottom middle")
+            data.label.position[1] <- gsub("middle", "right", data.label.position[1])
+            tmp.len <- length(data.label.position)
+            data.label.position[tmp.len] <- gsub("middle", "left", data.label.position[tmp.len])
+        }
 
         # add invisible line to force all categorical labels to be shown
         if (i == 1)
