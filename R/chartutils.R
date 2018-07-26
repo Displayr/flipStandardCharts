@@ -861,3 +861,8 @@ checkD3Format <- function(format, axis.type, warning.type = "Axis label")
                 "' incompatible with axis type '", axis.type, "'")
     return(format)
 }
+
+notAutoRange <- function(axis)
+{
+    return(!isTRUE(axis$autorange) && length(axis$range) > 0 && min(abs(axis$range)) > 0)
+}

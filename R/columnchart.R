@@ -462,10 +462,12 @@ Column <- function(x,
                       width = marker.border.width))
 
         # Add invisible line to force all categorical labels to be shown
-        # Also ensures y-axis tick bounds are treated properly
+        # Type "scatter" ensures y-axis tick bounds are treated properly
+        # but it also adds extra space next to the y-axis
         if (!is.stacked && i == 1)
             p <- add_trace(p, x = x, y = rep(min(y,na.rm = T), length(x)),
-                           type = "scatter", mode = "markers", cliponaxis = FALSE,
+                           mode = if (notAutoRange(yaxis)) "markers" else "lines", 
+                           type = "scatter", cliponaxis = TRUE,
                            hoverinfo = "none", showlegend = F, opacity = 0)
 
         # this is the main trace for each data series
