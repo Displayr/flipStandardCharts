@@ -442,7 +442,7 @@ Column <- function(x,
                             bar.gap = bar.gap,
                             display.threshold = data.label.threshold,
                             dates = axisFormat$ymd,
-                            reversed = (getSign(chart.matrix[1,1], yaxis) < 0),
+                            reversed = any(getSign(chart.matrix, yaxis) < 0),
                             font = data.label.font)
 
     ## Initiate plotly object
