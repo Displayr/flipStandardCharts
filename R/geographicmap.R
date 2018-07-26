@@ -497,14 +497,15 @@ plotlyMap <- function(table, name.map, colors, min.value, max.range, color.NA, l
                   locationmode = locationmode
     ) %>%
 
-        add_trace(#hoverinfo = "text", # should display 'text' only but causes all hovertext to disappear
+        add_trace(hoverinfo = "location+text",
             z = df[, 1],
             zmin = min.value,
             zmax = max.range,
             color = df[, 1],
             colors = colors,
             locations = rownames(df),
-            text = format.function(df[, 1], decimals = decimals, comma.for.thousands = commaFromD3(values.hovertext.format)),
+            text = format.function(df[, 1], decimals = decimals,
+                                         comma.for.thousands = commaFromD3(values.hovertext.format)),
             marker = list(line = bdry)
         ) %>%
 
