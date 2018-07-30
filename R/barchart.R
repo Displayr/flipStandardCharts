@@ -17,11 +17,18 @@
 #' @export
 Bar <- function(x,
                     type = "Bar",
+                    colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
+                    opacity = NULL,
                     fit.type = "None", # can be "Smooth" or anything else
+                    fit.line.colors = colors,
                     fit.ignore.last = FALSE,
                     fit.line.type = "dot",
                     fit.line.width = 1,
                     fit.line.name = "Fitted",
+                    fit.line.opacity = 1,
+                    fit.CI.show = FALSE,
+                    fit.CI.colors = fit.line.colors,
+                    fit.CI.opacity = 0.4,
                     global.font.family = "Arial",
                     global.font.color = rgb(44, 44, 44, maxColorValue = 255),
                     title = "",
@@ -38,9 +45,6 @@ Bar <- function(x,
                     footer.font.size = 8,
                     footer.wrap = TRUE,
                     footer.wrap.nchar = 100,
-                    colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
-                    fit.line.colors = colors,
-                    opacity = 1,
                     background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
                     background.fill.opacity = 0,
                     charting.area.fill.color = background.fill.color,
@@ -117,7 +121,7 @@ Bar <- function(x,
                     y.tick.label.wrap.nchar = 21,
                     marker.border.width = 1,
                     marker.border.colors = colors,
-                    marker.border.opacity = 1,
+                    marker.border.opacity = opacity,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
                     bar.gap = 0.15,
@@ -171,7 +175,9 @@ Bar <- function(x,
     hover.mode <- if (tooltip.show) "closest" else FALSE
     barmode <- if (is.stacked) "stack" else ""
     if (is.null(opacity))
-        opacity <- 1
+        opacity <- if (fit.type == "None") 1 else 0.6
+    if (is.null(marker.border.opacity))
+        marker.border.opacity <- opacity
     eval(colors) # not sure why, but this is necessary for bars to appear properly
 
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
@@ -223,7 +229,6 @@ Bar <- function(x,
     margins <- setMarginsForLegend(margins, legend.show, legend, colnames(chart.matrix))
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
-    footer.axis <- setFooterAxis(footer, footer.font, margins)
 
     # Data label annotations
     data.annotations <- NULL
@@ -238,7 +243,8 @@ Bar <- function(x,
                             swap.axes.and.data = TRUE,
                             bar.gap = bar.gap,
                             display.threshold = data.label.threshold,
-                            dates = axisFormat$ymd)
+                            dates = axisFormat$ymd,
+                            font = data.label.font)
 
     ## Initiate plotly object
     p <- plot_ly(as.data.frame(chart.matrix))
@@ -261,34 +267,47 @@ Bar <- function(x,
 
         # add invisible line to force all categorical labels to be shown
         if (!is.stacked && i == 1)
-            p <- add_trace(p, x=rep(min(y,na.rm=T), length(y)), y=x,
-                           type="scatter", mode="lines",
-                           hoverinfo="none", showlegend=F, opacity=0)
+            p <- add_trace(p, x = rep(min(y,na.rm = TRUE), length(y)), y = x,
+                           type = "scatter", mode = "lines",
+                           hoverinfo = "none", showlegend = FALSE, opacity = 0)
 
         # this is the main trace for each data series
         p <- add_trace(p, x = y, y = x, type = "bar", orientation = "h", marker = marker,
-                       name  =  y.labels[i], legendgroup  =  i,
-                       text = autoFormatLongLabels(x.labels.full, wordwrap=T, truncate=F),
-                       hoverinfo  = setHoverText(yaxis, chart.matrix, is.bar=TRUE))
+                       name  =  y.labels[i], legendgroup = i, 
+                       text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE, truncate = FALSE),
+                       hoverinfo  = setHoverText(yaxis, chart.matrix, is.bar = TRUE))
 
         if (fit.type != "None" && is.stacked && i == 1)
             warning("Line of best fit not shown for stacked charts.")
         if (fit.type != "None" && !is.stacked)
         {
-            tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, yaxis$type)
+            tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, yaxis$type, fit.CI.show)
             tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                          else sprintf("%s: %s", fit.line.name, y.labels[i])
             p <- add_trace(p, x = tmp.fit$y, y = tmp.fit$x, type = 'scatter', mode = "lines",
-                      name = tmp.fname, legendgroup = i, showlegend = F,
+                      name = tmp.fname, legendgroup = i, showlegend = FALSE,
                       line = list(dash = fit.line.type, width = fit.line.width,
-                      color = fit.line.colors[i], shape = 'spline'))
+                      color = fit.line.colors[i], shape = 'spline'), opacity = fit.line.opacity)
+            if (fit.CI.show && !is.null(tmp.fit$lb))
+            {
+                p <- add_trace(p, y = tmp.fit$x, x = tmp.fit$lb, type = 'scatter',
+                        mode = 'lines', name = "Lower bound of 95%CI",
+                        showlegend = FALSE, legendgroup = i,
+                        line=list(color=fit.CI.colors[i], width=0, shape='spline'))
+                p <- add_trace(p, y = tmp.fit$x, x = tmp.fit$ub, type = 'scatter',
+                        mode = 'lines', name = "Upper bound of 95% CI",
+                        fill = "tonextx", fillcolor = toRGB(fit.CI.colors[i], alpha = fit.CI.opacity),
+                        showlegend = FALSE, legendgroup = i,
+                        line = list(color=fit.CI.colors[i], width=0, shape='spline'))
+            }
+
         }
 
         # Only used for small multiples
         if (!is.null(average.series))
             p <- add_trace(p, y = x, x = average.series, name = "Average",
                     type = "scatter", mode = "lines", showlegend = FALSE,
-                    line = list(color = average.color)) 
+                    line = list(color = average.color))
 
 
 
@@ -296,10 +315,8 @@ Bar <- function(x,
         {
             y.range <- getRange(x, yaxis, axisFormat)
             yaxis2 <- list(overlaying = "y", visible = FALSE, range = y.range)
-            x.sign <- sign(data.annotations$x[,i])
-            if (x.data.reversed)
-                x.sign <- -1 * x.sign
-            x.diff <- x.sign * diff(range(data.annotations$x))/100
+            x.sign <- getSign(data.annotations$x[,i], xaxis)
+            x.diff <- diff(range(data.annotations$x))/100
             p <- add_text(p, yaxis = "y2", x = data.annotations$x[,i] + x.diff,
                       y = data.annotations$y[,i],
                       text = data.annotations$text[,i],
@@ -308,7 +325,13 @@ Bar <- function(x,
                       showlegend = FALSE, legendgroup = i)
         }
     }
-    p <- addSubtitle(p, subtitle, subtitle.font, margins)
+    annotations <- NULL
+    if (data.label.show && is.stacked)
+        annotations <- data.annotations
+    n <- length(annotations)
+    annotations[[n+1]] <- setFooter(footer, footer.font, margins)
+    annotations[[n+2]] <- setSubtitle(subtitle, subtitle.font, margins)
+
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
@@ -316,7 +339,6 @@ Bar <- function(x,
         showlegend = legend.show,
         legend = legend,
         yaxis = yaxis,
-        xaxis4 = footer.axis,
         yaxis2 = yaxis2,
         xaxis = xaxis,
         margin = margins,
@@ -325,7 +347,7 @@ Bar <- function(x,
         hovermode = hover.mode,
         titlefont = title.font,
         font = data.label.font,
-        annotations = if (is.stacked) data.annotations else NULL,
+        annotations =  annotations,
         bargap = bar.gap,
         barmode = barmode
     )

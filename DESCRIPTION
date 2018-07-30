@@ -22,6 +22,7 @@ Imports:
     flipTransformations (>= 1.1.2),
     flipU,
     Hmisc,
+    mgcv,
     htmltools,
     httr,
     leaflet,

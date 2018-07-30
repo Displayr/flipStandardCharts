@@ -21,10 +21,6 @@
 #' colors from grDevices OR one or more specified hex value colors OR a single
 #' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
 #' @param line.opacity Opacity for series lines as an alpha value (0 to 1).
-#' @param data.label.position Character; where to place the source data
-#' value in relation to the marker icon.  Can be "top left", "top center", "top
-#' right", "middle left", "middle center", "middle right", "bottom left",
-#' "bottom center", "bottom right".
 #' @inherit Column
 #' @examples
 #' z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L),
@@ -37,11 +33,18 @@
 #' @export
 Area <- function(x,
                     type = "Area",
+                    colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
+                    opacity = NULL,
+                    fit.line.colors = colors,
                     fit.type = "None", # can be "Smooth" or anything else
                     fit.ignore.last = FALSE,
                     fit.line.type = "dot",
                     fit.line.width = 1,
                     fit.line.name = "Fitted",
+                    fit.line.opacity = 1,
+                    fit.CI.show = FALSE,
+                    fit.CI.opacity = 0.4,
+                    fit.CI.colors = fit.line.colors,
                     global.font.family = "Arial",
                     global.font.color = rgb(44, 44, 44, maxColorValue = 255),
                     title = "",
@@ -58,9 +61,6 @@ Area <- function(x,
                     footer.font.size = 8,
                     footer.wrap = TRUE,
                     footer.wrap.nchar = 100,
-                    colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
-                    fit.line.colors = colors,
-                    opacity = NULL,
                     background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
                     background.fill.opacity = 0,
                     charting.area.fill.color = background.fill.color,
@@ -153,8 +153,7 @@ Area <- function(x,
                     data.label.font.color = global.font.color,
                     data.label.format = "",
                     data.label.prefix = "",
-                    data.label.suffix = "",
-                    data.label.position = "top middle")
+                    data.label.suffix = "")
 {
     # Data checking
     ErrorIfNotEnoughData(x)
@@ -205,7 +204,6 @@ Area <- function(x,
     x.labels.full <- rownames(chart.matrix)
 
     # Constants
-    plotly.type <- "scatter"
     hover.mode <- if (tooltip.show) "closest" else FALSE
     barmode <- if (is.stacked) "stack" else ""
     fill.bound <- if (is.stacked) "tonexty" else "tozeroy"
@@ -227,7 +225,7 @@ Area <- function(x,
 
     eval(colors) # not sure why, but this is necessary for bars to appear properly
     if (is.null(opacity))
-        opacity <- if (!is.stacked) 0.4 else 1
+        opacity <- if (!is.stacked || fit.type != "None") 0.4 else 1
     if (opacity == 1 && !is.stacked && ncol(chart.matrix) > 1)
         warning("Displaying this chart with opacity set to 1 will make it difficult to read as some data series may be obscured.")
 
@@ -275,7 +273,6 @@ Area <- function(x,
     margins <- setMarginsForLegend(margins, legend.show, legend, colnames(chart.matrix))
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
-    footer.axis <- setFooterAxis(footer, footer.font, margins)
 
     ## Initiate plotly object
     p <- plot_ly(as.data.frame(chart.matrix))
@@ -283,16 +280,15 @@ Area <- function(x,
         rownames(chart.matrix) <- 1:nrow(chart.matrix)
     x.labels <- axisFormat$labels
     y.labels <- colnames(chart.matrix)
-    xaxis2 <- NULL
 
     # Invisible trace to ensure enough space for data labels
+    # and that tick bounds are shown properly
     # This must happen before ANY of the area traces are put in
-    # to avoid plotly bug
-    if (data.label.show)
-        p <- add_trace(p, type = plotly.type, mode = "markers",
-                   x = x.labels, y = apply(chart.matrix, 1, max, na.rm = TRUE) * 1.01,
-                   marker = list(color = "red", opacity = 0.0),
-                   hoverinfo = "none", showlegend = FALSE)
+    if (data.label.show || notAutoRange(yaxis)) 
+        p <- add_trace(p, type = "scatter", mode = "markers",
+           x = x.labels, y = apply(chart.matrix, 1, max, na.rm = TRUE) * 1.01,
+           marker = list(color = "red", opacity = 0.0),
+           hoverinfo = "none", showlegend = FALSE, cliponaxis = FALSE)
 
     ## Add a trace for each col of data in the matrix
     for (i in 1:ncol(chart.matrix))
@@ -314,9 +310,18 @@ Area <- function(x,
 
         source.text <- ""
         if (data.label.show)
+        {
             source.text <- paste(data.label.prefix,
                  FormatAsReal(chart.matrix[, i] * data.label.mult, decimals = data.label.decimals),
                  data.label.suffix, sep = "")
+            y.sign <- getSign(chart.matrix[,i], yaxis)
+            if (is.stacked)
+                y.sign <- -y.sign
+            data.label.position <- ifelse(y.sign >= 0, "top middle", "bottom middle")
+            data.label.position[1] <- gsub("middle", "right", data.label.position[1])
+            tmp.len <- length(data.label.position)
+            data.label.position[tmp.len] <- gsub("middle", "left", data.label.position[tmp.len])
+        }
 
         # add invisible line to force all categorical labels to be shown
         if (i == 1)
@@ -340,13 +345,14 @@ Area <- function(x,
                            text = source.text,
                            textfont = data.label.font,
                            textposition = data.label.position,
+                           cliponaxis = FALSE, 
                            hoverinfo = "none",
                            showlegend = FALSE)
 
            # draw line
            if (any(!is.na(y)) && (has.gap || line.thickness > 0))
                 p <- add_trace(p,
-                           type = plotly.type,
+                           type = "scatter",
                            x = x,
                            y = y,
                            connectgaps = FALSE,
@@ -383,7 +389,7 @@ Area <- function(x,
             # This is done last, to retain the hovertext
             if (any(!is.na(y)))
                 p <- add_trace(p,
-                           type = plotly.type,
+                           type = "scatter",
                            x = x,
                            y = y,
                            fill = fill.bound,
@@ -403,11 +409,23 @@ Area <- function(x,
             {
                 tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                          else sprintf("%s: %s", fit.line.name, y.labels[i])
-                tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type)
-                p <- add_trace(p, x=tmp.fit$x, y=tmp.fit$y, type='scatter', mode="lines",
-                          name=tmp.fname, legendgroup=i, showlegend=F,
-                          line=list(dash=fit.line.type, width=fit.line.width,
-                          color=fit.line.colors[i], shape='spline'))
+                tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type, fit.CI.show)
+                p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$y, type = 'scatter', mode = "lines",
+                          name = tmp.fname, legendgroup = i, showlegend = FALSE,
+                          line = list(dash = fit.line.type, width = fit.line.width,
+                          color = fit.line.colors[i], shape = 'spline'), opacity = fit.line.opacity)    
+                if (fit.CI.show && !is.null(tmp.fit$lb))
+                {
+                    p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$lb, type = 'scatter',
+                            mode = 'lines', name = "Lower bound of 95%CI",
+                            showlegend = FALSE, legendgroup = i,
+                            line=list(color=fit.CI.colors[i], width=0, shape='spline'))
+                    p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$ub, type = 'scatter',
+                            mode = 'lines', name = "Upper bound of 95% CI",
+                            fill = "tonexty", fillcolor = toRGB(fit.CI.colors[i], alpha = fit.CI.opacity),
+                            showlegend = FALSE, legendgroup = i,
+                            line = list(color=fit.CI.colors[i], width=0, shape='spline'))
+                }
             }
         }
         else
@@ -420,7 +438,7 @@ Area <- function(x,
             # text and line must occur together as a single trace
             y.label <- y.labels[i]
             p <- add_trace(p,
-                           type = plotly.type,
+                           type = "scatter",
                            x = x,
                            y = y,
                            fill = fill.bound,
@@ -436,7 +454,6 @@ Area <- function(x,
                            marker = marker)
          }
     }
-    p <- addSubtitle(p, subtitle, subtitle.font, margins)
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
@@ -444,12 +461,12 @@ Area <- function(x,
         showlegend = legend.show,
         legend = legend,
         yaxis = yaxis,
-        xaxis4 = footer.axis,
-        xaxis2 = xaxis2,
         xaxis = xaxis,
         margin = margins,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
+        annotations = list(setSubtitle(subtitle, subtitle.font, margins),
+                           setFooter(footer, footer.font, margins)),
         hovermode = hover.mode,
         titlefont = title.font,
         font = data.label.font

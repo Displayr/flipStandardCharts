@@ -10,21 +10,24 @@
 #' @param average.show Logical; whether to show a second series in each panel containing
 #'     the data averaged across all series.
 #' @param average.color The color in which the average series should be displayed
-#' @param paneltitle.show Logical; whether to show a title for each panel.
-#' @param paneltitle.font.family Font family of panel titles.
-#' @param paneltitle.font.color Font color of panel titles.
-#' @param paneltitle.font.size Font size of panel titles.
-#' @param paneltitle.wrap Logical; whether the panel title should be wrapped.
-#' @param paneltitle.wrap.nchar Number of characters (approximately) in each line
-#'     of the panel title when \code{paneltitle.wordwrap} \code{TRUE}.
+#' @param panel.title.show Logical; whether to show a title for each panel.
+#' @param panel.title.font.family Font family of panel titles.
+#' @param panel.title.font.color Font color of panel titles.
+#' @param panel.title.font.size Font size of panel titles.
+#' @param panel.title.wrap Logical; whether the panel title should be wrapped.
+#' @param panel.title.wrap.nchar Number of characters (approximately) in each line
+#'     of the panel title when \code{panel.title.wordwrap} \code{TRUE}.
 #' @param legend.show Ignored except for with \code{GeographicMap}.
 #' @param pad.top Numeric in [0,1]; Spacing above chart (between panels)
 #' @param pad.bottom Numeric in [0,1]; Spacing below chart (between panels)
 #' @param pad.left Numeric in [0,1]; Spacing to the left of chart (between panels)
 #' @param pad.right Numeric in [0,1]; Spacing to the right chart (between panels)
+#' @param scatter.groups.column The column of \code{x} which is used to aggregate
+#'   the data for small multiples. By default this is the last column in \code{x}
 #' @param mapping.package Not used.
 #' @param ... Extra arguments passed to the charting function
 #' @inherit Column
+#' @inherit Scatter
 #' @inherit GeographicMap
 #' @importFrom plotly subplot
 #' @export
@@ -49,32 +52,15 @@ SmallMultiples <- function(x,
                            values.bounds.maximum = NULL,
                            values.bounds.minimum = NULL,
                            colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
+                           fit.line.colors = colors,
+                           fit.CI.colors = colors,
                            global.font.family = "Arial",
                            global.font.color = rgb(44, 44, 44, maxColorValue = 255),
                            title = "",
                            title.font.family = global.font.family,
                            title.font.color = global.font.color,
                            title.font.size = 16,
-                           paneltitle.show = TRUE,
-                           paneltitle.font.family = global.font.family,
-                           paneltitle.font.color = global.font.color,
-                           paneltitle.font.size = 14,
-                           paneltitle.wrap = TRUE,
-                           paneltitle.wrap.nchar = 20,
-                           x.title = "",
-                           x.title.font.size = 12,
-                           y.title = "",
-                           y.title.font.size = 12,
-                           data.label.show = FALSE,
-                           grid.show = TRUE,
-                           x.tick.show = TRUE,
-                           x.tick.angle = NULL,
-                           legend.show = FALSE,
-                           margin.left = NULL,
-                           margin.right = NULL,
-                           margin.top = NULL,
-                           margin.bottom = NULL,
-                           subtitle = "", # parameters to discard
+                           subtitle = "",
                            subtitle.font.family = global.font.family,
                            subtitle.font.color = global.font.color,
                            subtitle.font.size = 12,
@@ -84,19 +70,65 @@ SmallMultiples <- function(x,
                            footer.font.size = 8,
                            footer.wrap = TRUE,
                            footer.wrap.nchar = 100,
-                           fit.line.colors = NULL,
+                           panel.title.show = TRUE,
+                           panel.title.font.family = global.font.family,
+                           panel.title.font.color = global.font.color,
+                           panel.title.font.size = 14,
+                           panel.title.wrap = TRUE,
+                           panel.title.wrap.nchar = 20,
+                           x.title = "",
+                           x.title.font.size = 12,
+                           y.title = "",
+                           y.title.font.size = 12,
+                           data.label.show = FALSE,
+                           grid.show = TRUE,
+                           x.tick.show = TRUE,
+                           x.tick.angle = NULL,
+                           legend.show = TRUE,
+                           margin.left = NULL,
+                           margin.right = NULL,
+                           margin.top = NULL,
+                           margin.bottom = NULL,
                            mapping.package = "plotly", # discarded
+                           scatter.x.column = 1,
+                           scatter.y.column = 2,
+                           scatter.sizes.column = 3,
+                           scatter.colors.column = 4,
+                           scatter.groups.column = NULL,
+                           scatter.colors.as.categorical = TRUE,
+                           scatter.sizes.as.diameter = FALSE,
                            ...)
 {
-    # Subplot has problems with the placement of GeographicMap and Radar
-    # Arguments which also cannot be used: data labels, subtitle, footer
     chart.type <- gsub(" ", "", chart.type)
     chart <- get0(chart.type, mode = "function")
     eval(colors)
     if (is.null(fit.line.colors))
         fit.line.colors <- colors
+    if (is.null(footer.font.family))
+        footer.font.family <- global.font.family
+    if (is.null(footer.font.color))
+        footer.font.color <- global.font.color
+    if (is.null(footer.font.size))
+        footer.font.size <- 8
 
-    if (is.null(ncol(x)) || ncol(x) <= 1)
+    if (chart.type == "Scatter")
+    {
+        if (sum(scatter.groups.column, na.rm = TRUE) <= 0)
+            scatter.groups.column <- NCOL(x)
+
+        if (sum(scatter.groups.column, na.rm = TRUE) <= 0 || NCOL(x) < scatter.groups.column)
+            scatter.groups.column <- NCOL(x)
+        if (isTRUE(unname(scatter.colors.column == scatter.groups.column)))
+            scatter.colors.column <- 0
+        if (isTRUE(unname(scatter.sizes.column == scatter.groups.column)))
+            scatter.sizes.column <- 0
+        indexes <- tapply(1:nrow(x), x[,scatter.groups.column], function(ii) ii)
+        npanels <- length(indexes)
+
+    } else
+        npanels <- NCOL(x)
+
+    if (npanels <= 1)
         stop("Small Multiples can only be used for data containing multiple series.")
 
     # Data manipulation
@@ -104,31 +136,63 @@ SmallMultiples <- function(x,
     {
         if (!is.numeric(x.order))
             x.order <- suppressWarnings(as.numeric(TextAsVector(x.order)))
-        if (any(is.na(x.order)) || any(x.order > ncol(x)))
-            stop("'Order' should be a comma separated list of indices (between 1 and ", ncol(x), ")")
+        if (any(is.na(x.order)) || any(x.order > npanels))
+            stop("'Order' should be a comma separated list of indices (between 1 and ", npanels, ")")
         if (is.numeric(x.order) && length(x.order) > 0)
-            x <- x[, x.order]
+        {
+            if (chart.type == "Scatter")
+                indexes <- indexes[x.order]
+            else
+                x <- x[, x.order]
+            npanels <- length(x.order)
+        }
     }
-    values.max = max(0, unlist(x), na.rm = TRUE)
-    values.min = min(0, unlist(x), na.rm = TRUE)
+    if (npanels > 100)
+        stop("Small multiples cannot show more than 100 panels (current dataset contains ", npanels, " series).\n")
+    if (length(colors) < npanels)
+        colors <- paste0(rep("", npanels), colors)
+
+    all.values <- if (chart.type == "Scatter") x[,scatter.y.column]
+                  else unlist(x)
+    values.max = max(0, all.values, na.rm = TRUE)
+    values.min = min(0, all.values, na.rm = TRUE)
     values.bounds.minimum <- charToNumeric(values.bounds.minimum)
     values.bounds.maximum <- charToNumeric(values.bounds.maximum)
     x.bounds.minimum <- charToNumeric(x.bounds.minimum)
     x.bounds.maximum <- charToNumeric(x.bounds.maximum)
     y.bounds.minimum <- charToNumeric(y.bounds.minimum)
     y.bounds.maximum <- charToNumeric(y.bounds.maximum)
-    if (share.axes && chart.type == "Bar" && is.null(x.bounds.maximum))
-        x.bounds.maximum <- values.max
-    if (share.axes && chart.type != "Bar" && is.null(y.bounds.maximum))
-        y.bounds.maximum <- values.max
-    if (share.axes && chart.type == "Bar" && is.null(x.bounds.minimum))
-        x.bounds.minimum <- values.min
-    if (share.axes && chart.type != "Bar" && is.null(y.bounds.minimum))
-        y.bounds.minimum <- values.min
-    if (share.axes && chart.type == "GeographicMap")
-        values.bounds.maximum <- max(values.bounds.maximum, values.max)
-    if (share.axes && chart.type == "GeographicMap")
-        values.bounds.minimum <- min(values.bounds.minimum, values.min)
+
+    if (share.axes)
+    {
+        if (chart.type == "Scatter" && is.numeric(x[,scatter.x.column]))
+        {
+            xvals <- x[,scatter.x.column]
+            if (is.null(x.bounds.minimum))
+                x.bounds.minimum <- min(xvals, na.rm = TRUE)
+            if (is.null(x.bounds.maximum))
+                x.bounds.maximum <- max(xvals, na.rm = TRUE)
+        }
+        if (chart.type == "GeographicMap")
+        {
+            values.bounds.maximum <- max(values.bounds.maximum, values.max)
+            values.bounds.minimum <- min(values.bounds.minimum, values.min)
+        }
+        else if (chart.type == "Bar")
+        {
+            if (is.null(x.bounds.maximum))
+                x.bounds.maximum <- values.max
+            if (is.null(x.bounds.minimum))
+                x.bounds.minimum <- values.min
+        }
+        else
+        {
+            if (is.null(y.bounds.maximum))
+                y.bounds.maximum <- values.max
+            if (is.null(y.bounds.minimum))
+                y.bounds.minimum <- values.min
+        }
+    }
 
     if (is.null(x.tick.angle) && chart.type %in% c("Column", "Area", "Line") &&
         max(nchar(rownames(x)), 0) > 3)
@@ -150,7 +214,6 @@ SmallMultiples <- function(x,
     if (is.null(margin.right) || is.na(margin.right))
         margin.right <- 20
 
-    npanels <- ncol(x)
     ncols <- ceiling(npanels/nrows)
     h.offset <- 0
     w.offset <- 0
@@ -158,24 +221,13 @@ SmallMultiples <- function(x,
     {
         w.offset <- c(pad.left, rep(0, max(0, ncols - 2)), pad.right)[1:ncols]
         if (any(w.offset >= 1/ncols))
-            stop("'pad.left' and 'pad.bottom' should be between 0 and 1/ncols (", round(1/ncols, 4), ")")
+            stop("'Left padding' and 'Right padding' should be between 0 and 1/ncols (", round(1/ncols, 4), ")")
     }
     h.offset <- c(pad.top, rep(0, max(0, nrows - 2)), pad.bottom)[1:nrows]
     if (any(h.offset >= 1/nrows))
-        stop("'pad.top' and 'pad.bottom' should be between 0 and 1/nrows (", round(1/nrows, 4), ")")
+        stop("'Top padding' and 'Bottom padding' should be between 0 and 1/nrows (", 
+             round(1/nrows, 4), ")")
 
-    # Position titles for each panel
-    paneltitles <- NULL
-    if (paneltitle.show && !is.null(colnames(x)))
-    {
-        title.list <- autoFormatLongLabels(colnames(x), paneltitle.wrap, paneltitle.wrap.nchar)
-        titles.ypos <- rep((nrows:1)/nrows, each = ncols)[1:npanels]
-        titles.xpos <- rep((1:ncols - 0.5)/ncols, nrows)[1:npanels]
-        paneltitles <- list(text = title.list, x = titles.xpos, y = titles.ypos,
-                            showarrow = FALSE, xanchor = "center", yanchor = "top",
-                            font = list(family = paneltitle.font.family, color = paneltitle.font.color,
-                            size = paneltitle.font.size), xref = 'paper', yref = 'paper')
-    }
 
     # Construct charts
     .bind_mean <- function(a, b, rev = FALSE)
@@ -188,7 +240,77 @@ SmallMultiples <- function(x,
             return(cbind(a, Average = b))
     }
 
-    if (chart.type == "Radar")
+
+    if (chart.type == "Scatter")
+    {
+        if (average.show)
+            warning("Averages cannot be shown for small multiples with scatterplot.")
+        empty.footer <- length(footer) == 0 || nchar(footer) == 0
+        sz.min <- NULL
+        sz.max <- NULL
+        if (!is.null(scatter.sizes.column) && !is.na(scatter.sizes.column) &&
+            scatter.sizes.column > 0 && scatter.sizes.column <= NCOL(x))
+        {
+            notNA.ind <- 1:nrow(x)
+            if (sum(scatter.x.column, na.rm = TRUE) > 0)
+                notNA.ind <- intersect(notNA.ind, which(!is.na(x[,scatter.x.column])))
+            if (sum(scatter.y.column, na.rm = TRUE) > 0)
+                notNA.ind <- intersect(notNA.ind, which(!is.na(x[,scatter.y.column])))
+            if (sum(scatter.colors.column, na.rm = TRUE) > 0)
+                notNA.ind <- intersect(notNA.ind, which(!is.na(x[,scatter.colors.column])))
+            sc.tmp <- abs(AsNumeric(x[notNA.ind, scatter.sizes.column], binary = FALSE))
+            sz.min <- min(sc.tmp, na.rm = TRUE)
+            sz.max <- max(sc.tmp, na.rm = TRUE)
+            if (empty.footer)
+                footer <- sprintf("%s%s of points are proportional to absolute value of '%s'; ",
+                              footer, if (scatter.sizes.as.diameter) "Diameter" else "Area",
+                              colnames(x)[scatter.sizes.column])
+
+        }
+        col.min <- NULL
+        col.max <- NULL
+        if (!is.null(scatter.colors.column) && !is.na(scatter.colors.column) &&
+            scatter.colors.column > 0 && scatter.colors.column <= NCOL(x))
+        {
+            if (!is.numeric(x[,scatter.colors.column]))
+                x[,scatter.colors.column] <- as.factor(x[,scatter.colors.column])
+            col.tmp <- AsNumeric(x[,scatter.colors.column], binary = FALSE)
+            col.min <- min(col.tmp, na.rm = TRUE)
+            col.max <- max(col.tmp, na.rm = TRUE)
+            colors <- rep(list(colors), npanels) # use the whole palette in each panel
+            if (empty.footer)
+                footer <- sprintf("%sPoints colored according to '%s'; ",
+                              footer, colnames(x)[scatter.colors.column])
+        } else
+            colors <- as.list(colors)
+
+        plot.list <- lapply(1:npanels, function(i){chart(x[indexes[[i]],],
+                                                     scatter.x.column = scatter.x.column,
+                                                     scatter.y.column = scatter.y.column,
+                                                     scatter.sizes.column = scatter.sizes.column,
+                                                     scatter.colors.column = scatter.colors.column,
+                                                     scatter.sizes.as.diameter = scatter.sizes.as.diameter,
+                                                     scatter.colors.as.categorical = FALSE,
+                                                     colors = colors[[i]],
+                                                     fit.line.colors = fit.line.colors[i],
+                                                     fit.CI.colors = fit.CI.colors[i],
+                                                     x.title = x.title, x.title.font.size = x.title.font.size,
+                                                     y.title = y.title, y.title.font.size = y.title.font.size,
+                                                     grid.show = grid.show, data.label.show = data.label.show,
+                                                     x.tick.show = x.tick.show, x.tick.angle = x.tick.angle,
+                                                     y.bounds.maximum = y.bounds.maximum,
+                                                     y.bounds.minimum = y.bounds.minimum,
+                                                     x.bounds.maximum = x.bounds.maximum,
+                                                     x.bounds.minimum = x.bounds.minimum,
+                                                     global.font.family = global.font.family,
+                                                     global.font.color = global.font.color,
+                                                     legend.show = legend.show && (i == 1),
+                                                     footer.show = FALSE,
+                                                     sz.min = sz.min, sz.max = sz.max,
+                                                     col.min = col.min, col.max = col.max,
+                                                    ...)$htmlwidget})
+    }
+    else if (chart.type == "Radar")
     {
         plot.list <- lapply(1:npanels, function(i){chart(.bind_mean(x[,i, drop = FALSE], average.series),
                                                      hovertext.show = c(TRUE, TRUE),
@@ -224,6 +346,7 @@ SmallMultiples <- function(x,
                                                      average.series = average.series,
                                                      average.color = average.color,
                                                      fit.line.colors = fit.line.colors[i],
+                                                     fit.CI.colors = fit.CI.colors[i],
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
                                                      grid.show = grid.show, data.label.show = data.label.show,
@@ -235,11 +358,23 @@ SmallMultiples <- function(x,
                                                      global.font.family = global.font.family,
                                                      global.font.color = global.font.color,
                                                      ...)$htmlwidget})
-
+    else if (chart.type == "Pyramid")
+        plot.list <- lapply(1:npanels, function(i){chart(x[,i, drop = FALSE],
+                                                     colors = colors,
+                                                     x.title = x.title, x.title.font.size = x.title.font.size,
+                                                     y.title = y.title, y.title.font.size = y.title.font.size,
+                                                     data.label.show = data.label.show,
+                                                     x.tick.show = FALSE, x.tick.angle = x.tick.angle,
+                                                     x.bounds.maximum = x.bounds.maximum,
+                                                     x.bounds.minimum = x.bounds.minimum,
+                                                     global.font.family = global.font.family,
+                                                     global.font.color = global.font.color,
+                                                     ...)$htmlwidget})
     else
         plot.list <- lapply(1:npanels, function(i){chart(.bind_mean(x[,i, drop = FALSE], average.series),
                                                      colors = c(colors[i], average.color),
                                                      fit.line.colors = c(fit.line.colors[i], average.color),
+                                                     fit.CI.colors = c(fit.CI.colors[i], average.color),
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
                                                      grid.show = grid.show, data.label.show = data.label.show,
@@ -258,8 +393,35 @@ SmallMultiples <- function(x,
                    heights = rep(1/nrows, nrows) - h.offset, # compensate for plotly bug
                    widths = rep(1/ncols, ncols) - w.offset, titleX = TRUE, titleY = TRUE,
                    shareX = share.axes && !is.geo, shareY = share.axes && !is.geo)
-    res <- layout(res, title = title, showlegend = is.geo, annotations = paneltitles,
-                  titlefont = list(family = title.font.family, color = title.font.color, size = title.font.size),
-                  margin = list(l = margin.left, r = margin.right, b = margin.bottom, t = margin.top))
+
+    # Titles and margin text
+    title.font <- list(family = title.font.family, size = title.font.size, color = title.font.color)
+    panel.title.font <- list(family = panel.title.font.family, color = panel.title.font.color,
+                             size = panel.title.font.size)
+    subtitle.font <- list(family = subtitle.font.family, size = subtitle.font.size,
+                          color = subtitle.font.color)
+    footer.font <- list(family = footer.font.family, size = footer.font.size, color = footer.font.color)
+    footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate = FALSE)
+    margins <- list(l = margin.left, r = margin.right, b = margin.bottom, t = margin.top)
+    margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
+                                 subtitle.font.size, footer.font.size)
+    annotations <- list(setSubtitle(subtitle, subtitle.font, margins),
+                        setFooter(footer, footer.font, margins))
+    titles <- if (chart.type == "Scatter") names(indexes)
+              else                         colnames(x)
+    if (panel.title.show && !is.null(titles))
+    {
+        title.list <- autoFormatLongLabels(titles, panel.title.wrap, panel.title.wrap.nchar)
+        titles.ypos <- rep((nrows:1)/nrows, each = ncols)[1:npanels]
+        titles.xpos <- rep((1:ncols - 0.5)/ncols, nrows)[1:npanels]
+        for (i in 1:npanels)
+            annotations[[i+2]] <- list(text = title.list[i], showarrow = FALSE,
+                            x = titles.xpos[i], y = titles.ypos[i], font = panel.title.font,
+                            xanchor = "center", yanchor = "top", xref = 'paper', yref = 'paper')
+    }
+
+
+    res <- layout(res, title = title, showlegend = is.geo, margin = margins,
+                  annotations = annotations, titlefont = title.font)
     res
 }

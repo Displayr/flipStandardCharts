@@ -71,7 +71,7 @@ Pie <- function(x,
     ErrorIfNotEnoughData(x)
     groups <- NULL
 
-    if (is.null(dim(x)) || length(dim(x)) == 1)
+    if (is.null(dim(x)) || length(dim(x)) == 1 || is.data.frame(x) && nrow(x) == 1)
     {
         x.labels <- names(x)
         if (is.null(x.labels))
@@ -179,7 +179,7 @@ Pie <- function(x,
         y.values <- y.values * 100
     }
 
-    donut <- Donut(values = y.values,
+    donut <- rhtmlDonut::Donut(values = y.values,
                   labels = x.labels,
                   values.color = pie.values.colors,
                   values.order = pie.values.order,
@@ -191,14 +191,12 @@ Pie <- function(x,
                   labels.font.family = data.label.font.family,
                   labels.font.color = data.label.font.color,
                   labels.font.size = data.label.font.size,
-                  labels.min.font.size = data.label.font.size,
                   groups = groups,
                   groups.color = pie.groups.colors,
                   groups.order = pie.groups.order,
                   groups.font.family = pie.groups.font.family,
                   groups.font.color = pie.groups.font.color,
                   groups.font.size = pie.groups.font.size,
-                  groups.min.font.size = pie.groups.font.size,
                   title = title,
                   title.font.family = title.font.family,
                   title.font.size = title.font.size,

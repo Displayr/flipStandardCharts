@@ -13,10 +13,12 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1, scatter.y.column = 2,
   scatter.max.labels = 50, colors = ChartColors(12), trend.lines = FALSE,
   logos = NULL, logo.size = 0.5, fit.type = "None",
   fit.ignore.last = FALSE, fit.line.type = "dot", fit.line.width = 1,
-  fit.line.name = "Fitted", fit.line.colors = colors, legend.show = TRUE,
-  tooltip.show = TRUE, modebar.show = FALSE, global.font.family = "Arial",
-  global.font.color = rgb(44, 44, 44, maxColorValue = 255), title = "",
-  title.font.family = global.font.family,
+  fit.line.name = "Fitted", fit.line.colors = colors,
+  fit.line.opacity = 1, fit.CI.show = FALSE,
+  fit.CI.colors = fit.line.colors, fit.CI.opacity = 0.4,
+  legend.show = TRUE, tooltip.show = TRUE, modebar.show = FALSE,
+  global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
+  maxColorValue = 255), title = "", title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
   subtitle = "", subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color, subtitle.font.size = 12,
@@ -63,8 +65,10 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1, scatter.y.column = 2,
   x.tick.font.family = global.font.family, x.tick.font.size = 10,
   x.tick.label.wrap = TRUE, x.tick.label.wrap.nchar = 21,
   line.thickness = 0, line.colors = colors, marker.border.width = 1,
-  marker.border.colors = colors, marker.border.opacity = 1,
-  marker.size = if (is.null(scatter.sizes)) 6 else 12, swap.x.and.y = FALSE)
+  marker.border.colors = colors, marker.border.opacity = NULL,
+  marker.size = if (is.null(scatter.sizes)) 6 else 12, swap.x.and.y = FALSE,
+  footer.show = TRUE, sz.min = NULL, sz.max = NULL, sz.scale = 50,
+  col.min = NULL, col.max = NULL)
 }
 \arguments{
 \item{x}{A numeric vector for the x-axis coordinates (which may be named); or a matrix or dataframe; or a list of matrices, where each matrix share the same row and column names}
@@ -108,7 +112,8 @@ This should be input as a comma-seperated list of URLs.}
 
 \item{logo.size}{Numeric controlling the size of the logos.}
 
-\item{fit.type}{Character; type of line of best fit. Can be one of "None", "Linear" or "Smooth" (loess local polynomial fitting).}
+\item{fit.type}{Character; type of line of best fit. Can be one of "None", "Linear", "LOESS",
+"Friedman's super smoother" or "Cubic spline".}
 
 \item{fit.ignore.last}{Boolean; whether to ignore the last data point in the fit.}
 
@@ -121,6 +126,16 @@ This should be input as a comma-seperated list of URLs.}
 \item{fit.line.colors}{Character; a vector containing one or more named
 colors from grDevices OR one or more specified hex value colors OR a single
 named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
+
+\item{fit.line.opacity}{Opacity of trend line as an alpha value (0 to 1).}
+
+\item{fit.CI.show}{Show 95\% confidence interval.}
+
+\item{fit.CI.colors}{Character; a vector containing one or more named
+colors from grDevices OR one or more specified hex value colors OR a single
+named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
+
+\item{fit.CI.opacity}{Opacity of confidence interval ribbon as an alpha value (0 to 1).}
 
 \item{legend.show}{Logical; show the legend.}
 
@@ -185,7 +200,7 @@ value in relation to the marker icon.  Can be "top left", "top center", "top
 right", "middle left", "middle center", "middle right", "bottom left",
 "bottom center", "bottom right". Only applicable for line and area charts.}
 
-\item{opacity}{Opacity of area fill colors as an alpha value (0 to 1).}
+\item{opacity}{Opacity of scatter points as an alpha value (0 to 1).}
 
 \item{background.fill.color}{Background color in character format
 (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
@@ -400,6 +415,18 @@ if \code{scatter.sizes} is provided, but used for the legend
 if \code{scatter.colors.as.categorical}.}
 
 \item{swap.x.and.y}{Swap the x and y axis around on the chart.}
+
+\item{footer.show}{Hide footer text. This is required by SmallMultiples}
+
+\item{sz.min}{Parameter to control scaling of scatter.sizes, used by SmallMultiples}
+
+\item{sz.max}{Parameter to control scaling of scatter.sizes, used by SmallMultiples}
+
+\item{sz.scale}{Parameter to control scaling of scatter.sizes, used by SmallMultiples}
+
+\item{col.min}{Parameter to control scaling of scatter.colors, used by SmallMultiples}
+
+\item{col.max}{Parameter to control scaling of scatter.colors, used by SmallMultiples}
 
 \item{legend.fill}{Same as \code{legend.fill.color}. Retained for backwards compatibility.}
 

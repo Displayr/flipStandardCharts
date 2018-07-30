@@ -176,8 +176,9 @@ getRange <- function(x, axis, axisFormat)
 #' @param ignore.last Whether to ignore the last observation in \code{x}
 #'   and \code{y}.
 #' @importFrom stats supsmu
+#' @importFrom mgcv gam
 #' @noRd
-fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
+fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE)
 {
     if (!is.numeric(y))
     {
@@ -202,8 +203,10 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
     ord <- order(tmp.dat$x)
     tmp.dat <- tmp.dat[ord,]
 
-    if (grepl("(friedman|super)", fit.type, ignore.case = TRUE))
+    if (grepl("(friedman|super|supsmu)", fit.type, ignore.case = TRUE))
     {
+        if (CI.show)
+            warning("Confidence intervals cannot be computed for trend lines of this type.")
         indU <- which(!duplicated(tmp.dat$x))
         if (length(indU) < nrow(tmp.dat))
             warning("Multiple points at the same x-coordinate ignored for estimating line of best fit.\n")
@@ -211,7 +214,9 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
         return(list(x = x[ord[indU]], y = tmp.fit$y))
     }
     else if (grepl("(smooth|loess)", fit.type, ignore.case = TRUE) && nrow(tmp.dat) > 7)
-        tmp.fit <- loess(y~x, data=tmp.dat)
+        tmp.fit <- loess(y~x, data = tmp.dat)
+    else if (grepl("(cubic|spline|gam)", fit.type, ignore.case = TRUE))
+        tmp.fit <- gam(y~s(x, bs = "cr"), data = tmp.dat)
     else
         tmp.fit <- lm(y~x, data=tmp.dat)
 
@@ -219,9 +224,16 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type)
              else seq(from = min(tmp.dat$x), to = max(tmp.dat$x), length = 100)
     if (!tmp.is.factor && max(x.fit) < max(tmp.dat$x))
         x.fit <- c(x.fit, max(tmp.dat$x))
-    y.fit <- predict(tmp.fit, data.frame(x = x.fit))
+    y.fit <- if ("gam" %in% class(tmp.fit)) predict(tmp.fit, data.frame(x = x.fit), se = CI.show, type = "response")
+             else                           predict(tmp.fit, data.frame(x = x.fit), se = CI.show)
     if (tmp.is.factor)
         x.fit <- tmp.dat$xorig
+    if (CI.show)
+    {
+        lb <- as.numeric(y.fit$fit - (1.96 * y.fit$se))
+        ub <- as.numeric(y.fit$fit + (1.96 * y.fit$se))
+        return(list(x = x.fit, y = y.fit$fit, lb = lb, ub = ub))
+    }
     return(list(x = x.fit, y = y.fit))
 }
 
@@ -547,36 +559,26 @@ setCustomMargins <- function(margins, margin.top, margin.bottom, margin.left,
     margins
 }
 
-addSubtitle <- function(p, subtitle, subtitle.font, margins)
+setSubtitle <- function(subtitle, subtitle.font, margins)
 {
-    if (sum(nchar(subtitle)) > 0)
-        p <- add_annotations(p, text = subtitle, font = subtitle.font,
+    if (sum(nchar(subtitle)) == 0)
+        return(NULL)
+    return(list(text = subtitle, font = subtitle.font,
                 xref = "paper", x = 0.5, xshift = (margins$r - margins$l)/2,
-                yref = "paper", y = 1.0, yanchor = "bottom", showarrow = FALSE)
-    p
+                yref = "paper", y = 1.0, yanchor = "bottom", showarrow = FALSE))
 }
 
-# footer.font and margins are lists
-# footer.font = list(family, size, color)
-# margins = list(top, bottom, left, right, inner)
-setFooterAxis <- function(footer, footer.font, margins, overlay = "x")
+setFooter <- function(footer, footer.font, margins)
 {
-    # overlay = FALSE is needed for the distribution chart with no x axis
-    # but in other cases, setting to FALSE may do ugly things with transparencies
-
-    res <- NULL
-    if (nchar(footer) > 0)
-    {
-        footer.nline <- sum(gregexpr("<br>", footer)[[1]] > -1) + 1
-        footer.npad <- max(0, ceiling(margins$b/footer.font$size/1.25) - footer.nline - 2)
-        footer <- paste0(paste(rep("<br>", footer.npad), collapse = ""), footer)
-        res <- list(overlaying = overlay, side = "bottom", anchor = "free",
-             position = 0, domain = c(0,1.0), visible = TRUE, layer = "below traces",
-             showline = FALSE, zeroline = FALSE, showgrid = FALSE,
-             tickfont = footer.font, ticktext = c(footer), tickangle = 0,
-             range = c(0,1), tickvals = c(0.5))
-    }
-    res
+    if (sum(nchar(footer)) == 0)
+        return(NULL)
+    
+    footer.nline <- sum(gregexpr("<br>", footer)[[1]] > -1) + 1
+    footer.npad <- max(0, ceiling(margins$b/footer.font$size/1.25) - footer.nline - 2)
+    footer <- paste0("&nbsp;", paste(rep("<br>", footer.npad), collapse = ""), footer)
+    return(list(text = footer, font = footer.font,
+            xref = "paper", x = 0.5, yref = "paper", y = 0.0,
+                yanchor = "top", xanchor = "center", showarrow = FALSE))
 }
 
 # This differs from as.numeric in that it returns NULL
@@ -860,5 +862,18 @@ checkD3Format <- function(format, axis.type, warning.type = "Axis label")
     return(format)
 }
 
+notAutoRange <- function(axis)
+{
+    return(!isTRUE(axis$autorange) && length(axis$range) > 0 && min(abs(axis$range)) > 0)
+}
 
+getSign <- function(values, axis)
+{
+    res <- sign(values)
+    if (length(axis$range) >= 2 && axis$range[2] < axis$range[1])
+        res <- -res
+    else if (axis$autorange == "reversed")
+        res <- -res
+    return(res)
+}
 

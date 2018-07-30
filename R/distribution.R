@@ -325,7 +325,6 @@ Distribution <-   function(x,
                                  10, 10)
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, 0)
-    footer.axis <- setFooterAxis(footer, footer.font, margins, overlay = FALSE)
 
     ## Initiate plotly object
     p <- plot_ly()
@@ -381,7 +380,6 @@ Distribution <-   function(x,
                   FALSE, values.zero.line.width, values.zero.line.color,
                   values.hovertext.format)
     hover.mode <- if (tooltip.show) "'closest'" else "FALSE"
-    p <- addSubtitle(p, subtitle, subtitle.font, margins)
     txt <- paste0("p <- layout(p,
         autosize = TRUE,
         font = list(size = 11),
@@ -389,11 +387,12 @@ Distribution <-   function(x,
         "showlegend = FALSE,
         title = title,
         titlefont = title.font,
-        xaxis4 = footer.axis,
         showlegend = FALSE,",
         violinCategoriesAxes(vertical, n.variables, gsub("'", "\\\\'", labels)), "
         ", if (vertical) "y" else "x", "axis = values.axis,
         margin = margins,
+        annotations = list(setSubtitle(subtitle, subtitle.font, margins),
+                           setFooter(footer, footer.font, margins)),
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity))")
     eval(parse(text = txt))
@@ -482,7 +481,7 @@ addDensities <- function(p,
                y = if (vertical) values.density$x else x.product * values.density$y,
                x = if (vertical) x.product * values.density$y else values.density$x,
                fill = if (vertical) "tozerox" else "tozeroy",
-               fillcolor = density.color,
+               fillcolor = density.color[1],
                hoverinfo = "none",
                line = list(shape = "spline", width = 0),
                mode = "lines",

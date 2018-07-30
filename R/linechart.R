@@ -14,11 +14,18 @@
 #' @export
 Line <-   function(x,
                     type = "Line",
+                    colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
+                    opacity = NULL,
                     fit.type = "None", # can be "Smooth" or anything else
+                    fit.line.colors = colors,
                     fit.ignore.last = FALSE,
                     fit.line.type = "dot",
                     fit.line.width = 1,
                     fit.line.name = "Fitted",
+                    fit.line.opacity = 1,
+                    fit.CI.show = FALSE,
+                    fit.CI.colors = fit.line.colors,
+                    fit.CI.opacity = 0.4,
                     global.font.family = "Arial",
                     global.font.color = rgb(44, 44, 44, maxColorValue = 255),
                     title = "",
@@ -35,9 +42,6 @@ Line <-   function(x,
                     footer.font.size = 8,
                     footer.wrap = TRUE,
                     footer.wrap.nchar = 100,
-                    colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
-                    fit.line.colors = colors,
-                    opacity = 1,
                     grid.show = TRUE,
                     background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
                     background.fill.opacity = 0,
@@ -111,14 +115,13 @@ Line <-   function(x,
                     x.tick.label.wrap = TRUE,
                     x.tick.label.wrap.nchar = 21,
                     line.thickness = 3,
-                    line.opacity = 1,
                     marker.show = NULL,
                     marker.colors = colors,
-                    marker.opacity = 1,
+                    marker.opacity = NULL,
                     marker.size = 6,
                     marker.border.width = 1,
                     marker.border.colors = colors,
-                    marker.border.opacity = 1,
+                    marker.border.opacity = NULL,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
                     data.label.show = FALSE,
@@ -127,8 +130,7 @@ Line <-   function(x,
                     data.label.font.size = 10,
                     data.label.format = "",
                     data.label.prefix = "",
-                    data.label.suffix = "",
-                    data.label.position = "top middle")
+                    data.label.suffix = "")
 {
     ErrorIfNotEnoughData(x)
     # Some minimal data cleaning
@@ -152,6 +154,12 @@ Line <-   function(x,
     series.mode <- "lines+markers"
     if (is.null(marker.show) || marker.show == "none")
         series.mode <- "lines"
+    if (is.null(opacity))
+        opacity <- if (fit.type == "None") 1 else 0.6
+    if (is.null(marker.opacity))
+        marker.opacity <- opacity
+    if (is.null(marker.border.opacity))
+        marker.border.opacity <- marker.opacity
     eval(colors) # not sure why, but this is necessary for bars to appear properly
 
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
@@ -201,7 +209,6 @@ Line <-   function(x,
     margins <- setMarginsForLegend(margins, legend.show, legend, colnames(chart.matrix))
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
-    footer.axis <- setFooterAxis(footer, footer.font, margins)
 
     ## Initiate plotly object
     p <- plot_ly(as.data.frame(chart.matrix))
@@ -213,14 +220,14 @@ Line <-   function(x,
 
     ## Add a trace for each col of data in the matrix
     line.thickness <- line.thickness * rep(1, ncol(chart.matrix))
-    line.opacity <- line.opacity * rep(1, ncol(chart.matrix))
+    opacity <- opacity * rep(1, ncol(chart.matrix))
     for (i in 1:ncol(chart.matrix))
     {
         y <- as.numeric(chart.matrix[, i])
         x <- x.labels
 
         lines <- list(width = line.thickness[i],
-                      color = toRGB(colors[i], alpha = line.opacity[i]))
+                      color = toRGB(colors[i], alpha = opacity[i]))
 
         # add invisible line to force all categorical labels to be shown
         if (i == 1)
@@ -246,16 +253,10 @@ Line <-   function(x,
                  data.label.function(chart.matrix[, i], decimals = data.label.decimals),
                  data.label.suffix, sep = "")
 
-            p <- add_trace(p, x = x, y = y,
-                   type = "scatter",
-                   mode = "text",
-                   legendgroup = tmp.group,
-                   name = y.label,
-                   text = source.text,
-                   textfont = data.label.font,
-                   textposition = data.label.position,
-                   hoverinfo = "none",
-                   showlegend = FALSE)
+            p <- add_trace(p, x = x, y = y, type = "scatter", mode = "text", name = y.label,
+                   cliponaxis = FALSE, text = source.text,
+                   textfont = data.label.font, textposition = "top middle",
+                   hoverinfo = "none", showlegend = FALSE, legendgroup = tmp.group)
         }
 
         # Draw line - main trace
@@ -297,14 +298,25 @@ Line <-   function(x,
         {
             tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                      else sprintf("%s: %s", fit.line.name, y.labels[i])
-            tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type)
-            p <- add_trace(p, x=tmp.fit$x, y=tmp.fit$y, type='scatter', mode="lines",
-                      name=tmp.fname, legendgroup=tmp.group, showlegend=F,
-                      line=list(dash=fit.line.type, width=fit.line.width,
-                      color=fit.line.colors[i], shape='spline'))
+            tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type, fit.CI.show)
+            p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$y, type = 'scatter', mode = "lines",
+                      name = tmp.fname, legendgroup = tmp.group, showlegend = FALSE,
+                      line = list(dash = fit.line.type, width = fit.line.width,
+                      color = fit.line.colors[i], shape = 'spline'), opacity = fit.line.opacity)
+            if (fit.CI.show && !is.null(tmp.fit$lb))
+            {
+                p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$lb, type = 'scatter',
+                        mode = 'lines', name = "Lower bound of 95%CI",
+                        showlegend = FALSE, legendgroup = tmp.group,
+                        line=list(color=fit.CI.colors[i], width=0, shape='spline'))
+                p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$ub, type = 'scatter',
+                        mode = 'lines', name = "Upper bound of 95% CI",
+                        fill = "tonexty", fillcolor = toRGB(fit.CI.colors[i], alpha = fit.CI.opacity),
+                        showlegend = FALSE, legendgroup = tmp.group,
+                        line = list(color=fit.CI.colors[i], width=0, shape='spline'))
+            }
         }
     }
-    p <- addSubtitle(p, subtitle, subtitle.font, margins)
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
@@ -312,12 +324,13 @@ Line <-   function(x,
         showlegend = legend.show,
         legend = legend,
         yaxis = yaxis,
-        xaxis4 = footer.axis,
         xaxis2 = xaxis2,
         xaxis = xaxis,
         margin = margins,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
+        annotations = list(setSubtitle(subtitle, subtitle.font, margins),
+                           setFooter(footer, footer.font, margins)),
         hovermode = hover.mode,
         titlefont = title.font,
         font = data.label.font

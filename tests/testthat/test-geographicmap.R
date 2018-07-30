@@ -89,7 +89,7 @@ test_that ("Areas in Australia", {
 })
 
 names(country.codes)[1] <- "XXX"
-test_that ("Postcodes by country", {
+test_that ("Unmatched name warning", {
     expect_warning(GeographicMap(country.codes), "Unmatched region names: XXX")
 })
 
@@ -98,3 +98,9 @@ test_that ("Ambiguous names DS-2016", {
     names(ambiguous) <- c("Georgia", "Indiana", "Virginia")
     expect_error(GeographicMap(ambiguous), NA)
 })
+
+names(austria.state.table)[1:5] <- "XXX"
+test_that ("Most unmatched", {
+    expect_warning(GeographicMap(austria.state.table), "5 rows of the input data were not matched.")
+})
+

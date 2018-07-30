@@ -16,6 +16,7 @@
 #' @param scatter.colors.name Character; Used for labelling footers.
 #' @param scatter.colors.as.categorical Boolean; Whether to treat colors as a categorical groups, or a numeric scale.
 #' @param colors A vector of colors to use in the chart. When \code{scatter.colors.as.categorical}, the vector of colors should have the length as the number of categories in \code{scatter.colors}. If \code{scatter.colors} is used as numeric vector, then a color ramp is constructed from the colors listed.
+#' @param opacity Opacity of scatter points colors as an alpha value (0 to 1).
 #' @param title Character; chart title.
 #' @param title.font.family Character; title font family. Can be "Arial Black",
 #' "Arial", "Comic Sans MS", "Courier New", "Georgia", "Impact",
@@ -147,6 +148,7 @@ LabeledScatter <- function(x = NULL,
                                 logos = NULL,
                                 logo.size  = 0.5,
                                 colors = ChartColors(12),
+                                opacity = NULL,
                                 legend.show = TRUE,
                                 global.font.family = "Arial",
                                 global.font.color = rgb(44, 44, 44, maxColorValue = 255),
@@ -349,7 +351,11 @@ LabeledScatter <- function(x = NULL,
             warning("Some points omitted due to missing values in 'scatter.sizes'.")
             not.na <- not.na & is.finite(scatter.sizes)
         }
+        if (is.null(opacity))
+            opacity <- 0.4
     }
+    if (is.null(opacity))
+        opacity <- 1
 
     scatter.colors.raw <- scatter.colors
     if (!is.null(scatter.colors))
@@ -459,6 +465,7 @@ LabeledScatter <- function(x = NULL,
                        Z = if (is.null(scatter.sizes)) NULL else abs(scatter.sizes[not.na]),
                        group = groups[not.na],
                        colors = colors,
+                       color.transparency = opacity,
                        label = lab.tidy[not.na],
                        label.alt = scatter.labels[not.na],
                        fixed.aspect = FALSE,

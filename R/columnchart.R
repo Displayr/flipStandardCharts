@@ -8,11 +8,19 @@
 #' @param type One of "Column", "Stacked Column" or "100\% Stacked Column"
 #' @param average.series y-values of additional data series which is shown as a line. Used by \code{SmallMultiples}.
 #' @param average.color Color of the \code{average.series} as a hex code or string
-#' @param fit.type Character; type of line of best fit. Can be one of "None", "Linear" or "Smooth" (loess local polynomial fitting).
+#' @param fit.type Character; type of line of best fit. Can be one of "None", "Linear", "LOESS",
+#'          "Friedman's super smoother" or "Cubic spline".
 #' @param fit.ignore.last Logical; whether to ignore the last data point in the fit.
 #' @param fit.line.type Character; One of "solid", "dot", "dash, "dotdash", or length of dash "2px", "5px".
 #' @param fit.line.width Numeric; Line width of line of best fit.
 #' @param fit.line.name Character; Name of the line of best fit, which will appear in the hovertext.
+#' @param fit.line.opacity Opacity of trend line as an alpha value (0 to 1).
+#' @param fit.CI.show Show 95\% confidence interval.
+#' @param fit.CI.opacity Opacity of confidence interval ribbon as an alpha value (0 to 1).
+#' @param fit.CI.colors Character; a vector containing one or more named
+#' colors from grDevices OR one or more specified hex value colors OR a single
+#' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
+
 #' @param title Character; chart title.
 #' @param title.font.family Character; title font family. Can be "Arial Black",
 #' "Arial", "Comic Sans MS", "Courier New", "Georgia", "Impact",
@@ -36,7 +44,7 @@
 #' @param footer.wrap Logical; whether the footer text should be wrapped.
 #' @param footer.wrap.nchar Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.
 #' @param grid.show Logical; whether to show grid lines.
-#' @param opacity Opacity of area fill colors as an alpha value (0 to 1).
+#' @param opacity Opacity of bars as an alpha value (0 to 1).
 #' @param colors Character; a vector containing one or more named
 #' colors from grDevices OR one or more specified hex value colors OR a single
 #' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
@@ -198,12 +206,19 @@
 #' @importFrom stats loess loess.control lm predict
 #' @export
 Column <- function(x,
+                    colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
+                    opacity = NULL,
                     type = "Column",
                     fit.type = "None", # can be "Smooth" or anything else
+                    fit.line.colors = colors,
                     fit.ignore.last = FALSE,
                     fit.line.type = "dot",
                     fit.line.width = 1,
                     fit.line.name = "Fitted",
+                    fit.line.opacity = 1,
+                    fit.CI.show = FALSE,
+                    fit.CI.colors = fit.line.colors,
+                    fit.CI.opacity = 0.4,
                     global.font.family = "Arial",
                     global.font.color = rgb(44, 44, 44, maxColorValue = 255),
                     title = "",
@@ -220,9 +235,6 @@ Column <- function(x,
                     footer.font.size = 8,
                     footer.wrap = TRUE,
                     footer.wrap.nchar = 100,
-                    colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
-                    fit.line.colors = colors,
-                    opacity = NULL,
                     background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
                     background.fill.opacity = 0,
                     charting.area.fill.color = background.fill.color,
@@ -299,7 +311,7 @@ Column <- function(x,
                     x.tick.label.wrap.nchar = 21,
                     marker.border.width = 1,
                     marker.border.colors = colors,
-                    marker.border.opacity = 1,
+                    marker.border.opacity = NULL,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
                     bar.gap = 0.15,
@@ -352,7 +364,9 @@ Column <- function(x,
     hover.mode <- if (tooltip.show) "closest" else FALSE
     barmode <- if (is.stacked) "stack" else ""
     if (is.null(opacity))
-        opacity <- 1
+        opacity <- if (fit.type == "None") 1 else 0.6
+    if (is.null(marker.border.opacity))
+        marker.border.opacity <- opacity
     eval(colors) # not sure why, but this is necessary for bars to appear properly
 
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
@@ -413,7 +427,6 @@ Column <- function(x,
     margins <- setMarginsForLegend(margins, legend.show, legend, colnames(chart.matrix))
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
-    footer.axis <- setFooterAxis(footer, footer.font, margins)
 
     # Data label annotations
     data.annotations <- NULL
@@ -429,7 +442,8 @@ Column <- function(x,
                             bar.gap = bar.gap,
                             display.threshold = data.label.threshold,
                             dates = axisFormat$ymd,
-                            reversed = y.data.reversed)
+                            reversed = any(getSign(chart.matrix, yaxis) < 0),
+                            font = data.label.font)
 
     ## Initiate plotly object
     p <- plot_ly(as.data.frame(chart.matrix))
@@ -447,54 +461,71 @@ Column <- function(x,
                       alpha = marker.border.opacity),
                       width = marker.border.width))
 
-        # add invisible line to force all categorical labels to be shown
+        # Add invisible line to force all categorical labels to be shown
+        # Type "scatter" ensures y-axis tick bounds are treated properly
+        # but it also adds extra space next to the y-axis
         if (!is.stacked && i == 1)
             p <- add_trace(p, x = x, y = rep(min(y,na.rm = T), length(x)),
-                           type = "scatter", mode = "lines",
+                           mode = if (notAutoRange(yaxis)) "markers" else "lines", 
+                           type = "scatter", cliponaxis = TRUE,
                            hoverinfo = "none", showlegend = F, opacity = 0)
 
         # this is the main trace for each data series
         p <- add_trace(p, x = x, y = y, type = "bar", orientation = "v", marker = marker,
-                       name  =  y.labels[i], legendgroup  =  i,
+                       name  =  y.labels[i], legendgroup = i,
                        text = autoFormatLongLabels(x.labels.full, wordwrap=T, truncate=F),
                        hoverinfo  = setHoverText(xaxis, chart.matrix))
         if (fit.type != "None" && is.stacked && i == 1)
             warning("Line of best fit not shown for stacked charts.")
         if (fit.type != "None" && !is.stacked)
         {
-            tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type)
+            tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type, fit.CI.show)
             tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                          else sprintf("%s: %s", fit.line.name, y.labels[i])
             p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$y, type = 'scatter', mode = "lines",
-                      name = tmp.fname, legendgroup = i, showlegend = F,
+                      name = tmp.fname, legendgroup = i, showlegend = FALSE, opacity = fit.line.opacity,
                       line = list(dash = fit.line.type, width = fit.line.width,
-                      color = fit.line.colors[i], shape = 'spline'))
+                      color = fit.line.colors[i], shape = 'spline'), opacity = fit.line.opacity)
+            if (fit.CI.show && !is.null(tmp.fit$lb))
+            {
+                p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$lb, type = 'scatter',
+                        mode = 'lines', name = "Lower bound of 95%CI",
+                        showlegend = FALSE, legendgroup = i,
+                        line=list(color=fit.CI.colors[i], width=0, shape='spline'))
+                p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$ub, type = 'scatter',
+                        mode = 'lines', name = "Upper bound of 95% CI",
+                        fill = "tonexty", fillcolor = toRGB(fit.CI.colors[i], alpha = fit.CI.opacity),
+                        showlegend = FALSE, legendgroup = i,
+                        line = list(color=fit.CI.colors[i], width=0, shape='spline'))
+            }
         }
-            
+
         # Only used for small multiples
         if (!is.null(average.series))
             p <- add_trace(p, x = x, y = average.series, name = "Average",
                     type = "scatter", mode = "lines", showlegend = FALSE,
-                    line = list(color = average.color)) 
+                    line = list(color = average.color))
 
 
         if (data.label.show && !is.stacked)
         {
             x.range <- getRange(x, xaxis, axisFormat)
-            y.sign <- sign(data.annotations$y[,i])
-            if (y.data.reversed)
-                y.sign <- -1 * (y.sign)
-            #y.diff <- -10 * (y.sign < 0) * diff(range(data.annotations$y))/200
+            y.sign <- getSign(data.annotations$y[,i], yaxis)
             xaxis2 <- list(overlaying = "x", visible = FALSE, range = x.range)
             p <- add_text(p, xaxis = "x2", x = data.annotations$x[,i],
-                      y = data.annotations$y[,i],# + y.diff,
-                      text = data.annotations$text[,i],
+                      y = data.annotations$y[,i], cliponaxis = FALSE,
+                      text = data.annotations$text[,i], textfont = data.label.font,
                       textposition = ifelse(y.sign >= 0, "top center", "bottom center"),
-                      textfont = data.label.font, hoverinfo = "none",
-                      showlegend = FALSE, legendgroup = i)
+                      showlegend = FALSE, legendgroup = i, hoverinfo = "none")
         }
     }
-    p <- addSubtitle(p, subtitle, subtitle.font, margins)
+    annotations <- NULL
+    if (data.label.show && is.stacked)
+        annotations <- data.annotations
+    n <- length(annotations)
+    annotations[[n+1]] <- setFooter(footer, footer.font, margins)
+    annotations[[n+2]] <- setSubtitle(subtitle, subtitle.font, margins)
+    
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
@@ -502,7 +533,6 @@ Column <- function(x,
         showlegend = legend.show,
         legend = legend,
         yaxis = yaxis,
-        xaxis4 = footer.axis,
         xaxis2 = xaxis2,
         xaxis = xaxis,
         margin = margins,
@@ -511,7 +541,7 @@ Column <- function(x,
         hovermode = hover.mode,
         titlefont = title.font,
         font = data.label.font,
-        annotations = if (is.stacked) data.annotations else NULL,
+        annotations =  annotations,
         bargap = bar.gap,
         barmode = barmode
     )

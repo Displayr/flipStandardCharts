@@ -207,17 +207,23 @@ GeographicMap <- function(x,
         table <- table[!(rownames(table) %in% remove.regions), , drop = FALSE]
     }
 
-    table.names <- rownames(table)
     coords.names <- tolower(coords[[structure]])
-    incorrect.names <- !tolower(table.names) %in% coords.names
+    incorrect.names <- !tolower(rownames(table)) %in% coords.names
 
+    if (sum(incorrect.names) > 0.75 * nrow(table))
+        warning(paste0(sum(incorrect.names), " rows of the input data were not matched with",
+                       " geographic entity names. Please check that the data you are plotting is one of",
+                       " countries, states of a country, continents, US regions or Us, UK or Australian zip codes."))
     if (any(incorrect.names))
     {
-        msg <- paste("Unmatched region names:", paste(table.names[incorrect.names], collapse = ", "))
+        msg <- paste("Unmatched region names:", paste(rownames(table)[incorrect.names], collapse = ", "))
         warning(msg)
     }
     if (all(incorrect.names) && zip.country != "Automatic")
         stop("No names in the data were matched to zip codes in your selected country.")
+
+    table <- table[!incorrect.names, , drop = FALSE]
+    table.names <- rownames(table)
 
     # Splicing data onto coordinate data.frame.
     country.lookup <- match(coords.names, tolower(table.names))
@@ -491,14 +497,15 @@ plotlyMap <- function(table, name.map, colors, min.value, max.range, color.NA, l
                   locationmode = locationmode
     ) %>%
 
-        add_trace(#hoverinfo = "text", # should display 'text' only but causes all hovertext to disappear
+        add_trace(hoverinfo = "location+text",
             z = df[, 1],
             zmin = min.value,
             zmax = max.range,
             color = df[, 1],
             colors = colors,
             locations = rownames(df),
-            text = format.function(df[, 1], decimals = decimals, comma.for.thousands = commaFromD3(values.hovertext.format)),
+            text = format.function(df[, 1], decimals = decimals,
+                                         comma.for.thousands = commaFromD3(values.hovertext.format)),
             marker = list(line = bdry)
         ) %>%
 

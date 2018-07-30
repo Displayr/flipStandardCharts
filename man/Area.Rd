@@ -4,8 +4,11 @@
 \alias{Area}
 \title{Area}
 \usage{
-Area(x, type = "Area", fit.type = "None", fit.ignore.last = FALSE,
-  fit.line.type = "dot", fit.line.width = 1, fit.line.name = "Fitted",
+Area(x, type = "Area", colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
+  opacity = NULL, fit.line.colors = colors, fit.type = "None",
+  fit.ignore.last = FALSE, fit.line.type = "dot", fit.line.width = 1,
+  fit.line.name = "Fitted", fit.line.opacity = 1, fit.CI.show = FALSE,
+  fit.CI.opacity = 0.4, fit.CI.colors = fit.line.colors,
   global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
   maxColorValue = 255), title = "", title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
@@ -13,8 +16,7 @@ Area(x, type = "Area", fit.type = "None", fit.ignore.last = FALSE,
   subtitle.font.color = global.font.color, subtitle.font.size = 12,
   footer = "", footer.font.family = global.font.family,
   footer.font.color = global.font.color, footer.font.size = 8,
-  footer.wrap = TRUE, footer.wrap.nchar = 100, colors = ChartColors(max(1,
-  ncol(x), na.rm = TRUE)), fit.line.colors = colors, opacity = NULL,
+  footer.wrap = TRUE, footer.wrap.nchar = 100,
   background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
   background.fill.opacity = 0,
   charting.area.fill.color = background.fill.color,
@@ -57,8 +59,7 @@ Area(x, type = "Area", fit.type = "None", fit.ignore.last = FALSE,
   marker.border.opacity = 1, tooltip.show = TRUE, modebar.show = FALSE,
   data.label.show = FALSE, data.label.font.family = global.font.family,
   data.label.font.size = 10, data.label.font.color = global.font.color,
-  data.label.format = "", data.label.prefix = "", data.label.suffix = "",
-  data.label.position = "top middle")
+  data.label.format = "", data.label.prefix = "", data.label.suffix = "")
 }
 \arguments{
 \item{x}{Input data may be a matrix or a vector, containing the height of the columns
@@ -67,7 +68,18 @@ will be parsed automatically.}
 
 \item{type}{One of "Column", "Stacked Column" or "100\% Stacked Column"}
 
-\item{fit.type}{Character; type of line of best fit. Can be one of "None", "Linear" or "Smooth" (loess local polynomial fitting).}
+\item{colors}{Character; a vector containing one or more named
+colors from grDevices OR one or more specified hex value colors OR a single
+named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
+
+\item{opacity}{Opacity of bars as an alpha value (0 to 1).}
+
+\item{fit.line.colors}{Character; a vector containing one or more named
+colors from grDevices OR one or more specified hex value colors OR a single
+named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
+
+\item{fit.type}{Character; type of line of best fit. Can be one of "None", "Linear", "LOESS",
+"Friedman's super smoother" or "Cubic spline".}
 
 \item{fit.ignore.last}{Logical; whether to ignore the last data point in the fit.}
 
@@ -76,6 +88,16 @@ will be parsed automatically.}
 \item{fit.line.width}{Numeric; Line width of line of best fit.}
 
 \item{fit.line.name}{Character; Name of the line of best fit, which will appear in the hovertext.}
+
+\item{fit.line.opacity}{Opacity of trend line as an alpha value (0 to 1).}
+
+\item{fit.CI.show}{Show 95\% confidence interval.}
+
+\item{fit.CI.opacity}{Opacity of confidence interval ribbon as an alpha value (0 to 1).}
+
+\item{fit.CI.colors}{Character; a vector containing one or more named
+colors from grDevices OR one or more specified hex value colors OR a single
+named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 
 \item{global.font.family}{Character; font family for all occurrences of any
 font attribute for the chart unless specified individually.}
@@ -118,16 +140,6 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{footer.wrap}{Logical; whether the footer text should be wrapped.}
 
 \item{footer.wrap.nchar}{Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.}
-
-\item{colors}{Character; a vector containing one or more named
-colors from grDevices OR one or more specified hex value colors OR a single
-named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
-
-\item{fit.line.colors}{Character; a vector containing one or more named
-colors from grDevices OR one or more specified hex value colors OR a single
-named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
-
-\item{opacity}{Opacity of area fill colors as an alpha value (0 to 1).}
 
 \item{background.fill.color}{Background color in character format
 (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
@@ -372,11 +384,6 @@ See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 \item{data.label.prefix}{Character; prefix for data values.}
 
 \item{data.label.suffix}{Character; suffix for data values.}
-
-\item{data.label.position}{Character; where to place the source data
-value in relation to the marker icon.  Can be "top left", "top center", "top
-right", "middle left", "middle center", "middle right", "bottom left",
-"bottom center", "bottom right".}
 }
 \description{
 Area chart
