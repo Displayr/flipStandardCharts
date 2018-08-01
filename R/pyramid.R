@@ -138,6 +138,7 @@ Pyramid <- function(x,
     xtick.font = list(family = x.tick.font.family, size = x.tick.font.size, color = x.tick.font.color)
     footer.font = list(family = footer.font.family, size = footer.font.size, color = footer.font.color)
     data.label.font = list(family = data.label.font.family, size = data.label.font.size, color = data.label.font.color)
+    footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate = FALSE)
 
     type <- "Bar"
     tmp.label <- formatByD3(max(chart.matrix), data.label.format,
