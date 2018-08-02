@@ -172,7 +172,7 @@ Pie <- function(x,
     data.label.decimals <- decimalsFromD3(data.label.format)
 
     # Convert pie.inner.radius to character
-    inner.radius <- paste(pie.inner.radius, "%", sep = "")
+    inner.radius <- pie.inner.radius / 100
     if (as.percentages)
     {
         data.label.suffix <- paste0("%", data.label.suffix)
@@ -187,7 +187,7 @@ Pie <- function(x,
                   values.font.size = data.label.font.size,
                   values.decimal.places = data.label.decimals,
                   values.display.as = "original",
-                  values.display.thres = pie.data.threshold * 100,
+                  values.display.thres = pie.data.threshold,
                   labels.font.family = data.label.font.family,
                   labels.font.color = data.label.font.color,
                   labels.font.size = data.label.font.size,

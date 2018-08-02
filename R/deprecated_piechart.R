@@ -130,7 +130,7 @@ pieChart <- function(chart.matrix,
         pie.inner.radius <- 0
 
     # Convert pie.inner.radius to character
-    inner.radius <- paste(pie.inner.radius, "%", sep = "")
+    inner.radius <- pie.inner.radius / 100
 
     values.display.as <- if (pie.show.percentages) "percentage" else "original"
     if (pie.show.percentages)
@@ -147,7 +147,7 @@ pieChart <- function(chart.matrix,
                       values.font.size = pie.values.font.size,
                       values.decimal.places = pie.values.decimals,
                       values.display.as = values.display.as,
-                      values.display.thres = pie.data.threshold * 100,
+                      values.display.thres = pie.data.threshold,
                       labels.font.family = pie.labels.font.family,
                       labels.font.color = pie.labels.font.color,
                       labels.font.size = pie.labels.font.size,
