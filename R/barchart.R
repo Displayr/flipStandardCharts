@@ -194,7 +194,7 @@ Bar <- function(x,
         legend.show <- FALSE
     legend <- setLegend(type, legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
                         legend.border.color, legend.border.line.width, legend.position.x, legend.position.y)
-    footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
+    footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate = FALSE)
 
     # Format axis labels
     tmp.label <- sprintf(paste0("%s%.", data.label.decimals, "f%s"),

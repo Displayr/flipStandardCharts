@@ -212,8 +212,8 @@ GeographicMap <- function(x,
 
     if (sum(incorrect.names) > 0.75 * nrow(table))
         warning(paste0(sum(incorrect.names), " rows of the input data were not matched with",
-                       " geographic entity names. Please check that the data you are plotting is one of",
-                       " countries, states of a country, continents, US regions or Us, UK or Australian zip codes."))
+                       " geographic entity names. Please check that the data you are plotting is one of:",
+                       " countries; states of a country; continents; US regions; or US, UK or Australian zip codes."))
     if (any(incorrect.names))
     {
         msg <- paste("Unmatched region names:", paste(rownames(table)[incorrect.names], collapse = ", "))

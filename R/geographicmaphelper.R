@@ -101,7 +101,7 @@ AreasInCountry <- function(country)
     country <- tidyCountryName(country)
     data <- switch(country, Australia = australia.areas$name)
     if (is.null(data))
-        stop("Area mapping data is not avaialble for this country.")
+        stop("Area mapping data is not available for this country.")
     sort(unique(as.character(data)))
 }
 

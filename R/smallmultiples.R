@@ -225,7 +225,7 @@ SmallMultiples <- function(x,
     }
     h.offset <- c(pad.top, rep(0, max(0, nrows - 2)), pad.bottom)[1:nrows]
     if (any(h.offset >= 1/nrows))
-        stop("'Top padding' and 'Bottom padding' should be between 0 and 1/nrows (", 
+        stop("'Top padding' and 'Bottom padding' should be between 0 and 1/nrows (",
              round(1/nrows, 4), ")")
 
 
@@ -423,5 +423,7 @@ SmallMultiples <- function(x,
 
     res <- layout(res, title = title, showlegend = is.geo, margin = margins,
                   annotations = annotations, titlefont = title.font)
-    res
+    result <- list(htmlwidget = res)
+    class(result) <- "StandardChart"
+    result
 }
