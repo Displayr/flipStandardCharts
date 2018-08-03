@@ -519,7 +519,7 @@ plotlyMap <- function(table, name.map, colors, min.value, max.range, color.NA, l
         )
 
     if (legend.show)
-        p <- colorbar(p, title = legend.title, tickfont = font, titlefont = font,
+        p <- colorbar(p, title = legend.title, tickfont = font, titlefont = font, tickformat = values.hovertext.format,
                 separatethousands = commaFromD3(values.hovertext.format), x = 1)
     else
         p <- hide_colorbar(p)
