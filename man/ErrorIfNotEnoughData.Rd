@@ -12,5 +12,5 @@ ErrorIfNotEnoughData(x, require.tidy = TRUE)
 \item{require.tidy}{The data is assumed to be a numeric vector, matrix, array, or data frame.}
 }
 \description{
-Returns an error if there is not enough data for charting/
+Returns an error if there is not enough data for charting.
 }
