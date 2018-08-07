@@ -231,8 +231,8 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE, w
              else seq(from = min(tmp.dat$x), to = max(tmp.dat$x), length = 100)
     if (!tmp.is.factor && max(x.fit) < max(tmp.dat$x))
         x.fit <- c(x.fit, max(tmp.dat$x))
-    y.fit <- if ("gam" %in% class(tmp.fit)) predict(tmp.fit, data.frame(x = x.fit), se = CI.show, type = "response")
-             else                           predict(tmp.fit, data.frame(x = x.fit), se = CI.show)
+    y.fit <- if ("gam" %in% class(tmp.fit)) suppressWarnings(predict(tmp.fit, data.frame(x = x.fit), se = CI.show, type = "response"))
+             else                           suppressWarnings(predict(tmp.fit, data.frame(x = x.fit), se = CI.show))
     if (tmp.is.factor)
         x.fit <- tmp.dat$xorig
     if (CI.show)
