@@ -211,16 +211,16 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE, w
         indU <- which(!duplicated(tmp.dat$x))
         if (length(indU) < nrow(tmp.dat))
             warning(warning.prefix, "Multiple points at the same x-coordinate ignored for estimating line of best fit.\n")
-        tmp.fit <- try(supsmu(tmp.dat$x[indU], tmp.dat$y[indU]), silent = TRUE)
+        tmp.fit <- suppressWarnings(try(supsmu(tmp.dat$x[indU], tmp.dat$y[indU]), silent = TRUE))
         if (!inherits(tmp.fit, "try-error"))
             return(list(x = x[ord[indU]], y = tmp.fit$y))
     }
     else if (grepl("(smooth|loess)", fit.type, ignore.case = TRUE) && nrow(tmp.dat) > 7)
-        tmp.fit <- try(loess(y~x, data = tmp.dat), silent = TRUE)
+        tmp.fit <- suppressWarnings(try(loess(y~x, data = tmp.dat), silent = TRUE))
     else if (grepl("(cubic|spline|gam)", fit.type, ignore.case = TRUE))
-        tmp.fit <- try(gam(y~s(x, bs = "cr"), data = tmp.dat), silent = TRUE)
+        tmp.fit <- suppressWarnings(try(gam(y~s(x, bs = "cr"), data = tmp.dat), silent = TRUE))
     else
-        tmp.fit <- try(lm(y~x, data=tmp.dat), silent = TRUE)
+        tmp.fit <- suppressWarnings(try(lm(y~x, data=tmp.dat), silent = TRUE))
 
     if (inherits(tmp.fit, "try-error"))
     {
