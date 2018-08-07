@@ -139,13 +139,8 @@ Heat <- function(x,
     mat <- checkMatrixNames(x, assign.col.names = FALSE)
     ErrorIfNotEnoughData(mat)
 
-    if (!is.matrix(mat)) {
-        rownames <- names(mat)
-        mat <- matrix(mat) # create single column matrix from vector
-        rownames(mat) <- rownames
-        # Until VIS-362 is fixed, rhtmlHeatmap cannot handle vectors
-        stop("Input must be two-dimensional.")
-    }
+    if (dim(mat)[2] == 1)
+        stop("Input must be two-dimensional, i.e. at least 2 variables or a table with at least 2 columns.")
 
     if (nrow(mat) > 500 || ncol(mat) > 500)
         stop("Heatmap cannot be plotted with more than 500 rows or columns.")

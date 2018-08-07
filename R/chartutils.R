@@ -1,6 +1,6 @@
 #' ErrorIfNotEnoughData
 #'
-#' Returns an error if there is not enough data for charting/
+#' Returns an error if there is not enough data for charting.
 #' @param x The data to be plotted.
 #' @param require.tidy The data is assumed to be a numeric vector, matrix, array, or data frame.
 #' @export
@@ -579,7 +579,7 @@ setFooter <- function(footer, footer.font, margins)
 {
     if (sum(nchar(footer)) == 0)
         return(NULL)
-    
+
     footer.nline <- sum(gregexpr("<br>", footer)[[1]] > -1) + 1
     footer.npad <- max(0, ceiling(margins$b/footer.font$size/1.25) - footer.nline - 2)
     footer <- paste0("&nbsp;", paste(rep("<br>", footer.npad), collapse = ""), footer)
