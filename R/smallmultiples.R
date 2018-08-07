@@ -305,7 +305,7 @@ SmallMultiples <- function(x,
                                                      global.font.family = global.font.family,
                                                      global.font.color = global.font.color,
                                                      legend.show = legend.show && (i == 1),
-                                                     footer.show = FALSE,
+                                                     small.mult.index = i,
                                                      sz.min = sz.min, sz.max = sz.max,
                                                      col.min = col.min, col.max = col.max,
                                                     ...)$htmlwidget})

@@ -108,7 +108,7 @@
 #' right", "middle left", "middle center", "middle right", "bottom left",
 #' "bottom center", "bottom right". Only applicable for line and area charts.
 #' @param swap.x.and.y Swap the x and y axis around on the chart.
-#' @param footer.show Hide footer text. This is required by SmallMultiples
+#' @param small.mult.index Used by Small Multiples to add prefixes to warnings.
 #' @param sz.min Parameter to control scaling of scatter.sizes, used by SmallMultiples
 #' @param sz.max Parameter to control scaling of scatter.sizes, used by SmallMultiples
 #' @param sz.scale Parameter to control scaling of scatter.sizes, used by SmallMultiples
@@ -256,7 +256,7 @@ Scatter <- function(x = NULL,
                          marker.border.opacity = NULL,
                          marker.size = if (is.null(scatter.sizes)) 6 else 12,
                          swap.x.and.y = FALSE,
-                         footer.show = TRUE,     # for small multiples
+                         small.mult.index = NULL,
                          sz.min = NULL,
                          sz.max = NULL,
                          sz.scale = 50,
@@ -288,6 +288,7 @@ Scatter <- function(x = NULL,
         x.hovertext.format <- x.tick.format
     if (sum(nchar(y.hovertext.format)) == 0)
         y.hovertext.format <- y.tick.format
+    warning.prefix <- if (!is.null(small.mult.index)) paste0("Chart ", small.mult.index, ": ") else ""
 
     # Grouping font attributes to simplify passing to plotly
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
@@ -344,9 +345,9 @@ Scatter <- function(x = NULL,
         scatter.labels <- names(x)
 
     # Warning if non-default selected but corresponding data is missing
-    if (footer.show && is.null(scatter.sizes) && scatter.sizes.as.diameter)
+    if (is.null(small.mult.index) && is.null(scatter.sizes) && scatter.sizes.as.diameter)
         warning("'Sizes' variable not provided.")
-    if (footer.show && is.null(scatter.colors) && !scatter.colors.as.categorical)
+    if (is.null(small.mult.index) && is.null(scatter.colors) && !scatter.colors.as.categorical)
         warning("'Colors' variable not provided.")
 
     # Basic data checking
@@ -368,12 +369,12 @@ Scatter <- function(x = NULL,
         y.title <- tmp
     }
     if (any(duplicated(cbind(x, y))))
-        warning("Chart contains overlapping points in the same position.")
+        warning(warning.prefix, "Chart contains overlapping points in the same position.")
 
     # Remove NAs
     not.na <- !is.na(x) & !is.na(y)
     if (sum(not.na) != n)
-        warning("Data points with missing values have been omitted.")
+        warning(warning.prefix, "Data points with missing values have been omitted.")
     n <- length(x)
     if (!is.null(scatter.sizes))
     {
@@ -381,7 +382,7 @@ Scatter <- function(x = NULL,
             stop("'scatter.sizes' should be a numeric vector with the same number of observations as 'x'.")
         if (any(!is.finite(suppressWarnings(AsNumeric(scatter.sizes, binary = FALSE)))))
         {
-            warning("Some points omitted due to missing values in 'scatter.sizes'.")
+            warning(warning.prefix, "Some points omitted due to missing values in 'scatter.sizes'.")
             not.na <- not.na & is.finite(suppressWarnings(AsNumeric(scatter.sizes, binary = FALSE)))
         }
     }
@@ -391,7 +392,7 @@ Scatter <- function(x = NULL,
             stop("'scatter.colors' should be a vector with the same number of observations as 'x'.")
         if (any(is.na(scatter.colors)))
         {
-            warning("Some points omitted due to missing values in 'scatter.colors'")
+            warning(warning.prefix, "Some points omitted due to missing values in 'scatter.colors'")
             not.na <- not.na & !is.na(scatter.colors)
         }
     } else
@@ -680,7 +681,7 @@ Scatter <- function(x = NULL,
 
         if (fit.type != "None" && num.series > 1)
         {
-            tmp.fit <- fitSeries(x[ind], y[ind], fit.type, fit.ignore.last, xaxis$type, fit.CI.show)
+            tmp.fit <- fitSeries(x[ind], y[ind], fit.type, fit.ignore.last, xaxis$type, fit.CI.show, warning.prefix)
             tmp.fname <- sprintf("%s: %s", fit.line.name, g.list[ggi])
             p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$y, type = 'scatter', mode = "lines",
                       name = tmp.fname, legendgroup = ggi, showlegend = FALSE,
@@ -702,7 +703,7 @@ Scatter <- function(x = NULL,
     }
     if (fit.type != "None" && num.series == 1)
     {
-        tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type, fit.CI.show)
+        tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type, fit.CI.show, warning.prefix)
         p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$y, type = 'scatter', mode = 'lines',
                     name = fit.line.name, showlegend = FALSE, line = list(dash = fit.line.type,
                     width = fit.line.width, shape = 'spline',
@@ -731,7 +732,7 @@ Scatter <- function(x = NULL,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
         annotations = list(setSubtitle(subtitle, subtitle.font, margins),
-                           if (footer.show) setFooter(footer, footer.font, margins) else NULL),
+                           if (is.null(small.mult.index)) setFooter(footer, footer.font, margins) else NULL),
         hovermode = hover.mode,
         titlefont = title.font,
         font = data.label.font

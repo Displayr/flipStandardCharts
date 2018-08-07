@@ -175,10 +175,11 @@ getRange <- function(x, axis, axisFormat)
 #'   to provide extra information about how to display the \code{x} variable.
 #' @param ignore.last Whether to ignore the last observation in \code{x}
 #'   and \code{y}.
+#' @param warning.prefix Used by small multiples for nice warning messages.
 #' @importFrom stats supsmu
 #' @importFrom mgcv gam
 #' @noRd
-fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE)
+fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE, warning.prefix = "")
 {
     if (!is.numeric(y))
     {
@@ -197,7 +198,7 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE)
         tmp.dat <- tmp.dat[-ind.na,]
     if (nrow(tmp.dat) < 2)
     {
-        warning("Not enough data to constuct line of best fit.")
+        warning(warning.prefix, "Not enough data to constuct line of best fit.")
         return(list(x = NULL, y = NULL))
     }
     ord <- order(tmp.dat$x)
@@ -209,17 +210,23 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE)
             warning("Confidence intervals cannot be computed for trend lines of this type.")
         indU <- which(!duplicated(tmp.dat$x))
         if (length(indU) < nrow(tmp.dat))
-            warning("Multiple points at the same x-coordinate ignored for estimating line of best fit.\n")
-        tmp.fit <- supsmu(tmp.dat$x[indU], tmp.dat$y[indU])
-        return(list(x = x[ord[indU]], y = tmp.fit$y))
+            warning(warning.prefix, "Multiple points at the same x-coordinate ignored for estimating line of best fit.\n")
+        tmp.fit <- try(supsmu(tmp.dat$x[indU], tmp.dat$y[indU]), silent = TRUE)
+        if (!inherits(tmp.fit, "try-error"))
+            return(list(x = x[ord[indU]], y = tmp.fit$y))
     }
     else if (grepl("(smooth|loess)", fit.type, ignore.case = TRUE) && nrow(tmp.dat) > 7)
-        tmp.fit <- loess(y~x, data = tmp.dat)
+        tmp.fit <- try(loess(y~x, data = tmp.dat), silent = TRUE)
     else if (grepl("(cubic|spline|gam)", fit.type, ignore.case = TRUE))
-        tmp.fit <- gam(y~s(x, bs = "cr"), data = tmp.dat)
+        tmp.fit <- try(gam(y~s(x, bs = "cr"), data = tmp.dat), silent = TRUE)
     else
-        tmp.fit <- lm(y~x, data=tmp.dat)
+        tmp.fit <- try(lm(y~x, data=tmp.dat), silent = TRUE)
 
+    if (inherits(tmp.fit, "try-error"))
+    {
+        warning(warning.prefix, "Could not fit trend line using ", fit.type, ".")
+        return(list(x = NULL, y = NULL))
+    }
     x.fit <- if (tmp.is.factor) tmp.dat$x
              else seq(from = min(tmp.dat$x), to = max(tmp.dat$x), length = 100)
     if (!tmp.is.factor && max(x.fit) < max(tmp.dat$x))
