@@ -204,7 +204,7 @@ Area <- function(x,
     x.labels.full <- rownames(chart.matrix)
 
     # Constants
-    hover.mode <- if (tooltip.show) "closest" else FALSE
+    hover.mode <- if (tooltip.show) "x" else FALSE
     barmode <- if (is.stacked) "stack" else ""
     fill.bound <- if (is.stacked) "tonexty" else "tozeroy"
 
@@ -295,7 +295,8 @@ Area <- function(x,
     {
         y <- as.numeric(chart.matrix[, i])
         x <- x.labels
-
+        y.label <- y.labels[i]
+        
         lines <- list(width = line.thickness,
                       color = toRGB(line.colors[i], alpha = line.opacity))
 
@@ -308,47 +309,14 @@ Area <- function(x,
                        alpha = marker.border.opacity),
                        width = marker.border.width))
 
-        source.text <- ""
-        if (data.label.show)
-        {
-            source.text <- paste(data.label.prefix,
-                 FormatAsReal(chart.matrix[, i] * data.label.mult, decimals = data.label.decimals),
-                 data.label.suffix, sep = "")
-            y.sign <- getSign(chart.matrix[,i], yaxis)
-            if (is.stacked)
-                y.sign <- -y.sign
-            data.label.position <- ifelse(y.sign >= 0, "top middle", "bottom middle")
-            data.label.position[1] <- gsub("middle", "right", data.label.position[1])
-            tmp.len <- length(data.label.position)
-            data.label.position[tmp.len] <- gsub("middle", "left", data.label.position[tmp.len])
-        }
-
         # add invisible line to force all categorical labels to be shown
         if (i == 1)
             p <- add_trace(p, x = x, y = rep(min(y,na.rm=T), length(x)),
                            type = "scatter", mode = "lines",
                            hoverinfo = "none", showlegend = F, opacity = 0)
-
+        
         if (!is.stacked)
         {
-            y.label <- y.labels[i]
-
-            # Need to add data labels first otherwise it will override hovertext in area chart
-            if (data.label.show)
-                p <- add_trace(p,
-                           type = "scatter",
-                           mode = "text",
-                           x = x,
-                           y = y,
-                           legendgroup = i,
-                           name = y.label,
-                           text = source.text,
-                           textfont = data.label.font,
-                           textposition = data.label.position,
-                           cliponaxis = FALSE, 
-                           hoverinfo = "none",
-                           showlegend = FALSE)
-
            # draw line
            if (any(!is.na(y)) && (has.gap || line.thickness > 0))
                 p <- add_trace(p,
@@ -404,7 +372,6 @@ Area <- function(x,
                            marker = marker,
                            mode = series.mode)
 
-
             if (fit.type != "None")
             {
                 tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
@@ -428,32 +395,62 @@ Area <- function(x,
                 }
             }
         }
-        else
+    }
+    if (is.stacked)
+    {
+        for (i in 1:ncol(chart.matrix))   
         {
+            y <- as.numeric(chart.matrix[, i])
+            x <- x.labels
+            y.label <- y.labels[i]
+
             if (fit.type != "None" && is.stacked && i == 1)
                 warning("Line of best fit not shown for stacked charts.")
             fill.bound <- if (is.stacked && i > 1) "tonexty" else "tozeroy"
 
-            # plotly has bug where for stacked area charts,
-            # text and line must occur together as a single trace
+            vals <- if (is.stacked && i > 1) chart.matrix[,i] - chart.matrix[,i-1]
+                    else chart.matrix[,i]
+            source.text <- paste(data.label.prefix,
+                 FormatAsReal(vals * data.label.mult, decimals = data.label.decimals),
+                 data.label.suffix, sep = "")
+
+            # Stacked traces cannot be interrupted by other traces
             y.label <- y.labels[i]
-            p <- add_trace(p,
-                           type = "scatter",
-                           x = x,
-                           y = y,
-                           fill = fill.bound,
-                           fillcolor = toRGB(colors[i], alpha = opacity),
-                           line = lines,
-                           name = y.label,
-                           legendgroup = i,
-                           text = if (!data.label.show) NULL else source.text,
-                           textfont = if (!data.label.show) NULL else data.label.font,
-                           textposition = if (!data.label.show) NULL else data.label.position,
-                           hoverinfo = if (ncol(chart.matrix) > 1) "x+y+name" else "x+y",
-                           mode = if (data.label.show) "lines+text" else "lines",
-                           marker = marker)
+            p <- add_trace(p, type = "scatter", x = x, y = y, name = y.label,
+                    fill = fill.bound, fillcolor = toRGB(colors[i], alpha = opacity),
+                    line = lines, legendgroup = i, text = source.text,
+                    hoverinfo = if (ncol(chart.matrix) > 1) "x+text+name" else "x+text",
+                    hoverlabel = list(bgcolor=colors[i], font = data.label.font),
+                    mode = "lines", marker = marker)
          }
     }
+
+    if (data.label.show)
+    {
+        for (i in 1:ncol(chart.matrix))   
+        {
+            y <- as.numeric(chart.matrix[, i])
+            x <- x.labels
+            y.label <- y.labels[i]
+
+            vals <- if (is.stacked && i > 1) chart.matrix[,i] - chart.matrix[,i-1]
+                    else chart.matrix[,i]
+            source.text <- paste(data.label.prefix,
+                 FormatAsReal(vals * data.label.mult, decimals = data.label.decimals),
+                 data.label.suffix, sep = "")
+
+            m <- nrow(chart.matrix)
+            data.label.pos <- rep("top middle", m)
+            data.label.pos[1] <- gsub("middle", "right", data.label.pos[1])
+            data.label.pos[m] <- gsub("middle", "left",  data.label.pos[m])
+
+            p <- add_trace(p, type = "scatter", mode = "text", x = x, y = y,
+                    legendgroup = i, showlegend = FALSE, name = y.label,
+                    text = source.text, textfont = data.label.font,
+                    textposition = data.label.pos, hoverinfo = "none", cliponaxis = FALSE)
+        }
+    }
+
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,

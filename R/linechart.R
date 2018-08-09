@@ -148,7 +148,7 @@ Line <-   function(x,
 
     # Constants
     plotly.type <- "scatter"
-    hover.mode <- if (tooltip.show) "closest" else FALSE
+    hover.mode <- if (tooltip.show) "x" else FALSE
     marker.symbols <- if (is.null(marker.show)) rep(100, ncol(chart.matrix))
                              else marker.show
     series.mode <- "lines+markers"
