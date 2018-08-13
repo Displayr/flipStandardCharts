@@ -468,7 +468,7 @@ Column <- function(x,
             p <- add_trace(p, x = x, y = rep(min(y,na.rm = T), length(x)),
                            mode = if (notAutoRange(yaxis)) "markers" else "lines", 
                            type = "scatter", cliponaxis = TRUE,
-                           hoverinfo = "none", showlegend = F, opacity = 0)
+                           hoverinfo = "none", showlegend = FALSE, opacity = 0)
 
         # this is the main trace for each data series
         p <- add_trace(p, x = x, y = y, type = "bar", orientation = "v", marker = marker,

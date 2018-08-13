@@ -417,8 +417,9 @@ setAxis <- function(title, side, axisLabels, titlefont,
     else if (axis.type == "date" && !is.null(axisLabels$ymd))
     {
         autorange <- FALSE
+        rev <- length(range) == 2 && range[2] < range[1]
         range <- getDateAxisRange(axisLabels$ymd)
-        if (ticks$autorange == "reversed")
+        if (ticks$autorange == "reversed" || rev)
             range <- rev(range)
         if (length(axisLabels$labels) < 10)
         {
@@ -427,10 +428,15 @@ setAxis <- function(title, side, axisLabels, titlefont,
             tickdistance <- difftime(axisLabels$ymd[2], axisLabels$ymd[1], units = "secs") * 1000
         }
     }
-    else if (axis.type == "category")
+    else if (axis.type == "category" && !is.null(axisLabels$ymd))
     {
-        autorange <- TRUE
-        range <- NULL
+        if (!is.null(range))
+        {
+            rev <- range[1] > range[2]
+            range <- getRange(as.character(axisLabels$ymd))
+            if (rev)
+                range <- rev(range)
+        }
     }
 
     rangemode <- "normal"
