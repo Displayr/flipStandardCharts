@@ -132,10 +132,11 @@ getRange <- function(x, axis, axisFormat)
         range <- axis$range
     if (is.null(range))
     {
-        if (!is.null(axisFormat) && !is.null(axisFormat$ymd))
+        if ((!is.null(axis) && axis$type == "date") ||
+            (!is.null(axisFormat) && !is.null(axisFormat$ymd)))
         {
             tmp.dates <- as.numeric(axisFormat$ymd) * 1000
-            diff <- min(diff(tmp.dates), na.rm=T)
+            diff <- min(diff(tmp.dates), na.rm = TRUE)
             range <- range(tmp.dates) + c(-1, 1) * diff
         }
         else if (is.numeric(x)) # this can contain NAs
@@ -151,8 +152,8 @@ getRange <- function(x, axis, axisFormat)
                     else abs(min(diff(sort(tmp)), na.rm = TRUE))
             range <- range(tmp) + c(-0.5, 0.5) * diff
         }
-        else if (all(!is.na(suppressWarnings(AsDateTime(x, on.parse.failure = "silent")))))
-            range <- range(AsDateTime(x))
+       # else if (all(!is.na(suppressWarnings(AsDateTime(x, on.parse.failure = "silent")))))
+       #     range <- range(AsDateTime(x))
         else
             range <- c(-0.5, length(x)-0.5)
 
@@ -389,6 +390,11 @@ setAxis <- function(title, side, axisLabels, titlefont,
     autorange <- ticks$autorange
     range <- ticks$range
     day.len <- 60 * 60 * 24 * 1000
+    tickmode <- ticks$mode
+    tick0 <- NULL
+    tickformat <- checkD3Format(tickformatmanual, axis.type)
+    hoverformat <- checkD3Format(hovertext.format.manual, axis.type, "Hovertext")
+
     if ((!axisLabels$labels.on.x) && side %in% c("left","right"))
     {
         autorange <- FALSE
@@ -414,9 +420,18 @@ setAxis <- function(title, side, axisLabels, titlefont,
         range <- getDateAxisRange(axisLabels$ymd)
         if (ticks$autorange == "reversed")
             range <- rev(range)
+        if (length(axisLabels$labels) < 10)
+        {
+            tickmode <- "linear"
+            tick0 <- axisLabels$ymd[1]
+            tickdistance <- difftime(axisLabels$ymd[2], axisLabels$ymd[1], units = "secs") * 1000
+        }
     }
-    tickformat <- checkD3Format(tickformatmanual, axis.type)
-    hoverformat <- checkD3Format(hovertext.format.manual, axis.type, "Hovertext")
+    else if (axis.type == "category")
+    {
+        autorange <- TRUE
+        range <- NULL
+    }
 
     rangemode <- "normal"
     if (axis.type == "numeric" && show.zero)
@@ -424,10 +439,10 @@ setAxis <- function(title, side, axisLabels, titlefont,
     if (gridwidth == 0)
         zero.line.color <- rgb(1, 1, 1, alpha = 0) # invisible
 
-    # Specify max number of ticks but not for distribution charts
+    # Specify max number of ticks
     nticks <- NULL
     independ.axis <- side %in% c("top", "bottom") == axisLabels$labels.on.x
-    if (axis.type != "category" && independ.axis &&
+    if (axis.type != "category" && tickmode == "auto" && independ.axis &&
         !(length(axisLabels$labels) == 1 && is.numeric(axisLabels$labels)))
         nticks <- min(length(axisLabels$labels) + 1, 11)
 
@@ -436,11 +451,11 @@ setAxis <- function(title, side, axisLabels, titlefont,
                  showline = has.line, linecolor = linecolor,
                  linewidth = if (!has.line) NULL else linewidth,
                  showgrid = gridwidth > 0, gridwidth = gridwidth,
-                 gridcolor = gridcolor, tickmode = ticks$mode, nticks = nticks,
+                 gridcolor = gridcolor, tickmode = tickmode, nticks = nticks,
                  tickvals = ticks$tickvals, ticktext = ticks$ticktext,
                  ticks = if (has.line) "outside" else "", tickangle = tickangle,
                  ticklen = ticklen, tickcolor = linecolor, tickfont = tickfont,
-                 dtick = tickdistance, tickformat = tickformat,
+                 dtick = tickdistance, tickformat = tickformat, tick0 = tick0,
                  tickprefix = tickprefix, ticksuffix = ticksuffix,
                  hoverformat = hoverformat, layer = "below traces",
                  autorange = autorange, range = range, rangemode = rangemode,
