@@ -100,15 +100,6 @@ Pie <- function(x,
             groups <- as.character(x[,3])
     }
 
-    # Some basic data checking
-    ind.missing <- which(!is.finite(y.values) | y.values < 0)
-    if (length(ind.missing) > 0)
-    {
-        # Fill with zeros so the coloring does not change
-        warning("Missing and negative values have been omitted.")
-        y.values[ind.missing] <- 0
-    }
-
     if (is.null(pie.data.threshold))
         pie.data.threshold <- 0.003
 
@@ -147,6 +138,7 @@ Pie <- function(x,
                 pie.values.colors <- paste(rep("", length(v.list)), pie.values.colors)
                 names(pie.values.colors) <- v.list
                 pie.values.colors <- pie.values.colors[x.labels]
+                pie.values.colors
             }
         }
     }
@@ -178,6 +170,18 @@ Pie <- function(x,
         data.label.suffix <- paste0("%", data.label.suffix)
         y.values <- y.values * 100
     }
+
+    # Remove negative and missing values
+    ind.missing <- which(!is.finite(y.values) | y.values < 0)
+    if (length(ind.missing) > 0)
+    {
+        warning("Missing and negative values have been omitted.")
+        y.values <- y.values[-ind.missing]
+        x.labels <- x.labels[-ind.missing]
+        groups <- groups[-ind.missing]
+        if (!is.null(pie.values.colors))
+            pie.values.colors <- pie.values.colors[-ind.missing]
+    } 
 
     donut <- rhtmlDonut::Donut(values = y.values,
                   labels = x.labels,
