@@ -107,27 +107,65 @@ Pie <- function(x,
     if (length(unique(groups)) > 1 && type == "Donut")
         stop("The table supplied is two-dimensional and cannot be displayed as a donut chart.  Please change the chart type to 'Pie' and update.")
 
-    if (is.null(groups))
+    if (is.null(groups)) # 1-d data
     {
         pie.values.colors <- colors
         pie.groups.colors <- NULL
+        ind.missing <- which(!is.finite(y.values) | y.values <= 0)
+        if (length(ind.missing) > 0)
+        {
+            warning("Missing and negative values have been omitted.")
+            y.values <- y.values[-ind.missing]
+            x.labels <- x.labels[-ind.missing]
 
-        if (!is.null(pie.values.colors) && length(pie.values.colors) != length(x.labels))
-            warning("'Colors' does not have length equal to the number of slices (", length(x.labels), ").")
-    } else
+            # Recreate palette if possible
+            if (!is.null(attr(pie.values.colors, "palette.type")))
+                pie.values.colors <- ChartColors(length(y.values),
+                    attr(pie.values.colors, "palette.type"), 
+                    custom.gradient.start = pie.values.colors[1],
+                    custom.gradient.end   = pie.values.colors[length(pie.values.colors)])
+        }   
+
+        if (length(pie.values.colors) > 1 && length(pie.values.colors) < length(x.labels))
+            warning("'Colors' does have the number of colors required (",
+            length(x.labels), "). Colors will be recycled to make up the required number.")
+    } else              # 2-d data
     {
         pie.groups.colors <- if (!is.null(colors)) StripAlphaChannel(colors) else NULL
         pie.values.colors <- if (!is.null(pie.subslice.colors)) StripAlphaChannel(pie.subslice.colors) else NULL
 
+        # Remove negative and missing values (2d data)
+        ind.missing <- which(!is.finite(y.values) | y.values <= 0)
+        if (length(ind.missing) > 0)
+        {
+            warning("Missing and negative values have been omitted.")
+            y.values <- y.values[-ind.missing]
+            x.labels <- x.labels[-ind.missing]
+            groups <- groups[-ind.missing]
+
+            # Recreate palette if possible
+            if (!is.null(attr(pie.groups.colors, "palette.type")))
+                pie.groups.colors <- ChartColors(length(unique(groups)),
+                    attr(pie.groups.colors, "palette.type"), 
+                    custom.gradient.start = pie.groups.colors[1],
+                    custom.gradient.end   = pie.groups.colors[length(pie.groups.colors)])
+
+            num.values <- max(tapply(x.labels, groups, length))
+            if (pie.subslice.colors.repeat && !is.null(attr(pie.values.colors, "palette.type")))
+                pie.values.colors <- ChartColors(num.values,
+                    attr(pie.values.colors, "palette.type"), 
+                    custom.gradient.start = pie.values.colors[1],
+                    custom.gradient.end   = pie.values.colors[length(pie.values.colors)])
+        } 
+
         # We allow the number of groups to be 1
         # For dynamic data, one or more of the group categories may disappear occasionally
         num.groups <- length(unique(groups))
-        if (!is.null(pie.groups.colors) && length(pie.groups.colors) != num.groups)
-            warning("'Colors' does not have length equal to the number of groups (", num.groups, ").")
+        if (length(pie.groups.colors) > 1 && length(pie.groups.colors) < num.groups)
+            warning("'Colors' does not have length equal to the number of groups (", num.groups, "). Colors will be recycled to make up the required number.")
 
-        num.values <- if (!pie.subslice.colors.repeat) nrow(x)
-                      else                             length(unique(x.labels))
-        if (!is.null(pie.values.colors) && length(pie.values.colors) != num.values)
+        num.values <- max(tapply(x.labels, groups, length))
+        if (length(pie.values.colors) > 1 && length(pie.values.colors) < num.values)
             warning("'Outer ring colors' should be a vector of colors of length ", num.values, ".")
 
         if (pie.subslice.colors.repeat)
@@ -170,18 +208,6 @@ Pie <- function(x,
         data.label.suffix <- paste0("%", data.label.suffix)
         y.values <- y.values * 100
     }
-
-    # Remove negative and missing values
-    ind.missing <- which(!is.finite(y.values) | y.values < 0)
-    if (length(ind.missing) > 0)
-    {
-        warning("Missing and negative values have been omitted.")
-        y.values <- y.values[-ind.missing]
-        x.labels <- x.labels[-ind.missing]
-        groups <- groups[-ind.missing]
-        if (!is.null(pie.values.colors))
-            pie.values.colors <- pie.values.colors[-ind.missing]
-    } 
 
     donut <- rhtmlDonut::Donut(values = y.values,
                   labels = x.labels,
