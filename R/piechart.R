@@ -150,8 +150,9 @@ Pie <- function(x,
                     custom.gradient.start = pie.groups.colors[1],
                     custom.gradient.end   = pie.groups.colors[length(pie.groups.colors)])
 
-            num.values <- max(tapply(x.labels, groups, length))
-            if (pie.subslice.colors.repeat && !is.null(attr(pie.values.colors, "palette.type")))
+            num.values <- if (!pie.subslice.colors.repeat) max(tapply(x.labels, groups, length))
+                          else                             length(unique(x.labels)) 
+            if (!is.null(attr(pie.values.colors, "palette.type")))
                 pie.values.colors <- ChartColors(num.values,
                     attr(pie.values.colors, "palette.type"), 
                     custom.gradient.start = pie.values.colors[1],
@@ -164,10 +165,12 @@ Pie <- function(x,
         if (length(pie.groups.colors) > 1 && length(pie.groups.colors) < num.groups)
             warning("'Colors' does not have length equal to the number of groups (", num.groups, "). Colors will be recycled to make up the required number.")
 
-        num.values <- max(tapply(x.labels, groups, length))
+        num.values <- if (!pie.subslice.colors.repeat) max(tapply(x.labels, groups, length))
+                      else                             length(unique(x.labels)) 
         if (length(pie.values.colors) > 1 && length(pie.values.colors) < num.values)
             warning("'Outer ring colors' should be a vector of colors of length ", num.values, ".")
 
+        # Ensure that subslices with the same names have the same color
         if (pie.subslice.colors.repeat)
         {
             v.list <- unique(x.labels)
