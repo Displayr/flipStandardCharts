@@ -212,7 +212,7 @@ Bar <- function(x,
                   ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance,
                   y.tick.format, y.tick.prefix, y.tick.suffix, y.tick.show,
                   y.zero, y.zero.line.width, y.zero.line.color,
-                  y.hovertext.format)
+                  y.hovertext.format, with.bars = TRUE)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance,

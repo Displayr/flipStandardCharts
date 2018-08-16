@@ -371,7 +371,8 @@ setAxis <- function(title, side, axisLabels, titlefont,
                     ticks, tickfont, tickangle, ticklen, tickdistance,
                     tickformatmanual, tickprefix, ticksuffix, tickshow,
                     show.zero, zero.line.width, zero.line.color,
-                    hovertext.format.manual, labels = NULL, num.series = 1)
+                    hovertext.format.manual, labels = NULL, num.series = 1, 
+                    with.bars = FALSE)
 {
     axis.type <- if (side %in% c("bottom", "top")) axisLabels$x.axis.type else axisLabels$y.axis.type
     has.line <- !is.null(linewidth) && linewidth > 0
@@ -399,7 +400,17 @@ setAxis <- function(title, side, axisLabels, titlefont,
     {
         autorange <- FALSE
         if (axis.type == "date")
+        {
             range <- rev(getDateAxisRange(axisLabels$ymd))
+            
+            # Override default tick positions if there are only a few bars
+            if (with.bars && length(axisLabels$labels) <= 10)
+            {
+                tickmode <- "linear"
+                tick0 <- axisLabels$ymd[1]
+                tickdistance <- difftime(axisLabels$ymd[2], axisLabels$ymd[1], units = "secs") * 1000
+            }
+        }
         else if (axis.type == "numeric")
         {
             range <- rev(getRange(axisLabels$labels, NULL, NULL))
@@ -421,7 +432,9 @@ setAxis <- function(title, side, axisLabels, titlefont,
         range <- getDateAxisRange(axisLabels$ymd)
         if (ticks$autorange == "reversed" || rev)
             range <- rev(range)
-        if (length(axisLabels$labels) < 10)
+
+        # Override default tick positions if there are only a few column bars
+        if (with.bars && length(axisLabels$labels) <= 10)
         {
             tickmode <- "linear"
             tick0 <- axisLabels$ymd[1]

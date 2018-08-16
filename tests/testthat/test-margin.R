@@ -32,7 +32,10 @@ for (ff in funcs)
         test_that(filestem, {
 
             cmd <- paste0("pp <-", ff, "(", test.cases[i], ")")
-            expect_error(eval(parse(text=cmd)), NA)
+            if (ff == "Pie")
+                expect_warning(eval(parse(text=cmd)), "Missing and negative values have been omitted")
+            else
+                expect_error(eval(parse(text=cmd)), NA)
 
             #print(pp)
             #readline(prompt=paste0(filestem, ": press [enter] to continue: "))
