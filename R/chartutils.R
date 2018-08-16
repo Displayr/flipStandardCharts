@@ -358,7 +358,7 @@ getDateAxisRange <- function(label.dates)
 
     # plotly handles different time-scales differently
     if (diff < day.len)
-        range <- range(tmp.dates, na.rm = T) - day.len*11/24 + c(-0.5, 0.5) * diff
+        range <- as.character(range(label.dates) + (c(-1, 1) * ceiling(0.5 * diff/1000)))
     else if (diff < 5 * day.len)
         range <- range(tmp.dates, na.rm = T) + c(-1.0, 0.1) * day.len
     else
