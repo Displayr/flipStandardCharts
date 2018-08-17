@@ -44,7 +44,6 @@ dataLabelPositions <- function(chart.matrix,
     if (!is.null(dates))
     {
         date.vals <- as.numeric(dates) * 1000           # convert to milliseconds
-        date.vals <- date.vals - 43200000               # middle of day
         x.pos <- date.vals + rep(series.pos, each = nrow(chart.matrix)) * (date.vals[2] - date.vals[1])
     }
     else if (all(!is.na(suppressWarnings(as.numeric(rownames(chart.matrix))))))
@@ -74,7 +73,7 @@ dataLabelPositions <- function(chart.matrix,
             yanchor <- "bottom"
     }
     n <- length(text)
-    return(lapply(1:n, function(ii) list(text = text[ii], font = font, 
+    return(lapply(1:n, function(ii) list(text = text[ii], font = font,
            x = x.pos[ii], y = y.pos[ii], showarrow = FALSE,
            xref = "x", yref = "y", xanchor = xanchor, yanchor = yanchor)))
 }

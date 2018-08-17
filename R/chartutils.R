@@ -129,7 +129,14 @@ getRange <- function(x, axis, axisFormat)
 {
     range <- NULL
     if (!is.null(axis))
-        range <- axis$range
+    {
+        # in setAxis, date ranges must be a character, but when we copy an
+        # axis to add data labels, we need it as a numeric
+        if (axis$type == "date" && is.character(axis$range))
+            range <- as.numeric(AsDateTime(axis$range)) * 1000
+        else
+            range <- axis$range
+    }
     if (is.null(range))
     {
         if ((!is.null(axis) && axis$type == "date") ||
@@ -352,16 +359,13 @@ formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, x.format, y.fo
 
 getDateAxisRange <- function(label.dates)
 {
-    tmp.dates <- as.numeric(label.dates) * 1000
-    day.len <- 60 * 60 * 24 * 1000  # length of a day in milliseconds
+    tmp.dates <- as.numeric(label.dates)
     diff <- min(abs(diff(tmp.dates)), na.rm = TRUE)
 
-    if (diff < day.len)
-        range <- as.character(range(label.dates) + c(-1,1) * ceiling(0.5 * diff/1000))
-    else if (diff < 5 * day.len)
-        range <- range(tmp.dates, na.rm = TRUE) + c(-1.0, 0.1) * day.len
-    else
-        range <- range(tmp.dates, na.rm = TRUE) + c(-0.5, 0.5) * diff
+    # Always return date-ranges as characters since there 
+    # seems to be more problems with using milliseconds since plotly v4.8.0
+    range <- as.character(range(label.dates) + c(-1,1) * ceiling(0.5 * diff))
+    range
 }
 
 setAxis <- function(title, side, axisLabels, titlefont,
