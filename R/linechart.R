@@ -253,9 +253,12 @@ Line <-   function(x,
                  data.label.function(chart.matrix[, i], decimals = data.label.decimals),
                  data.label.suffix, sep = "")
 
+            data.label.pos <- "top middle"
+            if (length(x) > 2)
+                data.label.pos <- c("top right", rep("top middle", length(x)-2), "top left")
             p <- add_trace(p, x = x, y = y, type = "scatter", mode = "text", name = y.label,
                    cliponaxis = FALSE, text = source.text,
-                   textfont = data.label.font, textposition = "top middle",
+                   textfont = data.label.font, textposition = data.label.pos,
                    hoverinfo = "none", showlegend = FALSE, legendgroup = tmp.group)
         }
 

@@ -352,13 +352,16 @@ formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, x.format, y.fo
 
 getDateAxisRange <- function(label.dates)
 {
-    tmp.dates <- as.numeric(label.dates)
-    diff <- min(abs(diff(tmp.dates)), na.rm = T)
+    tmp.dates <- as.numeric(label.dates) * 1000
+    day.len <- 60 * 60 * 24 * 1000  # length of a day in milliseconds
+    diff <- min(abs(diff(tmp.dates)), na.rm = TRUE)
 
-    # Always return date-ranges as characters since there 
-    # seems to be more problems with using milliseconds since plotly v4.8.0
-    range <- as.character(range(label.dates) + (c(-1, 1) * ceiling(0.5 * diff)))
-    range
+    if (diff < day.len)
+        range <- as.character(range(label.dates) + c(-1,1) * ceiling(0.5 * diff/1000))
+    else if (diff < 5 * day.len)
+        range <- range(tmp.dates, na.rm = TRUE) + c(-1.0, 0.1) * day.len
+    else
+        range <- range(tmp.dates, na.rm = TRUE) + c(-0.5, 0.5) * diff
 }
 
 setAxis <- function(title, side, axisLabels, titlefont,
@@ -401,9 +404,13 @@ setAxis <- function(title, side, axisLabels, titlefont,
             # Override default tick positions if there are only a few bars
             if (with.bars && length(axisLabels$labels) <= 10)
             {
-                tickmode <- "linear"
-                tick0 <- axisLabels$ymd[1]
-                tickdistance <- difftime(axisLabels$ymd[2], axisLabels$ymd[1], units = "secs") * 1000
+                tmp.dist <- difftime(axisLabels$ymd[2], axisLabels$ymd[1], units = "secs")
+                if (difftime(max(axisLabels$ymd), min(axisLabels$ymd), units = "secs") < 11 * tmp.dist)
+                {
+                    tickmode <- "linear"
+                    tick0 <- axisLabels$ymd[1]
+                    tickdistance <- tmp.dist * 1000
+                }
             }
         }
         else if (axis.type == "numeric")
@@ -429,11 +436,16 @@ setAxis <- function(title, side, axisLabels, titlefont,
             range <- rev(range)
 
         # Override default tick positions if there are only a few column bars
+        # and if there will not be too many ticks
         if (with.bars && length(axisLabels$labels) <= 10)
         {
-            tickmode <- "linear"
-            tick0 <- axisLabels$ymd[1]
-            tickdistance <- difftime(axisLabels$ymd[2], axisLabels$ymd[1], units = "secs") * 1000
+            tmp.dist <- difftime(axisLabels$ymd[2], axisLabels$ymd[1], units = "secs")
+            if (difftime(max(axisLabels$ymd), min(axisLabels$ymd), units = "secs") < 11 * tmp.dist)
+            {
+                tickmode <- "linear"
+                tick0 <- axisLabels$ymd[1]
+                tickdistance <- tmp.dist * 1000
+            }
         }
     }
     else if (axis.type == "category" && !is.null(axisLabels$ymd))
