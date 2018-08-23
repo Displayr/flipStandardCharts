@@ -11,31 +11,34 @@ Radar(x, title = "", title.font.family = global.font.family,
   background.fill.opacity = 0,
   charting.area.fill.color = background.fill.color,
   charting.area.fill.opacity = 0, legend.show = TRUE,
+  legend.wrap = TRUE, legend.wrap.nchar = 30,
   legend.fill.color = background.fill.color, legend.fill.opacity = 0,
   legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
   legend.border.line.width = 0, legend.font.color = global.font.color,
   legend.font.family = global.font.family, legend.font.size = 10,
-  legend.ascending = NA, legend.position.y = 1, legend.position.x = 1.02,
-  margin.top = NULL, margin.bottom = NULL, margin.left = NULL,
-  margin.right = NULL, margin.inner.pad = NULL, pad.left = 0,
-  pad.right = 0, line.thickness = 3, tooltip.show = TRUE,
-  modebar.show = FALSE, global.font.family = "Arial",
-  global.font.color = rgb(44, 44, 44, maxColorValue = 255),
-  grid.show = TRUE, x.tick.show = TRUE,
+  legend.ascending = NA, legend.position.y = 1,
+  legend.position.x = 1.02, margin.top = NULL, margin.bottom = NULL,
+  margin.left = NULL, margin.right = NULL, margin.inner.pad = NULL,
+  pad.left = 0, pad.right = 0, line.thickness = 3,
+  tooltip.show = TRUE, modebar.show = FALSE,
+  global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
+  maxColorValue = 255), grid.show = TRUE, x.tick.show = TRUE,
   x.tick.font.color = global.font.color,
   x.tick.font.family = global.font.family, x.tick.font.size = 12,
   x.grid.width = 1 * grid.show, x.grid.color = rgb(225, 225, 225,
-  maxColorValue = 255), y.bounds.maximum = NULL, y.tick.distance = NULL,
-  y.grid.width = 1 * grid.show, y.grid.color = rgb(225, 225, 225,
-  maxColorValue = 255), y.tick.show = TRUE, y.tick.suffix = "",
-  y.tick.prefix = "", y.tick.format = "", hovertext.show = TRUE,
-  y.hovertext.format = "", y.tick.font.color = global.font.color,
+  maxColorValue = 255), y.bounds.maximum = NULL,
+  y.tick.distance = NULL, y.grid.width = 1 * grid.show,
+  y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+  y.tick.show = TRUE, y.tick.suffix = "", y.tick.prefix = "",
+  y.tick.format = "", hovertext.show = TRUE, y.hovertext.format = "",
+  y.tick.font.color = global.font.color,
   y.tick.font.family = global.font.family, y.tick.font.size = 10,
   x.tick.label.wrap = TRUE, x.tick.label.wrap.nchar = 21,
   data.label.show = FALSE, data.label.font.family = global.font.family,
   data.label.font.size = 10, data.label.font.color = global.font.color,
-  data.label.format = "", data.label.prefix = "", data.label.suffix = "",
-  subtitle = "", subtitle.font.family = global.font.family,
+  data.label.format = "", data.label.prefix = "",
+  data.label.suffix = "", subtitle = "",
+  subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color, subtitle.font.size = 12,
   footer = "", footer.font.family = global.font.family,
   footer.font.color = global.font.color, footer.font.size = 8,
@@ -76,6 +79,11 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{charting.area.fill.opacity}{Charting area background}
 
 \item{legend.show}{Logical; show the legend.}
+
+\item{legend.wrap}{Logical; whether the legend text should be wrapped.}
+
+\item{legend.wrap.nchar}{Number of characters (approximately) in each 
+line of the legend when \code{legend.wrap} \code{TRUE}.}
 
 \item{legend.fill.color}{Legend fill color as a named color in character format
 (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}

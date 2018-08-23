@@ -66,6 +66,8 @@ Area <- function(x,
                     charting.area.fill.color = background.fill.color,
                     charting.area.fill.opacity = 0,
                     legend.show = TRUE,
+                    legend.wrap = TRUE,
+                    legend.wrap.nchar = 30,
                     legend.fill.color = background.fill.color,
                     legend.fill.opacity = 0,
                     legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
@@ -204,7 +206,6 @@ Area <- function(x,
     x.labels.full <- rownames(chart.matrix)
 
     # Constants
-    hover.mode <- if (tooltip.show) "x" else FALSE
     barmode <- if (is.stacked) "stack" else ""
     fill.bound <- if (is.stacked) "tonexty" else "tozeroy"
 
@@ -313,7 +314,7 @@ Area <- function(x,
         if (i == 1)
             p <- add_trace(p, x = x, y = rep(min(y,na.rm=T), length(x)),
                            type = "scatter", mode = "lines",
-                           hoverinfo = "none", showlegend = F, opacity = 0)
+                           hoverinfo = "skip", showlegend = FALSE, opacity = 0)
         
         if (!is.stacked)
         {
@@ -364,10 +365,10 @@ Area <- function(x,
                            fillcolor = toRGB(colors[i], alpha = opacity),
                            connectgaps = TRUE,
                            line = list(width = 0),
-                           name = y.label,
+                           name  =  autoFormatLongLabels(y.label, legend.wrap, legend.wrap.nchar), 
                            legendgroup = i,
                            hoverlabel = list(bgcolor=colors[i]),
-                           text = autoFormatLongLabels(x.labels.full, wordwrap=T, truncate=F),
+                           text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
                            hoverinfo = setHoverText(xaxis, chart.matrix),
                            marker = marker,
                            mode = series.mode)
@@ -416,7 +417,8 @@ Area <- function(x,
 
             # Stacked traces cannot be interrupted by other traces
             y.label <- y.labels[i]
-            p <- add_trace(p, type = "scatter", x = x, y = y, name = y.label,
+            p <- add_trace(p, type = "scatter", x = x, y = y,
+                    name  =  autoFormatLongLabels(y.label, legend.wrap, legend.wrap.nchar), 
                     fill = fill.bound, fillcolor = toRGB(colors[i], alpha = opacity),
                     line = lines, legendgroup = i, text = source.text,
                     hoverinfo = if (ncol(chart.matrix) > 1) "x+text+name" else "x+text",
@@ -447,7 +449,7 @@ Area <- function(x,
             p <- add_trace(p, type = "scatter", mode = "text", x = x, y = y,
                     legendgroup = i, showlegend = FALSE, name = y.label,
                     text = source.text, textfont = data.label.font,
-                    textposition = data.label.pos, hoverinfo = "none", cliponaxis = FALSE)
+                    textposition = data.label.pos, hoverinfo = "skip", cliponaxis = FALSE)
         }
     }
 
@@ -464,7 +466,8 @@ Area <- function(x,
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
         annotations = list(setSubtitle(subtitle, subtitle.font, margins),
                            setFooter(footer, footer.font, margins)),
-        hovermode = hover.mode,
+        hovermode = if (tooltip.show) "x" else FALSE,
+        hoverlabel = list(namelength = -1, font = data.label.font, bordercolor = charting.area.fill.color),
         titlefont = title.font,
         font = data.label.font
     )

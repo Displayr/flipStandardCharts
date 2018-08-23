@@ -74,7 +74,8 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{footer.wrap}{Logical; whether the footer text should be wrapped.}
 
-\item{footer.wrap.nchar}{Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.}
+\item{footer.wrap.nchar}{Number of characters (approximately) in each 
+line of the footer when \code{footer.wrap} \code{TRUE}.}
 
 \item{pie.data.threshold}{Labels with values smaller than the theshold are not shown.}
 

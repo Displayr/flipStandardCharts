@@ -4,10 +4,10 @@
 \alias{Heat}
 \title{Generates a heatmap from a table of data.}
 \usage{
-Heat(x, sort.rows = "None", sort.columns = "None", colors = c("#0066ff",
-  "#ff0000"), standardization = "None", global.font.family = "Arial",
-  global.font.color = "#000000", title = "",
-  title.font.family = global.font.family,
+Heat(x, sort.rows = "None", sort.columns = "None",
+  colors = c("#0066ff", "#ff0000"), standardization = "None",
+  global.font.family = "Arial", global.font.color = "#000000",
+  title = "", title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
   subtitle = "", subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color, subtitle.font.size = 12,
@@ -25,9 +25,9 @@ Heat(x, sort.rows = "None", sort.columns = "None", colors = c("#0066ff",
   legend.font.color = global.font.color, legend.font.size = 10,
   data.label.show = TRUE, data.label.font.size = 10,
   data.label.font.family = global.font.family, data.label.format = "",
-  data.label.prefix = "", data.label.suffix = "", left.columns = NULL,
-  left.column.headings = "", right.columns = NULL,
-  right.column.headings = "")
+  data.label.prefix = "", data.label.suffix = "",
+  left.columns = NULL, left.column.headings = "",
+  right.columns = NULL, right.column.headings = "")
 }
 \arguments{
 \item{x}{A matrix of data to be displayed with values in the cells and optiona row and column labels.}

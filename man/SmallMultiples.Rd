@@ -5,31 +5,36 @@
 \title{Plotting data as a small multiples}
 \usage{
 SmallMultiples(x, chart.type = "Area", nrows = 2, share.axes = TRUE,
-  pad.left = 0.01, pad.right = 0.01, pad.top = 0.01, pad.bottom = 0.01,
-  x.order = NULL, average.show = FALSE, average.color = rgb(153, 153, 153,
-  maxColorValue = 255), y.bounds.maximum = NULL, y.bounds.minimum = NULL,
+  pad.left = 0.01, pad.right = 0.01, pad.top = 0.01,
+  pad.bottom = 0.01, x.order = NULL, average.show = FALSE,
+  average.color = rgb(153, 153, 153, maxColorValue = 255),
+  y.bounds.maximum = NULL, y.bounds.minimum = NULL,
   x.bounds.maximum = NULL, x.bounds.minimum = NULL,
   values.bounds.maximum = NULL, values.bounds.minimum = NULL,
   colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
   fit.line.colors = colors, fit.CI.colors = colors,
   global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
-  maxColorValue = 255), title = "", title.font.family = global.font.family,
+  maxColorValue = 255), title = "",
+  title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
   subtitle = "", subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color, subtitle.font.size = 12,
   footer = "", footer.font.family = global.font.family,
   footer.font.color = global.font.color, footer.font.size = 8,
-  footer.wrap = TRUE, footer.wrap.nchar = 100, panel.title.show = TRUE,
+  footer.wrap = TRUE, footer.wrap.nchar = 100,
+  panel.title.show = TRUE,
   panel.title.font.family = global.font.family,
-  panel.title.font.color = global.font.color, panel.title.font.size = 14,
-  panel.title.wrap = TRUE, panel.title.wrap.nchar = 20, x.title = "",
-  x.title.font.size = 12, y.title = "", y.title.font.size = 12,
-  data.label.show = FALSE, grid.show = TRUE, x.tick.show = TRUE,
-  x.tick.angle = NULL, legend.show = TRUE, margin.left = NULL,
-  margin.right = NULL, margin.top = NULL, margin.bottom = NULL,
-  mapping.package = "plotly", scatter.x.column = 1, scatter.y.column = 2,
-  scatter.sizes.column = 3, scatter.colors.column = 4,
-  scatter.groups.column = NULL, scatter.colors.as.categorical = TRUE,
+  panel.title.font.color = global.font.color,
+  panel.title.font.size = 14, panel.title.wrap = TRUE,
+  panel.title.wrap.nchar = 20, x.title = "", x.title.font.size = 12,
+  y.title = "", y.title.font.size = 12, data.label.show = FALSE,
+  grid.show = TRUE, x.tick.show = TRUE, x.tick.angle = NULL,
+  legend.show = TRUE, margin.left = NULL, margin.right = NULL,
+  margin.top = NULL, margin.bottom = NULL,
+  mapping.package = "plotly", scatter.x.column = 1,
+  scatter.y.column = 2, scatter.sizes.column = 3,
+  scatter.colors.column = 4, scatter.groups.column = NULL,
+  scatter.colors.as.categorical = TRUE,
   scatter.sizes.as.diameter = FALSE, ...)
 }
 \arguments{
@@ -125,7 +130,8 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{footer.wrap}{Logical; whether the footer text should be wrapped.}
 
-\item{footer.wrap.nchar}{Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.}
+\item{footer.wrap.nchar}{Number of characters (approximately) in each 
+line of the footer when \code{footer.wrap} \code{TRUE}.}
 
 \item{panel.title.show}{Logical; whether to show a title for each panel.}
 

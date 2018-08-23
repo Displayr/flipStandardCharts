@@ -6,7 +6,8 @@
 \usage{
 Pyramid(x, colors = ChartColors(max(1, length(x))), opacity = NULL,
   global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
-  maxColorValue = 255), title = "", title.font.family = global.font.family,
+  maxColorValue = 255), title = "",
+  title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
   subtitle = "", subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color, subtitle.font.size = 12,
@@ -16,9 +17,10 @@ Pyramid(x, colors = ChartColors(max(1, length(x))), opacity = NULL,
   background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
   background.fill.opacity = 0,
   charting.area.fill.color = background.fill.color,
-  charting.area.fill.opacity = 0, margin.top = NULL, margin.bottom = NULL,
-  margin.left = NULL, margin.right = NULL, margin.inner.pad = NULL,
-  y.title = "", y.title.font.color = global.font.color,
+  charting.area.fill.opacity = 0, margin.top = NULL,
+  margin.bottom = NULL, margin.left = NULL, margin.right = NULL,
+  margin.inner.pad = NULL, y.title = "",
+  y.title.font.color = global.font.color,
   y.title.font.family = global.font.family, y.title.font.size = 12,
   y.line.width = 0, y.line.color = rgb(0, 0, 0, maxColorValue = 255),
   y.tick.mark.length = 5, y.bounds.minimum = NULL,
@@ -45,11 +47,12 @@ Pyramid(x, colors = ChartColors(max(1, length(x))), opacity = NULL,
   y.tick.label.wrap = TRUE, y.tick.label.wrap.nchar = 21,
   marker.border.width = 1, marker.border.colors = colors,
   marker.border.opacity = NULL, data.label.show = FALSE,
-  data.label.font.family = global.font.family, data.label.font.size = 10,
-  data.label.font.color = global.font.color, data.label.format = "",
-  data.label.prefix = "", data.label.suffix = "",
-  data.label.threshold = NULL, x.hovertext.format = data.label.format,
-  tooltip.show = TRUE, modebar.show = FALSE, bar.gap = 0.15)
+  data.label.font.family = global.font.family,
+  data.label.font.size = 10, data.label.font.color = global.font.color,
+  data.label.format = "", data.label.prefix = "",
+  data.label.suffix = "", data.label.threshold = NULL,
+  x.hovertext.format = data.label.format, tooltip.show = TRUE,
+  modebar.show = FALSE, bar.gap = 0.15)
 }
 \arguments{
 \item{x}{Input data may be a matrix or a vector, containing the height of the columns
@@ -102,7 +105,8 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{footer.wrap}{Logical; whether the footer text should be wrapped.}
 
-\item{footer.wrap.nchar}{Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.}
+\item{footer.wrap.nchar}{Number of characters (approximately) in each 
+line of the footer when \code{footer.wrap} \code{TRUE}.}
 
 \item{background.fill.color}{Background color in character format
 (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
@@ -305,4 +309,9 @@ bar or column charts, or between each cluster of bars or columns.}
 }
 \description{
 Bar charts with a centred axis
+}
+\examples{
+z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L),
+      .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
+Bar(z, type="100\% Stacked Bar")
 }

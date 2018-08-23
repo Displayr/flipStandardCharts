@@ -50,6 +50,8 @@ Bar <- function(x,
                     charting.area.fill.color = background.fill.color,
                     charting.area.fill.opacity = 0,
                     legend.show = TRUE,
+                    legend.wrap = TRUE,
+                    legend.wrap.nchar = 30,
                     legend.position.x = 1.02,
                     legend.position.y = 1.00,
                     legend.ascending = NA,
@@ -172,7 +174,6 @@ Bar <- function(x,
     x.labels.full <- rownames(chart.matrix)
 
     # Constants
-    hover.mode <- if (tooltip.show) "closest" else FALSE
     barmode <- if (is.stacked) "stack" else ""
     if (is.null(opacity))
         opacity <- if (fit.type == "None") 1 else 0.6
@@ -273,9 +274,9 @@ Bar <- function(x,
 
         # this is the main trace for each data series
         p <- add_trace(p, x = y, y = x, type = "bar", orientation = "h", marker = marker,
-                       name  =  autoFormatLongLabels(y.labels[i], wordwrap = FALSE), legendgroup = i, 
-                       text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE, truncate = FALSE),
-                       hoverinfo  = setHoverText(yaxis, chart.matrix, is.bar = TRUE))
+                       name  =  autoFormatLongLabels(y.labels[i], legend.wrap, legend.wrap.nchar), 
+                       text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
+                       hoverinfo  = setHoverText(yaxis, chart.matrix, is.bar = TRUE), legendgroup = i)
 
         if (fit.type != "None" && is.stacked && i == 1)
             warning("Line of best fit not shown for stacked charts.")
@@ -345,7 +346,7 @@ Bar <- function(x,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
         hoverlabel = list(namelength = -1, font = data.label.font, bordercolor = charting.area.fill.color),
-        hovermode = hover.mode,
+        hovermode = if (tooltip.show) "closest" else FALSE,
         titlefont = title.font,
         font = data.label.font,
         annotations =  annotations,

@@ -4,12 +4,13 @@
 \alias{Stream}
 \title{Plot data as a Streamgraph}
 \usage{
-Stream(x, colors = c("#5C9AD3", "#ED7D31", "#A5A5A5", "#FFC000", "#4473C5",
-  "#70AD46", "#255F91", "#9E480D", "#636365", "#987300", "#26408B", "#42682B"),
-  y.axis.show = TRUE, y.tick.format = "", y.number.ticks = 5,
-  values.hovertext.format = "", x.tick.format = "\%d \%b \%y",
-  x.tick.units = "Automatic", x.tick.interval = 1, margin.top = 20,
-  margin.left = 50, margin.bottom = 30, margin.right = 40)
+Stream(x, colors = c("#5C9AD3", "#ED7D31", "#A5A5A5", "#FFC000",
+  "#4473C5", "#70AD46", "#255F91", "#9E480D", "#636365", "#987300",
+  "#26408B", "#42682B"), y.axis.show = TRUE, y.tick.format = "",
+  y.number.ticks = 5, values.hovertext.format = "",
+  x.tick.format = "\%d \%b \%y", x.tick.units = "Automatic",
+  x.tick.interval = 1, margin.top = 20, margin.left = 50,
+  margin.bottom = 30, margin.right = 40)
 }
 \arguments{
 \item{x}{A \code{matrix}, with columns containing the dates or other numeric x-axis variable.}

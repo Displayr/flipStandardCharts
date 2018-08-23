@@ -585,12 +585,7 @@ setMarginsForText <- function(margins, title, subtitle, footer,
 
 setMarginsForLegend <- function(margins, showlegend, legend, text, type = "")
 {
-    if (showlegend && legend$x > 0.99)
-    {
-        len <- if (is.factor(text)) nchar(levels(text))
-               else                 nchar(text)
-        margins$r <- min(300, 70 + (legend$font$size * max(0, len) * 0.7))
-    } else if (type != "radar")
+    if (type != "radar")
         margins$r <- 20
     margins
 }
@@ -770,7 +765,8 @@ autoFormatLongLabels <- function(x, wordwrap = FALSE, n = 21, truncate = FALSE)
 {
     if (truncate)
         warning("autoFormatLongLabels: truncate not longer does anything.")
-
+    if (!is.character(x))
+        x <- as.character(x)
     # Check for zero-length strings which are ignored by plotly
     if (length(x) > 1)
     {

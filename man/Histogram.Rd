@@ -5,11 +5,12 @@
 \title{Histogram.
 Plots a histogram of data.}
 \usage{
-Histogram(x, weights = NULL, vertical = FALSE, density.color = "Green",
-  values.color = "Green", show.values = FALSE,
-  histogram.cumulative = FALSE, histogram.counts = FALSE,
-  maximum.bins = NULL, global.font.family = "Arial",
-  global.font.color = rgb(44, 44, 44, maxColorValue = 255), title = "",
+Histogram(x, weights = NULL, vertical = FALSE,
+  density.color = "Green", values.color = "Green",
+  show.values = FALSE, histogram.cumulative = FALSE,
+  histogram.counts = FALSE, maximum.bins = NULL,
+  global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
+  maxColorValue = 255), title = "",
   title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
   subtitle = "", subtitle.font.family = global.font.family,
@@ -20,9 +21,10 @@ Histogram(x, weights = NULL, vertical = FALSE, density.color = "Green",
   background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
   background.fill.opacity = 0,
   charting.area.fill.color = background.fill.color,
-  charting.area.fill.opacity = 0, margin.top = NULL, margin.bottom = NULL,
-  margin.left = NULL, margin.right = NULL, grid.show = FALSE,
-  values.title = "", values.title.font.color = global.font.color,
+  charting.area.fill.opacity = 0, margin.top = NULL,
+  margin.bottom = NULL, margin.left = NULL, margin.right = NULL,
+  grid.show = FALSE, values.title = "",
+  values.title.font.color = global.font.color,
   values.title.font.family = global.font.family,
   values.title.font.size = 12, values.line.width = 0,
   values.line.color = rgb(0, 0, 0, maxColorValue = 255),
@@ -35,7 +37,8 @@ Histogram(x, weights = NULL, vertical = FALSE, density.color = "Green",
   values.tick.prefix = "", values.tick.format = "",
   values.hovertext.format = "", values.tick.angle = NULL,
   values.tick.font.color = global.font.color,
-  values.tick.font.family = global.font.family, values.tick.font.size = 10,
+  values.tick.font.family = global.font.family,
+  values.tick.font.size = 10,
   categories.tick.font.color = global.font.color,
   categories.tick.font.family = global.font.family,
   categories.tick.font.size = 10, categories.tick.label.wrap = TRUE,
@@ -213,8 +216,7 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 A \code{plotly} chart.
 }
 \description{
-Histogram.
-Plots a histogram of data.
+Distribution Chart.
 }
 \examples{
 Histogram(rnorm(100))

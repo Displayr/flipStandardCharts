@@ -30,6 +30,8 @@
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param charting.area.fill.opacity Charting area background
 #' opacity as an alpha value (0 to 1).
+#' @param legend.wrap Logical; whether the legend text should be wrapped.
+#' @param legend.wrap.nchar Number of characters (approximately) in each 
 #' @param legend.fill Same as \code{legend.fill.color}. Retained for backwards compatibility.
 #' @param legend.fill.color Legend fill color as a named color in character format
 #' (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
@@ -153,6 +155,8 @@ Scatter <- function(x = NULL,
                          fit.CI.colors = fit.line.colors,
                          fit.CI.opacity = 0.4,
                          legend.show = TRUE,
+                         legend.wrap = TRUE,
+                         legend.wrap.nchar = 30,
                          tooltip.show = TRUE,
                          modebar.show = FALSE,
                          global.font.family = "Arial",
@@ -525,7 +529,6 @@ Scatter <- function(x = NULL,
 
 
     # other constants
-    hover.mode <- if (tooltip.show) "closest" else FALSE
     colorbar.show <- legend.show
     legend.show <- legend.show && num.series > 1
     series.mode <- if (is.null(line.thickness) || line.thickness == 0) "markers"
@@ -662,13 +665,14 @@ Scatter <- function(x = NULL,
 
         # Main trace
         separate.legend <- legend.show && scatter.colors.as.categorical && !is.null(scatter.sizes)
-        p <- add_trace(p, x = x[ind], y = y[ind], name = paste0(g.list[ggi], " "),
+        p <- add_trace(p, x = x[ind], y = y[ind], 
+                name  =  autoFormatLongLabels(paste0(g.list[ggi], " "), legend.wrap, legend.wrap.nchar), 
                 showlegend = (legend.show && !separate.legend),
                 legendgroup = if (num.series > 1) ggi else 1,
                 textposition = data.label.position, cliponaxis = FALSE,
                 marker = marker.obj, line = line.obj, text = source.text[ind],
                 hoverinfo = if (num.series == 1) "text" else "name+text",
-                type="scatter", mode = series.mode, symbols = marker.symbols)
+                type = "scatter", mode = series.mode, symbols = marker.symbols)
 
         # Getting legend with consistently sized markers
         if (separate.legend)
@@ -733,7 +737,8 @@ Scatter <- function(x = NULL,
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
         annotations = list(setSubtitle(subtitle, subtitle.font, margins),
                            if (is.null(small.mult.index)) setFooter(footer, footer.font, margins) else NULL),
-        hovermode = hover.mode,
+        hovermode = if (tooltip.show) "closest" else FALSE,
+        hoverlabel = list(namelength = -1, font = data.label.font, bordercolor = charting.area.fill.color),
         titlefont = title.font,
         font = data.label.font
     )

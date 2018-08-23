@@ -48,6 +48,8 @@ Line <-   function(x,
                     charting.area.fill.color = background.fill.color,
                     charting.area.fill.opacity = 0,
                     legend.show = TRUE,
+                    legend.wrap = TRUE,
+                    legend.wrap.nchar = 30,
                     legend.fill.color = background.fill.color,
                     legend.fill.opacity = 0,
                     legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
@@ -147,8 +149,6 @@ Line <-   function(x,
         warning("Missing values have been omitted.")
 
     # Constants
-    plotly.type <- "scatter"
-    hover.mode <- if (tooltip.show) "x" else FALSE
     marker.symbols <- if (is.null(marker.show)) rep(100, ncol(chart.matrix))
                              else marker.show
     series.mode <- "lines+markers"
@@ -264,19 +264,12 @@ Line <-   function(x,
 
         # Draw line - main trace
         if (any(!is.na(y)))
-            p <- add_trace(p,
-                   type = plotly.type,
-                   x = x,
-                   y = y,
-                   connectgaps = FALSE,
-                   line = lines,
-                   name = y.label,
-                   showlegend = (type == "Line"),
-                   legendgroup = tmp.group,
+            p <- add_trace(p, x = x, y = y, type = "scatter", mode = series.mode,
+                   connectgaps = FALSE, line = lines, marker = marker,
+                   name  =  autoFormatLongLabels(y.label, legend.wrap, legend.wrap.nchar), 
+                   showlegend = (type == "Line"), legendgroup = tmp.group,
                    text = autoFormatLongLabels(x.labels.full, wordwrap=T, truncate=F),
-                   hoverinfo  = setHoverText(xaxis, chart.matrix),
-                   marker = marker,
-                   mode = series.mode)
+                   hoverinfo  = setHoverText(xaxis, chart.matrix))
 
         # single points (no lines) need to be added separately
         not.na <- is.finite(y)
@@ -334,7 +327,8 @@ Line <-   function(x,
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
         annotations = list(setSubtitle(subtitle, subtitle.font, margins),
                            setFooter(footer, footer.font, margins)),
-        hovermode = hover.mode,
+        hovermode = if (tooltip.show) "closest" else FALSE,
+        hoverlabel = list(namelength = -1, font = data.label.font, bordercolor = charting.area.fill.color),
         titlefont = title.font,
         font = data.label.font
     )

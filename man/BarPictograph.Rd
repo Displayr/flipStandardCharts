@@ -4,15 +4,17 @@
 \alias{BarPictograph}
 \title{Create bar chart composed of icons}
 \usage{
-BarPictograph(x, image = "Stickman", custom.image = NULL, base.image = "",
-  hide.base.image = FALSE, base.icon.color = "", scale = NA,
-  total.icons = NA, icon.ncol = NA, fix.icon.nrow = TRUE,
-  label.color.asIcon = FALSE, colors = ChartColors(length(x)),
-  fill.direction = c("From left", "From right")[1],
-  global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
-  maxColorValue = 255), data.label.show = FALSE, data.label.position = "No",
-  data.label.format = "", data.label.prefix = "", data.label.suffix = "",
-  data.label.bigmark = ",", data.label.font.family = global.font.family,
+BarPictograph(x, image = "Stickman", custom.image = NULL,
+  base.image = "", hide.base.image = FALSE, base.icon.color = "",
+  scale = NA, total.icons = NA, icon.ncol = NA,
+  fix.icon.nrow = TRUE, label.color.asIcon = FALSE,
+  colors = ChartColors(length(x)), fill.direction = c("From left",
+  "From right")[1], global.font.family = "Arial",
+  global.font.color = rgb(44, 44, 44, maxColorValue = 255),
+  data.label.show = FALSE, data.label.position = "No",
+  data.label.format = "", data.label.prefix = "",
+  data.label.suffix = "", data.label.bigmark = ",",
+  data.label.font.family = global.font.family,
   data.label.font.color = global.font.color, data.label.font.size = 8,
   data.label.align.horizontal = "Default", categories.tick.show = TRUE,
   categories.tick.font.family = global.font.family,
@@ -22,7 +24,8 @@ BarPictograph(x, image = "Stickman", custom.image = NULL, base.image = "",
   categories.tick.align.vertical = "Default",
   background.fill.color = "transparent", pad.row = 2, pad.col = 2,
   pad.icon.row = 0, pad.icon.col = 0, graphic.width.inch = NA,
-  graphic.height.inch = NA, graphic.resolution = 72, print.config = FALSE)
+  graphic.height.inch = NA, graphic.resolution = 72,
+  print.config = FALSE)
 }
 \arguments{
 \item{x}{A \code{\link{list}}, where each vector contains data to be plotted. If the data is not numeric
@@ -124,7 +127,7 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 A \code{plotly} chart.
 }
 \description{
-Create bar chart composed of icons
+Distribution Chart.
 }
 \examples{
 BarPictograph(1:5, image = "Sick person")

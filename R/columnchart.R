@@ -42,7 +42,8 @@
 #' @param footer.font.family Character; footer font family
 #' @param footer.font.size Integer; footer font size
 #' @param footer.wrap Logical; whether the footer text should be wrapped.
-#' @param footer.wrap.nchar Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.
+#' @param footer.wrap.nchar Number of characters (approximately) in each 
+#' line of the footer when \code{footer.wrap} \code{TRUE}.
 #' @param grid.show Logical; whether to show grid lines.
 #' @param opacity Opacity of bars as an alpha value (0 to 1).
 #' @param colors Character; a vector containing one or more named
@@ -60,6 +61,9 @@
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param charting.area.fill.opacity Charting area background opacity as an alpha value (0 to 1).
 #' @param legend.show Logical; show the legend.
+#' @param legend.wrap Logical; whether the legend text should be wrapped.
+#' @param legend.wrap.nchar Number of characters (approximately) in each 
+#' line of the legend when \code{legend.wrap} \code{TRUE}.
 #' @param legend.fill.color Legend fill color as a named color in character format
 #' (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param legend.fill.opacity Legend fill opacity as an alpha value (0 to 1).
@@ -240,6 +244,8 @@ Column <- function(x,
                     charting.area.fill.color = background.fill.color,
                     charting.area.fill.opacity = 0,
                     legend.show = TRUE,
+                    legend.wrap = TRUE,
+                    legend.wrap.nchar = 30,
                     legend.position.x = 1.02,
                     legend.position.y = 1,
                     legend.fill.color = background.fill.color,
@@ -361,7 +367,6 @@ Column <- function(x,
         x.title <- matrix.labels[1]
 
     # Constants
-    hover.mode <- if (tooltip.show) "closest" else FALSE
     barmode <- if (is.stacked) "stack" else ""
     if (is.null(opacity))
         opacity <- if (fit.type == "None") 1 else 0.6
@@ -472,9 +477,9 @@ Column <- function(x,
 
         # this is the main trace for each data series
         p <- add_trace(p, x = x, y = y, type = "bar", orientation = "v", marker = marker,
-                       name  =  y.labels[i], legendgroup = i,
-                       text = autoFormatLongLabels(x.labels.full, wordwrap=T, truncate=F),
-                       hoverinfo  = setHoverText(xaxis, chart.matrix))
+                       name  =  autoFormatLongLabels(y.labels[i], legend.wrap, legend.wrap.nchar), 
+                       text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
+                       hoverinfo  = setHoverText(xaxis, chart.matrix), legendgroup = i)
         if (fit.type != "None" && is.stacked && i == 1)
             warning("Line of best fit not shown for stacked charts.")
         if (fit.type != "None" && !is.stacked)
@@ -541,7 +546,7 @@ Column <- function(x,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
         hoverlabel = list(namelength = -1, font = data.label.font, bordercolor = charting.area.fill.color),
-        hovermode = hover.mode,
+        hovermode = if (tooltip.show) "closest" else FALSE,
         titlefont = title.font,
         font = data.label.font,
         annotations =  annotations,

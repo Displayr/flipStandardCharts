@@ -4,13 +4,15 @@
 \alias{Bar}
 \title{Bar}
 \usage{
-Bar(x, type = "Bar", colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
-  opacity = NULL, fit.type = "None", fit.line.colors = colors,
-  fit.ignore.last = FALSE, fit.line.type = "dot", fit.line.width = 1,
-  fit.line.name = "Fitted", fit.line.opacity = 1, fit.CI.show = FALSE,
-  fit.CI.colors = fit.line.colors, fit.CI.opacity = 0.4,
-  global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
-  maxColorValue = 255), title = "", title.font.family = global.font.family,
+Bar(x, type = "Bar", colors = ChartColors(max(1, ncol(x), na.rm =
+  TRUE)), opacity = NULL, fit.type = "None",
+  fit.line.colors = colors, fit.ignore.last = FALSE,
+  fit.line.type = "dot", fit.line.width = 1,
+  fit.line.name = "Fitted", fit.line.opacity = 1,
+  fit.CI.show = FALSE, fit.CI.colors = fit.line.colors,
+  fit.CI.opacity = 0.4, global.font.family = "Arial",
+  global.font.color = rgb(44, 44, 44, maxColorValue = 255), title = "",
+  title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
   subtitle = "", subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color, subtitle.font.size = 12,
@@ -21,10 +23,12 @@ Bar(x, type = "Bar", colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
   background.fill.opacity = 0,
   charting.area.fill.color = background.fill.color,
   charting.area.fill.opacity = 0, legend.show = TRUE,
-  legend.position.x = 1.02, legend.position.y = 1, legend.ascending = NA,
-  legend.fill.color = background.fill.color, legend.fill.opacity = 0,
-  legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
-  legend.border.line.width = 0, legend.font.color = global.font.color,
+  legend.wrap = TRUE, legend.wrap.nchar = 30,
+  legend.position.x = 1.02, legend.position.y = 1,
+  legend.ascending = NA, legend.fill.color = background.fill.color,
+  legend.fill.opacity = 0, legend.border.color = rgb(44, 44, 44,
+  maxColorValue = 255), legend.border.line.width = 0,
+  legend.font.color = global.font.color,
   legend.font.family = global.font.family, legend.font.size = 10,
   margin.top = NULL, margin.bottom = NULL, margin.left = NULL,
   margin.right = NULL, margin.inner.pad = NULL, grid.show = TRUE,
@@ -56,11 +60,12 @@ Bar(x, type = "Bar", colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
   marker.border.width = 1, marker.border.colors = colors,
   marker.border.opacity = opacity, tooltip.show = TRUE,
   modebar.show = FALSE, bar.gap = 0.15, data.label.show = FALSE,
-  data.label.font.family = global.font.family, data.label.font.size = 10,
-  data.label.font.color = global.font.color, data.label.format = "",
-  data.label.prefix = "", data.label.suffix = "",
-  data.label.threshold = NULL, average.series = NULL,
-  average.color = rgb(230, 230, 230, maxColorValue = 255))
+  data.label.font.family = global.font.family,
+  data.label.font.size = 10, data.label.font.color = global.font.color,
+  data.label.format = "", data.label.prefix = "",
+  data.label.suffix = "", data.label.threshold = NULL,
+  average.series = NULL, average.color = rgb(230, 230, 230,
+  maxColorValue = 255))
 }
 \arguments{
 \item{x}{Input data may be a matrix or a vector, containing the height of the columns
@@ -140,7 +145,8 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{footer.wrap}{Logical; whether the footer text should be wrapped.}
 
-\item{footer.wrap.nchar}{Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.}
+\item{footer.wrap.nchar}{Number of characters (approximately) in each 
+line of the footer when \code{footer.wrap} \code{TRUE}.}
 
 \item{background.fill.color}{Background color in character format
 (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
@@ -155,6 +161,11 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{charting.area.fill.opacity}{Charting area background opacity as an alpha value (0 to 1).}
 
 \item{legend.show}{Logical; show the legend.}
+
+\item{legend.wrap}{Logical; whether the legend text should be wrapped.}
+
+\item{legend.wrap.nchar}{Number of characters (approximately) in each 
+line of the legend when \code{legend.wrap} \code{TRUE}.}
 
 \item{legend.position.x}{A numeric controlling the position of the legend.
 Values range from -0.5 (left) to 1.5 (right).}

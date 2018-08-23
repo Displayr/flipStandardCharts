@@ -4,8 +4,8 @@
 \alias{Palm}
 \title{Generates a palm tree plot from a table of data.}
 \usage{
-Palm(table, x.tick.font.family = "", x.tick.font.size = 11, x.title = "",
-  x.title.font.family = "", x.title.font.size = 12,
+Palm(table, x.tick.font.family = "", x.tick.font.size = 11,
+  x.title = "", x.title.font.family = "", x.title.font.size = 12,
   legend.font.family = "", legend.font.size = 11, y.axis.show = TRUE,
   tooltip.show = TRUE, y.tick.format = "", y.tick.font.family = "",
   y.tick.font.size = 11, y.title = "", y.title.font.family = "",

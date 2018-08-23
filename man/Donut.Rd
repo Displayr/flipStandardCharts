@@ -72,7 +72,8 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{footer.wrap}{Logical; whether the footer text should be wrapped.}
 
-\item{footer.wrap.nchar}{Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.}
+\item{footer.wrap.nchar}{Number of characters (approximately) in each 
+line of the footer when \code{footer.wrap} \code{TRUE}.}
 
 \item{pie.data.threshold}{Labels with values smaller than the theshold are not shown.}
 
@@ -113,5 +114,11 @@ font attribute for the chart unless specified individually.}
 (e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).}
 }
 \description{
-Donut chart
+Pie chart
+}
+\examples{
+dat <- data.frame(labels=rep(LETTERS[24:26], each=3), vals=abs(rnorm(9)),
+     groups=rep(LETTERS[1:3], 3), stringsAsFactors = FALSE)
+Pie(dat)
+Pie(dat, pie.subslice.colors=rainbow(9), pie.subslice.colors.repeat = FALSE)
 }
