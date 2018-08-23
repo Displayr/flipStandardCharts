@@ -511,9 +511,11 @@ Column <- function(x,
         {
             x.range <- getRange(x, xaxis, axisFormat)
             y.sign <- getSign(data.annotations$y[,i], yaxis)
-            xaxis2 <- list(overlaying = "x", visible = FALSE, range = x.range)
-            p <- add_text(p, xaxis = "x2", x = data.annotations$x[,i],
-                      y = data.annotations$y[,i], cliponaxis = FALSE,
+            if (NCOL(chart.matrix) > 1)
+                xaxis2 <- list(overlaying = "x", visible = FALSE, range = x.range)
+            p <- add_text(p, y = data.annotations$y[,i], cliponaxis = FALSE,
+                      x = if (NCOL(chart.matrix) > 1) data.annotations$x[,i] else x,
+                      xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x",
                       text = data.annotations$text[,i], textfont = data.label.font,
                       textposition = ifelse(y.sign >= 0, "top center", "bottom center"),
                       showlegend = FALSE, legendgroup = i, hoverinfo = "none")
@@ -538,6 +540,7 @@ Column <- function(x,
         margin = margins,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
+        hoverlabel = list(namelength = -1, font = data.label.font, bordercolor = charting.area.fill.color),
         hovermode = hover.mode,
         titlefont = title.font,
         font = data.label.font,

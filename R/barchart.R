@@ -273,7 +273,7 @@ Bar <- function(x,
 
         # this is the main trace for each data series
         p <- add_trace(p, x = y, y = x, type = "bar", orientation = "h", marker = marker,
-                       name  =  y.labels[i], legendgroup = i, 
+                       name  =  autoFormatLongLabels(y.labels[i], wordwrap = FALSE), legendgroup = i, 
                        text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE, truncate = FALSE),
                        hoverinfo  = setHoverText(yaxis, chart.matrix, is.bar = TRUE))
 
@@ -309,19 +309,19 @@ Bar <- function(x,
                     type = "scatter", mode = "lines", showlegend = FALSE,
                     line = list(color = average.color))
 
-
-
         if (data.label.show && !is.stacked)
         {
             y.range <- getRange(x, yaxis, axisFormat)
-            yaxis2 <- list(overlaying = "y", visible = FALSE, range = y.range)
+            if (NCOL(chart.matrix) > 1)
+                yaxis2 <- list(overlaying = "y", visible = FALSE, range = y.range)
             x.sign <- getSign(data.annotations$x[,i], xaxis)
             x.diff <- diff(range(data.annotations$x))/100
-            p <- add_text(p, yaxis = "y2", x = data.annotations$x[,i] + x.diff,
-                      y = data.annotations$y[,i],
+            p <- add_text(p, x = data.annotations$x[,i] + x.diff,
+                      y = if (NCOL(chart.matrix) > 1) data.annotations$y[,i] else x,
+                      yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y",
                       text = data.annotations$text[,i],
                       textposition = ifelse(x.sign >= 0, "middle right", "middle left"),
-                      textfont = data.label.font, hoverinfo = "none",
+                      textfont = data.label.font, hoverinfo = "skip",
                       showlegend = FALSE, legendgroup = i)
         }
     }
@@ -344,6 +344,7 @@ Bar <- function(x,
         margin = margins,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
+        hoverlabel = list(namelength = -1, font = data.label.font, bordercolor = charting.area.fill.color),
         hovermode = hover.mode,
         titlefont = title.font,
         font = data.label.font,
