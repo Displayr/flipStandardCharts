@@ -61,4 +61,5 @@ Suggests:
     flipExampleData,
     ggplot2movies,
     testthat,
+Encoding: UTF-8
 RoxygenNote: 6.1.0

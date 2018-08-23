@@ -76,17 +76,17 @@ Palm <- function(table,
         legend.font.size = 11
 
     palm <- rhtmlPalmTrees::PalmTrees(data = table,
-                                      weights = NULL,           # Numeric vector specifying weights. Length must equal to ncol(data)
-                                      row.names = NULL,         # Default values are rownames(data)
+                                      weights = NULL,                               # Numeric vector; length must equal to ncol(data)
+                                      row.names = NULL,                             # Default values are rownames(data)
                                       row.font.size = x.tick.font.size,
                                       row.font.family = x.tick.font.family,
                                       row.heading = x.title,
                                       row.heading.font.size = x.title.font.size,
                                       row.heading.font.family = x.title.font.family,
-                                      col.names = NULL,         # Shown on legend. Default values are colnames(data)
-                                      col.font.size = legend.font.size,            # Shown in legend
-                                      col.font.family = legend.font.family,        # Shown in legend
-                                      col.heading = "",                            # Legend heading, defaults to "Columns" if NULL
+                                      col.names = NULL,                             # Shown on legend. Default values are colnames(data)
+                                      col.font.size = legend.font.size,             # Shown in legend
+                                      col.font.family = legend.font.family,         # Shown in legend
+                                      col.heading = "",                             # Legend heading, defaults to "Columns" if NULL
                                       col.heading.font.size = 0,
                                       col.heading.font.family = legend.font.family,
                                       tooltips = tooltip.show,
@@ -95,17 +95,17 @@ Palm <- function(table,
                                       tooltips.heading.font.size = x.title.font.size,
                                       tooltips.heading.font.family = legend.font.family,
                                       y.show = y.axis.show,
-                                      y.digits = y.decimals,           # number of decimal places of the y axis
+                                      y.digits = y.decimals,
                                       y.font.size = y.tick.font.size,
                                       y.font.family = y.tick.font.family,
-                                      y.lab = y.title,          # y axis title
+                                      y.lab = y.title,
                                       y.lab.font.size = y.title.font.size,
                                       y.lab.font.family = y.title.font.family,
-                                      prefix = y.tick.prefix,                   # prefix of numbers in the tooltips and y axis
-                                      suffix = y.tick.suffix,                   # suffix of numbers in the tooltips and y axis
-                                      colors = colors,          # colors of the leaves
-                                      digits = y.decimals,      # number of decimal places in the tooltips
-                                      order = "original")       # not exposed since user can change by amending input data
+                                      prefix = y.tick.prefix,                       # prefix of numbers in the tooltips and y axis
+                                      suffix = y.tick.suffix,                       # suffix of numbers in the tooltips and y axis
+                                      colors = unname(unlist(colors)),              # colors of the leaves
+                                      digits = y.decimals,                          # number of decimal places in the tooltips
+                                      order = "original")                           # not exposed since user can change by amending input data
 
     result <- list(htmlwidget = palm)
     class(result) <- "StandardChart"
