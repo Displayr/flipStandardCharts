@@ -362,7 +362,7 @@ getDateAxisRange <- function(label.dates)
     tmp.dates <- as.numeric(label.dates)
     diff <- min(abs(diff(tmp.dates)), na.rm = TRUE)
 
-    # Always return date-ranges as characters since there 
+    # Always return date-ranges as characters since there
     # seems to be more problems with using milliseconds since plotly v4.8.0
     range <- as.character(range(label.dates) + c(-1,1) * ceiling(0.5 * diff))
     range
@@ -373,7 +373,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
                     ticks, tickfont, tickangle, ticklen, tickdistance,
                     tickformatmanual, tickprefix, ticksuffix, tickshow,
                     show.zero, zero.line.width, zero.line.color,
-                    hovertext.format.manual, labels = NULL, num.series = 1, 
+                    hovertext.format.manual, labels = NULL, num.series = 1,
                     with.bars = FALSE)
 {
     axis.type <- if (side %in% c("bottom", "top")) axisLabels$x.axis.type else axisLabels$y.axis.type
@@ -404,7 +404,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
         if (axis.type == "date")
         {
             range <- rev(getDateAxisRange(axisLabels$ymd))
-            
+
             # Override default tick positions if there are only a few bars
             if (with.bars && length(axisLabels$labels) <= 10)
             {
@@ -585,7 +585,14 @@ setMarginsForText <- function(margins, title, subtitle, footer,
 
 setMarginsForLegend <- function(margins, showlegend, legend, text, type = "")
 {
-    if (type != "radar")
+    if (showlegend && legend$x > 0.99)
+    {
+        # Needed to preserve subtitle alignment
+        if (is.factor(text))
+            text <- levels(text)
+        len <- max(c(0,nchar(unlist(strsplit(split = "<br>", text)))), na.rm = TRUE)
+        margins$r <- min(300, 70 + (legend$font$size * max(0, len) * 0.7))
+    } else if (type != "radar")
         margins$r <- 20
     margins
 }
@@ -765,6 +772,8 @@ autoFormatLongLabels <- function(x, wordwrap = FALSE, n = 21, truncate = FALSE)
 {
     if (truncate)
         warning("autoFormatLongLabels: truncate not longer does anything.")
+    if (is.null(x))
+        return("")
     if (!is.character(x))
         x <- as.character(x)
     # Check for zero-length strings which are ignored by plotly

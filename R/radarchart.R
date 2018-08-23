@@ -314,7 +314,9 @@ Radar <- function(x,
     xaxis = list(title = "", showgrid = F, zeroline = F, showticklabels = F,
                categoryorder = "array", categoryarray = g.list)
     yaxis = list(title = "", showgrid = F, zeroline = F, showticklabels = F)
-    margins <- setMarginsForLegend(margins, legend.show, legend, colnames(chart.matrix), type = "radar")
+    
+    legend.text <- autoFormatLongLabels(colnames(chart.matrix), legend.wrap, legend.wrap.nchar) 
+    margins <- setMarginsForLegend(margins, legend.show, legend, legend.text, type = "radar")
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
 
@@ -390,8 +392,7 @@ Radar <- function(x,
     for (ggi in 1:length(g.list))
     {
         ind <- which(pos$Group == g.list[ggi])
-        p <- add_trace(p, x = pos$x[ind], y = pos$y[ind],
-                    name  =  autoFormatLongLabels(g.list[ggi], legend.wrap, legend.wrap.nchar), 
+        p <- add_trace(p, x = pos$x[ind], y = pos$y[ind], name = legend.text[ggi],
                     type = "scatter", mode = "lines", fill = "toself",
                     fillcolor = toRGB(colors[ggi], alpha = opacity[ggi]),
                     legendgroup = g.list[ggi], showlegend = TRUE,

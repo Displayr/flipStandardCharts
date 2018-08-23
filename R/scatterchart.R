@@ -615,8 +615,10 @@ Scatter <- function(x = NULL,
     margins <- setMarginsForAxis(margins, ylab.tmp, yaxis)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
+    
+    legend.text <- autoFormatLongLabels(g.list, legend.wrap, legend.wrap.nchar)
     margins <- setMarginsForLegend(margins, legend.show || scatter.colors.as.numeric,
-                    legend, scatter.colors)
+                    legend, legend.text)
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
 
@@ -666,7 +668,8 @@ Scatter <- function(x = NULL,
         # Main trace
         separate.legend <- legend.show && scatter.colors.as.categorical && !is.null(scatter.sizes)
         p <- add_trace(p, x = x[ind], y = y[ind], 
-                name  =  autoFormatLongLabels(paste0(g.list[ggi], " "), legend.wrap, legend.wrap.nchar), 
+                #name  =  autoFormatLongLabels(paste0(g.list[ggi], " "), legend.wrap, legend.wrap.nchar),
+                name = legend.text[ggi], 
                 showlegend = (legend.show && !separate.legend),
                 legendgroup = if (num.series > 1) ggi else 1,
                 textposition = data.label.position, cliponaxis = FALSE,
@@ -676,7 +679,7 @@ Scatter <- function(x = NULL,
 
         # Getting legend with consistently sized markers
         if (separate.legend)
-            p <- add_trace(p, x = list(NULL), y = list(NULL), name = g.list[ggi],
+            p <- add_trace(p, x = list(NULL), y = list(NULL), name = legend.text[ggi],
                 showlegend = TRUE, legendgroup = ggi, visible = TRUE,
                 line = line.obj, marker = list(size = marker.size,
                 opacity = opacity, color = colors[ggi]),

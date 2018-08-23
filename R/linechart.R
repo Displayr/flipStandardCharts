@@ -206,7 +206,9 @@ Line <-   function(x,
     margins <- setMarginsForAxis(margins, axisFormat, xaxis)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
-    margins <- setMarginsForLegend(margins, legend.show, legend, colnames(chart.matrix))
+    
+    legend.text <- autoFormatLongLabels(colnames(chart.matrix), legend.wrap, legend.wrap.nchar) 
+    margins <- setMarginsForLegend(margins, legend.show, legend, legend.text)
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
 
@@ -265,8 +267,7 @@ Line <-   function(x,
         # Draw line - main trace
         if (any(!is.na(y)))
             p <- add_trace(p, x = x, y = y, type = "scatter", mode = series.mode,
-                   connectgaps = FALSE, line = lines, marker = marker,
-                   name  =  autoFormatLongLabels(y.label, legend.wrap, legend.wrap.nchar), 
+                   connectgaps = FALSE, line = lines, marker = marker, name = legend.text[i],
                    showlegend = (type == "Line"), legendgroup = tmp.group,
                    text = autoFormatLongLabels(x.labels.full, wordwrap=T, truncate=F),
                    hoverinfo  = setHoverText(xaxis, chart.matrix))

@@ -227,7 +227,9 @@ Bar <- function(x,
     margins <- setMarginsForAxis(margins, as.character(range(x)), xaxis)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
-    margins <- setMarginsForLegend(margins, legend.show, legend, colnames(chart.matrix))
+
+    legend.text <- autoFormatLongLabels(colnames(chart.matrix), legend.wrap, legend.wrap.nchar) 
+    margins <- setMarginsForLegend(margins, legend.show, legend, legend.text)
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
 
@@ -274,7 +276,7 @@ Bar <- function(x,
 
         # this is the main trace for each data series
         p <- add_trace(p, x = y, y = x, type = "bar", orientation = "h", marker = marker,
-                       name  =  autoFormatLongLabels(y.labels[i], legend.wrap, legend.wrap.nchar), 
+                       name  =  legend.text[i], 
                        text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
                        hoverinfo  = setHoverText(yaxis, chart.matrix, is.bar = TRUE), legendgroup = i)
 

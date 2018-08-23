@@ -271,7 +271,9 @@ Area <- function(x,
     margins <- setMarginsForAxis(margins, axisFormat, xaxis)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
-    margins <- setMarginsForLegend(margins, legend.show, legend, colnames(chart.matrix))
+    
+    legend.text <- autoFormatLongLabels(colnames(chart.matrix), legend.wrap, legend.wrap.nchar) 
+    margins <- setMarginsForLegend(margins, legend.show, legend, legend.text)
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
 
@@ -365,7 +367,7 @@ Area <- function(x,
                            fillcolor = toRGB(colors[i], alpha = opacity),
                            connectgaps = TRUE,
                            line = list(width = 0),
-                           name  =  autoFormatLongLabels(y.label, legend.wrap, legend.wrap.nchar), 
+                           name = legend.text[i], 
                            legendgroup = i,
                            hoverlabel = list(bgcolor=colors[i]),
                            text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
@@ -417,8 +419,7 @@ Area <- function(x,
 
             # Stacked traces cannot be interrupted by other traces
             y.label <- y.labels[i]
-            p <- add_trace(p, type = "scatter", x = x, y = y,
-                    name  =  autoFormatLongLabels(y.label, legend.wrap, legend.wrap.nchar), 
+            p <- add_trace(p, type = "scatter", x = x, y = y, name = legend.text[i],
                     fill = fill.bound, fillcolor = toRGB(colors[i], alpha = opacity),
                     line = lines, legendgroup = i, text = source.text,
                     hoverinfo = if (ncol(chart.matrix) > 1) "x+text+name" else "x+text",
