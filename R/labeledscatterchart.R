@@ -238,8 +238,6 @@ LabeledScatter <- function(x = NULL,
         logo.urls <- try(TextAsVector(logos))
         if (inherits(logo.urls, "try-error"))
             logo.urls <- NULL
-        else if (any(nchar(logo.urls) == 0))
-            stop("Logos cannot be an empty string\n")
     }
 
     # Try to store name of variables
@@ -408,9 +406,6 @@ LabeledScatter <- function(x = NULL,
 
     if (trend.lines)
         legend.show <- FALSE
-    if (!is.null(logo.urls) && length(logo.urls) != n)
-        stop(sprintf("Number of URLs supplied in logos is %.0f but must be equal to the number of rows in the table (%.0f)\n", length(logo.urls)/num.tables, n/num.tables))
-    logo.size <- rep(logo.size, n)
 
     if (is.null(scatter.labels))
         scatter.labels <- rep("", n)
@@ -421,6 +416,13 @@ LabeledScatter <- function(x = NULL,
             scatter.labels <- FormatAsReal(scatter.labels, decimals = decimalsFromD3(data.label.format))
     }
     scatter.labels <- paste0(data.label.prefix, scatter.labels, data.label.suffix)
+
+    empty.logo <- which(nchar(logo.urls) == 0)
+    if (length(empty.logo) > 0)
+        logo.urls[empty.logo] <- scatter.labels[empty.logo]
+    if (!is.null(logo.urls) && length(logo.urls) < n)
+        logo.urls <- c(logo.urls, scatter.labels[(length(logo.urls)+1):n])
+    logo.size <- rep(logo.size, n)
 
     lab.tidy <- scatter.labels
     if (!is.na(scatter.max.labels) && length(scatter.labels) > scatter.max.labels)

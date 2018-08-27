@@ -16,8 +16,6 @@ test_that("Logos",  {
     expect_error(pp <- LabeledScatter(dat, logos = logos), NA)
     expect_error(pp <- LabeledScatter(dat, logos = paste(logos, collapse=","), logo.size = 0.2), NA)
     expect_error(pp <- LabeledScatter(dat, logos = c("Typo", logos[-1]), logo.size = 0.2), NA)
-    expect_error(pp <- LabeledScatter(dat, logos = logos[-1], logo.size = 0.2))
-    expect_error(pp <- LabeledScatter(dat, logos = c("", logos[-1]), logo.size = 0.2))
 })
 
 test_that("Trend lines", {
