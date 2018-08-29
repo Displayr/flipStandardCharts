@@ -612,8 +612,10 @@ rugCategoryAxis <- function(i, n.variables, vertical, show.density, show.mirror.
 {
     if(i > n.variables ||!show.values)
         return(NULL)
+
+    offset <- max(10, n.variables+2)/2/100
     if (show.density && show.mirror.density)
-        domain = c(.45, .55)
+        domain = c(.5 - offset, .5 + offset)
     else if (show.density)
         domain = c(0, 0.1)
     else if (show.mirror.density)
