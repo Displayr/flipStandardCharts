@@ -462,6 +462,7 @@ Column <- function(x,
     for (i in 1:ncol(chart.matrix))
     {
         y <- as.numeric(chart.matrix[, i])
+        y[!is.finite(y)] <- 0
         x <- x.labels
         marker <- list(color = toRGB(colors[i], alpha = opacity),
                       line = list(color = toRGB(marker.border.colors[i],

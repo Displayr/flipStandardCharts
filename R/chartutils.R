@@ -528,7 +528,7 @@ setMarginsForAxis <- function(margins, labels, axis)
     lab.nchar <- max(c(0, nchar(unlist(strsplit(split="<br>", as.character(labels))))), na.rm = TRUE)
     font.asp <- fontAspectRatio(axis$tickfont$family)
     lab.len <- font.asp * axis$tickfont$size * lab.nchar * 1.25
-    lab.nline <- if (is.character(labels)) max(sapply(gregexpr("<br>", labels),
+    lab.nline <- if (is.character(labels)) max(0, sapply(gregexpr("<br>", labels),
                      function(x){sum(x > -1)}), na.rm = TRUE)
                  else 0
 
