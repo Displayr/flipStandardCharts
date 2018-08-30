@@ -462,8 +462,7 @@ Column <- function(x,
     for (i in 1:ncol(chart.matrix))
     {
         y <- as.numeric(chart.matrix[, i])
-        ind.notNA <- which(is.finite(y))
-        y[!is.finite(y)] <- 0
+        y.filled <- ifelse(is.finite(y), y, 0)
         x <- x.labels
         marker <- list(color = toRGB(colors[i], alpha = opacity),
                       line = list(color = toRGB(marker.border.colors[i],
@@ -480,15 +479,15 @@ Column <- function(x,
                            hoverinfo = "none", showlegend = FALSE, opacity = 0)
 
         # this is the main trace for each data series
-        p <- add_trace(p, x = x, y = y, type = "bar", orientation = "v", marker = marker,
-                       name = legend.text[i], 
+        p <- add_trace(p, x = x, y = y.filled, type = "bar", 
+                       orientation = "v", marker = marker, name = legend.text[i], 
                        text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
                        hoverinfo  = setHoverText(xaxis, chart.matrix), legendgroup = i)
         if (fit.type != "None" && is.stacked && i == 1)
             warning("Line of best fit not shown for stacked charts.")
         if (fit.type != "None" && !is.stacked)
         {
-            tmp.fit <- fitSeries(x[ind.notNA], y[ind.notNA], fit.type, fit.ignore.last, xaxis$type, fit.CI.show)
+            tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type, fit.CI.show)
             tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                          else sprintf("%s: %s", fit.line.name, y.labels[i])
             p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$y, type = 'scatter', mode = "lines",
