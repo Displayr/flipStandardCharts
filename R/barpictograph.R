@@ -13,8 +13,8 @@
 #' @param categories.tick.align.horizontal Horizontal alignment of tick labels for each bar. One of "left", "right", "middle" or "Default".
 #' @param categories.tick.align.vertical Vertical alignment of tick labels for each bar. One of "top", "center", "bottom" or "Default".
 #' @param categories.tick.pad Horizontal space between the row labels and the icons.
-#' @param base.image URL of image to use as base image. Only used if \code{is.custom.url = TRUE} and \code{hide.base.image = FALSE}.
-#' @param hide.base.image Turns off background image (on by default). In general, the base image should only be shown if the input data is a proportion.
+#' @param base.image URL of image to use as base image. Only used if \code{custom.image} is supplied.
+#' @param hide.base.image Turns off background image. In general, the base image should only be shown if the input data is a proportion.
 #' @param base.icon.color Color of base image, supplied as a hex code or string. This is only used if the built-in icons are used.
 #' @param total.icons Maximum number of icons in each table cell. By default, it will be determine based on \code{ceiling(x)}.
 #' @param scale Value of one icon. If \code{scale  =  0}, the value is automatically determined from the data so that the largest entry is represented by 10 icons.
@@ -40,7 +40,7 @@ BarPictograph <- function(x,
                        image = "Stickman",
                        custom.image = NULL,
                        base.image = "",
-                       hide.base.image = FALSE,
+                       hide.base.image = sum(nchar(custom.image)) == 0,
                        base.icon.color = "",
                        scale = NA,
                        total.icons = NA,
@@ -105,7 +105,7 @@ BarPictograph <- function(x,
     x <- x/scale
 
     # Icon layout
-    if (!is.null(custom.image) && sum(nchar(base.image)) == 0)
+    if (sum(nchar(custom.image)) > 0 && sum(nchar(base.image)) == 0)
         hide.base.image <- TRUE
     icon.nrow <- NA # only icon.ncol is used for bar charts
     if (!is.na(icon.ncol) && any(icon.ncol > total.icons))

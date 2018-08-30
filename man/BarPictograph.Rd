@@ -5,9 +5,9 @@
 \title{Create bar chart composed of icons}
 \usage{
 BarPictograph(x, image = "Stickman", custom.image = NULL,
-  base.image = "", hide.base.image = FALSE, base.icon.color = "",
-  scale = NA, total.icons = NA, icon.ncol = NA,
-  fix.icon.nrow = TRUE, label.color.asIcon = FALSE,
+  base.image = "", hide.base.image = sum(nchar(custom.image)) == 0,
+  base.icon.color = "", scale = NA, total.icons = NA,
+  icon.ncol = NA, fix.icon.nrow = TRUE, label.color.asIcon = FALSE,
   colors = ChartColors(length(x)), fill.direction = c("From left",
   "From right")[1], global.font.family = "Arial",
   global.font.color = rgb(44, 44, 44, maxColorValue = 255),
@@ -38,9 +38,9 @@ will be parsed automatically.}
 
 \item{custom.image}{URL of icon to use. If this parameter is supplied \code{image} is ignored.}
 
-\item{base.image}{URL of image to use as base image. Only used if \code{is.custom.url = TRUE} and \code{hide.base.image = FALSE}.}
+\item{base.image}{URL of image to use as base image. Only used if \code{custom.image} is supplied.}
 
-\item{hide.base.image}{Turns off background image (on by default). In general, the base image should only be shown if the input data is a proportion.}
+\item{hide.base.image}{Turns off background image. In general, the base image should only be shown if the input data is a proportion.}
 
 \item{base.icon.color}{Color of base image, supplied as a hex code or string. This is only used if the built-in icons are used.}
 
