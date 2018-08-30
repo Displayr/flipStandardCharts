@@ -261,6 +261,7 @@ Bar <- function(x,
     for (i in 1:ncol(chart.matrix))
     {
         y <- as.numeric(chart.matrix[, i])
+        ind.notNA <- which(is.finite(y))
         y[!is.finite(y)] <- 0
         x <- x.labels
 
@@ -285,7 +286,7 @@ Bar <- function(x,
             warning("Line of best fit not shown for stacked charts.")
         if (fit.type != "None" && !is.stacked)
         {
-            tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, yaxis$type, fit.CI.show)
+            tmp.fit <- fitSeries(x[ind.notNA], y[ind.notNA], fit.type, fit.ignore.last, yaxis$type, fit.CI.show)
             tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                          else sprintf("%s: %s", fit.line.name, y.labels[i])
             p <- add_trace(p, x = tmp.fit$y, y = tmp.fit$x, type = 'scatter', mode = "lines",
