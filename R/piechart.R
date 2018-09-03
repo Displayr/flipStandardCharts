@@ -176,7 +176,7 @@ Pie <- function(x,
             v.list <- unique(x.labels)
             if (!is.null(pie.values.colors))
             {
-                pie.values.colors <- paste(rep("", length(v.list)), pie.values.colors)
+                pie.values.colors <- paste0(rep("", length(v.list)), pie.values.colors)
                 names(pie.values.colors) <- v.list
                 pie.values.colors <- pie.values.colors[x.labels]
                 pie.values.colors
