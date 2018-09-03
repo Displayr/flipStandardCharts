@@ -80,7 +80,7 @@ GeographicMap <- function(x,
     # Find map.type from rownames
     names <- tolower(rownames(table))
 
-    # Check for defined formats first or if country or zip.country are specified.
+    # Check for defined formats first, or if country or zip.country are specified.
     map.type <- definedFormatMapTypes(names, zip.country)
     if (!missing(country) && country != "")
     {
@@ -97,6 +97,8 @@ GeographicMap <- function(x,
         match.counts <- lapply(types, function(x) length(intersect(x, names)))
         country <- FindCountryFromRegions(names)
         match.counts[["states"]] <- attr(country, "matches")
+        if (max(unlist(match.counts)) == 0)
+            stop("No rows of the input data were matched with geographic entity names.")
         map.type <- names(which.max(match.counts))
     }
 

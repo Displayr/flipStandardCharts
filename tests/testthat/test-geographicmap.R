@@ -104,3 +104,7 @@ test_that ("Most unmatched", {
     expect_warning(GeographicMap(austria.state.table), "5 rows of the input data were not matched.")
 })
 
+names(austria.state.table) <- c("aaaaa", "bbbbb", "ccccc", "ddddd", "eeeee", "fffff")
+test_that ("All unmatched", {
+    expect_error(GeographicMap(austria.state.table), "No rows of the input data were matched with geographic entity names.")
+})
