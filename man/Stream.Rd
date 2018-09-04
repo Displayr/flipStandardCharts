@@ -7,10 +7,9 @@
 Stream(x, colors = c("#5C9AD3", "#ED7D31", "#A5A5A5", "#FFC000",
   "#4473C5", "#70AD46", "#255F91", "#9E480D", "#636365", "#987300",
   "#26408B", "#42682B"), y.axis.show = TRUE, y.tick.format = "",
-  y.number.ticks = 5, values.hovertext.format = "",
-  x.tick.format = "\%d \%b \%y", x.tick.units = "Automatic",
-  x.tick.interval = 1, margin.top = 20, margin.left = 50,
-  margin.bottom = 30, margin.right = 40)
+  y.number.ticks = 5, x.tick.format = "\%d \%b \%y",
+  x.tick.units = "Automatic", x.tick.interval = 1, margin.top = 20,
+  margin.left = 50, margin.bottom = 30, margin.right = 40)
 }
 \arguments{
 \item{x}{A \code{matrix}, with columns containing the dates or other numeric x-axis variable.}
@@ -23,9 +22,6 @@ Stream(x, colors = c("#5C9AD3", "#ED7D31", "#A5A5A5", "#FFC000",
 See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 
 \item{y.number.ticks}{The total number of ticks on the y-axis.}
-
-\item{values.hovertext.format}{A string representing a d3 formatting code for the hover text.
-Only the decimal places are used.}
 
 \item{x.tick.format}{A string representing a d3 formatting code for the x.axis.
 See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}

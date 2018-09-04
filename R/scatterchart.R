@@ -552,15 +552,15 @@ Scatter <- function(x = NULL,
         footer <- ""
         if (!is.null(scatter.labels.name))
             footer <- sprintf("%sPoints labeled by '%s'; ",
-                               footer, scatter.labels.name)
+                               footer, scatter.labels.name[1])
         if (!is.null(scatter.colors.name) && !scatter.mult.yvals)
             footer <- sprintf("%sPoints colored according to '%s'; ",
-                              footer, scatter.colors.name)
+                              footer, scatter.colors.name[1])
         if (!is.null(scatter.sizes.name) && !scatter.mult.yvals)
             footer <- sprintf("%s%s of points are proportional to absolute value of '%s'; ",
                               footer,
                               if (scatter.sizes.as.diameter) "Diameter" else "Area",
-                              scatter.sizes.name)
+                              scatter.sizes.name[1])
     }
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
 

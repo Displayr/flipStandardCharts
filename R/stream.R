@@ -7,8 +7,6 @@
 #' @param y.tick.format A string representing a d3 formatting code for the y-axis.
 #' See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format
 #' @param y.number.ticks The total number of ticks on the y-axis.
-#' @param values.hovertext.format A string representing a d3 formatting code for the hover text.
-#' Only the decimal places are used.
 #' @param x.tick.format A string representing a d3 formatting code for the x.axis.
 #' See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format
 #' @param x.tick.units "Automatic", "Number", "Day", "Month" or "Year".
@@ -28,7 +26,6 @@ Stream <- function(x,
                    y.axis.show = TRUE,
                    y.tick.format = "",
                    y.number.ticks = 5,
-                   values.hovertext.format = "",
                    x.tick.format = "%d %b %y",
                    x.tick.units = "Automatic",
                    x.tick.interval = 1,
@@ -115,7 +112,6 @@ Stream <- function(x,
         x.tick.interval <- ceiling(x.tick.interval)
     }
 
-    x <- round(x, decimalsFromD3(values.hovertext.format, 2))
     df <- data.frame(value = as.numeric(t(x)), date = columns, key = rep(rownames(x), rep(ncol(x), nrow(x))))
 
     sg <- streamgraph(data = df,
