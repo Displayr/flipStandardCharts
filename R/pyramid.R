@@ -66,7 +66,6 @@ Pyramid <- function(x,
                     x.line.color = rgb(0, 0, 0, maxColorValue = 255),
                     x.tick.marks = "",
                     x.tick.mark.length = 5,
-                    x.bounds.minimum = NULL,
                     x.bounds.maximum = NULL,
                     x.tick.distance = NULL,
                     x.zero = TRUE,
@@ -143,6 +142,10 @@ Pyramid <- function(x,
     type <- "Bar"
     tmp.label <- formatByD3(max(chart.matrix), data.label.format,
                  data.label.prefix, data.label.suffix)
+    if (!is.null(x.bounds.maximum))
+        x.bounds.maximum <- x.bounds.maximum/2
+    x.bounds.minimum <- if (!is.null(x.bounds.maximum)) -x.bounds.maximum
+                        else                             NULL
     x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, chart.matrix, is.null(x.tick.distance))
     xtick <- setTicks(x.range$min, x.range$max, x.tick.distance, x.data.reversed,
                   data = NULL, type = type,

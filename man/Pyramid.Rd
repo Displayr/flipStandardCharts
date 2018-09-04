@@ -35,14 +35,13 @@ Pyramid(x, colors = ChartColors(max(1, length(x))), opacity = NULL,
   x.title = "", x.title.font.color = global.font.color,
   x.title.font.family = global.font.family, x.title.font.size = 12,
   x.line.width = 0, x.line.color = rgb(0, 0, 0, maxColorValue = 255),
-  x.tick.marks = "", x.tick.mark.length = 5, x.bounds.minimum = NULL,
-  x.bounds.maximum = NULL, x.tick.distance = NULL, x.zero = TRUE,
-  x.zero.line.width = 0, x.zero.line.color = rgb(225, 225, 225,
-  maxColorValue = 255), x.data.reversed = FALSE, x.grid.width = 0,
-  x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
-  x.tick.show = FALSE, x.tick.suffix = "", x.tick.prefix = "",
-  x.tick.format = "", x.tick.angle = NULL,
-  x.tick.font.color = global.font.color,
+  x.tick.marks = "", x.tick.mark.length = 5, x.bounds.maximum = NULL,
+  x.tick.distance = NULL, x.zero = TRUE, x.zero.line.width = 0,
+  x.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
+  x.data.reversed = FALSE, x.grid.width = 0, x.grid.color = rgb(225,
+  225, 225, maxColorValue = 255), x.tick.show = FALSE,
+  x.tick.suffix = "", x.tick.prefix = "", x.tick.format = "",
+  x.tick.angle = NULL, x.tick.font.color = global.font.color,
   x.tick.font.family = global.font.family, x.tick.font.size = 10,
   y.tick.label.wrap = TRUE, y.tick.label.wrap.nchar = 21,
   marker.border.width = 1, marker.border.colors = colors,
@@ -217,9 +216,6 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 x-axis.  Can be "outside", "inside", "none"}
 
 \item{x.tick.mark.length}{Length of tick marks in pixels.}
-
-\item{x.bounds.minimum}{Minimum of range for plotting;
-NULL = no manual range set.  Must be less than x.bounds.maximum}
 
 \item{x.bounds.maximum}{Maximum of range for
 plotting; NULL = no manual range set.  Must be greater than x.bounds.minimum}

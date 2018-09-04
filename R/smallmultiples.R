@@ -178,7 +178,7 @@ SmallMultiples <- function(x,
             values.bounds.maximum <- max(values.bounds.maximum, values.max)
             values.bounds.minimum <- min(values.bounds.minimum, values.min)
         }
-        else if (chart.type == "Bar")
+        else if (chart.type %in% c("Bar", "Pyramid"))
         {
             if (is.null(x.bounds.maximum))
                 x.bounds.maximum <- values.max
@@ -366,7 +366,6 @@ SmallMultiples <- function(x,
                                                      data.label.show = data.label.show,
                                                      x.tick.show = FALSE, x.tick.angle = x.tick.angle,
                                                      x.bounds.maximum = x.bounds.maximum,
-                                                     x.bounds.minimum = x.bounds.minimum,
                                                      global.font.family = global.font.family,
                                                      global.font.color = global.font.color,
                                                      ...)$htmlwidget})
