@@ -353,6 +353,11 @@ Scatter <- function(x = NULL,
         warning("'Sizes' variable not provided.")
     if (is.null(small.mult.index) && is.null(scatter.colors) && !scatter.colors.as.categorical)
         warning("'Colors' variable not provided.")
+    qualitative.palettes <- c("Default colors", "Primary colors", 
+        "Light colors", "Strong colors", "Colorblind safe colors")
+    if (!scatter.colors.as.categorical && !is.null(attr(colors, "palette.type"))
+        && attr(colors, "palette.type") %in% qualitative.palettes)
+        warning("For a numeric 'colors' variable, a qualitative palette should not be used. The colorscale is created by interpolating the colors.")
 
     # Basic data checking
     if (is.null(x) && is.null(y))
