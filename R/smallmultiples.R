@@ -149,7 +149,7 @@ SmallMultiples <- function(x,
     }
     if (npanels > 100)
         stop("Small multiples cannot show more than 100 panels (current dataset contains ", npanels, " series).\n")
-    if (length(colors) < npanels)
+    if (length(colors) < npanels && !chart.type %in% c("GeographicMap", "Pyramid", "Scatter"))
         colors <- paste0(rep("", npanels), colors)
 
     all.values <- if (chart.type == "Scatter") x[,scatter.y.column]
