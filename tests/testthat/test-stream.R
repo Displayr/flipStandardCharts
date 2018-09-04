@@ -14,7 +14,7 @@ test_that("Stream",
               Stream(x, x.tick.interval = 6, y.axis.show = FALSE)
               Stream(x, x.tick.interval = 6, y.number.ticks = 3)
               Stream(x, x.tick.interval = 6, y.number.ticks = 10)
-              Stream(x, x.tick.interval = 6, y.number.ticks = 10,  values.hovertext.format = ".0f")
+              Stream(x/100, x.tick.interval = 6, y.number.ticks = 10,  y.tick.format = ".1%")
 
               # Testing better example
               library(dplyr)
