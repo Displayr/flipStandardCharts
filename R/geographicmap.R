@@ -3,6 +3,7 @@
 #' Creates a map with a table as input, using shading to represent the values of
 #' countries or states on the map.
 #'
+#' @inherit Column
 #' @param x A matrix, two-dimensional array, table or vector, containing the
 #'   data to be plotted. The \code{\link{rownames}} (or \code{\link{names}} in
 #'   the case of a vector) should contain the names of the geographic entities
@@ -69,6 +70,20 @@ GeographicMap <- function(x,
                           values.bounds.maximum = NULL,
                           mapping.package = "leaflet",
                           background = FALSE,
+                          title = "",
+                          title.font.family = global.font.family,
+                          title.font.color = global.font.color,
+                          title.font.size = 16,
+                          subtitle = "",
+                          subtitle.font.family = global.font.family,
+                          subtitle.font.color = global.font.color,
+                          subtitle.font.size = 12,
+                          footer = "",
+                          footer.font.family = global.font.family,
+                          footer.font.color = global.font.color,
+                          footer.font.size = 8,
+                          footer.wrap = TRUE,
+                          footer.wrap.nchar = 100,
                           zip.country = "Automatic")
 {
     requireNamespace("sp")
@@ -301,15 +316,19 @@ GeographicMap <- function(x,
                    values.hovertext.format, treat.NA.as.0, n.categories, categories,
                    format.function, map.type, background, ocean.color)
 
-    } else {        # mapping.package == "plotly"
-
-        font <- list(family = legend.font.family, color = legend.font.color,
-                     size = legend.font.size)
+    } else
+    {       
+        # mapping.package == "plotly"
         map <- plotlyMap(table, name.map, colors, values.bounds.minimum,
                    values.bounds.maximum, color.NA, legend.show,
                    legend.title, mult, decimals, suffix, values.hovertext.format,
                    treat.NA.as.0, n.categories, categories, format.function, map.type,
-                  ocean.color, high.resolution, font)
+                   ocean.color, high.resolution, title, subtitle, footer,
+                   legend.font = list(family=legend.font.family, color=legend.font.color, size=legend.font.size),
+                   title.font = list(family=title.font.family, color=title.font.color, size=title.font.size),
+                   subtitle.font = list(family=subtitle.font.family, color=subtitle.font.color, size=subtitle.font.size),
+                   footer.font = list(family=footer.font.family, color=footer.font.color, size=footer.font.size),
+                   footer.wrap = footer.wrap, footer.wrap.nchar = footer.wrap.nchar)
     }
 
     result <- list(htmlwidget = map)
@@ -421,7 +440,9 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.sh
 plotlyMap <- function(table, name.map, colors, min.value, max.range, color.NA, legend.show,
            legend.title, mult, decimals, suffix, values.hovertext.format,
            treat.NA.as.0, n.categories, categories, format.function, map.type,
-           ocean.color, high.resolution, font)
+           ocean.color, high.resolution, title, subtitle, footer, 
+           legend.font, title.font, subtitle.font, footer.font, 
+           footer.wrap, footer.wrap.nchar)
 {
     df <- data.frame(table)
     df <- df[!is.na(df[, 1]), , drop = FALSE]  # avoid warning for NA
@@ -484,6 +505,8 @@ plotlyMap <- function(table, name.map, colors, min.value, max.range, color.NA, l
         showland = TRUE,
         landcolor = color.NA,
         showcountries = TRUE,
+        coastlinecolor = ocean.color,
+        coastlinewidth = 0.25,
         countrycolor = "#666666",  # boundary line between NA regions
         countrywidth = 0.25,
         showocean = TRUE,
@@ -495,11 +518,8 @@ plotlyMap <- function(table, name.map, colors, min.value, max.range, color.NA, l
         lataxis = lataxis,
         bgcolor = toRGB("white", 0))  # transparent
 
-    p <- plot_geo(df,
-                  locationmode = locationmode
-    ) %>%
-
-        add_trace(hoverinfo = "location+text",
+    p <- plot_geo(df, locationmode = locationmode) 
+    p <- add_trace(p, hoverinfo = "location+text",
             z = df[, 1],
             zmin = min.value,
             zmax = max.range,
@@ -507,27 +527,33 @@ plotlyMap <- function(table, name.map, colors, min.value, max.range, color.NA, l
             colors = colors,
             locations = rownames(df),
             text = format.function(df[, 1], decimals = decimals,
-                                         comma.for.thousands = commaFromD3(values.hovertext.format)),
+                        comma.for.thousands = commaFromD3(values.hovertext.format)),
             marker = list(line = bdry)
-        ) %>%
-
-        config(displayModeBar = F) %>%
-
-        layout(
-            title = "",
-            geo = g,
-            margin = list(l = 0, r = 0, t = 0, b = 0, pad = 0),
-            paper_bgcolor = 'transparent'
         )
-
     if (legend.show)
-        p <- colorbar(p, title = legend.title, tickfont = font, titlefont = font, tickformat = values.hovertext.format,
-                separatethousands = commaFromD3(values.hovertext.format), x = 1)
+        p <- colorbar(p, title = legend.title, x = 1, y = 0.5, yanchor = "middle",
+                outlinewidth = 0, ypad = 0,
+                tickfont = legend.font, titlefont = legend.font, 
+                tickformat = values.hovertext.format,
+                separatethousands = commaFromD3(values.hovertext.format))
     else
         p <- hide_colorbar(p)
 
-    p$sizingPolicy$browser$padding <- 0  # remove padding
-
+     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
+     margins <- list(l = 0, r = 0, t = 0, b = 0, pad = 0)
+     if (legend.show)
+        margins$r <- margins$l <- 70
+     margins <- setMarginsForText(margins, title, subtitle, footer, 
+                    title.font$size, subtitle.font$size, footer.font$size)
+     p <- config(p, displayModeBar = FALSE)
+     p$sizingPolicy$browser$padding <- 0
+     p <- layout(p, geo = g, margin = margins,
+            title = title, titlefont = title.font,
+            annotations = list(setSubtitle(subtitle, subtitle.font, margins),
+                               setFooter(footer, footer.font, margins)),
+            hoverlabel = list(namelength = -1, font = list(family = legend.font$family, color = "white", size = 12)),
+            paper_bgcolor = 'transparent'
+        )
     p
 }
 
