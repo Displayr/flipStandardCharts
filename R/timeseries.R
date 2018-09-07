@@ -3,6 +3,7 @@
 #' Plots interactive time series. Either multiple series may be plotted, or a single series with high and low
 #' range/error bars.
 #'
+#' @inherit Area
 #' @param x Input data may be a matrix or a vector, wth dates as the rownames and data series along the columns.
 #' @param range.bars Logical; whether the data consists of a single series with low, value, high in the columns, or
 #' multiple series.
@@ -10,37 +11,8 @@
 #' @param line.thickness Integer; The width of the lines connecting data points.
 #' @param legend.width Integer; Width (in pixels) of the legend.
 #' @param window.start The number of days before the end of the data series to start the range selector window.
-#' @param global.font.family Character; font family for all occurrences of any
-#' font attribute for the chart unless specified individually.
-#' @param global.font.color Global font color as a named color in character format
-#' (e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param title Character; chart title.
-#' @param title.font.family Character; title font family.
-#' @param title.font.color Title font color as a named color in character
-#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
-#' @param title.font.size Title font size; default = 16.
-#' @param x.title Character, x-axis title.
-#' @param x.title.font.color x-axis title font color as a named color in character format (e.g. "black")
-#' or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
-#' @param x.title.font.family Character; x-axis title font family.
-#' @param x.title.font.size x-axis title font size.
-#' @param x.tick.font.color X-axis tick label font color as a named color in
-#' character format (e.g. "black") or an rgb value (e.g.
-#' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param x.tick.font.family Character; x-axis tick label font family
-#' @param x.tick.font.size x-axis tick label font size
-#' @param y.title Character, y-axis title.
-#' @param y.title.font.color y-axis title font color as a named color in character format (e.g. "black")
-#' or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
-#' @param y.title.font.family Character; y-axis title font family.
-#' @param y.title.font.size y-axis title font size.
-#' @param y.tick.font.color y-axis tick label font color as a named color in
-#' character format (e.g. "black") or an rgb value (e.g.
-#' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param y.tick.font.family Character; y-axis tick label font family
-#' @param y.tick.font.size y-axis tick label font size
 #' @importFrom flipChartBasics ChartColors
-#' @importFrom dygraphs dygraph dySeries dyCSS dyRangeSelector %>% dyOptions dyLegend
+#' @importFrom dygraphs dygraph dySeries dyCSS dyRangeSelector %>% dyOptions dyLegend dyAxis
 #' @importFrom flipTime AsDate AsDateTime
 #' @importFrom xts xts
 #' @export
@@ -69,8 +41,10 @@ TimeSeries <- function(x = NULL,
                     y.title.font.size = 12,
                     y.tick.font.color = global.font.color,
                     y.tick.font.family = global.font.family,
-                    y.tick.font.size = 10
-) {
+                    y.tick.font.size = 10,
+                    y.tick.format = "",
+                    y.hovertext.format= y.tick.format)
+{
 
     if (is.null(dim(x)) || length(dim(x)) == 1L)
         x <- as.matrix(x)
@@ -134,7 +108,10 @@ TimeSeries <- function(x = NULL,
 
     write(css, "dygraph.css")
 
-    dg <- dygraph(x, main = title, xlab = x.title, ylab = y.title)
+    dg <- dygraph(x, main = title, xlab = x.title, ylab = y.title)  
+    dg <- dyAxis(dg, "y", 
+        valueFormatter = if (percentFromD3(y.hovertext.format)) 'function(d){return Math.round(d*100) + "%"}' else NULL,
+        axisLabelFormatter = if (percentFromD3(y.tick.format)) 'function(d){return Math.round(d*100) + "%"}' else NULL)
     if (range.bars)
     {
         dg <- dySeries(dg, colnames(x), label = colnames(x)[2], color = colors, strokeWidth = line.thickness)

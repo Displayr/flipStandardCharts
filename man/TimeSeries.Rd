@@ -17,7 +17,8 @@ TimeSeries(x = NULL, range.bars = FALSE, colors = ChartColors(1),
   y.title = "", y.title.font.color = global.font.color,
   y.title.font.family = global.font.family, y.title.font.size = 12,
   y.tick.font.color = global.font.color,
-  y.tick.font.family = global.font.family, y.tick.font.size = 10)
+  y.tick.font.family = global.font.family, y.tick.font.size = 10,
+  y.tick.format = "", y.hovertext.format = y.tick.format)
 }
 \arguments{
 \item{x}{Input data may be a matrix or a vector, wth dates as the rownames and data series along the columns.}
@@ -41,21 +42,26 @@ font attribute for the chart unless specified individually.}
 
 \item{title}{Character; chart title.}
 
-\item{title.font.family}{Character; title font family.}
+\item{title.font.family}{Character; title font family. Can be "Arial Black",
+"Arial", "Comic Sans MS", "Courier New", "Georgia", "Impact",
+"Lucida Console", "Lucida Sans Unicode", "Marlett", "Symbol", "Tahoma",
+"Times New Roman", "Trebuchet MS", "Verdana", "Webdings"}
 
 \item{title.font.color}{Title font color as a named color in character
 format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{title.font.size}{Title font size; default = 16.}
+\item{title.font.size}{Integer; Title font size; default = 10.}
 
-\item{x.title}{Character, x-axis title.}
+\item{x.title}{Character, x-axis title; defaults to chart input values;
+to turn off set to "FALSE".}
 
-\item{x.title.font.color}{x-axis title font color as a named color in character format (e.g. "black")
-or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
+\item{x.title.font.color}{x-axis title font color as a named color in
+character format (e.g. "black") or an rgb value (e.g.
+rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{x.title.font.family}{Character; x-axis title font family.}
+\item{x.title.font.family}{Character; x-axis title font family}
 
-\item{x.title.font.size}{x-axis title font size.}
+\item{x.title.font.size}{Integer; x-axis title font size}
 
 \item{x.tick.font.color}{X-axis tick label font color as a named color in
 character format (e.g. "black") or an rgb value (e.g.
@@ -63,26 +69,39 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{x.tick.font.family}{Character; x-axis tick label font family}
 
-\item{x.tick.font.size}{x-axis tick label font size}
+\item{x.tick.font.size}{Integer; x-axis tick label font size}
 
-\item{y.title}{Character, y-axis title.}
+\item{y.title}{Character, y-axis title; defaults to chart input values;
+to turn off set to "FALSE".}
 
-\item{y.title.font.color}{y-axis title font color as a named color in character format (e.g. "black")
-or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
+\item{y.title.font.color}{y-axis title font color as a named color in
+character format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0,
+max = 255)).}
 
-\item{y.title.font.family}{Character; y-axis title font family.}
+\item{y.title.font.family}{Character; y-axis title font family}
 
-\item{y.title.font.size}{y-axis title font size.}
+\item{y.title.font.size}{Integer; y-axis title font size}
 
-\item{y.tick.font.color}{y-axis tick label font color as a named color in
-character format (e.g. "black") or an rgb value (e.g.
+\item{y.tick.font.color}{y-axis tick label font color as a named color
+in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{y.tick.font.family}{Character; y-axis tick label font family}
 
-\item{y.tick.font.size}{y-axis tick label font size}
+\item{y.tick.font.size}{Integer; y-axis tick label font size}
+
+\item{y.tick.format}{A string representing a d3 formatting code.
+See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
+
+\item{y.hovertext.format}{A string representing a d3 formatting code
+See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 }
 \description{
 Plots interactive time series. Either multiple series may be plotted, or a single series with high and low
 range/error bars.
+}
+\examples{
+z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L),
+      .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
+Area(z)
 }
