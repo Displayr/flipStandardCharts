@@ -317,7 +317,7 @@ GeographicMap <- function(x,
                    format.function, map.type, background, ocean.color)
 
     } else
-    {       
+    {
         # mapping.package == "plotly"
         map <- plotlyMap(table, name.map, colors, values.bounds.minimum,
                    values.bounds.maximum, color.NA, legend.show,
@@ -440,8 +440,8 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.sh
 plotlyMap <- function(table, name.map, colors, min.value, max.range, color.NA, legend.show,
            legend.title, mult, decimals, suffix, values.hovertext.format,
            treat.NA.as.0, n.categories, categories, format.function, map.type,
-           ocean.color, high.resolution, title, subtitle, footer, 
-           legend.font, title.font, subtitle.font, footer.font, 
+           ocean.color, high.resolution, title, subtitle, footer,
+           legend.font, title.font, subtitle.font, footer.font,
            footer.wrap, footer.wrap.nchar)
 {
     df <- data.frame(table)
@@ -518,7 +518,7 @@ plotlyMap <- function(table, name.map, colors, min.value, max.range, color.NA, l
         lataxis = lataxis,
         bgcolor = toRGB("white", 0))  # transparent
 
-    p <- plot_geo(df, locationmode = locationmode) 
+    p <- plot_geo(df, locationmode = locationmode)
     p <- add_trace(p, hoverinfo = "location+text",
             z = df[, 1],
             zmin = min.value,
@@ -533,17 +533,17 @@ plotlyMap <- function(table, name.map, colors, min.value, max.range, color.NA, l
     if (legend.show)
         p <- colorbar(p, title = legend.title, x = 1, y = 0.5, yanchor = "middle",
                 outlinewidth = 0, ypad = 0,
-                tickfont = legend.font, titlefont = legend.font, 
+                tickfont = legend.font, titlefont = legend.font,
                 tickformat = values.hovertext.format,
                 separatethousands = commaFromD3(values.hovertext.format))
     else
         p <- hide_colorbar(p)
 
      footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
-     margins <- list(l = 0, r = 0, t = 0, b = 0, pad = 0)
+     margins <- list(l = 0, r = 0, t = 10, b = 0, pad = 0)
      if (legend.show)
         margins$r <- margins$l <- 70
-     margins <- setMarginsForText(margins, title, subtitle, footer, 
+     margins <- setMarginsForText(margins, title, subtitle, footer,
                     title.font$size, subtitle.font$size, footer.font$size)
      p <- config(p, displayModeBar = FALSE)
      p$sizingPolicy$browser$padding <- 0
