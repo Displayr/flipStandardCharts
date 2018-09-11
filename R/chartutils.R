@@ -213,7 +213,10 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE, w
     {
         if (CI.show)
             warning("Confidence intervals cannot be computed for trend lines of this type.")
-        indU <- which(!duplicated(tmp.dat$x) & is.finite(tmp.dat$x) & is.finite(tmp.dat$y))
+        ind.na <- which(!is.finite(tmp.dat$x) | !is.finite(tmp.dat$y))
+        if (length(ind.na) > 0)
+            tmp.dat <- tmp.dat[-ind.na,]
+        indU <- which(!duplicated(tmp.dat$x))
         if (length(indU) < nrow(tmp.dat))
             warning(warning.prefix, "Multiple points at the same x-coordinate ignored for estimating line of best fit.\n")
         tmp.fit <- suppressWarnings(try(supsmu(tmp.dat$x[indU], tmp.dat$y[indU]), silent = TRUE))
