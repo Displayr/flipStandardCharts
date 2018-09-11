@@ -201,9 +201,6 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE, w
     tmp.dat <- data.frame(xorig = x, x = x0, y = y)
     if (ignore.last)
         tmp.dat <- tmp.dat[-which.max(tmp.dat$x),]
-    ind.na <- which(!is.finite(tmp.dat$x) | !is.finite(tmp.dat$y))
-    if (length(ind.na) > 0)
-        tmp.dat <- tmp.dat[-ind.na,]
     if (nrow(tmp.dat) < 2)
     {
         warning(warning.prefix, "Not enough data to constuct line of best fit.")
@@ -216,12 +213,12 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE, w
     {
         if (CI.show)
             warning("Confidence intervals cannot be computed for trend lines of this type.")
-        indU <- which(!duplicated(tmp.dat$x))
+        indU <- which(!duplicated(tmp.dat$x) & is.finite(tmp.dat$x) & is.finite(tmp.dat$y))
         if (length(indU) < nrow(tmp.dat))
             warning(warning.prefix, "Multiple points at the same x-coordinate ignored for estimating line of best fit.\n")
         tmp.fit <- suppressWarnings(try(supsmu(tmp.dat$x[indU], tmp.dat$y[indU]), silent = TRUE))
         if (!inherits(tmp.fit, "try-error"))
-            return(list(x = x[ord[indU]], y = tmp.fit$y))
+            return(list(x = tmp.dat$xorig[indU], y = tmp.fit$y))
     }
     else if (grepl("(smooth|loess)", fit.type, ignore.case = TRUE) && nrow(tmp.dat) > 7)
         tmp.fit <- suppressWarnings(try(loess(y~x, data = tmp.dat), silent = TRUE))
@@ -236,11 +233,11 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE, w
         return(list(x = NULL, y = NULL))
     }
     x.fit <- if (tmp.is.factor) tmp.dat$x
-             else seq(from = min(tmp.dat$x), to = max(tmp.dat$x), length = 100)
+             else seq(from = min(x0, na.rm = TRUE), to = max(x0, na.rm = TRUE), length = 100)
     if (!tmp.is.factor && max(x.fit) < max(tmp.dat$x))
         x.fit <- c(x.fit, max(tmp.dat$x))
-    y.fit <- if ("gam" %in% class(tmp.fit)) suppressWarnings(predict(tmp.fit, data.frame(x = x.fit), se = CI.show, type = "response"))
-             else                           suppressWarnings(predict(tmp.fit, data.frame(x = x.fit), se = CI.show))
+    y.fit <- if ("gam" %in% class(tmp.fit)) suppressWarnings(try(predict(tmp.fit, data.frame(x = x.fit), se = CI.show, type = "response")))
+             else                           suppressWarnings(try(predict(tmp.fit, data.frame(x = x.fit), se = CI.show)))
     if (tmp.is.factor)
         x.fit <- tmp.dat$xorig
     if (CI.show)
