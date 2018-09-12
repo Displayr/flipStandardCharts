@@ -197,7 +197,7 @@ cleanMapInput <- function(table)
     if (is.null(colnames(table)))
         stop(paste(table.name, "has no column names"))
 
-    if (is.null(rownames(table)))
+    if (is.null(rownames(table)) || identical(rownames(table), as.character(seq(nrow(table)))))
     {
         rownames(table) <- table[, 1]
         table <- table[, -1, drop = FALSE]
