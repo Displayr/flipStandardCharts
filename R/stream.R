@@ -112,7 +112,10 @@ Stream <- function(x,
         x.tick.interval <- ceiling(x.tick.interval)
     }
 
-    df <- data.frame(value = as.numeric(t(x)), date = columns, key = rep(rownames(x), rep(ncol(x), nrow(x))))
+    # Rounding off data to make hovertext legible, but should not affect y-values on the graph
+    data.magnitude <- floor(log10(min(colSums(x, na.rm = TRUE))))
+    x.round <- round(as.numeric(t(x)), max(0, 4 - data.magnitude))
+    df <- data.frame(value = x.round, date = columns, key = rep(rownames(x), rep(ncol(x), nrow(x))))
 
     sg <- streamgraph(data = df,
                 key = "key",
