@@ -108,3 +108,9 @@ names(austria.state.table) <- c("aaaaa", "bbbbb", "ccccc", "ddddd", "eeeee", "ff
 test_that ("All unmatched", {
     expect_error(GeographicMap(austria.state.table), "No rows of the input data were matched with geographic entity names.")
 })
+
+mat <- structure(c(2031, 2032, 2121, 2037, 2, 3, 4, 5),
+                 .Dim = c(4L, 2L), .Dimnames = list(NULL, c("postcode", "val")))
+test_that ("Warning using first column as rownames", {
+    expect_warning(GeographicMap(mat), "The first column of the input data has been used as the geographic entitites.")
+})

@@ -198,7 +198,11 @@ cleanMapInput <- function(table)
         stop(paste(table.name, "has no column names"))
 
     if (is.null(rownames(table)))
-        stop(paste(table.name, "has no row names. The row names are required to match known geographic entitites."))
+    {
+        rownames(table) <- table[, 1]
+        table <- table[, -1, drop = FALSE]
+        warning(paste("The first column of the input data has been used as the geographic entitites."))
+    }
 
     if (all(!is.na(suppressWarnings(as.numeric(rownames(table))))) && !is.null(statistic) && statistic == "Text")
         stop(paste(table.name, "contains text and has numeric row names. Did you mean to convert this table to percentages?"))
