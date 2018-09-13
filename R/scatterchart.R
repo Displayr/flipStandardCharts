@@ -474,7 +474,7 @@ Scatter <- function(x = NULL,
             scatter.colors <- as.factor(scatter.colors)
 
         scatter.colors.as.numeric <- 1
-        groups <- as.character(scatter.colors)  # names are used to determine colorbar tick lengths
+        groups <- 1:n
         col.tmp <- AsNumeric(scatter.colors, binary = FALSE)
         if (is.null(col.min))
             col.min <- min(col.tmp, na.rm = TRUE)
