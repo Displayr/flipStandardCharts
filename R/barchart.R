@@ -335,11 +335,11 @@ Bar <- function(x,
     n <- length(annotations)
     annotations[[n+1]] <- setFooter(footer, footer.font, margins)
     annotations[[n+2]] <- setSubtitle(subtitle, subtitle.font, margins)
+    annotations[[n+3]] <- setTitle(title, title.font, margins)
 
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
-        title = title,
         showlegend = legend.show,
         legend = legend,
         yaxis = yaxis,
@@ -350,7 +350,6 @@ Bar <- function(x,
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
         hoverlabel = list(namelength = -1, font = data.label.font, bordercolor = charting.area.fill.color),
         hovermode = if (tooltip.show) "closest" else FALSE,
-        titlefont = title.font,
         font = data.label.font,
         annotations =  annotations,
         bargap = bar.gap,

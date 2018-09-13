@@ -474,7 +474,7 @@ Scatter <- function(x = NULL,
             scatter.colors <- as.factor(scatter.colors)
 
         scatter.colors.as.numeric <- 1
-        groups <- 1:n
+        groups <- as.character(scatter.colors)  # names are used to determine colorbar tick lengths
         col.tmp <- AsNumeric(scatter.colors, binary = FALSE)
         if (is.null(col.min))
             col.min <- min(col.tmp, na.rm = TRUE)
@@ -735,7 +735,6 @@ Scatter <- function(x = NULL,
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
         margin = margins,
-        title = title,
         showlegend = legend.show,
         legend = legend,
         yaxis = yaxis,
@@ -744,10 +743,10 @@ Scatter <- function(x = NULL,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
         annotations = list(setSubtitle(subtitle, subtitle.font, margins),
+                           setTitle(title, title.font, margins),
                            if (is.null(small.mult.index)) setFooter(footer, footer.font, margins) else NULL),
         hovermode = if (tooltip.show) "closest" else FALSE,
         hoverlabel = list(namelength = -1, font = data.label.font, bordercolor = charting.area.fill.color),
-        titlefont = title.font,
         font = data.label.font
     )
     result <- list(htmlwidget = p)

@@ -404,7 +404,10 @@ SmallMultiples <- function(x,
     margins <- list(l = margin.left, r = margin.right, b = margin.bottom, t = margin.top)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
+    if (sum(nchar(subtitle)) > 0)
+        subtitle <- paste0(subtitle, "<br>&nbsp;<br>")
     annotations <- list(setSubtitle(subtitle, subtitle.font, margins),
+                        setTitle(title, title.font, margins),
                         setFooter(footer, footer.font, margins))
     titles <- if (chart.type == "Scatter") names(indexes)
               else                         colnames(x)
@@ -418,10 +421,8 @@ SmallMultiples <- function(x,
                             x = titles.xpos[i], y = titles.ypos[i], font = panel.title.font,
                             xanchor = "center", yanchor = "top", xref = 'paper', yref = 'paper')
     }
-
-
-    res <- layout(res, title = title, showlegend = is.geo, margin = margins,
-                  annotations = annotations, titlefont = title.font)
+    res <- layout(res, showlegend = is.geo, margin = margins,
+                  annotations = annotations)
     result <- list(htmlwidget = res)
     class(result) <- "StandardChart"
     result

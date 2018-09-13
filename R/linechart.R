@@ -317,7 +317,6 @@ Line <-   function(x,
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
-        title = title,
         showlegend = legend.show,
         legend = legend,
         yaxis = yaxis,
@@ -327,10 +326,10 @@ Line <-   function(x,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
         annotations = list(setSubtitle(subtitle, subtitle.font, margins),
+                           setTitle(title, title.font, margins),
                            setFooter(footer, footer.font, margins)),
         hovermode = if (tooltip.show) "closest" else FALSE,
         hoverlabel = list(namelength = -1, font = data.label.font, bordercolor = charting.area.fill.color),
-        titlefont = title.font,
         font = data.label.font
     )
     result <- list(htmlwidget = p)

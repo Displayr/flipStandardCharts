@@ -423,23 +423,26 @@ Radar <- function(x,
         }
     }
     annot.len <- length(annotations)
-    annotations[[annot.len + 1]] <- setSubtitle(subtitle, subtitle.font, margins)
-    annotations[[annot.len + 2]] <- setFooter(footer, footer.font, margins)
+    annotations[[annot.len+1]] <- setFooter(footer, footer.font, margins)
+    annotations[[annot.len+2]] <- setTitle(title, title.font, margins)
+    annotations[[annot.len+3]] <- setSubtitle(subtitle, subtitle.font, margins)
+
     if (grid.show && y.grid.width > 0 && y.tick.show && !is.null(tick.vals))
     {
         for (i in 1:length(tick.vals))
-            annotations[[annot.len+2+i]] <- list(x = 0, y = tick.vals[i],
+            annotations[[annot.len+3+i]] <- list(x = 0, y = tick.vals[i],
                 font = y.tick.font, showarrow = FALSE, xanchor = "right", 
                 xshift = -5, xref = "x", yref = "y",
                 text = paste0(y.tick.prefix, tick.format.function(tick.vals[i],
                              decimals = y.tick.decimals), y.tick.suffix))
     }
-    p <- layout(p, margin = margins, title = title, titlefont = title.font,
+    p <- layout(p, margin = margins, 
+            annotations = annotations,
             plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
             paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
             hovermode = if (tooltip.show) "closest" else FALSE,
             hoverlabel = list(namelength = -1, font = data.label.font, bordercolor = charting.area.fill.color),
-            xaxis = xaxis, yaxis = yaxis, shapes = grid, annotations = annotations,
+            xaxis = xaxis, yaxis = yaxis, shapes = grid,
             legend = legend, showlegend = legend.show)
 
 

@@ -541,15 +541,13 @@ plotlyMap <- function(table, name.map, colors, min.value, max.range, color.NA, l
 
      footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
      margins <- list(l = 0, r = 0, t = 10, b = 0, pad = 0)
-     if (legend.show)
-        margins$r <- margins$l <- 70
      margins <- setMarginsForText(margins, title, subtitle, footer,
                     title.font$size, subtitle.font$size, footer.font$size)
      p <- config(p, displayModeBar = FALSE)
      p$sizingPolicy$browser$padding <- 0
      p <- layout(p, geo = g, margin = margins,
-            title = title, titlefont = title.font,
             annotations = list(setSubtitle(subtitle, subtitle.font, margins),
+                               setTitle(title, title.font, margins),
                                setFooter(footer, footer.font, margins)),
             hoverlabel = list(namelength = -1, font = list(family = legend.font$family, color = "white", size = 12)),
             paper_bgcolor = 'transparent'

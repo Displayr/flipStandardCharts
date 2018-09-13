@@ -613,12 +613,22 @@ setCustomMargins <- function(margins, margin.top, margin.bottom, margin.left,
     margins
 }
 
+
+setTitle <- function(title, title.font, margins)
+{
+    if (sum(nchar(title)) == 0)
+        return(NULL)
+    return(list(text = title, font = title.font,
+                xref = "paper", x = 0.5, yshift = margins$t * 0.5,
+                yref = "paper", y = 1.0, yanchor = "middle", showarrow = FALSE))
+}
+
 setSubtitle <- function(subtitle, subtitle.font, margins)
 {
     if (sum(nchar(subtitle)) == 0)
         return(NULL)
     return(list(text = subtitle, font = subtitle.font,
-                xref = "paper", x = 0.5, xshift = (margins$r - margins$l)/2,
+                xref = "paper", x = 0.5, #xshift = (margins$r - margins$l)/2,
                 yref = "paper", y = 1.0, yanchor = "bottom", showarrow = FALSE))
 }
 
@@ -631,7 +641,7 @@ setFooter <- function(footer, footer.font, margins)
     footer.npad <- max(0, ceiling(margins$b/footer.font$size/1.25) - footer.nline - 2)
     footer <- paste0("&nbsp;", paste(rep("<br>", footer.npad), collapse = ""), footer)
     return(list(text = footer, font = footer.font,
-            xref = "paper", x = 0.5, yref = "paper", y = 0.0,
+                xref = "paper", x = 0.5, yref = "paper", y = 0.0,
                 yanchor = "top", xanchor = "center", showarrow = FALSE))
 }
 
