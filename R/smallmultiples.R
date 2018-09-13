@@ -417,7 +417,7 @@ SmallMultiples <- function(x,
         titles.ypos <- rep((nrows:1)/nrows, each = ncols)[1:npanels]
         titles.xpos <- rep((1:ncols - 0.5)/ncols, nrows)[1:npanels]
         for (i in 1:npanels)
-            annotations[[i+2]] <- list(text = title.list[i], showarrow = FALSE,
+            annotations[[i+3]] <- list(text = title.list[i], showarrow = FALSE,
                             x = titles.xpos[i], y = titles.ypos[i], font = panel.title.font,
                             xanchor = "center", yanchor = "top", xref = 'paper', yref = 'paper')
     }
