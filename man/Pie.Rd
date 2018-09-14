@@ -30,9 +30,7 @@ Pie(x, type = "Pie", colors = NULL, pie.subslice.colors = NULL,
 
 \item{type}{One of "Pie" or "Donut"}
 
-\item{colors}{Character; a vector containing one or more named
-colors from grDevices OR one or more specified hex value colors OR a single
-named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
+\item{colors}{Character; a vector containing one or more colors specified as hex codes.}
 
 \item{pie.subslice.colors}{A vector containing hex value colors for the outer ring of the pie chart. If not supplied will default to the same colors as the inner ring.}
 
@@ -50,7 +48,7 @@ by group, or be different throughout; defaults to TRUE.}
 \item{title.font.size}{Integer; Title font size; default = 10.}
 
 \item{title.font.color}{Title font color as a named color in character
-format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
+format (e.g. "black") or a hex code.}
 
 \item{subtitle}{Character}
 
@@ -59,8 +57,7 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 \item{subtitle.font.size}{Integer; subtitle font size}
 
 \item{subtitle.font.color}{subtitle font color as a named color in
-character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
+character format (e.g. "black") or an a hex code.}
 
 \item{footer}{Character}
 
@@ -69,8 +66,7 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{footer.font.size}{Integer; footer font size}
 
 \item{footer.font.color}{footer font color as a named color in
-character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
+character format (e.g. "black") or an a hex code.}
 
 \item{footer.wrap}{Logical; whether the footer text should be wrapped.}
 
@@ -91,8 +87,7 @@ See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 \item{data.label.font.size}{Integer; Font size for data label.px.}
 
 \item{data.label.font.color}{Font color as a named color
-in character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
+in character format (e.g. "black") or an a hex code.}
 
 \item{data.label.font.family}{Character; font family for data label.}
 
@@ -113,7 +108,7 @@ donut charts as a proportion out of 100. Defaults to 70.}
 font attribute for the chart unless specified individually.}
 
 \item{global.font.color}{Global font color as a named color in character format
-(e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).}
+(e.g. "black") or an a hex code.}
 }
 \description{
 Pie chart

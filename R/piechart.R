@@ -20,10 +20,6 @@
 #' @param pie.border.color A single color for space around pie and between segments.
 #' @param pie.inner.radius The size of the inner radius of pie and
 #' donut charts as a proportion out of 100. Defaults to 70.
-#' @param global.font.family Character; font family for all occurrences of any
-#' font attribute for the chart unless specified individually.
-#' @param global.font.color Global font color as a named color in character format
-#' (e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @examples
 #' dat <- data.frame(labels=rep(LETTERS[24:26], each=3), vals=abs(rnorm(9)),
 #'      groups=rep(LETTERS[1:3], 3), stringsAsFactors = FALSE)

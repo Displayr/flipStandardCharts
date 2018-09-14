@@ -2,128 +2,16 @@
 #'
 #' Radar chart, also known as web chart, spider chart, star chart, star plot, cobweb chart, irregular polygon, polar chart, or Kiviat diagram
 #'
+#' @inherit Column
 #' @param x Input data in the form of a vector or matrix. The categories used
 #' to create the radar (i.e. the x-axis) is taken from the names/rownames of x.
-#' @param title Character; chart title.
-#' @param title.font.family Character; title font family. Can be "Arial Black",
-#' "Arial", "Comic Sans MS", "Courier New", "Georgia", "Impact",
-#' "Lucida Console", "Lucida Sans Unicode", "Marlett", "Symbol", "Tahoma",
-#' "Times New Roman", "Trebuchet MS", "Verdana", "Webdings"
-#' @param title.font.color Title font color as a named color in character
-#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
-#' @param title.font.size Title font size; default = 10.
-#' @param subtitle Character
-#' @param subtitle.font.color subtitle font color as a named color in
-#' character format (e.g. "black") or an rgb value (e.g.
-#' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param subtitle.font.family Character; subtitle font family
-#' @param subtitle.font.size subtitle font size
-#' @param footer Character
-#' @param footer.font.color footer font color as a named color in
-#' character format (e.g. "black") or an rgb value (e.g.
-#' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param footer.font.family Character; footer font family
-#' @param footer.font.size footer font size
-#' @param footer.wrap Logical; whether the footer text should be wrapped.
-#' @param footer.wrap.nchar Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.
 #' @param opacity Opacity of area fill colors as an alpha value (0 to 1).
-#' @param colors Character; a vector containing one or more named
-#' colors from grDevices OR one or more specified hex value colors OR a single
-#' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
-#' @param background.fill.color Background color in character format
-#' (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
-#' @param background.fill.opacity Background opacity as an alpha value
-#' (0 to 1).
-#' @param charting.area.fill.color Charting area background color as
-#' a named color in character format (e.g. "black") or an rgb value (e.g.
-#' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param charting.area.fill.opacity Charting area background
-#' @param grid.show Logical; Whether to show grid lines.
-#' opacity as an alpha value (0 to 1).
-#' @param legend.show Logical; show the legend.
-#' @param legend.wrap Logical; whether the legend text should be wrapped.
-#' @param legend.wrap.nchar Number of characters (approximately) in each 
-#' line of the legend when \code{legend.wrap} \code{TRUE}.
-
-#' @param legend.position.x A numeric controlling the position of the legend.
-#'   Values range from -0.5 (left) to 1.5 (right).
-#' @param legend.position.y A numeric controlling the position of the legend.
-#'   Values range from 0 (bottom) to 1 (top).
-#' @param legend.fill.color Legend fill color as a named color in character format
-#' (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
-#' @param legend.fill.opacity Legend fill opacity as an alpha value
-#' (0 to 1).
-#' @param legend.border.color Legend border color as a named color in character
-#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
-#' @param legend.border.line.width Width in pixels of the border
-#' around the legend.  0 = no border.
-#' @param legend.font.color Legend font color as a named color in character
-#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
-#' @param legend.font.family Character; legend font family.
-#' @param legend.font.size Legend font size.
-#' @param legend.ascending Logical; TRUE for ascending, FALSE for descending.
-#' By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.
-#' @param hovertext.show Logical; whether to show hovertext.
 #' @param pad.left Spacing on the left of the chart. Mainly used by SmallMultiples.
 #' @param pad.right Spacing on the right of the chart. Mainly used by SmallMultiples.
-#' @param margin.top Margin between plot area and the top of the
-#' graphic in pixels
-#' @param margin.bottom Margin between plot area and the bottom of the
-#' graphic in pixels
-#' @param margin.left Margin between plot area and the left of the
-#' graphic in pixels
-#' @param margin.right Margin between plot area and the right of the
-#' graphic in pixels
-#' @param margin.inner.pad Padding in pixels between plot proper
-#' and axis lines
-#' @param y.bounds.maximum Maximum of range for
-#' plotting; NULL = no manual range set.  The minimum is always 0.
-#' @param y.tick.distance Tick mark distance.
-#' @param y.grid.width Width of y-grid lines in pixels; 0 = no line
-#' @param y.grid.color Color of y-grid lines as a named color in character
-#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
-#' @param y.tick.show Whether to display the y-axis tick labels
-#' (i.e. radial distance from center)
-#' @param y.tick.suffix y-axis tick label suffix
-#' @param y.tick.prefix y-axis tick label prefix
-#' @param y.tick.format A string representing a d3 formatting code.
-#' See https://github.com/mbostock/d3/wiki/Formatting#numbers
-#' @param y.hovertext.format A string representing a d3 formatting code.
-#' See https://github.com/mbostock/d3/wiki/Formatting#numbers
-#' @param y.tick.font.color y-axis tick label font color as a named color
-#' in character format (e.g. "black") or an rgb value (e.g.
-#' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param y.tick.font.family Character; y-axis tick label font family
-#' @param y.tick.font.size y-axis tick label font size
-#' @param x.tick.show  Whether to display the x-axis tick labels
-#' (i.e. labels around the sides of the radar chart)
-#' @param x.tick.font.color x-axis title font color as a named color in
-#' character format (e.g. "black") or an rgb value (e.g.
-#' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param x.tick.font.family Character; x-axis title font family
-#' @param x.tick.font.size x-axis title font size
-#' @param x.grid.width Width of y-grid lines in pixels; 0 = no line
-#' @param x.grid.color Color of y-grid lines as a named color in character
-#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
-#' @param x.tick.label.wrap Logical; whether to wrap long labels on the x-axis.
-#' @param x.tick.label.wrap.nchar Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.
+#' @param y.tick.show Whether to display the y-axis tick labels (i.e. radial distance from center)
+#' @param x.tick.show  Whether to display the x-axis tick labels (i.e. labels around the sides of the radar chart)
 #' @param line.thickness Thickness of outline of radar polygons.
-#' @param tooltip.show Logical; whether to show a tooltip on hover.
-#' @param modebar.show Logical; whether to show the zoom menu buttons or not.
-#' @param global.font.family Character; font family for all occurrences of any
-#' font attribute for the chart unless specified individually.
-#' @param global.font.color Global font color as a named color in character format
-#' (e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param data.label.show Logical; whether to show data labels.
-#' @param data.label.font.family Character; font family for data label.
-#' @param data.label.font.size Font size for data label.
-#' @param data.label.font.color Font color as a named color
-#' in character format (e.g. "black") or an rgb value (e.g.
-#' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param data.label.format A string representing a d3 formatting code.
-#' See https://github.com/mbostock/d3/wiki/Formatting#numbers
-#' @param data.label.prefix Character; prefix for data values.
-#' @param data.label.suffix Character; suffix for data values.
+#' @param hovertext.show Logical; whether to show hovertext.
 #' @importFrom grDevices rgb
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom plotly plot_ly layout config

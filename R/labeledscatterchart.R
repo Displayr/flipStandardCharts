@@ -2,6 +2,7 @@
 #'
 #' Labeled Scatter Chart
 #'
+#' @inherit Column
 #' @param x A numeric vector for the x-axis coordinates (which may be named); or a matrix or dataframe; or a list of matrices, where each matrix share the same row and column names
 #' @param y Optional numeric vector for the y-axis coordinates. Should contain the same number of observations as x. If not provided, will use x instead.
 #' @param scatter.x.column When \code{x} is a dataframe or matrix, the index of the column (1-based) which contains the x-coordinate data.
@@ -16,115 +17,15 @@
 #' @param scatter.colors.name Character; Used for labelling footers.
 #' @param scatter.colors.as.categorical Boolean; Whether to treat colors as a categorical groups, or a numeric scale.
 #' @param colors A vector of colors to use in the chart. When \code{scatter.colors.as.categorical}, the vector of colors should have the length as the number of categories in \code{scatter.colors}. If \code{scatter.colors} is used as numeric vector, then a color ramp is constructed from the colors listed.
-#' @param opacity Opacity of scatter points colors as an alpha value (0 to 1).
-#' @param title Character; chart title.
-#' @param title.font.family Character; title font family. Can be "Arial Black",
-#' "Arial", "Comic Sans MS", "Courier New", "Georgia", "Impact",
-#' "Lucida Console", "Lucida Sans Unicode", "Marlett", "Symbol", "Tahoma",
-#' "Times New Roman", "Trebuchet MS", "Verdana", "Webdings"
-#' @param title.font.color Title font color as a named color in character
-#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
-#' @param title.font.size Title font size; default = 10.
-#' @param subtitle Character
-#' @param subtitle.font.color subtitle font color as a named color in
-#' character format (e.g. "black") or an rgb value (e.g.
-#' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param subtitle.font.family Character; subtitle font family
-#' @param subtitle.font.size subtitle font size
-#' @param footer Character
-#' @param footer.font.color footer font color as a named color in
-#' character format (e.g. "black") or an rgb value (e.g.
-#' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param footer.font.family Character; footer font family
-#' @param footer.font.size footer font size
-#' @param footer.wrap Logical; whether the footer text should be wrapped.
-#' @param footer.wrap.nchar Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.
-#' @param legend.show Logical; show the legend.
-#' @param legend.font.color Legend font color as a named color in character
-#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
-#' @param legend.font.family Character; legend font family.
-#' @param legend.font.size Legend font size.
-#' @param grid.show Logical; Whether to show grid lines.
-#' @param y.title Character, y-axis title; defaults to chart input values;
-#' to turn off set to "FALSE".
-#' @param y.title.font.color y-axis title font color as a named color in
-#' character format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).
-#' @param y.title.font.family Character; y-axis title font family
-#' @param y.title.font.size y-axis title font size
-#' @param y.line.width y-axis line in pixels, 0 = no line
-#' @param y.line.color y-axis line color as a named color in character format
-#' (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
-#' @param y.bounds.minimum Minimum of range for plotting;
-#' NULL = no manual range set.  Must be less than y.bounds.maximum
-#' @param y.bounds.maximum Maximum of range for
-#' plotting; NULL = no manual range set.  Must be greater than y.bounds.minimum
-#' @param y.tick.distance Tick mark distance.
-#' @param y.grid.width Width of y-grid lines in pixels; 0 = no line
-#' @param y.grid.color Color of y-grid lines as a named color in character
-#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
-#' @param y.tick.show Whether to display the y-axis tick labels
-#' @param y.tick.suffix y-axis tick label suffix
-#' @param y.tick.prefix y-axis tick label prefix
-#' @param y.tick.format A string representing a d3 formatting code.
-#' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
-#' https://docs.python.org/release/3.1.3/library/string.html#formatspec
-#' @param y.tick.font.color y-axis tick label font color as a named color
-#' in character format (e.g. "black") or an rgb value (e.g.
-#' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param y.tick.font.family Character; y-axis tick label font family
-#' @param y.tick.font.size y-axis tick label font size
-#' @param x.title Character, x-axis title; defaults to chart input values;
-#' to turn off set to "FALSE".
-#' @param x.title.font.color x-axis title font color as a named color in
-#' character format (e.g. "black") or an rgb value (e.g.
-#' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param x.title.font.family Character; x-axis title font family
-#' @param x.title.font.size x-axis title font size
-#' @param x.line.width x-axis line in pixels, 0 = no line
-#' @param x.line.color x-axis line color as a named color in character format
-#' (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
-#' @param x.tick.suffix x-axis tick label suffix
-#' @param x.tick.prefix x-axis tick label prefix
-#' @param x.tick.format A string representing a d3 formatting code.
-#' See https://github.com/mbostock/d3/wiki/Formatting#numbers or
-#' https://docs.python.org/release/3.1.3/library/string.html#formatspec
-#' @param x.bounds.minimum Minimum of range for plotting;
-#' NULL = no manual range set.  Must be less than x.bounds.maximum
-#' @param x.bounds.maximum Maximum of range for
-#' plotting; NULL = no manual range set.  Must be greater than x.bounds.minimum
-#' @param x.tick.distance Tick mark distance in
-#' x-axis units between minimum and maximum for plotting; NULL = no manual
-#' range set.
-#' @param x.grid.width Width of y-grid lines in pixels; 0 = no line
-#' @param x.grid.color Color of y-grid lines as a named color in character
-#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
-#' @param x.tick.show Whether to display the x-axis tick labels
-#' @param x.tick.font.color X-axis tick label font color as a named color in
-#' character format (e.g. "black") or an rgb value (e.g.
-#' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param x.tick.font.family Character; x-axis tick label font family
-#' @param x.tick.font.size x-axis tick label font size
-#' @param marker.size Size in pixels of marker
-#' @param global.font.family Character; font family for all occurrences of any
-#' font attribute for the chart unless specified individually.
-#' @param global.font.color Global font color as a named color in character format
-#' (e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param data.label.font.family Character; font family for data label.
-#' @param data.label.font.size Font size for data label.
-#' @param data.label.font.color Font color as a named color
-#' in character format (e.g. "black") or an rgb value (e.g.
-#' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param data.label.format A string representing a d3 formatting code.
-#' See https://github.com/mbostock/d3/wiki/Formatting#numbers
-#' @param data.label.prefix Character; prefix for data values.
-#' @param data.label.suffix Character; suffix for data values.
+#' @param opacity of scatter point colors as an alpha value (0 to 1).
 #' @param scatter.max.labels Integer; the maximum number of labels to show on a Labeled Scatterplot.
 #' @param trend.lines Boolean indicating whether to plot trend lines for multiple tables.
 #' @param logos Optional list of images to be used to label scatterplot instead of the row names.
 #' This should be input as a comma-seperated list of URLs.
-#' @param ... Other arguments which are ignored.
 #' @param logo.size Numeric controlling the size of the logos.
+#' @param marker.size Size in pixels of marker.
 #' @param swap.x.and.y Swap the x and y axis around on the chart.
+#' @param ... Other arguments which are ignored.
 #' @importFrom grDevices rgb
 #' @importFrom flipTransformations AsNumeric
 #' @importFrom flipFormat FormatAsReal

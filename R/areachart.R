@@ -3,23 +3,15 @@
 #' Area chart
 #' @param marker.show Can be "none", "automatic" or a vector referencing
 #' the plotly symbol dictionary using either numerics or strings.
-#' @param marker.colors Character; a vector containing one or more named
-#' colors from grDevices OR one or more specified hex value colors OR a single
-#' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
-#' be reversed. Only used if \code{marker.show} is \code{TRUE}.
+#' @param marker.colors Character; a vector containing on/mae or more colors specified as hex codes.
 #' @param marker.opacity Opacity for markers as an alpha value (0 to 1).
 #' @param marker.size Size in pixels of marker
-#' @param marker.border.width Width in pixels of border/line
-#' around markers; 0 is no line
-#' @param marker.border.colors Character; a vector containing one or more named
-#' colors from grDevices OR one or more specified hex value colors OR a single
-#' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
+#' @param marker.border.width Width in pixels of border/line around markers; 0 is no line
+#' @param marker.border.colors Character; a vector containing one or more colors specified as hex codes.
 #' @param marker.border.opacity Opacity of border/line around
 #' markers as an alpha value (0 to 1).
 #' @param line.thickness Thickness, in pixels, of the series line
-#' @param line.colors  Character; a vector containing one or more named
-#' colors from grDevices OR one or more specified hex value colors OR a single
-#' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
+#' @param line.colors  Character; a vector containing one or more colors specified as hex codes.
 #' @param line.opacity Opacity for series lines as an alpha value (0 to 1).
 #' @inherit Column
 #' @examples

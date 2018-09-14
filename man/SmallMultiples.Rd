@@ -78,23 +78,17 @@ If not specified, this will be automatically determined from the data.
 If the value specified is larger than the minimum in the data then
 the specified value will be ignored.}
 
-\item{colors}{Character; a vector containing one or more named
-colors from grDevices OR one or more specified hex value colors OR a single
-named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
+\item{colors}{Character; a vector containing one or more colors specified as hex codes.}
 
-\item{fit.line.colors}{Character; a vector containing one or more named
-colors from grDevices OR one or more specified hex value colors OR a single
-named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
+\item{fit.line.colors}{Character; a vector containing one or more colors specified as hex codes.}
 
-\item{fit.CI.colors}{Character; a vector containing one or more named
-colors from grDevices OR one or more specified hex value colors OR a single
-named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
+\item{fit.CI.colors}{Character; a vector containing one or more colors specified as hex codes.}
 
 \item{global.font.family}{Character; font family for all occurrences of any
 font attribute for the chart unless specified individually.}
 
 \item{global.font.color}{Global font color as a named color in character format
-(e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).}
+(e.g. "black") or an a hex code.}
 
 \item{title}{Character; chart title.}
 
@@ -104,7 +98,7 @@ font attribute for the chart unless specified individually.}
 "Times New Roman", "Trebuchet MS", "Verdana", "Webdings"}
 
 \item{title.font.color}{Title font color as a named color in character
-format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
+format (e.g. "black") or a hex code.}
 
 \item{title.font.size}{Integer; Title font size; default = 10.}
 
@@ -113,8 +107,7 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 \item{subtitle.font.family}{Character; subtitle font family}
 
 \item{subtitle.font.color}{subtitle font color as a named color in
-character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
+character format (e.g. "black") or an a hex code.}
 
 \item{subtitle.font.size}{Integer; subtitle font size}
 
@@ -123,8 +116,7 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{footer.font.family}{Character; footer font family}
 
 \item{footer.font.color}{footer font color as a named color in
-character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
+character format (e.g. "black") or an a hex code.}
 
 \item{footer.font.size}{Integer; footer font size}
 

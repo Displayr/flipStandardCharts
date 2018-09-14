@@ -54,9 +54,7 @@ will be parsed automatically.}
 
 \item{label.color.asIcon}{When set to \code{TRUE}, row and data labels are shown in the same color as the icons.}
 
-\item{colors}{Character; a vector containing one or more named
-colors from grDevices OR one or more specified hex value colors OR a single
-named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
+\item{colors}{Character; a vector containing one or more colors specified as hex codes.}
 
 \item{fill.direction}{Direction in which icons are filled. One of \code{"From left", "From right", "From top", "From bottom"}.}
 
@@ -81,8 +79,7 @@ font attribute for the chart unless specified individually.}
 \item{data.label.font.family}{Character; font family for data label.}
 
 \item{data.label.font.color}{Font color as a named color
-in character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
+in character format (e.g. "black") or an a hex code.}
 
 \item{data.label.font.size}{Integer; Font size for data label.px.}
 

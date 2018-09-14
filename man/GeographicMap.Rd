@@ -91,7 +91,7 @@ tile from opensteetmaps.}
 "Times New Roman", "Trebuchet MS", "Verdana", "Webdings"}
 
 \item{title.font.color}{Title font color as a named color in character
-format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
+format (e.g. "black") or a hex code.}
 
 \item{title.font.size}{Integer; Title font size; default = 10.}
 
@@ -100,8 +100,7 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 \item{subtitle.font.family}{Character; subtitle font family}
 
 \item{subtitle.font.color}{subtitle font color as a named color in
-character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
+character format (e.g. "black") or an a hex code.}
 
 \item{subtitle.font.size}{Integer; subtitle font size}
 
@@ -110,8 +109,7 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{footer.font.family}{Character; footer font family}
 
 \item{footer.font.color}{footer font color as a named color in
-character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
+character format (e.g. "black") or an a hex code.}
 
 \item{footer.font.size}{Integer; footer font size}
 

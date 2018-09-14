@@ -1,114 +1,22 @@
 #' Scatter
 #'
 #' Scatter plot
-#'
+#' @inherit Column
 #' @inherit LabeledScatter
+#' @param x A numeric vector for the x-axis coordinates (which may be named); or a matrix or datarame; or a list of matrices where each matrix share the same row and column names.
 #' @param scatter.labels.as.hovertext Logical; if TRUE, labels are shown has hovers; otherwise, as a labeled scatterplot.
 #' @param scatter.sizes.as.diameter Whether to show the points with diameter (instead of area, which is the default) proportional to the sizes variable.
-#' @param fit.type Character; type of line of best fit. Can be one of "None", "Linear", "LOESS",
-#'          "Friedman's super smoother" or "Cubic spline".
-#' @param fit.ignore.last Boolean; whether to ignore the last data point in the fit.
-#' @param fit.line.type Character; One of "solid", "dot", "dash, "dotdash", or length of dash "2px", "5px".
-#' @param fit.line.width Numeric; Line width of line of best fit.
-#' @param fit.line.name Character; Name of the line of best fit, which will appear in the hovertext.
-#' @param opacity Opacity of scatter points as an alpha value (0 to 1).
-#' @param fit.line.colors Character; a vector containing one or more named
-#' colors from grDevices OR one or more specified hex value colors OR a single
-#' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
-#' @param fit.line.opacity Opacity of trend line as an alpha value (0 to 1).
-#' @param fit.CI.show Show 95\% confidence interval.
-#' @param fit.CI.opacity Opacity of confidence interval ribbon as an alpha value (0 to 1).
-#' @param fit.CI.colors Character; a vector containing one or more named
-#' colors from grDevices OR one or more specified hex value colors OR a single
-#' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
-#' @param background.fill.color Background color in character format
-#' (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
-#' @param background.fill.opacity Background opacity as an alpha value
-#' (0 to 1).
-#' @param charting.area.fill.color Charting area background color as
-#' a named color in character format (e.g. "black") or an rgb value (e.g.
-#' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param charting.area.fill.opacity Charting area background
-#' opacity as an alpha value (0 to 1).
-#' @param legend.wrap Logical; whether the legend text should be wrapped.
-#' @param legend.wrap.nchar Number of characters (approximately) in each 
-#' @param legend.fill Same as \code{legend.fill.color}. Retained for backwards compatibility.
-#' @param legend.fill.color Legend fill color as a named color in character format
-#' (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
-#' @param legend.fill.opacity Legend fill opacity as an alpha value
-#' (0 to 1).
-#' @param legend.border.color Legend border color as a named color in character
-#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
-#' @param legend.border.line.width Width in pixels of the border
-#' around the legend.  0 = no border.
-#' @param legend.position.x A numeric controlling the position of the legend.
-#'   Values range from -0.5 (left) to 1.5 (right).
-#' @param legend.position.y A numeric controlling the position of the legend.
-#'   Values range from 0 (bottom) to 1 (top).
-#' @param legend.ascending Logical; TRUE for ascending, FALSE for descending.
-#' By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.
-#' @param margin.top Margin between plot area and the top of the
-#' graphic in pixels
-#' @param margin.bottom Margin between plot area and the bottom of the
-#' graphic in pixels
-#' @param margin.left Margin between plot area and the left of the
-#' graphic in pixels
-#' @param margin.right Margin between plot area and the right of the
-#' graphic in pixels
-#' @param margin.inner.pad Padding in pixels between plot proper
-#' and axis lines
-#' @param y.zero Whether the y-axis should include zero.
-#' @param y.zero.line.width Width in pixels of zero line; 0 = no zero line
-#' shown
-#' @param y.zero.line.color Color of horizontal zero line as a named
-#' color in character format (e.g. "black") or an rgb value (e.g.
-#' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param y.data.reversed Logical; whether to reverse y-axis or not
-#' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
-#' @param y.hovertext.format A string representing a d3 formatting code.
-#' See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format
-#' @param y.tick.angle y-axis tick label angle in degrees.
-#' 90 = vertical; 0 = horizontal
-#' @param y.tick.mark.length Length of tick marks in pixels.
-#' @param x.zero Whether the x-axis should include zero.
-#' @param x.zero.line.width Width in pixels of zero line.
-#' @param x.zero.line.color Color of horizontal zero (origo) line as a named
-#' color in character format (e.g. "black") or an rgb value (e.g.
-#' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param x.data.reversed Logical; whether to reverse x-axis or not
-#' @param x.hovertext.format A string representing a d3 formatting code.
-#' See https://github.com/mbostock/d3/wiki/Formatting#numbers
-#' @param x.tick.angle x-axis tick label angle in degrees.
-#' 90 = vertical; 0 = horizontal
-#' @param x.tick.mark.length Length of tick marks in pixels.
-#' @param x.tick.font.color X-axis tick label font color as a named color in
-#' @param x.tick.label.wrap Logical; whether to wrap long labels on the x-axis.
-#' @param x.tick.label.wrap.nchar Integer; number of characters in each
-#' line when \code{label.wrap} is \code{TRUE}.
 #' @param line.thickness Thickness, in pixels, of the series line
 #' @param line.colors  Character; a vector containing one or more named
 #' @param marker.size Size in pixels of marker. This is overriden
 #' if \code{scatter.sizes} is provided, but used for the legend
 #' if \code{scatter.colors.as.categorical}.
-#' @param marker.border.width Width in pixels of border/line
-#' @param marker.border.colors Character; a vector containing one or more named
-#' colors from grDevices OR one or more specified hex value colors OR a single
-#' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
-#' @param marker.border.opacity Opacity of border/line around
-#' markers as an alpha value (0 to 1).
-
-#' around markers; 0 is no line
-#' @param tooltip.show Logical; whether to show a tooltip on hover.
-#' @param modebar.show Logical; whether to show the zoom menu buttons or not.
-#' @param global.font.family Character; font family for all occurrences of any
-#' font attribute for the chart unless specified individually.
-#' @param global.font.color Global font color as a named color in character format
-#' (e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).
-#' @param data.label.show Logical; whether to show data labels.
-#' @param data.label.position Character; where to place the source data
-#' value in relation to the marker icon.  Can be "top left", "top center", "top
-#' right", "middle left", "middle center", "middle right", "bottom left",
-#' "bottom center", "bottom right". Only applicable for line and area charts.
+#' @param data.label.position Character; where to place the source data value in relation
+#' to the marker icon. Can be "top left", "top center", "top right", "middle left", "middle center",
+#' "middle right", "bottom left", "bottom center", "bottom right".
+#' @param marker.border.width Width in pixels of border/line around markers; 0 is no line.
+#' @param marker.border.colors Character; a vector containing one or more colors specified as hex codes.
+#' @param marker.border.opacity Opacity of border/line around markers as an alpha value (0 to 1).
 #' @param swap.x.and.y Swap the x and y axis around on the chart.
 #' @param small.mult.index Used by Small Multiples to add prefixes to warnings.
 #' @param sz.min Parameter to control scaling of scatter.sizes, used by SmallMultiples

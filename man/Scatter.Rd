@@ -76,7 +76,7 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1,
   sz.max = NULL, sz.scale = 50, col.min = NULL, col.max = NULL)
 }
 \arguments{
-\item{x}{A numeric vector for the x-axis coordinates (which may be named); or a matrix or dataframe; or a list of matrices, where each matrix share the same row and column names}
+\item{x}{A numeric vector for the x-axis coordinates (which may be named); or a matrix or datarame; or a list of matrices where each matrix share the same row and column names.}
 
 \item{y}{Optional numeric vector for the y-axis coordinates. Should contain the same number of observations as x. If not provided, will use x instead.}
 
@@ -108,7 +108,7 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1,
 
 \item{scatter.max.labels}{Integer; the maximum number of labels to show on a Labeled Scatterplot.}
 
-\item{colors}{A vector of colors to use in the chart. When \code{scatter.colors.as.categorical}, the vector of colors should have the length as the number of categories in \code{scatter.colors}. If \code{scatter.colors} is used as numeric vector, then a color ramp is constructed from the colors listed.}
+\item{colors}{Character; a vector containing one or more colors specified as hex codes.}
 
 \item{trend.lines}{Boolean indicating whether to plot trend lines for multiple tables.}
 
@@ -120,7 +120,7 @@ This should be input as a comma-seperated list of URLs.}
 \item{fit.type}{Character; type of line of best fit. Can be one of "None", "Linear", "LOESS",
 "Friedman's super smoother" or "Cubic spline".}
 
-\item{fit.ignore.last}{Boolean; whether to ignore the last data point in the fit.}
+\item{fit.ignore.last}{Logical; whether to ignore the last data point in the fit.}
 
 \item{fit.line.type}{Character; One of "solid", "dot", "dash, "dotdash", or length of dash "2px", "5px".}
 
@@ -128,17 +128,13 @@ This should be input as a comma-seperated list of URLs.}
 
 \item{fit.line.name}{Character; Name of the line of best fit, which will appear in the hovertext.}
 
-\item{fit.line.colors}{Character; a vector containing one or more named
-colors from grDevices OR one or more specified hex value colors OR a single
-named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
+\item{fit.line.colors}{Character; a vector containing one or more colors specified as hex codes.}
 
 \item{fit.line.opacity}{Opacity of trend line as an alpha value (0 to 1).}
 
 \item{fit.CI.show}{Show 95\% confidence interval.}
 
-\item{fit.CI.colors}{Character; a vector containing one or more named
-colors from grDevices OR one or more specified hex value colors OR a single
-named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
+\item{fit.CI.colors}{Character; a vector containing one or more colors specified as hex codes.}
 
 \item{fit.CI.opacity}{Opacity of confidence interval ribbon as an alpha value (0 to 1).}
 
@@ -146,7 +142,8 @@ named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 
 \item{legend.wrap}{Logical; whether the legend text should be wrapped.}
 
-\item{legend.wrap.nchar}{Number of characters (approximately) in each}
+\item{legend.wrap.nchar}{Number of characters (approximately) in each 
+line of the legend when \code{legend.wrap} \code{TRUE}.}
 
 \item{tooltip.show}{Logical; whether to show a tooltip on hover.}
 
@@ -156,7 +153,7 @@ named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
 font attribute for the chart unless specified individually.}
 
 \item{global.font.color}{Global font color as a named color in character format
-(e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).}
+(e.g. "black") or an a hex code.}
 
 \item{title}{Character; chart title.}
 
@@ -166,82 +163,74 @@ font attribute for the chart unless specified individually.}
 "Times New Roman", "Trebuchet MS", "Verdana", "Webdings"}
 
 \item{title.font.color}{Title font color as a named color in character
-format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
+format (e.g. "black") or a hex code.}
 
-\item{title.font.size}{Title font size; default = 10.}
+\item{title.font.size}{Integer; Title font size; default = 10.}
 
 \item{subtitle}{Character}
 
 \item{subtitle.font.family}{Character; subtitle font family}
 
 \item{subtitle.font.color}{subtitle font color as a named color in
-character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
+character format (e.g. "black") or an a hex code.}
 
-\item{subtitle.font.size}{subtitle font size}
+\item{subtitle.font.size}{Integer; subtitle font size}
 
 \item{footer}{Character}
 
 \item{footer.font.family}{Character; footer font family}
 
 \item{footer.font.color}{footer font color as a named color in
-character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
+character format (e.g. "black") or an a hex code.}
 
-\item{footer.font.size}{footer font size}
+\item{footer.font.size}{Integer; footer font size}
 
 \item{footer.wrap}{Logical; whether the footer text should be wrapped.}
 
-\item{footer.wrap.nchar}{Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.}
+\item{footer.wrap.nchar}{Number of characters (approximately) in each 
+line of the footer when \code{footer.wrap} \code{TRUE}.}
 
 \item{data.label.show}{Logical; whether to show data labels.}
 
 \item{data.label.font.family}{Character; font family for data label.}
 
 \item{data.label.font.color}{Font color as a named color
-in character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
+in character format (e.g. "black") or an a hex code.}
 
-\item{data.label.font.size}{Font size for data label.}
+\item{data.label.font.size}{Integer; Font size for data label.px.}
 
-\item{data.label.position}{Character; where to place the source data
-value in relation to the marker icon.  Can be "top left", "top center", "top
-right", "middle left", "middle center", "middle right", "bottom left",
-"bottom center", "bottom right". Only applicable for line and area charts.}
+\item{data.label.position}{Character; where to place the source data value in relation
+to the marker icon. Can be "top left", "top center", "top right", "middle left", "middle center",
+"middle right", "bottom left", "bottom center", "bottom right".}
 
-\item{opacity}{Opacity of scatter points as an alpha value (0 to 1).}
+\item{opacity}{Opacity of bars as an alpha value (0 to 1).}
 
-\item{background.fill.color}{Background color in character format
-(e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
+\item{background.fill.color}{Background color in character format (e.g. "black") or a hex code.}
 
-\item{background.fill.opacity}{Background opacity as an alpha value
-(0 to 1).}
+\item{background.fill.opacity}{Background opacity as an alpha value (0 to 1).}
 
 \item{charting.area.fill.color}{Charting area background color as
-a named color in character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
+a named color in character format (e.g. "black") or a hex code.}
 
-\item{charting.area.fill.opacity}{Charting area background
-opacity as an alpha value (0 to 1).}
+\item{charting.area.fill.opacity}{Charting area background opacity as an alpha value (0 to 1).}
 
 \item{legend.fill.color}{Legend fill color as a named color in character format
-(e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
+(e.g. "black") or a hex code.}
 
-\item{legend.fill.opacity}{Legend fill opacity as an alpha value
-(0 to 1).}
+\item{legend.fill.opacity}{Legend fill opacity as an alpha value (0 to 1).}
 
 \item{legend.border.color}{Legend border color as a named color in character
-format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
+format (e.g. "black") or a hex code.}
 
 \item{legend.border.line.width}{Width in pixels of the border
 around the legend.  0 = no border.}
 
 \item{legend.font.color}{Legend font color as a named color in character
-format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
+format (e.g. "black") or a hex code.}
 
 \item{legend.font.family}{Character; legend font family.}
 
-\item{legend.font.size}{Legend font size.}
+\item{legend.font.size}{Integer; Legend font size.}
 
 \item{legend.position.y}{A numeric controlling the position of the legend.
 Values range from 0 (bottom) to 1 (top).}
@@ -267,49 +256,45 @@ graphic in pixels}
 \item{margin.inner.pad}{Padding in pixels between plot proper
 and axis lines}
 
-\item{grid.show}{Logical; Whether to show grid lines.}
+\item{grid.show}{Logical; whether to show grid lines.}
 
 \item{y.title}{Character, y-axis title; defaults to chart input values;
 to turn off set to "FALSE".}
 
 \item{y.title.font.color}{y-axis title font color as a named color in
-character format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).}
+character format (e.g. "black") or a hex code.}
 
 \item{y.title.font.family}{Character; y-axis title font family}
 
-\item{y.title.font.size}{y-axis title font size}
+\item{y.title.font.size}{Integer; y-axis title font size}
 
-\item{y.line.width}{y-axis line in pixels, 0 = no line}
+\item{y.line.width}{y-axis line width in pixels (0 = no line).}
 
 \item{y.line.color}{y-axis line color as a named color in character format
-(e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
+(e.g. "black") or a hex code.}
 
-\item{y.tick.mark.length}{Length of tick marks in pixels.}
+\item{y.tick.mark.length}{Length of tick marks in pixels. Ticks are only shown when \code{y.line.width > 0}.}
 
-\item{y.bounds.minimum}{Minimum of range for plotting;
-NULL = no manual range set.  Must be less than y.bounds.maximum}
+\item{y.bounds.minimum}{Minimum of range for plotting; NULL = no manual range set.}
 
-\item{y.bounds.maximum}{Maximum of range for
-plotting; NULL = no manual range set.  Must be greater than y.bounds.minimum}
+\item{y.bounds.maximum}{Maximum of range for plotting; NULL = no manual range set.}
 
-\item{y.tick.distance}{Tick mark distance.}
+\item{y.tick.distance}{Distance between tick marks. Requires that \code{y.bounds.minimum} and \code{y.bounds.maximum} have been set.}
 
 \item{y.zero}{Whether the y-axis should include zero.}
 
-\item{y.zero.line.width}{Width in pixels of zero line; 0 = no zero line
-shown}
+\item{y.zero.line.width}{Width in pixels of zero line;}
 
 \item{y.zero.line.color}{Color of horizontal zero line as a named
 color in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
-\item{y.data.reversed}{Logical; whether to reverse y-axis or not
-format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
+\item{y.data.reversed}{Logical; whether to reverse y-axis or not}
 
 \item{y.grid.width}{Width of y-grid lines in pixels; 0 = no line}
 
 \item{y.grid.color}{Color of y-grid lines as a named color in character
-format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
+format (e.g. "black") or a hex code.}
 
 \item{y.tick.show}{Whether to display the y-axis tick labels}
 
@@ -318,38 +303,35 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 \item{y.tick.prefix}{y-axis tick label prefix}
 
 \item{y.tick.format}{A string representing a d3 formatting code.
-See https://github.com/mbostock/d3/wiki/Formatting#numbers or
-https://docs.python.org/release/3.1.3/library/string.html#formatspec}
+See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 
-\item{y.hovertext.format}{A string representing a d3 formatting code.
+\item{y.hovertext.format}{A string representing a d3 formatting code
 See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 
 \item{y.tick.angle}{y-axis tick label angle in degrees.
 90 = vertical; 0 = horizontal}
 
 \item{y.tick.font.color}{y-axis tick label font color as a named color
-in character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
+in character format (e.g. "black") or an a hex code.}
 
 \item{y.tick.font.family}{Character; y-axis tick label font family}
 
-\item{y.tick.font.size}{y-axis tick label font size}
+\item{y.tick.font.size}{Integer; y-axis tick label font size}
 
 \item{x.title}{Character, x-axis title; defaults to chart input values;
 to turn off set to "FALSE".}
 
 \item{x.title.font.color}{x-axis title font color as a named color in
-character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
+character format (e.g. "black") or an a hex code.}
 
 \item{x.title.font.family}{Character; x-axis title font family}
 
-\item{x.title.font.size}{x-axis title font size}
+\item{x.title.font.size}{Integer; x-axis title font size}
 
 \item{x.line.width}{x-axis line in pixels, 0 = no line}
 
 \item{x.line.color}{x-axis line color as a named color in character format
-(e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
+(e.g. "black") or a hex code.}
 
 \item{x.tick.mark.length}{Length of tick marks in pixels.}
 
@@ -367,7 +349,7 @@ range set.}
 
 \item{x.zero.line.width}{Width in pixels of zero line.}
 
-\item{x.zero.line.color}{Color of horizontal zero (origo) line as a named
+\item{x.zero.line.color}{Color of horizontal zero (origin) line as a named
 color in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
@@ -376,7 +358,7 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{x.grid.width}{Width of y-grid lines in pixels; 0 = no line}
 
 \item{x.grid.color}{Color of y-grid lines as a named color in character
-format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
+format (e.g. "black") or a hex code.}
 
 \item{x.tick.show}{Whether to display the x-axis tick labels}
 
@@ -385,8 +367,7 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 \item{x.tick.prefix}{x-axis tick label prefix}
 
 \item{x.tick.format}{A string representing a d3 formatting code.
-See https://github.com/mbostock/d3/wiki/Formatting#numbers or
-https://docs.python.org/release/3.1.3/library/string.html#formatspec}
+See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 
 \item{x.hovertext.format}{A string representing a d3 formatting code.
 See https://github.com/mbostock/d3/wiki/Formatting#numbers}
@@ -394,30 +375,26 @@ See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 \item{x.tick.angle}{x-axis tick label angle in degrees.
 90 = vertical; 0 = horizontal}
 
-\item{x.tick.font.color}{X-axis tick label font color as a named color in}
+\item{x.tick.font.color}{X-axis tick label font color as a named color in
+character format (e.g. "black") or an a hex code.}
 
 \item{x.tick.font.family}{Character; x-axis tick label font family}
 
-\item{x.tick.font.size}{x-axis tick label font size}
+\item{x.tick.font.size}{Integer; x-axis tick label font size}
 
 \item{x.tick.label.wrap}{Logical; whether to wrap long labels on the x-axis.}
 
-\item{x.tick.label.wrap.nchar}{Integer; number of characters in each
-line when \code{label.wrap} is \code{TRUE}.}
+\item{x.tick.label.wrap.nchar}{Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.}
 
 \item{line.thickness}{Thickness, in pixels, of the series line}
 
 \item{line.colors}{Character; a vector containing one or more named}
 
-\item{marker.border.width}{Width in pixels of border/line}
+\item{marker.border.width}{Width in pixels of border/line around markers; 0 is no line.}
 
-\item{marker.border.colors}{Character; a vector containing one or more named
-colors from grDevices OR one or more specified hex value colors OR a single
-named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
+\item{marker.border.colors}{Character; a vector containing one or more colors specified as hex codes.}
 
-\item{marker.border.opacity}{Opacity of border/line around
-markers as an alpha value (0 to 1).
-around markers; 0 is no line}
+\item{marker.border.opacity}{Opacity of border/line around markers as an alpha value (0 to 1).}
 
 \item{marker.size}{Size in pixels of marker. This is overriden
 if \code{scatter.sizes} is provided, but used for the legend
@@ -437,10 +414,13 @@ if \code{scatter.colors.as.categorical}.}
 
 \item{col.max}{Parameter to control scaling of scatter.colors, used by SmallMultiples}
 
-\item{legend.fill}{Same as \code{legend.fill.color}. Retained for backwards compatibility.}
-
 \item{...}{Extra arguments that are ignored.}
 }
 \description{
 Scatter plot
+}
+\examples{
+z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L),
+      .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
+Column(z, type="Stacked Column")
 }

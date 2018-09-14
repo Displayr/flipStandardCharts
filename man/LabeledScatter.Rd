@@ -83,7 +83,7 @@ This should be input as a comma-seperated list of URLs.}
 
 \item{colors}{A vector of colors to use in the chart. When \code{scatter.colors.as.categorical}, the vector of colors should have the length as the number of categories in \code{scatter.colors}. If \code{scatter.colors} is used as numeric vector, then a color ramp is constructed from the colors listed.}
 
-\item{opacity}{Opacity of scatter points colors as an alpha value (0 to 1).}
+\item{opacity}{of scatter point colors as an alpha value (0 to 1).}
 
 \item{legend.show}{Logical; show the legend.}
 
@@ -91,7 +91,7 @@ This should be input as a comma-seperated list of URLs.}
 font attribute for the chart unless specified individually.}
 
 \item{global.font.color}{Global font color as a named color in character format
-(e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).}
+(e.g. "black") or an a hex code.}
 
 \item{title}{Character; chart title.}
 
@@ -101,43 +101,41 @@ font attribute for the chart unless specified individually.}
 "Times New Roman", "Trebuchet MS", "Verdana", "Webdings"}
 
 \item{title.font.color}{Title font color as a named color in character
-format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
+format (e.g. "black") or a hex code.}
 
-\item{title.font.size}{Title font size; default = 10.}
+\item{title.font.size}{Integer; Title font size; default = 10.}
 
 \item{subtitle}{Character}
 
 \item{subtitle.font.family}{Character; subtitle font family}
 
 \item{subtitle.font.color}{subtitle font color as a named color in
-character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
+character format (e.g. "black") or an a hex code.}
 
-\item{subtitle.font.size}{subtitle font size}
+\item{subtitle.font.size}{Integer; subtitle font size}
 
 \item{footer}{Character}
 
 \item{footer.font.family}{Character; footer font family}
 
 \item{footer.font.color}{footer font color as a named color in
-character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
+character format (e.g. "black") or an a hex code.}
 
-\item{footer.font.size}{footer font size}
+\item{footer.font.size}{Integer; footer font size}
 
 \item{footer.wrap}{Logical; whether the footer text should be wrapped.}
 
-\item{footer.wrap.nchar}{Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.}
+\item{footer.wrap.nchar}{Number of characters (approximately) in each 
+line of the footer when \code{footer.wrap} \code{TRUE}.}
 
 \item{scatter.max.labels}{Integer; the maximum number of labels to show on a Labeled Scatterplot.}
 
 \item{data.label.font.family}{Character; font family for data label.}
 
 \item{data.label.font.color}{Font color as a named color
-in character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
+in character format (e.g. "black") or an a hex code.}
 
-\item{data.label.font.size}{Font size for data label.}
+\item{data.label.font.size}{Integer; Font size for data label.px.}
 
 \item{data.label.format}{A string representing a d3 formatting code.
 See https://github.com/mbostock/d3/wiki/Formatting#numbers}
@@ -147,41 +145,39 @@ See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 \item{data.label.suffix}{Character; suffix for data values.}
 
 \item{legend.font.color}{Legend font color as a named color in character
-format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
+format (e.g. "black") or a hex code.}
 
 \item{legend.font.family}{Character; legend font family.}
 
-\item{legend.font.size}{Legend font size.}
+\item{legend.font.size}{Integer; Legend font size.}
 
-\item{grid.show}{Logical; Whether to show grid lines.}
+\item{grid.show}{Logical; whether to show grid lines.}
 
 \item{y.title}{Character, y-axis title; defaults to chart input values;
 to turn off set to "FALSE".}
 
 \item{y.title.font.color}{y-axis title font color as a named color in
-character format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, max = 255)).}
+character format (e.g. "black") or a hex code.}
 
 \item{y.title.font.family}{Character; y-axis title font family}
 
-\item{y.title.font.size}{y-axis title font size}
+\item{y.title.font.size}{Integer; y-axis title font size}
 
-\item{y.line.width}{y-axis line in pixels, 0 = no line}
+\item{y.line.width}{y-axis line width in pixels (0 = no line).}
 
 \item{y.line.color}{y-axis line color as a named color in character format
-(e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
+(e.g. "black") or a hex code.}
 
-\item{y.bounds.minimum}{Minimum of range for plotting;
-NULL = no manual range set.  Must be less than y.bounds.maximum}
+\item{y.bounds.minimum}{Minimum of range for plotting; NULL = no manual range set.}
 
-\item{y.bounds.maximum}{Maximum of range for
-plotting; NULL = no manual range set.  Must be greater than y.bounds.minimum}
+\item{y.bounds.maximum}{Maximum of range for plotting; NULL = no manual range set.}
 
-\item{y.tick.distance}{Tick mark distance.}
+\item{y.tick.distance}{Distance between tick marks. Requires that \code{y.bounds.minimum} and \code{y.bounds.maximum} have been set.}
 
 \item{y.grid.width}{Width of y-grid lines in pixels; 0 = no line}
 
 \item{y.grid.color}{Color of y-grid lines as a named color in character
-format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
+format (e.g. "black") or a hex code.}
 
 \item{y.tick.show}{Whether to display the y-axis tick labels}
 
@@ -190,32 +186,29 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 \item{y.tick.prefix}{y-axis tick label prefix}
 
 \item{y.tick.format}{A string representing a d3 formatting code.
-See https://github.com/mbostock/d3/wiki/Formatting#numbers or
-https://docs.python.org/release/3.1.3/library/string.html#formatspec}
+See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 
 \item{y.tick.font.color}{y-axis tick label font color as a named color
-in character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
+in character format (e.g. "black") or an a hex code.}
 
 \item{y.tick.font.family}{Character; y-axis tick label font family}
 
-\item{y.tick.font.size}{y-axis tick label font size}
+\item{y.tick.font.size}{Integer; y-axis tick label font size}
 
 \item{x.title}{Character, x-axis title; defaults to chart input values;
 to turn off set to "FALSE".}
 
 \item{x.title.font.color}{x-axis title font color as a named color in
-character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
+character format (e.g. "black") or an a hex code.}
 
 \item{x.title.font.family}{Character; x-axis title font family}
 
-\item{x.title.font.size}{x-axis title font size}
+\item{x.title.font.size}{Integer; x-axis title font size}
 
 \item{x.line.width}{x-axis line in pixels, 0 = no line}
 
 \item{x.line.color}{x-axis line color as a named color in character format
-(e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
+(e.g. "black") or a hex code.}
 
 \item{x.bounds.minimum}{Minimum of range for plotting;
 NULL = no manual range set.  Must be less than x.bounds.maximum}
@@ -230,7 +223,7 @@ range set.}
 \item{x.grid.width}{Width of y-grid lines in pixels; 0 = no line}
 
 \item{x.grid.color}{Color of y-grid lines as a named color in character
-format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
+format (e.g. "black") or a hex code.}
 
 \item{x.tick.show}{Whether to display the x-axis tick labels}
 
@@ -239,18 +232,16 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 \item{x.tick.prefix}{x-axis tick label prefix}
 
 \item{x.tick.format}{A string representing a d3 formatting code.
-See https://github.com/mbostock/d3/wiki/Formatting#numbers or
-https://docs.python.org/release/3.1.3/library/string.html#formatspec}
+See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 
 \item{x.tick.font.color}{X-axis tick label font color as a named color in
-character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
+character format (e.g. "black") or an a hex code.}
 
 \item{x.tick.font.family}{Character; x-axis tick label font family}
 
-\item{x.tick.font.size}{x-axis tick label font size}
+\item{x.tick.font.size}{Integer; x-axis tick label font size}
 
-\item{marker.size}{Size in pixels of marker}
+\item{marker.size}{Size in pixels of marker.}
 
 \item{swap.x.and.y}{Swap the x and y axis around on the chart.}
 
@@ -258,4 +249,9 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 }
 \description{
 Labeled Scatter Chart
+}
+\examples{
+z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L),
+      .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
+Column(z, type="Stacked Column")
 }

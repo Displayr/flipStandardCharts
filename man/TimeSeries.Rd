@@ -38,7 +38,7 @@ multiple series.}
 font attribute for the chart unless specified individually.}
 
 \item{global.font.color}{Global font color as a named color in character format
-(e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).}
+(e.g. "black") or an a hex code.}
 
 \item{title}{Character; chart title.}
 
@@ -48,7 +48,7 @@ font attribute for the chart unless specified individually.}
 "Times New Roman", "Trebuchet MS", "Verdana", "Webdings"}
 
 \item{title.font.color}{Title font color as a named color in character
-format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
+format (e.g. "black") or a hex code.}
 
 \item{title.font.size}{Integer; Title font size; default = 10.}
 
@@ -56,16 +56,14 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 to turn off set to "FALSE".}
 
 \item{x.title.font.color}{x-axis title font color as a named color in
-character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
+character format (e.g. "black") or an a hex code.}
 
 \item{x.title.font.family}{Character; x-axis title font family}
 
 \item{x.title.font.size}{Integer; x-axis title font size}
 
 \item{x.tick.font.color}{X-axis tick label font color as a named color in
-character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
+character format (e.g. "black") or an a hex code.}
 
 \item{x.tick.font.family}{Character; x-axis tick label font family}
 
@@ -75,16 +73,14 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 to turn off set to "FALSE".}
 
 \item{y.title.font.color}{y-axis title font color as a named color in
-character format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0,
-max = 255)).}
+character format (e.g. "black") or a hex code.}
 
 \item{y.title.font.family}{Character; y-axis title font family}
 
 \item{y.title.font.size}{Integer; y-axis title font size}
 
 \item{y.tick.font.color}{y-axis tick label font color as a named color
-in character format (e.g. "black") or an rgb value (e.g.
-rgb(0, 0, 0, maxColorValue = 255)).}
+in character format (e.g. "black") or an a hex code.}
 
 \item{y.tick.font.family}{Character; y-axis tick label font family}
 
