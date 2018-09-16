@@ -11,6 +11,10 @@
 #' @param line.thickness Integer; The width of the lines connecting data points.
 #' @param legend.width Integer; Width (in pixels) of the legend.
 #' @param window.start The number of days before the end of the data series to start the range selector window.
+#' @param y.hovertext.font.color Legend font color as a named color in character
+#' format (e.g. "black") or a hex code.
+#' @param y.hovertext.font.family Character; legend font family.
+#' @param y.hovertext.font.size Integer; Legend font size.
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom dygraphs dygraph dySeries dyCSS dyRangeSelector %>% dyOptions dyLegend dyAxis
 #' @importFrom flipTime AsDate AsDateTime
@@ -43,6 +47,9 @@ TimeSeries <- function(x = NULL,
                     y.tick.font.family = global.font.family,
                     y.tick.font.size = 10,
                     y.tick.format = "",
+                    y.hovertext.font.size = 12,
+                    y.hovertext.font.color = global.font.color,
+                    y.hovertext.font.family = global.font.family,
                     y.hovertext.format= y.tick.format)
 {
 
@@ -82,8 +89,13 @@ TimeSeries <- function(x = NULL,
     css <- paste0(".dygraph-title {
         color: ", title.font.color, ";
         font-size: ", title.font.size, "px;
-        font-family: ", title.font.size, ";
+        font-family: ", title.font.family, ";
         font-weight: bold;
+        }
+        .dygraph-legend {
+        color: ", y.hovertext.font.color, ";
+        font-size: ", y.hovertext.font.size, "px;
+        font-family: ", y.hovertext.font.family, ";
         }
         .dygraph-label.dygraph-xlabel {
         color: ", x.title.font.color, ";
@@ -108,8 +120,8 @@ TimeSeries <- function(x = NULL,
 
     write(css, "dygraph.css")
 
-    dg <- dygraph(x, main = title, xlab = x.title, ylab = y.title)  
-    dg <- dyAxis(dg, "y", 
+    dg <- dygraph(x, main = title, xlab = x.title, ylab = y.title)
+    dg <- dyAxis(dg, "y",
         valueFormatter = if (percentFromD3(y.hovertext.format)) 'function(d){return Math.round(d*100) + "%"}' else NULL,
         axisLabelFormatter = if (percentFromD3(y.tick.format)) 'function(d){return Math.round(d*100) + "%"}' else NULL)
     if (range.bars)

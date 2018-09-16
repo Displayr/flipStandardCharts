@@ -18,7 +18,10 @@ TimeSeries(x = NULL, range.bars = FALSE, colors = ChartColors(1),
   y.title.font.family = global.font.family, y.title.font.size = 12,
   y.tick.font.color = global.font.color,
   y.tick.font.family = global.font.family, y.tick.font.size = 10,
-  y.tick.format = "", y.hovertext.format = y.tick.format)
+  y.tick.format = "", y.hovertext.font.size = 12,
+  y.hovertext.font.color = global.font.color,
+  y.hovertext.font.family = global.font.family,
+  y.hovertext.format = y.tick.format)
 }
 \arguments{
 \item{x}{Input data may be a matrix or a vector, wth dates as the rownames and data series along the columns.}
@@ -88,6 +91,13 @@ in character format (e.g. "black") or an a hex code.}
 
 \item{y.tick.format}{A string representing a d3 formatting code.
 See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
+
+\item{y.hovertext.font.size}{Integer; Legend font size.}
+
+\item{y.hovertext.font.color}{Legend font color as a named color in character
+format (e.g. "black") or a hex code.}
+
+\item{y.hovertext.font.family}{Character; legend font family.}
 
 \item{y.hovertext.format}{A string representing a d3 formatting code
 See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
