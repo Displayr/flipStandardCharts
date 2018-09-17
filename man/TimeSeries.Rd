@@ -18,7 +18,7 @@ TimeSeries(x = NULL, range.bars = FALSE, colors = ChartColors(1),
   y.title.font.family = global.font.family, y.title.font.size = 12,
   y.tick.font.color = global.font.color,
   y.tick.font.family = global.font.family, y.tick.font.size = 10,
-  y.tick.format = "", y.hovertext.font.size = 12,
+  y.tick.format = "", y.hovertext.font.size = 11,
   y.hovertext.font.color = global.font.color,
   y.hovertext.font.family = global.font.family,
   y.hovertext.format = y.tick.format)
