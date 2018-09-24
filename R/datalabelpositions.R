@@ -44,7 +44,9 @@ dataLabelPositions <- function(chart.matrix,
     if (!is.null(dates))
     {
         date.vals <- as.numeric(dates) * 1000           # convert to milliseconds
-        x.pos <- date.vals + rep(series.pos, each = nrow(chart.matrix)) * (date.vals[2] - date.vals[1])
+        date.diff <- if (barmode == "stack")    0.0
+                     else                       date.vals[2] - date.vals[1]
+        x.pos <- date.vals + (rep(series.pos, each = nrow(chart.matrix)) * date.diff)
     }
     else if (all(!is.na(suppressWarnings(as.numeric(rownames(chart.matrix))))))
         x.pos <- as.numeric(rownames(chart.matrix)) + rep(series.pos, each = nrow(chart.matrix))
