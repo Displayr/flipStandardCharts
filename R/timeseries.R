@@ -22,7 +22,7 @@
 #' @export
 TimeSeries <- function(x = NULL,
                     range.bars = FALSE,
-                    colors = ChartColors(1),
+                    colors = NULL,
                     line.thickness = NULL,
                     legend.width = 250,
                     window.start = NULL,
@@ -55,6 +55,9 @@ TimeSeries <- function(x = NULL,
 
     if (is.null(dim(x)) || length(dim(x)) == 1L)
         x <- as.matrix(x)
+
+    if (is.null(colors))
+        colors <- ChartColors(ncol(x))
 
     row.names <- AsDateTime(rownames(x), on.parse.failure = "silent")
     if (all(is.na(row.names)))
