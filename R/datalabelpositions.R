@@ -33,8 +33,7 @@ dataLabelPositions <- function(chart.matrix,
         if (is.null(display.threshold))
             display.threshold <- 0.05
         text[chart.matrix < largest.bar * display.threshold] <- ""
-    }
-    else
+    } else
     {
         series.pos <- ((0:(series.count - 1) + 0.5) / series.count - 0.5) * (1 - bar.gap)
         y.pos <- chart.matrix
@@ -75,7 +74,8 @@ dataLabelPositions <- function(chart.matrix,
             yanchor <- "bottom"
     }
     n <- length(text)
-    return(lapply(1:n, function(ii) list(text = text[ii], font = font,
+    font <- rep(font, each = nrow(chart.matrix))
+    return(lapply(1:n, function(ii) list(text = text[ii], font = font[[ii]],
            x = x.pos[ii], y = y.pos[ii], showarrow = FALSE,
            xref = "x", yref = "y", xanchor = xanchor, yanchor = yanchor)))
 }

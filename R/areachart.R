@@ -142,6 +142,7 @@ Area <- function(x,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
                     data.label.show = FALSE,
+                    data.label.font.autocolor = FALSE,
                     data.label.font.family = global.font.family,
                     data.label.font.size = 10,
                     data.label.font.color = global.font.color,
@@ -222,6 +223,17 @@ Area <- function(x,
     if (opacity == 1 && !is.stacked && ncol(chart.matrix) > 1)
         warning("Displaying this chart with opacity set to 1 will make it difficult to read as some data series may be obscured.")
 
+    if (is.stacked && data.label.font.autocolor)
+    {
+        dlab.color <- autoFontColor(colors)
+        if (sum(y.data.reversed, isTRUE(y.bounds.minimum > y.bounds.maximum)) != 1)
+            dlab.color <- c(dlab.color[-1], global.font.color) # top datalabels are on the chart background
+ 
+    } else
+        dlab.color <- vectorize(data.label.font.color, ncol(chart.matrix))
+    
+    data.label.font = lapply(dlab.color, 
+        function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
     subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
     x.title.font = list(family = x.title.font.family, size = x.title.font.size, color = x.title.font.color)
@@ -230,7 +242,6 @@ Area <- function(x,
     xtick.font = list(family = x.tick.font.family, size = x.tick.font.size, color = x.tick.font.color)
     footer.font = list(family = footer.font.family, size = footer.font.size, color = footer.font.color)
     legend.font = list(family = legend.font.family, size = legend.font.size, color = legend.font.color)
-    data.label.font = list(family = data.label.font.family, size = data.label.font.size, color = data.label.font.color)
 
     if (ncol(chart.matrix) == 1)
         legend.show <- FALSE
@@ -361,8 +372,8 @@ Area <- function(x,
                            line = list(width = 0),
                            name = legend.text[i], 
                            legendgroup = i,
-                           hoverlabel = list(bgcolor=colors[i]),
                            text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
+                           hoverlabel = list(font = data.label.font[[i]], bgcolor = colors[i]),
                            hoverinfo = setHoverText(xaxis, chart.matrix),
                            marker = marker,
                            mode = series.mode)
@@ -415,7 +426,7 @@ Area <- function(x,
                     fill = fill.bound, fillcolor = toRGB(colors[i], alpha = opacity),
                     line = lines, legendgroup = i, text = source.text,
                     hoverinfo = if (ncol(chart.matrix) > 1) "x+text+name" else "x+text",
-                    hoverlabel = list(bgcolor=colors[i], font = data.label.font),
+                    hoverlabel = list(bgcolor=colors[i], font = data.label.font[[i]]),
                     mode = "lines", marker = marker)
          }
     }
@@ -441,7 +452,7 @@ Area <- function(x,
 
             p <- add_trace(p, type = "scatter", mode = "text", x = x, y = y,
                     legendgroup = i, showlegend = FALSE, name = y.label,
-                    text = source.text, textfont = data.label.font,
+                    text = source.text, textfont = data.label.font[[i]],
                     textposition = data.label.pos, hoverinfo = "skip", cliponaxis = FALSE)
         }
     }
@@ -459,9 +470,9 @@ Area <- function(x,
         annotations = list(setSubtitle(subtitle, subtitle.font, margins),
                            setTitle(title, title.font, margins),
                            setFooter(footer, footer.font, margins)),
+        font = data.label.font[[1]],
         hovermode = if (tooltip.show) "x" else FALSE,
-        hoverlabel = list(namelength = -1, font = data.label.font, bordercolor = charting.area.fill.color),
-        font = data.label.font
+        hoverlabel = list(namelength = -1, bordercolor = charting.area.fill.color)
     )
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"

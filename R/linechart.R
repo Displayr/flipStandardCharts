@@ -162,6 +162,9 @@ Line <-   function(x,
         marker.border.opacity <- marker.opacity
     eval(colors) # not sure why, but this is necessary for bars to appear properly
 
+    dlab.color <- vectorize(data.label.font.color, ncol(chart.matrix))
+    data.label.font = lapply(dlab.color, 
+        function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
     subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
     x.title.font = list(family = x.title.font.family, size = x.title.font.size, color = x.title.font.color)
@@ -170,7 +173,6 @@ Line <-   function(x,
     xtick.font = list(family = x.tick.font.family, size = x.tick.font.size, color = x.tick.font.color)
     footer.font = list(family = footer.font.family, size = footer.font.size, color = footer.font.color)
     legend.font = list(family = legend.font.family, size = legend.font.size, color = legend.font.color)
-    data.label.font = list(family = data.label.font.family, size = data.label.font.size, color = data.label.font.color)
 
     if (ncol(chart.matrix) == 1)
         legend.show <- FALSE
@@ -260,7 +262,7 @@ Line <-   function(x,
                 data.label.pos <- c("top right", rep("top middle", length(x)-2), "top left")
             p <- add_trace(p, x = x, y = y, type = "scatter", mode = "text", name = y.label,
                    cliponaxis = FALSE, text = source.text,
-                   textfont = data.label.font, textposition = data.label.pos,
+                   textfont = data.label.font[[i]], textposition = data.label.pos,
                    hoverinfo = "none", showlegend = FALSE, legendgroup = tmp.group)
         }
 
@@ -270,6 +272,7 @@ Line <-   function(x,
                    connectgaps = FALSE, line = lines, marker = marker, name = legend.text[i],
                    showlegend = (type == "Line"), legendgroup = tmp.group,
                    text = autoFormatLongLabels(x.labels.full, wordwrap=T, truncate=F),
+                   hoverlabel = list(font = data.label.font[[i]]),
                    hoverinfo  = setHoverText(xaxis, chart.matrix))
 
         # single points (no lines) need to be added separately
@@ -329,8 +332,7 @@ Line <-   function(x,
                            setTitle(title, title.font, margins),
                            setFooter(footer, footer.font, margins)),
         hovermode = if (tooltip.show) "closest" else FALSE,
-        hoverlabel = list(namelength = -1, font = data.label.font, bordercolor = charting.area.fill.color),
-        font = data.label.font
+        hoverlabel = list(namelength = -1, bordercolor = charting.area.fill.color)
     )
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"

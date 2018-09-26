@@ -46,6 +46,7 @@ Pyramid(x, colors = ChartColors(max(1, length(x))), opacity = NULL,
   y.tick.label.wrap = TRUE, y.tick.label.wrap.nchar = 21,
   marker.border.width = 1, marker.border.colors = colors,
   marker.border.opacity = NULL, data.label.show = FALSE,
+  data.label.font.autocolor = FALSE,
   data.label.font.family = global.font.family,
   data.label.font.size = 10, data.label.font.color = global.font.color,
   data.label.format = "", data.label.prefix = "",
@@ -261,12 +262,17 @@ around series bars; 0 is no line}
 
 \item{data.label.show}{Logical; whether to show data labels.}
 
+\item{data.label.font.autocolor}{Logical; Whether font color should be automatically determined
+(black or white) based on the color of the background column if stacked.}
+
 \item{data.label.font.family}{Character; font family for data label.}
 
 \item{data.label.font.size}{Integer; Font size for data label.px.}
 
 \item{data.label.font.color}{Font color as a named color
-in character format (e.g. "black") or an a hex code.}
+in character format (e.g. "black") or an a hex code. This can be a single
+color, a vector of colors (1 for each series/column), or a comma separated list
+of colors}
 
 \item{data.label.format}{A string representing a d3 formatting code.
 See https://github.com/mbostock/d3/wiki/Formatting#numbers}

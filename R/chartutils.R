@@ -944,3 +944,18 @@ getSign <- function(values, axis)
     return(res)
 }
 
+#' use black or white for good contrast against colors
+#'
+#' @param colors vector of colors which will be the background color of the 
+#' @importFrom grDevices col2rgb rgb2hsv
+autoFontColor <- function (colors)
+{
+    c.hsv <- rgb2hsv(col2rgb(colors))
+    return(ifelse(c.hsv["v",] > 0.5, "#2C2C2C", "#FFFFFF"))
+}
+
+vectorize <- function(x, n)
+{
+    x <- TextAsVector(x)
+    return(paste0(x, rep("", n)))
+}

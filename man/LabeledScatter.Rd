@@ -133,7 +133,9 @@ line of the footer when \code{footer.wrap} \code{TRUE}.}
 \item{data.label.font.family}{Character; font family for data label.}
 
 \item{data.label.font.color}{Font color as a named color
-in character format (e.g. "black") or an a hex code.}
+in character format (e.g. "black") or an a hex code. This can be a single
+color, a vector of colors (1 for each series/column), or a comma separated list
+of colors}
 
 \item{data.label.font.size}{Integer; Font size for data label.px.}
 

@@ -173,7 +173,11 @@
 #' @param data.label.font.family Character; font family for data label.
 #' @param data.label.font.size Integer; Font size for data label.px.
 #' @param data.label.font.color Font color as a named color
-#' in character format (e.g. "black") or an a hex code.
+#' in character format (e.g. "black") or an a hex code. This can be a single
+#' color, a vector of colors (1 for each series/column), or a comma separated list
+#' of colors
+#' @param data.label.font.autocolor Logical; Whether font color should be automatically determined
+#' (black or white) based on the color of the background column if stacked.
 #' @param data.label.format A string representing a d3 formatting code.
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers
 #' @param data.label.prefix Character; prefix for data values.
@@ -303,6 +307,7 @@ Column <- function(x,
                     modebar.show = FALSE,
                     bar.gap = 0.15,
                     data.label.show = FALSE,
+                    data.label.font.autocolor = FALSE,
                     data.label.font.family = global.font.family,
                     data.label.font.size = 10,
                     data.label.font.color = global.font.color,
@@ -361,6 +366,13 @@ Column <- function(x,
         marker.border.opacity <- opacity
     eval(colors) # not sure why, but this is necessary for bars to appear properly
 
+    if (is.stacked && data.label.font.autocolor)
+        dlab.color <- autoFontColor(colors) 
+    else
+        dlab.color <- vectorize(data.label.font.color, ncol(chart.matrix))
+    
+    data.label.font = lapply(dlab.color, 
+        function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
     subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
     x.title.font = list(family = x.title.font.family, size = x.title.font.size, color = x.title.font.color)
@@ -369,8 +381,8 @@ Column <- function(x,
     xtick.font = list(family = x.tick.font.family, size = x.tick.font.size, color = x.tick.font.color)
     footer.font = list(family = footer.font.family, size = footer.font.size, color = footer.font.color)
     legend.font = list(family = legend.font.family, size = legend.font.size, color = legend.font.color)
-    data.label.font = list(family = data.label.font.family, size = data.label.font.size, color = data.label.font.color)
 
+    
     if (ncol(chart.matrix) == 1)
         legend.show <- FALSE
     legend <- setLegend(type, legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
@@ -469,6 +481,7 @@ Column <- function(x,
         p <- add_trace(p, x = x, y = y.filled, type = "bar", 
                        orientation = "v", marker = marker, name = legend.text[i], 
                        text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
+                       hoverlabel = list(font = data.label.font[[i]]),
                        hoverinfo  = setHoverText(xaxis, chart.matrix), legendgroup = i)
         if (fit.type != "None" && is.stacked && i == 1)
             warning("Line of best fit not shown for stacked charts.")
@@ -511,7 +524,7 @@ Column <- function(x,
             p <- add_text(p, y = data.annotations$y[,i], cliponaxis = FALSE,
                       x = if (NCOL(chart.matrix) > 1) data.annotations$x[,i] else x,
                       xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x",
-                      text = data.annotations$text[,i], textfont = data.label.font,
+                      text = data.annotations$text[,i], textfont = data.label.font[[i]],
                       textposition = ifelse(y.sign >= 0, "top center", "bottom center"),
                       showlegend = FALSE, legendgroup = i, hoverinfo = "none")
         }
@@ -535,9 +548,8 @@ Column <- function(x,
         margin = margins,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
-        hoverlabel = list(namelength = -1, font = data.label.font, bordercolor = charting.area.fill.color),
+        hoverlabel = list(namelength = -1, bordercolor = charting.area.fill.color),
         hovermode = if (tooltip.show) "closest" else FALSE,
-        font = data.label.font,
         annotations =  annotations,
         bargap = bar.gap,
         barmode = barmode

@@ -88,6 +88,7 @@ Pyramid <- function(x,
                     marker.border.colors = colors,
                     marker.border.opacity = NULL,
                     data.label.show = FALSE,
+                    data.label.font.autocolor = FALSE,
                     data.label.font.family = global.font.family,
                     data.label.font.size = 10,
                     data.label.font.color = global.font.color,
@@ -136,6 +137,13 @@ Pyramid <- function(x,
         marker.border.opacity <- opacity/(4 + 3*(opacity < 0.7))
     colors <- paste0(rep("", nrow(chart.matrix)), colors)
 
+    if (data.label.font.autocolor)
+        dlab.color <- autoFontColor(colors) 
+    else
+        dlab.color <- vectorize(data.label.font.color, nrow(chart.matrix))
+    
+    data.label.font = lapply(dlab.color, 
+        function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
     subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
     x.title.font = list(family = x.title.font.family, size = x.title.font.size, color = x.title.font.color)
@@ -143,7 +151,6 @@ Pyramid <- function(x,
     ytick.font = list(family = y.tick.font.family, size = y.tick.font.size, color = y.tick.font.color)
     xtick.font = list(family = x.tick.font.family, size = x.tick.font.size, color = x.tick.font.color)
     footer.font = list(family = footer.font.family, size = footer.font.size, color = footer.font.color)
-    data.label.font = list(family = data.label.font.family, size = data.label.font.size, color = data.label.font.color)
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate = FALSE)
 
     type <- "Bar"
@@ -199,20 +206,22 @@ Pyramid <- function(x,
 
         p <- add_trace(p, x = c(0, y[i]/2), y = x[ind], type = "bar", orientation = "h",
                        marker = marker, name  =  x[i],
+                       hoverlabel = list(font = data.label.font[[i]]),
                        text = formatByD3(y[i], x.hovertext.format), hoverinfo  = "name+text")
         p <- add_trace(p, x = -c(0, y[i]/2), y = x[ind], type = "bar", orientation = "h",
                        marker = marker, name  =  x[i],
+                       hoverlabel = list(font = data.label.font[[i]]),
                        text = formatByD3(y[i], x.hovertext.format), hoverinfo  = "name+text")
-    }
 
-    if (data.label.show)
-    {
-        source.text <- formatByD3(chart.matrix[,1], data.label.format,
-               data.label.prefix, data.label.suffix)
-        p <- add_trace(p, y = x, x = rep(0, length(x)),
-               type = "scatter", mode = "text", text = source.text,
-               textfont = data.label.font, textposition = "middle center",
-               hoverinfo = "none", showlegend = FALSE)
+        if (data.label.show)
+        {
+            source.text <- formatByD3(chart.matrix[,1], data.label.format,
+                   data.label.prefix, data.label.suffix)
+            p <- add_trace(p, y = x[i], x = 0,
+                   type = "scatter", mode = "text", text = source.text[i],
+                   textfont = data.label.font[[i]], textposition = "middle center",
+                   hoverinfo = "none", showlegend = FALSE)
+        }
     }
 
     p <- config(p, displayModeBar = modebar.show)
@@ -227,8 +236,8 @@ Pyramid <- function(x,
         annotations = list(setSubtitle(subtitle, subtitle.font, margins),
                            setTitle(title, title.font, margins),
                            setFooter(footer, footer.font, margins)),
+        hoverlabel = list(namelength = -1, bordercolor = charting.area.fill.color),
         hovermode = hover.mode,
-        font = data.label.font,
         bargap = bar.gap,
         barmode = 'overlay'
     )

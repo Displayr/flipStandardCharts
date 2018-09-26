@@ -4,7 +4,7 @@
 \alias{TimeSeries}
 \title{TimeSeries}
 \usage{
-TimeSeries(x = NULL, range.bars = FALSE, colors = ChartColors(1),
+TimeSeries(x = NULL, range.bars = FALSE, colors = NULL,
   line.thickness = NULL, legend.width = 250, window.start = NULL,
   global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
   maxColorValue = 255), title = "",

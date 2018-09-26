@@ -128,6 +128,7 @@ Bar <- function(x,
                     modebar.show = FALSE,
                     bar.gap = 0.15,
                     data.label.show = FALSE,
+                    data.label.font.autocolor = FALSE,
                     data.label.font.family = global.font.family,
                     data.label.font.size = 10,
                     data.label.font.color = global.font.color,
@@ -162,6 +163,8 @@ Bar <- function(x,
         type <- "Stacked Bar"
     if (type == "100% Stacked")
         type <- "100% Stacked Bar"
+    if (!is.stacked)
+        type <- "Bar"
 
     # Some minimal data cleaning
     # Assume formatting and Qtable/attribute handling already done
@@ -188,6 +191,13 @@ Bar <- function(x,
         marker.border.opacity <- opacity
     eval(colors) # not sure why, but this is necessary for bars to appear properly
 
+    if (is.stacked && data.label.font.autocolor)
+        dlab.color <- autoFontColor(colors) 
+    else
+        dlab.color <- vectorize(data.label.font.color, ncol(chart.matrix))
+    
+    data.label.font = lapply(dlab.color, 
+        function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
     subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
     x.title.font = list(family = x.title.font.family, size = x.title.font.size, color = x.title.font.color)
@@ -196,7 +206,6 @@ Bar <- function(x,
     xtick.font = list(family = x.tick.font.family, size = x.tick.font.size, color = x.tick.font.color)
     footer.font = list(family = footer.font.family, size = footer.font.size, color = footer.font.color)
     legend.font = list(family = legend.font.family, size = legend.font.size, color = legend.font.color)
-    data.label.font = list(family = data.label.font.family, size = data.label.font.size, color = data.label.font.color)
 
     if (ncol(chart.matrix) == 1)
         legend.show <- FALSE
@@ -278,14 +287,17 @@ Bar <- function(x,
 
         # add invisible line to force all categorical labels to be shown
         if (!is.stacked && i == 1)
+        {
             p <- add_trace(p, x = rep(min(y,na.rm = TRUE), length(y)), y = x,
                            type = "scatter", mode = "lines",
                            hoverinfo = "none", showlegend = FALSE, opacity = 0)
+        }
 
         # this is the main trace for each data series
         p <- add_trace(p, x = y.filled, y = x, type = "bar", orientation = "h", 
                        marker = marker, name  =  legend.text[i], 
                        text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
+                       hoverlabel = list(font = data.label.font[[i]]),
                        hoverinfo  = setHoverText(yaxis, chart.matrix, is.bar = TRUE), legendgroup = i)
 
         if (fit.type != "None" && is.stacked && i == 1)
@@ -332,7 +344,7 @@ Bar <- function(x,
                       yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y",
                       text = data.annotations$text[,i],
                       textposition = ifelse(x.sign >= 0, "middle right", "middle left"),
-                      textfont = data.label.font, hoverinfo = "skip",
+                      textfont = data.label.font[[i]], hoverinfo = "skip",
                       showlegend = FALSE, legendgroup = i)
         }
     }
@@ -355,9 +367,8 @@ Bar <- function(x,
         margin = margins,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
-        hoverlabel = list(namelength = -1, font = data.label.font, bordercolor = charting.area.fill.color),
+        hoverlabel = list(namelength = -1, bordercolor = charting.area.fill.color),
         hovermode = if (tooltip.show) "closest" else FALSE,
-        font = data.label.font,
         annotations =  annotations,
         bargap = bar.gap,
         barmode = barmode
