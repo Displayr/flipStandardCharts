@@ -319,7 +319,7 @@ Column <- function(x,
                     average.color = rgb(230, 230, 230, maxColorValue = 255))
 {
     ErrorIfNotEnoughData(x)
-    if (bar.gap <= 0.0 || bar.gap >= 1.0)
+    if (bar.gap < 0.0 || bar.gap >= 1.0)
     {
         warning("Parameter 'bar gap' must be between 0 and 1. ",
                 "Invalid 'bar gap' set to default value of 0.15.")     
