@@ -211,7 +211,9 @@ Scatter <- function(x = NULL,
     ytick.font = list(family = y.tick.font.family, size = y.tick.font.size, color = y.tick.font.color)
     xtick.font = list(family = x.tick.font.family, size = x.tick.font.size, color = x.tick.font.color)
     footer.font = list(family = footer.font.family, size = footer.font.size, color = footer.font.color)
-    legend.font = list(family = legend.font.family, size = legend.font.size, color = legend.font.color)
+    legend.font = list(family = if (!is.null(legend.font.family)) legend.font.family else global.font.family,
+                       color = if (!is.null(legend.font.color)) legend.font.color else global.font.family,
+                       size = if (!is.null(legend.font.size)) legend.font.size else data.label.font.size)
 
     # Try to store name of variables
     scatter.mult.yvals <- isTRUE(attr(x, "scatter.mult.yvals"))
@@ -662,8 +664,7 @@ Scatter <- function(x = NULL,
                            setTitle(title, title.font, margins),
                            if (is.null(small.mult.index)) setFooter(footer, footer.font, margins) else NULL),
         hovermode = if (tooltip.show) "closest" else FALSE,
-        hoverlabel = list(namelength = -1, bordercolor = charting.area.fill.color,
-        font = data.label.font[[1]])
+        hoverlabel = list(namelength = -1, bordercolor = charting.area.fill.color)
     )
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
