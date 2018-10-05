@@ -261,7 +261,7 @@ Scatter <- function(x = NULL,
         warning("'Sizes' variable not provided.")
     if (is.null(small.mult.index) && is.null(scatter.colors) && !scatter.colors.as.categorical)
         warning("'Colors' variable not provided.")
-    qualitative.palettes <- c("Default colors", "Primary colors", 
+    qualitative.palettes <- c("Default colors", "Primary colors",
         "Light colors", "Strong colors", "Colorblind safe colors")
     if (!scatter.colors.as.categorical && !is.null(attr(colors, "palette.type"))
         && attr(colors, "palette.type") %in% qualitative.palettes)
@@ -428,9 +428,9 @@ Scatter <- function(x = NULL,
     num.groups <- length(g.list)
     num.series <- if (scatter.colors.as.numeric) 1 else num.groups
     data.label.font.color <- vectorize(data.label.font.color, length(g.list))
-    data.label.font = lapply(data.label.font.color, 
+    data.label.font = lapply(data.label.font.color,
         function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
-    
+
 
     # hovertext
     source.text <- paste0(scatter.labels, " (", formatByD3(x, x.hovertext.format, x.tick.prefix, x.tick.suffix), ", ",
@@ -534,7 +534,7 @@ Scatter <- function(x = NULL,
     margins <- setMarginsForAxis(margins, ylab.tmp, yaxis)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
-    
+
     legend.text <- autoFormatLongLabels(g.list, legend.wrap, legend.wrap.nchar)
     margins <- setMarginsForLegend(margins, legend.show || scatter.colors.as.numeric,
                     legend, legend.text)
@@ -586,13 +586,13 @@ Scatter <- function(x = NULL,
 
         # Main trace
         separate.legend <- legend.show && scatter.colors.as.categorical && !is.null(scatter.sizes)
-        p <- add_trace(p, x = x[ind], y = y[ind], 
+        p <- add_trace(p, x = x[ind], y = y[ind],
                 #name  =  autoFormatLongLabels(paste0(g.list[ggi], " "), legend.wrap, legend.wrap.nchar),
-                name = legend.text[ggi], 
+                name = legend.text[ggi],
                 showlegend = (legend.show && !separate.legend),
                 legendgroup = if (num.series > 1) ggi else 1,
                 textposition = data.label.position, cliponaxis = FALSE,
-                textfont = data.label.font[[ggi]],
+                textfont = if (data.label.show) data.label.font[[ggi]] else NULL,
                 marker = marker.obj, line = line.obj, text = source.text[ind],
                 hoverinfo = if (num.series == 1) "text" else "name+text",
                 hoverlabel = list(font = data.label.font[[ggi]]),
@@ -662,7 +662,8 @@ Scatter <- function(x = NULL,
                            setTitle(title, title.font, margins),
                            if (is.null(small.mult.index)) setFooter(footer, footer.font, margins) else NULL),
         hovermode = if (tooltip.show) "closest" else FALSE,
-        hoverlabel = list(namelength = -1, bordercolor = charting.area.fill.color)
+        hoverlabel = list(namelength = -1, bordercolor = charting.area.fill.color,
+        font = data.label.font[[1]])
     )
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
