@@ -1,8 +1,8 @@
 #' Scatter
 #'
 #' Scatter plot
-#' @inherit Column
 #' @inherit LabeledScatter
+#' @inherit Column
 #' @param x A numeric vector for the x-axis coordinates (which may be named); or a matrix or datarame; or a list of matrices where each matrix share the same row and column names.
 #' @param scatter.labels.as.hovertext Logical; if TRUE, labels are shown has hovers; otherwise, as a labeled scatterplot.
 #' @param scatter.sizes.as.diameter Whether to show the points with diameter (instead of area, which is the default) proportional to the sizes variable.
@@ -86,6 +86,7 @@ Scatter <- function(x = NULL,
                          data.label.show = FALSE,
                          data.label.font.family = global.font.family,
                          data.label.font.color = global.font.color,
+                         data.label.font.autocolor = FALSE,
                          data.label.font.size = 10,
                          data.label.position = "top middle",
                          opacity = NULL,
@@ -211,7 +212,6 @@ Scatter <- function(x = NULL,
     xtick.font = list(family = x.tick.font.family, size = x.tick.font.size, color = x.tick.font.color)
     footer.font = list(family = footer.font.family, size = footer.font.size, color = footer.font.color)
     legend.font = list(family = legend.font.family, size = legend.font.size, color = legend.font.color)
-    data.label.font = list(family = data.label.font.family, size=data.label.font.size, color = data.label.font.color)
 
     # Try to store name of variables
     scatter.mult.yvals <- isTRUE(attr(x, "scatter.mult.yvals"))
@@ -358,6 +358,8 @@ Scatter <- function(x = NULL,
         opacity <- if (fit.type == "None") 1 else 0.4
     if (is.null(marker.border.opacity))
         marker.border.opacity <- opacity
+    if (data.label.font.autocolor)
+        data.label.font.color <- colors
 
     scatter.colors.as.numeric <- 0
     colorbar <- NULL
@@ -425,6 +427,10 @@ Scatter <- function(x = NULL,
 
     num.groups <- length(g.list)
     num.series <- if (scatter.colors.as.numeric) 1 else num.groups
+    data.label.font.color <- vectorize(data.label.font.color, length(g.list))
+    data.label.font = lapply(data.label.font.color, 
+        function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
+    
 
     # hovertext
     source.text <- paste0(scatter.labels, " (", formatByD3(x, x.hovertext.format, x.tick.prefix, x.tick.suffix), ", ",
@@ -586,8 +592,10 @@ Scatter <- function(x = NULL,
                 showlegend = (legend.show && !separate.legend),
                 legendgroup = if (num.series > 1) ggi else 1,
                 textposition = data.label.position, cliponaxis = FALSE,
+                textfont = data.label.font[[ggi]],
                 marker = marker.obj, line = line.obj, text = source.text[ind],
                 hoverinfo = if (num.series == 1) "text" else "name+text",
+                hoverlabel = list(font = data.label.font[[ggi]]),
                 type = "scatter", mode = series.mode, symbols = marker.symbols)
 
         # Getting legend with consistently sized markers
@@ -654,8 +662,7 @@ Scatter <- function(x = NULL,
                            setTitle(title, title.font, margins),
                            if (is.null(small.mult.index)) setFooter(footer, footer.font, margins) else NULL),
         hovermode = if (tooltip.show) "closest" else FALSE,
-        hoverlabel = list(namelength = -1, font = data.label.font, bordercolor = charting.area.fill.color),
-        font = data.label.font
+        hoverlabel = list(namelength = -1, bordercolor = charting.area.fill.color)
     )
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"

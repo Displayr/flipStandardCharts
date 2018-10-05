@@ -30,7 +30,8 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1,
   footer.font.color = global.font.color, footer.font.size = 8,
   footer.wrap = TRUE, footer.wrap.nchar = 100,
   data.label.show = FALSE, data.label.font.family = global.font.family,
-  data.label.font.color = global.font.color, data.label.font.size = 10,
+  data.label.font.color = global.font.color,
+  data.label.font.autocolor = FALSE, data.label.font.size = 10,
   data.label.position = "top middle", opacity = NULL,
   background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
   background.fill.opacity = 0, charting.area.fill.color = rgb(255, 255,
@@ -108,7 +109,7 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1,
 
 \item{scatter.max.labels}{Integer; the maximum number of labels to show on a Labeled Scatterplot.}
 
-\item{colors}{Character; a vector containing one or more colors specified as hex codes.}
+\item{colors}{A vector of colors to use in the chart. When \code{scatter.colors.as.categorical}, the vector of colors should have the length as the number of categories in \code{scatter.colors}. If \code{scatter.colors} is used as numeric vector, then a color ramp is constructed from the colors listed.}
 
 \item{trend.lines}{Boolean indicating whether to plot trend lines for multiple tables.}
 
@@ -199,13 +200,16 @@ in character format (e.g. "black") or an a hex code. This can be a single
 color, a vector of colors (1 for each series/column), or a comma separated list
 of colors}
 
+\item{data.label.font.autocolor}{Boolean; If true, \code{data.label.font.color} is ignored and labels are colored
+according to the series color.}
+
 \item{data.label.font.size}{Integer; Font size for data label.px.}
 
 \item{data.label.position}{Character; where to place the source data value in relation
 to the marker icon. Can be "top left", "top center", "top right", "middle left", "middle center",
 "middle right", "bottom left", "bottom center", "bottom right".}
 
-\item{opacity}{Opacity of bars as an alpha value (0 to 1).}
+\item{opacity}{of scatter point colors as an alpha value (0 to 1).}
 
 \item{background.fill.color}{Background color in character format (e.g. "black") or a hex code.}
 

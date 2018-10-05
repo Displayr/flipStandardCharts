@@ -126,7 +126,6 @@ Radar <- function(x,
     y.tick.font = list(family = y.tick.font.family, size = y.tick.font.size, color = y.tick.font.color)
     footer.font = list(family = footer.font.family, size = footer.font.size, color = footer.font.color)
     legend.font = list(family = legend.font.family, size = legend.font.size, color = legend.font.color)
-    data.label.font = list(family = data.label.font.family, size = data.label.font.size, color = data.label.font.color)
     legend <- setLegend("Radar", legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
                         legend.border.color, legend.border.line.width, legend.position.x, legend.position.y)
 
@@ -262,22 +261,27 @@ Radar <- function(x,
                         xanchor = xanch[ii], xshift = outer[ii,1]/r.max))
     }
 
+    n <- length(g.list)
     if (is.null(line.thickness))
         line.thickness <- 3
-    if (length(data.label.show) > 1 && length(g.list) == 2) # small multiples
+    if (length(data.label.show) > 1 && n == 2) # small multiples
     {
         line.thickness <- c(line.thickness, 0)
         opacity <- c(opacity, if (opacity == 0.0) 0.2 else opacity)
     }
     else
     {
-        line.thickness <- rep(1, length(g.list)) * line.thickness
-        opacity <- rep(1, length(g.list)) * opacity
+        line.thickness <- vectorize(line.thickness, n)
+        opacity <- vectorize(opacity, n)
     }
-    hovertext.show <- rep(TRUE, length(g.list)) & hovertext.show
-
+    hovertext.show <- vectorize(hovertext.show, n)
+    data.label.show <- vectorize(data.label.show, n)
+    data.label.font.color <- vectorize(data.label.font.color, n)
+    data.label.font = lapply(data.label.font.color, 
+        function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
+    
     # Main trace
-    for (ggi in 1:length(g.list))
+    for (ggi in 1:n)
     {
         ind <- which(pos$Group == g.list[ggi])
         p <- add_trace(p, x = pos$x[ind], y = pos$y[ind], name = legend.text[ggi],
@@ -289,8 +293,7 @@ Radar <- function(x,
     }
 
     # Markers are added as a separate trace to allow overlapping hoverinfo
-    data.label.show <- suppressWarnings(rep(TRUE, length(g.list)) & data.label.show)
-    for (ggi in length(g.list):1)
+    for (ggi in n:1)
     {
         ind <- which(pos$Group == g.list[ggi])
         ind <- ind[-length(ind)] # remove last duplicated point
@@ -298,6 +301,7 @@ Radar <- function(x,
                     name = g.list[ggi], legendgroup = g.list[ggi], opacity = 0,
                     showlegend = FALSE, text = pos$HoverText[ind],
                     hoverinfo = if (hovertext.show[ggi]) "all+text" else "none",
+                    hoverlabel = list(font = data.label.font[[ggi]]),
                     marker = list(size = 5, color = toRGB(colors[ggi])))
 
         if (data.label.show[ggi])
@@ -307,7 +311,7 @@ Radar <- function(x,
             p <- add_trace(p, x = pos$x[ind] + x.offset, y = pos$y[ind] + y.offset,
                     type = "scatter", mode = "text", legendgroup = g.list[ggi],
                     showlegend = FALSE, hoverinfo = "none", text = pos$DataLabels[ind],
-                    textfont = data.label.font)
+                    textfont = data.label.font[[ggi]])
         }
     }
     annot.len <- length(annotations)
@@ -329,7 +333,7 @@ Radar <- function(x,
             plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
             paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
             hovermode = if (tooltip.show) "closest" else FALSE,
-            hoverlabel = list(namelength = -1, font = data.label.font, bordercolor = charting.area.fill.color),
+            hoverlabel = list(namelength = -1, bordercolor = charting.area.fill.color),
             xaxis = xaxis, yaxis = yaxis, shapes = grid,
             legend = legend, showlegend = legend.show)
 

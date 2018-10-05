@@ -957,6 +957,12 @@ autoFontColor <- function (colors)
 
 vectorize <- function(x, n)
 {
+    if (is.logical(x))
+        return(suppressWarnings(rep(TRUE, n) & x))
+
+    if (is.numeric(x))
+        return(suppressWarnings(rep(0, n) + x))
+
     x <- TextAsVector(x)
-    return(paste0(x, rep("", n)))
+    return(suppressWarnings(paste0(x, rep("", n))))
 }

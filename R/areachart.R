@@ -242,6 +242,7 @@ Area <- function(x,
     xtick.font = list(family = x.tick.font.family, size = x.tick.font.size, color = x.tick.font.color)
     footer.font = list(family = footer.font.family, size = footer.font.size, color = footer.font.color)
     legend.font = list(family = legend.font.family, size = legend.font.size, color = legend.font.color)
+    data.label.show = vectorize(data.label.show, ncol(chart.matrix))
 
     if (ncol(chart.matrix) == 1)
         legend.show <- FALSE
@@ -290,7 +291,7 @@ Area <- function(x,
     # Invisible trace to ensure enough space for data labels
     # and that tick bounds are shown properly
     # This must happen before ANY of the area traces are put in
-    if (data.label.show || notAutoRange(yaxis)) 
+    if (any(data.label.show) || notAutoRange(yaxis)) 
         p <- add_trace(p, type = "scatter", mode = "markers",
            x = x.labels, y = apply(chart.matrix, 1, max, na.rm = TRUE) * 1.01,
            marker = list(color = "red", opacity = 0.0),
@@ -431,9 +432,9 @@ Area <- function(x,
          }
     }
 
-    if (data.label.show)
+    for (i in 1:ncol(chart.matrix))   
     {
-        for (i in 1:ncol(chart.matrix))   
+        if (data.label.show[i])
         {
             y <- as.numeric(chart.matrix[, i])
             x <- x.labels

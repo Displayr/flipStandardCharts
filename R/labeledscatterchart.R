@@ -17,6 +17,8 @@
 #' @param scatter.colors.name Character; Used for labelling footers.
 #' @param scatter.colors.as.categorical Boolean; Whether to treat colors as a categorical groups, or a numeric scale.
 #' @param colors A vector of colors to use in the chart. When \code{scatter.colors.as.categorical}, the vector of colors should have the length as the number of categories in \code{scatter.colors}. If \code{scatter.colors} is used as numeric vector, then a color ramp is constructed from the colors listed.
+#' @param data.label.font.autocolor Boolean; If true, \code{data.label.font.color} is ignored and labels are colored
+#' according to the series color.
 #' @param opacity of scatter point colors as an alpha value (0 to 1).
 #' @param scatter.max.labels Integer; the maximum number of labels to show on a Labeled Scatterplot.
 #' @param trend.lines Boolean indicating whether to plot trend lines for multiple tables.
@@ -70,6 +72,7 @@ LabeledScatter <- function(x = NULL,
                                 scatter.max.labels = 50,
                                 data.label.font.family = global.font.family,
                                 data.label.font.color = global.font.color,
+                                data.label.font.autocolor = NA,
                                 data.label.font.size = 10,
                                 data.label.format = "",
                                 data.label.prefix = "",
@@ -304,6 +307,8 @@ LabeledScatter <- function(x = NULL,
         names(colors) <- g.list
     }
     colors <- StripAlphaChannel(colors)
+    if (is.na(data.label.font.autocolor))
+        data.label.font.autocolor <- length(unique(groups[not.na])) > 1
 
     if (trend.lines)
         legend.show <- FALSE
@@ -417,7 +422,7 @@ LabeledScatter <- function(x = NULL,
                        title.font.color = title.font.color,
                        title.font.size = title.font.size,
                        labels.font.family = data.label.font.family,
-                       labels.font.color = if (length(unique(groups[not.na])) > 1) NULL else data.label.font.color,
+                       labels.font.color = if (data.label.font.autocolor) NULL else data.label.font.color,
                        labels.font.size = data.label.font.size,
                        point.radius = 0.5 * marker.size,
                        y.bounds.maximum = y.bounds.maximum,

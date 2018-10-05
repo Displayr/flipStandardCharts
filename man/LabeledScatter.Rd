@@ -22,7 +22,8 @@ LabeledScatter(x = NULL, y = NULL, scatter.x.column = 1,
   footer.font.color = global.font.color, footer.font.size = 8,
   footer.wrap = TRUE, footer.wrap.nchar = 100,
   scatter.max.labels = 50, data.label.font.family = global.font.family,
-  data.label.font.color = global.font.color, data.label.font.size = 10,
+  data.label.font.color = global.font.color,
+  data.label.font.autocolor = NA, data.label.font.size = 10,
   data.label.format = "", data.label.prefix = "",
   data.label.suffix = "", legend.font.color = global.font.color,
   legend.font.family = global.font.family, legend.font.size = 10,
@@ -136,6 +137,9 @@ line of the footer when \code{footer.wrap} \code{TRUE}.}
 in character format (e.g. "black") or an a hex code. This can be a single
 color, a vector of colors (1 for each series/column), or a comma separated list
 of colors}
+
+\item{data.label.font.autocolor}{Boolean; If true, \code{data.label.font.color} is ignored and labels are colored
+according to the series color.}
 
 \item{data.label.font.size}{Integer; Font size for data label.px.}
 

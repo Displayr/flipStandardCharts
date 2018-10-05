@@ -162,6 +162,7 @@ Line <-   function(x,
         marker.border.opacity <- marker.opacity
     eval(colors) # not sure why, but this is necessary for bars to appear properly
 
+    data.label.show <- vectorize(data.label.show, ncol(chart.matrix))
     dlab.color <- vectorize(data.label.font.color, ncol(chart.matrix))
     data.label.font = lapply(dlab.color, 
         function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
@@ -251,7 +252,7 @@ Line <-   function(x,
         tmp.group <- paste("group", i)
 
         # Need to add data labels first otherwise it will override hovertext in area chart
-        if (data.label.show)
+        if (data.label.show[i])
         {
             source.text <- paste(data.label.prefix,
                  data.label.function(chart.matrix[, i], decimals = data.label.decimals),
