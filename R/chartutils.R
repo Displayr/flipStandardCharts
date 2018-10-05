@@ -950,8 +950,9 @@ getSign <- function(values, axis)
 #' @importFrom grDevices col2rgb rgb2hsv
 autoFontColor <- function (colors)
 {
-    c.hsv <- rgb2hsv(col2rgb(colors))
-    return(ifelse(c.hsv["v",] > 0.5, "#2C2C2C", "#FFFFFF"))
+    tmp.rgb <- col2rgb(colors)
+    tmp.lum <- apply(tmp.rgb, 2, function(x) return(0.299*x[1] + 0.587*x[2] + 0.114*x[3]))
+    return(ifelse(tmp.lum > 126, "#2C2C2C", "#FFFFFF"))
 }
 
 vectorize <- function(x, n)
