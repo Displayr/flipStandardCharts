@@ -152,7 +152,8 @@ SmallMultiples <- function(x,
         stop("Small multiples cannot show more than 100 panels (current dataset contains ", npanels, " series).\n")
     if (length(colors) < npanels && !chart.type %in% c("GeographicMap", "Pyramid", "Scatter"))
         colors <- paste0(rep("", npanels), colors)
-    data.label.font.color <- vectorize(data.label.font.color, npanels)
+    if (chart.type != "Pyramid")
+        data.label.font.color <- vectorize(data.label.font.color, npanels)
 
     all.values <- if (chart.type == "Scatter") x[,scatter.y.column]
                   else unlist(x)
@@ -369,7 +370,7 @@ SmallMultiples <- function(x,
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
                                                      data.label.show = data.label.show,
-                                                     data.label.font.color = data.label.font.color[i],
+                                                     data.label.font.color = data.label.font.color,
                                                      x.tick.show = FALSE, x.tick.angle = x.tick.angle,
                                                      x.bounds.maximum = x.bounds.maximum,
                                                      global.font.family = global.font.family,
@@ -382,7 +383,7 @@ SmallMultiples <- function(x,
                                                      fit.CI.colors = c(fit.CI.colors[i], average.color),
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
-                                                     grid.show = grid.show, 
+                                                     grid.show = grid.show,
                                                      data.label.show = c(data.label.show, FALSE),
                                                      data.label.font.color = data.label.font.color[i],
                                                      x.tick.show = x.tick.show, x.tick.angle = x.tick.angle,
