@@ -235,7 +235,8 @@ BarPictograph <- function(x,
     rowlabel.cells <- NULL
     if (categories.tick.show)
     {
-        label.opp.pos <- setdiff(c("left", "right"), gsub("From ", "", fill.direction))[1]
+        label.opp.pos <- if (fill.direction == "From right") "left"
+                         else                                "right"
         if (categories.tick.align.horizontal == "Default")
             categories.tick.align.horizontal <- label.opp.pos
 
@@ -298,7 +299,7 @@ BarPictograph <- function(x,
                         image.url, base.image.str, layout.str, data.label.str,
                         floating.label.str, pad.icon.col, pad.icon.row, 0, 0, 0, 0)
     json.cells <- matrix(json.cells, ncol = 1)
-    if (categories.tick.show && grepl("left", fill.direction))
+    if (categories.tick.show && !grepl("right", fill.direction))
     {
         column.width <- c("\"flexible:label\"", column.width)
         json.cells <- cbind(rowlabel.cells, json.cells)
