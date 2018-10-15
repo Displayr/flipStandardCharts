@@ -25,7 +25,7 @@ BarPictograph(x, image = "Stickman", custom.image = NULL,
   background.fill.color = "transparent", pad.row = 2, pad.col = 2,
   pad.icon.row = 0, pad.icon.col = 0, graphic.width.inch = NA,
   graphic.height.inch = NA, graphic.resolution = 72,
-  print.config = FALSE)
+  maximum.number.icons = 10000, print.config = FALSE)
 }
 \arguments{
 \item{x}{A \code{\link{list}}, where each vector contains data to be plotted. If the data is not numeric
@@ -119,6 +119,8 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{graphic.height.inch}{Verical dimension of the chart output in inches.}
 
 \item{graphic.resolution}{Number of pixels per inch. Should not have an actual effect but rounding errors sometimes occur if this is chosen poorly.}
+
+\item{maximum.number.icons}{Maximum allowed number of icons. Note that increasing this value may cause the browser to crash.}
 
 \item{print.config}{Print configuration string based to \code{rhtmlPictographs::graphic}. This is useful for debugging.}
 }

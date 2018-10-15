@@ -25,6 +25,7 @@
 #' @param pad.col Vertical spacing between cells in table.
 #' @param pad.icon.row Numeric specifying vertical spacing between icons inside each table cell. May be a single value or a numeric matrix of the same dimensions as \code{x}.
 #' @param pad.icon.col Horizontal spacing between icons inside each table cell.
+#' @param maximum.number.icons Maximum allowed number of icons. Note that increasing this value may cause the browser to crash.
 #' @param graphic.width.inch Horizontal dimension of the chart output in inches. If these dimensions are not specified, the width-to-height ratio of the chart output may not match the desired dimensions.
 #' @param graphic.height.inch Verical dimension of the chart output in inches.
 #' @param graphic.resolution Number of pixels per inch. Should not have an actual effect but rounding errors sometimes occur if this is chosen poorly.
@@ -76,6 +77,7 @@ BarPictograph <- function(x,
                        graphic.width.inch = NA,
                        graphic.height.inch = NA,
                        graphic.resolution = 72,
+                       maximum.number.icons = 10000,
                        print.config = FALSE)
 {
     # Ensure that input data x is a named vector
@@ -327,6 +329,16 @@ BarPictograph <- function(x,
 
     if (print.config)
         cat(json.str, "\n")
+
+    # Check that the number of icons is not too big
+    if (hide.base.image)
+        num.icons <- sum(prop * total.icons)
+    else
+        num.icons <- length(prop) * total.icons
+    if (num.icons > maximum.number.icons)
+        stop("Cannot create a chart with ", num.icons,
+        " icons (maximum allowed is ", maximum.number.icons, 
+        "). Try increasing the 'scale' parameter.")
 
     result <- list(htmlwidget = graphic(json.str))
     class(result) <- "StandardChart"
