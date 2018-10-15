@@ -84,7 +84,7 @@ for (dat in dat.list)
 
 test_that("Heat single column",
           {
-              expect_error(Heat(seq(10)), "Input must be two-dimensional.")
+              expect_error(Heat(seq(10)), NA)
           })
 
 
