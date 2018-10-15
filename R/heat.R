@@ -139,9 +139,6 @@ Heat <- function(x,
     mat <- checkMatrixNames(x, assign.col.names = FALSE)
     ErrorIfNotEnoughData(mat)
 
-    if (dim(mat)[2] == 1)
-        stop("Input must be two-dimensional, i.e. at least 2 variables or a table with at least 2 columns.")
-
     if (nrow(mat) > 500 || ncol(mat) > 500)
         stop("Heatmap cannot be plotted with more than 500 rows or columns.")
 
