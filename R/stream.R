@@ -3,6 +3,9 @@
 #' Create a Streamtraph, which is an area chart centered around the x-axis rather than on top of it.
 #' @param x A \code{matrix}, with columns containing the dates or other numeric x-axis variable.
 #' @param colors A vector of colors of the streams.
+#' @param global.font.color Global font color as a named color in character format
+#' (e.g. "black") or an a hex code.
+#' @param hovertext.font.color Font color of hovertext as a string or hex code.
 #' @param y.axis.show Logical; if FALSE, the y-axis is not shown.
 #' @param y.tick.format A string representing a d3 formatting code for the y-axis.
 #' See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format
@@ -16,7 +19,7 @@
 #' @param margin.right Right margin (default should be fine, this allows for fine-tuning plot space)
 #' @param margin.bottom Bottom margin (default should be fine, this allows for fine-tuning plot space)
 #' @param margin.left Left margin (default should be fine, this allows for fine-tuning plot space)
-#' @importFrom streamgraph streamgraph sg_fill_manual sg_axis_x sg_axis_y
+#' @importFrom streamgraph streamgraph sg_fill_manual sg_axis_x sg_axis_y sg_colors
 #' @importFrom flipTime AsDateTime
 #' @export
 Stream <- function(x,
@@ -29,6 +32,8 @@ Stream <- function(x,
                    x.tick.format = "%d %b %y",
                    x.tick.units = "Automatic",
                    x.tick.interval = 1,
+                   global.font.color = rgb(44, 44, 44, maxColorValue = 255),
+                   hovertext.font.color = global.font.color,
                    margin.top = 20,
                    margin.left = 50,
                    margin.bottom = 30,
@@ -135,6 +140,7 @@ Stream <- function(x,
     else
         sg <- sg_axis_y(sg, tick_count = y.number.ticks, tick_format = y.tick.format)
     sg <- sg_axis_x(sg, tick_interval = x.tick.interval, tick_units = tolower(x.tick.units), tick_format = x.tick.format)
+    sg <- sg_colors(sg, axis_color = global.font.color, tooltip_color = hovertext.font.color)
 
     # Override default of fixed size widget
     sg$sizingPolicy$browser$fill <- TRUE

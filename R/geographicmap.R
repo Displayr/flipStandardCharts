@@ -427,7 +427,7 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.sh
         map <- setView(map, -96, 37.8, zoom = 4)
 
     # Set the background color
-    js <- paste0("document.querySelector('.leaflet-container').style.backgroundColor = '",
+    js <- paste0("() => document.querySelector('.leaflet-container').style.backgroundColor = '",
                  ocean.color, "'")
     map <- onRender(map, js)
 
