@@ -71,6 +71,13 @@
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers
 #' @param data.label.prefix Character; prefix for data values.
 #' @param data.label.suffix Character; suffix for data values.
+#' @param hovertext.font.size Integer; Font size for hovertext (tooltips).
+#' @param hovertext.font.family Character; font family for hovertext.
+#' @param hovertext.format A string representing a d3 formatting code.
+#' See https://github.com/mbostock/d3/wiki/Formatting#numbers
+#' @param hovertext.prefix Character; prefix for hovertext.
+#' @param hovertext.suffix Character; suffix for hovertext.
+
 #' @param left.columns An optional list of vectors or matrices to be appended to the left
 #' of the heatmap.
 #' @param left.column.headings An optional comma separated string containing headings for
@@ -131,6 +138,11 @@ Heat <- function(x,
                     data.label.format = "",
                     data.label.prefix = "",
                     data.label.suffix = "",
+                    hovertext.font.family = global.font.family,
+                    hovertext.font.size = 11,
+                    hovertext.format = data.label.format,
+                    hovertext.prefix = data.label.prefix,
+                    hovertext.suffix = data.label.suffix,
                     left.columns = NULL,
                     left.column.headings = "",
                     right.columns = NULL,
@@ -174,11 +186,29 @@ Heat <- function(x,
         format.function <- FormatAsReal
         cell.decimals <- decimalsFromD3(data.label.format, 2)
     }
-    cellnote <- paste0(data.label.prefix,
+    data.label.text <- paste0(data.label.prefix,
                        apply(mat, c(1, 2), format.function, decimals = cell.decimals),
                        data.label.suffix)
-    dim(cellnote) <- dim(mat)
-    cellnote[!is.finite(mat)] <- "NA"
+    dim(data.label.text) <- dim(mat)
+    data.label.text[!is.finite(mat)] <- "NA"
+
+    pct <- percentFromD3(hovertext.format) || grepl("%", stat, fixed = TRUE)
+    if (pct)
+    {
+        format.function <- FormatAsPercent
+        cell.decimals <- decimalsFromD3(hovertext.format, 0)
+    }
+    else
+    {
+        format.function <- FormatAsReal
+        cell.decimals <- decimalsFromD3(hovertext.format, 2)
+    }
+    hovertext.text <- paste0(hovertext.prefix,
+                       apply(mat, c(1, 2), format.function, decimals = cell.decimals),
+                       hovertext.suffix)
+    dim(hovertext.text) <- dim(mat)
+    hovertext.text[!is.finite(mat)] <- "NA"
+
     if (y.title == stat)
         y.title <- ""
 
@@ -210,9 +240,10 @@ Heat <- function(x,
                                      yaxis_location = "left",
                                      colors = colors,
 
-                                     # Data labels
-                                     cellnote = cellnote,
+                                     # Data labels and hovertext
+                                     cellnote = hovertext.text,
                                      show_cellnote_in_cell = data.label.show,
+                                     cellnote_in_cell = data.label.text,
 
                                      # Left and right additional columns
                                      left_columns = left.appended$columns.append,
@@ -255,8 +286,8 @@ Heat <- function(x,
                                      legend_font_size = legend.font.size,
                                      cell_font_family = data.label.font.family,
                                      cell_font_size = data.label.font.size,
-                                     tip_font_family = data.label.font.family,  # hover are same as data.label
-                                     tip_font_size = data.label.font.size,
+                                     tip_font_family = hovertext.font.family,
+                                     tip_font_size = hovertext.font.size,
                                      left_columns_font_size = data.label.font.size,
                                      left_columns_font_family = data.label.font.family,
                                      left_columns_font_color = global.font.color,

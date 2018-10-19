@@ -26,8 +26,12 @@ Heat(x, sort.rows = "None", sort.columns = "None",
   data.label.show = TRUE, data.label.font.size = 10,
   data.label.font.family = global.font.family, data.label.format = "",
   data.label.prefix = "", data.label.suffix = "",
-  left.columns = NULL, left.column.headings = "",
-  right.columns = NULL, right.column.headings = "")
+  hovertext.font.family = global.font.family, hovertext.font.size = 11,
+  hovertext.format = data.label.format,
+  hovertext.prefix = data.label.prefix,
+  hovertext.suffix = data.label.suffix, left.columns = NULL,
+  left.column.headings = "", right.columns = NULL,
+  right.column.headings = "")
 }
 \arguments{
 \item{x}{A matrix of data to be displayed with values in the cells and optiona row and column labels.}
@@ -143,6 +147,17 @@ See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 \item{data.label.prefix}{Character; prefix for data values.}
 
 \item{data.label.suffix}{Character; suffix for data values.}
+
+\item{hovertext.font.family}{Character; font family for hovertext.}
+
+\item{hovertext.font.size}{Integer; Font size for hovertext (tooltips).}
+
+\item{hovertext.format}{A string representing a d3 formatting code.
+See https://github.com/mbostock/d3/wiki/Formatting#numbers}
+
+\item{hovertext.prefix}{Character; prefix for hovertext.}
+
+\item{hovertext.suffix}{Character; suffix for hovertext.}
 
 \item{left.columns}{An optional list of vectors or matrices to be appended to the left
 of the heatmap.}
