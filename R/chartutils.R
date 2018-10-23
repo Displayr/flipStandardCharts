@@ -937,6 +937,8 @@ notAutoRange <- function(axis)
 getSign <- function(values, axis)
 {
     res <- sign(values)
+    if (any(is.na(res)))
+        res[which(is.na(res))] <- 0
     if (length(axis$range) >= 2 && axis$range[2] < axis$range[1])
         res <- -res
     else if (axis$autorange == "reversed")

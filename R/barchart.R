@@ -150,13 +150,12 @@ Bar <- function(x,
 
     chart.matrix <- checkMatrixNames(x)
     is.stacked <- grepl("Stacked", type, fixed=T)
-    is.hundred.percent.stacked <- grepl("100% Stacked", type, fixed=T)
     if (is.stacked && ncol(chart.matrix) < 2)
-        stop(paste(type, "requires more than one series. Use Bar charts instead for this data."))
-    if (is.stacked && (any(is.na(chart.matrix)) || any(chart.matrix < 0)))
-        stop("Stacked charts cannot be produced with missing or negative values.")
-    if (is.hundred.percent.stacked && any(rowSums(chart.matrix) == 0))
-        stop("100% stacked charts cannot be produced with rows that do not contain positive values.")
+    {
+        warning("No stacking performed for only one series.")
+        is.stacked <- FALSE
+    }
+    is.hundred.percent.stacked <- grepl("100% Stacked", type, fixed=T)
     if (any(is.na(as.matrix(chart.matrix))))
         warning("Missing values have been set to zero.")
     if (type == "Stacked")
@@ -184,7 +183,7 @@ Bar <- function(x,
     x.labels.full <- rownames(chart.matrix)
 
     # Constants
-    barmode <- if (is.stacked) "stack" else ""
+    barmode <- if (is.stacked) "relative" else "group"
     if (is.null(opacity))
         opacity <- if (fit.type == "None") 1 else 0.6
     if (is.null(marker.border.opacity))

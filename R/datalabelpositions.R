@@ -19,6 +19,8 @@ dataLabelPositions <- function(chart.matrix,
                   bar.suffix, sep = "")
 
     chart.matrix[which(is.na(chart.matrix))] <- 0
+    if (barmode == "relative")
+       barmode <- "stack"
 
     series.count <- ncol(chart.matrix)
     if (barmode == "stack")

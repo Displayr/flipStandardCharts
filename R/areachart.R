@@ -154,11 +154,14 @@ Area <- function(x,
     ErrorIfNotEnoughData(x)
     chart.matrix <- checkMatrixNames(x)
     is.stacked <- grepl("Stacked", type, fixed = TRUE)
-    is.hundred.percent.stacked <- grepl("100% Stacked", type, fixed = TRUE)
     if (is.stacked && ncol(chart.matrix) < 2)
-        stop(paste(type, "requires more than one series. Use Area charts instead for this data."))
+    {
+        warning("No stacking performed for only one series.")
+        is.stacked <- FALSE
+    }
+    is.hundred.percent.stacked <- grepl("100% Stacked", type, fixed = TRUE)
     if (is.stacked && (any(is.na(chart.matrix)) || any(chart.matrix < 0)))
-        stop("Stacked charts cannot be produced with missing or negative values.")
+        stop("Stacked Area charts cannot be produced with missing or negative values. Try using Bar or Column charts with stacking")
     if (is.hundred.percent.stacked && any(rowSums(chart.matrix) == 0))
         stop("100% stacked charts cannot be produced with rows that do not contain positive values.")
     if (any(is.na(as.matrix(chart.matrix))))

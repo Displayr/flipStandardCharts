@@ -35,13 +35,13 @@ for (func in c("Area", "Bar", "Column"))
                     stack.str <- "\"100% Stacked\", "
                 cmd <- paste0("pp <- ", func, "(", dat, ", type = ", stack.str, opts[ii], ")")
 
-                if (grepl("missing", filestem))
+                if (grepl("missing", filestem) && func == "Area")
                     expect_error(eval(parse(text=cmd)))
                 else
                 {
-                    expect_error(eval(parse(text=cmd)), NA)
-                    #print(pp)
-                    #readline(prompt=paste0(filestem, ": press [enter] to continue: "))
+                    expect_error(suppressWarnings(eval(parse(text=cmd))), NA)
+                    print(pp)
+                    readline(prompt=paste0(filestem, ": press [enter] to continue: "))
                 }
             })
         }
