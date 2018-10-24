@@ -27,14 +27,17 @@ dataLabelPositions <- function(chart.matrix,
     {
         series.pos <- rep(0, series.count)
         y.pos <- if (swap.axes.and.data)
-            cum.data(chart.matrix, "cumulative.sum") - 0.5 * chart.matrix
+            cum.signed.data(chart.matrix) - 0.5 * chart.matrix
         else
-            cum.data(chart.matrix, "cumulative.sum")
+            cum.signed.data(chart.matrix)
 
         largest.bar <- max(rowSums(chart.matrix))
         if (is.null(display.threshold))
             display.threshold <- 0.05
-        text[chart.matrix < largest.bar * display.threshold] <- ""
+        text[abs(chart.matrix) < largest.bar * display.threshold] <- ""
+        text[chart.matrix == 0] <- ""
+
+        
     } else
     {
         series.pos <- ((0:(series.count - 1) + 0.5) / series.count - 0.5) * (1 - bar.gap)
@@ -67,17 +70,18 @@ dataLabelPositions <- function(chart.matrix,
         y.pos <- matrix(y.pos, ncol=ncol(chart.matrix))
         return(list(text = text, x = x.pos, y = y.pos))
     }
-    xanchor <- "center"
-    yanchor <- "middle"
-    if (!swap.axes.and.data)
-    {
-        yanchor <- "top"
-        if (barmode == "stack" && reversed)
-            yanchor <- "bottom"
-    }
+    
+    # Return list of annotations for stacked charts
     n <- length(text)
+    xanchor <- "center"
+    if (swap.axes.and.data)
+        yanchor <- rep("middle", n)
+    else if (reversed)
+        yanchor <- ifelse(as.numeric(chart.matrix) >= 0, "bottom", "top")
+    else
+        yanchor <- ifelse(as.numeric(chart.matrix) >= 0, "top", "bottom")
     font <- rep(font, each = nrow(chart.matrix))
     return(lapply(1:n, function(ii) list(text = text[ii], font = font[[ii]],
            x = x.pos[ii], y = y.pos[ii], showarrow = FALSE,
-           xref = "x", yref = "y", xanchor = xanchor, yanchor = yanchor)))
+           xref = "x", yref = "y", xanchor = xanchor, yanchor = yanchor[ii])))
 }

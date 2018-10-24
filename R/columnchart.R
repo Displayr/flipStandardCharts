@@ -447,7 +447,7 @@ Column <- function(x,
                             bar.gap = bar.gap,
                             display.threshold = data.label.threshold,
                             dates = axisFormat$ymd,
-                            reversed = any(getSign(chart.matrix, yaxis) < 0),
+                            reversed = isReversed(yaxis),
                             font = data.label.font)
 
     ## Initiate plotly object
@@ -529,6 +529,7 @@ Column <- function(x,
         }
     }
     annotations <- NULL
+    #print(data.annotations)
     if (data.label.show && is.stacked)
         annotations <- data.annotations
     n <- length(annotations)

@@ -170,6 +170,13 @@ getRange <- function(x, axis, axisFormat)
     range
 }
 
+isReversed <- function(axis)
+{
+    if (is.null(axis$range))
+        return(axis$autorange == "reversed")
+    return(xor(axis$range[1] > axis$range[2], axis$autorange == "reversed"))
+}
+
 
 #' Construct line of best fit
 #'
@@ -737,8 +744,6 @@ setTicks <- function(minimum, maximum, distance, reversed = FALSE,
                  tickvals=tickvals, ticktext=ticktext))
 }
 
-
-
 ## Takes a matrix, and returns a matrix of either a cumulative sum,
 ## or a cumulative sum of percentages, over each row.
 cum.data <- function(x, output = "cumulative.percentage")
@@ -750,6 +755,22 @@ cum.data <- function(x, output = "cumulative.percentage")
     else if (output == "column.percentage")
         apply(x, 1, function(z) prop.table(z))
     t(result)
+}
+
+cum.signed.data <- function(x)
+{
+    result <- matrix(0, NROW(x), NCOL(x))
+    for (i in 1:nrow(x))
+    {
+        ind <- which(x[i,] >= 0)
+        if (length(ind) > 0)
+            result[i,ind] <- cumsum(x[i,ind])
+        
+        ind <- which(x[i,] < 0)
+        if (length(ind) > 0)
+            result[i,ind] <- cumsum(x[i,ind])
+    }
+    return(result)
 }
 
 ## Takes a single string and puts <br> in place of the closest space preceding the n= value character.
