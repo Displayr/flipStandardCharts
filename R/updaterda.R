@@ -274,8 +274,9 @@
 # unzip(f, exdir = tempdir())
 # us.postcodes <- readOGR(tempdir(), "cb_2016_us_zcta510_500k")
 # colnames(us.postcodes@data)[3] <- "name"
-# # Simplify polygons to reduce size
+# # Simplify polygons to reduce size. Named polygons causes leaflet map to be blank.
 # us.postcodes <- ms_simplify(us.postcodes, keep = 0.01, keep_shapes = TRUE)
+# names(us.postcodes@polygons) <- NULL
 #
 # # UK postcodes
 # # Note terms and conditions - http://www.opendoorlogistics.com/downloads/
@@ -289,6 +290,7 @@
 # uk.compress2 <- ms_simplify(uk.postcodes[701:750, ], keep_shapes = TRUE)
 # uk.compress3 <- ms_simplify(uk.postcodes[751:2880, ], keep_shapes = TRUE)
 # uk.postcodes <- rbind(uk.compress, uk.compress2, uk.compress3)
+# names(uk.postcodes@polygons) <- NULL
 #
 # # Australia post codes
 # # http://www.abs.gov.au/AUSSTATS/abs@.nsf/DetailsPage/1270.0.55.003July%202016?OpenDocument
@@ -299,6 +301,7 @@
 # australia.postcodes <- readOGR(tempdir(), "POA_2016_AUST")
 # colnames(australia.postcodes@data)[2] <- "name"
 # australia.postcodes <- ms_simplify(australia.postcodes, keep = 0.02, keep_shapes = TRUE)
+# names(australia.postcodes@polygons) <- NULL
 #
 # # Australia SA4 areas
 # url <- "http://www.abs.gov.au/AUSSTATS/subscriber.nsf/log?openagent&1270055001_sa4_2016_aust_shape.zip&1270.0.55.001&Data%20Cubes&C65BC89E549D1CA3CA257FED0013E074&0&July%202016&12.07.2016&Latest"
@@ -309,6 +312,7 @@
 # australia.areas <- readOGR(tempdir(), "SA4_2016_AUST")
 # colnames(australia.areas@data)[2] <- "name"
 # australia.areas <- ms_simplify(australia.areas, keep = 0.005, keep_shapes = TRUE)
+# names(australia.areas@polygons) <- NULL
 #
 #
 # # Manually combine 2 counties of Norway, zendesk 16755
