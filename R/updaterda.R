@@ -11,7 +11,7 @@
 #' admin1.coordinates - a SpatialPolygonsDataFrame of regional data and polygons.
 #' map.coordinates.50 - a SpatialPolygonsDataFrame of country data and polygons at the
 #'     higher resolution of 1:50,000,000
-#' map.coordinates.110} - a SpatialPolygonsDataFrame of country data and polygons at the
+#' map.coordinates.110 - a SpatialPolygonsDataFrame of country data and polygons at the
 #'     lower resolution of 1:110,000,000
 #' ISO_3166_1 - a data.frame of country names
 #' ISO_3166_2 - a data.frame of region names
@@ -309,6 +309,30 @@
 # australia.areas <- readOGR(tempdir(), "SA4_2016_AUST")
 # colnames(australia.areas@data)[2] <- "name"
 # australia.areas <- ms_simplify(australia.areas, keep = 0.005, keep_shapes = TRUE)
+#
+#
+# # Manually combine 2 counties of Norway, zendesk 16755
+# ad <- admin1.coordinates
+# to.merge <- ad[ad$name %in% c("Nord-Trøndelag", "Sør-Trøndelag"), ]
+# ad <- ad[!ad$name %in% c("Nord-Trøndelag", "Sør-Trøndelag"), ]
+#
+# merged <- aggregate(to.merge, FUN = mean, dissolve = TRUE)
+# merged$admin <- "Norway"
+# merged$name <- "Trøndelag"
+# merged$ID <- NULL
+#
+# levels(ad$name) <- c(levels(ad$name), "Trøndelag")
+# ad <- rbind(ad, merged)
+# print(ad[ad$admin == "Norway", ]$name)
+# admin1.coordinates <- ad
+#
+# anm <- admin1.name.map
+# anm[["Norway"]]$"Nord-Trøndelag" <- NULL
+# anm[["Norway"]]$"Sør-Trøndelag" <- NULL
+# anm[["Norway"]]$"Trøndelag" <- "Trondelag"
+# print(anm[["Norway"]])
+# admin1.name.map <- anm
+#
 #
 # # Save everything into sysdata.rda
 # use_data(missing110,
