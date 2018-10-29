@@ -40,8 +40,8 @@ for (func in c("Area", "Bar", "Column"))
                 else
                 {
                     expect_error(suppressWarnings(eval(parse(text=cmd))), NA)
-                    print(pp)
-                    readline(prompt=paste0(filestem, ": press [enter] to continue: "))
+                    #print(pp)
+                    #readline(prompt=paste0(filestem, ": press [enter] to continue: "))
                 }
             })
         }

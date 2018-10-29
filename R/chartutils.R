@@ -898,21 +898,26 @@ percentFromD3 <- function(format)
 
 #' Output data in D3-formatting
 #'
-#' Returns a strings according to the d3 format specified
+#' Returns a strings according to the d3 format specified. 
 #' @noRd
 #' @param x Input data (may be a vector) to format
-#' @param format d3 formatting string
+#' @param format D3 formatting string. Accepts percentages, numeric and scientific notation
 #' @param prefix Optional string to prepend to output
 #' @param suffix Optional string to append to output
-formatByD3 <- function(x, format, prefix = "", suffix = "")
+formatByD3 <- function(x, format, prefix = "", suffix = "", percent = FALSE)
 {
     x.str <- as.character(x)
     if (is.numeric(x))
     {
-        if (percentFromD3(format))
-            x.str <- paste0(FormatAsReal(x*100, decimals = decimalsFromD3(format)), "%")
+        big.mark <- if (commaFromD3(format) || format == "") "," else ""
+        tmp.fmt <- gsub("[^deEfgGs]", "", format)
+        if (nchar(tmp.fmt) == 0)
+            tmp.fmt <- "f" 
+
+        if (percentFromD3(format) || percent)
+            x.str <- paste0(formatC(x*100, format = "f", digits = decimalsFromD3(format), big.mark = big.mark), "%")
         else
-            x.str <- FormatAsReal(x, decimals = decimalsFromD3(format))
+            x.str <- formatC(x, format = tmp.fmt, digits = decimalsFromD3(format), big.mark = big.mark)
     }
     x.str <- paste0(prefix, x.str, suffix)
     return(x.str)

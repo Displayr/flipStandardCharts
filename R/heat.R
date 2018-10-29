@@ -73,10 +73,10 @@
 #' @param data.label.suffix Character; suffix for data values.
 #' @param hovertext.font.size Integer; Font size for hovertext (tooltips).
 #' @param hovertext.font.family Character; font family for hovertext.
-#' @param hovertext.format A string representing a d3 formatting code.
+#' @param y.hovertext.format A string representing a d3 formatting code.
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers
-#' @param hovertext.prefix Character; prefix for hovertext.
-#' @param hovertext.suffix Character; suffix for hovertext.
+#' @param y.hovertext.prefix Character; prefix for hovertext.
+#' @param y.hovertext.suffix Character; suffix for hovertext.
 
 #' @param left.columns An optional list of vectors or matrices to be appended to the left
 #' of the heatmap.
@@ -140,9 +140,9 @@ Heat <- function(x,
                     data.label.suffix = "",
                     hovertext.font.family = global.font.family,
                     hovertext.font.size = 11,
-                    hovertext.format = data.label.format,
-                    hovertext.prefix = data.label.prefix,
-                    hovertext.suffix = data.label.suffix,
+                    y.hovertext.format = data.label.format,
+                    y.hovertext.prefix = data.label.prefix,
+                    y.hovertext.suffix = data.label.suffix,
                     left.columns = NULL,
                     left.column.headings = "",
                     right.columns = NULL,
@@ -175,37 +175,12 @@ Heat <- function(x,
     n.col <- ncol(mat)
 
     stat <- ifelse(is.null(attr(x, "statistic")), "", attr(x, "statistic"))
-    pct <- percentFromD3(data.label.format) || grepl("%", stat, fixed = TRUE)
-    if (pct)
-    {
-        format.function <- FormatAsPercent
-        cell.decimals <- decimalsFromD3(data.label.format, 0)
-    }
-    else
-    {
-        format.function <- FormatAsReal
-        cell.decimals <- decimalsFromD3(data.label.format, 2)
-    }
-    data.label.text <- paste0(data.label.prefix,
-                       apply(mat, c(1, 2), format.function, decimals = cell.decimals),
-                       data.label.suffix)
+    pct <- percentFromD3(y.hovertext.format) || grepl("%", stat, fixed = TRUE)
+    data.label.text <- formatByD3(mat, data.label.format, data.label.prefix, data.label.suffix, percent = pct)
     dim(data.label.text) <- dim(mat)
     data.label.text[!is.finite(mat)] <- "NA"
 
-    pct <- percentFromD3(hovertext.format) || grepl("%", stat, fixed = TRUE)
-    if (pct)
-    {
-        format.function <- FormatAsPercent
-        cell.decimals <- decimalsFromD3(hovertext.format, 0)
-    }
-    else
-    {
-        format.function <- FormatAsReal
-        cell.decimals <- decimalsFromD3(hovertext.format, 2)
-    }
-    hovertext.text <- paste0(hovertext.prefix,
-                       apply(mat, c(1, 2), format.function, decimals = cell.decimals),
-                       hovertext.suffix)
+    hovertext.text <- formatByD3(mat, y.hovertext.format, y.hovertext.prefix, y.hovertext.suffix, percent = pct)
     dim(hovertext.text) <- dim(mat)
     hovertext.text[!is.finite(mat)] <- "NA"
 
@@ -226,7 +201,8 @@ Heat <- function(x,
         "column"
     } else
         "none"
-
+    
+    cell.decimals <- decimalsFromD3(y.hovertext.format, if (pct) 0 else 2)
     row.order <- if(is.null(rownames(mat))) seq(nrow(mat)) else str_trim(rownames(mat))
     left.appended <- appendColumns(left.columns, mat, cell.decimals, left.column.headings, row.order)
     right.appended <- appendColumns(right.columns, mat, cell.decimals, right.column.headings, row.order)
