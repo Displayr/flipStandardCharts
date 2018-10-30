@@ -915,9 +915,9 @@ formatByD3 <- function(x, format, prefix = "", suffix = "", percent = FALSE)
             tmp.fmt <- "f" 
 
         if (percentFromD3(format) || percent)
-            x.str <- paste0(formatC(x*100, format = "f", digits = decimalsFromD3(format), big.mark = big.mark), "%")
+            x.str <- paste0(formatC(x*100, format = "f", digits = decimalsFromD3(format, 0), big.mark = big.mark), "%")
         else
-            x.str <- formatC(x, format = tmp.fmt, digits = decimalsFromD3(format), big.mark = big.mark)
+            x.str <- formatC(x, format = tmp.fmt, digits = decimalsFromD3(format, 2), big.mark = big.mark)
     }
     x.str <- paste0(prefix, x.str, suffix)
     return(x.str)

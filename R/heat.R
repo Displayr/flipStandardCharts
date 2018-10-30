@@ -202,7 +202,7 @@ Heat <- function(x,
     } else
         "none"
     
-    cell.decimals <- decimalsFromD3(y.hovertext.format, if (pct) 0 else 2)
+    cell.decimals <- decimalsFromD3(data.label.format, if (pct) 0 else 2)
     row.order <- if(is.null(rownames(mat))) seq(nrow(mat)) else str_trim(rownames(mat))
     left.appended <- appendColumns(left.columns, mat, cell.decimals, left.column.headings, row.order)
     right.appended <- appendColumns(right.columns, mat, cell.decimals, right.column.headings, row.order)
