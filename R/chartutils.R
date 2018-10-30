@@ -909,13 +909,14 @@ formatByD3 <- function(x, format, prefix = "", suffix = "", percent = FALSE)
     x.str <- as.character(x)
     if (is.numeric(x))
     {
-        big.mark <- if (commaFromD3(format) || format == "") "," else ""
+        use.comma <- commaFromD3(format) || format == ""
+        big.mark <- if (use.comma) "," else ""
         tmp.fmt <- gsub("[^deEfgGs]", "", format)
-        if (nchar(tmp.fmt) == 0)
-            tmp.fmt <- "f" 
 
         if (percentFromD3(format) || percent)
             x.str <- paste0(formatC(x*100, format = "f", digits = decimalsFromD3(format, 0), big.mark = big.mark), "%")
+        else if (sum(nchar(tmp.fmt), na.rm = T) == 0 || tmp.fmt == "f")
+            x.str <- FormatAsReal(x, decimals = decimalsFromD3(format, 2), comma.for.thousands = use.comma)
         else
             x.str <- formatC(x, format = tmp.fmt, digits = decimalsFromD3(format, 2), big.mark = big.mark)
     }
