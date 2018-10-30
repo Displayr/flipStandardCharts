@@ -904,7 +904,8 @@ percentFromD3 <- function(format)
 #' @param format D3 formatting string. Accepts percentages, numeric and scientific notation
 #' @param prefix Optional string to prepend to output
 #' @param suffix Optional string to append to output
-formatByD3 <- function(x, format, prefix = "", suffix = "", percent = FALSE)
+#' @param decimals Default number of decimals shown; used if not specified in \code{format} 
+formatByD3 <- function(x, format, prefix = "", suffix = "", percent = FALSE, decimals = 2)
 {
     x.str <- as.character(x)
     if (is.numeric(x))
@@ -916,9 +917,9 @@ formatByD3 <- function(x, format, prefix = "", suffix = "", percent = FALSE)
         if (percentFromD3(format) || percent)
             x.str <- paste0(formatC(x*100, format = "f", digits = decimalsFromD3(format, 0), big.mark = big.mark), "%")
         else if (sum(nchar(tmp.fmt), na.rm = T) == 0 || tmp.fmt == "f")
-            x.str <- FormatAsReal(x, decimals = decimalsFromD3(format, 2), comma.for.thousands = use.comma)
+            x.str <- FormatAsReal(x, decimals = decimalsFromD3(format, decimals), comma.for.thousands = use.comma)
         else
-            x.str <- formatC(x, format = tmp.fmt, digits = decimalsFromD3(format, 2), big.mark = big.mark)
+            x.str <- formatC(x, format = tmp.fmt, digits = decimalsFromD3(format, decimals), big.mark = big.mark)
     }
     x.str <- paste0(prefix, x.str, suffix)
     return(x.str)

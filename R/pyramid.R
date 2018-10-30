@@ -155,7 +155,7 @@ Pyramid <- function(x,
 
     type <- "Bar"
     tmp.label <- formatByD3(max(chart.matrix), data.label.format,
-                 data.label.prefix, data.label.suffix)
+                 data.label.prefix, data.label.suffix, decimals = 0)
     if (!is.null(x.bounds.maximum))
         x.bounds.maximum <- x.bounds.maximum/2
     x.bounds.minimum <- if (!is.null(x.bounds.maximum)) -x.bounds.maximum
@@ -216,7 +216,7 @@ Pyramid <- function(x,
         if (data.label.show)
         {
             source.text <- formatByD3(chart.matrix[,1], data.label.format,
-                   data.label.prefix, data.label.suffix)
+                   data.label.prefix, data.label.suffix, decimals = 0)
             p <- add_trace(p, y = x[i], x = 0,
                    type = "scatter", mode = "text", text = source.text[i],
                    textfont = data.label.font[[i]], textposition = "middle center",
