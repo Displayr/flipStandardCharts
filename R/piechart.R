@@ -123,8 +123,11 @@ Pie <- function(x,
         }   
 
         if (length(pie.values.colors) > 1 && length(pie.values.colors) < length(x.labels))
+        {
             warning("'Colors' does have the number of colors required (",
             length(x.labels), "). Colors will be recycled to make up the required number.")
+            pie.values.colors <- paste0(rep("", length(x.labels)), pie.values.colors)
+        }
     } else              # 2-d data
     {
         pie.groups.colors <- if (!is.null(colors)) StripAlphaChannel(colors) else NULL
