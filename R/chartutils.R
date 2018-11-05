@@ -364,15 +364,18 @@ formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, x.format, y.fo
                 x.axis.type = x.axis.type, y.axis.type = y.axis.type))
 }
 
-getDateAxisRange <- function(label.dates)
+getDateAxisRange <- function(label.dates, new.range = NULL)
 {
+    if (length(new.range) == 2)
+        return(as.character(new.range))
+
     tmp.dates <- as.numeric(label.dates)
     diff <- min(abs(diff(tmp.dates)), na.rm = TRUE)
 
     # Always return date-ranges as characters since there
     # seems to be more problems with using milliseconds since plotly v4.8.0
     range <- as.character(range(label.dates) + c(-1,1) * ceiling(0.5 * diff))
-    range
+    return(as.character(range))
 }
 
 setAxis <- function(title, side, axisLabels, titlefont,
@@ -410,7 +413,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
         autorange <- FALSE
         if (axis.type == "date")
         {
-            range <- rev(getDateAxisRange(axisLabels$ymd))
+            range <- rev(getDateAxisRange(axisLabels$ymd, range))
 
             # Override default tick positions if there are only a few bars
             if (with.bars && length(axisLabels$labels) <= 10)
@@ -442,7 +445,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
     {
         autorange <- FALSE
         rev <- length(range) == 2 && range[2] < range[1]
-        range <- getDateAxisRange(axisLabels$ymd)
+        range <- getDateAxisRange(axisLabels$ymd, range)
         if (ticks$autorange == "reversed" || rev)
             range <- rev(range)
 
@@ -669,18 +672,47 @@ charToNumeric <- function(x)
     return(xnum)
 }
 
-# This is only applied to the values axis which is always numeric
+# This is only applied to the values axis.
+# It can handle categorical and date axes types but only for the values axis
+# (date categorical axis range is set using getDateAxisRange in setAxis)
 setValRange <- function(min, max, values, use.defaults = TRUE)
 {
-    min <- charToNumeric(min)
-    max <- charToNumeric(max)
-
     # If no range is specified, then use defaults
     if (use.defaults && is.null(min) && is.null(max))
         return(list(min = NULL, max = NULL))
-    if  (is.null(min))
+
+    if (is.list(values) && !is.null(values$labels.on.x))
+    {
+        axis.type <- if (values$labels.on.x) values$x.axis.type else values$y.axis.type
+        if (axis.type == "date")
+            values <- values$ymd
+        else if (axis.type %in% c("numeric", "linear"))
+            values <- suppressWarnings(as.numeric(values$labels))
+        else
+            values <- c(0, length(values$labels)-1)
+    }
+
+    if (is.factor(values) || is.character(values))
+        values <- as.numeric(as.factor(values)) - 1
+    if (inherits(values, "POSIXct"))
+    {
+        min <- AsDateTime(as.character(min), on.parse.failure = FALSE)
+        max <- AsDateTime(as.character(max), on.parse.failure = FALSE)
+
+    } else if (inherits(values, "Date") || inherits(values, "POSIXct"))
+    {
+        min <- AsDate(as.character(min), on.parse.failure = FALSE)
+        max <- AsDate(as.character(max), on.parse.failure = FALSE)
+
+    } else
+    {
+        min <- charToNumeric(min)
+        max <- charToNumeric(max)
+    }
+
+    if  (length(min) == 0 || is.na(min))
         min <- min(unlist(values), na.rm = TRUE)
-    if  (is.null(max))
+    if  (length(max) == 0 || is.na(max))
         max <- max(unlist(values), na.rm = TRUE)
     return(list(min = min, max = max))
 }
@@ -689,8 +721,8 @@ setValRange <- function(min, max, values, use.defaults = TRUE)
 setTicks <- function(minimum, maximum, distance, reversed = FALSE,
                 data = NULL, labels = NULL, type="scatter", label.font.size = 10)
 {
-    if (is.null(minimum) != is.null(maximum))
-        warning("To specify the range of an axis, you must specify both the minimum and maximum values.")
+    #if (is.null(minimum) != is.null(maximum))
+    #    warning("To specify the range of an axis, you must specify both the minimum and maximum values.")
     if ((is.null(minimum) || is.null(maximum)) && !is.null(distance))
         stop("If specifying the distance between ticks on an axis,",
              "you must also specify the minimum and maximum values.")
@@ -733,7 +765,7 @@ setTicks <- function(minimum, maximum, distance, reversed = FALSE,
         if (reversed)
             range <- rev(range)
     }
-    if (!is.null(distance))
+    if (!is.null(distance) && is.numeric(minimum) && is.numeric(maximum))
     {
         # error msg if axis is not numeric
         autorange <- FALSE
@@ -765,7 +797,7 @@ cum.signed.data <- function(x)
         ind <- which(x[i,] >= 0)
         if (length(ind) > 0)
             result[i,ind] <- cumsum(x[i,ind])
-        
+
         ind <- which(x[i,] < 0)
         if (length(ind) > 0)
             result[i,ind] <- cumsum(x[i,ind])
@@ -898,13 +930,13 @@ percentFromD3 <- function(format)
 
 #' Output data in D3-formatting
 #'
-#' Returns a strings according to the d3 format specified. 
+#' Returns a strings according to the d3 format specified.
 #' @noRd
 #' @param x Input data (may be a vector) to format
 #' @param format D3 formatting string. Accepts percentages, numeric and scientific notation
 #' @param prefix Optional string to prepend to output
 #' @param suffix Optional string to append to output
-#' @param decimals Default number of decimals shown; used if not specified in \code{format} 
+#' @param decimals Default number of decimals shown; used if not specified in \code{format}
 formatByD3 <- function(x, format, prefix = "", suffix = "", percent = FALSE, decimals = 2)
 {
     x.str <- as.character(x)
@@ -976,7 +1008,7 @@ getSign <- function(values, axis)
 
 #' use black or white for good contrast against colors
 #'
-#' @param colors vector of colors which will be the background color of the 
+#' @param colors vector of colors which will be the background color of the
 #' @importFrom grDevices col2rgb rgb2hsv
 autoFontColor <- function (colors)
 {

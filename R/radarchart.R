@@ -143,6 +143,8 @@ Radar <- function(x,
             offset <- 1.1 + data.label.font.size/100
         y.bounds.maximum <- offset * max(chart.matrix)
     }
+    if (y.bounds.maximum <= 0)
+        stop("Maximum of the values axis must be greater than 0.")
     if (is.null(y.tick.distance))
     {
         base <- 10^round(log10(y.bounds.maximum) - 1)

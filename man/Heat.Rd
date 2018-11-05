@@ -7,6 +7,7 @@
 Heat(x, sort.rows = "None", sort.columns = "None",
   colors = c("#0066ff", "#ff0000"), standardization = "None",
   global.font.family = "Arial", global.font.color = "#000000",
+  values.bounds.minimum = NULL, values.bounds.maximum = NULL,
   title = "", title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
   subtitle = "", subtitle.font.family = global.font.family,
@@ -52,6 +53,10 @@ font attribute for the chart unless specified individually.}
 
 \item{global.font.color}{Global font color as a named color in character format
 (e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).}
+
+\item{values.bounds.minimum}{Numeric; lower bound of the color range.}
+
+\item{values.bounds.maximum}{Numeric; upper bound of the color range.}
 
 \item{title}{Character; chart title.}
 

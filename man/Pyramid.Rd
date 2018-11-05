@@ -145,7 +145,8 @@ character format (e.g. "black") or a hex code.}
 
 \item{y.tick.mark.length}{Length of tick marks in pixels. Ticks are only shown when \code{y.line.width > 0}.}
 
-\item{y.bounds.minimum}{Minimum of range for plotting; NULL = no manual range set.}
+\item{y.bounds.minimum}{Minimum of range for plotting; For a date axis this should be supplied as a date string.
+For a categorical axis, the index of the category (0-based) should be used.}
 
 \item{y.bounds.maximum}{Maximum of range for plotting; NULL = no manual range set.}
 

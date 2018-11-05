@@ -213,15 +213,16 @@ Bar <- function(x,
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate = FALSE)
 
     # Format axis labels
+    axisFormat <- formatLabels(chart.matrix, type, y.tick.label.wrap, y.tick.label.wrap.nchar,
+                               y.tick.format, x.tick.format)
+    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, chart.matrix, is.null(x.tick.distance))
+    y.range <- setValRange(y.bounds.minimum, y.bounds.maximum, axisFormat, is.null(y.tick.distance))
     tmp.label <- sprintf(paste0("%s%.", data.label.decimals, "f%s"),
                 data.label.prefix, max(chart.matrix), data.label.suffix)
-    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, chart.matrix, is.null(x.tick.distance))
     xtick <- setTicks(x.range$min, x.range$max, x.tick.distance, x.data.reversed,
                   data = if (data.label.show && !is.stacked) chart.matrix else NULL, type = type,
                   labels = tmp.label, label.font.size = data.label.font.size)
-    ytick <- setTicks(y.bounds.minimum, y.bounds.maximum, y.tick.distance, !y.data.reversed)
-    axisFormat <- formatLabels(chart.matrix, type, y.tick.label.wrap, y.tick.label.wrap.nchar,
-                               y.tick.format, x.tick.format)
+    ytick <- setTicks(y.range$min, y.range$max, y.tick.distance, !y.data.reversed)
 
     yaxis <- setAxis(y.title, "left", axisFormat, y.title.font,
                   y.line.color, y.line.width, y.grid.width * grid.show, y.grid.color,

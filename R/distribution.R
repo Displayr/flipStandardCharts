@@ -365,8 +365,8 @@ Distribution <-   function(x,
     }
     # Finalizing the layout
     # Format axis labels
-    #categories.tick.tick <- setTicks(categories.tick.bounds.minimum, categories.tick.bounds.maximum, categories.tick.distance, FALSE)
-    values.tick <- setTicks(values.bounds.minimum, values.bounds.maximum, values.tick.distance, FALSE)
+    values.range <- setValRange(values.bounds.minimum, values.bounds.maximum, rng)
+    values.tick <- setTicks(values.range$min, values.range$max, values.tick.distance, FALSE)
 
     axisFormat <- formatLabels(values, "Area", categories.tick.label.wrap, categories.tick.label.wrap.nchar, "", values.tick.format) #ignored
     #axisFormat <- NULL
@@ -547,7 +547,7 @@ addSummaryStatistics <- function(p, values, weights, vertical, show.mean, show.m
                        name = name,
                        hoverinfo = paste0("name+", if (vertical) "y" else "x"),
                        mode = if (is.null(line)) "markers" else "lines",
-                       type = "scatter",
+                       type = "scatter", cliponaxis = FALSE,
                        xaxis = category.axis,
                        yaxis = value.axis
         )

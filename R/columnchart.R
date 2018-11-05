@@ -38,7 +38,7 @@
 #' @param footer.font.family Character; footer font family
 #' @param footer.font.size Integer; footer font size
 #' @param footer.wrap Logical; whether the footer text should be wrapped.
-#' @param footer.wrap.nchar Number of characters (approximately) in each 
+#' @param footer.wrap.nchar Number of characters (approximately) in each
 #' line of the footer when \code{footer.wrap} \code{TRUE}.
 #' @param grid.show Logical; whether to show grid lines.
 #' @param opacity Opacity of bars as an alpha value (0 to 1).
@@ -50,7 +50,7 @@
 #' @param charting.area.fill.opacity Charting area background opacity as an alpha value (0 to 1).
 #' @param legend.show Logical; show the legend.
 #' @param legend.wrap Logical; whether the legend text should be wrapped.
-#' @param legend.wrap.nchar Number of characters (approximately) in each 
+#' @param legend.wrap.nchar Number of characters (approximately) in each
 #' line of the legend when \code{legend.wrap} \code{TRUE}.
 #' @param legend.fill.color Legend fill color as a named color in character format
 #' (e.g. "black") or a hex code.
@@ -89,7 +89,8 @@
 #' @param y.line.color y-axis line color as a named color in character format
 #' (e.g. "black") or a hex code.
 #' @param y.tick.mark.length Length of tick marks in pixels. Ticks are only shown when \code{y.line.width > 0}.
-#' @param y.bounds.minimum Minimum of range for plotting; NULL = no manual range set.
+#' @param y.bounds.minimum Minimum of range for plotting; For a date axis this should be supplied as a date string.
+#'  For a categorical axis, the index of the category (0-based) should be used.
 #' @param y.bounds.maximum Maximum of range for plotting; NULL = no manual range set.
 #' @param y.tick.distance Distance between tick marks. Requires that \code{y.bounds.minimum} and \code{y.bounds.maximum} have been set.
 #' @param y.zero Whether the y-axis should include zero.
@@ -126,8 +127,8 @@
 #' @param x.tick.marks Character; whether and where to show tick marks on the
 #' x-axis.  Can be "outside", "inside", "none"
 #' @param x.tick.mark.length Length of tick marks in pixels.
-#' @param x.bounds.minimum Minimum of range for plotting;
-#' NULL = no manual range set.  Must be less than x.bounds.maximum
+#' @param x.bounds.minimum Minimum of range for plotting; For a date axis this should be supplied as a date string.
+#'  For a categorical axis, the index of the category (0-based) should be used.
 #' @param x.bounds.maximum Maximum of range for
 #' plotting; NULL = no manual range set.  Must be greater than x.bounds.minimum
 #' @param x.tick.distance Tick mark distance in
@@ -322,7 +323,7 @@ Column <- function(x,
     if (bar.gap < 0.0 || bar.gap >= 1.0)
     {
         warning("Parameter 'bar gap' must be between 0 and 1. ",
-                "Invalid 'bar gap' set to default value of 0.15.")     
+                "Invalid 'bar gap' set to default value of 0.15.")
         bar.gap <- 0.15
     }
 
@@ -366,11 +367,11 @@ Column <- function(x,
     eval(colors) # not sure why, but this is necessary for bars to appear properly
 
     if (is.stacked && data.label.font.autocolor)
-        dlab.color <- autoFontColor(colors) 
+        dlab.color <- autoFontColor(colors)
     else
         dlab.color <- vectorize(data.label.font.color, ncol(chart.matrix))
-    
-    data.label.font = lapply(dlab.color, 
+
+    data.label.font = lapply(dlab.color,
         function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
     subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
@@ -381,7 +382,7 @@ Column <- function(x,
     footer.font = list(family = footer.font.family, size = footer.font.size, color = footer.font.color)
     legend.font = list(family = legend.font.family, size = legend.font.size, color = legend.font.color)
 
-    
+
     if (ncol(chart.matrix) == 1)
         legend.show <- FALSE
     legend <- setLegend(type, legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
@@ -390,8 +391,10 @@ Column <- function(x,
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate = FALSE)
 
     # Format axis labels
+    axisFormat <- formatLabels(chart.matrix, type, x.tick.label.wrap, x.tick.label.wrap.nchar,
+                               x.tick.format, y.tick.format)
     # Turn off autorange if data labels are shown
-    if (data.label.show && is.null(x.bounds.minimum))
+    if (data.label.show && axisFormat$x.axis.type != "date" && is.null(x.bounds.minimum))
     {
         xlab.tmp <- rownames(chart.matrix)
         tmp.range <- getRange(xlab.tmp, NULL, NULL)
@@ -403,12 +406,12 @@ Column <- function(x,
             x.bounds.maximum <- max(0, x.bounds.maximum)
         }
     }
-    y.range <- setValRange(y.bounds.minimum, y.bounds.maximum, chart.matrix, is.null(y.tick.distance))
-    ytick <- setTicks(y.range$min, y.range$max, y.tick.distance, y.data.reversed)
-    xtick <- setTicks(x.bounds.minimum, x.bounds.maximum, x.tick.distance, x.data.reversed)
 
-    axisFormat <- formatLabels(chart.matrix, type, x.tick.label.wrap, x.tick.label.wrap.nchar,
-                        x.tick.format, y.tick.format)
+
+    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, axisFormat, is.null(x.tick.distance))
+    y.range <- setValRange(y.bounds.minimum, y.bounds.maximum, chart.matrix, is.null(y.tick.distance))
+    xtick <- setTicks(x.range$min, x.range$max, x.tick.distance, x.data.reversed)
+    ytick <- setTicks(y.range$min, y.range$max, y.tick.distance, y.data.reversed)
 
     yaxis <- setAxis(y.title, "left", axisFormat, y.title.font,
                   y.line.color, y.line.width, y.grid.width * grid.show, y.grid.color,
@@ -427,8 +430,8 @@ Column <- function(x,
     margins <- setMarginsForAxis(margins, axisFormat, xaxis)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
-    
-    legend.text <- autoFormatLongLabels(colnames(chart.matrix), legend.wrap, legend.wrap.nchar) 
+
+    legend.text <- autoFormatLongLabels(colnames(chart.matrix), legend.wrap, legend.wrap.nchar)
     margins <- setMarginsForLegend(margins, legend.show, legend, legend.text)
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
@@ -472,13 +475,13 @@ Column <- function(x,
         # but it also adds extra space next to the y-axis
         if (!is.stacked && i == 1)
             p <- add_trace(p, x = x, y = rep(min(y,na.rm = T), length(x)),
-                           mode = if (notAutoRange(yaxis)) "markers" else "lines", 
+                           mode = if (notAutoRange(yaxis)) "markers" else "lines",
                            type = "scatter", cliponaxis = TRUE,
                            hoverinfo = "none", showlegend = FALSE, opacity = 0)
 
         # this is the main trace for each data series
-        p <- add_trace(p, x = x, y = y.filled, type = "bar", 
-                       orientation = "v", marker = marker, name = legend.text[i], 
+        p <- add_trace(p, x = x, y = y.filled, type = "bar",
+                       orientation = "v", marker = marker, name = legend.text[i],
                        text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
                        hoverlabel = list(font = data.label.font[[i]]),
                        hoverinfo  = setHoverText(xaxis, chart.matrix), legendgroup = i)

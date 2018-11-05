@@ -483,8 +483,10 @@ Scatter <- function(x = NULL,
     # Format axis labels
     #if (is.null(y.tick.decimals))
     #    y.tick.decimals <- decimalsToDisplay(as.numeric(y))
-    xtick <- setTicks(x.bounds.minimum, x.bounds.maximum, x.tick.distance, x.data.reversed)
-    ytick <- setTicks(y.bounds.minimum, y.bounds.maximum, y.tick.distance, y.data.reversed)
+    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, x)
+    y.range <- setValRange(y.bounds.minimum, y.bounds.maximum, y)
+    xtick <- setTicks(x.range$min, x.range$max, x.tick.distance, x.data.reversed)
+    ytick <- setTicks(y.range$min, y.range$max, y.tick.distance, y.data.reversed)
 
     xlab.tmp <- if (!is.numeric(x)) as.character(x)
                 else FormatAsReal(x, decimals=2) #x.tick.decimals)

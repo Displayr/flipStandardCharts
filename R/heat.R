@@ -58,6 +58,8 @@
 #' character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param y.tick.font.size Integer; y-axis tick label font size
+#' @param values.bounds.minimum Numeric; lower bound of the color range.
+#' @param values.bounds.maximum Numeric; upper bound of the color range.
 #' @param legend.show Whether to display the legend
 #' @param legend.font.family Character; legend font family.
 #' @param legend.font.color Legend font color as a named color in character
@@ -100,6 +102,8 @@ Heat <- function(x,
                     standardization = "None",
                     global.font.family = "Arial",
                     global.font.color = "#000000",
+                    values.bounds.minimum = NULL,
+                    values.bounds.maximum = NULL,
                     title = "",
                     title.font.family = global.font.family,
                     title.font.color = global.font.color,
@@ -171,6 +175,19 @@ Heat <- function(x,
     } else
         mat
 
+    default.range <- range(mat, na.rm = TRUE)
+    color.range <- unlist(setValRange(values.bounds.minimum, values.bounds.maximum, mat))
+    if (!is.null(color.range[1]) && color.range[1] > default.range[1])
+    {
+        warning("Minimum value cannot be larger than ", default.range[1], ".")
+        color.range[1] <- default.range[1]
+    }
+    if (!is.null(color.range[2]) && color.range[2] < default.range[2])
+    {
+        warning("Maximum value cannot be smaller than ", default.range[2], ".")
+        color.range[2] <- default.range[2]
+    }
+
     n.row <- nrow(mat)
     n.col <- ncol(mat)
 
@@ -215,6 +232,7 @@ Heat <- function(x,
                                      xaxis_location = "top",
                                      yaxis_location = "left",
                                      colors = colors,
+                                     color_range = color.range,
 
                                      # Data labels and hovertext
                                      cellnote = hovertext.text,
