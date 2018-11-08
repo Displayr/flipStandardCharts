@@ -408,7 +408,7 @@ Column <- function(x,
     }
 
 
-    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, axisFormat, is.null(x.tick.distance))
+    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, axisFormat, is.null(x.tick.distance), is.bar = TRUE)
     y.range <- setValRange(y.bounds.minimum, y.bounds.maximum, chart.matrix, is.null(y.tick.distance))
     xtick <- setTicks(x.range$min, x.range$max, x.tick.distance, x.data.reversed)
     ytick <- setTicks(y.range$min, y.range$max, y.tick.distance, y.data.reversed)

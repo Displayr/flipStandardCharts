@@ -413,7 +413,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
         autorange <- FALSE
         if (axis.type == "date")
         {
-            range <- rev(getDateAxisRange(axisLabels$ymd, range))
+                range <- rev(getDateAxisRange(axisLabels$ymd, range))
 
             # Override default tick positions if there are only a few bars
             if (with.bars && length(axisLabels$labels) <= 10)
@@ -429,7 +429,9 @@ setAxis <- function(title, side, axisLabels, titlefont,
         }
         else if (axis.type == "numeric")
         {
-            range <- rev(getRange(axisLabels$labels, NULL, NULL))
+            if (is.null(range))
+                range <- getRange(axisLabels$labels, NULL, NULL)
+            range <- rev(range)
             if (show.zero)
             {
                 range[2] <- min(range[2], 0)
@@ -675,7 +677,7 @@ charToNumeric <- function(x)
 # This is only applied to the values axis.
 # It can handle categorical and date axes types but only for the values axis
 # (date categorical axis range is set using getDateAxisRange in setAxis)
-setValRange <- function(min, max, values, use.defaults = TRUE)
+setValRange <- function(min, max, values, use.defaults = TRUE, is.bar = FALSE)
 {
     # If no range is specified, then use defaults
     if (use.defaults && is.null(min) && is.null(max))
@@ -689,7 +691,7 @@ setValRange <- function(min, max, values, use.defaults = TRUE)
         else if (axis.type %in% c("numeric", "linear"))
             values <- suppressWarnings(as.numeric(values$labels))
         else
-            values <- c(0, length(values$labels)-1)
+            values <- 0:(length(values$labels)-1)
     }
 
     if (is.factor(values) || is.character(values))
@@ -714,6 +716,13 @@ setValRange <- function(min, max, values, use.defaults = TRUE)
         min <- min(unlist(values), na.rm = TRUE)
     if  (length(max) == 0 || is.na(max))
         max <- max(unlist(values), na.rm = TRUE)
+  
+    if (is.bar)
+    {
+        diff <- min(diff(values))/2
+        min <- min - diff
+        max <- max + diff
+    }
     return(list(min = min, max = max))
 }
 
