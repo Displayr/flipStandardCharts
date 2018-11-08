@@ -394,7 +394,7 @@ Column <- function(x,
     axisFormat <- formatLabels(chart.matrix, type, x.tick.label.wrap, x.tick.label.wrap.nchar,
                                x.tick.format, y.tick.format)
     # Turn off autorange if data labels are shown
-    if (data.label.show && axisFormat$x.axis.type != "date" && is.null(x.bounds.minimum))
+    if (FALSE && data.label.show && axisFormat$x.axis.type != "date" && is.null(x.bounds.minimum))
     {
         xlab.tmp <- rownames(chart.matrix)
         tmp.range <- getRange(xlab.tmp, NULL, NULL)
