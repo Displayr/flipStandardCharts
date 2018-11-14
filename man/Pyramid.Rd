@@ -101,7 +101,7 @@ character format (e.g. "black") or an a hex code.}
 
 \item{footer.wrap}{Logical; whether the footer text should be wrapped.}
 
-\item{footer.wrap.nchar}{Number of characters (approximately) in each 
+\item{footer.wrap.nchar}{Number of characters (approximately) in each
 line of the footer when \code{footer.wrap} \code{TRUE}.}
 
 \item{background.fill.color}{Background color in character format (e.g. "black") or a hex code.}

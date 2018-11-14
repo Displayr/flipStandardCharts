@@ -143,7 +143,7 @@ This should be input as a comma-seperated list of URLs.}
 
 \item{legend.wrap}{Logical; whether the legend text should be wrapped.}
 
-\item{legend.wrap.nchar}{Number of characters (approximately) in each 
+\item{legend.wrap.nchar}{Number of characters (approximately) in each
 line of the legend when \code{legend.wrap} \code{TRUE}.}
 
 \item{tooltip.show}{Logical; whether to show a tooltip on hover.}
@@ -188,7 +188,7 @@ character format (e.g. "black") or an a hex code.}
 
 \item{footer.wrap}{Logical; whether the footer text should be wrapped.}
 
-\item{footer.wrap.nchar}{Number of characters (approximately) in each 
+\item{footer.wrap.nchar}{Number of characters (approximately) in each
 line of the footer when \code{footer.wrap} \code{TRUE}.}
 
 \item{data.label.show}{Logical; whether to show data labels.}
