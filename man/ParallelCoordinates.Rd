@@ -36,6 +36,8 @@ is provided, then the first color will be used for all the lines. If it is provi
 
 \item{scale.reverse}{Logical; whether to reverse the color scalebar}
 
+\item{scale.nticks}{Integer; number of ticks to show on colorscalebar}
+
 \item{global.font.family}{Character; font family for all occurrences of any
 font attribute for the chart unless specified individually.}
 
@@ -90,8 +92,6 @@ graphic in pixels}
 \item{font.unit}{One of "px" of "pt". By default all font sizes are specified in terms of
 pixels ("px"). But changing this to "pt" will mean that the font sizes will be in terms
 points ("pt"), which will be consistent with font sizes in text boxes.}
-
-\item{scale.nticks;}{Integer; number of ticks to show on colorscalebar}
 }
 \description{
 Create a parallel coordinates plot to show multivariate data

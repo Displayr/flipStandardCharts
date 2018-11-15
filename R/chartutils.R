@@ -679,6 +679,11 @@ charToNumeric <- function(x)
 # (date categorical axis range is set using getDateAxisRange in setAxis)
 setValRange <- function(min, max, values, use.defaults = TRUE, is.bar = FALSE)
 {
+    if (is.null(min) || is.na(min) || min == "")
+        min <- NULL
+    if (is.null(max) || is.na(max) || max == "")
+        max <- NULL
+    
     # If no range is specified, then use defaults
     if (use.defaults && is.null(min) && is.null(max))
         return(list(min = NULL, max = NULL))

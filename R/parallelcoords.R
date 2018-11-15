@@ -11,7 +11,7 @@
 #'  \code{colors} will be interpolated (linearly) to create a color scalebar
 #' @param scale.show Logical; whether to show the color scalebar
 #' @param scale.reverse Logical; whether to reverse the color scalebar
-#' @param scale.nticks; Integer; number of ticks to show on colorscalebar
+#' @param scale.nticks Integer; number of ticks to show on colorscalebar
 #' @param global.font.family Character; font family for all occurrences of any
 #' font attribute for the chart unless specified individually.
 #' @param global.font.color Global font color as a named color in character format
