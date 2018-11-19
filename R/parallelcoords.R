@@ -104,6 +104,8 @@ ParallelCoordinates <- function(x,
         label.font.size = round(fsc * label.font.size, 0)
         range.font.size = round(fsc * range.font.size, 0)
         tick.font.size = round(fsc * tick.font.size, 0)
+        legend.font.size = round(fsc * legend.font.size, 0)
+        legend.title.font.size = round(fsc * legend.title.font.size, 0)
     }
 
     if (!is.null(group) && scale.show && sum(nchar(legend.title)) == 0 &&
