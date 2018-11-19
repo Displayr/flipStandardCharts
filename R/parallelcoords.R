@@ -123,6 +123,13 @@ ParallelCoordinates <- function(x,
             dimlist[[i]] <- list(label = colnames(x)[i], values = as.numeric(x[[i]]),
                 tickformat = paste0(".", range.decimals, "f"), range = rr)
 
+        } else if (any(class(x[[i]]) %in% c("Date", "POSIXct", "POSIXt")))
+        {
+            date.seq <- seq(from = min(x[[i]], na.rm = TRUE),
+                            to = max(x[[i]], na.rm = TRUE), length = 5)
+            dimlist[[i]] <- list(label = colnames(x)[i], values = as.numeric(x[[i]]),
+                tickvals = as.numeric(date.seq), ticktext = date.seq)
+        
         } else
         {
             ff <- as.factor(x[[i]])
