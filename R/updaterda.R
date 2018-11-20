@@ -315,7 +315,7 @@
 # names(australia.areas@polygons) <- NULL
 #
 #
-# # Manually combine 2 counties of Norway, zendesk 16755
+# ##### Manually combine 2 counties of Norway, zendesk 16755
 # ad <- admin1.coordinates
 # to.merge <- ad[ad$name %in% c("Nord-Trøndelag", "Sør-Trøndelag"), ]
 # ad <- ad[!ad$name %in% c("Nord-Trøndelag", "Sør-Trøndelag"), ]
@@ -336,6 +336,14 @@
 # anm[["Norway"]]$"Trøndelag" <- "Trondelag"
 # print(anm[["Norway"]])
 # admin1.name.map <- anm
+#
+#
+# ##### Manually remove Macquarie Island from Australia state map
+# ac <- admin1.coordinates
+# keep <- admin1.coordinates$name_en != "Macquarie Island"
+# keep[is.na(keep)] <- TRUE
+# ac <- ac[keep, ]
+# admin1.coordinates <- ac
 #
 #
 # # Save everything into sysdata.rda
