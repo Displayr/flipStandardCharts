@@ -183,17 +183,13 @@ Values range from 0 (bottom) to 1 (top).}
 \item{legend.ascending}{Logical; TRUE for ascending, FALSE for descending.
 By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.}
 
-\item{margin.top}{Margin between plot area and the top of the
-graphic in pixels}
+\item{margin.top}{Margin between plot area and the top of the graphic in pixels}
 
-\item{margin.bottom}{Margin between plot area and the bottom of the
-graphic in pixels}
+\item{margin.bottom}{Margin between plot area and the bottom of the graphic in pixels}
 
-\item{margin.left}{Margin between plot area and the left of the
-graphic in pixels}
+\item{margin.left}{Margin between plot area and the left of the graphic in pixels}
 
-\item{margin.right}{Margin between plot area and the right of the
-graphic in pixels}
+\item{margin.right}{Margin between plot area and the right of the graphic in pixels}
 
 \item{margin.inner.pad}{Padding in pixels between plot proper
 and axis lines}

@@ -4,10 +4,10 @@
 \alias{Line}
 \title{Line}
 \usage{
-Line(x, type = "Line", colors = ChartColors(max(1, ncol(x), na.rm =
-  TRUE)), opacity = NULL, fit.type = "None",
-  fit.line.colors = colors, fit.ignore.last = FALSE,
-  fit.line.type = "dot", fit.line.width = 1,
+Line(x, type = "Line", shape = c("linear", "spline")[1],
+  smoothing = 1, colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
+  opacity = NULL, fit.type = "None", fit.line.colors = colors,
+  fit.ignore.last = FALSE, fit.line.type = "dot", fit.line.width = 1,
   fit.line.name = "Fitted", fit.line.opacity = 1,
   fit.CI.show = FALSE, fit.CI.colors = fit.line.colors,
   fit.CI.opacity = 0.4, global.font.family = "Arial",
@@ -71,6 +71,10 @@ to be plotted, with the name/rownames used as the column names of the chart. Num
 will be parsed automatically.}
 
 \item{type}{One of "Column", "Stacked Column" or "100\% Stacked Column"}
+
+\item{shape}{Either "linear" for straight lines between data points or "spline" for curved lines.}
+
+\item{smoothing}{Numeric; smoothing if \code{shape} is "spline".}
 
 \item{colors}{Character; a vector containing one or more colors specified as hex codes.}
 
@@ -183,17 +187,13 @@ Values range from 0 (bottom) to 1 (top).}
 \item{legend.ascending}{Logical; TRUE for ascending, FALSE for descending.
 By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.}
 
-\item{margin.top}{Margin between plot area and the top of the
-graphic in pixels}
+\item{margin.top}{Margin between plot area and the top of the graphic in pixels}
 
-\item{margin.bottom}{Margin between plot area and the bottom of the
-graphic in pixels}
+\item{margin.bottom}{Margin between plot area and the bottom of the graphic in pixels}
 
-\item{margin.left}{Margin between plot area and the left of the
-graphic in pixels}
+\item{margin.left}{Margin between plot area and the left of the graphic in pixels}
 
-\item{margin.right}{Margin between plot area and the right of the
-graphic in pixels}
+\item{margin.right}{Margin between plot area and the right of the graphic in pixels}
 
 \item{margin.inner.pad}{Padding in pixels between plot proper
 and axis lines}

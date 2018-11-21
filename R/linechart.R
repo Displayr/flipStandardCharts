@@ -2,6 +2,8 @@
 #'
 #' Line chart
 #' @inherit Area
+#' @param shape Either "linear" for straight lines between data points or "spline" for curved lines.
+#' @param smoothing Numeric; smoothing if \code{shape} is "spline".
 #' @examples
 #' z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L),
 #'       .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
@@ -14,6 +16,8 @@
 #' @export
 Line <-   function(x,
                     type = "Line",
+                    shape = c("linear", "spline")[1],
+                    smoothing = 1,
                     colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
                     opacity = NULL,
                     fit.type = "None", # can be "Smooth" or anything else
@@ -233,6 +237,7 @@ Line <-   function(x,
         x <- x.labels
 
         lines <- list(width = line.thickness[i],
+                      shape = shape, smoothing = smoothing,
                       color = toRGB(colors[i], alpha = opacity[i]))
 
         # add invisible line to force all categorical labels to be shown

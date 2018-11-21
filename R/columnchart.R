@@ -69,14 +69,10 @@
 #' format (e.g. "black") or a hex code.
 #' @param legend.font.family Character; legend font family.
 #' @param legend.font.size Integer; Legend font size.
-#' @param margin.top Margin between plot area and the top of the
-#' graphic in pixels
-#' @param margin.bottom Margin between plot area and the bottom of the
-#' graphic in pixels
-#' @param margin.left Margin between plot area and the left of the
-#' graphic in pixels
-#' @param margin.right Margin between plot area and the right of the
-#' graphic in pixels
+#' @param margin.top Margin between plot area and the top of the graphic in pixels
+#' @param margin.bottom Margin between plot area and the bottom of the graphic in pixels
+#' @param margin.left Margin between plot area and the left of the graphic in pixels
+#' @param margin.right Margin between plot area and the right of the graphic in pixels
 #' @param margin.inner.pad Padding in pixels between plot proper
 #' and axis lines
 #' @param y.title Character, y-axis title; defaults to chart input values;

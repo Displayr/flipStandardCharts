@@ -165,17 +165,13 @@ of colors}
 
 \item{legend.show}{Ignored except for with \code{GeographicMap}.}
 
-\item{margin.left}{Margin between plot area and the left of the
-graphic in pixels}
+\item{margin.left}{Margin between plot area and the left of the graphic in pixels}
 
-\item{margin.right}{Margin between plot area and the right of the
-graphic in pixels}
+\item{margin.right}{Margin between plot area and the right of the graphic in pixels}
 
-\item{margin.top}{Margin between plot area and the top of the
-graphic in pixels}
+\item{margin.top}{Margin between plot area and the top of the graphic in pixels}
 
-\item{margin.bottom}{Margin between plot area and the bottom of the
-graphic in pixels}
+\item{margin.bottom}{Margin between plot area and the bottom of the graphic in pixels}
 
 \item{mapping.package}{Not used.}
 
