@@ -8,10 +8,8 @@
 #' @param colors A vector of colors for the color in lines in plot. Note that only 6-digit
 #'  hex codes are accepted (8-digit hex results in black lines). If no \code{group}
 #'  is provided, then the first color will be used for all the lines. If it is provided,
-#'  \code{colors} will be interpolated (linearly) to create a color scalebar
-#' @param scale.show Logical; whether to show the color scalebar
-#' @param scale.reverse Logical; whether to reverse the color scalebar
-#' @param scale.nticks Integer; number of ticks to show on colorscalebar
+#'  \code{colors} will be interpolated (linearly) to create a color scalebar.
+#' @param opacity Opacity of the line colors as an alpha value (0 to 1).
 #' @param global.font.family Character; font family for all occurrences of any
 #' font attribute for the chart unless specified individually.
 #' @param global.font.color Global font color as a named color in character format
@@ -19,36 +17,15 @@
 #' @param font.unit One of "px" of "pt". By default all font sizes are specified in terms of
 #'  pixels ("px"). But changing this to "pt" will mean that the font sizes will be in terms
 #'  points ("pt"), which will be consistent with font sizes in text boxes.
-#' @param range.decimals The number of decimals to shown in the range labels (for numeric
-#'  variables) and the tick labels.
 #' @param label.font.color Label font color as a named color in character
 #' format (e.g. "black") or a hex code.
 #' @param label.font.family Character; label font family.
 #' @param label.font.size Integer; Label font size.
-#' @param range.font.color Range label font color as a named color in character
-#' format (e.g. "black") or a hex code.
-#' @param range.font.family Character; range label font family.
-#' @param range.font.size Integer; Range label font size.
+#' @param label.rotate Boolean; whether to rotate the variable names on the chart. 
 #' @param tick.font.color Tick label font color as a named color in character
 #' format (e.g. "black") or a hex code.
 #' @param tick.font.family Character; tick label font family.
 #' @param tick.font.size Integer; Tick label font size.
-#' @param legend.font.color legend font color as a named color in character
-#' format (e.g. "black") or a hex code.
-#' @param legend.font.family Character; legend font family.
-#' @param legend.font.size Integer; legend font size.
-#' @param legend.title Character; title for the legend (colorscale bar). If none is provided,
-#'  \code{attr(group, "label")} will be used if available.
-#' @param legend.title.font.color legend.title label font color as a named color in character
-#' format (e.g. "black") or a hex code.
-#' @param legend.title.font.family Character; legend title font family.
-#' @param legend.title.font.size Integer; legend title font size.
-#' @param background.fill.color Background color in character format (e.g. "black") or a hex code.
-#' @param background.fill.opacity Background opacity as an alpha value (0 to 1).
-#' @param charting.area.fill.color Charting area background color as
-#' a named color in character format (e.g. "black") or a hex code.
-#' @param charting.area.fill.opacity Charting area background opacity as an alpha value (0 to 1).
-
 #' @param margin.top Margin between plot area and the top of the
 #' graphic in pixels
 #' @param margin.bottom Margin between plot area and the bottom of the
@@ -57,43 +34,40 @@
 #' graphic in pixels
 #' @param margin.right Margin between plot area and the right of the
 #' graphic in pixels
-#' @importFrom plotly plot_ly layout
+#' @param auto.resize Whether the chart should resize automatically. It does not appear to work.
+#' @param interactive Whether the lines should be hidden/shown depending on mouse.
+#' @param queue Logical; whether lines should be added slowly to the plot
+#' @param queue.rate Specifies the speed if \code{queue = TRUE}. This specifies the number
+#'  of lines drawn per second.
+#' @param ... Parameters which are ignored. This is included so calls expecting the
+#'     plotly implementation which had more parameters will not cause errors 
+#' @importFrom parcoords parcoords
+#' @importFrom htmlwidgets JS
+#' @importFrom jsonlite toJSON
 #' @export
 ParallelCoordinates <- function(x,
+                                opacity = 0.4,
                                 group = NULL,
                                 colors = ChartColors(5, "Spectral"),
-                                scale.show = TRUE,
-                                scale.reverse = TRUE,
-                                scale.nticks = 10,
                                 global.font.family = "Arial",
                                 global.font.color = rgb(44, 44, 44, maxColorValue = 255),
                                 label.font.family = global.font.family,
                                 label.font.color = global.font.color,
                                 label.font.size = 12,
-                                range.font.family = global.font.family,
-                                range.font.color = global.font.color,
-                                range.font.size = 10,
-                                range.decimals = 0,
+                                label.rotate = FALSE,
                                 tick.font.family = global.font.family,
                                 tick.font.color = global.font.color,
                                 tick.font.size = 10,
-                                legend.font.family = global.font.family,
-                                legend.font.color = global.font.color,
-                                legend.font.size = 10,
-                                legend.title = NULL,
-                                legend.title.font.family = global.font.family,
-                                legend.title.font.color = global.font.color,
-                                legend.title.font.size = 12,
-                                background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
-                                background.fill.opacity = 0,
-                                charting.area.fill.color = rgb(255, 255, 255, maxColorValue = 255),
-                                charting.area.fill.opacity = 0,
-                                margin.top = 40,
-                                margin.bottom = 40,
-                                margin.left = 50,
-                                margin.right = 40,
-                                font.unit = "px")
-
+                                margin.top = 0,
+                                margin.bottom = 0,
+                                margin.left = 0,
+                                margin.right = 0,
+                                auto.resize = TRUE,
+                                interactive = TRUE,
+                                queue = FALSE,
+                                queue.rate = NULL,
+                                font.unit = "px",
+                                ...)
 
 {
     # For the other chart types, the font size conversion
@@ -102,97 +76,129 @@ ParallelCoordinates <- function(x,
     {
         fsc <- 1.3333
         label.font.size = round(fsc * label.font.size, 0)
-        range.font.size = round(fsc * range.font.size, 0)
+        #range.font.size = round(fsc * range.font.size, 0)
         tick.font.size = round(fsc * tick.font.size, 0)
-        legend.font.size = round(fsc * legend.font.size, 0)
-        legend.title.font.size = round(fsc * legend.title.font.size, 0)
+        #legend.font.size = round(fsc * legend.font.size, 0)
+        #legend.title.font.size = round(fsc * legend.title.font.size, 0)
     }
 
-    if (!is.null(group) && scale.show && sum(nchar(legend.title)) == 0 &&
-        !is.null(attr(group, "label")))
-        legend.title <- attr(group, "label")
-
-    # Set up data for plotting
+    # Reduce the number of ticks for date variables
     dimlist <- list()
     for (i in 1:ncol(x))
     {
-        if (is.numeric(x[[i]]))
+        if (any(class(x[[i]]) %in% c("Date", "POSIXct", "POSIXt")))
         {
-            rr <- range(x[[i]], na.rm = TRUE) * 10^{range.decimals}
-            rr <- c(floor(rr[1]), ceiling(rr[2])) / 10^{range.decimals}
-            dimlist[[i]] <- list(label = colnames(x)[i], values = as.numeric(x[[i]]),
-                tickformat = paste0(".", range.decimals, "f"), range = rr)
-
-        } else if (any(class(x[[i]]) %in% c("Date", "POSIXct", "POSIXt")))
-        {
-            date.seq <- seq(from = min(x[[i]], na.rm = TRUE),
+            tmp.name <- names(x)[i]
+            tmp.seq <- seq(from = min(x[[i]], na.rm = TRUE),
                             to = max(x[[i]], na.rm = TRUE), length = 5)
-            dimlist[[i]] <- list(label = colnames(x)[i], values = as.numeric(x[[i]]),
-                tickvals = as.numeric(date.seq), ticktext = date.seq)
-        
+            dimlist[[tmp.name]] <- list(tickValues = tmp.seq)
+        }
+    }
+    tasks <- NULL
+    
+    # some JS function if group is a variable
+    if (!is.null(group))
+    {
+        if (length(group) != nrow(x))
+            stop("Length of color variable must be the same as x")
+
+        if (is.factor(group) || is.character(group))
+        {
+            x <- data.frame(x, tmp.color = as.factor(group), check.names = FALSE)
+            if (length(colors) <= 1)
+                colorScale <- JS('d3.scale.category20()')           
+            else
+            { 
+                colors <- paste0(colors, rep("", nlevels(x$tmp.color)))[1:nlevels(x$tmp.color)]
+                colorScale = JS(sprintf('d3.scale.ordinal().range(%s).domain(%s)',
+                    toJSON(colors), toJSON(levels(x$tmp.color))))
+            }
         } else
         {
-            ff <- as.factor(x[[i]])
-            dimlist[[i]] <- list(label = colnames(x)[i], values = as.numeric(ff),
-                 tickvals = 1:nlevels(ff), ticktext = levels(ff))
+            x <- data.frame(x, tmp.color = as.numeric(group))
+            if (length(colors) <= 1)
+                colors <- c("blue", "red")
+            seq.len <- length(colors)
+            seq.val <- seq(from = min(x$tmp.color, na.rm = T), 
+                           to = max(x$tmp.color, na.rm = T),
+                           length = seq.len)
+            colorScale = JS(sprintf(
+            'd3.scale.linear().domain(%s).range(%s).interpolate(d3.interpolateRgb)',
+            toJSON(seq.val), toJSON(colors)))
         }
-    }
+        colors <- list(colorBy = "tmp.color", colorScale = colorScale)
+        tasks <- c(tasks, JS(removeColVar()))
 
-    # Set colors
-    eval(colors)
-    if (length(group) == 0)
-    {
-        group <- colors[1]
-        col.scale <- NULL
+    } else
+        colors <- colors[1]
 
-    } else if (length(group) != nrow(x))
-    {
-        stop("Variable 'group' should have the same number of values as the number of observations in 'x'")
-    }
-    else
-    {
-        colorbar = list(outlinewidth = 0, title = legend.title,
-                        tickfont = list(family = legend.font.family,
-                        color = legend.font.color, size = legend.font.size),
-                        titlefont = list(family = legend.title.font.family,
-                        color = legend.title.font.color, size = legend.title.font.size))
-        if (!is.null(group) && is.factor(group))
-        {
-            ff <- as.factor(group)
-            colorbar = c(colorbar, list(tickmode = "array", ticktext = levels(ff), tickvals = 1:nlevels(ff)))
-            group <- as.numeric(ff)
-        }
-        else if (!is.null(group) && any(class(group) %in% c("Date", "POSIXct", "POSIXt")))
-        {
-            tick.labs <- seq(from = min(group, na.rm = TRUE), to = max(group, na.rm = TRUE), length = 5)
-            group <- as.numeric(group)
-            tick.vals <- seq(from = min(group, na.rm = TRUE), to = max(group, na.rm = TRUE), length = 5)
-            colorbar = c(colorbar, list(tickmode = "array", ticktext = tick.labs, tickvals = tick.vals))
-        }
-        cc.vals <- seq(from = 0, to = 1, length = scale.nticks)
-        col.fun <- colorRamp(unique(colors))  # undo recycling in PrepareColors
-        cc.cols <- rgb(col.fun(cc.vals), maxColorValue = 255) # hex values of opaque colors
-        col.scale <- mapply(function(a,b)c(a,b), a = cc.vals, b = cc.cols, SIMPLIFY = FALSE)
-    }
+    # Margins
+    margin.bottom <- margin.bottom + tick.font.size
+    margin.top <- margin.top + 2 * label.font.size
+    if (label.rotate)
+        margin.top <- margin.top + max(nchar(colnames(x))) * 0.5 * label.font.size
 
-    p <- x %>%
-        plot_ly(type = 'parcoords',
-        line = list(color = group, colorscale = col.scale,
-            showscale = scale.show, reversescale = scale.reverse, colorbar = colorbar),
-            labelfont = list(family = label.font.family, color = label.font.color, size = label.font.size),
-            rangefont = list(family = range.font.family, color = range.font.color, size = range.font.size),
-            tickfont = list(family = tick.font.family, color = tick.font.color, size = tick.font.size),
-        dimensions = dimlist)
+    # Apply formatting
+    tasks <- c(tasks, JS(formatD3Text(tick.font.family,
+                    tick.font.color, tick.font.size))) 
+    tasks <- c(tasks, JS(formatD3Labels(label.font.family,
+                    label.font.color, label.font.size, label.rotate)))
 
-    p <- config(p, displayModeBar = FALSE)
-    p$sizingPolicy$browser$padding <- 0
-    p <- layout(p,
-        margin = list(t = margin.top, b = margin.bottom, l = margin.left, r = margin.right),
-        plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
-        paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity))
-
-    result <- list(htmlwidget = p)
-    class(result) <- "StandardChart"
-    result
-
+    #lapply(tasks, cat)
+    parcoords(x, alpha = opacity, dimensions = dimlist, tasks = tasks,
+        rownames = FALSE, composite = "darken", color = colors,
+        brushMode = if (interactive) "1D-axes-multi" else NULL,
+        margin = list(top = margin.top, bottom = margin.bottom,
+            left = margin.left, right = margin.right),
+        autoresize = auto.resize, queue = queue, rate = queue.rate)
 }
+
+# Formatting is applied after initial rendering
+# Tick labels are applied first because we can't select the exact text elements
+# Copied from https://github.com/timelyportfolio/parcoords/issues/8
+
+formatD3Text <- function(family, color, size)
+    return(paste0('
+function(){
+      d3.select(this.el).selectAll("svg text")
+        .style("font", "', size, 'px ', family, '") .style("fill", "', color, '")
+    }
+'))
+
+formatD3Labels <- function(family, color, size, rotate)
+    return(paste0('
+function(){
+      d3.select(this.el).selectAll(".dimension:nth-child(n+1) > .axis > text")
+        .style("font", "', size, 'px ', family, '") .style("fill", "', color,
+        '") .attr("transform", "translate(0,-', size, ')',
+        if (rotate) ' rotate(-90)") .attr("text-anchor", "start' else '', '")
+    }
+'))
+
+# Javascript function to remove variable used to create colorscale
+# Copied from https://github.com/timelyportfolio/parcoords/issues/17
+removeColVar <- function()
+    return ("
+function(){
+  // supply an array of columns to hide
+  this.parcoords.hideAxis(['names', 'tmp.color'])
+
+  this.parcoords.removeAxes();
+  this.parcoords.render();
+
+  // duplicated from the widget js code
+  //  to make sure reorderable and brushes work
+  if( this.x.options.reorderable ) {
+    this.parcoords.reorderable();
+  } else {
+    this.parcoords.createAxes();
+  }
+
+  if( this.x.options.brushMode ) {
+  // reset the brush with None
+    this.parcoords.brushMode('None')
+    this.parcoords.brushMode(this.x.options.brushMode);
+    this.parcoords.brushPredicate(this.x.options.brushPredicate);
+  }
+}
+")   

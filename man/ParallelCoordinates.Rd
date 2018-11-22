@@ -4,29 +4,21 @@
 \alias{ParallelCoordinates}
 \title{Parallel coordinates}
 \usage{
-ParallelCoordinates(x, group = NULL, colors = ChartColors(5,
-  "Spectral"), scale.show = TRUE, scale.reverse = TRUE,
-  scale.nticks = 10, global.font.family = "Arial",
+ParallelCoordinates(x, opacity = 0.4, group = NULL,
+  colors = ChartColors(5, "Spectral"), global.font.family = "Arial",
   global.font.color = rgb(44, 44, 44, maxColorValue = 255),
   label.font.family = global.font.family,
   label.font.color = global.font.color, label.font.size = 12,
-  range.font.family = global.font.family,
-  range.font.color = global.font.color, range.font.size = 10,
-  range.decimals = 0, tick.font.family = global.font.family,
+  label.rotate = FALSE, tick.font.family = global.font.family,
   tick.font.color = global.font.color, tick.font.size = 10,
-  legend.font.family = global.font.family,
-  legend.font.color = global.font.color, legend.font.size = 10,
-  legend.title = NULL, legend.title.font.family = global.font.family,
-  legend.title.font.color = global.font.color,
-  legend.title.font.size = 12, background.fill.color = rgb(255, 255,
-  255, maxColorValue = 255), background.fill.opacity = 0,
-  charting.area.fill.color = rgb(255, 255, 255, maxColorValue = 255),
-  charting.area.fill.opacity = 0, margin.top = 40,
-  margin.bottom = 40, margin.left = 50, margin.right = 40,
-  font.unit = "px")
+  margin.top = 0, margin.bottom = 0, margin.left = 0,
+  margin.right = 0, auto.resize = TRUE, interactive = TRUE,
+  queue = FALSE, queue.rate = NULL, font.unit = "px", ...)
 }
 \arguments{
 \item{x}{A dataframe containing multiple variables (as columns)}
+
+\item{opacity}{Opacity of the line colors as an alpha value (0 to 1).}
 
 \item{group}{An optional variable which is used to color the lines in plot.
 It should be a vector with length equal to the number of rows in \code{x}.
@@ -35,13 +27,7 @@ Can be numeric or categorical.}
 \item{colors}{A vector of colors for the color in lines in plot. Note that only 6-digit
 hex codes are accepted (8-digit hex results in black lines). If no \code{group}
 is provided, then the first color will be used for all the lines. If it is provided,
-\code{colors} will be interpolated (linearly) to create a color scalebar}
-
-\item{scale.show}{Logical; whether to show the color scalebar}
-
-\item{scale.reverse}{Logical; whether to reverse the color scalebar}
-
-\item{scale.nticks}{Integer; number of ticks to show on colorscalebar}
+\code{colors} will be interpolated (linearly) to create a color scalebar.}
 
 \item{global.font.family}{Character; font family for all occurrences of any
 font attribute for the chart unless specified individually.}
@@ -56,15 +42,7 @@ format (e.g. "black") or a hex code.}
 
 \item{label.font.size}{Integer; Label font size.}
 
-\item{range.font.family}{Character; range label font family.}
-
-\item{range.font.color}{Range label font color as a named color in character
-format (e.g. "black") or a hex code.}
-
-\item{range.font.size}{Integer; Range label font size.}
-
-\item{range.decimals}{The number of decimals to shown in the range labels (for numeric
-variables) and the tick labels.}
+\item{label.rotate}{Boolean; whether to rotate the variable names on the chart.}
 
 \item{tick.font.family}{Character; tick label font family.}
 
@@ -72,32 +50,6 @@ variables) and the tick labels.}
 format (e.g. "black") or a hex code.}
 
 \item{tick.font.size}{Integer; Tick label font size.}
-
-\item{legend.font.family}{Character; legend font family.}
-
-\item{legend.font.color}{legend font color as a named color in character
-format (e.g. "black") or a hex code.}
-
-\item{legend.font.size}{Integer; legend font size.}
-
-\item{legend.title}{Character; title for the legend (colorscale bar). If none is provided,
-\code{attr(group, "label")} will be used if available.}
-
-\item{legend.title.font.family}{Character; legend title font family.}
-
-\item{legend.title.font.color}{legend.title label font color as a named color in character
-format (e.g. "black") or a hex code.}
-
-\item{legend.title.font.size}{Integer; legend title font size.}
-
-\item{background.fill.color}{Background color in character format (e.g. "black") or a hex code.}
-
-\item{background.fill.opacity}{Background opacity as an alpha value (0 to 1).}
-
-\item{charting.area.fill.color}{Charting area background color as
-a named color in character format (e.g. "black") or a hex code.}
-
-\item{charting.area.fill.opacity}{Charting area background opacity as an alpha value (0 to 1).}
 
 \item{margin.top}{Margin between plot area and the top of the
 graphic in pixels}
@@ -111,9 +63,21 @@ graphic in pixels}
 \item{margin.right}{Margin between plot area and the right of the
 graphic in pixels}
 
+\item{auto.resize}{Whether the chart should resize automatically. It does not appear to work.}
+
+\item{interactive}{Whether the lines should be hidden/shown depending on mouse.}
+
+\item{queue}{Logical; whether lines should be added slowly to the plot}
+
+\item{queue.rate}{Specifies the speed if \code{queue = TRUE}. This specifies the number
+of lines drawn per second.}
+
 \item{font.unit}{One of "px" of "pt". By default all font sizes are specified in terms of
 pixels ("px"). But changing this to "pt" will mean that the font sizes will be in terms
 points ("pt"), which will be consistent with font sizes in text boxes.}
+
+\item{...}{Parameters which are ignored. This is included so calls expecting the
+plotly implementation which had more parameters will not cause errors}
 }
 \description{
 Create a parallel coordinates plot to show multivariate data
