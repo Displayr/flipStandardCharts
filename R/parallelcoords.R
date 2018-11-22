@@ -87,12 +87,7 @@ ParallelCoordinates <- function(x,
     for (i in 1:ncol(x))
     {
         if (any(class(x[[i]]) %in% c("Date", "POSIXct", "POSIXt")))
-        {
-            tmp.name <- names(x)[i]
-            tmp.seq <- seq(from = min(x[[i]], na.rm = TRUE),
-                            to = max(x[[i]], na.rm = TRUE), length = 5)
-            dimlist[[tmp.name]] <- list(tickValues = tmp.seq)
-        }
+            x[,i] <- as.numeric(x[,i])
     }
     tasks <- NULL
     
