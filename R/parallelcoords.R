@@ -39,6 +39,8 @@
 #' @param queue Logical; whether lines should be added slowly to the plot
 #' @param queue.rate Specifies the speed if \code{queue = TRUE}. This specifies the number
 #'  of lines drawn per second.
+#' @param width Numeric; Width of chart in pixels.
+#' @param height Numeric; Height of chart in pixels.
 #' @param ... Parameters which are ignored. This is included so calls expecting the
 #'     plotly implementation which had more parameters will not cause errors 
 #' @importFrom parcoords parcoords
@@ -67,6 +69,8 @@ ParallelCoordinates <- function(x,
                                 queue = FALSE,
                                 queue.rate = NULL,
                                 font.unit = "px",
+                                width = NULL,
+                                height = NULL,
                                 ...)
 
 {
@@ -76,18 +80,18 @@ ParallelCoordinates <- function(x,
     {
         fsc <- 1.3333
         label.font.size = round(fsc * label.font.size, 0)
-        #range.font.size = round(fsc * range.font.size, 0)
         tick.font.size = round(fsc * tick.font.size, 0)
-        #legend.font.size = round(fsc * legend.font.size, 0)
-        #legend.title.font.size = round(fsc * legend.title.font.size, 0)
     }
 
     # Reduce the number of ticks for date variables
     dimlist <- list()
     for (i in 1:ncol(x))
     {
+        tmp.name0 <- colnames(x)[i]
         if (any(class(x[[i]]) %in% c("Date", "POSIXct", "POSIXt")))
             x[,i] <- as.numeric(x[,i])
+        tmp.name1 <- colnames(x)[i]
+        dimlist[[tmp.name1]] <- list(title = tmp.name0)
     }
     tasks <- NULL
     
@@ -138,6 +142,8 @@ ParallelCoordinates <- function(x,
                     tick.font.color, tick.font.size))) 
     tasks <- c(tasks, JS(formatD3Labels(label.font.family,
                     label.font.color, label.font.size, label.rotate)))
+    tasks <- c(tasks, JS(removeD3CanvasMargin()))
+    tasks <- c(tasks, JS(removeD3BodyPadding()))
 
     #lapply(tasks, cat)
     parcoords(x, alpha = opacity, dimensions = dimlist, tasks = tasks,
@@ -145,8 +151,17 @@ ParallelCoordinates <- function(x,
         brushMode = if (interactive) "1D-axes-multi" else NULL,
         margin = list(top = margin.top, bottom = margin.bottom,
             left = margin.left, right = margin.right),
+        width = width, height = height,
         autoresize = auto.resize, queue = queue, rate = queue.rate)
 }
+
+setD3Margin <- function()
+    return('
+function(){
+    d3.select("canvas") .attr("translate(0, -50)")
+}
+')
+
 
 # Formatting is applied after initial rendering
 # Tick labels are applied first because we can't select the exact text elements
@@ -196,4 +211,21 @@ function(){
     this.parcoords.brushPredicate(this.x.options.brushPredicate);
   }
 }
-")   
+")
+
+# The following two functions add javascript code to remove some margins and padding
+# Not sure what they are doing or where they come from but
+# inspecting objects in chrome show these are always present
+removeD3CanvasMargin <- function()
+    return ('
+function(){
+    d3.select("canvas") .attr("translate(0, -50)")
+}
+')
+
+removeD3BodyPadding <- function()
+    return('
+function(){
+    d3.select("body") .style("padding", "0px")
+}
+')

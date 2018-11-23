@@ -13,7 +13,8 @@ ParallelCoordinates(x, opacity = 0.4, group = NULL,
   tick.font.color = global.font.color, tick.font.size = 10,
   margin.top = 0, margin.bottom = 0, margin.left = 0,
   margin.right = 0, auto.resize = TRUE, interactive = TRUE,
-  queue = FALSE, queue.rate = NULL, font.unit = "px", ...)
+  queue = FALSE, queue.rate = NULL, font.unit = "px", width = NULL,
+  height = NULL, ...)
 }
 \arguments{
 \item{x}{A dataframe containing multiple variables (as columns)}
@@ -75,6 +76,10 @@ of lines drawn per second.}
 \item{font.unit}{One of "px" of "pt". By default all font sizes are specified in terms of
 pixels ("px"). But changing this to "pt" will mean that the font sizes will be in terms
 points ("pt"), which will be consistent with font sizes in text boxes.}
+
+\item{width}{Numeric; Width of chart in pixels.}
+
+\item{height}{Numeric; Height of chart in pixels.}
 
 \item{...}{Parameters which are ignored. This is included so calls expecting the
 plotly implementation which had more parameters will not cause errors}
