@@ -84,6 +84,7 @@ ParallelCoordinates <- function(x,
     }
 
     # Reduce the number of ticks for date variables
+	tasks <- NULL
     dimlist <- list()
     for (i in 1:ncol(x))
     {
@@ -91,10 +92,14 @@ ParallelCoordinates <- function(x,
         if (any(class(x[[i]]) %in% c("Date", "POSIXct", "POSIXt")))
             x[,i] <- as.numeric(x[,i])
         tmp.name1 <- colnames(x)[i]
-        dimlist[[tmp.name1]] <- list(title = tmp.name0)
+		dimlist[[tmp.name1]] <- list(title = tmp.name0)
+		
+        #if (any(class(x[[i]]) %in% c("Date", "POSIXct", "POSIXt")))
+		#		tasks <- c(tasks, JS(orderDateTicks(tmp.name1, x[[i]])))
+		if (is.factor(x[[i]]))
+			tasks <- c(tasks, JS(orderCategoricalTicks(tmp.name1, levels(x[[i]]))))
     }
-    tasks <- NULL
-    
+
     # some JS function if group is a variable
     if (!is.null(group))
     {
@@ -151,7 +156,7 @@ ParallelCoordinates <- function(x,
         brushMode = if (interactive) "1D-axes-multi" else NULL,
         margin = list(top = margin.top, bottom = margin.bottom,
             left = margin.left, right = margin.right),
-        width = width, height = height,
+        width = width, height = height, reorderable = interactive,
         autoresize = auto.resize, queue = queue, rate = queue.rate)
 }
 
@@ -229,3 +234,30 @@ function(){
     d3.select("body") .style("padding", "0px")
 }
 ')
+
+orderCategoricalTicks <- function(varname, varlevels)
+	return(paste0("
+function(){
+	this.parcoords.dimensions()['", varname, "']
+	.yscale = d3.scale.ordinal()
+	.domain(['", paste(varlevels, collapse = "','"), "'])
+	.rangePoints([
+	1,
+	this.parcoords.height()-this.parcoords.margin().top - this.parcoords.margin().bottom
+])
+}
+"))
+
+
+orderDateTicks <- function(varname, varlevels)
+	return(paste0("
+function(){
+	this.parcoords.dimensions()['", varname, "']
+	.yscale = d3.scale.time()
+	.domain([new Date(2018,1,1), new Date(2019, 2, 1)])
+	.rangePoints([
+	1,
+	this.parcoords.height()-this.parcoords.margin().top - this.parcoords.margin().bottom
+])
+}
+"))
