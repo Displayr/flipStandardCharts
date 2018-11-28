@@ -243,12 +243,29 @@ function(){
 	.domain(['", paste(varlevels, collapse = "','"), "'])
 	.rangePoints([
 	1,
-	this.parcoords.height()-this.parcoords.margin().top - this.parcoords.margin().bottom
-])
+	this.parcoords.height()-this.parcoords.margin().top - this.parcoords.margin().bottom]);
+
+	this.parcoords.removeAxes();
+	this.parcoords.render();
+	
+	// duplicated from the widget js code
+	//  to make sure reorderable and brushes work
+	if( this.x.options.reorderable ) {
+	   this.parcoords.reorderable();
+	 } else {
+	   this.parcoords.createAxes();
+	 }
+
+	 if( this.x.options.brushMode ) {
+	 // reset the brush with None
+	   this.parcoords.brushMode('None')
+	   this.parcoords.brushMode(this.x.options.brushMode);
+	   this.parcoords.brushPredicate(this.x.options.brushPredicate);
+	}
 }
 "))
 
-
+# Not working yet
 orderDateTicks <- function(varname, varlevels)
 	return(paste0("
 function(){
