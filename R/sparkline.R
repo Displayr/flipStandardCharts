@@ -146,7 +146,7 @@ Sparkline <- function(x,
     }
 
     if (type == "Box")
-        return(Box(x, values.title = "",
+        return(Box(x, values.title = " ",
 		values.tick.show = x.tick.show, values.tick.format = x.tick.format,
 		values.tick.font.color = x.tick.font.color, values.tick.font.size = x.tick.font.size,
 		values.line.width = x.axis.width, values.line.color = x.axis.color,
