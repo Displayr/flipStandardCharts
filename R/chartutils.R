@@ -665,19 +665,41 @@ charToNumeric <- function(x)
     if (!is.character(x))
         return(x)
 
+	x.orig <- x
     x <- gsub(" ", "", x)
     x <- gsub(",", "", x) # e.g. '5,000'
     xnum <- suppressWarnings(as.numeric(x))
     xnum <- xnum[!is.na(xnum)]
     if (length(xnum) != 1)
+	{
+		warning("Value '", x.orig, "' is not numeric.")
         return(NULL)
+	}
     return(xnum)
 }
 
+# Modified warning message
+charToDate <- function(x)
+{
+	x <- as.character(x)
+	res <- AsDate(x, on.parse.failure = FALSE)
+	if (any(is.na(res)))
+		warning("Value '", x, "' could not be parsed as a date.")
+	return(res)
+}
+
+charToDateTime <- function(x)
+{
+	x <- as.character(x)
+	res <- AsDateTime(x, on.parse.failure = FALSE)
+	if (any(is.na(res)))
+		warning("Value '", x, "' could not be parsed as a date.")
+	return(res)
+}
 # This is only applied to the values axis.
 # It can handle categorical and date axes types but only for the values axis
 # (date categorical axis range is set using getDateAxisRange in setAxis)
-setValRange <- function(min, max, values, use.defaults = TRUE, is.bar = FALSE)
+setValRange <- function(min, max, values, show.zero = FALSE, use.defaults = TRUE, is.bar = FALSE)
 {
     if (is.null(min) || is.na(min) || min == "")
         min <- NULL
@@ -703,13 +725,17 @@ setValRange <- function(min, max, values, use.defaults = TRUE, is.bar = FALSE)
         values <- as.numeric(as.factor(values)) - 1
     if (inherits(values, "POSIXct"))
     {
-        min <- AsDateTime(as.character(min), on.parse.failure = FALSE)
-        max <- AsDateTime(as.character(max), on.parse.failure = FALSE)
+		if (!is.null(min) && !is.na(min))
+			min <- charToDateTime(min)
+		if (!is.null(max) && !is.na(max))
+			max <- charToDateTime(max)
 
     } else if (inherits(values, "Date") || inherits(values, "POSIXct"))
     {
-        min <- AsDate(as.character(min), on.parse.failure = FALSE)
-        max <- AsDate(as.character(max), on.parse.failure = FALSE)
+		if (!is.null(min) && !is.na(min))
+			min <- charToDate(min)
+		if (!is.null(max) && !is.na(max))
+			max <- charToDate(max)
 
     } else
     {
@@ -718,7 +744,7 @@ setValRange <- function(min, max, values, use.defaults = TRUE, is.bar = FALSE)
     }
 
     if  (length(min) == 0 || is.na(min))
-        min <- min(unlist(values), na.rm = TRUE)
+        min <- min(unlist(values), if (show.zero) 0 else NULL, na.rm = TRUE)
     if  (length(max) == 0 || is.na(max))
         max <- max(unlist(values), na.rm = TRUE)
   

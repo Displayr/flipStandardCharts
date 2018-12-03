@@ -162,7 +162,7 @@ Pyramid <- function(x,
         x.bounds.maximum <- as.numeric(x.bounds.maximum)/2
     x.bounds.minimum <- if (!is.null(x.bounds.maximum)) -x.bounds.maximum
                         else                             NULL
-    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, chart.matrix, is.null(x.tick.distance))
+    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, chart.matrix, FALSE, is.null(x.tick.distance))
     xtick <- setTicks(x.range$min, x.range$max, x.tick.distance, x.data.reversed,
                   data = NULL, type = type,
                   labels = tmp.label, label.font.size = data.label.font.size)

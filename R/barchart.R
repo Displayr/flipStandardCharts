@@ -215,8 +215,8 @@ Bar <- function(x,
     # Format axis labels
     axisFormat <- formatLabels(chart.matrix, type, y.tick.label.wrap, y.tick.label.wrap.nchar,
                                y.tick.format, x.tick.format)
-    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, chart.matrix, is.null(x.tick.distance))
-    y.range <- setValRange(y.bounds.minimum, y.bounds.maximum, axisFormat, is.null(y.tick.distance), is.bar = TRUE)
+    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, chart.matrix, x.zero, is.null(x.tick.distance))
+    y.range <- setValRange(y.bounds.minimum, y.bounds.maximum, axisFormat, y.zero, is.null(y.tick.distance), is.bar = TRUE)
     tmp.label <- sprintf(paste0("%s%.", data.label.decimals, "f%s"),
                 data.label.prefix, max(chart.matrix), data.label.suffix)
     xtick <- setTicks(x.range$min, x.range$max, x.tick.distance, x.data.reversed,
