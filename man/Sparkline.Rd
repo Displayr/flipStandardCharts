@@ -6,15 +6,29 @@
 \usage{
 Sparkline(x, type = c("Area", "Line", "Curve", "Column", "Box")[1],
   fill.color = "red", fill.opacity = 0.5, line.thickness = 3,
-  line.color = fill.color, line.opacity = 1, end.points.show = FALSE,
+  line.color = fill.color, line.opacity = 1,
+  global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
+  maxColorValue = 255), font.unit = "px", end.points.show = FALSE,
   end.points.symbol = "circle", end.points.size = 20,
   end.points.color = fill.color, end.points.opacity = 1,
   end.labels.position = c("None", "Above", "Below", "Next")[1],
-  end.labels.decimals = 2, background.fill.color = rgb(255, 255, 255,
-  maxColorValue = 255), background.fill.opacity = 0,
-  x.axis.show = FALSE, x.tick.show = x.axis.show,
-  y.axis.show = FALSE, y.tick.show = y.axis.show, margin.left = 0,
-  margin.right = 0, margin.top = 0, margin.bottom = 0)
+  end.labels.font.family = global.font.family,
+  end.labels.font.color = global.font.color, end.labels.font.size = 10,
+  end.labels.format = "", end.labels.prefix = "",
+  end.labels.suffix = "", hover.bg.color = rgb(0.5, 0.5, 0.5),
+  hover.font.family = global.font.family, hover.font.color = rgb(1, 1,
+  1), hover.font.size = 11, hover.format = "",
+  background.fill.color = rgb(255, 255, 255, maxColorValue = 255),
+  background.fill.opacity = 0, x.axis.show = FALSE,
+  x.axis.color = rgb(44, 44, 44, max = 255), x.axis.width = 1,
+  x.tick.show = x.axis.show, x.tick.font.family = global.font.family,
+  x.tick.font.color = global.font.color, x.tick.font.size = 10,
+  x.tick.format = "", y.axis.show = FALSE, y.axis.color = rgb(44, 44,
+  44, max = 255), y.axis.width = 1, y.tick.show = y.axis.show,
+  y.tick.font.family = global.font.family,
+  y.tick.font.color = global.font.color, y.tick.font.size = 10,
+  y.tick.format = "", margin.left = 0, margin.right = 0,
+  margin.top = 0, margin.bottom = 0)
 }
 \arguments{
 \item{x}{A numeric input vector to plot. Note that because sparklines is designed to be minimal 
@@ -35,7 +49,17 @@ but if both arguments are used, then \code{fill.color} will be ignored in favour
 
 \item{line.opacity}{Opacity of \code{line.color} as an alpha value (0 to 1).}
 
-\item{end.points.show}{Logical; whether to show markers at either end of the series. This only applies for}
+\item{global.font.family}{Character; font family for all occurrences of any
+font attribute for the chart unless specified individually.}
+
+\item{global.font.color}{Global font color as a named color in character format
+(e.g. "black") or an a hex code.}
+
+\item{font.unit}{Set to 'pt' (default) to get font sizing consistent with textboxes.
+Otherwise fonts will be taken to be specified in pixels.}
+
+\item{end.points.show}{Logical; whether to show markers at either end of the series. 
+This only applies for charts with \code{type} "Area", "Line", or "Curve".}
 
 \item{end.points.symbol}{Character; marker symbol used at end points. See \url{https://plot.ly/r/reference/#scatter-marker-symbol} for options.}
 
@@ -47,7 +71,31 @@ but if both arguments are used, then \code{fill.color} will be ignored in favour
 
 \item{end.labels.position}{Character; Whether to put labels above, below or next to end points.}
 
-\item{end.labels.decimals}{Numeric; The number of decimals to be shown in the end labels.}
+\item{end.labels.font.family}{Character; label font family}
+
+\item{end.labels.font.color}{label font color as a named color
+in character format (e.g. "black") or an a hex code.}
+
+\item{end.labels.font.size}{Integer; label font size}
+
+\item{end.labels.format}{A string representing a d3 formatting code.
+See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
+
+\item{end.labels.prefix}{Optional text to prepend to end labels.}
+
+\item{end.labels.suffix}{Optional text to append to end labels.}
+
+\item{hover.bg.color}{Color of the background text box showing the hover text.}
+
+\item{hover.font.family}{Character; hover text font family}
+
+\item{hover.font.color}{hover text font color as a named color
+in character format (e.g. "black") or an a hex code.}
+
+\item{hover.font.size}{Integer; hover text font size.}
+
+\item{hover.format}{A string representing a d3 formatting code.
+See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 
 \item{background.fill.color}{Background color in character format (e.g. "black") or a hex code.}
 
@@ -55,11 +103,39 @@ but if both arguments are used, then \code{fill.color} will be ignored in favour
 
 \item{x.axis.show}{Logical; Whether to show the x-axis.}
 
+\item{x.axis.color}{Character; Color of the x-axis line.}
+
+\item{x.axis.width}{Integer; Width of the x-axis line in pixels.}
+
 \item{x.tick.show}{Logical; Whether to show ticklabels. This only has an effect is \code{x.tick.show} is true.}
+
+\item{x.tick.font.family}{Character; x-axis tick label font family}
+
+\item{x.tick.font.color}{x-axis tick label font color as a named color
+in character format (e.g. "black") or an a hex code.}
+
+\item{x.tick.font.size}{Integer; x-axis tick label font size}
+
+\item{x.tick.format}{A string representing a d3 formatting code.
+See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 
 \item{y.axis.show}{Logical; Whether to show the y-axis.}
 
-\item{y.tick.show}{Logical; Whether to show ticklabels. This only has an effect is \code{y.tick.show} is true}
+\item{y.axis.color}{Character; Color of the y-axis line.}
+
+\item{y.axis.width}{Integer; Width of the y-axis line in pixels.}
+
+\item{y.tick.show}{Logical; Whether to show ticklabels. This only has an effect is \code{y.tick.show} is true.}
+
+\item{y.tick.font.family}{Character; y-axis tick label font family}
+
+\item{y.tick.font.color}{y-axis tick label font color as a named color
+in character format (e.g. "black") or an a hex code.}
+
+\item{y.tick.font.size}{Integer; y-axis tick label font size}
+
+\item{y.tick.format}{A string representing a d3 formatting code.
+See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 
 \item{margin.left}{Margin between plot area and the left of the graphic in pixels}
 
@@ -76,7 +152,7 @@ Create small charts for displaying inline with text
 xx <- rnorm(10)
 Sparkline(xx, background.fill.color = "black", background.fill.opacity = 1)
 Sparkline(xx, type = "Curve", end.points.show = TRUE, end.labels.position = "Next", 
-     end.labels.decimals = 5)
+     end.labels.format = ".1\%")
 Sparkline(xx, type = "Line", x.axis.show = TRUE, y.axis.show = TRUE, 
      x.tick.show = FALSE, y.tick.show = FALSE)
 }
