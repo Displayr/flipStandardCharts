@@ -125,12 +125,6 @@ Sparkline <- function(x,
         margin.top = 0,
         margin.bottom = 0)
 {
-    if (type == "Box")
-        return(Box(x, background.fill.color = background.fill.color, 
-        background.fill.opacity = background.fill.opacity, vertical = FALSE,
-        margin.bottom = margin.bottom, margin.top = margin.top, 
-        margin.left = margin.left, margin.right = margin.right))
-
     if (is.null(line.color))
     {
         line.color <- fill.color
@@ -139,6 +133,8 @@ Sparkline <- function(x,
 	data.is.percent <- isTRUE(grepl("%$", attr(x, "statistic")))
 	if (data.is.percent && sum(nchar(y.tick.format)) == 0)
 		y.tick.format = "%"
+	if (data.is.percent && sum(nchar(hover.format)) == 0)
+		hover.format = "%"
 
     if (tolower(font.unit) %in% c("pt", "point", "points"))
     {
@@ -148,6 +144,17 @@ Sparkline <- function(x,
         y.tick.font.size = round(fsc * y.tick.font.size, 0)
         hover.font.size = round(fsc * hover.font.size, 0)
     }
+
+    if (type == "Box")
+        return(Box(x, values.title = "",
+		values.tick.show = x.tick.show, values.tick.format = x.tick.format,
+		values.tick.font.color = x.tick.font.color, values.tick.font.size = x.tick.font.size,
+		values.line.width = x.axis.width, values.line.color = x.axis.color,
+		values.tick.font.family = x.tick.font.family,
+		background.fill.color = background.fill.color, 
+        background.fill.opacity = background.fill.opacity, vertical = FALSE,
+        margin.bottom = margin.bottom, margin.top = margin.top, 
+        margin.left = margin.left, margin.right = margin.right))
 
     n <- length(x)
     x0 <- 1:n
@@ -192,7 +199,7 @@ Sparkline <- function(x,
                 shift = end.points.size * 0.75, position = end.labels.position,
 				font = end.lab.font, index = 1),
                 setLabel(x[n], x0[n],
-				text = formatByD3(x[1], end.labels.format, end.labels.prefix, 
+				text = formatByD3(x[n], end.labels.format, end.labels.prefix, 
 				end.labels.suffix, data.is.percent),
                 shift = end.points.size * 0.75, position = end.labels.position,
 				font = end.lab.font, index = n))
