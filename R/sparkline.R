@@ -131,10 +131,10 @@ Sparkline <- function(x,
         line.opacity <- fill.opacity
     }
 	data.is.percent <- isTRUE(grepl("%$", attr(x, "statistic")))
-	if (data.is.percent && sum(nchar(y.tick.format)) == 0)
-		y.tick.format = "%"
-	if (data.is.percent && sum(nchar(hover.format)) == 0)
-		hover.format = "%"
+	if (sum(nchar(y.tick.format)) == 0 || y.tick.format == ".0")
+		y.tick.format <- if (data.is.percent) "%" else ".2f"
+	if (sum(nchar(hover.format)) == 0 || hover.format == ".0")
+		hover.format <- if (data.is.percent) "%" else ".2f"
 
     if (tolower(font.unit) %in% c("pt", "point", "points"))
     {
@@ -210,12 +210,14 @@ Sparkline <- function(x,
             
     xaxis <- list(side = "bottom", showgrid = FALSE, showline = x.axis.show, zeroline = FALSE,
                 showticklabels = x.axis.show, ticks = if (x.axis.show) "outside" else "",
-                tickfont = list(size = if (x.tick.show) x.tick.font.size else 1, color = x.tick.font.color,
+                tickfont = list(size = if (x.tick.show) x.tick.font.size else 1,
+						   		color = if (x.tick.show) x.tick.font.color else "transparent",
 				family = x.tick.font.family), tickformat = x.tick.format,
                 linewidth = x.axis.width, linecolor = x.axis.color, tickcolor = x.axis.color)
     yaxis <- list(side = "left", showgrid = FALSE, showline = y.axis.show, zeroline = FALSE,
                 showticklabels = y.axis.show, ticks = if (y.axis.show) "outside" else "",
-                tickfont = list(size = if (x.tick.show) y.tick.font.size else 1, color = y.tick.font.color,
+                tickfont = list(size = if (y.tick.show) y.tick.font.size else 1, 
+							 	color = if (y.tick.show) y.tick.font.color else "transparent",
 				family = y.tick.font.family), 
 				hoverformat = hover.format, tickformat = y.tick.format,
                 linewidth = y.axis.width, linecolor = y.axis.color, tickcolor = y.axis.color)
