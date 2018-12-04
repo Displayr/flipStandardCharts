@@ -125,6 +125,13 @@ Sparkline <- function(x,
         margin.top = 0,
         margin.bottom = 0)
 {
+	if (NCOL(x) > 1)
+	{
+		warning("Sparklines can only show a single series.")
+		x <- x[,1]
+	}
+	x <- as.numeric(x)
+
     if (is.null(line.color))
     {
         line.color <- fill.color
@@ -161,7 +168,7 @@ Sparkline <- function(x,
     n <- length(x)
     x0 <- 1:n
     annot <- NULL
-    p <- plot_ly()    
+    p <- plot_ly()
 
     if (type == "Area")
         p <- add_trace(p, x = x0, y = x, fill = "tozeroy", type = "scatter", mode = "lines",
