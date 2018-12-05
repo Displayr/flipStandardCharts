@@ -338,6 +338,7 @@ Distribution <-   function(x,
         warning("The number of colors provided for shading the densities is not consistent with the number of variables.")
     # working out the range of the data
     rng <- range(unlist(x), na.rm = TRUE)
+	bins <- list(start = rng[1], end = rng[2], size = (rng[2] - rng[1])/maximum.bins)
     # Creating the violin plot
     for (v in 1:n.variables)
     {
@@ -357,7 +358,7 @@ Distribution <-   function(x,
         wgt <- wgt[not.missing]
         wgt <- prop.table(wgt) # Rebasing the weight (Required by the density function)
         from <- if (automatic.lower.density) rng[1] else from
-        p <- addDensities(p, values, wgt, labels[v], vertical, show.density, show.mirror.density, density.type, histogram.cumulative, histogram.counts, maximum.bins, box.points, category.axis, value.axis, density.color, values.color, bw, adjust, kernel, n, from, to, cut)
+        p <- addDensities(p, values, wgt, labels[v], vertical, show.density, show.mirror.density, density.type, histogram.cumulative, histogram.counts, bins, maximum.bins, box.points, category.axis, value.axis, density.color, values.color, bw, adjust, kernel, n, from, to, cut)
         p <- addSummaryStatistics(p, values, wgt, vertical,  show.mean, show.median, show.quartiles, show.range, show.values,
                                  mean.color, median.color, quartile.color, range.color, values.color,
                                  category.axis, axisName(vertical, v, 1, TRUE), value.axis, value.axis.2)
@@ -426,6 +427,7 @@ addDensities <- function(p,
                          density.type,
                          histogram.cumulative,
                          histogram.counts,
+                         bins,
                          maximum.bins,
                          box.points,
                          category.axis,
@@ -460,9 +462,9 @@ addDensities <- function(p,
                       yaxis = value.axis)
     } else if (density.type == "Histogram")
     {
-        p <-add_trace(p,
-                      nbinsx = maximum.bins,
-                      nbinsy = maximum.bins,
+        p <- add_trace(p,
+                      xbins = if (!vertical) bins else NULL,
+                      ybins = if (vertical) bins else NULL,
                       x = if (vertical) NULL else values,
                       y = if (vertical) values else NULL ,
                       marker = list(color = rep(density.color, max(100, maximum.bins))), # Hacking past a plotly bug
