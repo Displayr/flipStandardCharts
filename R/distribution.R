@@ -338,9 +338,9 @@ Distribution <-   function(x,
         warning("The number of colors provided for shading the densities is not consistent with the number of variables.")
     # working out the range of the data
     rng <- range(unlist(x), na.rm = TRUE)
-	bins <- list(start = rng[1], end = rng[2], size = (rng[2] - rng[1])/maximum.bins)
     if (is.null(maximum.bins) || is.na(maximum.bins))
         maximum.bins <- min(length(unique(unlist(x))), 50)
+	bins <- list(start = rng[1], end = rng[2], size = (rng[2] - rng[1])/maximum.bins)
     # Creating the violin plot
     for (v in 1:n.variables)
     {
