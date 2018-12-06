@@ -340,7 +340,8 @@ Distribution <-   function(x,
     rng <- range(unlist(x), na.rm = TRUE)
     if (is.null(maximum.bins) || is.na(maximum.bins))
         maximum.bins <- min(length(unique(unlist(x))), 50)
-	bins <- list(start = rng[1], end = rng[2], size = (rng[2] - rng[1])/maximum.bins)
+    offset <- min(diff(sort(unique(unlist(x)))))/2
+    bins <- list(start = rng[1] - offset, end = rng[2] + offset, size = (rng[2] - rng[1])/maximum.bins)
     # Creating the violin plot
     for (v in 1:n.variables)
     {
@@ -467,6 +468,8 @@ addDensities <- function(p,
         p <- add_trace(p,
                       xbins = if (!vertical) bins else NULL,
                       ybins = if (vertical) bins else NULL,
+                      nbinsx = maximum.bins,
+                      nbinsy = maximum.bins,
                       x = if (vertical) NULL else values,
                       y = if (vertical) values else NULL ,
                       marker = list(color = rep(density.color, max(100, maximum.bins))), # Hacking past a plotly bug
