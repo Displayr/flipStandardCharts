@@ -341,7 +341,7 @@ Distribution <-   function(x,
     if (is.null(maximum.bins) || is.na(maximum.bins))
         maximum.bins <- min(length(unique(unlist(x))), 50)
     offset <- min(diff(sort(unique(unlist(x)))))/2
-    bins <- list(start = rng[1] - offset, end = rng[2] + offset, size = (rng[2] - rng[1])/maximum.bins)
+    bins <- list(start = rng[1] - offset, end = rng[2] + offset)
     # Creating the violin plot
     for (v in 1:n.variables)
     {
