@@ -340,8 +340,10 @@ Distribution <-   function(x,
     rng <- range(unlist(x), na.rm = TRUE)
     if (is.null(maximum.bins) || is.na(maximum.bins))
         maximum.bins <- min(length(unique(unlist(x))), 50)
-    offset <- min(diff(sort(unique(unlist(x)))))/2
-    bins <- list(start = rng[1] - offset, end = rng[2] + offset)
+    bin.offset <- min(diff(sort(unique(unlist(x)))))/10
+    bin.size = (rng[2] - rng[1])/maximum.bins
+    bins <- list(start = rng[1] - bin.offset, end = rng[2] + bin.offset, 
+                 size = if (bin.size < 0.5) bin.size else NULL) # avoiding bug for small ranges
     # Creating the violin plot
     for (v in 1:n.variables)
     {
@@ -472,7 +474,7 @@ addDensities <- function(p,
                       nbinsy = maximum.bins,
                       x = if (vertical) NULL else values,
                       y = if (vertical) values else NULL ,
-                      marker = list(color = rep(density.color, max(100, maximum.bins))), # Hacking past a plotly bug
+                      marker = list(color = density.color[1]),
                       histnorm = if(histogram.counts) "" else "probability",
                       hoverinfo = if (vertical) "x" else "y",
                       cumulative = list(enabled = histogram.cumulative),
