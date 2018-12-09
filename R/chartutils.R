@@ -203,8 +203,12 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE, w
     }
 
     tmp.is.factor <- axis.type != "numeric"
-    x0 <- if (tmp.is.factor) suppressWarnings(AsNumeric(x, binary = FALSE))
-          else as.numeric(x)
+    if (tolower(axis.type) == "category")
+        x0 <- (1:length(x)) - 1
+    else if (tmp.is.factor)
+        x0 <- suppressWarnings(AsNumeric(x, binary = FALSE))
+    else
+        x0 <- as.numeric(x)
     tmp.dat <- data.frame(xorig = x, x = x0, y = y)
     if (ignore.last)
         tmp.dat <- tmp.dat[-which.max(tmp.dat$x),]
@@ -236,7 +240,7 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE, w
         tmp.fit <- suppressWarnings(try(gam(y~s(x, bs = "cr"), data = tmp.dat), silent = TRUE))
     else
         tmp.fit <- suppressWarnings(try(lm(y~x, data=tmp.dat), silent = TRUE))
-
+    
     if (inherits(tmp.fit, "try-error"))
     {
         warning(warning.prefix, "Could not fit trend line using ", fit.type, ".")
