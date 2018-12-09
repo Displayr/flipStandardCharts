@@ -356,6 +356,9 @@ formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, x.format, y.fo
     if (axis.type == "date")
     {
         ymd <- AsDateTime(labels, on.parse.failure = "silent")
+        n.dup <- sum(duplicated(ymd))
+        if (n.dup > 0)
+            warning("Date axis has ", n.dup, " duplicated values. There may have been error parsing dates.")
         labels <- ymd
     }
     else
@@ -374,7 +377,7 @@ getDateAxisRange <- function(label.dates, new.range = NULL)
         return(as.character(new.range))
 
     tmp.dates <- as.numeric(label.dates)
-    diff <- min(abs(diff(tmp.dates)), na.rm = TRUE)
+    diff <- min(abs(diff(sort(unique(tmp.dates)))), na.rm = TRUE)
 
     # Always return date-ranges as characters since there
     # seems to be more problems with using milliseconds since plotly v4.8.0
