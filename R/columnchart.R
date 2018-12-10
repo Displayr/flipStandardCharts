@@ -513,13 +513,17 @@ Column <- function(x,
                     line = list(color = average.color))
 
 
+        # Avoid using annotations because it does not work with small multiples
         if (data.label.show && !is.stacked)
         {
             x.range <- getRange(x, xaxis, axisFormat)
             y.sign <- getSign(data.annotations$y[,i], yaxis)
             if (NCOL(chart.matrix) > 1)
                 xaxis2 <- list(overlaying = "x", visible = FALSE, range = x.range)
-            p <- add_text(p, y = data.annotations$y[,i], cliponaxis = FALSE,
+            p <- add_trace(p, y = data.annotations$y[,i], cliponaxis = FALSE,
+                      type = "scatter", mode = "markers+text",
+                      marker = list(color = 'rgba(0,0,0,0)', symbol = "circle-open",
+                      size = (y.sign < 0) * data.label.font.size),
                       x = if (NCOL(chart.matrix) > 1) data.annotations$x[,i] else x,
                       xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x",
                       text = data.annotations$text[,i], textfont = data.label.font[[i]],

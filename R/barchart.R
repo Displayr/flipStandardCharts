@@ -332,6 +332,7 @@ Bar <- function(x,
                     type = "scatter", mode = "lines", showlegend = FALSE,
                     line = list(color = average.color))
 
+        # Avoid using annotations because it does not work with small multiples
         if (data.label.show && !is.stacked)
         {
             y.range <- getRange(x, yaxis, axisFormat)
@@ -339,7 +340,9 @@ Bar <- function(x,
                 yaxis2 <- list(overlaying = "y", visible = FALSE, range = y.range)
             x.sign <- getSign(data.annotations$x[,i], xaxis)
             x.diff <- diff(range(data.annotations$x))/100
-            p <- add_text(p, x = data.annotations$x[,i] + x.diff,
+            p <- add_trace(p, x = data.annotations$x[,i] + x.diff, type = "scatter", 
+                      mode = "markers+text", marker = list(color = 'rgba(0,0,0,0)',
+                      size = (x.sign < 0) * data.label.font.size, symbol = "circle-open"),
                       y = if (NCOL(chart.matrix) > 1) data.annotations$y[,i] else x,
                       yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y",
                       text = data.annotations$text[,i],
