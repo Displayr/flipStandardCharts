@@ -203,7 +203,7 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE, w
     }
 
     tmp.is.factor <- axis.type != "numeric"
-    if (tolower(axis.type) == "category")
+    if (tolower(axis.type) == "category" && !is.factor(x))
         x0 <- (1:length(x)) - 1
     else if (tmp.is.factor)
         x0 <- suppressWarnings(AsNumeric(x, binary = FALSE))
