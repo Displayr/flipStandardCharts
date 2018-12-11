@@ -144,7 +144,7 @@ Bar <- function(x,
     if (bar.gap < 0.0 || bar.gap >= 1.0)
     {
         warning("Parameter 'bar gap' must be between 0 and 1. ",
-                "Invalid 'bar gap' set to default value of 0.15.")     
+                "Invalid 'bar gap' set to default value of 0.15.")
         bar.gap <- 0.15
     }
 
@@ -191,11 +191,11 @@ Bar <- function(x,
     eval(colors) # not sure why, but this is necessary for bars to appear properly
 
     if (is.stacked && data.label.font.autocolor)
-        dlab.color <- autoFontColor(colors) 
+        dlab.color <- autoFontColor(colors)
     else
         dlab.color <- vectorize(data.label.font.color, ncol(chart.matrix))
-    
-    data.label.font = lapply(dlab.color, 
+
+    data.label.font = lapply(dlab.color,
         function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
     subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
@@ -244,7 +244,7 @@ Bar <- function(x,
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
 
-    legend.text <- autoFormatLongLabels(colnames(chart.matrix), legend.wrap, legend.wrap.nchar) 
+    legend.text <- autoFormatLongLabels(colnames(chart.matrix), legend.wrap, legend.wrap.nchar)
     margins <- setMarginsForLegend(margins, legend.show, legend, legend.text)
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
@@ -294,8 +294,8 @@ Bar <- function(x,
         }
 
         # this is the main trace for each data series
-        p <- add_trace(p, x = y.filled, y = x, type = "bar", orientation = "h", 
-                       marker = marker, name  =  legend.text[i], 
+        p <- add_trace(p, x = y.filled, y = x, type = "bar", orientation = "h",
+                       marker = marker, name  =  legend.text[i],
                        text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
                        hoverlabel = list(font = data.label.font[[i]]),
                        hoverinfo  = setHoverText(yaxis, chart.matrix, is.bar = TRUE), legendgroup = i)
@@ -340,9 +340,9 @@ Bar <- function(x,
                 yaxis2 <- list(overlaying = "y", visible = FALSE, range = y.range)
             x.sign <- getSign(data.annotations$x[,i], xaxis)
             x.diff <- diff(range(data.annotations$x))/100
-            p <- add_trace(p, x = data.annotations$x[,i] + x.diff, type = "scatter", 
+            p <- add_trace(p, x = data.annotations$x[,i] + x.diff, type = "scatter",
                       mode = "markers+text", marker = list(color = 'rgba(0,0,0,0)',
-                      size = (data.annotations$x[,i] < 0) * 12, #(data.label.font.size * 0.33 + 10), 
+                      size = (data.annotations$x[,i] < 0) * data.label.font.size,
                       symbol = "circle-open"),
                       y = if (NCOL(chart.matrix) > 1) data.annotations$y[,i] else x,
                       yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y",
