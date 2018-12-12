@@ -340,9 +340,10 @@ Distribution <-   function(x,
     rng <- range(unlist(x), na.rm = TRUE)
     if (is.null(maximum.bins) || is.na(maximum.bins))
         maximum.bins <- min(length(unique(unlist(x))), 50)
-    bin.offset <- min(diff(sort(unique(unlist(x)))))/10
+    bin.offset <- min(diff(sort(unique(unlist(x)))))/2
+    rng <- rng  + c(-1, 1) * bin.offset
     bin.size = (rng[2] - rng[1])/maximum.bins
-    bins <- list(start = rng[1] - bin.offset, end = rng[2] + bin.offset, 
+    bins <- list(start = rng[1], end = rng[2], 
                  size = if (bin.size < 0.5) bin.size else NULL) # avoiding bug for small ranges
     # Creating the violin plot
     for (v in 1:n.variables)
