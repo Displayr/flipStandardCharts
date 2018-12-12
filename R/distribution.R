@@ -341,10 +341,11 @@ Distribution <-   function(x,
     if (is.null(maximum.bins) || is.na(maximum.bins))
         maximum.bins <- min(length(unique(unlist(x))), 50)
     bin.offset <- min(diff(sort(unique(unlist(x)))))/2
-    rng <- rng  + c(-1, 1) * bin.offset
+    if (density.type == "Histogram")
+        rng <- rng  + c(-1, 1) * bin.offset
     bin.size = (rng[2] - rng[1])/maximum.bins
     bins <- list(start = rng[1], end = rng[2], 
-                 size = if (bin.size < 0.5) bin.size else NULL) # avoiding bug for small ranges
+                 size = if (bin.size < 1.0) bin.size else NULL) # avoiding bug for small ranges
     # Creating the violin plot
     for (v in 1:n.variables)
     {
