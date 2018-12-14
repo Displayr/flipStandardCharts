@@ -12,7 +12,7 @@
 Bean <- function(x,
                    weights = NULL,
                    vertical = FALSE,
-                   density.color = "Green",
+                   density.color = "#008000",
                    values.color = rgb(0.6,0.6,0.6),
                     bw = "nrd0",
                     adjust = 1,

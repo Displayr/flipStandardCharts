@@ -5,7 +5,7 @@
 \title{Box}
 \usage{
 Box(x, weights = NULL, vertical = TRUE, show.values = FALSE,
-  density.color = "Green", values.color = "Green",
+  density.color = "#008000", values.color = "#008000",
   box.points = "Suspected outliers", global.font.family = "Arial",
   global.font.color = rgb(44, 44, 44, maxColorValue = 255), title = "",
   title.font.family = global.font.family,

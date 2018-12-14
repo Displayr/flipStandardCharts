@@ -6,7 +6,7 @@
 Plots a histogram of data.}
 \usage{
 Histogram(x, weights = NULL, vertical = FALSE,
-  density.color = "Green", values.color = "Green",
+  density.color = "#008000", values.color = "#008000",
   show.values = FALSE, histogram.cumulative = FALSE,
   histogram.counts = FALSE, maximum.bins = NULL,
   global.font.family = "Arial", global.font.color = rgb(44, 44, 44,

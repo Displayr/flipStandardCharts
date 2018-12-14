@@ -4,7 +4,7 @@
 \alias{Bean}
 \title{Bean}
 \usage{
-Bean(x, weights = NULL, vertical = FALSE, density.color = "Green",
+Bean(x, weights = NULL, vertical = FALSE, density.color = "#008000",
   values.color = rgb(0.6, 0.6, 0.6), bw = "nrd0", adjust = 1,
   kernel = c("gaussian", "epanechnikov", "rectangular", "triangular",
   "biweight", "cosine", "optcosine"), n = 512, from = NULL,

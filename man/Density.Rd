@@ -4,11 +4,12 @@
 \alias{Density}
 \title{Density}
 \usage{
-Density(x, weights = NULL, vertical = FALSE, density.color = "Green",
-  values.color = "Green", show.values = FALSE, bw = "nrd0",
-  adjust = 1, kernel = c("gaussian", "epanechnikov", "rectangular",
-  "triangular", "biweight", "cosine", "optcosine"), n = 512,
-  from = NULL, to = NULL, cut = 3, automatic.lower.density = TRUE,
+Density(x, weights = NULL, vertical = FALSE,
+  density.color = "#008000", values.color = "#008000",
+  show.values = FALSE, bw = "nrd0", adjust = 1,
+  kernel = c("gaussian", "epanechnikov", "rectangular", "triangular",
+  "biweight", "cosine", "optcosine"), n = 512, from = NULL,
+  to = NULL, cut = 3, automatic.lower.density = TRUE,
   global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
   maxColorValue = 255), title = "",
   title.font.family = global.font.family,
