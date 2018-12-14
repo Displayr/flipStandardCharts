@@ -671,6 +671,10 @@ charToNumeric <- function(x)
 {
     if (!is.character(x))
         return(x)
+    if (length(x) == 0 || is.na(x))
+        return(NULL)
+    if (nchar(x) == 0)
+        return(NULL)
 
 	x.orig <- x
     x <- gsub(" ", "", x)
@@ -689,6 +693,11 @@ charToNumeric <- function(x)
 charToDate <- function(x)
 {
 	x <- as.character(x)
+    if (length(x) == 0 || is.na(x))
+        return(NULL)
+    if (nchar(x) == 0)
+        return(NULL)
+
 	res <- AsDate(x, on.parse.failure = FALSE)
 	if (any(is.na(res)))
 		warning("Value '", x, "' could not be parsed as a date.")
