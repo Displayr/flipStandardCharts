@@ -651,6 +651,11 @@ Scatter <- function(x = NULL,
                     line = list(color=fit.CI.colors[1], width=0, shape='spline'))
         }
     }
+    annot <- list(setSubtitle(subtitle, subtitle.font, margins),
+                  setTitle(title, title.font, margins),
+                  if (is.null(small.mult.index)) setFooter(footer, footer.font, margins) else NULL)
+    annot <- Filter(Negate(is.null), annot)
+
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
@@ -662,9 +667,7 @@ Scatter <- function(x = NULL,
         margin = margins,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
-        annotations = list(setSubtitle(subtitle, subtitle.font, margins),
-                           setTitle(title, title.font, margins),
-                           if (is.null(small.mult.index)) setFooter(footer, footer.font, margins) else NULL),
+        annotations = annot,
         hovermode = if (tooltip.show) "closest" else FALSE,
         hoverlabel = list(namelength = -1, bordercolor = charting.area.fill.color)
     )

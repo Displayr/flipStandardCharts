@@ -324,6 +324,11 @@ Line <-   function(x,
             }
         }
     }
+    annot <- list(setSubtitle(subtitle, subtitle.font, margins),
+                           setTitle(title, title.font, margins),
+                           setFooter(footer, footer.font, margins))
+    annot <- Filter(Negate(is.null), annot)
+
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
@@ -335,9 +340,7 @@ Line <-   function(x,
         margin = margins,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
-        annotations = list(setSubtitle(subtitle, subtitle.font, margins),
-                           setTitle(title, title.font, margins),
-                           setFooter(footer, footer.font, margins)),
+        annotations = annot,
         hovermode = if (tooltip.show) "closest" else FALSE,
         hoverlabel = list(namelength = -1, bordercolor = charting.area.fill.color)
     )

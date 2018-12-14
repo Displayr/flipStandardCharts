@@ -359,7 +359,8 @@ Bar <- function(x,
     annotations[[n+1]] <- setFooter(footer, footer.font, margins)
     annotations[[n+2]] <- setSubtitle(subtitle, subtitle.font, margins)
     annotations[[n+3]] <- setTitle(title, title.font, margins)
-
+    annotations <- Filter(Negate(is.null), annotations)
+    
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
