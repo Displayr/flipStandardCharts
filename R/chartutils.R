@@ -775,7 +775,7 @@ setValRange <- function(min, max, values, show.zero = FALSE, use.defaults = TRUE
 
 
 setTicks <- function(minimum, maximum, distance, reversed = FALSE,
-                data = NULL, labels = NULL, type="scatter", label.font.size = 10)
+                data = NULL, labels = NULL, type="scatter", label.font.size = 10, is.bar = FALSE)
 {
     #if (is.null(minimum) != is.null(maximum))
     #    warning("To specify the range of an axis, you must specify both the minimum and maximum values.")
@@ -826,6 +826,11 @@ setTicks <- function(minimum, maximum, distance, reversed = FALSE,
         # error msg if axis is not numeric
         autorange <- FALSE
         mode <- "array"
+        if (is.bar && distance == round(distance))
+        {
+            minimum <- ceiling(minimum)
+            maximum <- floor(maximum)
+        }
         tickvals <- seq(minimum, maximum, by=distance)
     }
     return (list(autorange=autorange, mode=mode, range=range,

@@ -222,7 +222,7 @@ Bar <- function(x,
     xtick <- setTicks(x.range$min, x.range$max, x.tick.distance, x.data.reversed,
                   data = if (data.label.show && !is.stacked) chart.matrix else NULL, type = type,
                   labels = tmp.label, label.font.size = data.label.font.size)
-    ytick <- setTicks(y.range$min, y.range$max, y.tick.distance, !y.data.reversed)
+    ytick <- setTicks(y.range$min, y.range$max, y.tick.distance, !y.data.reversed, is.bar = TRUE)
 
     yaxis <- setAxis(y.title, "left", axisFormat, y.title.font,
                   y.line.color, y.line.width, y.grid.width * grid.show, y.grid.color,

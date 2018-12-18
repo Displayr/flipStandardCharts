@@ -390,7 +390,7 @@ Column <- function(x,
     axisFormat <- formatLabels(chart.matrix, type, x.tick.label.wrap, x.tick.label.wrap.nchar,
                                x.tick.format, y.tick.format)
     # Turn off autorange if data labels are shown
-    if (FALSE && data.label.show && axisFormat$x.axis.type != "date" && is.null(x.bounds.minimum))
+    if (data.label.show && axisFormat$x.axis.type != "date" && is.null(x.bounds.minimum))
     {
         xlab.tmp <- rownames(chart.matrix)
         tmp.range <- getRange(xlab.tmp, NULL, NULL)
@@ -406,7 +406,7 @@ Column <- function(x,
 
     x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, axisFormat, x.zero, is.null(x.tick.distance), is.bar = TRUE)
     y.range <- setValRange(y.bounds.minimum, y.bounds.maximum, chart.matrix, y.zero, is.null(y.tick.distance))
-    xtick <- setTicks(x.range$min, x.range$max, x.tick.distance, x.data.reversed)
+    xtick <- setTicks(x.range$min, x.range$max, x.tick.distance, x.data.reversed, is.bar = TRUE)
     ytick <- setTicks(y.range$min, y.range$max, y.tick.distance, y.data.reversed)
 
     yaxis <- setAxis(y.title, "left", axisFormat, y.title.font,
