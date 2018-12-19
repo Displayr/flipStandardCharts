@@ -389,20 +389,6 @@ Column <- function(x,
     # Format axis labels
     axisFormat <- formatLabels(chart.matrix, type, x.tick.label.wrap, x.tick.label.wrap.nchar,
                                x.tick.format, y.tick.format)
-    # Turn off autorange if data labels are shown
-    if (FALSE && data.label.show && axisFormat$x.axis.type != "date" && is.null(x.bounds.minimum))
-    {
-        xlab.tmp <- rownames(chart.matrix)
-        tmp.range <- getRange(xlab.tmp, NULL, NULL)
-        x.bounds.minimum <- tmp.range[1]
-        x.bounds.maximum <- tmp.range[2]
-        if (x.zero && all(!is.na(suppressWarnings(as.numeric(xlab.tmp)))))
-        {
-            x.bounds.minimum  <- min(0, x.bounds.minimum)
-            x.bounds.maximum <- max(0, x.bounds.maximum)
-        }
-    }
-
 
     x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, axisFormat, x.zero, is.null(x.tick.distance), is.bar = TRUE)
     y.range <- setValRange(y.bounds.minimum, y.bounds.maximum, chart.matrix, y.zero, is.null(y.tick.distance))
@@ -532,7 +518,6 @@ Column <- function(x,
         }
     }
     annotations <- NULL
-    #print(data.annotations)
     if (data.label.show && is.stacked)
         annotations <- data.annotations
     n <- length(annotations)

@@ -127,6 +127,7 @@ checkTableList <- function(y, trend.lines)
 #' @noRd
 getRange <- function(x, axis, axisFormat)
 {
+    tozero <- FALSE
     range <- NULL
     if (!is.null(axis))
     {
@@ -136,6 +137,9 @@ getRange <- function(x, axis, axisFormat)
             range <- as.numeric(AsDateTime(axis$range)) * 1000
         else
             range <- axis$range
+        
+        if (is.null(axis$range) && axis$rangemode == "tozero")
+            tozero <- TRUE
     }
     if (is.null(range))
     {
@@ -151,6 +155,8 @@ getRange <- function(x, axis, axisFormat)
             diff <- if (length(x) == 1) 1
                     else abs(min(diff(sort(x)), na.rm = TRUE))
             range <- range(x) + c(-0.5, 0.5) * diff
+            if (tozero)
+                range <- c(min(0, range[1]), max(0, range[2]))
         }
         else if (all(!is.na(suppressWarnings(as.numeric(x)))))
         {
@@ -158,6 +164,8 @@ getRange <- function(x, axis, axisFormat)
             diff <- if (length(x) == 1) 1
                     else abs(min(diff(sort(tmp)), na.rm = TRUE))
             range <- range(tmp) + c(-0.5, 0.5) * diff
+            if (tozero)
+                range <- c(min(0, range[1]), max(0, range[2]))
         }
        # else if (all(!is.na(suppressWarnings(AsDateTime(x, on.parse.failure = "silent")))))
        #     range <- range(AsDateTime(x))
