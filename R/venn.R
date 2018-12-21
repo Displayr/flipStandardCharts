@@ -183,7 +183,7 @@ convertDataFrameIntoJSON <- function(x, nms, weights, data.label.decimals)
             list("sets"= list(1, 3), "size"= .sum(c(1, 3))),
             list("sets"= list(2, 3), "size"= .sum(c(2, 3))),
             list("sets"= list(0, 1, 2), "size"= .sum(c(0, 1, 2))),
-            list("sets"= list(0, 1, 3), "size"= .sum(c(0, 1, 2))),
+            list("sets"= list(0, 1, 3), "size"= .sum(c(0, 1, 3))),
             list("sets"= list(0, 2, 3), "size"= .sum(c(0, 2, 3))),
             list("sets"= list(1, 2, 3), "size"= .sum(c(1, 2, 3))),
             list("sets"= list(0, 1, 2, 3), "size"= .sum(c(0, 1, 2, 3))))
@@ -205,7 +205,7 @@ convertDataFrameIntoJSON <- function(x, nms, weights, data.label.decimals)
             list("sets"= list(2, 4), "size"= .sum(c(2, 4))),
             list("sets"= list(3, 4), "size"= .sum(c(3, 4))),
             list("sets"= list(0, 1, 2), "size"= .sum(c(0, 1, 2))),
-            list("sets"= list(0, 1, 3), "size"= .sum(c(0, 1, 2))),
+            list("sets"= list(0, 1, 3), "size"= .sum(c(0, 1, 3))),
             list("sets"= list(0, 1, 4), "size"= .sum(c(0, 1, 4))),
             list("sets"= list(0, 2, 3), "size"= .sum(c(0, 2, 3))),
             list("sets"= list(0, 2, 4), "size"= .sum(c(0, 2, 4))),
