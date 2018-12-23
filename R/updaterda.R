@@ -24,7 +24,7 @@
 
 
 
-
+#
 # library(httr)
 # library(XML)
 # library(devtools)
@@ -153,6 +153,9 @@
 #
 # # Add missing mappings
 # admin0.name.map.by.admin[["United Kingdom"]] <- c("UK", admin0.name.map.by.admin[["United Kingdom"]])
+# admin0.name.map.by.admin$Palestine <- c("State of Palestine", admin0.name.map.by.admin$Palestine)
+# admin0.name.map.by.admin$Fiji <- c("Fiji Islands", admin0.name.map.by.admin$Fiji)
+#
 # # Check that there are no more duplicates
 # all.names <- unlist(admin0.name.map.by.admin)
 # duplicates <- length(all.names) - length(unique(all.names))
