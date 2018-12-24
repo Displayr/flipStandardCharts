@@ -41,6 +41,8 @@ Radar <- function(x,
                     legend.ascending = NA,
                     legend.position.y = 1,
                     legend.position.x = 1.02,
+                    hovertext.font.family = global.font.family,
+                    hovertext.font.size = 11,
                     margin.top = NULL,
                     margin.bottom = NULL,
                     margin.left = NULL,
@@ -303,7 +305,8 @@ Radar <- function(x,
                     name = g.list[ggi], legendgroup = g.list[ggi], opacity = 0,
                     showlegend = FALSE, text = pos$HoverText[ind],
                     hoverinfo = if (hovertext.show[ggi]) "all+text" else "none",
-                    hoverlabel = list(font = data.label.font[[ggi]]),
+                    hoverlabel = list(font = list(color = data.label.font[[ggi]]$color,
+                    size = hovertext.font.size, family = hovertext.font.family)),
                     marker = list(size = 5, color = toRGB(colors[ggi])))
 
         if (data.label.show[ggi])
@@ -335,7 +338,8 @@ Radar <- function(x,
             plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
             paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
             hovermode = if (tooltip.show) "closest" else FALSE,
-            hoverlabel = list(namelength = -1, bordercolor = charting.area.fill.color),
+            hoverlabel = list(namelength = -1, bordercolor = charting.area.fill.color,
+                font = list(size = hovertext.font.size, family = hovertext.font.family)),
             xaxis = xaxis, yaxis = yaxis, shapes = grid,
             legend = legend, showlegend = legend.show)
 

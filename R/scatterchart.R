@@ -162,6 +162,8 @@ Scatter <- function(x = NULL,
                          x.tick.font.size = 10,
                          x.tick.label.wrap = TRUE,
                          x.tick.label.wrap.nchar = 21,
+                         hovertext.font.family = global.font.family,
+                         hovertext.font.size = 11,
                          line.thickness = 0,
                          line.colors = colors,
                          marker.border.width = 1,
@@ -599,7 +601,8 @@ Scatter <- function(x = NULL,
                 textfont = if (data.label.show) data.label.font[[ggi]] else NULL,
                 marker = marker.obj, line = line.obj, text = source.text[ind],
                 hoverinfo = if (num.series == 1) "text" else "name+text",
-                hoverlabel = list(font = data.label.font[[ggi]]),
+                hoverlabel = list(font = list(color = data.label.font[[ggi]]$color,
+                size = hovertext.font.size, family = hovertext.font.family)),
                 type = "scatter", mode = series.mode, symbols = marker.symbols)
 
         # Getting legend with consistently sized markers
@@ -669,7 +672,8 @@ Scatter <- function(x = NULL,
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
         annotations = annot,
         hovermode = if (tooltip.show) "closest" else FALSE,
-        hoverlabel = list(namelength = -1, bordercolor = charting.area.fill.color)
+        hoverlabel = list(namelength = -1, bordercolor = charting.area.fill.color,
+            font = list(size = hovertext.font.size, family = hovertext.font.family)),
     )
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"

@@ -69,6 +69,8 @@ Line <-   function(x,
                     margin.left = NULL,
                     margin.right = NULL,
                     margin.inner.pad = NULL,
+                    hovertext.font.family = global.font.family,
+                    hovertext.font.size = 11,
                     y.title = "",
                     y.title.font.color = global.font.color,
                     y.title.font.family = global.font.family,
@@ -279,7 +281,8 @@ Line <-   function(x,
                    connectgaps = FALSE, line = lines, marker = marker, name = legend.text[i],
                    showlegend = (type == "Line"), legendgroup = tmp.group,
                    text = autoFormatLongLabels(x.labels.full, wordwrap=T, truncate=F),
-                   hoverlabel = list(font = data.label.font[[i]]),
+                   hoverlabel = list(font = list(color = data.label.font[[i]]$color,
+                   size = hovertext.font.size, family = hovertext.font.family)),
                    hoverinfo  = setHoverText(xaxis, chart.matrix))
 
         # single points (no lines) need to be added separately
@@ -342,7 +345,8 @@ Line <-   function(x,
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
         annotations = annot,
         hovermode = if (tooltip.show) "closest" else FALSE,
-        hoverlabel = list(namelength = -1, bordercolor = charting.area.fill.color)
+        hoverlabel = list(namelength = -1, bordercolor = charting.area.fill.color,
+            font = list(size = hovertext.font.size, family = hovertext.font.family))
     )
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"

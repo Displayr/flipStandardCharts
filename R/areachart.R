@@ -129,6 +129,8 @@ Area <- function(x,
                     x.tick.font.size = 10,
                     x.tick.label.wrap = TRUE,
                     x.tick.label.wrap.nchar = 21,
+                    hovertext.font.family = global.font.family,
+                    hovertext.font.size = 11,
                     line.thickness = NULL,
                     line.colors = colors,
                     line.opacity = 1,
@@ -378,7 +380,9 @@ Area <- function(x,
                            name = legend.text[i], 
                            legendgroup = i,
                            text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
-                           hoverlabel = list(font = data.label.font[[i]], bgcolor = colors[i]),
+                           hoverlabel = list(font = list(color = data.label.font[[i]]$color,
+                           size = hovertext.font.size, family = hovertext.font.family),
+                           bgcolor = colors[i]),
                            hoverinfo = setHoverText(xaxis, chart.matrix),
                            marker = marker,
                            mode = series.mode)
@@ -431,7 +435,9 @@ Area <- function(x,
                     fill = fill.bound, fillcolor = toRGB(colors[i], alpha = opacity),
                     line = lines, legendgroup = i, text = source.text,
                     hoverinfo = if (ncol(chart.matrix) > 1) "x+text+name" else "x+text",
-                    hoverlabel = list(bgcolor=colors[i], font = data.label.font[[i]]),
+                    hoverlabel = list(bgcolor=colors[i],
+                    font = list(color = data.label.font[[i]]$color,
+                    size = hovertext.font.size, family = hovertext.font.family)),
                     mode = "lines", marker = marker)
          }
     }
@@ -479,7 +485,8 @@ Area <- function(x,
         annotations = annot,
         font = data.label.font[[1]],
         hovermode = if (tooltip.show) "x" else FALSE,
-        hoverlabel = list(namelength = -1, bordercolor = charting.area.fill.color)
+        hoverlabel = list(namelength = -1, bordercolor = charting.area.fill.color,
+            font = list(size = hovertext.font.size, family = hovertext.font.family))
     )
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
