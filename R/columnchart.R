@@ -154,6 +154,8 @@
 #' @param x.tick.font.size Integer; x-axis tick label font size
 #' @param x.tick.label.wrap Logical; whether to wrap long labels on the x-axis.
 #' @param x.tick.label.wrap.nchar Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.
+#' @param hovertext.font.family Font family of hover text.
+#' @param hovertext.font.size Font size of hover text.
 #' @param marker.border.width Width in pixels of border/line
 #' around series bars; 0 is no line
 #' @param marker.border.colors Character; a vector containing one or more colors specified as hex codes.

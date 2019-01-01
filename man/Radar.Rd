@@ -17,7 +17,8 @@ Radar(x, title = "", title.font.family = global.font.family,
   legend.border.line.width = 0, legend.font.color = global.font.color,
   legend.font.family = global.font.family, legend.font.size = 10,
   legend.ascending = NA, legend.position.y = 1,
-  legend.position.x = 1.02, margin.top = NULL, margin.bottom = NULL,
+  legend.position.x = 1.02, hovertext.font.family = global.font.family,
+  hovertext.font.size = 11, margin.top = NULL, margin.bottom = NULL,
   margin.left = NULL, margin.right = NULL, margin.inner.pad = NULL,
   pad.left = 0, pad.right = 0, line.thickness = 3,
   tooltip.show = TRUE, modebar.show = FALSE,
@@ -106,6 +107,10 @@ Values range from 0 (bottom) to 1 (top).}
 
 \item{legend.position.x}{A numeric controlling the position of the legend.
 Values range from -0.5 (left) to 1.5 (right).}
+
+\item{hovertext.font.family}{Font family of hover text.}
+
+\item{hovertext.font.size}{Font size of hover text.}
 
 \item{margin.top}{Margin between plot area and the top of the graphic in pixels}
 

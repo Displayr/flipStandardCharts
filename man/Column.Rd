@@ -29,7 +29,8 @@ Column(x, colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
   legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
   legend.border.line.width = 0, legend.font.color = global.font.color,
   legend.font.family = global.font.family, legend.font.size = 10,
-  legend.ascending = NA, margin.top = NULL, margin.bottom = NULL,
+  legend.ascending = NA, hovertext.font.family = global.font.family,
+  hovertext.font.size = 11, margin.top = NULL, margin.bottom = NULL,
   margin.left = NULL, margin.right = NULL, margin.inner.pad = NULL,
   grid.show = TRUE, y.title = "",
   y.title.font.color = global.font.color,
@@ -183,6 +184,10 @@ format (e.g. "black") or a hex code.}
 
 \item{legend.ascending}{Logical; TRUE for ascending, FALSE for descending.
 By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.}
+
+\item{hovertext.font.family}{Font family of hover text.}
+
+\item{hovertext.font.size}{Font size of hover text.}
 
 \item{margin.top}{Margin between plot area and the top of the graphic in pixels}
 

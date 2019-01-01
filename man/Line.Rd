@@ -31,6 +31,7 @@ Line(x, type = "Line", shape = c("linear", "spline")[1],
   legend.position.x = 1.02, legend.position.y = 1,
   legend.ascending = NA, margin.top = NULL, margin.bottom = NULL,
   margin.left = NULL, margin.right = NULL, margin.inner.pad = NULL,
+  hovertext.font.family = global.font.family, hovertext.font.size = 11,
   y.title = "", y.title.font.color = global.font.color,
   y.title.font.family = global.font.family, y.title.font.size = 12,
   y.line.width = 0, y.line.color = rgb(0, 0, 0, maxColorValue = 255),
@@ -197,6 +198,10 @@ By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.}
 
 \item{margin.inner.pad}{Padding in pixels between plot proper
 and axis lines}
+
+\item{hovertext.font.family}{Font family of hover text.}
+
+\item{hovertext.font.size}{Font size of hover text.}
 
 \item{y.title}{Character, y-axis title; defaults to chart input values;
 to turn off set to "FALSE".}

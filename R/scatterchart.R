@@ -673,7 +673,7 @@ Scatter <- function(x = NULL,
         annotations = annot,
         hovermode = if (tooltip.show) "closest" else FALSE,
         hoverlabel = list(namelength = -1, bordercolor = charting.area.fill.color,
-            font = list(size = hovertext.font.size, family = hovertext.font.family)),
+            font = list(size = hovertext.font.size, family = hovertext.font.family))
     )
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"

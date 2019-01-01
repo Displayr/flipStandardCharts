@@ -56,6 +56,7 @@ Area(x, type = "Area", colors = ChartColors(max(1, ncol(x), na.rm =
   x.tick.angle = NULL, x.tick.font.color = global.font.color,
   x.tick.font.family = global.font.family, x.tick.font.size = 10,
   x.tick.label.wrap = TRUE, x.tick.label.wrap.nchar = 21,
+  hovertext.font.family = global.font.family, hovertext.font.size = 11,
   line.thickness = NULL, line.colors = colors, line.opacity = 1,
   marker.show = NULL, marker.colors = colors, marker.opacity = 1,
   marker.size = 6, marker.border.width = 1,
@@ -327,6 +328,10 @@ character format (e.g. "black") or an a hex code.}
 \item{x.tick.label.wrap}{Logical; whether to wrap long labels on the x-axis.}
 
 \item{x.tick.label.wrap.nchar}{Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.}
+
+\item{hovertext.font.family}{Font family of hover text.}
+
+\item{hovertext.font.size}{Font size of hover text.}
 
 \item{line.thickness}{Thickness, in pixels, of the series line}
 

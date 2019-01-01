@@ -70,6 +70,7 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1,
   x.tick.font.color = global.font.color,
   x.tick.font.family = global.font.family, x.tick.font.size = 10,
   x.tick.label.wrap = TRUE, x.tick.label.wrap.nchar = 21,
+  hovertext.font.family = global.font.family, hovertext.font.size = 11,
   line.thickness = 0, line.colors = colors, marker.border.width = 1,
   marker.border.colors = colors, marker.border.opacity = NULL,
   marker.size = if (is.null(scatter.sizes)) 6 else 12,
@@ -388,6 +389,10 @@ character format (e.g. "black") or an a hex code.}
 \item{x.tick.label.wrap}{Logical; whether to wrap long labels on the x-axis.}
 
 \item{x.tick.label.wrap.nchar}{Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.}
+
+\item{hovertext.font.family}{Font family of hover text.}
+
+\item{hovertext.font.size}{Font size of hover text.}
 
 \item{line.thickness}{Thickness, in pixels, of the series line}
 
