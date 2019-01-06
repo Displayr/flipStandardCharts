@@ -4,17 +4,24 @@
 \alias{Palm}
 \title{Generates a palm tree plot from a table of data.}
 \usage{
-Palm(table, x.tick.font.family = "", x.tick.font.size = 11,
-  x.title = "", x.title.font.family = "", x.title.font.size = 12,
-  legend.font.family = "", legend.font.size = 11, y.axis.show = TRUE,
-  tooltip.show = TRUE, y.tick.format = "", y.tick.font.family = "",
-  y.tick.font.size = 11, y.title = "", y.title.font.family = "",
-  y.title.font.size = 12, y.tick.prefix = NULL, y.tick.suffix = NULL,
+Palm(table, global.font.family = "Arial",
+  x.tick.font.family = global.font.family, x.tick.font.size = 11,
+  x.title = "", x.title.font.family = global.font.family,
+  x.title.font.size = 12, legend.font.family = global.font.family,
+  legend.font.size = 11, y.axis.show = TRUE, tooltip.show = TRUE,
+  y.tick.format = "", y.tick.font.family = global.font.family,
+  y.tick.font.size = 11, y.title = "",
+  y.title.font.family = global.font.family, y.title.font.size = 12,
+  y.tick.prefix = NULL, y.tick.suffix = NULL,
+  hovertext.font.family = global.font.family, hovertext.font.size = 11,
   colors = NULL)
 }
 \arguments{
 \item{table}{A matrix of data to be displayed. Each row is represented by a palm tree, the value in each column
 determines the area of a leaf on each palm tree.}
+
+\item{global.font.family}{Character; font family for all occurrences of any
+font attribute for the chart unless specified individually.}
 
 \item{x.tick.font.family}{Character; x-axis tick label font family}
 
@@ -50,6 +57,10 @@ See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 \item{y.tick.prefix}{y-axis tick label prefix}
 
 \item{y.tick.suffix}{y-axis tick label suffix}
+
+\item{hovertext.font.family}{Font family of hover text.}
+
+\item{hovertext.font.size}{Font size of hover text.}
 
 \item{colors}{Character; a vector containing one or more named
 colors from grDevices OR one or more specified hex value colors OR a single

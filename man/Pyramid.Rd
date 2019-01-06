@@ -44,6 +44,7 @@ Pyramid(x, colors = ChartColors(max(1, length(x))), opacity = NULL,
   x.tick.angle = NULL, x.tick.font.color = global.font.color,
   x.tick.font.family = global.font.family, x.tick.font.size = 10,
   y.tick.label.wrap = TRUE, y.tick.label.wrap.nchar = 21,
+  hovertext.font.family = global.font.family, hovertext.font.size = 11,
   marker.border.width = 1, marker.border.colors = colors,
   marker.border.opacity = NULL, data.label.show = FALSE,
   data.label.font.autocolor = FALSE,
@@ -249,6 +250,10 @@ character format (e.g. "black") or an a hex code.}
 \item{y.tick.label.wrap}{Logical; whether to wrap long labels on the y-axis (vertical).}
 
 \item{y.tick.label.wrap.nchar}{Integer; number of characters in each line when \code{y.tick.label.wrap} is \code{TRUE}.}
+
+\item{hovertext.font.family}{Font family of hover text.}
+
+\item{hovertext.font.size}{Font size of hover text.}
 
 \item{marker.border.width}{Width in pixels of border/line
 around series bars; 0 is no line}
