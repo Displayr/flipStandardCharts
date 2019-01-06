@@ -131,6 +131,8 @@
 #' font attribute for the chart unless specified individually.
 #' @param global.font.color Global font color as a named color in character format
 #' (e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).
+#' @param hovertext.font.family Font family of hover text.
+#' @param hovertext.font.size Font size of hover text.
 #' @param tooltip.show Logical; whether to show a tooltip on hover.
 #' @return A \code{plotly} chart.
 #' @examples
@@ -223,6 +225,8 @@ Distribution <-   function(x,
     categories.tick.font.size = 10,
     categories.tick.label.wrap = TRUE,
     categories.tick.label.wrap.nchar = 21,
+    hovertext.font.family = global.font.family,
+    hovertext.font.size = 11,
     tooltip.show = TRUE,
     modebar.show = FALSE)
 {
@@ -400,6 +404,8 @@ Distribution <-   function(x,
         annotations = list(setSubtitle(subtitle, subtitle.font, margins),
                            setTitle(title, title.font, margins),
                            setFooter(footer, footer.font, margins)),
+        hoverlabel = list(namelength = -1, 
+            font = list(size = hovertext.font.size, family = hovertext.font.family)),
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity))")
     eval(parse(text = txt))

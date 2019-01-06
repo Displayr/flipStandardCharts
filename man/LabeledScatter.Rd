@@ -46,6 +46,7 @@ LabeledScatter(x = NULL, y = NULL, scatter.x.column = 1,
   x.tick.suffix = "", x.tick.prefix = "", x.tick.format = "",
   x.tick.font.color = global.font.color,
   x.tick.font.family = global.font.family, x.tick.font.size = 10,
+  hovertext.font.family = global.font.family, hovertext.font.size = 11,
   marker.size = 6, swap.x.and.y = FALSE, ...)
 }
 \arguments{
@@ -247,6 +248,10 @@ character format (e.g. "black") or an a hex code.}
 \item{x.tick.font.family}{Character; x-axis tick label font family}
 
 \item{x.tick.font.size}{Integer; x-axis tick label font size}
+
+\item{hovertext.font.family}{Font family of hover text.}
+
+\item{hovertext.font.size}{Font size of hover text.}
 
 \item{marker.size}{Size in pixels of marker.}
 

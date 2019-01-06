@@ -49,8 +49,9 @@ Distribution(x, weights = NULL, vertical = TRUE, show.mean = TRUE,
   categories.tick.font.color = global.font.color,
   categories.tick.font.family = global.font.family,
   categories.tick.font.size = 10, categories.tick.label.wrap = TRUE,
-  categories.tick.label.wrap.nchar = 21, tooltip.show = TRUE,
-  modebar.show = FALSE)
+  categories.tick.label.wrap.nchar = 21,
+  hovertext.font.family = global.font.family, hovertext.font.size = 11,
+  tooltip.show = TRUE, modebar.show = FALSE)
 }
 \arguments{
 \item{x}{A \code{\link{list}}, where each vector contains data to be plotted. If the data is not numeric
@@ -261,6 +262,10 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{categories.tick.label.wrap}{Logical; whether to wrap long labels on the x-axis.}
 
 \item{categories.tick.label.wrap.nchar}{Integer; number of characters in each line when \code{categories.tick.label.wrap} is \code{TRUE}.}
+
+\item{hovertext.font.family}{Font family of hover text.}
+
+\item{hovertext.font.size}{Font size of hover text.}
 
 \item{tooltip.show}{Logical; whether to show a tooltip on hover.}
 

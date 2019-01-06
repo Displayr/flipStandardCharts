@@ -81,6 +81,8 @@ Violin <- function(x,
     categories.tick.font.size = 10,
     categories.tick.label.wrap = TRUE,
     categories.tick.label.wrap.nchar = 21,
+    hovertext.font.family = global.font.family,
+    hovertext.font.size = 11,
     modebar.show = FALSE)
 {
     cl <- match.call()

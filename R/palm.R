@@ -22,6 +22,10 @@
 #' @param y.title.font.size y-axis title font size
 #' @param y.tick.prefix y-axis tick label prefix
 #' @param y.tick.suffix y-axis tick label suffix
+#' @param global.font.family Character; font family for all occurrences of any
+#' font attribute for the chart unless specified individually.
+#' @param hovertext.font.family Font family of hover text.
+#' @param hovertext.font.size Font size of hover text.
 #' @param colors Character; a vector containing one or more named
 #' colors from grDevices OR one or more specified hex value colors OR a single
 #' named palette from grDevices, RColorBrewer, colorspace, or colorRamps.
@@ -34,23 +38,26 @@
 #' @export
 
 Palm <- function(table,
-                 x.tick.font.family = "",
+                 global.font.family = "Arial",
+                 x.tick.font.family = global.font.family,
                  x.tick.font.size = 11,
                  x.title = "",
-                 x.title.font.family = "",
+                 x.title.font.family = global.font.family,
                  x.title.font.size = 12,
-                 legend.font.family = "",
+                 legend.font.family = global.font.family,
                  legend.font.size = 11,
                  y.axis.show = TRUE,
                  tooltip.show = TRUE,
                  y.tick.format = "",
-                 y.tick.font.family = "",
+                 y.tick.font.family = global.font.family,
                  y.tick.font.size = 11,
                  y.title = "",
-                 y.title.font.family = "",
+                 y.title.font.family = global.font.family,
                  y.title.font.size = 12,
                  y.tick.prefix = NULL,
                  y.tick.suffix = NULL,
+                 hovertext.font.family = global.font.family,
+                 hovertext.font.size = 11,
                  colors = NULL) {
 
 
@@ -90,8 +97,8 @@ Palm <- function(table,
                                       col.heading.font.size = 0,
                                       col.heading.font.family = legend.font.family,
                                       tooltips = tooltip.show,
-                                      tooltips.font.size = legend.font.size,
-                                      tooltips.font.family = legend.font.family,
+                                      tooltips.font.size = hovertext.font.size,
+                                      tooltips.font.family = hovertext.font.family,
                                       tooltips.heading.font.size = x.title.font.size,
                                       tooltips.heading.font.family = legend.font.family,
                                       y.show = y.axis.show,
