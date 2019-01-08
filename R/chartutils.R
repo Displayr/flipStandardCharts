@@ -564,9 +564,9 @@ setMarginsForAxis <- function(margins, labels, axis)
         new.margin <- lab.len
 
     title.nline <- 0
-    if (nchar(axis$title) > 0)
+    if (sum(nchar(axis$title)) > 0)
         title.nline <- sum(gregexpr("<br>", axis$title)[[1]] > -1) + 1
-    title.pad <- axis$titlefont$size * title.nline * 1.25
+    title.pad <- max(0, axis$titlefont$size) * title.nline * 1.25
 
     if (axis$side == "right")
         margins$r <- max(margins$r, new.margin + title.pad)
@@ -882,12 +882,23 @@ lineBreakEveryN <- function(x, n = 21)
         stop("Wrap line length cannot be smaller than 1")
 
     w.list <- strsplit(x, " ")[[1]]
+    w.list <- w.list[which(nchar(w.list) > 0)]
     final <- w.list[1]
     c.len <- nchar(final)
+    if (grepl("<br>", final))
+    {
+        tmp <- strsplit(final, split = "<br>")[[1]]
+        c.len <- nchar(tmp[length(tmp)])
+    }
     for (ww in w.list[-1])
     {
         new.len <- c.len + nchar(ww) + 1
-        if (new.len > n)
+        if (grepl("<br>", ww))
+        {
+            final <- paste0(final, " ", ww)
+            tmp <- strsplit(ww, split = "<br>")[[1]]
+            c.len <- nchar(tmp[length(tmp)])
+        } else if (new.len > n)
         {
             final <- paste0(final, "<br>", ww)
             c.len <- nchar(ww)
