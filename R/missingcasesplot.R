@@ -8,14 +8,25 @@
 #' @param subset Logical vector indicating whether each row of the data frame should be included
 #' @param hovertext.font.color Color of hovertext as a string or hex code.
 #' @param x.tick.label.nchar Number of characters wide the x-axis labels should be before wrapping.
+#' @param font.unit One of "px" of "pt". By default all font sizes are specified in terms of
+#'  pixels ("px"). But changing this to "pt" will mean that the font sizes will be in terms
+#'  points ("pt"), which will be consistent with font sizes in text boxes.
+#' @param data.label.position One of "center", "above" or "below".
 #' @export
 MissingCasesPlot <- function(raw.data,
+    show.counts.missing = FALSE,
+    show.percentages.missing = FALSE,
     subset = NULL,
     title = "Missing values by case",
     subtitle = "",
     footer = "",
     global.font.family = "Arial",
     global.font.color = "#2C2C2C",
+    data.label.show = FALSE,
+    data.label.position = "center",
+    data.label.font.family = global.font.family,
+    data.label.font.color = global.font.color,
+    data.label.font.size = 10,
     title.font.family = global.font.family,
     title.font.color = global.font.color,
     title.font.size = 16,
@@ -38,9 +49,8 @@ MissingCasesPlot <- function(raw.data,
     y.tick.font.size = 10,
     hovertext.font.family = global.font.family,
     hovertext.font.color = "#FFFFFF",
-    hovertext.font.size = 11, 
-    show.counts.missing = FALSE,
-    show.percentages.missing = FALSE)
+    hovertext.font.size = 11,
+    font.unit = "px")
 {
     dat <- as.matrix(is.na(raw.data) * 1)
     index <- 1:nrow(dat)
@@ -50,10 +60,24 @@ MissingCasesPlot <- function(raw.data,
         dat <- dat[index,]
     }
 
+    # For the other chart types, the font size conversion
+    # happens inside flipChart::CChart but MissingCasesPlot is called separately.
+    if (tolower(font.unit) %in% c("pt", "point", "points"))
+    {
+        fsc <- 1.3333
+        title.font.size = round(fsc * title.font.size, 0)
+        subtitle.font.size = round(fsc * subtitle.font.size, 0)
+        footer.font.size = round(fsc * footer.font.size, 0)
+        y.tick.font.size = round(fsc * y.tick.font.size, 0)
+        x.tick.font.size = round(fsc * x.tick.font.size, 0)
+        hovertext.font.size = round(fsc * hovertext.font.size, 0)
+        data.label.font.size = round(fsc * data.label.font.size, 0)
+    }
+
 
     if (is.null(colnames(dat)))
         colnames(dat) <- paste("Variable", 1:ncol(dat))
-    tmp <- paste("Missing:<b>",rep(colnames(dat), each=nrow(dat)), "</b>case", rep(index, ncol(dat))) 
+    tmp <- paste("Missing:<b>",rep(colnames(dat), each=nrow(dat)), "</b>case", rep(index, ncol(dat)))
     info.text <- ifelse(dat > 0, tmp, "")
 
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
@@ -62,6 +86,7 @@ MissingCasesPlot <- function(raw.data,
     x.tick.font = list(family = x.tick.font.family, size = x.tick.font.size, color = x.tick.font.color)
     footer.font = list(family = footer.font.family, size = footer.font.size, color = footer.font.color)
     hovertext.font = list(family = hovertext.font.family, size = hovertext.font.size, color = hovertext.font.color)
+    data.label.font = list(family = data.label.font.family, size = data.label.font.size, color = data.label.font.color)
 
     x.labels <- paste0("<b>", colnames(dat), "</b>")
     if (show.counts.missing || show.percentages.missing)
@@ -78,9 +103,9 @@ MissingCasesPlot <- function(raw.data,
     x.labels <- autoFormatLongLabels(x.labels, x.tick.label.wrap, x.tick.label.nchar, truncate = FALSE)
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate = FALSE)
     xaxis <- list(side = "bottom", ticklen = 0, tickangle = x.tick.angle, tickfont = x.tick.font)
-    yaxis <- list(side = "left", ticklen = 0, tickfont = y.tick.font, tick0 = 1, 
-                dtick = max(1, floor(nrow(dat)/100)*10))
-    
+    yaxis <- list(side = "left", ticklen = 0, tickfont = y.tick.font,
+                  tickmode = "auto", nticks = min(nrow(dat) + 1, 11))
+
     margins <- list(t = 10, r = 0, l = 10, b = 10, pad = 0)
     margins <- setMarginsForAxis(margins, x.labels, xaxis)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
@@ -92,6 +117,21 @@ MissingCasesPlot <- function(raw.data,
     annotations[[3]] <- setSubtitle(subtitle, subtitle.font, margins)
     annotations <- Filter(Negate(is.null), annotations)
 
+    n <- length(annotations)
+    if (data.label.show)
+    {
+        ind <- which(dat > 0, arr.ind = TRUE)
+        for (ii in 1:nrow(ind))
+        {
+            ypos <- index[ind[ii,1]]
+            annotations[[n+ii]] <- list(text = ypos, x = ind[ii,2] - 1, y = ypos,
+            yanchor = switch(tolower(data.label.position), above = "bottom", 
+                below = "top", "center"),
+            visible = TRUE, clicktoshow = "onoff",
+            xref = "x", yref = "y", showarrow = FALSE, font = data.label.font)
+        }
+    }
+
     p <- plot_ly(z = dat, x = x.labels, y = index, type = "heatmap",
                  zmin = 0, zmax = 1, colorscale = list(c('0', 'rgba(0,0,255)'), c('1','rgba(55,0,0)')),
                  hoverinfo = "text", text = info.text, colorscale = FALSE,
@@ -99,10 +139,11 @@ MissingCasesPlot <- function(raw.data,
 
     p <- config(p, displayModeBar = FALSE)
     p$sizingPolicy$browser$padding <- 0
-    p <- layout(p, xaxis = xaxis, yaxis = yaxis,            
+    p <- layout(p, xaxis = xaxis, yaxis = yaxis,
                 plot_bgcolor = toRGB("white", alpha = 0),
                 paper_bgcolor = toRGB("white", alpha = 0),
-                hoverlabel = list(namelength = -1, font = hovertext.font), 
+                hoverlabel = list(namelength = -1, font = hovertext.font),
+                hovermode = "y",
                 annotations = annotations,
                 margin = margins)
     p

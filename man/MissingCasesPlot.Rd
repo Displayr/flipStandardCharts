@@ -4,9 +4,13 @@
 \alias{MissingCasesPlot}
 \title{MissingCasesPlot}
 \usage{
-MissingCasesPlot(raw.data, subset = NULL,
+MissingCasesPlot(raw.data, show.counts.missing = FALSE,
+  show.percentages.missing = FALSE, subset = NULL,
   title = "Missing values by case", subtitle = "", footer = "",
   global.font.family = "Arial", global.font.color = "#2C2C2C",
+  data.label.show = FALSE, data.label.position = "center",
+  data.label.font.family = global.font.family,
+  data.label.font.color = global.font.color, data.label.font.size = 10,
   title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
   subtitle.font.family = global.font.family,
@@ -21,10 +25,14 @@ MissingCasesPlot(raw.data, subset = NULL,
   y.tick.font.color = global.font.color, y.tick.font.size = 10,
   hovertext.font.family = global.font.family,
   hovertext.font.color = "#FFFFFF", hovertext.font.size = 11,
-  show.counts.missing = FALSE, show.percentages.missing = FALSE)
+  font.unit = "px")
 }
 \arguments{
 \item{raw.data}{Matrix or data frame.}
+
+\item{show.counts.missing}{Include the number of cases missing in the variable label.}
+
+\item{show.percentages.missing}{Include the percentage of cases missing in the variable label.}
 
 \item{subset}{Logical vector indicating whether each row of the data frame should be included}
 
@@ -39,6 +47,19 @@ font attribute for the chart unless specified individually.}
 
 \item{global.font.color}{Global font color as a named color in character format
 (e.g. "black") or an a hex code.}
+
+\item{data.label.show}{Logical; whether to show data labels.}
+
+\item{data.label.position}{One of "center", "above" or "below".}
+
+\item{data.label.font.family}{Character; font family for data label.}
+
+\item{data.label.font.color}{Font color as a named color
+in character format (e.g. "black") or an a hex code. This can be a single
+color, a vector of colors (1 for each series/column), or a comma separated list
+of colors}
+
+\item{data.label.font.size}{Integer; Font size for data label.px.}
 
 \item{title.font.family}{Character; title font family. Can be "Arial Black",
 "Arial", "Comic Sans MS", "Courier New", "Georgia", "Impact",
@@ -96,9 +117,9 @@ in character format (e.g. "black") or an a hex code.}
 
 \item{hovertext.font.size}{Font size of hover text.}
 
-\item{show.counts.missing}{Include the number of cases missing in the variable label.}
-
-\item{show.percentages.missing}{Include the percentage of cases missing in the variable label.}
+\item{font.unit}{One of "px" of "pt". By default all font sizes are specified in terms of
+pixels ("px"). But changing this to "pt" will mean that the font sizes will be in terms
+points ("pt"), which will be consistent with font sizes in text boxes.}
 }
 \description{
 Show which cases in a data frame are missing
