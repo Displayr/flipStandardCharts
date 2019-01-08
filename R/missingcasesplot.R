@@ -126,8 +126,8 @@ MissingCasesPlot <- function(raw.data,
             ypos <- index[ind[ii,1]]
             annotations[[n+ii]] <- list(text = ypos, x = ind[ii,2] - 1, y = ypos,
             yanchor = switch(tolower(data.label.position), above = "bottom", 
-                below = "top", "center"),
-            visible = TRUE, clicktoshow = "onoff",
+                below = "top", "center"), 
+            bgcolor = rgb(220, 220, 220, maxColorValue = 255),
             xref = "x", yref = "y", showarrow = FALSE, font = data.label.font)
         }
     }
