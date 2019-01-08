@@ -11,7 +11,7 @@ MissingCasesPlot(raw.data, show.counts.missing = FALSE,
   data.label.show = FALSE, data.label.position = "center",
   data.label.font.family = global.font.family,
   data.label.font.color = global.font.color, data.label.font.size = 10,
-  title.font.family = global.font.family,
+  data.label.bg.opacity = 1, title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
   subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color, subtitle.font.size = 12,
@@ -60,6 +60,8 @@ color, a vector of colors (1 for each series/column), or a comma separated list
 of colors}
 
 \item{data.label.font.size}{Integer; Font size for data label.px.}
+
+\item{data.label.bg.opacity}{Numeric between 0 (tranparent) to 1 (opaque), specifying the opacity of the data label background (grey).}
 
 \item{title.font.family}{Character; title font family. Can be "Arial Black",
 "Arial", "Comic Sans MS", "Courier New", "Georgia", "Impact",

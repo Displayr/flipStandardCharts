@@ -12,6 +12,7 @@
 #'  pixels ("px"). But changing this to "pt" will mean that the font sizes will be in terms
 #'  points ("pt"), which will be consistent with font sizes in text boxes.
 #' @param data.label.position One of "center", "above" or "below".
+#' @param data.label.bg.opacity Numeric between 0 (tranparent) to 1 (opaque), specifying the opacity of the data label background (grey).
 #' @export
 MissingCasesPlot <- function(raw.data,
     show.counts.missing = FALSE,
@@ -27,6 +28,7 @@ MissingCasesPlot <- function(raw.data,
     data.label.font.family = global.font.family,
     data.label.font.color = global.font.color,
     data.label.font.size = 10,
+    data.label.bg.opacity = 1.0,
     title.font.family = global.font.family,
     title.font.color = global.font.color,
     title.font.size = 16,
@@ -127,7 +129,8 @@ MissingCasesPlot <- function(raw.data,
             annotations[[n+ii]] <- list(text = ypos, x = ind[ii,2] - 1, y = ypos,
             yanchor = switch(tolower(data.label.position), above = "bottom", 
                 below = "top", "center"), 
-            bgcolor = rgb(220, 220, 220, maxColorValue = 255),
+            bgcolor = rgb(220, 220, 220, maxColorValue = 255, 
+                alpha = data.label.bg.opacity*255),
             xref = "x", yref = "y", showarrow = FALSE, font = data.label.font)
         }
     }
