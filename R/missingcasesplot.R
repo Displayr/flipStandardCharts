@@ -112,7 +112,7 @@ MissingCasesPlot <- function(raw.data,
     yaxis <- list(side = "left", ticklen = 0, tickfont = y.tick.font,
                   tickmode = "auto", nticks = min(nrow(dat) + 1, 11))
 
-    margins <- list(t = 10, r = 0, l = 10, b = 10, pad = 0)
+    margins <- list(t = 20, r = 60, l = 80, b = 20, pad = 0)
     margins <- setMarginsForAxis(margins, x.labels, xaxis)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
