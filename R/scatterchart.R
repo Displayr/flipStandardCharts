@@ -541,7 +541,7 @@ Scatter <- function(x = NULL,
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
 
-    legend.text <- autoFormatLongLabels(g.list, legend.wrap, legend.wrap.nchar)
+    legend.text <- autoFormatLongLabels(g.list, legend.wrap, legend.wrap.nchar, remove.empty = FALSE)
     margins <- setMarginsForLegend(margins, legend.show || scatter.colors.as.numeric,
                     legend, legend.text)
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,

@@ -4,7 +4,7 @@
 \alias{MissingCasesPlot}
 \title{MissingCasesPlot}
 \usage{
-MissingCasesPlot(raw.data, show.counts.missing = FALSE,
+MissingCasesPlot(raw.data, show.counts.missing = TRUE,
   show.percentages.missing = FALSE, subset = NULL,
   title = "Missing values by case", subtitle = "", footer = "",
   global.font.family = "Arial", global.font.color = "#2C2C2C",
@@ -20,8 +20,8 @@ MissingCasesPlot(raw.data, show.counts.missing = FALSE,
   footer.wrap = TRUE, footer.wrap.nchar = 100,
   x.tick.font.family = global.font.family,
   x.tick.font.color = global.font.color, x.tick.font.size = 11,
-  x.tick.label.wrap = TRUE, x.tick.label.nchar = 20,
-  x.tick.angle = 0, y.tick.font.family = global.font.family,
+  x.tick.label.wrap = NULL, x.tick.label.nchar = 20,
+  x.tick.angle = NULL, y.tick.font.family = global.font.family,
   y.tick.font.color = global.font.color, y.tick.font.size = 10,
   hovertext.font.family = global.font.family,
   hovertext.font.color = "#FFFFFF", hovertext.font.size = 11,

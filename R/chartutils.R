@@ -876,13 +876,14 @@ cum.signed.data <- function(x)
 
 ## Takes a single string and puts <br> in place of the closest space preceding the n= value character.
 ## E.g. if n= 20 then count 20 characters.  The space preceding character 20 is replaced by "<br>".
-lineBreakEveryN <- function(x, n = 21)
+lineBreakEveryN <- function(x, n = 21, remove.empty)
 {
     if (n <= 0)
         stop("Wrap line length cannot be smaller than 1")
 
     w.list <- strsplit(x, " ")[[1]]
-    w.list <- w.list[which(nchar(w.list) > 0)]
+    if (remove.empty)
+        w.list <- w.list[which(nchar(w.list) > 0)]
     final <- w.list[1]
     c.len <- nchar(final)
     if (grepl("<br>", final))
@@ -911,7 +912,7 @@ lineBreakEveryN <- function(x, n = 21)
     final
 }
 
-autoFormatLongLabels <- function(x, wordwrap = FALSE, n = 21, truncate = FALSE)
+autoFormatLongLabels <- function(x, wordwrap = FALSE, n = 21, truncate = FALSE, remove.empty = TRUE)
 {
     if (truncate)
         warning("autoFormatLongLabels: truncate not longer does anything.")
@@ -919,6 +920,7 @@ autoFormatLongLabels <- function(x, wordwrap = FALSE, n = 21, truncate = FALSE)
         return("")
     if (!is.character(x))
         x <- as.character(x)
+    
     # Check for zero-length strings which are ignored by plotly
     if (length(x) > 1)
     {
@@ -929,7 +931,7 @@ autoFormatLongLabels <- function(x, wordwrap = FALSE, n = 21, truncate = FALSE)
 
     output.text <- x
     if (wordwrap && length(output.text) > 0)
-        output.text <- sapply(output.text, function(x) lineBreakEveryN(x, n))
+        output.text <- sapply(output.text, function(x) lineBreakEveryN(x, n, remove.empty = remove.empty))
     if (is.null(output.text) || is.na(output.text) || length(output.text) == 0)
         output.text <- ""
 
