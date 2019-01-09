@@ -15,7 +15,7 @@
 #' @param data.label.bg.opacity Numeric between 0 (tranparent) to 1 (opaque), specifying the opacity of the data label background (grey).
 #' @export
 MissingCasesPlot <- function(raw.data,
-    show.counts.missing = FALSE,
+    show.counts.missing = TRUE,
     show.percentages.missing = FALSE,
     subset = NULL,
     title = "Missing values by case",
@@ -43,9 +43,9 @@ MissingCasesPlot <- function(raw.data,
     x.tick.font.family = global.font.family,
     x.tick.font.color = global.font.color,
     x.tick.font.size = 11,
-    x.tick.label.wrap = TRUE,
+    x.tick.label.wrap = NULL,
     x.tick.label.nchar = 20,
-    x.tick.angle = 0,
+    x.tick.angle = NULL,
     y.tick.font.family = global.font.family,
     y.tick.font.color = global.font.color,
     y.tick.font.size = 10,
@@ -61,6 +61,10 @@ MissingCasesPlot <- function(raw.data,
         index <- which(subset)
         dat <- dat[index,]
     }
+    if (is.null(x.tick.angle))
+        x.tick.angle <- if (ncol(dat) >= 10) 90 else 0
+    if (is.null(x.tick.label.wrap))
+        x.tick.label.wrap <- x.tick.angle == 0
 
     # For the other chart types, the font size conversion
     # happens inside flipChart::CChart but MissingCasesPlot is called separately.
@@ -93,7 +97,7 @@ MissingCasesPlot <- function(raw.data,
     x.labels <- paste0("<b>", colnames(dat), "</b>")
     if (show.counts.missing || show.percentages.missing)
     {
-        x.labels <- paste0(x.labels, "<br>(")
+        x.labels <- paste0(x.labels, if (x.tick.label.wrap) "<br>(" else " (")
         if (show.counts.missing)
             x.labels <- paste0(x.labels, colSums(dat), " cases ")
         if (show.counts.missing && show.percentages.missing)
