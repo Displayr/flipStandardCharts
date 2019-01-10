@@ -885,24 +885,18 @@ lineBreakEveryN <- function(x, n = 21, remove.empty)
     if (remove.empty)
         w.list <- w.list[which(nchar(w.list) > 0)]
     final <- w.list[1]
-    c.len <- nchar(final)
-    if (grepl("<br>", final))
-    {
-        tmp <- strsplit(final, split = "<br>")[[1]]
-        c.len <- nchar(tmp[length(tmp)])
-    }
+    c.len <- lengthLastLine(final)
     for (ww in w.list[-1])
     {
         new.len <- c.len + nchar(ww) + 1
-        if (grepl("<br>", ww))
-        {
-            final <- paste0(final, " ", ww)
-            tmp <- strsplit(ww, split = "<br>")[[1]]
-            c.len <- nchar(tmp[length(tmp)])
-        } else if (new.len > n)
+        if (new.len > n)
         {
             final <- paste0(final, "<br>", ww)
-            c.len <- nchar(ww)
+            c.len <- lengthLastLine(ww)
+        } else if (grepl("<br>", ww))
+        {
+            final <- paste0(final, " ", ww)
+            c.len <- lengthLastLine(ww)
         } else
         {
             final <- paste0(final, " ", ww)
@@ -910,6 +904,12 @@ lineBreakEveryN <- function(x, n = 21, remove.empty)
         }
     }
     final
+}
+
+lengthLastLine <- function(x)
+{
+    tmp <- strsplit(x, split = "<br>")[[1]]
+    return(length(tmp[length(tmp)]))
 }
 
 autoFormatLongLabels <- function(x, wordwrap = FALSE, n = 21, truncate = FALSE, remove.empty = TRUE)
