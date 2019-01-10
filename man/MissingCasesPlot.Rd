@@ -25,7 +25,8 @@ MissingCasesPlot(raw.data, show.counts.missing = TRUE,
   y.tick.font.color = global.font.color, y.tick.font.size = 10,
   hovertext.font.family = global.font.family,
   hovertext.font.color = "#FFFFFF", hovertext.font.size = 11,
-  font.unit = "px")
+  margin.top = NULL, margin.bottom = NULL, margin.left = NULL,
+  margin.right = NULL, font.unit = "px")
 }
 \arguments{
 \item{raw.data}{Matrix or data frame.}
@@ -118,6 +119,14 @@ in character format (e.g. "black") or an a hex code.}
 \item{hovertext.font.color}{Color of hovertext as a string or hex code.}
 
 \item{hovertext.font.size}{Font size of hover text.}
+
+\item{margin.top}{Margin between plot area and the top of the graphic in pixels}
+
+\item{margin.bottom}{Margin between plot area and the bottom of the graphic in pixels}
+
+\item{margin.left}{Margin between plot area and the left of the graphic in pixels}
+
+\item{margin.right}{Margin between plot area and the right of the graphic in pixels}
 
 \item{font.unit}{One of "px" of "pt". By default all font sizes are specified in terms of
 pixels ("px"). But changing this to "pt" will mean that the font sizes will be in terms

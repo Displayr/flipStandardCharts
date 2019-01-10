@@ -52,6 +52,10 @@ MissingCasesPlot <- function(raw.data,
     hovertext.font.family = global.font.family,
     hovertext.font.color = "#FFFFFF",
     hovertext.font.size = 11,
+    margin.top = NULL,
+    margin.bottom = NULL,
+    margin.left = NULL,
+    margin.right = NULL,
     font.unit = "px")
 {
     dat <- as.matrix(is.na(raw.data) * 1)
@@ -116,6 +120,7 @@ MissingCasesPlot <- function(raw.data,
     margins <- setMarginsForAxis(margins, x.labels, xaxis)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
+    margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left, margin.right, 0)
 
     annotations <- NULL
     annotations[[1]] <- setTitle(title, title.font, margins)
