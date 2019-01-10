@@ -20,7 +20,7 @@ MissingCasesPlot(raw.data, show.counts.missing = TRUE,
   footer.wrap = TRUE, footer.wrap.nchar = 100,
   x.tick.font.family = global.font.family,
   x.tick.font.color = global.font.color, x.tick.font.size = 11,
-  x.tick.label.wrap = NULL, x.tick.label.nchar = 20,
+  x.tick.label.wrap = NULL, x.tick.label.wrap.nchar = 20,
   x.tick.angle = NULL, y.tick.font.family = global.font.family,
   y.tick.font.color = global.font.color, y.tick.font.size = 10,
   hovertext.font.family = global.font.family,
@@ -102,7 +102,7 @@ character format (e.g. "black") or an a hex code.}
 
 \item{x.tick.label.wrap}{Logical; whether to wrap long labels on the x-axis.}
 
-\item{x.tick.label.nchar}{Number of characters wide the x-axis labels should be before wrapping.}
+\item{x.tick.label.wrap.nchar}{Number of characters wide the x-axis labels should be before wrapping.}
 
 \item{x.tick.angle}{x-axis tick label angle in degrees.
 90 = vertical; 0 = horizontal}

@@ -7,7 +7,7 @@
 #' @param show.percentages.missing Include the percentage of cases missing in the variable label.
 #' @param subset Logical vector indicating whether each row of the data frame should be included
 #' @param hovertext.font.color Color of hovertext as a string or hex code.
-#' @param x.tick.label.nchar Number of characters wide the x-axis labels should be before wrapping.
+#' @param x.tick.label.wrap.nchar Number of characters wide the x-axis labels should be before wrapping.
 #' @param font.unit One of "px" of "pt". By default all font sizes are specified in terms of
 #'  pixels ("px"). But changing this to "pt" will mean that the font sizes will be in terms
 #'  points ("pt"), which will be consistent with font sizes in text boxes.
@@ -44,7 +44,7 @@ MissingCasesPlot <- function(raw.data,
     x.tick.font.color = global.font.color,
     x.tick.font.size = 11,
     x.tick.label.wrap = NULL,
-    x.tick.label.nchar = 20,
+    x.tick.label.wrap.nchar = 20,
     x.tick.angle = NULL,
     y.tick.font.family = global.font.family,
     y.tick.font.color = global.font.color,
@@ -110,7 +110,7 @@ MissingCasesPlot <- function(raw.data,
             x.labels <- paste0(x.labels, " ", round(colSums(dat)/nrow(dat)*100), "%")
         x.labels <- paste0(x.labels, " missing)")
     }
-    x.labels <- autoFormatLongLabels(x.labels, x.tick.label.wrap, x.tick.label.nchar, truncate = FALSE)
+    x.labels <- autoFormatLongLabels(x.labels, x.tick.label.wrap, x.tick.label.wrap.nchar, truncate = FALSE)
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate = FALSE)
     xaxis <- list(side = "bottom", ticklen = 0, tickangle = x.tick.angle, tickfont = x.tick.font)
     yaxis <- list(side = "left", ticklen = 0, tickfont = y.tick.font,
