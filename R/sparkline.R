@@ -138,10 +138,10 @@ Sparkline <- function(x,
         line.opacity <- fill.opacity
     }
 	data.is.percent <- isTRUE(grepl("%$", attr(x, "statistic")))
-	if (sum(nchar(y.tick.format)) == 0 || y.tick.format == ".0")
-		y.tick.format <- if (data.is.percent) "%" else ".2f"
-	if (sum(nchar(hover.format)) == 0 || hover.format == ".0")
-		hover.format <- if (data.is.percent) "%" else ".2f"
+	if (sum(nchar(y.tick.format)) == 0 || grepl("[0-9]$", y.tick.format))
+		y.tick.format <- if (data.is.percent) paste0(y.tick.format, "%") else paste0(y.tick.format, "f")
+	if (sum(nchar(hover.format)) == 0 || grepl("[0-9]$", hover.format))
+		hover.format <- if (data.is.percent) paste0(hover.format, "%") else paste0(hover.format, "f")
 
     if (tolower(font.unit) %in% c("pt", "point", "points"))
     {
