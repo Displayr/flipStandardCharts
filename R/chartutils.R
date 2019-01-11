@@ -909,7 +909,7 @@ lineBreakEveryN <- function(x, n = 21, remove.empty)
 lengthLastLine <- function(x)
 {
     tmp <- strsplit(x, split = "<br>")[[1]]
-    return(length(tmp[length(tmp)]))
+    return(nchar(tmp[length(tmp)]))
 }
 
 autoFormatLongLabels <- function(x, wordwrap = FALSE, n = 21, truncate = FALSE, remove.empty = TRUE)
