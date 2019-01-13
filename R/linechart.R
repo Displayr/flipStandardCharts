@@ -231,6 +231,8 @@ Line <-   function(x,
     xaxis2 <- NULL
 
     ## Add a trace for each col of data in the matrix
+    if (is.character(line.thickness))
+        line.thickness <- as.numeric(TextAsVector(line.thickness))
     line.thickness <- line.thickness * rep(1, ncol(chart.matrix))
     opacity <- opacity * rep(1, ncol(chart.matrix))
     for (i in 1:ncol(chart.matrix))
