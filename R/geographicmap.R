@@ -84,6 +84,8 @@ GeographicMap <- function(x,
                           footer.font.size = 8,
                           footer.wrap = TRUE,
                           footer.wrap.nchar = 100,
+                          hovertext.font.family = global.font.family,
+                          hovertext.font.size = 11,
                           zip.country = "Automatic")
 {
     requireNamespace("sp")
@@ -312,9 +314,11 @@ GeographicMap <- function(x,
     if (mapping.package == "leaflet") {
 
         map <- leafletMap(coords, colors, values.bounds.minimum, values.bounds.maximum,
-                   color.NA, legend.show, legend.title, mult, decimals, suffix,
+                   color.NA, legend.show, legend.title, legend.font.family, legend.font.size,
+                   mult, decimals, suffix,
                    values.hovertext.format, treat.NA.as.0, n.categories, categories,
-                   format.function, map.type, background, ocean.color)
+                   format.function, map.type, background, ocean.color,
+                   hovertext.font.family, hovertext.font.size)
 
     } else
     {
@@ -328,7 +332,8 @@ GeographicMap <- function(x,
                    title.font = list(family=title.font.family, color=title.font.color, size=title.font.size),
                    subtitle.font = list(family=subtitle.font.family, color=subtitle.font.color, size=subtitle.font.size),
                    footer.font = list(family=footer.font.family, color=footer.font.color, size=footer.font.size),
-                   footer.wrap = footer.wrap, footer.wrap.nchar = footer.wrap.nchar)
+                   footer.wrap = footer.wrap, footer.wrap.nchar = footer.wrap.nchar,
+                   hovertext.font.family, hovertext.font.size)
     }
 
     result <- list(htmlwidget = map)
@@ -344,10 +349,11 @@ GeographicMap <- function(x,
 #' @importFrom stats as.formula
 #' @importFrom htmltools browsable tagList tags
 #' @importFrom htmlwidgets onRender
-leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.show,
-                       legend.title, mult, decimals, suffix, values.hovertext.format,
+leafletMap <- function(coords, colors, min.value, max.range, color.NA, 
+                       legend.show, legend.title, legend.font.family, legend.font.size,
+                       mult, decimals, suffix, values.hovertext.format,
                        treat.NA.as.0, n.categories, categories, format.function, map.type,
-                       background, ocean.color)
+                       background, ocean.color, hovertext.font.family, hovertext.font.size)
 {
     max.values <- unique(coords$table.max[!is.na(coords$table.max)])
     if (length(max.values) == 1)
@@ -430,7 +436,12 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA, legend.sh
     js <- paste0("function(){document.querySelector('.leaflet-container').style.backgroundColor = '",
                  ocean.color, "'}")
     map <- onRender(map, js)
-
+    js <- paste0("function(){document.querySelector('.leaflet-container').style.font = '",
+                 hovertext.font.size, "px ", hovertext.font.family, "'}")
+    map <- onRender(map, js)
+    js <- paste0("function(){document.querySelector('.info.legend.leaflet-control').style.font = '",
+                 legend.font.size, "px ", legend.font.family, "'}")
+    map <- onRender(map, js)
     map
 }
 
@@ -442,7 +453,7 @@ plotlyMap <- function(table, name.map, colors, min.value, max.range, color.NA, l
            treat.NA.as.0, n.categories, categories, format.function, map.type,
            ocean.color, high.resolution, title, subtitle, footer,
            legend.font, title.font, subtitle.font, footer.font,
-           footer.wrap, footer.wrap.nchar)
+           footer.wrap, footer.wrap.nchar, hovertext.font.family, hovertext.font.size)
 {
     df <- data.frame(table)
     df <- df[!is.na(df[, 1]), , drop = FALSE]  # avoid warning for NA
@@ -549,7 +560,8 @@ plotlyMap <- function(table, name.map, colors, min.value, max.range, color.NA, l
             annotations = list(setSubtitle(subtitle, subtitle.font, margins),
                                setTitle(title, title.font, margins),
                                setFooter(footer, footer.font, margins)),
-            hoverlabel = list(namelength = -1, font = list(family = legend.font$family, color = "white", size = 12)),
+            hoverlabel = list(namelength = -1, 
+            font = list(family = hovertext.font.family, color = "white", size = hovertext.font.size)),
             paper_bgcolor = 'transparent'
         )
     p

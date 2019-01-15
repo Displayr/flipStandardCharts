@@ -22,6 +22,7 @@ GeographicMap(x, country, high.resolution = FALSE,
   footer = "", footer.font.family = global.font.family,
   footer.font.color = global.font.color, footer.font.size = 8,
   footer.wrap = TRUE, footer.wrap.nchar = 100,
+  hovertext.font.family = global.font.family, hovertext.font.size = 11,
   zip.country = "Automatic")
 }
 \arguments{
@@ -117,6 +118,10 @@ character format (e.g. "black") or an a hex code.}
 
 \item{footer.wrap.nchar}{Number of characters (approximately) in each
 line of the footer when \code{footer.wrap} \code{TRUE}.}
+
+\item{hovertext.font.family}{Font family of hover text.}
+
+\item{hovertext.font.size}{Font size of hover text.}
 
 \item{zip.country}{One of \code{"Automatic"}, \code{"USA"}, \code{"UK"} or \code{"Australia"}.
 If \code{"Automatic"} an attempt is made to infer the country from the data.}
