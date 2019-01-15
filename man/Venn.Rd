@@ -4,7 +4,10 @@
 \alias{Venn}
 \title{\code{Venn}}
 \usage{
-Venn(x = NULL, weights = NULL, data.label.font.size = 20,
+Venn(x = NULL, weights = NULL, global.font.family = "Arial",
+  data.label.font.family = global.font.family,
+  data.label.font.size = 20,
+  hovertext.font.family = global.font.family, hovertext.font.size = 11,
   values.hovertext.format = "")
 }
 \arguments{
@@ -12,7 +15,15 @@ Venn(x = NULL, weights = NULL, data.label.font.size = 20,
 
 \item{weights}{An optional vector of weights, or, the name or, the name of a variable in \code{x}. It may not be an expression.}
 
+\item{global.font.family}{Font family of all text elements. These can be overriden for individual text elements.}
+
+\item{data.label.font.family}{Font family of data labels.}
+
 \item{data.label.font.size}{The font size of the labels. Defaults to 20.}
+
+\item{hovertext.font.family}{Font family of hovertext (i.e tooltips).}
+
+\item{hovertext.font.size}{Font size of hovertext in pixels.}
 
 \item{values.hovertext.format}{A string representing a d3 formatting code.
 See https://github.com/mbostock/d3/wiki/Formatting#numbers. This option only applies when \code{x} is a data.frame.}

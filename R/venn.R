@@ -6,7 +6,11 @@
 #'
 #' @param x A \link{data.frame} \code{logical} (converted to logical using >= 1 if not) or a JSON-like list.
 #' @param weights An optional vector of weights, or, the name or, the name of a variable in \code{x}. It may not be an expression.
+#' @param global.font.family Font family of all text elements. These can be overriden for individual text elements.
+#' @param data.label.font.family Font family of data labels.
 #' @param data.label.font.size The font size of the labels. Defaults to 20.
+#' @param hovertext.font.family Font family of hovertext (i.e tooltips).
+#' @param hovertext.font.size Font size of hovertext in pixels.
 #' @param values.hovertext.format A string representing a d3 formatting code.
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers. This option only applies when \code{x} is a data.frame.
 #' @examples
@@ -23,9 +27,13 @@
 #' @importFrom d3vennR d3vennR
 #' @export
 Venn <- function(x = NULL,
-                        weights = NULL,
-                        data.label.font.size = 20,
-                        values.hovertext.format = "")
+                 weights = NULL,
+                 global.font.family = "Arial",
+                 data.label.font.family = global.font.family,
+                 data.label.font.size = 20,
+                 hovertext.font.family = global.font.family,
+                 hovertext.font.size = 11,
+                 values.hovertext.format = "")
 {
     if (is.numeric(x))
     {
@@ -61,84 +69,87 @@ Venn <- function(x = NULL,
         for (i in seq(length(x)))
             x[[i]]$size <- x[[i]]$size * 100
     }
+
     # Creating the Venn diagram
-    vv <- venn_tooltip(d3vennR(data = x, fontSize = data.label.font.size), suffix = suffix)
+    vv <- d3vennR(data = x, fontSize = data.label.font.size)
+    vv$x$tasks <- list(
+        venn_tooltip(suffix = suffix, font.family = hovertext.font.family, 
+                     font.size = hovertext.font.size), 
+        venn_fontfamily(data.label.font.family))
+    vv$sizingPolicy$browser$fill <- TRUE
     result <- list(htmlwidget = vv)
     class(result) <- "StandardChart"
     result
 }
 
-#' venn_tooltip
-#'
-#' Creating the tooltips
-#' @param venn The JSON-like list.
-#' @param suffix A string to append to the hovertext.
-#' @importFrom htmlwidgets JS
-venn_tooltip <- function(venn, suffix = ""){
-        venn$x$tasks[length(venn$x$tasks)+1] <- list(
-            JS(paste0('
-                            function(){
-                            var div = d3.select(this);
+venn_fontfamily <- function(font.family){
+    JS(paste0('
+function(){
+    d3.select(this).selectAll(".venn-circle text")
+        .style("font-family", "', font.family, '")
+}'
+))}
 
-                            // add a tooltip
-                            var tooltip = d3.select("body").append("div")
-                            .attr("class", "venntooltip")
-                            .style("position", "absolute")
-                            .style("text-align", "center")
-                            .style("width", 128)
-                            .style("height", 16)
-                            .style("background", "#333")
-                            .style("color","#ddd")
-                            .style("padding","2px")
-                            .style("border","0px")
-                            .style("border-radius","8px")
-                            .style("opacity",0);
+venn_tooltip <- function(suffix = "", font.family, font.size){
+    JS(paste0('
+function(){
+    var div = d3.select(this);
 
-                            div.selectAll("path")
-                            .style("stroke-opacity", 0)
-                            .style("stroke", "#fff")
-                            .style("stroke-width", 0)
+    // add a tooltip
+    var tooltip = d3.select("body").append("div")
+    .attr("class", "venntooltip")
+    .style("position", "absolute")
+    .style("text-align", "center")
+    .style("width", 128)
+    .style("height", 16)
+    .style("background", "#333")
+    .style("color","#ddd")
+    .style("padding","5px")
+    .style("border","0px")
+    .style("border-radius","2px")
+    .style("opacity",0);
 
-                            // add listeners to all the groups to display tooltip on mousover
-                            div.selectAll("g")
-                            .on("mouseover", function(d, i) {
+    div.selectAll("path")
+    .style("stroke-opacity", 0)
+    .style("stroke", "#fff")
+    .style("stroke-width", 0)
 
-                            // sort all the areas relative to the current item
-                            venn.sortAreas(div, d);
+    // add listeners to all the groups to display tooltip on mousover
+    div.selectAll("g")
+    .on("mouseover", function(d, i) {
 
-                            // Display a tooltip with the current size
-                            tooltip.transition().duration(400).style("opacity", .9);
-                            tooltip.text(d.size + "', suffix, '");
+        // sort all the areas relative to the current item
+        venn.sortAreas(div, d);
 
-                            // highlight the current path
-                            var selection = d3.select(this).transition("tooltip").duration(400);
-                            selection.select("path")
-                            .style("stroke-width", 3)
-                            .style("fill-opacity", d.sets.length == 1 ? .4 : .1)
-                            .style("stroke-opacity", 1);
-                            })
+        // Display a tooltip with the current size
+        tooltip.transition().duration(400).style("opacity", .9);
+        tooltip.text(d.size + "', suffix, '")
+            .style("font", "', font.size, 'px ', font.family, '");
 
-                            .on("mousemove", function() {
-                            tooltip.style("left", (d3.event.pageX) + "px")
-                            .style("top", (d3.event.pageY - 28) + "px");
-                            })
+        // highlight the current path
+        var selection = d3.select(this).transition("tooltip").duration(400);
+        selection.select("path")
+        .style("stroke-width", 3)
+        .style("fill-opacity", d.sets.length == 1 ? .4 : .1)
+        .style("stroke-opacity", 1);
+    })
 
-                            .on("mouseout", function(d, i) {
-                            tooltip.transition().duration(400).style("opacity", 0);
-                            var selection = d3.select(this).transition("tooltip").duration(400);
-                            selection.select("path")
-                            .style("stroke-width", 0)
-                            .style("fill-opacity", d.sets.length == 1 ? .25 : .0)
-                            .style("stroke-opacity", 0);
-                            });
-                            }
-                            '))
-            )
+    .on("mousemove", function() {
+        tooltip.style("left", (d3.event.pageX) + "px")
+        .style("top", (d3.event.pageY - 28) + "px");
+    })
 
-        # Override default where widget does not size to browser
-        venn$sizingPolicy$browser$fill <- TRUE
-        venn
-    }
+    .on("mouseout", function(d, i) {
+        tooltip.transition().duration(400).style("opacity", 0);
+        var selection = d3.select(this).transition("tooltip").duration(400);
+        selection.select("path")
+        .style("stroke-width", 0)
+        .style("fill-opacity", d.sets.length == 1 ? .25 : .0)
+        .style("stroke-opacity", 0);
+    });
+}'
+))}
+
 
 #' convertDataFrameIntoJSON
 #'
