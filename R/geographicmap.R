@@ -64,7 +64,7 @@ GeographicMap <- function(x,
                           legend.title = "",
                           legend.font.family = global.font.family,
                           legend.font.color = global.font.color,
-                          legend.font.size = 10,
+                          legend.font.size = 14,
                           values.hovertext.format = "",
                           values.bounds.minimum = NULL,
                           values.bounds.maximum = NULL,
@@ -433,14 +433,13 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA,
         map <- setView(map, -96, 37.8, zoom = 4)
 
     # Set the background color
-    js <- paste0("function(){document.querySelector('.leaflet-container').style.backgroundColor = '",
-                 ocean.color, "'}")
-    map <- onRender(map, js)
-    js <- paste0("function(){document.querySelector('.leaflet-container').style.font = '",
-                 hovertext.font.size, "px ", hovertext.font.family, "'}")
-    map <- onRender(map, js)
-    js <- paste0("function(){document.querySelector('.info.legend.leaflet-control').style.font = '",
-                 legend.font.size, "px ", legend.font.family, "'}")
+    js <- paste0("function(){
+        document.querySelector('.leaflet-container').style.backgroundColor = '", ocean.color, "';
+        document.querySelector('.leaflet-container').style.font = '",
+            hovertext.font.size, "px ", hovertext.font.family, "';
+        document.querySelector('.info.legend.leaflet-control').style.font = '",
+            legend.font.size, "px ", legend.font.family, "';
+    }")
     map <- onRender(map, js)
     map
 }

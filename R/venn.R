@@ -30,9 +30,9 @@ Venn <- function(x = NULL,
                  weights = NULL,
                  global.font.family = "Arial",
                  data.label.font.family = global.font.family,
-                 data.label.font.size = 20,
+                 data.label.font.size = 14,
                  hovertext.font.family = global.font.family,
-                 hovertext.font.size = 11,
+                 hovertext.font.size = 14,
                  values.hovertext.format = "")
 {
     if (is.numeric(x))
