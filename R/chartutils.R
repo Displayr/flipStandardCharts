@@ -564,7 +564,7 @@ setMarginsForAxis <- function(margins, labels, axis)
         new.margin <- lab.len
 
     title.nline <- 0
-    if (sum(nchar(axis$title)) > 0)
+    if (sum(nchar(axis$title)) > 0 && axis$title != " ")
         title.nline <- sum(gregexpr("<br>", axis$title)[[1]] > -1) + 1
     title.pad <- max(0, axis$titlefont$size) * title.nline * 1.25
     
