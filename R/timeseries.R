@@ -11,10 +11,10 @@
 #' @param line.thickness Integer; The width of the lines connecting data points.
 #' @param legend.width Integer; Width (in pixels) of the legend.
 #' @param window.start The number of days before the end of the data series to start the range selector window.
-#' @param y.hovertext.font.color Legend font color as a named color in character
+#' @param hovertext.font.color Legend font color as a named color in character
 #' format (e.g. "black") or a hex code.
-#' @param y.hovertext.font.family Character; legend font family.
-#' @param y.hovertext.font.size Integer; Legend font size.
+#' @param hovertext.font.family Character; legend font family.
+#' @param hovertext.font.size Integer; Legend font size.
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom dygraphs dygraph dySeries dyCSS dyRangeSelector %>% dyOptions dyLegend dyAxis
 #' @importFrom flipTime AsDate AsDateTime
@@ -47,9 +47,9 @@ TimeSeries <- function(x = NULL,
                     y.tick.font.family = global.font.family,
                     y.tick.font.size = 10,
                     y.tick.format = "",
-                    y.hovertext.font.size = 11,
-                    y.hovertext.font.color = global.font.color,
-                    y.hovertext.font.family = global.font.family,
+                    hovertext.font.size = 11,
+                    hovertext.font.color = global.font.color,
+                    hovertext.font.family = global.font.family,
                     y.hovertext.format= y.tick.format)
 {
 
@@ -96,9 +96,9 @@ TimeSeries <- function(x = NULL,
         font-weight: bold;
         }
         .dygraph-legend {
-        color: ", y.hovertext.font.color, ";
-        font-size: ", y.hovertext.font.size, "px;
-        font-family: ", y.hovertext.font.family, ";
+        color: ", hovertext.font.color, ";
+        font-size: ", hovertext.font.size, "px;
+        font-family: ", hovertext.font.family, ";
         }
         .dygraph-label.dygraph-xlabel {
         color: ", x.title.font.color, ";
