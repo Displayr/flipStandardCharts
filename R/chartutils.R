@@ -885,7 +885,7 @@ lineBreakEveryN <- function(x, n = 21, remove.empty)
     if (remove.empty)
         w.list <- w.list[which(nchar(w.list) > 0)]
     if (length(w.list) == 0)
-        return("")
+        return(" ")
     final <- w.list[1]
     c.len <- lengthLastLine(final)
     for (ww in w.list[-1])

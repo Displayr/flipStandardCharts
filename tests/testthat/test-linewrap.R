@@ -4,7 +4,7 @@ test_that("Line wrap",
 {
     x1 <- c("A normal length", "B", "", "D")
     res1 <- flipStandardCharts:::autoFormatLongLabels(x1, wordwrap = TRUE, n = 100)
-    expect_equal(x1, res1)
+    expect_equal(res1, c("A normal length", "B", " ", "D"))
 
     x2 <- c("The quick brown dog", "The lazy dog", "The woman who swallowed a horse is dead of course")
     res2 <- flipStandardCharts:::autoFormatLongLabels(x2, wordwrap = TRUE, n = 10)
