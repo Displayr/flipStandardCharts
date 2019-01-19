@@ -354,7 +354,8 @@ LabeledScatter <- function(x = NULL,
             footer <- sprintf("%sArea of points are proportional to absolute value of '%s'; ",
                               footer, scatter.sizes.name)
     }
-    footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
+    if (sum(nchar(footer)) > 0 && footer != " ")
+        footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
 
     # Convert d3 formatting
     x.decimals <- decimalsFromD3(x.tick.format, decimalsToDisplay(x))
