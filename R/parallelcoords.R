@@ -89,14 +89,24 @@ ParallelCoordinates <- function(x,
     for (i in 1:ncol(x))
     {
         tmp.name0 <- colnames(x)[i]
-        if (any(class(x[[i]]) %in% c("Date", "POSIXct", "POSIXt")))
-            x[,i] <- as.numeric(x[,i])
         tmp.name1 <- colnames(x)[i]
 		dimlist[[tmp.name1]] <- list(title = tmp.name0)
 		
-        #if (any(class(x[[i]]) %in% c("Date", "POSIXct", "POSIXt")))
-		#		tasks <- c(tasks, JS(orderDateTicks(tmp.name1, x[[i]])))
-		if (is.factor(x[[i]]))
+        if (any(class(x[[i]]) %in% c("Date")))
+        {
+            x[,i] <- as.numeric(x[,i])
+            dimlist[[tmp.name1]] <- list(title = tmp.name0, 
+                tickFormat = JS('function(d){ x = new Date(d * 24 * 60 * 60 * 1000); 
+                                 return(x.toLocaleDateString()) }'))
+        } else if ( any(class(x[[i]]) %in% c("POSIXct", "POSIXt")))
+        {
+            x[,i] <- as.numeric(x[,i])
+            dimlist[[tmp.name1]] <- list(title = tmp.name0, 
+                tickFormat = JS('function(d){ x = new Date(d * 1000); return(x.toDateString()) }'))
+        } else
+		    dimlist[[tmp.name1]] <- list(title = tmp.name0)
+		
+        if (is.factor(x[[i]]))
 			tasks <- c(tasks, JS(orderCategoricalTicks(tmp.name1, levels(x[[i]]))))
     }
 
@@ -262,19 +272,5 @@ function(){
 	   this.parcoords.brushMode(this.x.options.brushMode);
 	   this.parcoords.brushPredicate(this.x.options.brushPredicate);
 	}
-}
-"))
-
-# Not working yet
-orderDateTicks <- function(varname, varlevels)
-	return(paste0("
-function(){
-	this.parcoords.dimensions()['", varname, "']
-	.yscale = d3.scale.time()
-	.domain([new Date(2018,1,1), new Date(2019, 2, 1)])
-	.rangePoints([
-	1,
-	this.parcoords.height()-this.parcoords.margin().top - this.parcoords.margin().bottom
-])
 }
 "))

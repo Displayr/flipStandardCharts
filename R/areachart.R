@@ -236,7 +236,7 @@ Area <- function(x,
  
     } else
         dlab.color <- vectorize(data.label.font.color, ncol(chart.matrix))
-    
+
     data.label.font = lapply(dlab.color, 
         function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
@@ -380,7 +380,7 @@ Area <- function(x,
                            name = legend.text[i], 
                            legendgroup = i,
                            text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
-                           hoverlabel = list(font = list(color = data.label.font[[i]]$color,
+                           hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                            size = hovertext.font.size, family = hovertext.font.family),
                            bgcolor = colors[i]),
                            hoverinfo = setHoverText(xaxis, chart.matrix),
@@ -436,7 +436,7 @@ Area <- function(x,
                     line = lines, legendgroup = i, text = source.text,
                     hoverinfo = if (ncol(chart.matrix) > 1) "x+text+name" else "x+text",
                     hoverlabel = list(bgcolor=colors[i],
-                    font = list(color = data.label.font[[i]]$color,
+                    font = list(color = autoFontColor(colors[i]),
                     size = hovertext.font.size, family = hovertext.font.family)),
                     mode = "lines", marker = marker)
          }

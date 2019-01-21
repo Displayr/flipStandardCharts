@@ -299,7 +299,7 @@ Bar <- function(x,
         p <- add_trace(p, x = y.filled, y = x, type = "bar", orientation = "h",
                        marker = marker, name  =  legend.text[i],
                        text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
-                       hoverlabel = list(font = list(color = data.label.font[[i]]$color,
+                       hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family)),
                        hoverinfo  = setHoverText(yaxis, chart.matrix, is.bar = TRUE), legendgroup = i)
 

@@ -283,7 +283,7 @@ Line <-   function(x,
                    connectgaps = FALSE, line = lines, marker = marker, name = legend.text[i],
                    showlegend = (type == "Line"), legendgroup = tmp.group,
                    text = autoFormatLongLabels(x.labels.full, wordwrap=T, truncate=F),
-                   hoverlabel = list(font = list(color = data.label.font[[i]]$color,
+                   hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                    size = hovertext.font.size, family = hovertext.font.family)),
                    hoverinfo  = setHoverText(xaxis, chart.matrix))
 

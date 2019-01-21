@@ -469,7 +469,7 @@ Column <- function(x,
         p <- add_trace(p, x = x, y = y.filled, type = "bar",
                        orientation = "v", marker = marker, name = legend.text[i],
                        text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
-                       hoverlabel = list(font = list(color = data.label.font[[i]],
+                       hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family)),
                        hoverinfo  = setHoverText(xaxis, chart.matrix), legendgroup = i)
         if (fit.type != "None" && is.stacked && i == 1)

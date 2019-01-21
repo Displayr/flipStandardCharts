@@ -601,7 +601,7 @@ Scatter <- function(x = NULL,
                 textfont = if (data.label.show) data.label.font[[ggi]] else NULL,
                 marker = marker.obj, line = line.obj, text = source.text[ind],
                 hoverinfo = if (num.series == 1) "text" else "name+text",
-                hoverlabel = list(font = list(color = data.label.font[[ggi]]$color,
+                hoverlabel = list(font = list(color = autoFontColor(colors[ggi]),
                 size = hovertext.font.size, family = hovertext.font.family)),
                 type = "scatter", mode = series.mode, symbols = marker.symbols)
 

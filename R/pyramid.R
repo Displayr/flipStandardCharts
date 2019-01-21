@@ -210,7 +210,7 @@ Pyramid <- function(x,
 
         p <- add_trace(p, x = c(0, y[i]/2), y = x[ind], type = "bar", orientation = "h",
                        marker = marker, name  =  x[i],
-                       hoverlabel = list(font = list(color = data.label.font[[i]]$color,
+                       hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family)),
                        text = formatByD3(y[i], x.hovertext.format), hoverinfo  = "name+text")
         p <- add_trace(p, x = -c(0, y[i]/2), y = x[ind], type = "bar", orientation = "h",

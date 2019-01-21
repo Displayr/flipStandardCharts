@@ -305,7 +305,7 @@ Radar <- function(x,
                     name = g.list[ggi], legendgroup = g.list[ggi], opacity = 0,
                     showlegend = FALSE, text = pos$HoverText[ind],
                     hoverinfo = if (hovertext.show[ggi]) "all+text" else "none",
-                    hoverlabel = list(font = list(color = data.label.font[[ggi]]$color,
+                    hoverlabel = list(font = list(color = autoFontColor(colors[ggi]),
                     size = hovertext.font.size, family = hovertext.font.family)),
                     marker = list(size = 5, color = toRGB(colors[ggi])))
 
