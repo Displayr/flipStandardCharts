@@ -62,11 +62,11 @@ font attribute for the chart unless specified individually.}
 
 \item{legend.title}{The text to appear above the legend.}
 
-\item{legend.font.family}{Font family of legend. Only used with \code{plotly} object.}
+\item{legend.font.family}{Font family of legend.}
 
 \item{legend.font.color}{Font color of legend. Only used with \code{plotly} object.}
 
-\item{legend.font.size}{Font size of legend. Only used with \code{plotly} object.}
+\item{legend.font.size}{Font size of legend. Changing the defaults for leaflet object can give strange spacing.}
 
 \item{values.hovertext.format}{A string representing a d3 formatting code.
 See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
@@ -121,7 +121,7 @@ line of the footer when \code{footer.wrap} \code{TRUE}.}
 
 \item{hovertext.font.family}{Font family of hover text.}
 
-\item{hovertext.font.size}{Font size of hover text.}
+\item{hovertext.font.size}{Only used with \code{plotly} object.}
 
 \item{zip.country}{One of \code{"Automatic"}, \code{"USA"}, \code{"UK"} or \code{"Australia"}.
 If \code{"Automatic"} an attempt is made to infer the country from the data.}

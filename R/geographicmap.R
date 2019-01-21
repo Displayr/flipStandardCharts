@@ -41,9 +41,10 @@
 #' @param zip.country One of \code{"Automatic"}, \code{"USA"}, \code{"UK"} or \code{"Australia"}.
 #' If \code{"Automatic"} an attempt is made to infer the country from the data.
 #' @param legend.show Logical; Whether to display a legend with the color scale.
-#' @param legend.font.family Font family of legend. Only used with \code{plotly} object.
+#' @param legend.font.family Font family of legend.
 #' @param legend.font.color Font color of legend. Only used with \code{plotly} object.
-#' @param legend.font.size Font size of legend. Only used with \code{plotly} object.
+#' @param legend.font.size Font size of legend. Changing the defaults for leaflet object can give strange spacing.
+#' @param hovertext.font.size Only used with \code{plotly} object.
 #' @return an HTML widget for \code{"leaflet"} or a \code{"plotly"} object.
 #' @examples
 #' data <- seq(4)
@@ -96,6 +97,17 @@ GeographicMap <- function(x,
 
     # Find map.type from rownames
     names <- tolower(rownames(table))
+
+    # Get default parameter values
+    if (is.null(hovertext.font.family))
+        hovertext.font.family <- global.font.family
+    if (is.null(legend.font.family))
+        legend.font.family <- global.font.family
+    if (is.null(legend.font.size))
+        legend.font.size <- 14
+    if (is.null(hovertext.font.size))
+        hovertext.font.size <- 11
+
 
     # Check for defined formats first, or if country or zip.country are specified.
     map.type <- definedFormatMapTypes(names, zip.country)
@@ -349,7 +361,7 @@ GeographicMap <- function(x,
 #' @importFrom stats as.formula
 #' @importFrom htmltools browsable tagList tags
 #' @importFrom htmlwidgets onRender
-leafletMap <- function(coords, colors, min.value, max.range, color.NA, 
+leafletMap <- function(coords, colors, min.value, max.range, color.NA,
                        legend.show, legend.title, legend.font.family, legend.font.size,
                        mult, decimals, suffix, values.hovertext.format,
                        treat.NA.as.0, n.categories, categories, format.function, map.type,
@@ -559,7 +571,7 @@ plotlyMap <- function(table, name.map, colors, min.value, max.range, color.NA, l
             annotations = list(setSubtitle(subtitle, subtitle.font, margins),
                                setTitle(title, title.font, margins),
                                setFooter(footer, footer.font, margins)),
-            hoverlabel = list(namelength = -1, 
+            hoverlabel = list(namelength = -1,
             font = list(family = hovertext.font.family, color = "white", size = hovertext.font.size)),
             paper_bgcolor = 'transparent'
         )
