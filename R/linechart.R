@@ -313,6 +313,8 @@ Line <-   function(x,
             tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type, fit.CI.show)
             p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$y, type = 'scatter', mode = "lines",
                       name = tmp.fname, legendgroup = tmp.group, showlegend = FALSE,
+                      hoverlabel = list(font = list(color = autoFontColor(fit.line.colors[i]),
+                      size = hovertext.font.size, family = hovertext.font.family)),
                       line = list(dash = fit.line.type, width = fit.line.width,
                       color = fit.line.colors[i], shape = 'spline'), opacity = fit.line.opacity)
             if (fit.CI.show && !is.null(tmp.fit$lb))
@@ -320,11 +322,15 @@ Line <-   function(x,
                 p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$lb, type = 'scatter',
                         mode = 'lines', name = "Lower bound of 95%CI",
                         showlegend = FALSE, legendgroup = tmp.group,
+                        hoverlabel = list(font = list(color = autoFontColor(fit.CI.colors[i]),
+                        size = hovertext.font.size, family = hovertext.font.family)),
                         line=list(color=fit.CI.colors[i], width=0, shape='spline'))
                 p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$ub, type = 'scatter',
                         mode = 'lines', name = "Upper bound of 95% CI",
                         fill = "tonexty", fillcolor = toRGB(fit.CI.colors[i], alpha = fit.CI.opacity),
                         showlegend = FALSE, legendgroup = tmp.group,
+                        hoverlabel = list(font = list(color = autoFontColor(fit.CI.colors[i]),
+                        size = hovertext.font.size, family = hovertext.font.family)),
                         line = list(color=fit.CI.colors[i], width=0, shape='spline'))
             }
         }
