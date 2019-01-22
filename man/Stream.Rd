@@ -6,17 +6,27 @@
 \usage{
 Stream(x, colors = c("#5C9AD3", "#ED7D31", "#A5A5A5", "#FFC000",
   "#4473C5", "#70AD46", "#255F91", "#9E480D", "#636365", "#987300",
-  "#26408B", "#42682B"), y.axis.show = TRUE, y.tick.format = "",
+  "#26408B", "#42682B"), global.font.family = "Arial",
+  global.font.color = rgb(44, 44, 44, maxColorValue = 255),
+  global.font.size = 10, y.axis.show = TRUE, y.tick.format = "",
   y.number.ticks = 5, x.tick.format = "\%d \%b \%y",
   x.tick.units = "Automatic", x.tick.interval = 1,
-  global.font.color = rgb(44, 44, 44, maxColorValue = 255),
-  hovertext.font.color = global.font.color, margin.top = 20,
-  margin.left = 50, margin.bottom = 30, margin.right = 40)
+  hovertext.font.color = global.font.color,
+  hovertext.font.family = global.font.family, hovertext.font.size = 11,
+  margin.top = 20, margin.left = 50, margin.bottom = 30,
+  margin.right = 40)
 }
 \arguments{
 \item{x}{A \code{matrix}, with columns containing the dates or other numeric x-axis variable.}
 
 \item{colors}{A vector of colors of the streams.}
+
+\item{global.font.family}{Font family of tick labels.}
+
+\item{global.font.color}{Global font color as a named color in character format
+(e.g. "black") or an a hex code.}
+
+\item{global.font.size}{Font size of tick labels in pixels.}
 
 \item{y.axis.show}{Logical; if FALSE, the y-axis is not shown.}
 
@@ -33,10 +43,11 @@ See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 \item{x.tick.interval}{The frequency of ticks on the x-axis. Where the data crosses multiple years, re-starts at each year.
 If this is zero, it is determined from the data.}
 
-\item{global.font.color}{Global font color as a named color in character format
-(e.g. "black") or an a hex code.}
-
 \item{hovertext.font.color}{Font color of hovertext as a string or hex code.}
+
+\item{hovertext.font.family}{Font family of hovertext.}
+
+\item{hovertext.font.size}{Font size of hovertext in pixels.}
 
 \item{margin.top}{Top margin (default should be fine, this allows for fine-tuning plot space)}
 

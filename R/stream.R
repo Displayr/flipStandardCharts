@@ -5,7 +5,11 @@
 #' @param colors A vector of colors of the streams.
 #' @param global.font.color Global font color as a named color in character format
 #' (e.g. "black") or an a hex code.
+#' @param global.font.family Font family of tick labels.
+#' @param global.font.size Font size of tick labels in pixels.
+#' @param hovertext.font.family Font family of hovertext.
 #' @param hovertext.font.color Font color of hovertext as a string or hex code.
+#' @param hovertext.font.size Font size of hovertext in pixels.
 #' @param y.axis.show Logical; if FALSE, the y-axis is not shown.
 #' @param y.tick.format A string representing a d3 formatting code for the y-axis.
 #' See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format
@@ -26,14 +30,18 @@ Stream <- function(x,
                    colors = c("#5C9AD3", "#ED7D31", "#A5A5A5", "#FFC000",
                               "#4473C5", "#70AD46", "#255F91", "#9E480D",
                               "#636365", "#987300", "#26408B", "#42682B"),
+                   global.font.family = "Arial",
+                   global.font.color = rgb(44, 44, 44, maxColorValue = 255),
+                   global.font.size = 10,
                    y.axis.show = TRUE,
                    y.tick.format = "",
                    y.number.ticks = 5,
                    x.tick.format = "%d %b %y",
                    x.tick.units = "Automatic",
                    x.tick.interval = 1,
-                   global.font.color = rgb(44, 44, 44, maxColorValue = 255),
                    hovertext.font.color = global.font.color,
+                   hovertext.font.family = global.font.family,
+                   hovertext.font.size = 11,
                    margin.top = 20,
                    margin.left = 50,
                    margin.bottom = 30,
@@ -139,8 +147,21 @@ Stream <- function(x,
         sg <- sg_axis_y(sg, 0)
     else
         sg <- sg_axis_y(sg, tick_count = y.number.ticks, tick_format = y.tick.format)
-    sg <- sg_axis_x(sg, tick_interval = x.tick.interval, tick_units = tolower(x.tick.units), tick_format = x.tick.format)
+    
+    sg <- sg_axis_x(sg, tick_interval = x.tick.interval, tick_units = tolower(x.tick.units), 
+            tick_format = x.tick.format)
     sg <- sg_colors(sg, axis_color = global.font.color, tooltip_color = hovertext.font.color)
+
+    # Set font of hovertext and tick labels
+    js <- paste0("function(){
+        document.querySelector('text').style.font = '", hovertext.font.size, "px ",
+            hovertext.font.family, "';
+        document.querySelector('text').style.fill = '", hovertext.font.color, "';
+        document.querySelectorAll('g .tick text').forEach(function(i){
+            i.style.font = '", global.font.size, "px ", global.font.family, "';
+            i.style.fill = '", global.font.color, "';
+        })}")
+    sg <- onRender(sg, js)
 
     # Override default of fixed size widget
     sg$sizingPolicy$browser$fill <- TRUE
