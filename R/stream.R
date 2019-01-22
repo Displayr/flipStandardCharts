@@ -157,10 +157,11 @@ Stream <- function(x,
         document.querySelector('text').style.font = '", hovertext.font.size, "px ",
             hovertext.font.family, "';
         document.querySelector('text').style.fill = '", hovertext.font.color, "';
-        document.querySelectorAll('g .tick text').forEach(function(i){
-            i.style.font = '", global.font.size, "px ", global.font.family, "';
-            i.style.fill = '", global.font.color, "';
-        })}")
+        var ticks = document.querySelectorAll('g .tick text');
+        for (var i = 0; i < ticks.length; i++) {
+            ticks[i].style.font = '", global.font.size, "px ", global.font.family, "';
+            ticks[i].style.fill = '", global.font.color, "';
+        }}")
     sg <- onRender(sg, js)
 
     # Override default of fixed size widget
