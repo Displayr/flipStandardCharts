@@ -647,7 +647,7 @@ Scatter <- function(x = NULL,
         tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type, fit.CI.show, warning.prefix)
         p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$y, type = 'scatter', mode = 'lines',
                     name = fit.line.name, showlegend = FALSE, 
-                    hoverlabel = list(font = list(color = autoFontColor(fit.line.colors[ggi]),
+                    hoverlabel = list(font = list(color = autoFontColor(fit.line.colors[1]),
                     size = hovertext.font.size, family = hovertext.font.family)),
                     line = list(dash = fit.line.type, width = fit.line.width, 
                     shape = 'spline', color = fit.line.colors[1]), opacity = fit.line.opacity)
