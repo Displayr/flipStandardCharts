@@ -103,9 +103,9 @@ GeographicMap <- function(x,
         hovertext.font.family <- global.font.family
     if (is.null(legend.font.family))
         legend.font.family <- global.font.family
-    if (is.null(legend.font.size))
+    if (length(legend.font.size) == 0)
         legend.font.size <- 14
-    if (is.null(hovertext.font.size))
+    if (length(hovertext.font.size) == 0)
         hovertext.font.size <- 11
 
 
