@@ -86,6 +86,10 @@ ParallelCoordinates <- function(x,
         tick.font.size = round(fsc * tick.font.size, 0)
     }
 
+    # Clean up column names
+    colnames(x) <- gsub("[\'\"]", "", colnames(x))
+
+
     # Reduce the number of ticks for date variables
 	tasks <- NULL
     dimlist <- list()
@@ -115,7 +119,7 @@ ParallelCoordinates <- function(x,
 		
         if (is.factor(x[[i]]))
 			tasks <- c(tasks, JS(orderCategoricalTicks(tmp.name1, levels(x[[i]]), reverse.axes)))
-        else
+        else if (is.numeric(x[[i]]))
             tasks <- c(tasks, JS(orderContinuousTicks(tmp.name1, range(x[[i]], na.rm = TRUE), reverse.axes)))
     }
 
