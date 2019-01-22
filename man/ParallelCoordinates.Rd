@@ -5,9 +5,9 @@
 \title{Parallel coordinates}
 \usage{
 ParallelCoordinates(x, opacity = 0.4, group = NULL,
-  colors = ChartColors(5, "Spectral"), global.font.family = "Arial",
-  global.font.color = rgb(44, 44, 44, maxColorValue = 255),
-  label.font.family = global.font.family,
+  colors = ChartColors(5, "Spectral"), reverse.axes = TRUE,
+  global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
+  maxColorValue = 255), label.font.family = global.font.family,
   label.font.color = global.font.color, label.font.size = 12,
   label.rotate = FALSE, tick.font.family = global.font.family,
   tick.font.color = global.font.color, tick.font.size = 10,
@@ -29,6 +29,9 @@ Can be numeric or categorical.}
 hex codes are accepted (8-digit hex results in black lines). If no \code{group}
 is provided, then the first color will be used for all the lines. If it is provided,
 \code{colors} will be interpolated (linearly) to create a color scalebar.}
+
+\item{reverse.axes}{By default this is \code{true}, so that the smallest values are at the
+top of the y-axes. Setting it to \code{false}, will mean the axes start at the bottom of the chart.}
 
 \item{global.font.family}{Character; font family for all occurrences of any
 font attribute for the chart unless specified individually.}

@@ -10,6 +10,8 @@
 #'  is provided, then the first color will be used for all the lines. If it is provided,
 #'  \code{colors} will be interpolated (linearly) to create a color scalebar.
 #' @param opacity Opacity of the line colors as an alpha value (0 to 1).
+#' @param reverse.axes By default this is \code{true}, so that the smallest values are at the
+#'  top of the y-axes. Setting it to \code{false}, will mean the axes start at the bottom of the chart.
 #' @param global.font.family Character; font family for all occurrences of any
 #' font attribute for the chart unless specified individually.
 #' @param global.font.color Global font color as a named color in character format
@@ -51,6 +53,7 @@ ParallelCoordinates <- function(x,
                                 opacity = 0.4,
                                 group = NULL,
                                 colors = ChartColors(5, "Spectral"),
+                                reverse.axes = TRUE,
                                 global.font.family = "Arial",
                                 global.font.color = rgb(44, 44, 44, maxColorValue = 255),
                                 label.font.family = global.font.family,
@@ -101,14 +104,19 @@ ParallelCoordinates <- function(x,
         } else if ( any(class(x[[i]]) %in% c("POSIXct", "POSIXt")))
         {
             x[,i] <- as.numeric(x[,i])
+            out.fmt <- "x.toLocaleDateString()"
+            if (min(diff(sort(x[,i])), na.rm = TRUE) < (60 * 60 * 24))
+                out.fmt <- paste(out.fmt, "+ \" \" + x.toLocaleTimeString()")
             dimlist[[tmp.name1]] <- list(title = tmp.name0, 
-                tickFormat = JS('function(d){ x = new Date(d * 1000);
-                                 return(x.toLocaleTimeString())}'))
+                tickFormat = JS(paste0('function(d){ x = new Date(d * 1000);
+                                 return(', out.fmt, ')}')))
         } else
 		    dimlist[[tmp.name1]] <- list(title = tmp.name0)
 		
         if (is.factor(x[[i]]))
-			tasks <- c(tasks, JS(orderCategoricalTicks(tmp.name1, levels(x[[i]]))))
+			tasks <- c(tasks, JS(orderCategoricalTicks(tmp.name1, levels(x[[i]]), reverse.axes)))
+        else
+            tasks <- c(tasks, JS(orderContinuousTicks(tmp.name1, range(x[[i]], na.rm = TRUE), reverse.axes)))
     }
 
     # some JS function if group is a variable
@@ -246,15 +254,18 @@ function(){
 }
 ')
 
-orderCategoricalTicks <- function(varname, varlevels)
+orderCategoricalTicks <- function(varname, varlevels, reverse.axes)
+{
+    max.pos <- "this.parcoords.height() - this.parcoords.margin().top - this.parcoords.margin().bottom"
+    rng <- if (reverse.axes) paste("1,", max.pos)
+           else              paste(max.pos, ", 1")
+
 	return(paste0("
 function(){
 	this.parcoords.dimensions()['", varname, "']
 	.yscale = d3.scale.ordinal()
 	.domain(['", paste(varlevels, collapse = "','"), "'])
-	.rangePoints([
-	1,
-	this.parcoords.height()-this.parcoords.margin().top - this.parcoords.margin().bottom]);
+	.rangePoints([", rng, "]);
 
 	this.parcoords.removeAxes();
 	this.parcoords.render();
@@ -273,5 +284,38 @@ function(){
 	   this.parcoords.brushMode(this.x.options.brushMode);
 	   this.parcoords.brushPredicate(this.x.options.brushPredicate);
 	}
+}"))
 }
-"))
+
+orderContinuousTicks <- function(varname, varrange, reverse.axes)
+{
+    max.pos <- "this.parcoords.height() - this.parcoords.margin().top - this.parcoords.margin().bottom"
+    rng <- if (reverse.axes) paste("1,", max.pos)
+           else              paste(max.pos, ", 1")
+
+	return(paste0("
+function(){
+	this.parcoords.dimensions()['", varname, "']
+	.yscale = d3.scale.linear()
+	.domain([", varrange[1], ", ", varrange[2], "])
+	.range([", rng, "]);
+
+	this.parcoords.removeAxes();
+	this.parcoords.render();
+	
+	// duplicated from the widget js code
+	//  to make sure reorderable and brushes work
+	if( this.x.options.reorderable ) {
+	   this.parcoords.reorderable();
+	 } else {
+	   this.parcoords.createAxes();
+	 }
+
+	 if( this.x.options.brushMode ) {
+	 // reset the brush with None
+	   this.parcoords.brushMode('None')
+	   this.parcoords.brushMode(this.x.options.brushMode);
+	   this.parcoords.brushPredicate(this.x.options.brushPredicate);
+	}
+}"))
+}
