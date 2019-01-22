@@ -102,7 +102,8 @@ ParallelCoordinates <- function(x,
         {
             x[,i] <- as.numeric(x[,i])
             dimlist[[tmp.name1]] <- list(title = tmp.name0, 
-                tickFormat = JS('function(d){ x = new Date(d * 1000); return(x.toDateString()) }'))
+                tickFormat = JS('function(d){ x = new Date(d * 1000);
+                                 return(x.toLocaleTimeString())}'))
         } else
 		    dimlist[[tmp.name1]] <- list(title = tmp.name0)
 		
