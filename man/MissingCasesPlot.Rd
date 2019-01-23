@@ -5,7 +5,7 @@
 \title{MissingCasesPlot}
 \usage{
 MissingCasesPlot(raw.data, fill.color = "#5C9AD3",
-  base.color = "#D3D3D3", base.opacity = 0.2,
+  base.color = "#D3D3D3", base.opacity = 1,
   show.counts.missing = TRUE, show.percentages.missing = FALSE,
   subset = NULL, title = "Missing values by case", subtitle = "",
   footer = "", global.font.family = "Arial",
@@ -13,7 +13,7 @@ MissingCasesPlot(raw.data, fill.color = "#5C9AD3",
   data.label.position = "center",
   data.label.font.family = global.font.family,
   data.label.font.color = global.font.color, data.label.font.size = 10,
-  data.label.bg.opacity = 1, title.font.family = global.font.family,
+  data.label.bg.opacity = 0.5, title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
   subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color, subtitle.font.size = 12,

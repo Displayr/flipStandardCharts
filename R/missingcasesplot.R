@@ -20,7 +20,7 @@
 MissingCasesPlot <- function(raw.data,
     fill.color = "#5C9AD3",
     base.color = "#D3D3D3",
-    base.opacity = 0.2,
+    base.opacity = 1.0,
     show.counts.missing = TRUE,
     show.percentages.missing = FALSE,
     subset = NULL,
@@ -34,7 +34,7 @@ MissingCasesPlot <- function(raw.data,
     data.label.font.family = global.font.family,
     data.label.font.color = global.font.color,
     data.label.font.size = 10,
-    data.label.bg.opacity = 1.0,
+    data.label.bg.opacity = 0.5,
     title.font.family = global.font.family,
     title.font.color = global.font.color,
     title.font.size = 16,
@@ -118,9 +118,12 @@ MissingCasesPlot <- function(raw.data,
     }
     x.labels <- autoFormatLongLabels(x.labels, x.tick.label.wrap, x.tick.label.wrap.nchar, truncate = FALSE)
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate = FALSE)
-    xaxis <- list(side = "bottom", ticklen = 0, tickangle = x.tick.angle, tickfont = x.tick.font, showgrid = FALSE)
+    xaxis <- list(side = "bottom", ticklen = 0, tickangle = x.tick.angle, tickfont = x.tick.font,
+                  tickvals = 0:(ncol(dat)-1), ticktext = x.labels,
+                  showgrid = FALSE, zeroline = FALSE)
     yaxis <- list(side = "left", ticklen = 0, tickfont = y.tick.font, autorange = "reversed",
-                  tickmode = "auto", nticks = min(nrow(dat) + 1, 11), showgrid = FALSE)
+                  tickmode = "auto", nticks = min(nrow(dat) + 1, 11), 
+                  showgrid = FALSE, zeroline = FALSE)
 
     margins <- list(t = 20, r = 60, l = 80, b = 20, pad = 0)
     margins <- setMarginsForAxis(margins, x.labels, xaxis)
@@ -150,18 +153,38 @@ MissingCasesPlot <- function(raw.data,
         }
     }
 
-    p <- plot_ly(z = dat, x = x.labels, y = index, type = "heatmap",
-                 colors = c(rgb(t(col2rgb(base.color)), maxColorValue = 255, alpha = 255 * base.opacity), 
-                        fill.color),
-                 hoverinfo = "text", text = info.text, zmin = 0, zmax = 1,
-                 zsmooth = FALSE, connectgaps = FALSE, showscale = FALSE)
+    # avoid strange color scale if the range is not (0,1)
+    base.col.alpha <- rgb(t(col2rgb(base.color)), maxColorValue = 255, alpha = 255 * base.opacity)
+    if (all(dat == 0))
+        fill.color <- base.col.alpha
+    if (all(dat == 1))
+        base.col.alpha <- fill.color
 
+    # Main trace - heatmap
+    p <- plot_ly(z = dat, x = (1:ncol(dat)) - 1, y = index, type = "heatmap",
+                 colors = c(base.col.alpha, fill.color), 
+                 zmin = 0, zmax = 1, hoverinfo = "skip",
+                 zsmooth = FALSE, connectgaps = FALSE, showscale = FALSE)
+   
+    # Add lines in case heatmap does not show up
+    # (but heatmap is still needed for case with few variables) 
+    for (i in 1:ncol(dat))
+    {
+        tmp.ind <- which(dat[,i] > 0)
+        for (j in tmp.ind)
+        p <- add_trace(p, x = i + c(-1.5,-0.5), y = c(j,j),
+                type = "scatter", mode = "lines", showlegend = FALSE, 
+                hoverinfo = "y+text", text = paste("Missing:", "case", j),
+                z = NULL, zmin = NULL, zmax = NULL, zsmooth = NULL, showscale = NULL,
+                line = list(width = 1, color = fill.color))
+             
+    }
     p <- config(p, displayModeBar = FALSE)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p, xaxis = xaxis, yaxis = yaxis,
                 plot_bgcolor = toRGB("white", alpha = 0),
                 paper_bgcolor = toRGB("white", alpha = 0),
-                hoverlabel = list(namelength = -1, font = hovertext.font),
+                hoverlabel = list(namelength = -1, font = hovertext.font, bordercolor = "transparent"),
                 hovermode = "y",
                 annotations = annotations,
                 margin = margins)
