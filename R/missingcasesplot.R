@@ -19,7 +19,7 @@
 #' @export
 MissingCasesPlot <- function(raw.data,
     fill.color = "#5C9AD3",
-    base.color = "#FFFFFF",
+    base.color = "#D3D3D3",
     base.opacity = 1.0,
     show.counts.missing = TRUE,
     show.percentages.missing = FALSE,
