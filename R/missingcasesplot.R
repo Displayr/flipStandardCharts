@@ -3,6 +3,9 @@
 #' Show which cases in a data frame are missing
 #' @inherit Column
 #' @param raw.data Matrix or data frame.
+#' @param fill.color Color to show the missing value.
+#' @param base.color Background color of chart.
+#' @param base.opacity Opacity of background color.
 #' @param show.counts.missing Include the number of cases missing in the variable label.
 #' @param show.percentages.missing Include the percentage of cases missing in the variable label.
 #' @param subset Logical vector indicating whether each row of the data frame should be included
@@ -15,6 +18,9 @@
 #' @param data.label.bg.opacity Numeric between 0 (tranparent) to 1 (opaque), specifying the opacity of the data label background (grey).
 #' @export
 MissingCasesPlot <- function(raw.data,
+    fill.color = "#5C9AD3",
+    base.color = "#D3D3D3",
+    base.opacity = 0.2,
     show.counts.missing = TRUE,
     show.percentages.missing = FALSE,
     subset = NULL,
@@ -112,9 +118,9 @@ MissingCasesPlot <- function(raw.data,
     }
     x.labels <- autoFormatLongLabels(x.labels, x.tick.label.wrap, x.tick.label.wrap.nchar, truncate = FALSE)
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate = FALSE)
-    xaxis <- list(side = "bottom", ticklen = 0, tickangle = x.tick.angle, tickfont = x.tick.font)
-    yaxis <- list(side = "left", ticklen = 0, tickfont = y.tick.font,
-                  tickmode = "auto", nticks = min(nrow(dat) + 1, 11))
+    xaxis <- list(side = "bottom", ticklen = 0, tickangle = x.tick.angle, tickfont = x.tick.font, showgrid = FALSE)
+    yaxis <- list(side = "left", ticklen = 0, tickfont = y.tick.font, autorange = "reversed",
+                  tickmode = "auto", nticks = min(nrow(dat) + 1, 11), showgrid = FALSE)
 
     margins <- list(t = 20, r = 60, l = 80, b = 20, pad = 0)
     margins <- setMarginsForAxis(margins, x.labels, xaxis)
@@ -138,15 +144,16 @@ MissingCasesPlot <- function(raw.data,
             annotations[[n+ii]] <- list(text = ypos, x = ind[ii,2] - 1, y = ypos,
             yanchor = switch(tolower(data.label.position), above = "bottom", 
                 below = "top", "center"), 
-            bgcolor = rgb(220, 220, 220, maxColorValue = 255, 
+            bgcolor = rgb(t(col2rgb(base.color)), maxColorValue = 255, 
                 alpha = data.label.bg.opacity*255),
             xref = "x", yref = "y", showarrow = FALSE, font = data.label.font)
         }
     }
 
     p <- plot_ly(z = dat, x = x.labels, y = index, type = "heatmap",
-                 zmin = 0, zmax = 1, colorscale = list(c('0', 'rgba(0,0,255)'), c('1','rgba(55,0,0)')),
-                 hoverinfo = "text", text = info.text, colorscale = FALSE,
+                 colors = c(rgb(t(col2rgb(base.color)), maxColorValue = 255, alpha = 255 * base.opacity), 
+                        fill.color),
+                 hoverinfo = "text", text = info.text, zmin = 0, zmax = 1,
                  zsmooth = FALSE, connectgaps = FALSE, showscale = FALSE)
 
     p <- config(p, displayModeBar = FALSE)

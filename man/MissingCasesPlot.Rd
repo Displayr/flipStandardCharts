@@ -4,11 +4,13 @@
 \alias{MissingCasesPlot}
 \title{MissingCasesPlot}
 \usage{
-MissingCasesPlot(raw.data, show.counts.missing = TRUE,
-  show.percentages.missing = FALSE, subset = NULL,
-  title = "Missing values by case", subtitle = "", footer = "",
-  global.font.family = "Arial", global.font.color = "#2C2C2C",
-  data.label.show = FALSE, data.label.position = "center",
+MissingCasesPlot(raw.data, fill.color = "#5C9AD3",
+  base.color = "#D3D3D3", base.opacity = 0.2,
+  show.counts.missing = TRUE, show.percentages.missing = FALSE,
+  subset = NULL, title = "Missing values by case", subtitle = "",
+  footer = "", global.font.family = "Arial",
+  global.font.color = "#2C2C2C", data.label.show = FALSE,
+  data.label.position = "center",
   data.label.font.family = global.font.family,
   data.label.font.color = global.font.color, data.label.font.size = 10,
   data.label.bg.opacity = 1, title.font.family = global.font.family,
@@ -30,6 +32,12 @@ MissingCasesPlot(raw.data, show.counts.missing = TRUE,
 }
 \arguments{
 \item{raw.data}{Matrix or data frame.}
+
+\item{fill.color}{Color to show the missing value.}
+
+\item{base.color}{Background color of chart.}
+
+\item{base.opacity}{Opacity of background color.}
 
 \item{show.counts.missing}{Include the number of cases missing in the variable label.}
 
