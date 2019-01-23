@@ -5,7 +5,7 @@
 \title{MissingCasesPlot}
 \usage{
 MissingCasesPlot(raw.data, fill.color = "#5C9AD3",
-  base.color = "#D3D3D3", base.opacity = 1,
+  base.color = "#E6E6E6", base.opacity = 1,
   show.counts.missing = TRUE, show.percentages.missing = FALSE,
   subset = NULL, title = "Missing values by case", subtitle = "",
   footer = "", global.font.family = "Arial",
@@ -43,7 +43,9 @@ MissingCasesPlot(raw.data, fill.color = "#5C9AD3",
 
 \item{show.percentages.missing}{Include the percentage of cases missing in the variable label.}
 
-\item{subset}{Logical vector indicating whether each row of the data frame should be included}
+\item{subset}{Logical vector indicating whether each row of the data frame should be included.
+This vector should be the same length as the number of rows in \code{raw.data}. Missing data
+with rows where \code{subset} is \code{false} will not be shown.}
 
 \item{title}{Character; chart title.}
 

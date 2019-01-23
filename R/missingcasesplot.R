@@ -8,7 +8,9 @@
 #' @param base.opacity Opacity of background color.
 #' @param show.counts.missing Include the number of cases missing in the variable label.
 #' @param show.percentages.missing Include the percentage of cases missing in the variable label.
-#' @param subset Logical vector indicating whether each row of the data frame should be included
+#' @param subset Logical vector indicating whether each row of the data frame should be included.
+#'  This vector should be the same length as the number of rows in \code{raw.data}. Missing data
+#'  with rows where \code{subset} is \code{false} will not be shown.
 #' @param hovertext.font.color Color of hovertext as a string or hex code.
 #' @param x.tick.label.wrap.nchar Number of characters wide the x-axis labels should be before wrapping.
 #' @param font.unit One of "px" of "pt". By default all font sizes are specified in terms of
@@ -19,7 +21,7 @@
 #' @export
 MissingCasesPlot <- function(raw.data,
     fill.color = "#5C9AD3",
-    base.color = "#D3D3D3",
+    base.color = "#E6E6E6",
     base.opacity = 1.0,
     show.counts.missing = TRUE,
     show.percentages.missing = FALSE,
@@ -66,6 +68,8 @@ MissingCasesPlot <- function(raw.data,
 {
     dat <- as.matrix(is.na(raw.data) * 1)
     index <- 1:nrow(dat)
+    if (length(subset) > 1 && length(subset) != nrow(dat))
+        stop("Filters must be from the same data set as the input variables.")
     if (length(subset) == nrow(dat))
     {
         index <- which(subset)
@@ -118,7 +122,7 @@ MissingCasesPlot <- function(raw.data,
     xaxis <- list(side = "bottom", ticklen = 0, tickangle = x.tick.angle, tickfont = x.tick.font,
                   tickvals = 0:(ncol(dat)-1), ticktext = x.labels,
                   showgrid = FALSE, zeroline = FALSE)
-    yaxis <- list(side = "left", ticklen = 0, tickfont = y.tick.font, autorange = "reversed",
+    yaxis <- list(side = "left", ticklen = 0, tickfont = y.tick.font, range = rev(range(index)),
                   tickmode = "auto", nticks = min(nrow(dat) + 1, 11), 
                   showgrid = FALSE, zeroline = FALSE)
 
@@ -150,7 +154,7 @@ MissingCasesPlot <- function(raw.data,
         }
     }
 
-    # avoid strange color scale if the range is not (0,1)
+    # Avoid strange color scale if the range is not (0,1)
     base.col.alpha <- rgb(t(col2rgb(base.color)), maxColorValue = 255, alpha = 255 * base.opacity)
     if (all(dat == 0))
         fill.color <- base.col.alpha
@@ -163,17 +167,17 @@ MissingCasesPlot <- function(raw.data,
                  zmin = 0, zmax = 1, hoverinfo = "skip",
                  zsmooth = FALSE, connectgaps = FALSE, showscale = FALSE)
    
-    # Add lines in case heatmap does not show up
-    # (but heatmap is still needed for case with few variables)
+    # Add lines in case heatmap does not show missing values. Also better hovertext controls
+    # But heatmap is still needed for case with few variables
     # Data points are set to end points and midpoint (-1) so hovertext shows up
     for (i in 1:ncol(dat))
     {
         tmp.ind <- which(dat[,i] > 0)
         num.tmp <- length(tmp.ind)
         p <- add_trace(p, x = rep(i, each = num.tmp * 4) + c(-1.5,-1,-0.5, NA), 
-                y = rep(tmp.ind, each = 4) + c(0, 0, 0, NA),
+                y = rep(index[tmp.ind], each = 4) + c(0, 0, 0, NA),
                 type = "scatter", mode = "lines", showlegend = FALSE, hoverinfo = "text", 
-                text = autoFormatLongLabels(paste("Case", rep(tmp.ind, each = 4), "missing from", 
+                text = autoFormatLongLabels(paste("Case", rep(index[tmp.ind], each = 4), "missing from", 
                     paste0("<b>", colnames(dat)[i], "</b>")), TRUE, 50),
                 z = NULL, zmin = NULL, zmax = NULL, zsmooth = NULL, showscale = NULL,
                 line = list(width = 1.0, color = fill.color))
