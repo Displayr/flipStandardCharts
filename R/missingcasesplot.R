@@ -91,11 +91,6 @@ MissingCasesPlot <- function(raw.data,
     }
 
 
-    if (is.null(colnames(dat)))
-        colnames(dat) <- paste("Variable", 1:ncol(dat))
-    tmp <- paste("Missing:<b>",rep(colnames(dat), each=nrow(dat)), "</b>case", rep(index, ncol(dat)))
-    info.text <- ifelse(dat > 0, tmp, "")
-
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
     subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
     y.tick.font = list(family = y.tick.font.family, size = y.tick.font.size, color = y.tick.font.color)
@@ -104,6 +99,8 @@ MissingCasesPlot <- function(raw.data,
     hovertext.font = list(family = hovertext.font.family, size = hovertext.font.size, color = hovertext.font.color)
     data.label.font = list(family = data.label.font.family, size = data.label.font.size, color = data.label.font.color)
 
+    if (is.null(colnames(dat)))
+        colnames(dat) <- paste("Variable", 1:ncol(dat))
     x.labels <- paste0("<b>", colnames(dat), "</b>")
     if (show.counts.missing || show.percentages.missing)
     {
@@ -167,16 +164,19 @@ MissingCasesPlot <- function(raw.data,
                  zsmooth = FALSE, connectgaps = FALSE, showscale = FALSE)
    
     # Add lines in case heatmap does not show up
-    # (but heatmap is still needed for case with few variables) 
+    # (but heatmap is still needed for case with few variables)
+    # Data points are set to end points and midpoint (-1) so hovertext shows up
     for (i in 1:ncol(dat))
     {
         tmp.ind <- which(dat[,i] > 0)
-        for (j in tmp.ind)
-        p <- add_trace(p, x = i + c(-1.5,-0.5), y = c(j,j),
-                type = "scatter", mode = "lines", showlegend = FALSE, 
-                hoverinfo = "y+text", text = paste("Missing:", "case", j),
+        num.tmp <- length(tmp.ind)
+        p <- add_trace(p, x = rep(i, each = num.tmp * 4) + c(-1.5,-1,-0.5, NA), 
+                y = rep(tmp.ind, each = 4) + c(0, 0, 0, NA),
+                type = "scatter", mode = "lines", showlegend = FALSE, hoverinfo = "text", 
+                text = autoFormatLongLabels(paste("Case", rep(tmp.ind, each = 4), "missing from", 
+                    paste0("<b>", colnames(dat)[i], "</b>")), TRUE, 50),
                 z = NULL, zmin = NULL, zmax = NULL, zsmooth = NULL, showscale = NULL,
-                line = list(width = 1, color = fill.color))
+                line = list(width = 1.0, color = fill.color))
              
     }
     p <- config(p, displayModeBar = FALSE)
@@ -184,8 +184,9 @@ MissingCasesPlot <- function(raw.data,
     p <- layout(p, xaxis = xaxis, yaxis = yaxis,
                 plot_bgcolor = toRGB("white", alpha = 0),
                 paper_bgcolor = toRGB("white", alpha = 0),
-                hoverlabel = list(namelength = -1, font = hovertext.font, bordercolor = "transparent"),
-                hovermode = "y",
+                hoverlabel = list(namelength = -1, font = hovertext.font, 
+                    bordercolor = "transparent", bgcolor = rgb(0.05,0.05,0.05, alpha = 0.8)),
+                hovermode = "closest",
                 annotations = annotations,
                 margin = margins)
     p
