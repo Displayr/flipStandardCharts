@@ -19,7 +19,7 @@
 #' @export
 MissingCasesPlot <- function(raw.data,
     fill.color = "#5C9AD3",
-    base.color = "#D3D3D3",
+    base.color = "#E6E6E6",
     base.opacity = 1.0,
     show.counts.missing = TRUE,
     show.percentages.missing = FALSE,
@@ -118,7 +118,7 @@ MissingCasesPlot <- function(raw.data,
     xaxis <- list(side = "bottom", ticklen = 0, tickangle = x.tick.angle, tickfont = x.tick.font,
                   tickvals = 0:(ncol(dat)-1), ticktext = x.labels,
                   showgrid = FALSE, zeroline = FALSE)
-    yaxis <- list(side = "left", ticklen = 0, tickfont = y.tick.font, autorange = "reversed",
+    yaxis <- list(side = "left", ticklen = 0, tickfont = y.tick.font, range = rev(range(index)),
                   tickmode = "auto", nticks = min(nrow(dat) + 1, 11), 
                   showgrid = FALSE, zeroline = FALSE)
 
@@ -164,7 +164,7 @@ MissingCasesPlot <- function(raw.data,
                  zsmooth = FALSE, connectgaps = FALSE, showscale = FALSE)
    
     # Add lines in case heatmap does not show up
-    # (but heatmap is still needed for case with few variables)
+    # But heatmap is still needed for case with few variables
     # Data points are set to end points and midpoint (-1) so hovertext shows up
     for (i in 1:ncol(dat))
     {
