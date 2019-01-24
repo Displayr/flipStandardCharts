@@ -340,6 +340,8 @@ Bar <- function(x,
         if (!is.null(average.series))
             p <- add_trace(p, y = x, x = average.series, name = "Average",
                     type = "scatter", mode = "lines", showlegend = FALSE,
+                    hoverlabel = list(font = list(color = autoFontColor(average.color),
+                    size = hovertext.font.size, family = hovertext.font.family)),
                     line = list(color = average.color))
 
         # Avoid using annotations because it does not work with small multiples

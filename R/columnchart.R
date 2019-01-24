@@ -507,6 +507,8 @@ Column <- function(x,
         if (!is.null(average.series))
             p <- add_trace(p, x = x, y = average.series, name = "Average",
                     type = "scatter", mode = "lines", showlegend = FALSE,
+                    hoverlabel = list(font = list(color = autoFontColor(average.color),
+                    size = hovertext.font.size, family = hovertext.font.family)),
                     line = list(color = average.color))
 
 
