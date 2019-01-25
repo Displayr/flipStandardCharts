@@ -240,7 +240,7 @@ Sparkline <- function(x,
 		hoverlabel = list(bgcolor = hover.bg.color, bordercolor = hover.bg.color,
 			font = list(color = hover.font.color, size = hover.font.size, 
 			family = hover.font.family)),
-        plot_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
+        plot_bgcolor = "transparent",
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity))
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
