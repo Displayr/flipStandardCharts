@@ -133,6 +133,9 @@
 #' (e.g. "black") or an rgb value (e.g. #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param hovertext.font.family Font family of hover text.
 #' @param hovertext.font.size Font size of hover text.
+#' @param hover.on Only used for boxplot. If "all", then all the hovertext (for median,
+#   quartiles, range) will be shown simultaneously. If "points", then only the hovertext
+#'  for the element near the cursor will be shown.
 #' @param tooltip.show Logical; whether to show a tooltip on hover.
 #' @return A \code{plotly} chart.
 #' @examples
@@ -227,6 +230,7 @@ Distribution <-   function(x,
     categories.tick.label.wrap.nchar = 21,
     hovertext.font.family = global.font.family,
     hovertext.font.size = 11,
+    hover.on = c("all", "points")[1],
     tooltip.show = TRUE,
     modebar.show = FALSE)
 {
@@ -369,7 +373,7 @@ Distribution <-   function(x,
         wgt <- wgt[not.missing]
         wgt <- prop.table(wgt) # Rebasing the weight (Required by the density function)
         from <- if (automatic.lower.density) rng[1] else from
-        p <- addDensities(p, values, wgt, labels[v], vertical, show.density, show.mirror.density, density.type, histogram.cumulative, histogram.counts, bins, maximum.bins, box.points, category.axis, value.axis, density.color, values.color, bw, adjust, kernel, n, from, to, cut)
+        p <- addDensities(p, values, wgt, labels[v], vertical, show.density, show.mirror.density, density.type, histogram.cumulative, histogram.counts, bins, maximum.bins, box.points, category.axis, value.axis, density.color, values.color, bw, adjust, kernel, n, from, to, cut, hover.on)
         p <- addSummaryStatistics(p, values, wgt, vertical,  show.mean, show.median, show.quartiles, show.range, show.values,
                                  mean.color, median.color, quartile.color, range.color, values.color,
                                  category.axis, axisName(vertical, v, 1, TRUE), value.axis, value.axis.2)
@@ -448,7 +452,8 @@ addDensities <- function(p,
                          density.color,
                          values.color,
                          # Density parameters
-                         bw, adjust, kernel, n, from, to, cut)
+                         bw, adjust, kernel, n, from, to, cut,
+                         hover.on)
 {
     # Comuting the density Also used in plotting other graphical elements.
     d.args <- list(x = values, na.rm = TRUE, bw = bw, adjust = adjust, kernel = kernel, cut = cut, weights = weights)
@@ -470,10 +475,27 @@ addDensities <- function(p,
                       marker = list(color = values.color),
                       name = label,
                       line = list(color = density.color),
-                      hoverinfo = if (vertical) "y" else "x",
+                      hoverinfo = if (hover.on == "points") "skip" else if (vertical) "y" else "x",
                       type = "box",
                       xaxis = category.axis,
                       yaxis = value.axis)
+
+        if (hover.on == "points")
+        {
+            five.num <- wtd.quantile(values, weights = weights * length(weights), type = "i/(n+1)")
+            names(five.num) <- c("Minimum:", "Lower quartile:", "Median:", "Upper quartile:", "Maximum:")
+            five.pos <- rep(0, length(five.num))
+
+            p <- add_trace(p,
+                           x = if (vertical) five.pos else five.num,
+                           y = if (vertical) five.num else five.pos,
+                           type = "scatter",
+                           mode = "markers", cliponaxis = FALSE,
+                           marker = list(color = "transparent"),
+                           hoverlabel = list(bgcolor = density.color[1]),
+                           hoverinfo = "text",
+                           text = paste(names(five.num), round(five.num, 2)))
+        }
     } else if (density.type == "Histogram")
     {
         p <- add_trace(p,

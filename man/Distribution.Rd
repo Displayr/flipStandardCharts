@@ -50,7 +50,8 @@ Distribution(x, weights = NULL, vertical = TRUE, show.mean = TRUE,
   categories.tick.font.size = 10, categories.tick.label.wrap = TRUE,
   categories.tick.label.wrap.nchar = 21,
   hovertext.font.family = global.font.family, hovertext.font.size = 11,
-  tooltip.show = TRUE, modebar.show = FALSE)
+  hover.on = c("all", "points")[1], tooltip.show = TRUE,
+  modebar.show = FALSE)
 }
 \arguments{
 \item{x}{A \code{\link{list}}, where each vector contains data to be plotted. If the data is not numeric
@@ -265,6 +266,9 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{hovertext.font.family}{Font family of hover text.}
 
 \item{hovertext.font.size}{Font size of hover text.}
+
+\item{hover.on}{Only used for boxplot. If "all", then all the hovertext (for median,
+for the element near the cursor will be shown.}
 
 \item{tooltip.show}{Logical; whether to show a tooltip on hover.}
 

@@ -125,12 +125,13 @@ Sparkline <- function(x,
         margin.top = 0,
         margin.bottom = 0)
 {
+    ErrorIfNotEnoughData(x)
+    x <- checkMatrixNames(x)
 	if (NCOL(x) > 1)
 	{
 		warning("Sparklines can only show a single series.")
 		x <- x[,1]
 	}
-	x <- as.numeric(x)
 
     if (is.null(line.color))
     {
@@ -155,7 +156,8 @@ Sparkline <- function(x,
 	if (!x.axis.show)
 		x.axis.width = 0
     if (type == "Box")
-        return(Box(x, values.title = " ", density.color = fill.color,
+        return(Box(x, hover.on = "points",
+        values.title = " ", density.color = fill.color,
 		values.tick.show = x.tick.show, values.tick.format = x.tick.format,
 		values.tick.font.color = x.tick.font.color, values.tick.font.size = x.tick.font.size,
 		values.line.width = x.axis.width, values.line.color = x.axis.color,
@@ -166,56 +168,15 @@ Sparkline <- function(x,
         margin.left = margin.left, margin.right = margin.right))
 
     n <- length(x)
-    x0 <- 1:n
     annot <- NULL
-    p <- plot_ly()
-
-    if (type == "Area")
-        p <- add_trace(p, x = x0, y = x, fill = "tozeroy", type = "scatter", mode = "lines",
-                fillcolor = toRGB(fill.color, alpha = fill.opacity),
-                hoverinfo = "y",
-                line = list(width = line.thickness, color = toRGB(line.color, alpha = line.opacity)))
-    else if (type %in% c("Line", "Curve"))
-        p <- add_trace(p, x = x0, y = x, type = "scatter", mode = "lines",
-                hoverinfo = "y",
-                line = list(width = line.thickness, 
-                            shape = if (type == "Curve") "spline" else "linear",
-                            color = toRGB(line.color, alpha = line.opacity)))
-    else if (type == "Column")
-        p <- add_trace(p, x = x0, y = x, type = "bar", orientation = "v",
-                hoverinfo = "y",
-                marker = list(color = toRGB(fill.color, alpha = fill.opacity)))
-    else
-        stop("Unknown chart type. Please set type to one of 'Area', 'Line', 'Curve', 'Column', 'Bar'.")
-
-    if (type %in% c("Line", "Curve", "Area"))
-    {
-        if (end.points.show)
-            p <- add_trace(p, x = x0[c(1,n)], y = x[c(1,n)], type = "scatter", mode = "markers",
-                marker = list(color = end.points.color, opacity = end.points.opacity,
-                symbol = end.points.symbol, size = end.points.size), 
-                hoverinfo = "skip", cliponaxis = FALSE)
-        else
-            end.points.size <- 1
-
-        if (end.labels.position != "None")
-		{
-			end.lab.font = list(family = end.labels.font.family, color = end.labels.font.color,
-				size = end.labels.font.size)
-            annot <- list(setLabel(x[1], x0[1], 
-				text = formatByD3(x[1], end.labels.format, end.labels.prefix, 
-				end.labels.suffix, data.is.percent),
-                shift = end.points.size * 0.75, position = end.labels.position,
-				font = end.lab.font, index = 1),
-                setLabel(x[n], x0[n],
-				text = formatByD3(x[n], end.labels.format, end.labels.prefix, 
-				end.labels.suffix, data.is.percent),
-                shift = end.points.size * 0.75, position = end.labels.position,
-				font = end.lab.font, index = n))
-		}
-    }
-            
-    xaxis <- list(side = "bottom", showgrid = FALSE, showline = x.axis.show, zeroline = FALSE,
+    
+    axisFormat <- formatLabels(x, type = if (type == "Curve") "Line" else type,
+                        label.wrap = FALSE, label.wrap.nchar = NULL,
+                        x.format = x.tick.format, y.format = y.tick.format)
+    x.labels <- axisFormat$labels
+    x <- as.numeric(x)
+    xaxis <- list(side = "bottom", type = axisFormat$x.axis.type, 
+                showgrid = FALSE, showline = x.axis.show, zeroline = FALSE,
                 showticklabels = x.axis.show, ticks = if (x.axis.show) "outside" else "",
                 tickfont = list(size = if (x.tick.show) x.tick.font.size else 1,
 						   		color = if (x.tick.show) x.tick.font.color else "transparent",
@@ -229,12 +190,59 @@ Sparkline <- function(x,
 				hoverformat = hover.format, tickformat = y.tick.format,
                 linewidth = y.axis.width, linecolor = y.axis.color, tickcolor = y.axis.color)
 
+    p <- plot_ly()
+    if (type == "Area")
+        p <- add_trace(p, x = x.labels, y = x, fill = "tozeroy", type = "scatter", mode = "lines",
+                fillcolor = toRGB(fill.color, alpha = fill.opacity),
+                hoverinfo = "x+y",
+                line = list(width = line.thickness, color = toRGB(line.color, alpha = line.opacity)))
+    else if (type %in% c("Line", "Curve"))
+        p <- add_trace(p, x = x.labels, y = x, type = "scatter", mode = "lines",
+                hoverinfo = "x+y",
+                line = list(width = line.thickness, 
+                            shape = if (type == "Curve") "spline" else "linear",
+                            color = toRGB(line.color, alpha = line.opacity)))
+    else if (type == "Column")
+        p <- add_trace(p, x = x.labels, y = x, type = "bar", orientation = "v",
+                hoverinfo = "x+y",
+                marker = list(color = toRGB(fill.color, alpha = fill.opacity)))
+    else
+        stop("Unknown chart type. Please set type to one of 'Area', 'Line', 'Curve', 'Column', 'Bar'.")
+
+    if (type %in% c("Line", "Curve", "Area"))
+    {
+        if (end.points.show)
+            p <- add_trace(p, x = x.labels[c(1,n)], y = x[c(1,n)], type = "scatter", mode = "markers",
+                marker = list(color = end.points.color, opacity = end.points.opacity,
+                symbol = end.points.symbol, size = end.points.size), 
+                hoverinfo = "skip", cliponaxis = FALSE)
+        else
+            end.points.size <- 1
+
+        if (end.labels.position != "None")
+		{
+			end.lab.font = list(family = end.labels.font.family, color = end.labels.font.color,
+				size = end.labels.font.size)
+            annot <- list(setLabel(x[1], x.labels[1], 
+				text = formatByD3(x[1], end.labels.format, end.labels.prefix, 
+				end.labels.suffix, data.is.percent),
+                shift = end.points.size * 0.75, position = end.labels.position,
+				font = end.lab.font, index = 1),
+                setLabel(x[n], x.labels[n],
+				text = formatByD3(x[n], end.labels.format, end.labels.prefix, 
+				end.labels.suffix, data.is.percent),
+                shift = end.points.size * 0.75, position = end.labels.position,
+				font = end.lab.font, index = n))
+		}
+    }
+           
+
     p <- config(p, displayModeBar = FALSE)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
         xaxis = xaxis, yaxis = yaxis,
         annotations = annot,
-        hovermode = "x", showlegend = FALSE,
+        hovermode = "closest", showlegend = FALSE,
         margin = list(t = margin.top, b = margin.bottom, l = margin.left, r = margin.right, 
           	autoexpand = x.axis.show | y.axis.show),
 		hoverlabel = list(bgcolor = hover.bg.color, bordercolor = hover.bg.color,

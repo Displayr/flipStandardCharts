@@ -40,7 +40,7 @@ Box(x, weights = NULL, vertical = TRUE, show.values = FALSE,
   categories.tick.font.size = 10, categories.tick.label.wrap = TRUE,
   categories.tick.label.wrap.nchar = 21,
   hovertext.font.family = global.font.family, hovertext.font.size = 11,
-  modebar.show = FALSE)
+  hover.on = c("all", "points")[1], modebar.show = FALSE)
 }
 \arguments{
 \item{x}{A \code{\link{list}}, where each vector contains data to be plotted. If the data is not numeric
@@ -208,6 +208,9 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{hovertext.font.family}{Font family of hover text.}
 
 \item{hovertext.font.size}{Font size of hover text.}
+
+\item{hover.on}{Only used for boxplot. If "all", then all the hovertext (for median,
+for the element near the cursor will be shown.}
 
 \item{modebar.show}{Logical; whether to show the zoom menu buttons or not.}
 }

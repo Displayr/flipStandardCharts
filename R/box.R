@@ -70,6 +70,7 @@ Box <- function(x,
                  categories.tick.label.wrap.nchar = 21,
                  hovertext.font.family = global.font.family,
                  hovertext.font.size = 11,
+                 hover.on = c("all", "points")[1],
                  modebar.show = FALSE)
 {
     cl <- match.call()
