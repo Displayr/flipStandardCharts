@@ -130,7 +130,7 @@ Sparkline <- function(x,
 	if (NCOL(x) > 1)
 	{
 		warning("Sparklines can only show a single series.")
-		x <- x[,1]
+		x <- x[,1,drop = FALSE]
 	}
 
     if (is.null(line.color))
@@ -175,7 +175,7 @@ Sparkline <- function(x,
                         x.format = x.tick.format, y.format = y.tick.format)
     x.labels <- axisFormat$labels
     x <- as.numeric(x)
-    xaxis <- list(side = "bottom", type = axisFormat$x.axis.type, 
+    xaxis <- list(side = "bottom", type = axisFormat$x.axis.type, categoryorder = "trace", 
                 showgrid = FALSE, showline = x.axis.show, zeroline = FALSE,
                 showticklabels = x.axis.show, ticks = if (x.axis.show) "outside" else "",
                 tickfont = list(size = if (x.tick.show) x.tick.font.size else 1,
