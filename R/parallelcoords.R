@@ -142,7 +142,7 @@ ParallelCoordinates <- function(x,
             }
         } else
         {
-            x <- data.frame(x, tmp.color = as.numeric(group))
+            x <- data.frame(x, tmp.color = as.numeric(group), check.names = FALSE)
             if (length(colors) <= 1)
                 colors <- c("blue", "red")
             seq.len <- length(colors)
