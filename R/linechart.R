@@ -232,8 +232,17 @@ Line <-   function(x,
 
     ## Add a trace for each col of data in the matrix
     if (is.character(line.thickness))
-        line.thickness <- as.numeric(TextAsVector(line.thickness))
-    line.thickness <- line.thickness * rep(1, ncol(chart.matrix))
+    {
+        tmp.txt <- TextAsVector(line.thickness)
+        line.thickness <- suppressWarnings(as.numeric(tmp.txt))
+        na.ind <- which(is.na(line.thickness))
+        if (length(na.ind) == 1)
+            warning("Non-numeric line thickness value '", tmp.txt[na.ind], "' was ignored.")
+        if (length(na.ind) > 1)
+            warning("Non-numeric line thickness values '", 
+            paste(tmp.txt[na.ind], collapse = "', '"), "' were ignored.")
+    }
+    line.thickness <- suppressWarnings(line.thickness * rep(1, ncol(chart.matrix)))
     opacity <- opacity * rep(1, ncol(chart.matrix))
     for (i in 1:ncol(chart.matrix))
     {
