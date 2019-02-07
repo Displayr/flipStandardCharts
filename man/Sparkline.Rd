@@ -21,11 +21,12 @@ Sparkline(x, type = c("Area", "Line", "Curve", "Column", "Box")[1],
   background.fill.color = "transparent", background.fill.opacity = 1,
   x.axis.show = FALSE, x.axis.color = rgb(44, 44, 44, maxColorValue =
   255), x.axis.width = 1, x.tick.show = x.axis.show,
-  x.tick.font.family = global.font.family,
+  x.tick.length = NULL, x.tick.font.family = global.font.family,
   x.tick.font.color = global.font.color, x.tick.font.size = 10,
   x.tick.format = "", y.axis.show = FALSE, y.axis.color = rgb(44, 44,
   44, maxColorValue = 255), y.axis.width = 1,
-  y.tick.show = y.axis.show, y.tick.font.family = global.font.family,
+  y.tick.show = y.axis.show, y.tick.length = NULL,
+  y.tick.font.family = global.font.family,
   y.tick.font.color = global.font.color, y.tick.font.size = 10,
   y.tick.format = "", margin.left = 0, margin.right = 0,
   margin.top = 0, margin.bottom = 0)
@@ -109,6 +110,8 @@ See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 
 \item{x.tick.show}{Logical; Whether to show ticklabels. This only has an effect is \code{x.tick.show} is true.}
 
+\item{x.tick.length}{Numeric; length of tick marks if \code{x.tick.show}.}
+
 \item{x.tick.font.family}{Character; x-axis tick label font family}
 
 \item{x.tick.font.color}{x-axis tick label font color as a named color
@@ -126,6 +129,8 @@ See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 \item{y.axis.width}{Integer; Width of the y-axis line in pixels.}
 
 \item{y.tick.show}{Logical; Whether to show ticklabels. This only has an effect is \code{y.tick.show} is true.}
+
+\item{y.tick.length}{Numeric; length of tick marks if \code{y.tick.show}.}
 
 \item{y.tick.font.family}{Character; y-axis tick label font family}
 

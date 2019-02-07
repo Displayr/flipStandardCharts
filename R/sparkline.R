@@ -46,6 +46,7 @@
 #' See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format
 #' @param y.tick.font.color y-axis tick label font color as a named color
 #' in character format (e.g. "black") or an a hex code.
+#' @param y.tick.length Numeric; length of tick marks if \code{y.tick.show}.
 #' @param y.tick.font.family Character; y-axis tick label font family
 #' @param y.tick.font.size Integer; y-axis tick label font size
 #' @param x.tick.format A string representing a d3 formatting code.
@@ -54,6 +55,7 @@
 #' in character format (e.g. "black") or an a hex code.
 #' @param x.tick.font.family Character; x-axis tick label font family
 #' @param x.tick.font.size Integer; x-axis tick label font size
+#' @param x.tick.length Numeric; length of tick marks if \code{x.tick.show}.
 #' @param background.fill.color Background color in character format (e.g. "black") or a hex code.
 #' @param background.fill.opacity Background opacity as an alpha value (0 to 1).
 #' @param margin.top Margin between plot area and the top of the graphic in pixels
@@ -108,6 +110,7 @@ Sparkline <- function(x,
 		x.axis.color = rgb(44, 44, 44, maxColorValue = 255),
 		x.axis.width = 1,
         x.tick.show = x.axis.show,
+        x.tick.length = NULL,
 		x.tick.font.family = global.font.family,
 		x.tick.font.color = global.font.color,
 		x.tick.font.size = 10,
@@ -116,6 +119,7 @@ Sparkline <- function(x,
 		y.axis.color = rgb(44, 44, 44, maxColorValue = 255),
 		y.axis.width = 1,
         y.tick.show = y.axis.show,
+        y.tick.length = NULL,
 		y.tick.font.family = global.font.family,
 		y.tick.font.color = global.font.color,
 		y.tick.font.size = 10,
@@ -127,6 +131,7 @@ Sparkline <- function(x,
 {
     ErrorIfNotEnoughData(x)
     x <- checkMatrixNames(x)
+	data.is.percent <- isTRUE(grepl("%$", attr(x, "statistic")))
 	if (NCOL(x) > 1)
 	{
 		warning("Sparklines can only show a single series.")
@@ -138,7 +143,6 @@ Sparkline <- function(x,
         line.color <- fill.color
         line.opacity <- fill.opacity
     }
-	data.is.percent <- isTRUE(grepl("%$", attr(x, "statistic")))
 	if (sum(nchar(y.tick.format)) == 0 || grepl("[0-9]$", y.tick.format))
 		y.tick.format <- if (data.is.percent) paste0(y.tick.format, "%") else paste0(y.tick.format, "f")
 	if (sum(nchar(hover.format)) == 0 || grepl("[0-9]$", hover.format))
@@ -180,13 +184,13 @@ Sparkline <- function(x,
                 showticklabels = x.axis.show, ticks = if (x.axis.show) "outside" else "",
                 tickfont = list(size = if (x.tick.show) x.tick.font.size else 1,
 						   		color = if (x.tick.show) x.tick.font.color else "transparent",
-				family = x.tick.font.family), tickformat = x.tick.format,
+				family = x.tick.font.family), tickformat = x.tick.format, ticklen = x.tick.length,
                 linewidth = x.axis.width, linecolor = x.axis.color, tickcolor = x.axis.color)
     yaxis <- list(side = "left", showgrid = FALSE, showline = y.axis.show, zeroline = FALSE,
                 showticklabels = y.axis.show, ticks = if (y.axis.show) "outside" else "",
                 tickfont = list(size = if (y.tick.show) y.tick.font.size else 1, 
 							 	color = if (y.tick.show) y.tick.font.color else "transparent",
-				family = y.tick.font.family), 
+				family = y.tick.font.family), ticklen = y.tick.length, 
 				hoverformat = hover.format, tickformat = y.tick.format,
                 linewidth = y.axis.width, linecolor = y.axis.color, tickcolor = y.axis.color)
 
