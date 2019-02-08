@@ -77,3 +77,18 @@ test_that("HeatMap Extra Columns",
           expect_warning(print(HeatMap(table = three.cols, left.columns = list(v2, t1, t3), right.columns = list(v2, t1, t3))), "There are no matching row.")
 })
 
+table.class.obj <- structure(c(0.472972972972973, 0.486486486486487, 0.517241379310345,
+                               0.383561643835616, 0.558823529411765, 0.5, 0.457142857142857,
+                               0.542553191489362, 0.609756097560976, 0.527027027027027, 0.513513513513513,
+                               0.482758620689655, 0.616438356164384, 0.441176470588235, 0.5,
+                               0.542857142857143, 0.457446808510638, 0.390243902439024), .Dim = c(9L,2L),
+                            class = c("xtabs", "table"), statistic = "Row %", assigned.rownames = TRUE,
+                            .Dimnames = list(`D1 - Age` = c("18 to 24", "25 to 29", "30 to 34", "35 to 39",
+                            "40 to 44", "45 to 49", "50 to 54", "55 to 64", "65+"),
+                            `D3 - Gender` = c("Male", "Female")))
+
+test_that("xtabs and table object",
+{
+    expect_error(Heat(table.class.obj), NA)
+})
+

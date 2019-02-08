@@ -152,7 +152,7 @@ Heat <- function(x,
                     right.columns = NULL,
                     right.column.headings = "") {
 
-    mat <- checkMatrixNames(x, assign.col.names = FALSE)
+    mat <- checkMatrixNames(stripClassAndCallFromXtabs(x), assign.col.names = FALSE)
     ErrorIfNotEnoughData(mat)
 
     if (nrow(mat) > 500 || ncol(mat) > 500)
