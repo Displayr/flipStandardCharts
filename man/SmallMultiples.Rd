@@ -28,13 +28,14 @@ SmallMultiples(x, chart.type = "Area", nrows = 2, share.axes = TRUE,
   panel.title.font.size = 14, panel.title.wrap = TRUE,
   panel.title.wrap.nchar = 20, x.title = "", x.title.font.size = 12,
   y.title = "", y.title.font.size = 12, data.label.show = FALSE,
-  data.label.font.color = global.font.color, grid.show = TRUE,
-  x.tick.show = TRUE, x.tick.angle = NULL, legend.show = TRUE,
-  margin.left = NULL, margin.right = NULL, margin.top = NULL,
-  margin.bottom = NULL, mapping.package = "plotly",
-  scatter.x.column = 1, scatter.y.column = 2,
-  scatter.sizes.column = 3, scatter.colors.column = 4,
-  scatter.groups.column = NULL, scatter.colors.as.categorical = TRUE,
+  data.label.font.color = global.font.color, line.thickness = NULL,
+  grid.show = TRUE, x.tick.show = TRUE, x.tick.angle = NULL,
+  legend.show = TRUE, margin.left = NULL, margin.right = NULL,
+  margin.top = NULL, margin.bottom = NULL,
+  mapping.package = "plotly", scatter.x.column = 1,
+  scatter.y.column = 2, scatter.sizes.column = 3,
+  scatter.colors.column = 4, scatter.groups.column = NULL,
+  scatter.colors.as.categorical = TRUE,
   scatter.sizes.as.diameter = FALSE, ...)
 }
 \arguments{
@@ -155,6 +156,8 @@ to turn off set to "FALSE".}
 in character format (e.g. "black") or an a hex code. This can be a single
 color, a vector of colors (1 for each series/column), or a comma separated list
 of colors}
+
+\item{line.thickness}{Thickness, in pixels, of the series line}
 
 \item{grid.show}{Logical; whether to show grid lines.}
 

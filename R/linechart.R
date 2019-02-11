@@ -344,8 +344,6 @@ Line <-   function(x,
                  data.label.suffix, sep = "")
 
             data.label.pos <- "top middle"
-            if (length(x) > 2)
-                data.label.pos <- c("top right", rep("top middle", length(x)-2), "top left")
             data.label.offset <- line.thickness[i]/2
             if (!is.null(marker.show))
                 data.label.offset <- max(data.label.offset, marker.size)

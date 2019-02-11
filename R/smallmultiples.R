@@ -318,7 +318,8 @@ SmallMultiples <- function(x,
     else if (chart.type == "Radar")
     {
         plot.list <- lapply(1:npanels, function(i){chart(.bind_mean(x[,i, drop = FALSE], average.series),
-                                                     hovertext.show = c(TRUE, TRUE),
+                                                     hovertext.show = c(TRUE, TRUE), 
+                                                     line.thickness = line.thickness,
                                                      colors = c(colors[i], average.color),
                                                      grid.show = FALSE, x.tick.show = FALSE,
                                                      data.label.show = c(data.label.show, FALSE),
