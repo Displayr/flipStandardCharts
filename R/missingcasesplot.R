@@ -165,7 +165,7 @@ MissingCasesPlot <- function(raw.data,
     # space is filled
     if (nrow(dat) > 200)
     {
-        p <- plot_ly(x = c(0, ncol(dat)-1), y = range(index), 
+        p <- plot_ly(x = c(-0.5, ncol(dat)-0.5), y = range(index), 
                 type = "scatter", mode = "none")
         line.opacity <- 0.8
         if (max(colSums(dat)) > 100)
