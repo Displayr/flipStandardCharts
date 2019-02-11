@@ -161,16 +161,25 @@ MissingCasesPlot <- function(raw.data,
     if (all(dat == 1))
         base.col.alpha <- fill.color
 
-    # Main trace - heatmapi
+    # If there is only a small number of points use heatmap to ensure
+    # space is filled
     if (nrow(dat) > 200)
-        p <- plot_ly(x = c(1, ncol(dat)), y = range(index), 
-                type = "scatter", mode = "none") 
-
-    else
+    {
+        p <- plot_ly(x = c(0, ncol(dat)-1), y = range(index), 
+                type = "scatter", mode = "none")
+        line.opacity <- 0.8
+        if (max(colSums(dat)) > 100)
+            line.opacity <- 0.5
+        line.obj <- list(width = 0.5, color = toRGB(fill.color, alpha = line.opacity))
+    
+    } else
+    {
         p <- plot_ly(z = dat, x = (1:ncol(dat)) - 1, y = index, type = "heatmap",
                  colors = c(base.col.alpha, fill.color), 
                  zmin = 0, zmax = 1, hoverinfo = "skip",
                  zsmooth = FALSE, connectgaps = FALSE, showscale = FALSE)
+        line.obj <- list(width = 1, color = fill.color)
+    }
    
     # Add lines in case heatmap does not show missing values. Also better hovertext controls
     # But heatmap is still needed for case with few variables
@@ -185,7 +194,7 @@ MissingCasesPlot <- function(raw.data,
                 text = autoFormatLongLabels(paste("Case", rep(index[tmp.ind], each = 4), "missing from", 
                     paste0("<b>", colnames(dat)[i], "</b>")), TRUE, 50),
                 z = NULL, zmin = NULL, zmax = NULL, zsmooth = NULL, showscale = NULL,
-                line = list(width = 0.5, color = toRGB(fill.color, alpha = 0.5)))
+                line = line.obj)
              
     }
     p <- config(p, displayModeBar = FALSE)
