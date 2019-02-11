@@ -357,7 +357,7 @@ Line <-   function(x,
                    hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                    size = hovertext.font.size, family = hovertext.font.family),
                    bgcolor = toRGB(colors[i], alpha = opacity)),
-                   hoverinfo  = setHoverText(xaxis, chart.matrix))
+                   hoverinfo  = "x+y")
         }
     }
 
