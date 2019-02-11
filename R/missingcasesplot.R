@@ -161,8 +161,13 @@ MissingCasesPlot <- function(raw.data,
     if (all(dat == 1))
         base.col.alpha <- fill.color
 
-    # Main trace - heatmap
-    p <- plot_ly(z = dat, x = (1:ncol(dat)) - 1, y = index, type = "heatmap",
+    # Main trace - heatmapi
+    if (nrow(dat) > 200)
+        p <- plot_ly(x = c(1, ncol(dat)), y = range(index), 
+                type = "scatter", mode = "none") 
+
+    else
+        p <- plot_ly(z = dat, x = (1:ncol(dat)) - 1, y = index, type = "heatmap",
                  colors = c(base.col.alpha, fill.color), 
                  zmin = 0, zmax = 1, hoverinfo = "skip",
                  zsmooth = FALSE, connectgaps = FALSE, showscale = FALSE)
@@ -180,13 +185,13 @@ MissingCasesPlot <- function(raw.data,
                 text = autoFormatLongLabels(paste("Case", rep(index[tmp.ind], each = 4), "missing from", 
                     paste0("<b>", colnames(dat)[i], "</b>")), TRUE, 50),
                 z = NULL, zmin = NULL, zmax = NULL, zsmooth = NULL, showscale = NULL,
-                line = list(width = 1.0, color = fill.color))
+                line = list(width = 0.5, color = toRGB(fill.color, alpha = 0.5)))
              
     }
     p <- config(p, displayModeBar = FALSE)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p, xaxis = xaxis, yaxis = yaxis,
-                plot_bgcolor = toRGB("white", alpha = 0),
+                plot_bgcolor = toRGB(base.color),
                 paper_bgcolor = toRGB("white", alpha = 0),
                 hoverlabel = list(namelength = -1, font = hovertext.font, 
                     bordercolor = "transparent", bgcolor = rgb(0.05,0.05,0.05, alpha = 0.8)),
