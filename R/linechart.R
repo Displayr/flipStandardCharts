@@ -270,21 +270,6 @@ Line <-   function(x,
         y.label <- y.labels[i]
         tmp.group <- paste("group", i)
 
-        # Need to add data labels first otherwise it will override hovertext in area chart
-        if (data.label.show[i])
-        {
-            source.text <- paste(data.label.prefix,
-                 data.label.function(chart.matrix[, i], decimals = data.label.decimals),
-                 data.label.suffix, sep = "")
-
-            data.label.pos <- "top middle"
-            if (length(x) > 2)
-                data.label.pos <- c("top right", rep("top middle", length(x)-2), "top left")
-            p <- add_trace(p, x = x, y = y, type = "scatter", mode = "text", name = y.label,
-                   cliponaxis = FALSE, text = source.text,
-                   textfont = data.label.font[[i]], textposition = data.label.pos,
-                   hoverinfo = "none", showlegend = FALSE, legendgroup = tmp.group)
-        }
 
         # Draw line - main trace
         if (any(!is.na(y)))
@@ -344,6 +329,38 @@ Line <-   function(x,
             }
         }
     }
+
+    # Add data labels last to ensure they show on top of the lines
+    # This also overrides the hoverlabels so we need to re-create them
+    # We use a text trace instead of annotations because it will toggle with the legend
+    for (i in 1:ncol(chart.matrix))
+    {
+        if (data.label.show[i])
+        {
+            y <- as.numeric(chart.matrix[, i])
+            x <- x.labels
+            source.text <- paste(data.label.prefix,
+                 data.label.function(chart.matrix[, i], decimals = data.label.decimals),
+                 data.label.suffix, sep = "")
+
+            data.label.pos <- "top middle"
+            if (length(x) > 2)
+                data.label.pos <- c("top right", rep("top middle", length(x)-2), "top left")
+            data.label.offset <- line.thickness[i]/2
+            if (!is.null(marker.show))
+                data.label.offset <- max(data.label.offset, marker.size)
+            p <- add_trace(p, x = x, y = y, type = "scatter", name = y.label,
+                   cliponaxis = FALSE, text = source.text, mode = "markers+text",
+                   marker = list(size = data.label.offset, color="transparent"),
+                   textfont = data.label.font[[i]], textposition = data.label.pos,
+                   showlegend = FALSE, legendgroup = tmp.group,
+                   hoverlabel = list(font = list(color = autoFontColor(colors[i]),
+                   size = hovertext.font.size, family = hovertext.font.family),
+                   bgcolor = toRGB(colors[i], alpha = opacity)),
+                   hoverinfo  = setHoverText(xaxis, chart.matrix))
+        }
+    }
+
     annot <- list(setSubtitle(subtitle, subtitle.font, margins),
                            setTitle(title, title.font, margins),
                            setFooter(footer, footer.font, margins))
