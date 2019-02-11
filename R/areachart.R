@@ -184,8 +184,23 @@ Area <- function(x,
         if (any(na.seq$values[-c(1,n)]))
             has.gap <- TRUE
     }
-    if (is.null(line.thickness))
+    if (length(line.thickness) == 0 || line.thickness == "")
         line.thickness <- if (!has.gap || is.stacked) 0 else 3
+    if (is.character(line.thickness))
+    {
+        tmp.txt <- TextAsVector(line.thickness)
+        line.thickness <- suppressWarnings(as.numeric(tmp.txt))
+        na.ind <- which(is.na(line.thickness))
+        if (length(na.ind) == 1)
+            warning("Non-numeric line thickness value '", tmp.txt[na.ind], "' was ignored.")
+        if (length(na.ind) > 1)
+            warning("Non-numeric line thickness values '", 
+            paste(tmp.txt[na.ind], collapse = "', '"), "' were ignored.")
+        if (length(na.ind) > 0)
+            line.thickness[na.ind] <- if (!has.gap || is.stacked) 0 else 3
+    }
+    line.thickness <- suppressWarnings(line.thickness * rep(1, ncol(chart.matrix)))
+
     if (is.hundred.percent.stacked)
         chart.matrix <- cum.data(chart.matrix, "cumulative.percentage")
     else if (is.stacked)
@@ -209,15 +224,13 @@ Area <- function(x,
 
     marker.symbols <- if (is.null(marker.show)) rep(100, ncol(chart.matrix))
                              else marker.show
-    if (is.null(line.thickness))
-        line.thickness <- if (!has.gap || is.stacked) 0 else 3
 
     series.mode <- "lines+markers"
     if (is.null(marker.show))
         series.mode <- "lines"
-    else if (line.thickness == 0 && marker.show != "none")
+    else if (all(line.thickness == 0) && marker.show != "none")
         series.mode <- "markers"
-    else if (line.thickness >= 1 && marker.show == "none")
+    else if (any(line.thickness >= 1) && marker.show == "none")
         series.mode <- "lines"
     else if (line.thickness == 0 && marker.show == "none")
         series.mode <- "lines"
@@ -310,7 +323,7 @@ Area <- function(x,
         x <- x.labels
         y.label <- y.labels[i]
         
-        lines <- list(width = line.thickness,
+        lines <- list(width = line.thickness[i],
                       color = toRGB(line.colors[i], alpha = line.opacity))
 
         marker <- NULL
@@ -331,7 +344,7 @@ Area <- function(x,
         if (!is.stacked)
         {
            # draw line
-           if (any(!is.na(y)) && (has.gap || line.thickness > 0))
+           if (any(!is.na(y)) && (has.gap || line.thickness[i] > 0))
                 p <- add_trace(p,
                            type = "scatter",
                            x = x,

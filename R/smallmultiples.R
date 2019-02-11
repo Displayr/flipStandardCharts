@@ -82,6 +82,7 @@ SmallMultiples <- function(x,
                            y.title.font.size = 12,
                            data.label.show = FALSE,
                            data.label.font.color = global.font.color,
+                           line.thickness = NULL,
                            grid.show = TRUE,
                            x.tick.show = TRUE,
                            x.tick.angle = NULL,
@@ -377,8 +378,17 @@ SmallMultiples <- function(x,
                                                      global.font.color = global.font.color,
                                                      ...)$htmlwidget})
     else
+    {
+        # Line or Area chart
+        if (length(line.thickness) == 0)
+            line.thickness <- "" 
+        if (is.character(line.thickness))
+            line.thickness <- TextAsVector(line.thickness)
+        line.thickness <- suppressWarnings(paste0(line.thickness, rep("", npanels)))
+
         plot.list <- lapply(1:npanels, function(i){chart(.bind_mean(x[,i, drop = FALSE], average.series),
                                                      colors = c(colors[i], average.color),
+                                                     line.thickness = line.thickness[i],
                                                      fit.line.colors = c(fit.line.colors[i], average.color),
                                                      fit.CI.colors = c(fit.CI.colors[i], average.color),
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
@@ -394,6 +404,7 @@ SmallMultiples <- function(x,
                                                      global.font.family = global.font.family,
                                                      global.font.color = global.font.color,
                                                      ...)$htmlwidget})
+    }
 
     is.geo <- chart.type == "GeographicMap"
     is.radar <- chart.type == "Radar"
