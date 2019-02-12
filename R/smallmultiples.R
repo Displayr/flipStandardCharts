@@ -317,9 +317,15 @@ SmallMultiples <- function(x,
     }
     else if (chart.type == "Radar")
     {
+        if (length(line.thickness) == 0)
+            line.thickness <- "" 
+        if (is.character(line.thickness))
+            line.thickness <- TextAsVector(line.thickness)
+        line.thickness <- suppressWarnings(paste0(line.thickness, rep("", npanels)))
+
         plot.list <- lapply(1:npanels, function(i){chart(.bind_mean(x[,i, drop = FALSE], average.series),
                                                      hovertext.show = c(TRUE, TRUE), 
-                                                     line.thickness = line.thickness,
+                                                     line.thickness = line.thickness[i],
                                                      colors = c(colors[i], average.color),
                                                      grid.show = FALSE, x.tick.show = FALSE,
                                                      data.label.show = c(data.label.show, FALSE),
