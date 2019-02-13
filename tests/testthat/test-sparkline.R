@@ -33,3 +33,11 @@ for (dat in dat.list)
 
     }
 }
+
+test_that("sparkline-box",
+{
+    set.seed(1223)
+    Normals <- c(runif(38, 10, 20), rnorm(100,-5,2), rnorm(60, 5, 2), 35, 30)
+    Normals = list(A = Normals, "Big fat dog jumped over the lazy bigger water buffalo" = Normals + 3, "Cat" = Normals + 10)
+    expect_warning(Sparkline(Normals, "Box"), "Sparkline charts only show a single series")
+})

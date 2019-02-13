@@ -129,14 +129,49 @@ Sparkline <- function(x,
         margin.top = 0,
         margin.bottom = 0)
 {
-    ErrorIfNotEnoughData(x)
-    x <- checkMatrixNames(x)
-	data.is.percent <- isTRUE(grepl("%$", attr(x, "statistic")))
-	if (NCOL(x) > 1)
-	{
-		warning("Sparklines can only show a single series.")
-		x <- x[,1,drop = FALSE]
-	}
+    ErrorIfNotEnoughData(x, require.tidy = type != "Box")
+    data.is.percent <- isTRUE(grepl("%$", attr(x, "statistic")))
+    if (type == "Box")
+    {
+        if (length(x) == 1 && is.list(x) && NCOL(x[[1]]) > 1)
+            x <- x[[1]]
+        if (is.matrix(x))
+            x <- as.data.frame(x)
+        else if (!is.list(x))
+        {
+            if (is.array(x) && length(dim(x)) == 1)
+            {
+                x <- list(x)
+                names(x) <- attributes(x[[1]])$name
+            }
+            else if (NCOL(x) == 1)
+                x <- list(x)
+        }
+        if (!is.list(x))
+            stop("Input data should be a list of numeric vectors or a matrix.")
+        if (length(x) > 1)
+        {
+            warning("Sparkline charts only show a single series ",
+               "(", names(x)[1], "). ", 
+               "Use COLUMN MANIPULATIONS to choose a different data series.")
+            x <- x[[1]]
+        }
+    } else
+    {
+        x <- checkMatrixNames(x)
+        tmp.name <- "Column 1"
+        if (!is.null(colnames(x)))
+            tmp.name <- colnames(x)[1]
+        if (is.list(x) && !is.null(attr(x[[1]], "label")))
+            tmp.name <- attr(x[[1]], "label") 
+        if (NCOL(x) > 1)
+        {
+            warning("Sparkline charts only show a single series ",
+               "(", tmp.name, "). ",
+               "Use COLUMN MANIPULATIONS to choose a different data series.")
+            x <- x[,1,drop = FALSE]
+        }
+    }
 
     if (is.null(line.color))
     {
@@ -180,13 +215,14 @@ Sparkline <- function(x,
     x.labels <- axisFormat$labels
     x <- as.numeric(x)
     xaxis <- list(side = "bottom", type = axisFormat$x.axis.type, categoryorder = "trace", 
-                showgrid = FALSE, showline = x.axis.show, zeroline = FALSE,
+                showgrid = FALSE, showline = x.axis.show, zeroline = FALSE, automargin = TRUE,
                 showticklabels = x.axis.show, ticks = if (x.axis.show) "outside" else "",
                 tickfont = list(size = if (x.tick.show) x.tick.font.size else 1,
 						   		color = if (x.tick.show) x.tick.font.color else "transparent",
 				family = x.tick.font.family), tickformat = x.tick.format, ticklen = x.tick.length,
                 linewidth = x.axis.width, linecolor = x.axis.color, tickcolor = x.axis.color)
     yaxis <- list(side = "left", showgrid = FALSE, showline = y.axis.show, zeroline = FALSE,
+                automargin = TRUE,
                 showticklabels = y.axis.show, ticks = if (y.axis.show) "outside" else "",
                 tickfont = list(size = if (y.tick.show) y.tick.font.size else 1, 
 							 	color = if (y.tick.show) y.tick.font.color else "transparent",
