@@ -155,6 +155,10 @@ Line <-   function(x,
         warning("Missing values have been omitted.")
 
     # Constants
+    if (grepl("^curved", tolower(shape)))
+        shape <- "spline"
+    if (grepl("^straight", tolower(shape)))
+        shape <- "linear"
     marker.symbols <- if (is.null(marker.show)) rep(100, ncol(chart.matrix))
                              else marker.show
     series.mode <- "lines+markers"
