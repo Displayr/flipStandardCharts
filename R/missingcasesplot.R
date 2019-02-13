@@ -115,9 +115,9 @@ MissingCasesPlot <- function(raw.data,
         if (show.counts.missing)
             x.labels <- paste0(x.labels, colSums(dat), " cases ")
         if (show.counts.missing && show.percentages.missing)
-            x.labels <- paste(x.labels, "or")
+            x.labels <- paste(x.labels, "or ")
         if (show.percentages.missing)
-            x.labels <- paste0(x.labels, " ", round(colSums(dat)/nrow(dat)*100), "%")
+            x.labels <- paste0(x.labels, round(colSums(dat)/nrow(dat)*100), "%")
         x.labels <- paste0(x.labels, " missing)")
     }
     x.labels <- autoFormatLongLabels(x.labels, x.tick.label.wrap, x.tick.label.wrap.nchar, truncate = FALSE)
