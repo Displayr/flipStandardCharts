@@ -19,3 +19,10 @@ test_that("Missing rownames",
 
     expect_silent(Column(dat))
 })
+
+test_that("MissingCasesPlot",
+{
+    # This should create a blank plot
+    expect_error(MissingCasesPlot(dat), NA)
+
+})
