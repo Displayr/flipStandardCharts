@@ -18,6 +18,7 @@
 #'  points ("pt"), which will be consistent with font sizes in text boxes.
 #' @param data.label.position One of "center", "above" or "below".
 #' @param data.label.bg.opacity Numeric between 0 (tranparent) to 1 (opaque), specifying the opacity of the data label background (grey).
+#' @param tooltip.show Logical, indicating whether or not to show a tooltip on hover.
 #' @export
 MissingCasesPlot <- function(raw.data,
     fill.color = "#5C9AD3",
@@ -57,6 +58,7 @@ MissingCasesPlot <- function(raw.data,
     y.tick.font.family = global.font.family,
     y.tick.font.color = global.font.color,
     y.tick.font.size = 10,
+    tooltip.show = TRUE,
     hovertext.font.family = global.font.family,
     hovertext.font.color = "#FFFFFF",
     hovertext.font.size = 11,
@@ -181,22 +183,26 @@ MissingCasesPlot <- function(raw.data,
         line.obj <- list(width = 1, color = fill.color)
     }
    
-    # Add lines in case heatmap does not show missing values. Also better hovertext controls
-    # But heatmap is still needed for case with few variables
-    # Data points are set to end points and midpoint (-1) so hovertext shows up
-    for (i in 1:ncol(dat))
-    {
-        tmp.ind <- which(dat[,i] > 0)
-        num.tmp <- length(tmp.ind)
-        p <- add_trace(p, x = rep(i, each = num.tmp * 4) + c(-1.5,-1,-0.5, NA), 
-                y = rep(index[tmp.ind], each = 4) + c(0, 0, 0, NA),
-                type = "scatter", mode = "lines", showlegend = FALSE, hoverinfo = "text", 
-                text = autoFormatLongLabels(paste("Case", rep(index[tmp.ind], each = 4), "missing from", 
-                    paste0("<b>", colnames(dat)[i], "</b>")), TRUE, 50),
-                z = NULL, zmin = NULL, zmax = NULL, zsmooth = NULL, showscale = NULL,
-                line = line.obj)
-             
-    }
+    # Add lines in case heatmap does not show missing values.
+    # If tooltips are shown, an extra data point is added
+    # so that hover responds to the middle of the line
+    na.ind <- which(dat > 0, arr.ind = TRUE)
+    pt.xpos <- if (tooltip.show) c(-1.5, -1, -0.5, NA) else c(-1.5, -0.5, NA)
+    pt.ypos <- if (tooltip.show) c(0, 0, 0, NA) else c(0, 0, NA)
+    pt.len <- length(pt.xpos)
+    xvals <- rep(na.ind[,2], each = pt.len) + pt.xpos
+    yvals <- rep(index[na.ind[,1]], each = pt.len) + pt.ypos
+    hover.text <- NULL
+    if (tooltip.show)
+        hover.text <- rep(autoFormatLongLabels(paste("Case", index[na.ind[,1]], "missing from", 
+                paste0("<b>", colnames(dat)[na.ind[,2]], "</b>")), TRUE, 50), each = pt.len)
+    hover.mode <- if (tooltip.show) "text" else "skip"
+
+    p <- add_trace(p, x = xvals, y = yvals, line = line.obj,
+            hoverinfo = hover.mode, text = hover.text, 
+            type = "scatter", mode = "lines", showlegend = FALSE, 
+            z = NULL, zmin = NULL, zmax = NULL, zsmooth = NULL, showscale = NULL)
+
     p <- config(p, displayModeBar = FALSE)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p, xaxis = xaxis, yaxis = yaxis,

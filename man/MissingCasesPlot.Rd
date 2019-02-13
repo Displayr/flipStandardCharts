@@ -25,7 +25,7 @@ MissingCasesPlot(raw.data, fill.color = "#5C9AD3",
   x.tick.label.wrap = NULL, x.tick.label.wrap.nchar = 20,
   x.tick.angle = NULL, y.tick.font.family = global.font.family,
   y.tick.font.color = global.font.color, y.tick.font.size = 10,
-  hovertext.font.family = global.font.family,
+  tooltip.show = TRUE, hovertext.font.family = global.font.family,
   hovertext.font.color = "#FFFFFF", hovertext.font.size = 11,
   margin.top = NULL, margin.bottom = NULL, margin.left = NULL,
   margin.right = NULL, font.unit = "px")
@@ -123,6 +123,8 @@ character format (e.g. "black") or an a hex code.}
 in character format (e.g. "black") or an a hex code.}
 
 \item{y.tick.font.size}{Integer; y-axis tick label font size}
+
+\item{tooltip.show}{Logical, indicating whether or not to show a tooltip on hover.}
 
 \item{hovertext.font.family}{Font family of hover text.}
 
