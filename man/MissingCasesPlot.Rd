@@ -4,7 +4,7 @@
 \alias{MissingCasesPlot}
 \title{MissingCasesPlot}
 \usage{
-MissingCasesPlot(raw.data, fill.color = "#5C9AD3",
+MissingCasesPlot(raw.data, fill.color = "#5C9AD3", fill.opacity = NULL,
   base.color = "#E6E6E6", base.opacity = 1,
   show.counts.missing = TRUE, show.percentages.missing = FALSE,
   subset = NULL, title = "Missing values by case", subtitle = "",
@@ -34,6 +34,11 @@ MissingCasesPlot(raw.data, fill.color = "#5C9AD3",
 \item{raw.data}{Matrix or data frame.}
 
 \item{fill.color}{Color to show the missing value.}
+
+\item{fill.opacity}{Alpha transparence between 0 and 1 (or \code{NULL}).
+By default automatically tries to adjust opacity depending on the number of 
+missing values. However if there is a very high density of missing values, you may need to manually
+reduce the fill opacity to observe differences in saturated regions.}
 
 \item{base.color}{Background color of chart.}
 

@@ -4,6 +4,10 @@
 #' @inherit Column
 #' @param raw.data Matrix or data frame.
 #' @param fill.color Color to show the missing value.
+#' @param fill.opacity Alpha transparence between 0 and 1 (or \code{NULL}).
+#'  By default automatically tries to adjust opacity depending on the number of 
+#'  missing values. However if there is a very high density of missing values, you may need to manually
+#'  reduce the fill opacity to observe differences in saturated regions.
 #' @param base.color Background color of chart.
 #' @param base.opacity Opacity of background color.
 #' @param show.counts.missing Include the number of cases missing in the variable label.
@@ -23,6 +27,7 @@
 #' @export
 MissingCasesPlot <- function(raw.data,
     fill.color = "#5C9AD3",
+    fill.opacity = NULL,
     base.color = "#E6E6E6",
     base.opacity = 1.0,
     show.counts.missing = TRUE,
@@ -164,24 +169,32 @@ MissingCasesPlot <- function(raw.data,
     if (all(dat == 1))
         base.col.alpha <- fill.color
 
-    # If there is only a small number of points use heatmap to ensure
-    # space is filled
+    if (is.null(fill.opacity) || is.na(fill.opacity))
+    {
+        if (max(colSums(dat)) > 1000)
+            fill.opacity <- 0.2
+        else if (max(colSums(dat)) > 200)
+            fill.opacity <- 0.5
+        else
+            fill.opacity <- 1.0
+    }
+    fill.col.alpha <- rgb(t(col2rgb(fill.color)), maxColorValue = 255, alpha = 255 * fill.opacity)
+
+    # Main plot
     if (nrow(dat) > 200)
     {
         p <- plot_ly(x = c(-0.5, ncol(dat)-0.5), y = range(index), 
                 type = "scatter", mode = "none")
-        line.opacity <- 0.8
-        if (max(colSums(dat)) > 100)
-            line.opacity <- 0.5
-        line.obj <- list(width = 0.5, color = toRGB(fill.color, alpha = line.opacity))
+        line.obj <- list(width = 0.5, color = fill.col.alpha)
     
     } else
     {
+        # If there is only a small number of points use heatmap to ensure space is filled
         p <- plot_ly(z = dat, x = (1:ncol(dat)) - 1, y = index, type = "heatmap",
-                 colors = c(base.col.alpha, fill.color), 
+                 colors = c(base.col.alpha, fill.col.alpha),
                  zmin = 0, zmax = 1, hoverinfo = "skip",
                  zsmooth = FALSE, connectgaps = FALSE, showscale = FALSE)
-        line.obj <- list(width = 1, color = fill.color)
+        line.obj <- list(width = 1, color = fill.col.alpha)
     }
    
     # Add lines in case heatmap does not show missing values.

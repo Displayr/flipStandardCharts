@@ -19,8 +19,32 @@ test_that("Missing rownames",
     expect_silent(Column(dat))
 })
 
+set.seed(1234)
+n <- 1e4
+tb <- matrix(0, n, 10)
+colnames(tb) <- LETTERS[1:ncol(tb)]
+tb[,1] <- NA
+tb[seq(1, n, by = 2), 2] <- NA
+tb[seq(1, n, by = 3), 3] <- NA
+tb[seq(1, n, by = 4), 4] <- NA
+tb[seq(1, n, by = 5), 5] <- NA
+tb[seq(1, n, by = 6), 6] <- NA
+tb[seq(1, n, by = 10), 7] <- NA
+tb[seq(1, n, by = 100), 8] <- NA
+tb[seq(1, n, by = 1000), 9] <- NA
+tb[seq(1, n, by = 10000), 10] <- NA
+
+small <- cbind(
+    Dog = 1:10,
+    Elephant = c(1:5, NA, NA, 8:10),
+    'Bugs & Spiders' = rep(1,10),
+    Fish = c(1:4, rep(NA, 6))
+)
+
 test_that("MissingCasesPlot",
 {
     # This should create a blank plot
     expect_error(MissingCasesPlot(dat), NA)
+    expect_error(MissingCasesPlot(tb), NA)
+    expect_error(MissingCasesPlot(small), NA)
 })
