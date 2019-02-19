@@ -129,10 +129,10 @@ MissingCasesPlot <- function(raw.data,
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate = FALSE)
     xaxis <- list(side = "bottom", ticklen = 0, tickangle = x.tick.angle, tickfont = x.tick.font,
                   tickvals = 0:(ncol(dat)-1), ticktext = x.labels,
-                  showgrid = FALSE, zeroline = FALSE)
+                  showgrid = FALSE, zeroline = FALSE, fixedrange = !tooltip.show)
     yaxis <- list(side = "left", ticklen = 0, tickfont = y.tick.font, range = rev(range(index)),
                   tickmode = "auto", nticks = min(nrow(dat) + 1, 11), 
-                  showgrid = FALSE, zeroline = FALSE)
+                  showgrid = FALSE, zeroline = FALSE, fixedrange = !tooltip.show)
 
     margins <- list(t = 20, r = 60, l = 80, b = 20, pad = 0)
     margins <- setMarginsForAxis(margins, x.labels, xaxis)
@@ -227,7 +227,8 @@ MissingCasesPlot <- function(raw.data,
                 paper_bgcolor = toRGB("white", alpha = 0),
                 hoverlabel = list(namelength = -1, font = hovertext.font, 
                     bordercolor = "transparent", bgcolor = rgb(0.05,0.05,0.05, alpha = 0.8)),
-                hovermode = "closest",
+                hovermode = if (tooltip.show) "closest" else FALSE,
+                dragmode = if (tooltip.show) "zoom" else FALSE,
                 annotations = annotations,
                 margin = margins)
     p
