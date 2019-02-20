@@ -24,6 +24,7 @@
 #' @param data.label.bg.opacity Numeric between 0 (tranparent) to 1 (opaque), specifying the opacity of the data label background (grey).
 #' @param tooltip.show Logical, indicating whether or not to show a tooltip on hover. The default is off, because
 #'  turning on tooltips with large data sets can make the chart slow to render.
+#' @param enable.zoom Logical, indicating whether of not to allow the chart to be zoomable.
 #' @export
 MissingCasesPlot <- function(raw.data,
     fill.color = "#5C9AD3",
@@ -65,6 +66,7 @@ MissingCasesPlot <- function(raw.data,
     y.tick.font.color = global.font.color,
     y.tick.font.size = 10,
     tooltip.show = FALSE,
+    enable.zoom = TRUE,
     hovertext.font.family = global.font.family,
     hovertext.font.color = "#FFFFFF",
     hovertext.font.size = 11,
@@ -129,10 +131,10 @@ MissingCasesPlot <- function(raw.data,
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate = FALSE)
     xaxis <- list(side = "bottom", ticklen = 0, tickangle = x.tick.angle, tickfont = x.tick.font,
                   tickvals = 0:(ncol(dat)-1), ticktext = x.labels,
-                  showgrid = FALSE, zeroline = FALSE, fixedrange = !tooltip.show)
+                  showgrid = FALSE, zeroline = FALSE, fixedrange = !enable.zoom)
     yaxis <- list(side = "left", ticklen = 0, tickfont = y.tick.font, range = rev(range(index)),
                   tickmode = "auto", nticks = min(nrow(dat) + 1, 11), 
-                  showgrid = FALSE, zeroline = FALSE, fixedrange = !tooltip.show)
+                  showgrid = FALSE, zeroline = FALSE, fixedrange = !enable.zoom)
 
     margins <- list(t = 20, r = 60, l = 80, b = 20, pad = 0)
     margins <- setMarginsForAxis(margins, x.labels, xaxis)
@@ -228,7 +230,7 @@ MissingCasesPlot <- function(raw.data,
                 hoverlabel = list(namelength = -1, font = hovertext.font, 
                     bordercolor = "transparent", bgcolor = rgb(0.05,0.05,0.05, alpha = 0.8)),
                 hovermode = if (tooltip.show) "closest" else FALSE,
-                dragmode = if (tooltip.show) "zoom" else FALSE,
+                dragmode = if (enable.zoom) "zoom" else FALSE,
                 annotations = annotations,
                 margin = margins)
     p

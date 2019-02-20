@@ -25,7 +25,8 @@ MissingCasesPlot(raw.data, fill.color = "#5C9AD3", fill.opacity = NULL,
   x.tick.label.wrap = NULL, x.tick.label.wrap.nchar = 20,
   x.tick.angle = NULL, y.tick.font.family = global.font.family,
   y.tick.font.color = global.font.color, y.tick.font.size = 10,
-  tooltip.show = FALSE, hovertext.font.family = global.font.family,
+  tooltip.show = FALSE, enable.zoom = tooltip.show,
+  hovertext.font.family = global.font.family,
   hovertext.font.color = "#FFFFFF", hovertext.font.size = 11,
   margin.top = NULL, margin.bottom = NULL, margin.left = NULL,
   margin.right = NULL, font.unit = "px")
@@ -131,6 +132,8 @@ in character format (e.g. "black") or an a hex code.}
 
 \item{tooltip.show}{Logical, indicating whether or not to show a tooltip on hover. The default is off, because
 turning on tooltips with large data sets can make the chart slow to render.}
+
+\item{enable.zoom}{Logical, indicating whether of not to allow the chart to be zoomable.}
 
 \item{hovertext.font.family}{Font family of hover text.}
 
