@@ -303,6 +303,16 @@ Bar <- function(x,
                        size = hovertext.font.size, family = hovertext.font.family)),
                        hoverinfo  = setHoverText(yaxis, chart.matrix, is.bar = TRUE), legendgroup = i)
 
+        # add scatter trace to ensure hover is always shown
+        p <- add_trace(p, x = y.filled, y = x, type = "scatter", name = legend.text[i],
+                       mode = "markers", marker = list(color = "transparent"),
+                       text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
+                       hoverlabel = list(font = list(color = autoFontColor(colors[i]),
+                       size = hovertext.font.size, family = hovertext.font.family),
+                       bgcolor = colors[i]), showlegend = FALSE,
+                       hoverinfo  = setHoverText(yaxis, chart.matrix, is.bar = TRUE))
+
+
         if (fit.type != "None" && is.stacked && i == 1)
             warning("Line of best fit not shown for stacked charts.")
         if (fit.type != "None" && !is.stacked)
@@ -386,7 +396,7 @@ Bar <- function(x,
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
         hoverlabel = list(namelength = -1, bordercolor = "transparent",
             font = list(size = hovertext.font.size, family = hovertext.font.family)),
-        hovermode = if (tooltip.show) "y" else FALSE,
+        hovermode = if (tooltip.show) "closest" else FALSE,
         annotations =  annotations,
         bargap = bar.gap,
         barmode = barmode
