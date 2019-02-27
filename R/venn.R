@@ -102,9 +102,9 @@ function(){
     .style("text-align", "center")
     .style("background", "#333")
     .style("color","#ddd")
-    .style("padding","2px")
+    .style("padding","4px")
     .style("border","0px")
-    .style("border-radius","0px")
+    .style("border-radius","2px")
     .style("opacity",0);
 
     div.selectAll("path")
@@ -122,7 +122,8 @@ function(){
         // Display a tooltip with the current size
         tooltip.transition().duration(400).style("opacity", .9);
         tooltip.text(d.size + "', suffix, '")
-            .style("font", "', font.size, 'px ', font.family, '");
+            .style("font", "', font.size, 'px ', font.family, '")
+            .style("font-weight", "bold");
 
         // highlight the current path
         var selection = d3.select(this).transition("tooltip").duration(400);
