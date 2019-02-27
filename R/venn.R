@@ -100,8 +100,6 @@ function(){
     .attr("class", "venntooltip")
     .style("position", "absolute")
     .style("text-align", "center")
-    .style("width", 128)
-    .style("height", 16)
     .style("background", "#333")
     .style("color","#ddd")
     .style("padding","5px")
