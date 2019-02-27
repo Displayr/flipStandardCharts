@@ -482,7 +482,10 @@ addDensities <- function(p,
 
         if (hover.on == "points")
         {
-            five.num <- wtd.quantile(values, weights = weights * length(weights), type = "i/(n+1)")
+            # Unlike violin plots, box plots do not accept weights
+            # For consistency with plotly we use type = 5 (midpoints)
+            # this differs from violin plot quantiles (type = 6; i/n+1) 
+            five.num <- quantile(values, type = 5)
             names(five.num) <- c("Minimum:", "Lower quartile:", "Median:", "Upper quartile:", "Maximum:")
             five.pos <- rep(0, length(five.num))
 
@@ -541,7 +544,7 @@ createWeights <- function(x, weights)
     # tapply(weights, groups, c)
 }
 
-#' @importFrom stats density weighted.mean
+#' @importFrom stats density weighted.mean quantile
 #' @importFrom Hmisc wtd.quantile
 addSummaryStatistics <- function(p, values, weights, vertical, show.mean, show.median, show.quartiles, show.range, show.values,
                                  mean.color, median.color, quartile.color, range.color, values.color,
@@ -567,11 +570,12 @@ addSummaryStatistics <- function(p, values, weights, vertical, show.mean, show.m
               yaxis = value.axis.2)
 
     }
-    ### Box plot
+    ### Violin plot
     if (show.median || show.quartiles || show.range)
     {
-        #five.num <- wtd.quantile(values, weights = weights, type = "i/(n+1)")
-        five.num <- wtd.quantile(values, weights = weights * length(weights), type = "i/(n+1)")
+        # Quantiles are computed in the same way as SPSS
+        # This corresponds to type = 6 (default is type = 7); see Rdocs for stats::quantile
+        five.num <- wtd.quantile(values, weights = weights, type = "i/(n+1)", normwt = TRUE)
         names(five.num) <- c("Minimum:", "Lower quartile:", "Median:", "Upper quartile:", "Maximum:")
 
     }
