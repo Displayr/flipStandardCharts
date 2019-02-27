@@ -102,9 +102,9 @@ function(){
     .style("text-align", "center")
     .style("background", "#333")
     .style("color","#ddd")
-    .style("padding","5px")
+    .style("padding","2px")
     .style("border","0px")
-    .style("border-radius","2px")
+    .style("border-radius","0px")
     .style("opacity",0);
 
     div.selectAll("path")
