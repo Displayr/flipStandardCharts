@@ -459,10 +459,12 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA,
         document.querySelector('.info.legend.leaflet-control').style.backgroundColor = 'transparent';
         document.querySelector('.info.legend.leaflet-control').style.font = '",
             legend.font.size, "px ", legend.font.family, "';
+        document.querySelector('.leaflet-control-zoom').style.border = 'none';
         document.querySelector('.leaflet-control-zoom-out').style.backgroundColor = 'transparent';
         document.querySelector('.leaflet-control-zoom-out').style.border = 'none';
         document.querySelector('.leaflet-control-zoom-out').style.color = '", legend.font.color, "';
         document.querySelector('.leaflet-control-zoom-in').style.backgroundColor = 'transparent';
+        document.querySelector('.leaflet-control-zoom-in').style.border = 'none';
         document.querySelector('.leaflet-control-zoom-in').style.color = '", legend.font.color, "';
         var ticks = document.querySelectorAll('.legend svg text');
         for (var i = 0; i < ticks.length; i++) {
