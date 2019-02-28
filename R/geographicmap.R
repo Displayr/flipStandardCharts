@@ -423,6 +423,7 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA,
                            label = paste0(coords$name, ": ", format.function(coords$table1,
                                                                              decimals = decimals,
                                                                              comma.for.thousands = commaFromD3(values.hovertext.format))))
+        categoryControls <- ""
     }
     else
     {
@@ -436,6 +437,10 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA,
                                               format.function(coords[[paste("table", i, sep = "")]],
                                                               decimals = decimals,
                                                               comma.for.thousands = commaFromD3(values.hovertext.format))))
+            categoryControls <- paste0("
+                document.querySelector('.leaflet-control-layers-expanded').style.backgroundColor = 'transparent';
+                document.querySelector('.leaflet-control-layers-expanded').style.border = 'none';
+                document.querySelector('.leaflet-control-layers-expanded').style.color = '", legend.font.color, "';")
         }
         map <- addLayersControl(map, baseGroups = categories,
                                 options = layersControlOptions(collapsed = FALSE))
@@ -449,10 +454,7 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA,
     js <- paste0("function(){
         document.querySelector('.leaflet-container').style.backgroundColor = '", ocean.color, "';
         document.querySelector('.leaflet-container').style.font = '",
-            hovertext.font.size, "px ", hovertext.font.family, "';
-        document.querySelector('.leaflet-control-layers-expanded').style.backgroundColor = 'transparent';
-        document.querySelector('.leaflet-control-layers-expanded').style.border = 'none';
-        document.querySelector('.leaflet-control-layers-expanded').style.color = '", legend.font.color, "';
+            legend.font.size, "px ", legend.font.family, "';", categoryControls, "
         document.querySelector('.info.legend.leaflet-control').style.boxShadow = 'none';
         document.querySelector('.info.legend.leaflet-control').style.backgroundColor = 'transparent';
         document.querySelector('.info.legend.leaflet-control').style.font = '",
@@ -464,6 +466,7 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA,
         document.querySelector('.leaflet-control-zoom-in').style.color = '", legend.font.color, "';
         var ticks = document.querySelectorAll('.legend svg text');
         for (var i = 0; i < ticks.length; i++) {
+            ticks[i].style.font = '", legend.font.size, "px ", legend.font.family, "';
             ticks[i].style.fill = '", legend.font.color, "';
         }
     }")
