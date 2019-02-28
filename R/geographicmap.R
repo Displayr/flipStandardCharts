@@ -326,8 +326,8 @@ GeographicMap <- function(x,
     if (mapping.package == "leaflet") {
 
         map <- leafletMap(coords, colors, values.bounds.minimum, values.bounds.maximum,
-                   color.NA, legend.show, legend.title, legend.font.family, legend.font.size,
-                   mult, decimals, suffix,
+                   color.NA, legend.show, legend.title, legend.font.family, 
+                   legend.font.color, legend.font.size, mult, decimals, suffix,
                    values.hovertext.format, treat.NA.as.0, n.categories, categories,
                    format.function, map.type, background, ocean.color,
                    hovertext.font.family, hovertext.font.size)
@@ -362,7 +362,8 @@ GeographicMap <- function(x,
 #' @importFrom htmltools browsable tagList tags
 #' @importFrom htmlwidgets onRender
 leafletMap <- function(coords, colors, min.value, max.range, color.NA,
-                       legend.show, legend.title, legend.font.family, legend.font.size,
+                       legend.show, legend.title, legend.font.family, 
+                       legend.font.color, legend.font.size,
                        mult, decimals, suffix, values.hovertext.format,
                        treat.NA.as.0, n.categories, categories, format.function, map.type,
                        background, ocean.color, hovertext.font.family, hovertext.font.size)
@@ -449,8 +450,22 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA,
         document.querySelector('.leaflet-container').style.backgroundColor = '", ocean.color, "';
         document.querySelector('.leaflet-container').style.font = '",
             hovertext.font.size, "px ", hovertext.font.family, "';
+        document.querySelector('.leaflet-control-layers-expanded').style.backgroundColor = 'transparent';
+        document.querySelector('.leaflet-control-layers-expanded').style.border = 'none';
+        document.querySelector('.leaflet-control-layers-expanded').style.color = '", legend.font.color, "';
+        document.querySelector('.info.legend.leaflet-control').style.boxShadow = 'none';
+        document.querySelector('.info.legend.leaflet-control').style.backgroundColor = 'transparent';
         document.querySelector('.info.legend.leaflet-control').style.font = '",
             legend.font.size, "px ", legend.font.family, "';
+        document.querySelector('.leaflet-control-zoom-out').style.backgroundColor = 'transparent';
+        document.querySelector('.leaflet-control-zoom-out').style.border = 'none';
+        document.querySelector('.leaflet-control-zoom-out').style.color = '", legend.font.color, "';
+        document.querySelector('.leaflet-control-zoom-in').style.backgroundColor = 'transparent';
+        document.querySelector('.leaflet-control-zoom-in').style.color = '", legend.font.color, "';
+        var ticks = document.querySelectorAll('.legend svg text');
+        for (var i = 0; i < ticks.length; i++) {
+            ticks[i].style.fill = '", legend.font.color, "';
+        }
     }")
     map <- onRender(map, js)
     map
@@ -571,7 +586,7 @@ plotlyMap <- function(table, name.map, colors, min.value, max.range, color.NA, l
             annotations = list(setSubtitle(subtitle, subtitle.font, margins),
                                setTitle(title, title.font, margins),
                                setFooter(footer, footer.font, margins)),
-            hoverlabel = list(namelength = -1,
+            hoverlabel = list(namelength = -1, bordercolor = "transparent",
             font = list(family = hovertext.font.family, color = "white", size = hovertext.font.size)),
             paper_bgcolor = 'transparent'
         )
