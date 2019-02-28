@@ -451,18 +451,34 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA,
         map <- setView(map, -96, 37.8, zoom = 4)
 
     # Set the background color
+    panel.bg <- if (background) 'rgba(255,255,255,0.2)' else 'transparent'
     js <- paste0("function(){
         document.querySelector('.leaflet-container').style.backgroundColor = '", ocean.color, "';
         document.querySelector('.leaflet-container').style.font = '",
             legend.font.size, "px ", legend.font.family, "';", categoryControls, "
         document.querySelector('.info.legend.leaflet-control').style.boxShadow = 'none';
-        document.querySelector('.info.legend.leaflet-control').style.backgroundColor = 'transparent';
+        document.querySelector('.info.legend.leaflet-control').style.borderRadius = '2px';
+        document.querySelector('.info.legend.leaflet-control').style.backgroundColor = '", panel.bg, "';
         document.querySelector('.info.legend.leaflet-control').style.font = '",
             legend.font.size, "px ", legend.font.family, "';
-        document.querySelector('.leaflet-control-zoom-out').style.backgroundColor = 'transparent';
+        document.querySelector('.leaflet-control-zoom').style.border = 'none';
+        document.querySelector('.leaflet-control-zoom-out').style.backgroundColor = 'rgba(255,255,255,0.2)';
         document.querySelector('.leaflet-control-zoom-out').style.border = 'none';
+        document.querySelector('.leaflet-control-zoom-out').style.borderRadius = '2px';
+        document.querySelector('.leaflet-control-zoom-out').style.fontSize = '", legend.font.size, "px';
+        document.querySelector('.leaflet-control-zoom-out').style.fontWeight = 'bold';
+        document.querySelector('.leaflet-control-zoom-out').style.width = '", 2*legend.font.size, "px';
+        document.querySelector('.leaflet-control-zoom-out').style.height = '", 2*legend.font.size, "px';
+        document.querySelector('.leaflet-control-zoom-out').style.lineHeight = '", 2*legend.font.size, "px';
         document.querySelector('.leaflet-control-zoom-out').style.color = '", legend.font.color, "';
-        document.querySelector('.leaflet-control-zoom-in').style.backgroundColor = 'transparent';
+        document.querySelector('.leaflet-control-zoom-in').style.backgroundColor = 'rgba(255,255,255,0.2)';
+        document.querySelector('.leaflet-control-zoom-in').style.border = 'none';
+        document.querySelector('.leaflet-control-zoom-in').style.borderRadius = '2px';
+        document.querySelector('.leaflet-control-zoom-in').style.fontSize = '", legend.font.size, "px';
+        document.querySelector('.leaflet-control-zoom-in').style.fontWeight = 'bold';
+        document.querySelector('.leaflet-control-zoom-in').style.width = '", 2*legend.font.size, "px';
+        document.querySelector('.leaflet-control-zoom-in').style.height = '", 2*legend.font.size, "px';
+        document.querySelector('.leaflet-control-zoom-in').style.lineHeight = '", 2*legend.font.size, "px';
         document.querySelector('.leaflet-control-zoom-in').style.color = '", legend.font.color, "';
         var ticks = document.querySelectorAll('.legend svg text');
         for (var i = 0; i < ticks.length; i++) {
