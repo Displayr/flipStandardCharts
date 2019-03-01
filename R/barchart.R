@@ -279,7 +279,6 @@ Bar <- function(x,
     for (i in 1:ncol(chart.matrix))
     {
         y <- as.numeric(chart.matrix[, i])
-        y.filled <- ifelse(is.finite(y), y, 0)
         x <- x.labels
 
         marker <- list(color = toRGB(colors[i], alpha = opacity),
@@ -296,7 +295,7 @@ Bar <- function(x,
         }
 
         # this is the main trace for each data series
-        p <- add_trace(p, x = y.filled, y = x, type = "bar", orientation = "h",
+        p <- add_trace(p, x = y, y = x, type = "bar", orientation = "h",
                        marker = marker, name  =  legend.text[i],
                        text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),
@@ -304,7 +303,7 @@ Bar <- function(x,
                        hoverinfo  = setHoverText(yaxis, chart.matrix, is.bar = TRUE), legendgroup = i)
 
         # add scatter trace to ensure hover is always shown
-        p <- add_trace(p, x = y.filled, y = x, type = "scatter", name = legend.text[i],
+        p <- add_trace(p, x = y, y = x, type = "scatter", name = legend.text[i],
                        mode = "markers", marker = list(color = "transparent"),
                        text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),

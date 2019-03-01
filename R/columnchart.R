@@ -449,7 +449,6 @@ Column <- function(x,
     for (i in 1:ncol(chart.matrix))
     {
         y <- as.numeric(chart.matrix[, i])
-        y.filled <- ifelse(is.finite(y), y, 0)
         x <- x.labels
         marker <- list(color = toRGB(colors[i], alpha = opacity),
                       line = list(color = toRGB(marker.border.colors[i],
@@ -466,7 +465,7 @@ Column <- function(x,
                            hoverinfo = "none", showlegend = FALSE, opacity = 0)
 
         # this is the main trace for each data series
-        p <- add_trace(p, x = x, y = y.filled, type = "bar",
+        p <- add_trace(p, x = x, y = y, type = "bar",
                        orientation = "v", marker = marker, name = legend.text[i],
                        text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),
