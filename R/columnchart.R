@@ -458,9 +458,9 @@ Column <- function(x,
         # Add invisible line to force all categorical labels to be shown
         # Type "scatter" ensures y-axis tick bounds are treated properly
         # but it also adds extra space next to the y-axis
-        if (!is.stacked && i == 1)
+        if (i == 1)
             p <- add_trace(p, x = x, y = rep(min(y,na.rm = T), length(x)),
-                           mode = if (notAutoRange(yaxis)) "markers" else "lines",
+                           mode = "markers", #if (notAutoRange(yaxis)) "markers" else "lines",
                            type = "scatter", cliponaxis = TRUE,
                            hoverinfo = "none", showlegend = FALSE, opacity = 0)
 
