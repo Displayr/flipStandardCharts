@@ -48,3 +48,10 @@ test_that("MissingCasesPlot",
     expect_error(MissingCasesPlot(tb), NA)
     expect_error(MissingCasesPlot(small), NA)
 })
+
+test_that("Pyramid handles missing values",
+{
+    x <- c(1e-04, 2, 3, 4, NA, 0, 5)
+    expect_error(Pyramid(x), NA)
+})
+

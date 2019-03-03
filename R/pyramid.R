@@ -114,7 +114,8 @@ Pyramid <- function(x,
             x <- x[,1]
         }
     }
-    if (any(sign(x) * sign(x)[1] < 0))
+    ss <- sign(x[is.finite(x)])
+    if (any(ss * ss[1] < 0))
         stop("'Pyramid' charts cannot show a mixture of positive and negative values.")
     chart.matrix <- checkMatrixNames(x)
     if (bar.gap < 0.0 || bar.gap >= 1.0)
