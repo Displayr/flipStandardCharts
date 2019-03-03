@@ -472,6 +472,16 @@ Column <- function(x,
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family)),
                        hoverinfo  = setHoverText(xaxis, chart.matrix), legendgroup = i)
+
+        # add scatter trace to ensure hover is always shown
+        p <- add_trace(p, x = x, y = y, type = "scatter", name = legend.text[i],
+                       mode = "lines", line = list(color = "transparent"),
+                       text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
+                       hoverlabel = list(font = list(color = autoFontColor(colors[i]),
+                       size = hovertext.font.size, family = hovertext.font.family),
+                       bgcolor = colors[i]), showlegend = FALSE,
+                       hoverinfo  = setHoverText(xaxis, chart.matrix, is.bar = TRUE))
+
         if (fit.type != "None" && is.stacked && i == 1)
             warning("Line of best fit not shown for stacked charts.")
         if (fit.type != "None" && !is.stacked)
@@ -552,7 +562,7 @@ Column <- function(x,
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
         hoverlabel = list(namelength = -1, bordercolor = "transparent", 
             font = list(size = hovertext.font.size, family = hovertext.font.family)),
-        hovermode = if (tooltip.show) "x" else FALSE,
+        hovermode = if (tooltip.show) "closest" else FALSE,
         annotations =  annotations,
         bargap = bar.gap,
         barmode = barmode
