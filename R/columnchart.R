@@ -480,7 +480,7 @@ Column <- function(x,
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family),
                        bgcolor = colors[i]), showlegend = FALSE,
-                       hoverinfo  = setHoverText(xaxis, chart.matrix, is.bar = TRUE))
+                       hoverinfo  = setHoverText(xaxis, chart.matrix))
 
         if (fit.type != "None" && is.stacked && i == 1)
             warning("Line of best fit not shown for stacked charts.")
