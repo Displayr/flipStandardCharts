@@ -450,8 +450,10 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA,
     if (map.type == "United States of America" || map.type == "regions")
         map <- setView(map, -96, 37.8, zoom = 4)
 
-    # Set the background color
-    panel.bg <- if (background) 'rgba(255,255,255,0.2)' else 'transparent'
+    # Make legend semi-opaque if background is used to make it easier to read
+    panel.bg <- if (background) 'rgba(220,220,220,0.4)' else 'transparent'
+
+    # Apply setting for background color and adjust font/appearance
     js <- paste0("function(){
         document.querySelector('.leaflet-container').style.backgroundColor = '", ocean.color, "';
         document.querySelector('.leaflet-container').style.font = '",
@@ -462,23 +464,13 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA,
         document.querySelector('.info.legend.leaflet-control').style.font = '",
             legend.font.size, "px ", legend.font.family, "';
         document.querySelector('.leaflet-control-zoom').style.border = 'none';
-        document.querySelector('.leaflet-control-zoom-out').style.backgroundColor = 'rgba(255,255,255,0.2)';
+        document.querySelector('.leaflet-control-zoom-out').style.backgroundColor = 'rgba(220,220,220,0.2)';
         document.querySelector('.leaflet-control-zoom-out').style.border = 'none';
         document.querySelector('.leaflet-control-zoom-out').style.borderRadius = '2px';
-        document.querySelector('.leaflet-control-zoom-out').style.fontSize = '", legend.font.size, "px';
-        document.querySelector('.leaflet-control-zoom-out').style.fontWeight = 'bold';
-        document.querySelector('.leaflet-control-zoom-out').style.width = '", 2*legend.font.size, "px';
-        document.querySelector('.leaflet-control-zoom-out').style.height = '", 2*legend.font.size, "px';
-        document.querySelector('.leaflet-control-zoom-out').style.lineHeight = '", 2*legend.font.size, "px';
         document.querySelector('.leaflet-control-zoom-out').style.color = '", legend.font.color, "';
-        document.querySelector('.leaflet-control-zoom-in').style.backgroundColor = 'rgba(255,255,255,0.2)';
+        document.querySelector('.leaflet-control-zoom-in').style.backgroundColor = 'rgba(220,220,220,0.2)';
         document.querySelector('.leaflet-control-zoom-in').style.border = 'none';
         document.querySelector('.leaflet-control-zoom-in').style.borderRadius = '2px';
-        document.querySelector('.leaflet-control-zoom-in').style.fontSize = '", legend.font.size, "px';
-        document.querySelector('.leaflet-control-zoom-in').style.fontWeight = 'bold';
-        document.querySelector('.leaflet-control-zoom-in').style.width = '", 2*legend.font.size, "px';
-        document.querySelector('.leaflet-control-zoom-in').style.height = '", 2*legend.font.size, "px';
-        document.querySelector('.leaflet-control-zoom-in').style.lineHeight = '", 2*legend.font.size, "px';
         document.querySelector('.leaflet-control-zoom-in').style.color = '", legend.font.color, "';
         var ticks = document.querySelectorAll('.legend svg text');
         for (var i = 0; i < ticks.length; i++) {
