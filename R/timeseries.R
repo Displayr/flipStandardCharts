@@ -61,8 +61,8 @@ TimeSeries <- function(x = NULL,
 
     row.names <- AsDateTime(rownames(x), on.parse.failure = "silent")
     if (all(is.na(row.names)))
-        stop("Time series requires that the row names of the data must be dates",
-             " but the row names cannot be interpreted as dates.")
+        stop("Time series charts require dates to be supplied as the row names or first column",
+             "if the Data source is a table; or the first variable if variables are provided as the Data source.")
     is.time <- !all(format(row.names, format = "%H:%M:%S") == "00:00:00")
     rownames(x) <- as.character(row.names)
 
