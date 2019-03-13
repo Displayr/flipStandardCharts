@@ -86,7 +86,7 @@ test_that("Time series inputs",
 {
     google.df <- data.frame(Values = as.numeric(google.trends),
                             Time = as.Date(rownames(google.trends)))
-    expect_error(TimeSeries(google.df), "Time series charts require dates to be supplied as the row names if the Data source is a table; the first column if the data is pasted or typed; or the first variable if variables are provided as the Data source.")
+    expect_error(TimeSeries(google.df))
 
 })
 
