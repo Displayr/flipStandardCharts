@@ -43,6 +43,7 @@ Imports:
     XML,
     xts,
 Remotes:
+    cran/rgdal@1.3-9,
     Displayr/flipU,
     Displayr/flipChartBasics,
     Displayr/flipData,
