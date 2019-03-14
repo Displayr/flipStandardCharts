@@ -388,7 +388,7 @@ Scatter <- function(x = NULL,
             scatter.colors <- as.factor(scatter.colors)
 
         scatter.colors.as.numeric <- 1
-        groups <- 1:n
+        groups <- rep(1, n)
         col.tmp <- AsNumeric(scatter.colors, binary = FALSE)
         if (is.null(col.min))
             col.min <- min(col.tmp, na.rm = TRUE)
@@ -560,9 +560,9 @@ Scatter <- function(x = NULL,
                     else list(width = line.thickness, color = line.colors[ggi])
         if (ggi == 1 && scatter.colors.as.numeric)
             marker.obj <- list(size = tmp.size, sizemode = "diameter", opacity = opacity,
-                            line = list(width = marker.border.width,
-                            color = toRGB(marker.border.colors[ggi], alpha = marker.border.opacity)),
-                            color = colors[ggi], colorscale = col.scale, cmin = col.min, cmax = col.max,
+                            color = colors, line = list(width = marker.border.width,
+                            color = toRGB(marker.border.colors, alpha = marker.border.opacity)),
+                            colorscale = col.scale, cmin = col.min, cmax = col.max,
                             showscale = colorbar.show, colorbar = colorbar)
         else
             marker.obj <- list(size = tmp.size, sizemode = "diameter", opacity = opacity,
