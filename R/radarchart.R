@@ -204,9 +204,9 @@ Radar <- function(x,
                                  subtitle.font.size, footer.font.size)
     xaxis = list(title = "", showgrid = F, zeroline = F, showticklabels = F,
                categoryorder = "array", categoryarray = g.list)
-    yaxis = list(title = "", showgrid = F, zeroline = F, showticklabels = F)
-    
-    legend.text <- autoFormatLongLabels(colnames(chart.matrix), legend.wrap, legend.wrap.nchar) 
+    yaxis = list(title = "", showgrid = F, zeroline = F, showticklabels = F, scaleanchor = "x", scaleratio = 1)
+
+    legend.text <- autoFormatLongLabels(colnames(chart.matrix), legend.wrap, legend.wrap.nchar)
     margins <- setMarginsForLegend(margins, legend.show, legend, legend.text, type = "radar")
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
@@ -234,7 +234,7 @@ Radar <- function(x,
         {
             gpos <- getPolarCoord(rep(tt, n))
             for (i in 1:n)
-                grid[[length(grid)+1]] <- list(type = "line", layer = "below", 
+                grid[[length(grid)+1]] <- list(type = "line", layer = "below",
                      x0 = gpos[i,1], x1 = gpos[i+1,1], y0 = gpos[i,2], y1 = gpos[i+1,2],
                      line = list(width = y.grid.width * grid.show, dash = "dot",
                      xref = "x", yref = "y", color = y.grid.color))
@@ -281,9 +281,9 @@ Radar <- function(x,
     hovertext.show <- vectorize(hovertext.show, n)
     data.label.show <- vectorize(data.label.show, n)
     data.label.font.color <- vectorize(data.label.font.color, n)
-    data.label.font = lapply(data.label.font.color, 
+    data.label.font = lapply(data.label.font.color,
         function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
-    
+
     # Main trace
     for (ggi in 1:n)
     {
@@ -328,12 +328,12 @@ Radar <- function(x,
     {
         for (i in 1:length(tick.vals))
             annotations[[annot.len+3+i]] <- list(x = 0, y = tick.vals[i],
-                font = y.tick.font, showarrow = FALSE, xanchor = "right", 
+                font = y.tick.font, showarrow = FALSE, xanchor = "right",
                 xshift = -5, xref = "x", yref = "y",
                 text = paste0(y.tick.prefix, tick.format.function(tick.vals[i],
                              decimals = y.tick.decimals), y.tick.suffix))
     }
-    p <- layout(p, margin = margins, 
+    p <- layout(p, margin = margins,
             annotations = annotations,
             plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
             paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
