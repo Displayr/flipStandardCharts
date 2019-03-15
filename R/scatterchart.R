@@ -22,7 +22,7 @@
 #' @param sz.min Parameter to control scaling of scatter.sizes, used by SmallMultiples
 #' @param sz.max Parameter to control scaling of scatter.sizes, used by SmallMultiples
 #' @param sz.scale Parameter to control scaling of scatter.sizes. Marker size (in pixels) of 
-#'   the points with the largest value of \code{scatter.size}.
+#'   the points with the largest value of \code{scatter.size}. This defaults to 100/6 of \code{marker.size}.
 #' @param col.min Parameter to control scaling of scatter.colors, used by SmallMultiples
 #' @param col.max Parameter to control scaling of scatter.colors, used by SmallMultiples
 #' @param ... Extra arguments that are ignored.
@@ -170,7 +170,7 @@ Scatter <- function(x = NULL,
                          marker.border.width = 1,
                          marker.border.colors = colors,
                          marker.border.opacity = NULL,
-                         marker.size = NULL,
+                         marker.size = 6,
                          swap.x.and.y = FALSE,
                          small.mult.index = NULL,
                          sz.min = NULL,
@@ -207,10 +207,16 @@ Scatter <- function(x = NULL,
     warning.prefix <- if (!is.null(small.mult.index)) paste0("Chart ", small.mult.index, ": ") else ""
 
     # Specify marker size defaults. This ensures existing charts are not changed
-    if (is.null(sz.scale))
-        sz.scale <- if (is.null(marker.size)) 50 else marker.size
-    if (is.null(marker.size))
-        marker.size <- 6
+    if (!is.null(scatter.sizes))
+    {
+        if (is.null(sz.scale))
+            sz.scale <- 100/6 * marker.size
+
+        # Marker size used in legend
+        # This is fixed to match behaviour of LabeledScatter
+        # (It also useful to keep it small because space in the legend is limited)
+        marker.size <- 12
+    }    
 
     # Grouping font attributes to simplify passing to plotly
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
