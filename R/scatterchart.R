@@ -206,17 +206,6 @@ Scatter <- function(x = NULL,
         y.hovertext.format <- y.tick.format
     warning.prefix <- if (!is.null(small.mult.index)) paste0("Chart ", small.mult.index, ": ") else ""
 
-    # Specify marker size defaults. This ensures existing charts are not changed
-    if (!is.null(scatter.sizes))
-    {
-        if (is.null(sz.scale))
-            sz.scale <- 100/6 * marker.size
-
-        # Marker size used in legend
-        # This is fixed to match behaviour of LabeledScatter
-        # (It also useful to keep it small because space in the legend is limited)
-        marker.size <- 12
-    }    
 
     # Grouping font attributes to simplify passing to plotly
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
@@ -272,6 +261,18 @@ Scatter <- function(x = NULL,
     }
     if (is.null(scatter.labels) && !is.null(names(x)))
         scatter.labels <- names(x)
+
+    # Specify marker size defaults. This ensures existing charts are not changed
+    if (!is.null(scatter.sizes))
+    {
+        if (is.null(sz.scale))
+            sz.scale <- 50/6 * marker.size
+
+        # Marker size used in legend
+        # This is fixed to match behaviour of LabeledScatter
+        # (It also useful to keep it small because space in the legend is limited)
+        marker.size <- 12
+    }    
 
     # Warning if non-default selected but corresponding data is missing
     if (is.null(small.mult.index) && is.null(scatter.sizes) && scatter.sizes.as.diameter)
