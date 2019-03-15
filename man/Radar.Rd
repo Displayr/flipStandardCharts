@@ -7,7 +7,8 @@
 Radar(x, title = "", title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
   colors = ChartColors(max(1, ncol(x), na.rm = TRUE)), opacity = NULL,
-  background.fill.color = "transparent", background.fill.opacity = 1,
+  aspect.fixed = TRUE, background.fill.color = "transparent",
+  background.fill.opacity = 1,
   charting.area.fill.color = background.fill.color,
   charting.area.fill.opacity = 0, legend.show = TRUE,
   legend.wrap = TRUE, legend.wrap.nchar = 30,
@@ -63,6 +64,9 @@ format (e.g. "black") or a hex code.}
 \item{colors}{Character; a vector containing one or more colors specified as hex codes.}
 
 \item{opacity}{Opacity of area fill colors as an alpha value (0 to 1).}
+
+\item{aspect.fixed}{Logical; whether to fix aspect ratio. This should usually be set to true to avoid
+making a particular category look larger than the others. However, it is not supported with small-multiples.}
 
 \item{background.fill.color}{Background color in character format (e.g. "black") or a hex code.}
 

@@ -21,7 +21,8 @@
 #' @param small.mult.index Used by Small Multiples to add prefixes to warnings.
 #' @param sz.min Parameter to control scaling of scatter.sizes, used by SmallMultiples
 #' @param sz.max Parameter to control scaling of scatter.sizes, used by SmallMultiples
-#' @param sz.scale Parameter to control scaling of scatter.sizes, used by SmallMultiples
+#' @param sz.scale Parameter to control scaling of scatter.sizes. Marker size (in pixels) of 
+#'   the points with the largest value of \code{scatter.size}.
 #' @param col.min Parameter to control scaling of scatter.colors, used by SmallMultiples
 #' @param col.max Parameter to control scaling of scatter.colors, used by SmallMultiples
 #' @param ... Extra arguments that are ignored.
@@ -169,12 +170,12 @@ Scatter <- function(x = NULL,
                          marker.border.width = 1,
                          marker.border.colors = colors,
                          marker.border.opacity = NULL,
-                         marker.size = if (is.null(scatter.sizes)) 6 else 12,
+                         marker.size = NULL,
                          swap.x.and.y = FALSE,
                          small.mult.index = NULL,
                          sz.min = NULL,
                          sz.max = NULL,
-                         sz.scale = 50,
+                         sz.scale = NULL,
                          col.min = NULL,
                          col.max = NULL)
 {
@@ -204,6 +205,12 @@ Scatter <- function(x = NULL,
     if (sum(nchar(y.hovertext.format)) == 0)
         y.hovertext.format <- y.tick.format
     warning.prefix <- if (!is.null(small.mult.index)) paste0("Chart ", small.mult.index, ": ") else ""
+
+    # Specify marker size defaults. This ensures existing charts are not changed
+    if (is.null(sz.scale))
+        sz.scale <- if (is.null(marker.size)) 50 else marker.size
+    if (is.null(marker.size))
+        marker.size <- 6
 
     # Grouping font attributes to simplify passing to plotly
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)

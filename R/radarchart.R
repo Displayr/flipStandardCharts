@@ -12,6 +12,8 @@
 #' @param x.tick.show  Whether to display the x-axis tick labels (i.e. labels around the sides of the radar chart)
 #' @param line.thickness Thickness of outline of radar polygons.
 #' @param hovertext.show Logical; whether to show hovertext.
+#' @param aspect.fixed Logical; whether to fix aspect ratio. This should usually be set to true to avoid
+#'      making a particular category look larger than the others. However, it is not supported with small-multiples.
 #' @importFrom grDevices rgb
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom plotly plot_ly layout config
@@ -24,6 +26,7 @@ Radar <- function(x,
                     title.font.size = 16,
                     colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
                     opacity = NULL,
+                    aspect.fixed = TRUE,
                     background.fill.color =  "transparent",
                     background.fill.opacity = 1,
                     charting.area.fill.color = background.fill.color,
@@ -202,9 +205,10 @@ Radar <- function(x,
         subtitle <- paste0("<br>&nbsp;", subtitle, "<br>&nbsp;") # extra vertical space
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
-    xaxis = list(title = "", showgrid = F, zeroline = F, showticklabels = F,
+    xaxis = list(title = "", showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE,
                categoryorder = "array", categoryarray = g.list)
-    yaxis = list(title = "", showgrid = F, zeroline = F, showticklabels = F, scaleanchor = "x", scaleratio = 1)
+    yaxis = list(title = "", showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE,
+               scaleanchor = if (aspect.fixed) "x" else NULL, scaleratio = 1)
 
     legend.text <- autoFormatLongLabels(colnames(chart.matrix), legend.wrap, legend.wrap.nchar)
     margins <- setMarginsForLegend(margins, legend.show, legend, legend.text, type = "radar")

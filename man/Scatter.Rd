@@ -72,9 +72,9 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1,
   hovertext.font.family = global.font.family, hovertext.font.size = 11,
   line.thickness = 0, line.colors = colors, marker.border.width = 1,
   marker.border.colors = colors, marker.border.opacity = NULL,
-  marker.size = if (is.null(scatter.sizes)) 6 else 12,
-  swap.x.and.y = FALSE, small.mult.index = NULL, sz.min = NULL,
-  sz.max = NULL, sz.scale = 50, col.min = NULL, col.max = NULL)
+  marker.size = NULL, swap.x.and.y = FALSE, small.mult.index = NULL,
+  sz.min = NULL, sz.max = NULL, sz.scale = NULL, col.min = NULL,
+  col.max = NULL)
 }
 \arguments{
 \item{x}{A numeric vector for the x-axis coordinates (which may be named); or a matrix or datarame; or a list of matrices where each matrix share the same row and column names.}
@@ -415,7 +415,8 @@ if \code{scatter.colors.as.categorical}.}
 
 \item{sz.max}{Parameter to control scaling of scatter.sizes, used by SmallMultiples}
 
-\item{sz.scale}{Parameter to control scaling of scatter.sizes, used by SmallMultiples}
+\item{sz.scale}{Parameter to control scaling of scatter.sizes. Marker size (in pixels) of 
+the points with the largest value of \code{scatter.size}.}
 
 \item{col.min}{Parameter to control scaling of scatter.colors, used by SmallMultiples}
 

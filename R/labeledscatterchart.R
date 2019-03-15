@@ -231,6 +231,8 @@ LabeledScatter <- function(x = NULL,
     }
     if (any(duplicated(cbind(x, y))))
         warning("Chart contains overlapping points in the same position.")
+    if (is.null(marker.size) || is.na(marker.size))
+        marker.size <- 6
 
     # Unlike plotly scatterplots, axis can only deal with numeric data
     x <- AsNumeric(x, binary = FALSE)
