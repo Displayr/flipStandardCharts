@@ -140,7 +140,7 @@ test_that("Venn",
                 # Numeric input - 5D
                 Venn(x[,1:5])
                 # Numeric input - 6D
-                expect_error(Venn(x[,1:6]))
+                Venn(x[,1:6])
                 # Numeric input - 1D
                 expect_error(Venn(x[,1]))
                 # Factor input

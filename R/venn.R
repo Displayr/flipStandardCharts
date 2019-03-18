@@ -73,8 +73,8 @@ Venn <- function(x = NULL,
     # Creating the Venn diagram
     vv <- d3vennR(data = x, fontSize = data.label.font.size)
     vv$x$tasks <- list(
-        venn_tooltip(suffix = suffix, font.family = hovertext.font.family, 
-                     font.size = hovertext.font.size), 
+        venn_tooltip(suffix = suffix, font.family = hovertext.font.family,
+                     font.size = hovertext.font.size),
         venn_fontfamily(data.label.font.family))
     vv$sizingPolicy$browser$fill <- TRUE
     result <- list(htmlwidget = vv)
@@ -163,73 +163,41 @@ convertDataFrameIntoJSON <- function(x, nms, weights, data.label.decimals)
     .nm <- function(col) {nms[col + 1]}
     nms <- as.character(nms)
     k <- ncol(x)
-    error.msg <- "Venn diagrams can only be created with between 2 and 5 columns of data. You will need to create the input manually."
-    if (is.null(dim(x)))
-        stop(error.msg)
-    x <- if (k == 2)
-        list(
-            list("sets"= list(0), "label"= .nm(0), "size"= .sum(0)),
-            list("sets"= list(1), "label"= .nm(1), "size"= .sum(1)),
-            list("sets"= list(0, 1), "size"= .sum(0:1)))
-    else if (k == 3)
-        list(
-            list("sets"= list(0), "label"= .nm(0), "size"= .sum(0)),
-            list("sets"= list(1), "label"= .nm(1), "size"= .sum(1)),
-            list("sets"= list(2), "label"= .nm(2), "size"= .sum(2)),
-            list("sets"= list(0, 1), "size"= .sum(c(0, 1))),
-            list("sets"= list(0, 2), "size"= .sum(c(0, 2))),
-            list("sets"= list(1, 2), "size"= .sum(c(1, 2))),
-            list("sets"= list(0, 1, 2), "size"= .sum(c(0, 1, 2))))
-    else if (k == 4)
-        list(
-            list("sets"= list(0), "label"= .nm(0), "size"= .sum(0)),
-            list("sets"= list(1), "label"= .nm(1), "size"= .sum(1)),
-            list("sets"= list(2), "label"= .nm(2), "size"= .sum(2)),
-            list("sets"= list(3), "label"= .nm(3), "size"= .sum(3)),
-            list("sets"= list(0, 1), "size"= .sum(c(0, 1))),
-            list("sets"= list(0, 2), "size"= .sum(c(0, 2))),
-            list("sets"= list(0, 3), "size"= .sum(c(0, 3))),
-            list("sets"= list(1, 2), "size"= .sum(c(1, 2))),
-            list("sets"= list(1, 3), "size"= .sum(c(1, 3))),
-            list("sets"= list(2, 3), "size"= .sum(c(2, 3))),
-            list("sets"= list(0, 1, 2), "size"= .sum(c(0, 1, 2))),
-            list("sets"= list(0, 1, 3), "size"= .sum(c(0, 1, 3))),
-            list("sets"= list(0, 2, 3), "size"= .sum(c(0, 2, 3))),
-            list("sets"= list(1, 2, 3), "size"= .sum(c(1, 2, 3))),
-            list("sets"= list(0, 1, 2, 3), "size"= .sum(c(0, 1, 2, 3))))
-    else if (k == 5)
-        list(
-            list("sets"= list(0), "label"= .nm(0), "size"= .sum(0)),
-            list("sets"= list(1), "label"= .nm(1), "size"= .sum(1)),
-            list("sets"= list(2), "label"= .nm(2), "size"= .sum(2)),
-            list("sets"= list(3), "label"= .nm(3), "size"= .sum(3)),
-            list("sets"= list(4), "label"= .nm(4), "size"= .sum(4)),
-            list("sets"= list(0, 1), "size"= .sum(c(0, 1))),
-            list("sets"= list(0, 2), "size"= .sum(c(0, 2))),
-            list("sets"= list(0, 3), "size"= .sum(c(0, 3))),
-            list("sets"= list(0, 4), "size"= .sum(c(0, 4))),
-            list("sets"= list(1, 2), "size"= .sum(c(1, 2))),
-            list("sets"= list(1, 3), "size"= .sum(c(1, 3))),
-            list("sets"= list(1, 4), "size"= .sum(c(1, 4))),
-            list("sets"= list(2, 3), "size"= .sum(c(2, 3))),
-            list("sets"= list(2, 4), "size"= .sum(c(2, 4))),
-            list("sets"= list(3, 4), "size"= .sum(c(3, 4))),
-            list("sets"= list(0, 1, 2), "size"= .sum(c(0, 1, 2))),
-            list("sets"= list(0, 1, 3), "size"= .sum(c(0, 1, 3))),
-            list("sets"= list(0, 1, 4), "size"= .sum(c(0, 1, 4))),
-            list("sets"= list(0, 2, 3), "size"= .sum(c(0, 2, 3))),
-            list("sets"= list(0, 2, 4), "size"= .sum(c(0, 2, 4))),
-            list("sets"= list(0, 3, 4), "size"= .sum(c(0, 3, 4))),
-            list("sets"= list(1, 2, 3), "size"= .sum(c(1, 2, 3))),
-            list("sets"= list(1, 2, 4), "size"= .sum(c(1, 2, 4))),
-            list("sets"= list(1, 3, 4), "size"= .sum(c(1, 3, 4))),
-            list("sets"= list(2, 3, 4), "size"= .sum(c(2, 3, 4))),
-            list("sets"= list(0, 1, 2, 3), "size"= .sum(c(0, 1, 2, 3))),
-            list("sets"= list(0, 1, 2, 4), "size"= .sum(c(0, 1, 2, 4))),
-            list("sets"= list(0, 1, 3, 4), "size"= .sum(c(0, 1, 3, 4))),
-            list("sets"= list(0, 2, 3, 4), "size"= .sum(c(0, 2, 3, 4))),
-            list("sets"= list(1, 2, 3, 4), "size"= .sum(c(1, 2, 3, 4))),
-            list("sets"= list(0, 1, 2, 3, 4), "size"= .sum(c(0, 1, 2, 3, 4))))
-    else
-        stop(error.msg)
+
+    if (is.null(dim(drop(x))) || length(dim(drop(x))) != 2L || NCOL(x) == 1L)
+        stop("The supplied data needs to be a matrix or data.frame with at least two columns.")
+
+    all.subsets <- allSubsets(k)
+    sizes <- vapply(all.subsets, .sum, 0)
+    x <- makeSetList(all.subsets, sizes, nms)
+    return(x)
+}
+
+#' Creates all possible subsets of the integers 0, 1, 2,..., k-1
+#' for a supplied integer, k.
+#' @param size integer specifying largest set size, k
+#' @return a list containing all the subsets excluding the empty set
+#' and including the set {1, 2, ..., k}.
+#' @references Code modified from
+#' \url{http://rsnippets.blogspot.com/2012/04/generating-all-subsets-of-set.html}.
+#' @noRd
+allSubsets <- function(size) {
+    set <- 0:(size - 1)
+    idxs <- expand.grid(replicate(size, c(F, T), simplify = FALSE))
+    out <- apply(idxs, 1, function(idx) set[idx])
+    out <- out[-1]  # drop empty set
+    lens <- vapply(out, length, 0L)
+    out[order(lens, decreasing = FALSE)]
+}
+
+makeSetList <- function(sets, sizes, nms)
+    mapply(makeOneSet, sets, sizes, MoreArgs = list(nms = nms),
+           SIMPLIFY = FALSE, USE.NAMES = FALSE)
+
+makeOneSet <- function(set, size, nms)
+{
+    out <- list(sets = as.list(set), size = size)
+    if (length(set) == 1L)
+        out$label  <- nms[set+1]
+    return(out)
 }
