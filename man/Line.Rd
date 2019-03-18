@@ -4,10 +4,11 @@
 \alias{Line}
 \title{Line}
 \usage{
-Line(x, type = "Line", shape = c("linear", "spline")[1],
-  smoothing = 1, colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
-  opacity = NULL, fit.type = "None", fit.line.colors = colors,
-  fit.ignore.last = FALSE, fit.line.type = "dot", fit.line.width = 1,
+Line(x, type = "Line", line.type = "Solid", shape = c("linear",
+  "spline")[1], smoothing = 1, colors = ChartColors(max(1, ncol(x),
+  na.rm = TRUE)), opacity = NULL, fit.type = "None",
+  fit.line.colors = colors, fit.ignore.last = FALSE,
+  fit.line.type = "dot", fit.line.width = 1,
   fit.line.name = "Fitted", fit.line.opacity = 1,
   fit.CI.show = FALSE, fit.CI.colors = fit.line.colors,
   fit.CI.opacity = 0.4, global.font.family = "Arial",
@@ -60,6 +61,7 @@ Line(x, type = "Line", shape = c("linear", "spline")[1],
   marker.opacity = NULL, marker.size = 6, marker.border.width = 1,
   marker.border.colors = colors, marker.border.opacity = NULL,
   tooltip.show = TRUE, modebar.show = FALSE, data.label.show = FALSE,
+  data.label.position = "Top",
   data.label.font.family = global.font.family,
   data.label.font.color = global.font.color, data.label.font.size = 10,
   data.label.format = "", data.label.prefix = "",
@@ -71,6 +73,8 @@ to be plotted, with the name/rownames used as the column names of the chart. Num
 will be parsed automatically.}
 
 \item{type}{One of "Column", "Stacked Column" or "100\% Stacked Column"}
+
+\item{line.type}{Character; one of 'solid', 'dot', 'dashed'.}
 
 \item{shape}{Either "linear" for straight lines between data points or "spline" for curved lines.}
 
@@ -353,6 +357,8 @@ markers as an alpha value (0 to 1).}
 \item{modebar.show}{Logical; whether to show the zoom menu buttons or not.}
 
 \item{data.label.show}{Logical; whether to show data labels.}
+
+\item{data.label.position}{Character; one of 'top' or 'bottom'.}
 
 \item{data.label.font.family}{Character; font family for data label.}
 

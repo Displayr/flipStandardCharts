@@ -4,6 +4,8 @@
 #' @inherit Area
 #' @param shape Either "linear" for straight lines between data points or "spline" for curved lines.
 #' @param smoothing Numeric; smoothing if \code{shape} is "spline".
+#' @param line.type Character; one of 'solid', 'dot', 'dashed'.
+#' @param data.label.position Character; one of 'top' or 'bottom'.
 #' @examples
 #' z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L),
 #'       .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
@@ -16,6 +18,7 @@
 #' @export
 Line <-   function(x,
                     type = "Line",
+                    line.type = "Solid",
                     shape = c("linear", "spline")[1],
                     smoothing = 1,
                     colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
@@ -133,6 +136,7 @@ Line <-   function(x,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
                     data.label.show = FALSE,
+                    data.label.position = "Top",
                     data.label.font.family = global.font.family,
                     data.label.font.color = global.font.color,
                     data.label.font.size = 10,
@@ -172,8 +176,12 @@ Line <-   function(x,
         marker.border.opacity <- marker.opacity
     eval(colors) # not sure why, but this is necessary for bars to appear properly
 
+    line.type <- vectorize(tolower(line.type), ncol(chart.matrix))
     data.label.show <- vectorize(data.label.show, ncol(chart.matrix))
     dlab.color <- vectorize(data.label.font.color, ncol(chart.matrix))
+    dlab.pos <- vectorize(tolower(data.label.position), ncol(chart.matrix))
+    dlab.prefix <- vectorize(data.label.prefix, ncol(chart.matrix), split = NULL)
+    dlab.suffix <- vectorize(data.label.suffix, ncol(chart.matrix), split = NULL)
     data.label.font = lapply(dlab.color, 
         function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
@@ -188,7 +196,8 @@ Line <-   function(x,
     if (ncol(chart.matrix) == 1)
         legend.show <- FALSE
     legend <- setLegend(type, legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
-                        legend.border.color, legend.border.line.width, legend.position.x, legend.position.y)
+                        legend.border.color, legend.border.line.width, 
+                        legend.position.x, legend.position.y)
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
 
     # Format axis labels
@@ -253,10 +262,10 @@ Line <-   function(x,
         y <- as.numeric(chart.matrix[, i])
         x <- x.labels
 
-        lines <- list(width = line.thickness[i],
+        lines <- list(width = line.thickness[i], dash = line.type[i],
                       shape = shape, smoothing = smoothing,
                       color = toRGB(colors[i], alpha = opacity[i]))
-
+        
         # add invisible line to force all categorical labels to be shown
         if (i == 1)
             p <- add_trace(p, x = x, y = rep(min(y,na.rm = T), length(x)),
@@ -343,18 +352,18 @@ Line <-   function(x,
         {
             y <- as.numeric(chart.matrix[, i])
             x <- x.labels
-            source.text <- paste(data.label.prefix,
+            source.text <- paste(dlab.prefix[i],
                  data.label.function(chart.matrix[, i], decimals = data.label.decimals),
-                 data.label.suffix, sep = "")
+                 dlab.suffix[i], sep = "")
 
-            data.label.pos <- "top middle"
+            data.label.pos <- "top"
             data.label.offset <- line.thickness[i]/2
             if (!is.null(marker.show))
                 data.label.offset <- max(data.label.offset, marker.size)
             p <- add_trace(p, x = x, y = y, type = "scatter", name = y.label,
                    cliponaxis = FALSE, text = source.text, mode = "markers+text",
                    marker = list(size = data.label.offset, color="transparent"),
-                   textfont = data.label.font[[i]], textposition = data.label.pos,
+                   textfont = data.label.font[[i]], textposition = dlab.pos[i],
                    showlegend = FALSE, legendgroup = tmp.group,
                    hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                    size = hovertext.font.size, family = hovertext.font.family),

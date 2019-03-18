@@ -272,7 +272,7 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE, w
 }
 
 setLegend <- function(type, font, ascending, fill.color, fill.opacity, border.color, border.line.width,
-                      x.pos = 1.02, y.pos = 1.00, reversed = FALSE)
+                      x.pos = 1.02, y.pos = 1.00, reversed = FALSE, orientation = 'Vertical')
 {
     if (is.na(ascending))
         ascending <- !(grepl("Stacked", type) && !reversed) || grepl("Stacked Bar", type)
@@ -280,7 +280,7 @@ setLegend <- function(type, font, ascending, fill.color, fill.opacity, border.co
     return(list(bgcolor = toRGB(fill.color, alpha=fill.opacity),
             bordercolor = border.color,
             borderwidth = border.line.width,
-            orientation = 'v',
+            orientation = switch(orientation, Vertical = "v", Horizontal = "h", default = orientation),
             font = font,
             xanchor = "left",
             yanchor = "auto",
@@ -1101,7 +1101,7 @@ autoFontColor <- function (colors)
     return(ifelse(tmp.lum > 126, "#2C2C2C", "#FFFFFF"))
 }
 
-vectorize <- function(x, n)
+vectorize <- function(x, n, split = ",")
 {
     if (is.logical(x))
         return(suppressWarnings(rep(TRUE, n) & x))
@@ -1109,6 +1109,7 @@ vectorize <- function(x, n)
     if (is.numeric(x))
         return(suppressWarnings(rep(0, n) + x))
 
-    x <- TextAsVector(x)
+    if (!is.null(split))
+        x <- TextAsVector(x, split = split)
     return(suppressWarnings(paste0(x, rep("", n))))
 }
