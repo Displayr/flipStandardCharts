@@ -5,7 +5,8 @@
 \title{TimeSeries}
 \usage{
 TimeSeries(x = NULL, range.bars = FALSE, colors = NULL,
-  line.thickness = NULL, legend.width = 250, window.start = NULL,
+  line.thickness = NULL, legend.width = 250,
+  legend.split.lines = FALSE, window.start = NULL,
   global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
   maxColorValue = 255), title = "",
   title.font.family = global.font.family,
@@ -18,7 +19,8 @@ TimeSeries(x = NULL, range.bars = FALSE, colors = NULL,
   y.title.font.family = global.font.family, y.title.font.size = 12,
   y.tick.font.color = global.font.color,
   y.tick.font.family = global.font.family, y.tick.font.size = 10,
-  y.tick.format = "", hovertext.font.size = 11,
+  y.tick.format = "", y.bounds.minimum = NULL,
+  y.bounds.maximum = NULL, hovertext.font.size = 11,
   hovertext.font.color = global.font.color,
   hovertext.font.family = global.font.family,
   y.hovertext.format = y.tick.format)
@@ -33,7 +35,7 @@ multiple series.}
 
 \item{line.thickness}{Integer; The width of the lines connecting data points.}
 
-\item{legend.width}{Integer; Width (in pixels) of the legend.}
+\item{legend.width}{Integer; Width (in pixels) of the legend. Deprecated.}
 
 \item{window.start}{The number of days before the end of the data series to start the range selector window.}
 
@@ -91,6 +93,11 @@ in character format (e.g. "black") or an a hex code.}
 
 \item{y.tick.format}{A string representing a d3 formatting code.
 See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
+
+\item{y.bounds.minimum}{Minimum of range for plotting; For a date axis this should be supplied as a date string.
+For a categorical axis, the index of the category (0-based) should be used.}
+
+\item{y.bounds.maximum}{Maximum of range for plotting; NULL = no manual range set.}
 
 \item{hovertext.font.size}{Integer; Legend font size.}
 

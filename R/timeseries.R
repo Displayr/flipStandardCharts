@@ -9,7 +9,7 @@
 #' multiple series.
 #' @param colors Character; a named color from grDevices OR a hex value color.
 #' @param line.thickness Integer; The width of the lines connecting data points.
-#' @param legend.width Integer; Width (in pixels) of the legend.
+#' @param legend.width Integer; Width (in pixels) of the legend. Deprecated.
 #' @param window.start The number of days before the end of the data series to start the range selector window.
 #' @param hovertext.font.color Legend font color as a named color in character
 #' format (e.g. "black") or a hex code.
@@ -26,6 +26,7 @@ TimeSeries <- function(x = NULL,
                     colors = NULL,
                     line.thickness = NULL,
                     legend.width = 250,
+                    legend.split.lines = FALSE,
                     window.start = NULL,
                     global.font.family = "Arial",
                     global.font.color = rgb(44, 44, 44, maxColorValue = 255),
@@ -48,10 +49,12 @@ TimeSeries <- function(x = NULL,
                     y.tick.font.family = global.font.family,
                     y.tick.font.size = 10,
                     y.tick.format = "",
+                    y.bounds.minimum = NULL,
+                    y.bounds.maximum = NULL,
                     hovertext.font.size = 11,
                     hovertext.font.color = global.font.color,
                     hovertext.font.family = global.font.family,
-                    y.hovertext.format= y.tick.format)
+                    y.hovertext.format = y.tick.format)
 {
 
     if (is.null(dim(x)) || length(dim(x)) == 1L)
@@ -131,7 +134,12 @@ TimeSeries <- function(x = NULL,
     write(css, "dygraph.css")
 
     dg <- dygraph(x, main = title, xlab = x.title, ylab = y.title)
+    
+    y.bounds.minimum <- charToNumeric(y.bounds.minimum)
+    if (is.null(y.bounds.minimum))
+        y.bounds.minimum <- min(0, x)
     dg <- dyAxis(dg, "y",
+        valueRange = c(charToNumeric(y.bounds.minimum), charToNumeric(y.bounds.maximum)),
         valueFormatter = if (percentFromD3(y.hovertext.format)) 'function(d){return Math.round(d*100) + "%"}' else NULL,
         axisLabelFormatter = if (percentFromD3(y.tick.format)) 'function(d){return Math.round(d*100) + "%"}' else NULL)
     if (range.bars)
@@ -146,7 +154,18 @@ TimeSeries <- function(x = NULL,
     if (!range.bars && ncol(x) != 1)
         colors <- "#888888"
     dg <- dyRangeSelector(dg, fillColor = colors, dateWindow = c(range.start, range.end))
-    dg <- dyLegend(dg, width = legend.width)
+    dg <- dyLegend(dg, labelsSeparateLines = legend.split.lines)
+    
+    js <- paste0("function(){
+        var elem = document.querySelector('.dygraph-legend');
+        elem.removeAttribute('style', 'width');
+        document.querySelector('.dygraph-legend').style.font = '", hovertext.font.size, "px ",
+            hovertext.font.family, "';
+        document.querySelector('.dygraph-legend').style.backgroundColor = 'rgba(256,256,256,0.4)';
+        document.querySelector('.dygraph-legend').style.position = 'absolute';
+        document.querySelector('.dygraph-legend').style.right = '0px';
+        }")
+    dg <- onRender(dg, js)
 
     result <- list(htmlwidget = dg)
     class(result) <- "StandardChart"
