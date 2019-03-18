@@ -26,7 +26,7 @@ TimeSeries <- function(x = NULL,
                     colors = NULL,
                     line.thickness = NULL,
                     legend.width = 250,
-                    legend.split.lines = FALSE,
+                    legend.orientation = "Horizontal",
                     window.start = NULL,
                     global.font.family = "Arial",
                     global.font.color = rgb(44, 44, 44, maxColorValue = 255),
@@ -154,7 +154,7 @@ TimeSeries <- function(x = NULL,
     if (!range.bars && ncol(x) != 1)
         colors <- "#888888"
     dg <- dyRangeSelector(dg, fillColor = colors, dateWindow = c(range.start, range.end))
-    dg <- dyLegend(dg, labelsSeparateLines = legend.split.lines)
+    dg <- dyLegend(dg, labelsSeparateLines = tolower(substr(legend.orientation,1,1)) == "v")
     
     js <- paste0("function(){
         var elem = document.querySelector('.dygraph-legend');

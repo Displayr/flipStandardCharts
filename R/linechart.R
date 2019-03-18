@@ -55,6 +55,7 @@ Line <-   function(x,
                     charting.area.fill.color = background.fill.color,
                     charting.area.fill.opacity = 0,
                     legend.show = TRUE,
+                    legend.orientation = "Vertical",
                     legend.wrap = TRUE,
                     legend.wrap.nchar = 30,
                     legend.fill.color = background.fill.color,
@@ -64,8 +65,8 @@ Line <-   function(x,
                     legend.font.color = global.font.color,
                     legend.font.family = global.font.family,
                     legend.font.size = 10,
-                    legend.position.x = 1.02,
-                    legend.position.y = 1.00,
+                    legend.position.x = NULL,
+                    legend.position.y = NULL,
                     legend.ascending = NA,
                     margin.top = NULL,
                     margin.bottom = NULL,
@@ -197,7 +198,7 @@ Line <-   function(x,
         legend.show <- FALSE
     legend <- setLegend(type, legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
                         legend.border.color, legend.border.line.width, 
-                        legend.position.x, legend.position.y)
+                        legend.position.x, legend.position.y, FALSE, legend.orientation)
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
 
     # Format axis labels

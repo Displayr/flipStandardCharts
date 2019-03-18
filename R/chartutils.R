@@ -272,18 +272,28 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE, w
 }
 
 setLegend <- function(type, font, ascending, fill.color, fill.opacity, border.color, border.line.width,
-                      x.pos = 1.02, y.pos = 1.00, reversed = FALSE, orientation = 'Vertical')
+                      x.pos = NULL, y.pos = NULL, reversed = FALSE, orientation = 'Vertical')
 {
+    if (tolower(substr(orientation, 1, 1)) == "h")
+        orientation <- "h"
+    else
+        orientation <- "v"
+
+    if (is.null(x.pos))
+        x.pos <- if (orientation == "v") 1.0 else 0.8
+    if (is.null(y.pos))
+        y.pos <- 1.0
+
     if (is.na(ascending))
         ascending <- !(grepl("Stacked", type) && !reversed) || grepl("Stacked Bar", type)
     order <- if (!ascending) "reversed" else "normal"
     return(list(bgcolor = toRGB(fill.color, alpha=fill.opacity),
             bordercolor = border.color,
             borderwidth = border.line.width,
-            orientation = switch(orientation, Vertical = "v", Horizontal = "h", default = orientation),
+            orientation = orientation,
             font = font,
-            xanchor = "left",
-            yanchor = "auto",
+            xanchor = if (x.pos == 0.5) "center" else "left",
+            yanchor = if (y.pos > 1.0) "bottom" else "auto",
             y = max(-0.5, min(1.0, y.pos)),
             x = max(-0.5, min(1.02, x.pos)),
             traceorder = order))

@@ -18,10 +18,10 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1,
   fit.line.name = "Fitted", fit.line.colors = colors,
   fit.line.opacity = 1, fit.CI.show = FALSE,
   fit.CI.colors = fit.line.colors, fit.CI.opacity = 0.4,
-  legend.show = TRUE, legend.wrap = TRUE, legend.wrap.nchar = 30,
-  tooltip.show = TRUE, modebar.show = FALSE,
-  global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
-  maxColorValue = 255), title = "",
+  legend.show = TRUE, legend.orientation = "Vertical",
+  legend.wrap = TRUE, legend.wrap.nchar = 30, tooltip.show = TRUE,
+  modebar.show = FALSE, global.font.family = "Arial",
+  global.font.color = rgb(44, 44, 44, maxColorValue = 255), title = "",
   title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
   subtitle = "", subtitle.font.family = global.font.family,
@@ -140,6 +140,8 @@ This should be input as a comma-seperated list of URLs.}
 \item{fit.CI.opacity}{Opacity of confidence interval ribbon as an alpha value (0 to 1).}
 
 \item{legend.show}{Logical; show the legend.}
+
+\item{legend.orientation}{Character; One of 'Vertical' or 'Horizontal'}
 
 \item{legend.wrap}{Logical; whether the legend text should be wrapped.}
 

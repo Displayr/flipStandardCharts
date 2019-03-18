@@ -50,10 +50,11 @@ Bar <- function(x,
                     charting.area.fill.color = background.fill.color,
                     charting.area.fill.opacity = 0,
                     legend.show = TRUE,
+                    legend.orientation = "Vertical",
                     legend.wrap = TRUE,
                     legend.wrap.nchar = 30,
-                    legend.position.x = 1.02,
-                    legend.position.y = 1.00,
+                    legend.position.x = NULL,
+                    legend.position.y = NULL,
                     legend.ascending = NA,
                     legend.fill.color = background.fill.color,
                     legend.fill.opacity = 0,
@@ -211,7 +212,8 @@ Bar <- function(x,
     if (ncol(chart.matrix) == 1)
         legend.show <- FALSE
     legend <- setLegend(type, legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
-                        legend.border.color, legend.border.line.width, legend.position.x, legend.position.y)
+                        legend.border.color, legend.border.line.width, legend.position.x, legend.position.y,
+                        FALSE, legend.orientation)
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate = FALSE)
 
     # Format axis labels

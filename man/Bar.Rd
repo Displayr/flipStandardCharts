@@ -22,12 +22,12 @@ Bar(x, type = "Bar", colors = ChartColors(max(1, ncol(x), na.rm =
   background.fill.color = "transparent", background.fill.opacity = 1,
   charting.area.fill.color = background.fill.color,
   charting.area.fill.opacity = 0, legend.show = TRUE,
-  legend.wrap = TRUE, legend.wrap.nchar = 30,
-  legend.position.x = 1.02, legend.position.y = 1,
-  legend.ascending = NA, legend.fill.color = background.fill.color,
-  legend.fill.opacity = 0, legend.border.color = rgb(44, 44, 44,
-  maxColorValue = 255), legend.border.line.width = 0,
-  legend.font.color = global.font.color,
+  legend.orientation = "Vertical", legend.wrap = TRUE,
+  legend.wrap.nchar = 30, legend.position.x = NULL,
+  legend.position.y = NULL, legend.ascending = NA,
+  legend.fill.color = background.fill.color, legend.fill.opacity = 0,
+  legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
+  legend.border.line.width = 0, legend.font.color = global.font.color,
   legend.font.family = global.font.family, legend.font.size = 10,
   margin.top = NULL, margin.bottom = NULL, margin.left = NULL,
   margin.right = NULL, margin.inner.pad = NULL, grid.show = TRUE,
@@ -151,6 +151,8 @@ a named color in character format (e.g. "black") or a hex code.}
 \item{charting.area.fill.opacity}{Charting area background opacity as an alpha value (0 to 1).}
 
 \item{legend.show}{Logical; show the legend.}
+
+\item{legend.orientation}{Character; One of 'Vertical' or 'Horizontal'}
 
 \item{legend.wrap}{Logical; whether the legend text should be wrapped.}
 

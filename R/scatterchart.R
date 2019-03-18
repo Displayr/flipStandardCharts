@@ -64,6 +64,7 @@ Scatter <- function(x = NULL,
                          fit.CI.colors = fit.line.colors,
                          fit.CI.opacity = 0.4,
                          legend.show = TRUE,
+                         legend.orientation = "Vertical",
                          legend.wrap = TRUE,
                          legend.wrap.nchar = 30,
                          tooltip.show = TRUE,
@@ -478,7 +479,8 @@ Scatter <- function(x = NULL,
     legend <- setLegend("Scatterplot", legend.font, legend.ascending,
                         legend.fill.color, legend.fill.opacity,
                         legend.border.color, legend.border.line.width,
-                        legend.position.x, legend.position.y)
+                        legend.position.x, legend.position.y,
+                        orientation = legend.orientation)
     if (length(footer) == 0 || nchar(footer) == 0)
     {
         footer <- ""
