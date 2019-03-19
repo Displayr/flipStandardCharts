@@ -164,7 +164,7 @@ TimeSeries <- function(x = NULL,
         top.offset <- title.font.size + hovertext.font.size
 
     width.constraint <- ""
-    if (!is.null(legend.position.x))
+    if (!is.null(legend.position.x) && legend.position.x < 1.0)
         width.constraint <- paste0("document.querySelector('.dygraph-legend').style.left = '", 
                             legend.position.x * 100, "%';")
     
