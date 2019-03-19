@@ -25,7 +25,7 @@ TimeSeries <- function(x = NULL,
                     range.bars = FALSE,
                     colors = NULL,
                     line.thickness = NULL,
-                    legend.width = 250,
+                    legend.width = NULL,
                     legend.orientation = "Horizontal",
                     window.start = NULL,
                     global.font.family = "Arial",
@@ -155,15 +155,21 @@ TimeSeries <- function(x = NULL,
         colors <- "#888888"
     dg <- dyRangeSelector(dg, fillColor = colors, dateWindow = c(range.start, range.end))
     dg <- dyLegend(dg, labelsSeparateLines = tolower(substr(legend.orientation,1,1)) == "v")
+
+    top.offset <- 0
+    if (sum(nchar(title), na.rm = TRUE) > 0)
+        top.offset <- title.font.size + hovertext.font.size
     
     js <- paste0("function(){
         var elem = document.querySelector('.dygraph-legend');
         elem.removeAttribute('style', 'width');
         document.querySelector('.dygraph-legend').style.font = '", hovertext.font.size, "px ",
             hovertext.font.family, "';
-        document.querySelector('.dygraph-legend').style.backgroundColor = 'rgba(256,256,256,0.4)';
+        document.querySelector('.dygraph-legend').style.backgroundColor = 'transparent';
         document.querySelector('.dygraph-legend').style.position = 'absolute';
+        document.querySelector('.dygraph-legend').style.left = '10%';
         document.querySelector('.dygraph-legend').style.right = '0px';
+        document.querySelector('.dygraph-legend').style.top = '", top.offset, "px';
         }")
     dg <- onRender(dg, js)
 
