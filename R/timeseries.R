@@ -9,7 +9,8 @@
 #' multiple series.
 #' @param colors Character; a named color from grDevices OR a hex value color.
 #' @param line.thickness Integer; The width of the lines connecting data points.
-#' @param legend.width Integer; Width (in pixels) of the legend. Deprecated.
+#' @param legend.width Integer; Width (in pixels) of the legend. 
+#'      Deprecated. Use \code{legend.position.x} instead.
 #' @param window.start The number of days before the end of the data series to start the range selector window.
 #' @param hovertext.font.color Legend font color as a named color in character
 #' format (e.g. "black") or a hex code.
@@ -27,6 +28,8 @@ TimeSeries <- function(x = NULL,
                     line.thickness = NULL,
                     legend.width = NULL,
                     legend.orientation = "Horizontal",
+                    legend.position.x = NULL,
+                    legend.fill.color = "transparent",
                     window.start = NULL,
                     global.font.family = "Arial",
                     global.font.color = rgb(44, 44, 44, maxColorValue = 255),
@@ -159,17 +162,22 @@ TimeSeries <- function(x = NULL,
     top.offset <- 0
     if (sum(nchar(title), na.rm = TRUE) > 0)
         top.offset <- title.font.size + hovertext.font.size
+
+    width.constraint <- ""
+    if (!is.null(legend.position.x))
+        width.constraint <- paste0("document.querySelector('.dygraph-legend').style.left = '", 
+                            legend.position.x * 100, "%';")
     
     js <- paste0("function(){
         var elem = document.querySelector('.dygraph-legend');
         elem.removeAttribute('style', 'width');
         document.querySelector('.dygraph-legend').style.font = '", hovertext.font.size, "px ",
             hovertext.font.family, "';
-        document.querySelector('.dygraph-legend').style.backgroundColor = 'transparent';
+        document.querySelector('.dygraph-legend').style.backgroundColor = '", legend.fill.color, "';
         document.querySelector('.dygraph-legend').style.position = 'absolute';
-        document.querySelector('.dygraph-legend').style.left = '10%';
         document.querySelector('.dygraph-legend').style.right = '0px';
-        document.querySelector('.dygraph-legend').style.top = '", top.offset, "px';
+        document.querySelector('.dygraph-legend').style.top = '", top.offset, "px';",
+        width.constraint, "
         }")
     dg <- onRender(dg, js)
 

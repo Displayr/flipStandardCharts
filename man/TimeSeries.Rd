@@ -5,8 +5,9 @@
 \title{TimeSeries}
 \usage{
 TimeSeries(x = NULL, range.bars = FALSE, colors = NULL,
-  line.thickness = NULL, legend.width = 250,
-  legend.orientation = "Horizontal", window.start = NULL,
+  line.thickness = NULL, legend.width = NULL,
+  legend.orientation = "Horizontal", legend.position.x = NULL,
+  legend.fill.color = "transparent", window.start = NULL,
   global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
   maxColorValue = 255), title = "",
   title.font.family = global.font.family,
@@ -35,9 +36,16 @@ multiple series.}
 
 \item{line.thickness}{Integer; The width of the lines connecting data points.}
 
-\item{legend.width}{Integer; Width (in pixels) of the legend. Deprecated.}
+\item{legend.width}{Integer; Width (in pixels) of the legend. 
+Deprecated. Use \code{legend.position.x} instead.}
 
 \item{legend.orientation}{Character; One of 'Vertical' or 'Horizontal'}
+
+\item{legend.position.x}{A numeric controlling the position of the legend.
+Values range from -0.5 (left) to 1.5 (right).}
+
+\item{legend.fill.color}{Legend fill color as a named color in character format
+(e.g. "black") or a hex code.}
 
 \item{window.start}{The number of days before the end of the data series to start the range selector window.}
 
