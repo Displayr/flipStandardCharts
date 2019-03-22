@@ -311,6 +311,8 @@ Line <-   function(x,
                                 else list(color = toRGB(colors[i]),
                                      size = marker.size),
                        text = autoFormatLongLabels(x.labels.full[is.single], wordwrap=T, truncate=F),
+                       hoverlabel = list(font = list(color = autoFontColor(colors[i]),
+                       size = hovertext.font.size, family = hovertext.font.family)),
                        hoverinfo  = setHoverText(xaxis, chart.matrix),
                        showlegend = FALSE)
         }
