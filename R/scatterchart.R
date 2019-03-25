@@ -383,6 +383,14 @@ Scatter <- function(x = NULL,
     scatter.colors.as.numeric <- 0
     colorbar <- NULL
     groups <- rep("Series 1", n)
+
+    if (scatter.colors.as.categorical && length(unique(scatter.colors)) > 50)
+    {
+        warning("The colors variable has been treated as a numeric scale because there ",
+            "are more than 50 categories and would be slow to render")
+        scatter.colors.as.categorical <- FALSE
+    }
+
     if (!is.null(scatter.colors) && !scatter.colors.as.categorical)
     {
         # make colorscalebar
