@@ -5,7 +5,8 @@
 \title{Pie}
 \usage{
 Pie(x, type = "Pie", colors = NULL, pie.subslice.colors = NULL,
-  pie.subslice.colors.repeat = TRUE, title = "",
+  pie.subslice.colors.repeat = TRUE, global.font.family = "Arial",
+  global.font.color = rgb(44, 44, 44, maxColorValue = 255), title = "",
   title.font.family = global.font.family, title.font.size = 16,
   title.font.color = global.font.color, subtitle = "",
   subtitle.font.family = global.font.family, subtitle.font.size = 12,
@@ -17,13 +18,12 @@ Pie(x, type = "Pie", colors = NULL, pie.subslice.colors = NULL,
   data.label.prefix = "", data.label.suffix = "",
   data.label.font.size = 10, data.label.font.color = global.font.color,
   data.label.font.family = global.font.family,
+  hovertext.font.family = global.font.family, hovertext.font.size = 10,
   pie.groups.font.size = data.label.font.size,
   pie.groups.font.color = data.label.font.color,
   pie.groups.font.family = data.label.font.family,
   pie.groups.order = "initial", pie.inner.radius = NULL,
-  pie.border.color = rgb(255, 255, 255, maxColorValue = 255),
-  global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
-  maxColorValue = 255))
+  pie.border.color = rgb(255, 255, 255, maxColorValue = 255))
 }
 \arguments{
 \item{x}{Input data in the form of a vector, matrix or dataframe. If a dataframe is given, the first column is expected to contain the label names, the second column contains numeric values and the third (optional) column are the group labels.}
@@ -37,6 +37,12 @@ Pie(x, type = "Pie", colors = NULL, pie.subslice.colors = NULL,
 \item{pie.subslice.colors.repeat}{Logical; if, when a grouped
 pie chart is displayed, the colors of the subslices should repeat
 by group, or be different throughout; defaults to TRUE.}
+
+\item{global.font.family}{Character; font family for all occurrences of any
+font attribute for the chart unless specified individually.}
+
+\item{global.font.color}{Global font color as a named color in character format
+(e.g. "black") or an a hex code.}
 
 \item{title}{Character; chart title.}
 
@@ -93,6 +99,10 @@ of colors}
 
 \item{data.label.font.family}{Character; font family for data label.}
 
+\item{hovertext.font.family}{Font family of hover text.}
+
+\item{hovertext.font.size}{Font size of hover text.}
+
 \item{pie.groups.font.size}{Font size for group labels.}
 
 \item{pie.groups.font.color}{Font color as a named color}
@@ -105,12 +115,6 @@ of colors}
 donut charts as a proportion out of 100. Defaults to 70.}
 
 \item{pie.border.color}{A single color for space around pie and between segments.}
-
-\item{global.font.family}{Character; font family for all occurrences of any
-font attribute for the chart unless specified individually.}
-
-\item{global.font.color}{Global font color as a named color in character format
-(e.g. "black") or an a hex code.}
 }
 \description{
 Pie chart
