@@ -11,7 +11,8 @@ dataLabelPositions <- function(chart.matrix,
                                 display.threshold = NULL,
                                 dates,
                                 reversed = FALSE,
-                                font)
+                                font,
+                                center.data.labels = FALSE)
 {
     text <- if (!is.null(annotations)) annotations
             else paste(bar.prefix,
@@ -26,7 +27,7 @@ dataLabelPositions <- function(chart.matrix,
     if (barmode == "stack")
     {
         series.pos <- rep(0, series.count)
-        y.pos <- if (swap.axes.and.data)
+        y.pos <- if (swap.axes.and.data || center.data.labels)
             cum.signed.data(chart.matrix) - 0.5 * chart.matrix
         else
             cum.signed.data(chart.matrix)
@@ -74,7 +75,7 @@ dataLabelPositions <- function(chart.matrix,
     # Return list of annotations for stacked charts
     n <- length(text)
     xanchor <- "center"
-    if (swap.axes.and.data)
+    if (swap.axes.and.data || center.data.labels)
         yanchor <- rep("middle", n)
     else if (reversed)
         yanchor <- ifelse(as.numeric(chart.matrix) >= 0, "bottom", "top")

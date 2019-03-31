@@ -61,7 +61,7 @@ Column(x, colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
   marker.border.width = 1, marker.border.colors = colors,
   marker.border.opacity = NULL, tooltip.show = TRUE,
   modebar.show = FALSE, bar.gap = 0.15, data.label.show = FALSE,
-  data.label.font.autocolor = FALSE,
+  data.label.centered = TRUE, data.label.font.autocolor = FALSE,
   data.label.font.family = global.font.family,
   data.label.font.size = 10, data.label.font.color = global.font.color,
   data.label.format = "", data.label.prefix = "",
@@ -351,6 +351,8 @@ around series bars; 0 is no line}
 bar or column charts, or between each cluster of bars or columns.}
 
 \item{data.label.show}{Logical; whether to show data labels.}
+
+\item{data.label.centered}{Logical; whether data labels in Stacked Column charts should have the data labels vertically centered.}
 
 \item{data.label.font.autocolor}{Logical; Whether font color should be automatically determined
 (black or white) based on the color of the background column if stacked.}

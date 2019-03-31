@@ -170,6 +170,7 @@
 #' @param bar.gap Chart proportion between each bar or column if using
 #' bar or column charts, or between each cluster of bars or columns.
 #' @param data.label.show Logical; whether to show data labels.
+#' @param data.label.centered Logical; whether data labels in Stacked Column charts should have the data labels vertically centered.
 #' @param data.label.font.family Character; font family for data label.
 #' @param data.label.font.size Integer; Font size for data label.px.
 #' @param data.label.font.color Font color as a named color
@@ -310,6 +311,7 @@ Column <- function(x,
                     modebar.show = FALSE,
                     bar.gap = 0.15,
                     data.label.show = FALSE,
+                    data.label.centered = TRUE,
                     data.label.font.autocolor = FALSE,
                     data.label.font.family = global.font.family,
                     data.label.font.size = 10,
@@ -439,7 +441,8 @@ Column <- function(x,
                             display.threshold = data.label.threshold,
                             dates = axisFormat$ymd,
                             reversed = isReversed(yaxis),
-                            font = data.label.font)
+                            font = data.label.font,
+                            center.data.labels = data.label.centered)
 
     ## Initiate plotly object
     p <- plot_ly(as.data.frame(chart.matrix))
