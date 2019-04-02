@@ -216,18 +216,10 @@ Pyramid <- function(x,
                        text = formatByD3(y[i], x.hovertext.format), hoverinfo  = "name+text")
         p <- add_trace(p, x = -c(0, y[i]/2), y = x[ind], type = "bar", orientation = "h",
                        marker = marker, name  =  x[i],
-                       hoverlabel = list(font = list(color = data.label.font[[i]]$color,
+                       hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family)),
                        text = formatByD3(y[i], x.hovertext.format), hoverinfo  = "name+text")
-        
-        # add scatter trace to ensure hover is always shown
-        p <- add_trace(p, x = 0, y = x[i], type = "scatter", name = x[i],
-                       mode = "markers", marker = list(color = "transparent"),
-                       hoverlabel = list(font = list(color = autoFontColor(colors[i]),
-                       size = hovertext.font.size, family = hovertext.font.family),
-                       bgcolor = colors[i]),
-                       text = formatByD3(y[i], x.hovertext.format), hoverinfo  = "name+text")
-
+ 
         if (data.label.show)
         {
             source.text <- formatByD3(chart.matrix[,1], data.label.format,
@@ -237,6 +229,15 @@ Pyramid <- function(x,
                    textfont = data.label.font[[i]], textposition = "middle center",
                    hoverinfo = "none", showlegend = FALSE)
         }
+       
+        # add scatter trace to ensure hover is always shown
+        p <- add_trace(p, x = 0, y = x[i], type = "scatter", name = x[i],
+                       mode = "markers", marker = list(color = "transparent"),
+                       hoverlabel = list(font = list(color = autoFontColor(colors[i]),
+                       size = hovertext.font.size, family = hovertext.font.family),
+                       bgcolor = colors[i]),
+                       text = formatByD3(y[i], x.hovertext.format), hoverinfo  = "name+text")
+
     }
     annot <- list(setSubtitle(subtitle, subtitle.font, margins),
                            setTitle(title, title.font, margins),
