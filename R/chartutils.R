@@ -280,9 +280,9 @@ setLegend <- function(type, font, ascending, fill.color, fill.opacity, border.co
         orientation <- "v"
 
     if (is.null(x.pos))
-        x.pos <- if (orientation == "v") 1.02 else 0.8
+        x.pos <- if (orientation == "v") 1.02 else 0.5
     if (is.null(y.pos))
-        y.pos <- 1.0
+        y.pos <- if (orientation == "v") 1.0 else -0.2
 
     if (is.na(ascending))
         ascending <- !(grepl("Stacked", type) && !reversed) || grepl("Stacked Bar", type)

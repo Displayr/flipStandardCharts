@@ -219,6 +219,14 @@ Pyramid <- function(x,
                        hoverlabel = list(font = list(color = data.label.font[[i]]$color,
                        size = hovertext.font.size, family = hovertext.font.family)),
                        text = formatByD3(y[i], x.hovertext.format), hoverinfo  = "name+text")
+        
+        # add scatter trace to ensure hover is always shown
+        p <- add_trace(p, x = 0, y = x[i], type = "scatter", name = x[i],
+                       mode = "markers", marker = list(color = "transparent"),
+                       hoverlabel = list(font = list(color = autoFontColor(colors[i]),
+                       size = hovertext.font.size, family = hovertext.font.family),
+                       bgcolor = colors[i]),
+                       text = formatByD3(y[i], x.hovertext.format), hoverinfo  = "name+text")
 
         if (data.label.show)
         {
