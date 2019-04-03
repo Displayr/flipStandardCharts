@@ -404,6 +404,8 @@ Bar <- function(x,
         bargap = bar.gap,
         barmode = barmode
     )
+    if (data.label.show && is.stacked)
+        p <- onRender(p, "function(el, x) { el.on('plotly_legendclick', () => false) }")
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     result
