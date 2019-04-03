@@ -314,11 +314,12 @@ Bar <- function(x,
             p <- add_trace(p, x = y.filled, y = ypos, type = "scatter", name = legend.text[i],
                        mode = "markers", marker = list(color = "transparent"),
                        text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
-                       hoverlabel = list(font = list(color = autoFontColor(colors[i]),
+                       hoverlabel = list(font = list(color = "red", #autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family),
                        bgcolor = colors[i]), showlegend = FALSE,
                        yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y",
-                       hoverinfo  = setHoverText(yaxis, chart.matrix, is.bar = TRUE))
+                       hoverinfo  = gsub("+y", "+text", setHoverText(yaxis, chart.matrix, is.bar = TRUE),
+                            fixed = TRUE))
         }
 
         if (fit.type != "None" && is.stacked && i == 1)
