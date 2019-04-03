@@ -426,29 +426,31 @@ Column <- function(x,
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
 
-    # Data label annotations
-    data.annotations <- NULL
-    if (data.label.show)
-        data.annotations <- dataLabelPositions(chart.matrix = chart.matrix,
-                            annotations = NULL,
-                            data.label.mult = data.label.mult,
-                            bar.decimals = data.label.decimals,
-                            bar.prefix = data.label.prefix,
-                            bar.suffix = data.label.suffix,
-                            barmode = barmode,
-                            swap.axes.and.data = FALSE,
-                            bar.gap = bar.gap,
-                            display.threshold = data.label.threshold,
-                            dates = axisFormat$ymd,
-                            reversed = isReversed(yaxis),
-                            font = data.label.font,
-                            center.data.labels = data.label.centered)
-
     ## Initiate plotly object
     p <- plot_ly(as.data.frame(chart.matrix))
     x.labels <- axisFormat$labels
     y.labels <- colnames(chart.matrix)
+
+    # Set up numeric x-axis - this is used for data labels and hovertext
+    x.range <- getRange(x.labels, xaxis, axisFormat)
     xaxis2 <- NULL
+    if (!is.stacked && NCOL(chart.matrix) > 1)
+        xaxis2 <- list(overlaying = "x", visible = FALSE, range = x.range)
+    data.annotations <- dataLabelPositions(chart.matrix = chart.matrix,
+                        annotations = NULL,
+                        data.label.mult = data.label.mult,
+                        bar.decimals = data.label.decimals,
+                        bar.prefix = data.label.prefix,
+                        bar.suffix = data.label.suffix,
+                        barmode = barmode,
+                        swap.axes.and.data = FALSE,
+                        bar.gap = bar.gap,
+                        display.threshold = data.label.threshold,
+                        dates = axisFormat$ymd,
+                        reversed = isReversed(yaxis),
+                        font = data.label.font,
+                        center.data.labels = data.label.centered)
+
 
     ## Add a trace for each col of data in the matrix
     for (i in 1:ncol(chart.matrix))
@@ -478,14 +480,6 @@ Column <- function(x,
                        size = hovertext.font.size, family = hovertext.font.family)),
                        hoverinfo  = setHoverText(xaxis, chart.matrix), legendgroup = i)
 
-        # add scatter trace to ensure hover is always shown
-        p <- add_trace(p, x = x, y = y, type = "scatter", name = legend.text[i],
-                       mode = "lines", line = list(color = "transparent"),
-                       text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
-                       hoverlabel = list(font = list(color = autoFontColor(colors[i]),
-                       size = hovertext.font.size, family = hovertext.font.family),
-                       bgcolor = colors[i]), showlegend = FALSE,
-                       hoverinfo  = setHoverText(xaxis, chart.matrix))
 
         if (fit.type != "None" && is.stacked && i == 1)
             warning("Line of best fit not shown for stacked charts.")
@@ -530,10 +524,7 @@ Column <- function(x,
         # Avoid using annotations because it does not work with small multiples
         if (data.label.show && !is.stacked)
         {
-            x.range <- getRange(x, xaxis, axisFormat)
             y.sign <- getSign(data.annotations$y[,i], yaxis)
-            if (NCOL(chart.matrix) > 1)
-                xaxis2 <- list(overlaying = "x", visible = FALSE, range = x.range)
             p <- add_trace(p, y = data.annotations$y[,i], cliponaxis = FALSE,
                       type = "scatter", mode = "markers+text",
                       marker = list(color = 'rgba(0,0,0,0)', symbol = "circle-open",
@@ -542,9 +533,30 @@ Column <- function(x,
                       xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x",
                       text = data.annotations$text[,i], textfont = data.label.font[[i]],
                       textposition = ifelse(y.sign >= 0, "top center", "bottom center"),
-                      showlegend = FALSE, legendgroup = i, hoverinfo = "none")
+                      showlegend = FALSE, legendgroup = i, hoverinfo = "skip")
         }
     }
+   
+    # add line trace to ensure hover is always shown
+    # using scatter trace will add extra space to either side of x-axis
+    if (!is.stacked)
+    { 
+        for (i in 1:ncol(chart.matrix))
+        {
+            y <- as.numeric(chart.matrix[, i])
+            xpos <- if (NCOL(chart.matrix) > 1 && !is.stacked) data.annotations$x[,i] else x
+            p <- add_trace(p, x = xpos, y = y, type = "scatter", name = legend.text[i],
+                           mode = "lines", line = list(color = "transparent"),
+                           text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
+                           hoverlabel = list(font = list(color = autoFontColor(colors[i]),
+                           size = hovertext.font.size, family = hovertext.font.family),
+                           bgcolor = colors[i]), showlegend = FALSE,
+                           xaxis = if (!is.stacked && NCOL(chart.matrix) > 1) "x2" else "x",
+                           hoverinfo  = setHoverText(xaxis, chart.matrix))
+        }
+    }
+
+
     annotations <- NULL
     if (data.label.show && is.stacked)
         annotations <- data.annotations
@@ -563,12 +575,12 @@ Column <- function(x,
         xaxis2 = xaxis2,
         xaxis = xaxis,
         margin = margins,
+        annotations =  annotations,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
         hoverlabel = list(namelength = -1, bordercolor = "transparent",
             font = list(size = hovertext.font.size, family = hovertext.font.family)),
         hovermode = if (tooltip.show) "closest" else FALSE,
-        annotations =  annotations,
         bargap = bar.gap,
         barmode = barmode
     )

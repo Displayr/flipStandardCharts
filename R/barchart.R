@@ -253,21 +253,23 @@ Bar <- function(x,
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
 
-    # Data label annotations
-    data.annotations <- NULL
-    if (data.label.show)
-        data.annotations <- dataLabelPositions(chart.matrix = chart.matrix,
-                            annotations = NULL,
-                            data.label.mult = data.label.mult,
-                            bar.decimals = data.label.decimals,
-                            bar.prefix = data.label.prefix,
-                            bar.suffix = data.label.suffix,
-                            barmode = barmode,
-                            swap.axes.and.data = TRUE,
-                            bar.gap = bar.gap,
-                            display.threshold = data.label.threshold,
-                            dates = axisFormat$ymd,
-                            font = data.label.font)
+    # Set up numeric x-axis - this is used for data labels and hovertext
+    y.range <- getRange(x, yaxis, axisFormat)
+    yaxis2 <- NULL
+    if (!is.stacked && NCOL(chart.matrix) > 1)
+        yaxis2 <- list(overlaying = "y", visible = FALSE, range = y.range)
+    data.annotations <- dataLabelPositions(chart.matrix = chart.matrix,
+                        annotations = NULL,
+                        data.label.mult = data.label.mult,
+                        bar.decimals = data.label.decimals,
+                        bar.prefix = data.label.prefix,
+                        bar.suffix = data.label.suffix,
+                        barmode = barmode,
+                        swap.axes.and.data = TRUE,
+                        bar.gap = bar.gap,
+                        display.threshold = data.label.threshold,
+                        dates = axisFormat$ymd,
+                        font = data.label.font)
 
     ## Initiate plotly object
     p <- plot_ly(as.data.frame(chart.matrix))
@@ -275,7 +277,6 @@ Bar <- function(x,
         rownames(chart.matrix) <- 1:nrow(chart.matrix)
     x.labels <- axisFormat$labels
     y.labels <- colnames(chart.matrix)
-    yaxis2 <- NULL
 
     ## Add a trace for each col of data in the matrix
     for (i in 1:ncol(chart.matrix))
@@ -307,14 +308,18 @@ Bar <- function(x,
                        hoverinfo  = setHoverText(yaxis, chart.matrix, is.bar = TRUE), legendgroup = i)
 
         # add scatter trace to ensure hover is always shown
-        p <- add_trace(p, x = y, y = x, type = "scatter", name = legend.text[i],
+        if (!is.stacked)
+        {
+            ypos <- if (NCOL(chart.matrix) > 1) data.annotations$y[,i] else x
+            p <- add_trace(p, x = y.filled, y = ypos, type = "scatter", name = legend.text[i],
                        mode = "markers", marker = list(color = "transparent"),
                        text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family),
                        bgcolor = colors[i]), showlegend = FALSE,
+                       yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y",
                        hoverinfo  = setHoverText(yaxis, chart.matrix, is.bar = TRUE))
-
+        }
 
         if (fit.type != "None" && is.stacked && i == 1)
             warning("Line of best fit not shown for stacked charts.")
@@ -360,9 +365,6 @@ Bar <- function(x,
         # Avoid using annotations because it does not work with small multiples
         if (data.label.show && !is.stacked)
         {
-            y.range <- getRange(x, yaxis, axisFormat)
-            if (NCOL(chart.matrix) > 1)
-                yaxis2 <- list(overlaying = "y", visible = FALSE, range = y.range)
             x.sign <- getSign(data.annotations$x[,i], xaxis)
             x.diff <- diff(range(data.annotations$x))/100
             p <- add_trace(p, x = data.annotations$x[,i] + x.diff, type = "scatter",
