@@ -535,11 +535,11 @@ Column <- function(x,
                       showlegend = FALSE, legendgroup = i, hoverinfo = "skip")
         }
     }
-   
+
     # add line trace to ensure hover is always shown
     # using scatter trace will add extra space to either side of x-axis
     if (!is.stacked)
-    { 
+    {
         for (i in 1:ncol(chart.matrix))
         {
             y <- as.numeric(chart.matrix[, i])
@@ -583,7 +583,7 @@ Column <- function(x,
         barmode = barmode
     )
     if (data.label.show && is.stacked)
-        p <- onRender(p, "function(el, x) { el.on('plotly_legendclick', () => false) }")
+        p <- onRender(p, "function(el, x) { el.on('plotly_legendclick', function() { return false; })}")
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     result
