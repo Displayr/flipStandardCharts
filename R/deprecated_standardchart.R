@@ -2540,7 +2540,6 @@ Chart <-   function(y = NULL,
 
     ## Set plotly layout styles
     p <- layout(p,
-        title = title,
         ## LEGEND
         showlegend = legend.show,
         legend = list(
@@ -2660,10 +2659,10 @@ Chart <-   function(y = NULL,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
         hovermode = hover.mode,
-        titlefont = list(
-            family = title.font.family,
-            color = title.font.color,
-            size = title.font.size
+        title = list(text = title,
+            font = list(family = title.font.family,
+                        color = title.font.color,
+                        size = title.font.size)
         ),
         font = list(
             family = data.label.font.family,

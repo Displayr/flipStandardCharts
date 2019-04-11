@@ -137,7 +137,7 @@ getRange <- function(x, axis, axisFormat)
             range <- as.numeric(AsDateTime(axis$range)) * 1000
         else
             range <- axis$range
-        
+
         if (is.null(axis$range) && axis$rangemode == "tozero")
             tozero <- TRUE
     }
@@ -248,7 +248,7 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE, w
         tmp.fit <- suppressWarnings(try(gam(y~s(x, bs = "cr"), data = tmp.dat), silent = TRUE))
     else
         tmp.fit <- suppressWarnings(try(lm(y~x, data=tmp.dat), silent = TRUE))
-    
+
     if (inherits(tmp.fit, "try-error"))
     {
         warning(warning.prefix, "Could not fit trend line using ", fit.type, ".")
@@ -513,8 +513,9 @@ setAxis <- function(title, side, axisLabels, titlefont,
         !(length(axisLabels$labels) == 1 && is.numeric(axisLabels$labels)))
         nticks <- min(length(axisLabels$labels) + 1, 11)
 
-    return (list(title = title, side = side, type = axis.type,
-                 titlefont = titlefont, tickfont = tickfont,
+    return (list(title = list(text = title, font = titlefont),
+                 side = side, type = axis.type,
+                 tickfont = tickfont,
                  showline = has.line, linecolor = linecolor,
                  linewidth = if (!has.line) NULL else linewidth,
                  showgrid = gridwidth > 0, gridwidth = gridwidth,
@@ -576,8 +577,8 @@ setMarginsForAxis <- function(margins, labels, axis)
     title.nline <- 0
     if (sum(nchar(axis$title)) > 0 && axis$title != " ")
         title.nline <- sum(gregexpr("<br>", axis$title)[[1]] > -1) + 1
-    title.pad <- max(0, axis$titlefont$size) * title.nline * 1.25
-    
+    title.pad <- max(0, axis$title$font$size) * title.nline * 1.25
+
     if (axis$side == "right")
         margins$r <- max(margins$r, new.margin + title.pad)
     else if (axis$side == "left")
@@ -739,7 +740,7 @@ setValRange <- function(min, max, values, show.zero = FALSE, use.defaults = TRUE
         min <- NULL
     if (is.null(max) || is.na(max) || max == "")
         max <- NULL
-    
+
     # If no range is specified, then use defaults
     if (use.defaults && is.null(min) && is.null(max))
         return(list(min = NULL, max = NULL))
@@ -781,7 +782,7 @@ setValRange <- function(min, max, values, show.zero = FALSE, use.defaults = TRUE
         min <- min(unlist(values), if (show.zero) 0 else NULL, na.rm = TRUE)
     if  (length(max) == 0 || is.na(max))
         max <- max(unlist(values), na.rm = TRUE)
-  
+
     if (is.bar && length(values) > 1)
     {
         diff <- min(diff(values))/2
@@ -932,7 +933,7 @@ autoFormatLongLabels <- function(x, wordwrap = FALSE, n = 21, truncate = FALSE, 
         return("")
     if (!is.character(x))
         x <- as.character(x)
-    
+
     # Check for zero-length strings which are ignored by plotly
     if (length(x) > 1)
     {
