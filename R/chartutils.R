@@ -513,7 +513,12 @@ setAxis <- function(title, side, axisLabels, titlefont,
         !(length(axisLabels$labels) == 1 && is.numeric(axisLabels$labels)))
         nticks <- min(length(axisLabels$labels) + 1, 11)
 
-    return (list(title = list(text = title, font = titlefont),
+    if (sum(nchar(title)) > 0)
+        title <- list(text = title, font = titlefont)
+    else
+        title <- NULL
+
+    return (list(title = title,
                  side = side, type = axis.type,
                  tickfont = tickfont,
                  showline = has.line, linecolor = linecolor,

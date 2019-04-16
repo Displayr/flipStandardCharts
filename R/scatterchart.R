@@ -489,6 +489,7 @@ Scatter <- function(x = NULL,
                         legend.border.color, legend.border.line.width,
                         legend.position.x, legend.position.y,
                         orientation = legend.orientation)
+    legend$itemsizing <- TRUE
     if (length(footer) == 0 || nchar(footer) == 0)
     {
         footer <- ""
@@ -614,11 +615,10 @@ Scatter <- function(x = NULL,
         }
 
         # Main trace
-        separate.legend <- legend.show && scatter.colors.as.categorical && !is.null(scatter.sizes)
         p <- add_trace(p, x = x[ind], y = y[ind],
                 #name  =  autoFormatLongLabels(paste0(g.list[ggi], " "), legend.wrap, legend.wrap.nchar),
                 name = legend.text[ggi],
-                showlegend = (legend.show && !scatter.colors.as.numeric && !separate.legend),
+                showlegend = (legend.show && !scatter.colors.as.numeric),
                 legendgroup = if (num.series > 1) ggi else 1,
                 textposition = data.label.position, cliponaxis = FALSE,
                 textfont = if (data.label.show) data.label.font[[ggi]] else NULL,
@@ -627,15 +627,6 @@ Scatter <- function(x = NULL,
                 hoverlabel = list(font = list(color = autoFontColor(colors[ggi]),
                 size = hovertext.font.size, family = hovertext.font.family)),
                 type = "scatter", mode = series.mode, symbols = marker.symbols)
-
-        # Getting legend with consistently sized markers
-        if (separate.legend)
-            p <- add_trace(p, x = list(NULL), y = list(NULL), name = legend.text[ggi],
-                showlegend = TRUE, legendgroup = ggi, visible = TRUE,
-                line = line.obj, marker = list(size = marker.size,
-                opacity = opacity, color = colors[ggi]),
-                type = "scatter", mode = series.mode, symbols = marker.symbols)
-
 
         if (fit.type != "None" && num.series > 1)
         {
