@@ -489,7 +489,7 @@ Scatter <- function(x = NULL,
                         legend.border.color, legend.border.line.width,
                         legend.position.x, legend.position.y,
                         orientation = legend.orientation)
-    legend$itemsizing <- TRUE
+    legend$itemsizing <- "constant"
     if (length(footer) == 0 || nchar(footer) == 0)
     {
         footer <- ""
