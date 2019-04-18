@@ -582,8 +582,10 @@ Column <- function(x,
         bargap = bar.gap,
         barmode = barmode
     )
+    
+    # Disable legend toggling if there are data labels (DS-2393)
     if (data.label.show && is.stacked)
-        p <- onRender(p, "function(el, x) { el.on('plotly_legendclick', function() { return false; })}")
+        p <- onRender(p, "function(el, x) { window.onload = function() { el.on('plotly_legendclick', function() { return false; })} }")
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     result
