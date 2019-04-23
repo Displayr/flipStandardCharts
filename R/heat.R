@@ -155,6 +155,9 @@ Heat <- function(x,
     mat <- checkMatrixNames(stripClassAndCallFromXtabs(x), assign.col.names = FALSE)
     ErrorIfNotEnoughData(mat)
 
+    if (nchar(gsub("\\s", "", x.title, perl = TRUE)) == 0)
+        x.title <- ""
+
     if (nrow(mat) > 500 || ncol(mat) > 500)
         stop("Heatmap cannot be plotted with more than 500 rows or columns.")
 
