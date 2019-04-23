@@ -215,14 +215,14 @@ Sparkline <- function(x,
     x.labels <- axisFormat$labels
     x <- as.numeric(x)
     xaxis <- list(side = "bottom", type = axisFormat$x.axis.type, categoryorder = "trace", 
-                showgrid = FALSE, showline = x.axis.show, zeroline = FALSE, automargin = TRUE,
+                showgrid = FALSE, showline = x.axis.show, zeroline = FALSE, automargin = type != "Box",
                 showticklabels = x.axis.show, ticks = if (x.axis.show) "outside" else "",
                 tickfont = list(size = if (x.tick.show) x.tick.font.size else 1,
 						   		color = if (x.tick.show) x.tick.font.color else "transparent",
 				family = x.tick.font.family), tickformat = x.tick.format, ticklen = x.tick.length,
                 linewidth = x.axis.width, linecolor = x.axis.color, tickcolor = x.axis.color)
     yaxis <- list(side = "left", showgrid = FALSE, showline = y.axis.show, zeroline = FALSE,
-                automargin = TRUE,
+                automargin = type != "Box",
                 showticklabels = y.axis.show, ticks = if (y.axis.show) "outside" else "",
                 tickfont = list(size = if (y.tick.show) y.tick.font.size else 1, 
 							 	color = if (y.tick.show) y.tick.font.color else "transparent",
