@@ -433,9 +433,7 @@ Column <- function(x,
 
     # Set up numeric x-axis - this is used for data labels and hovertext
     x.range <- getRange(x.labels, xaxis, axisFormat)
-    xaxis2 <- NULL
-    if (!is.stacked && NCOL(chart.matrix) > 1)
-        xaxis2 <- list(overlaying = "x", visible = FALSE, range = x.range)
+    xaxis2 <- list(overlaying = "x", visible = FALSE, range = x.range)
     data.annotations <- dataLabelPositions(chart.matrix = chart.matrix,
                         annotations = NULL,
                         data.label.mult = data.label.mult,
@@ -520,10 +518,15 @@ Column <- function(x,
                     line = list(color = average.color))
 
 
-        # Avoid using annotations because it does not work with small multiples
-        if (data.label.show && !is.stacked)
+        if (data.label.show)
         {
             y.sign <- getSign(data.annotations$y[,i], yaxis)
+            if (is.stacked)
+                y.sign <- -1 * y.sign
+            if (is.stacked && data.label.centered)
+                textpos <- "middle center"
+            else
+                textpos <- ifelse(y.sign >= 0, "top center", "bottom center")
             p <- add_trace(p, y = data.annotations$y[,i], cliponaxis = FALSE,
                       type = "scatter", mode = "markers+text",
                       marker = list(color = 'rgba(0,0,0,0)', symbol = "circle-open",
@@ -531,7 +534,7 @@ Column <- function(x,
                       x = if (NCOL(chart.matrix) > 1) data.annotations$x[,i] else x,
                       xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x",
                       text = data.annotations$text[,i], textfont = data.label.font[[i]],
-                      textposition = ifelse(y.sign >= 0, "top center", "bottom center"),
+                      textposition = textpos,
                       showlegend = FALSE, legendgroup = i, hoverinfo = "skip")
         }
     }
@@ -556,8 +559,8 @@ Column <- function(x,
     }
 
     annotations <- NULL
-    if (data.label.show && is.stacked)
-        annotations <- data.annotations
+    #if (data.label.show && is.stacked)
+    #    annotations <- data.annotations
     n <- length(annotations)
     annotations[[n+1]] <- setTitle(title, title.font, margins)
     annotations[[n+2]] <- setFooter(footer, footer.font, margins)
@@ -582,7 +585,7 @@ Column <- function(x,
         bargap = bar.gap,
         barmode = barmode
     )
-    
+
     # Disable legend toggling if there are data labels (DS-2393)
     if (data.label.show && is.stacked)
         p <- onRender(p, "function(el, x) { window.onload = function() { el.on('plotly_legendclick', function() { return false; })} }")

@@ -255,9 +255,7 @@ Bar <- function(x,
 
     # Set up numeric x-axis - this is used for data labels and hovertext
     y.range <- getRange(x, yaxis, axisFormat)
-    yaxis2 <- NULL
-    if (!is.stacked && NCOL(chart.matrix) > 1)
-        yaxis2 <- list(overlaying = "y", visible = FALSE, range = y.range)
+    yaxis2 <- list(overlaying = "y", visible = FALSE, range = y.range)
     data.annotations <- dataLabelPositions(chart.matrix = chart.matrix,
                         annotations = NULL,
                         data.label.mult = data.label.mult,
@@ -347,7 +345,7 @@ Bar <- function(x,
                         mode = 'lines', name = "Upper bound of 95% CI",
                         hoverlabel = list(font = list(color = autoFontColor(fit.CI.colors[i]),
                         size = hovertext.font.size, family = hovertext.font.family)),
-                        fill = "tonextx", 
+                        fill = "tonextx",
                         fillcolor = toRGB(fit.CI.colors[i], alpha = fit.CI.opacity),
                         showlegend = FALSE, legendgroup = i,
                         line = list(color=fit.CI.colors[i], width=0, shape='spline'))
@@ -363,32 +361,31 @@ Bar <- function(x,
                     size = hovertext.font.size, family = hovertext.font.family)),
                     line = list(color = average.color))
 
-        # Avoid using annotations because it does not work with small multiples
-        if (data.label.show && !is.stacked)
+        if (data.label.show)
         {
             x.sign <- getSign(data.annotations$x[,i], xaxis)
-            x.diff <- diff(range(data.annotations$x))/100
+            x.diff <- if (is.stacked) 0 else diff(range(data.annotations$x))/100
+            textpos <- if (is.stacked) "middle center"
+                       else            ifelse(x.sign >= 0, "middle right", "middle left")
             p <- add_trace(p, x = data.annotations$x[,i] + x.diff, type = "scatter",
                       mode = "markers+text", marker = list(color = 'rgba(0,0,0,0)',
-                      size = (data.annotations$x[,i] < 0) * data.label.font.size,
-                      symbol = "circle-open"),
+                      size = (!is.stacked & data.annotations$x[,i] < 0) * data.label.font.size,
+                      symbol = "circle-open"), cliponaxis = FALSE,
                       y = if (NCOL(chart.matrix) > 1) data.annotations$y[,i] else x,
                       yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y",
                       text = data.annotations$text[,i],
-                      textposition = ifelse(x.sign >= 0, "middle right", "middle left"),
+                      textposition = textpos,
                       textfont = data.label.font[[i]], hoverinfo = "skip",
                       showlegend = FALSE, legendgroup = i)
         }
     }
     annotations <- NULL
-    if (data.label.show && is.stacked)
-        annotations <- data.annotations
     n <- length(annotations)
     annotations[[n+1]] <- setFooter(footer, footer.font, margins)
     annotations[[n+2]] <- setSubtitle(subtitle, subtitle.font, margins)
     annotations[[n+3]] <- setTitle(title, title.font, margins)
     annotations <- Filter(Negate(is.null), annotations)
-    
+
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,

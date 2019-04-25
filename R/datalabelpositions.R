@@ -38,7 +38,7 @@ dataLabelPositions <- function(chart.matrix,
         text[abs(chart.matrix) < largest.bar * display.threshold] <- ""
         text[chart.matrix == 0] <- ""
 
-        
+
     } else
     {
         series.pos <- ((0:(series.count - 1) + 0.5) / series.count - 0.5) * (1 - bar.gap)
@@ -49,9 +49,11 @@ dataLabelPositions <- function(chart.matrix,
     if (!is.null(dates))
     {
         date.vals <- as.numeric(dates) * 1000           # convert to milliseconds
-        date.diff <- if (barmode == "stack")    0.0
-                     else                       date.vals[2] - date.vals[1]
-        x.pos <- date.vals + (rep(series.pos, each = nrow(chart.matrix)) * date.diff)
+        date.diff <- date.vals[2] - date.vals[1]
+        if (barmode != "stack")
+            x.pos <- date.vals + (rep(series.pos, each = nrow(chart.matrix)) * date.diff)
+        else
+            x.pos <- rep(date.vals, ncol(chart.matrix))
     }
     else if (all(!is.na(suppressWarnings(as.numeric(rownames(chart.matrix))))))
         x.pos <- as.numeric(rownames(chart.matrix)) + rep(series.pos, each = nrow(chart.matrix))
@@ -64,25 +66,8 @@ dataLabelPositions <- function(chart.matrix,
         x.pos <- y.pos
         y.pos <- tmp.pos
     }
-    if (barmode != "stack")
-    {
-        text <- matrix(text, ncol=ncol(chart.matrix))
-        x.pos <- matrix(x.pos, ncol=ncol(chart.matrix))
-        y.pos <- matrix(y.pos, ncol=ncol(chart.matrix))
-        return(list(text = text, x = x.pos, y = y.pos))
-    }
-    
-    # Return list of annotations for stacked charts
-    n <- length(text)
-    xanchor <- "center"
-    if (swap.axes.and.data || center.data.labels)
-        yanchor <- rep("middle", n)
-    else if (reversed)
-        yanchor <- ifelse(as.numeric(chart.matrix) >= 0, "bottom", "top")
-    else
-        yanchor <- ifelse(as.numeric(chart.matrix) >= 0, "top", "bottom")
-    font <- rep(font, each = nrow(chart.matrix))
-    return(lapply(1:n, function(ii) list(text = text[ii], font = font[[ii]],
-           x = x.pos[ii], y = y.pos[ii], showarrow = FALSE,
-           xref = "x", yref = "y", xanchor = xanchor, yanchor = yanchor[ii])))
+    text <- matrix(text, ncol=ncol(chart.matrix))
+    x.pos <- matrix(x.pos, ncol=ncol(chart.matrix))
+    y.pos <- matrix(y.pos, ncol=ncol(chart.matrix))
+    return(list(text = text, x = x.pos, y = y.pos))
 }
