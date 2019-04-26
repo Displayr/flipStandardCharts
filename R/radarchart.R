@@ -31,7 +31,7 @@ Radar <- function(x,
                     background.fill.opacity = 1,
                     charting.area.fill.color = background.fill.color,
                     charting.area.fill.opacity = 0,
-                    legend.show = TRUE,
+                    legend.show = NA,
                     legend.orientation = "Vertical",
                     legend.wrap = TRUE,
                     legend.wrap.nchar = 30,
@@ -109,13 +109,13 @@ Radar <- function(x,
     n <- nrow(chart.matrix)
     m <- ncol(chart.matrix)
 
+    legend.show <- setShowLegend(legend.show, NCOL(chart.matrix))
     if (is.null(n) || n == 1 || m == 1)
     {
         # only 1 series
         chart.matrix <- data.frame(x=chart.matrix)
         n <- nrow(chart.matrix)
         m <- ncol(chart.matrix)
-        legend.show <- FALSE
     }
 
     if (n <= 2)

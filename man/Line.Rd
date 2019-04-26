@@ -22,7 +22,7 @@ Line(x, type = "Line", line.type = "Solid", shape = c("linear",
   footer.wrap = TRUE, footer.wrap.nchar = 100, grid.show = TRUE,
   background.fill.color = "transparent", background.fill.opacity = 1,
   charting.area.fill.color = background.fill.color,
-  charting.area.fill.opacity = 0, legend.show = TRUE,
+  charting.area.fill.opacity = 0, legend.show = NA,
   legend.orientation = "Vertical", legend.wrap = TRUE,
   legend.wrap.nchar = 30, legend.fill.color = background.fill.color,
   legend.fill.opacity = 0, legend.border.color = rgb(44, 44, 44,
@@ -158,7 +158,10 @@ a named color in character format (e.g. "black") or a hex code.}
 
 \item{charting.area.fill.opacity}{Charting area background opacity as an alpha value (0 to 1).}
 
-\item{legend.show}{Logical; show the legend.}
+\item{legend.show}{Controls whether legend is shown. This can be a logical (\code{TRUE} or \code{FALSE});
+or a string ("Show" or "Hide"). If it is \code{TRUE} or \code{NA} (the default), a legend will be 
+shown only if there is more than one data series. To force a legend to be shown even with 1
+data series, use "Show" instead.}
 
 \item{legend.orientation}{Character; One of 'Vertical' or 'Horizontal'}
 

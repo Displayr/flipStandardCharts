@@ -15,7 +15,7 @@ before_install:
   - Rscript -e 'update.packages(ask = FALSE)';
   - rcode="tfile <- tempfile(); capture.output(res<-devtools::test(), file = tfile); out <- readLines(tfile); cat(out, sep = '\n'); "
   - rcode+="n.fail <- as.numeric(sub('Failed:[[:space:]]', '', out[grep('Failed:[[:space:]]', out)])); "
-  - rcode+="write.csv(as.data.frame(res), file='test_results.csv'); "
+  - rcode+="write.csv(as.data.frame(res), file='test_results.csv'); for(i in ncol(res)) res[[i]] <- as.character(res[[i]]); "
   - rcode+="quit(status = !identical(n.fail, 0), save='no');"
 
 r_packages:
@@ -47,6 +47,6 @@ notifications:
 # Warning notifications and downstream package builds are implemented
 # by calling R functions so they can be updated in this package without
 # committing a new change to .travis.yml in each repository
-after_success: 
+after_success:
   - Rscript -e "require(flipDevTools); NotifyWarnings(); TriggerDownstreamBuilds()"
   - travis_wait Rscript -e "flipDevTools::CheckCoverage()"

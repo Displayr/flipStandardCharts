@@ -271,6 +271,29 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE, w
     return(list(x = x.fit, y = y.fit))
 }
 
+# This function deals with both logical or string inputs
+setShowLegend <- function(legend.show, num.series = 2)
+{
+    auto.show <- num.series > 1
+
+    # Default response is to only show legend if it there is more than 1 series
+    if (isTRUE(legend.show) || is.na(legend.show) || grepl("Auto", legend.show))
+        return(auto.show)
+    if (isTRUE(!legend.show))
+        return(FALSE)
+    
+    # If legend.show is not boolean, check for string inputs
+    # Note that legend is shown even if there is only 1 series
+    # For legacy reasons, the boolean inputs do not give the same result.
+    if (grepl(legend.show, "Show"))
+        return(TRUE)
+    if (grepl(legend.show, "Hide"))
+        return(FALSE)
+
+    # If legend.show is unknown, then return default
+    return(auto.show)
+}
+
 setLegend <- function(type, font, ascending, fill.color, fill.opacity, border.color, border.line.width,
                       x.pos = NULL, y.pos = NULL, reversed = FALSE, orientation = 'Vertical')
 {

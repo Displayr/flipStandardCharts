@@ -57,7 +57,7 @@ Area <- function(x,
                     background.fill.opacity = 1,
                     charting.area.fill.color = background.fill.color,
                     charting.area.fill.opacity = 0,
-                    legend.show = TRUE,
+                    legend.show = NA,
                     legend.orientation = "Vertical",
                     legend.wrap = TRUE,
                     legend.wrap.nchar = 30,
@@ -263,8 +263,7 @@ Area <- function(x,
     legend.font = list(family = legend.font.family, size = legend.font.size, color = legend.font.color)
     data.label.show = vectorize(data.label.show, ncol(chart.matrix))
 
-    if (ncol(chart.matrix) == 1)
-        legend.show <- FALSE
+    legend.show <- setShowLegend(legend.show, NCOL(chart.matrix))
     legend <- setLegend(type, legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
                         legend.border.color, legend.border.line.width,
                         legend.position.x, legend.position.y, y.data.reversed, legend.orientation)

@@ -321,6 +321,7 @@ GeographicMap <- function(x,
         warning("Maximum value must be larger than ", max.range, ".")
     values.bounds.minimum <- min(values.bounds.minimum, min.value)
     values.bounds.maximum <- max(values.bounds.maximum, max.range)
+    legend.show <- setShowLegend(legend.show)
 
     # Pass all data to a function specific to the package
     if (mapping.package == "leaflet") {

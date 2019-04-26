@@ -475,8 +475,8 @@ Scatter <- function(x = NULL,
 
 
     # other constants
-    colorbar.show <- legend.show
-    legend.show <- legend.show && (num.series > 1 || scatter.colors.as.numeric) 
+    colorbar.show <- setShowLegend(legend.show) # colorbar is always shown even for 1 data series
+    legend.show <- setShowLegend(legend.show, num.series + scatter.colors.as.numeric) 
     series.mode <- if (is.null(line.thickness) || line.thickness == 0) "markers"
                    else "markers+lines"
     if (data.label.show)

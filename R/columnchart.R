@@ -48,7 +48,10 @@
 #' @param charting.area.fill.color Charting area background color as
 #' a named color in character format (e.g. "black") or a hex code.
 #' @param charting.area.fill.opacity Charting area background opacity as an alpha value (0 to 1).
-#' @param legend.show Logical; show the legend.
+#' @param legend.show Controls whether legend is shown. This can be a logical (\code{TRUE} or \code{FALSE});
+#'  or a string ("Show" or "Hide"). If it is \code{TRUE} or \code{NA} (the default), a legend will be 
+#'  shown only if there is more than one data series. To force a legend to be shown even with 1
+#'  data series, use "Show" instead.
 #' @param legend.wrap Logical; whether the legend text should be wrapped.
 #' @param legend.wrap.nchar Number of characters (approximately) in each
 #' line of the legend when \code{legend.wrap} \code{TRUE}.
@@ -229,7 +232,7 @@ Column <- function(x,
                     background.fill.opacity = 1,
                     charting.area.fill.color = background.fill.color,
                     charting.area.fill.opacity = 0,
-                    legend.show = TRUE,
+                    legend.show = NA,
                     legend.orientation = 'Vertical',
                     legend.wrap = TRUE,
                     legend.wrap.nchar = 30,
@@ -386,9 +389,7 @@ Column <- function(x,
     footer.font = list(family = footer.font.family, size = footer.font.size, color = footer.font.color)
     legend.font = list(family = legend.font.family, size = legend.font.size, color = legend.font.color)
 
-
-    if (ncol(chart.matrix) == 1)
-        legend.show <- FALSE
+    legend.show <- setShowLegend(legend.show, NCOL(chart.matrix))
     legend <- setLegend(type, legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
                         legend.border.color, legend.border.line.width,
                         legend.position.x, legend.position.y, y.data.reversed, legend.orientation)
