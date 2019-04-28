@@ -549,7 +549,7 @@ Column <- function(x,
             y <- as.numeric(chart.matrix[, i])
             xpos <- if (NCOL(chart.matrix) > 1 && !is.stacked) data.annotations$x[,i] else x
             p <- add_trace(p, x = xpos, y = y, type = "scatter", name = legend.text[i],
-                       mode = "markers", marker = list(opacity = 0, color = colors[i]),
+                       mode = "lines", line = list(width = 0, color = colors[i]),
                        text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family),
