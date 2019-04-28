@@ -121,7 +121,7 @@ Pyramid <- function(x,
     if (bar.gap < 0.0 || bar.gap >= 1.0)
     {
         warning("Parameter 'bar gap' must be between 0 and 1. ",
-                "Invalid 'bar gap' set to default value of 0.15.")     
+                "Invalid 'bar gap' set to default value of 0.15.")
         bar.gap <- 0.15
     }
 
@@ -141,11 +141,11 @@ Pyramid <- function(x,
     colors <- paste0(rep("", nrow(chart.matrix)), colors)
 
     if (data.label.font.autocolor)
-        dlab.color <- autoFontColor(colors) 
+        dlab.color <- autoFontColor(colors)
     else
         dlab.color <- vectorize(data.label.font.color, nrow(chart.matrix))
-    
-    data.label.font = lapply(dlab.color, 
+
+    data.label.font = lapply(dlab.color,
         function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
     subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
@@ -219,7 +219,7 @@ Pyramid <- function(x,
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family)),
                        text = formatByD3(y[i], x.hovertext.format), hoverinfo  = "name+text")
- 
+
         if (data.label.show)
         {
             source.text <- formatByD3(chart.matrix[,1], data.label.format,
@@ -229,10 +229,10 @@ Pyramid <- function(x,
                    textfont = data.label.font[[i]], textposition = "middle center",
                    hoverinfo = "none", showlegend = FALSE)
         }
-       
+
         # add scatter trace to ensure hover is always shown
         p <- add_trace(p, x = 0, y = x[i], type = "scatter", name = x[i],
-                       mode = "markers", marker = list(color = "transparent"),
+                       mode = "markers", marker = list(color = colors[i], opacity = 0),
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family),
                        bgcolor = colors[i]),

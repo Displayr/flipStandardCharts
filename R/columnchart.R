@@ -49,7 +49,7 @@
 #' a named color in character format (e.g. "black") or a hex code.
 #' @param charting.area.fill.opacity Charting area background opacity as an alpha value (0 to 1).
 #' @param legend.show Controls whether legend is shown. This can be a logical (\code{TRUE} or \code{FALSE});
-#'  or a string ("Show" or "Hide"). If it is \code{TRUE} or \code{NA} (the default), a legend will be 
+#'  or a string ("Show" or "Hide"). If it is \code{TRUE} or \code{NA} (the default), a legend will be
 #'  shown only if there is more than one data series. To force a legend to be shown even with 1
 #'  data series, use "Show" instead.
 #' @param legend.wrap Logical; whether the legend text should be wrapped.
@@ -549,7 +549,7 @@ Column <- function(x,
             y <- as.numeric(chart.matrix[, i])
             xpos <- if (NCOL(chart.matrix) > 1 && !is.stacked) data.annotations$x[,i] else x
             p <- add_trace(p, x = xpos, y = y, type = "scatter", name = legend.text[i],
-                       mode = "lines", line = list(color = "transparent"),
+                       mode = "markers", marker = list(opacity = 0, color = colors[i]),
                        text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family),

@@ -309,7 +309,7 @@ Bar <- function(x,
         {
             ypos <- if (NCOL(chart.matrix) > 1) data.annotations$y[,i] else x
             p <- add_trace(p, x = y.filled, y = ypos, type = "scatter", name = legend.text[i],
-                       mode = "markers", marker = list(color = "transparent"),
+                       mode = "markers", marker = list(color = colors[i], opacity = 0),
                        text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family),
