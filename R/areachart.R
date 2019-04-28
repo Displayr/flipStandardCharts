@@ -53,7 +53,7 @@ Area <- function(x,
                     footer.font.size = 8,
                     footer.wrap = TRUE,
                     footer.wrap.nchar = 100,
-                    background.fill.color = "transparent", 
+                    background.fill.color = "transparent",
                     background.fill.opacity = 1,
                     charting.area.fill.color = background.fill.color,
                     charting.area.fill.opacity = 0,
@@ -195,7 +195,7 @@ Area <- function(x,
         if (length(na.ind) == 1)
             warning("Non-numeric line thickness value '", tmp.txt[na.ind], "' was ignored.")
         if (length(na.ind) > 1)
-            warning("Non-numeric line thickness values '", 
+            warning("Non-numeric line thickness values '",
             paste(tmp.txt[na.ind], collapse = "', '"), "' were ignored.")
         if (length(na.ind) > 0)
             line.thickness[na.ind] <- if (!has.gap || is.stacked) 0 else 3
@@ -247,11 +247,11 @@ Area <- function(x,
         dlab.color <- autoFontColor(colors)
         if (sum(y.data.reversed, isTRUE(y.bounds.minimum > y.bounds.maximum)) != 1)
             dlab.color <- c(dlab.color[-1], global.font.color) # top datalabels are on the chart background
- 
+
     } else
         dlab.color <- vectorize(data.label.font.color, ncol(chart.matrix))
 
-    data.label.font = lapply(dlab.color, 
+    data.label.font = lapply(dlab.color,
         function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
     subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
@@ -294,8 +294,8 @@ Area <- function(x,
     margins <- setMarginsForAxis(margins, axisFormat, xaxis)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
-    
-    legend.text <- autoFormatLongLabels(colnames(chart.matrix), legend.wrap, legend.wrap.nchar) 
+
+    legend.text <- autoFormatLongLabels(colnames(chart.matrix), legend.wrap, legend.wrap.nchar)
     margins <- setMarginsForLegend(margins, legend.show, legend, legend.text)
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
@@ -310,7 +310,7 @@ Area <- function(x,
     # Invisible trace to ensure enough space for data labels
     # and that tick bounds are shown properly
     # This must happen before ANY of the area traces are put in
-    if (any(data.label.show) || notAutoRange(yaxis)) 
+    if (any(data.label.show) || notAutoRange(yaxis))
         p <- add_trace(p, type = "scatter", mode = "markers",
            x = x.labels, y = apply(chart.matrix, 1, max, na.rm = TRUE) * 1.01,
            marker = list(color = "red", opacity = 0.0),
@@ -322,7 +322,7 @@ Area <- function(x,
         y <- as.numeric(chart.matrix[, i])
         x <- x.labels
         y.label <- y.labels[i]
-        
+
         lines <- list(width = line.thickness[i],
                       color = toRGB(line.colors[i], alpha = line.opacity))
 
@@ -340,7 +340,7 @@ Area <- function(x,
             p <- add_trace(p, x = x, y = rep(min(y,na.rm=T), length(x)),
                            type = "scatter", mode = "lines",
                            hoverinfo = "skip", showlegend = FALSE, opacity = 0)
-        
+
         if (!is.stacked)
         {
            # draw line
@@ -389,8 +389,8 @@ Area <- function(x,
                            fill = fill.bound,
                            fillcolor = toRGB(colors[i], alpha = opacity),
                            connectgaps = TRUE,
-                           line = list(width = 0),
-                           name = legend.text[i], 
+                           line = list(width = 0, color = colors[i]),
+                           name = legend.text[i],
                            legendgroup = i,
                            text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
                            hoverlabel = list(font = list(color = autoFontColor(colors[i]),
@@ -410,7 +410,7 @@ Area <- function(x,
                           hoverlabel = list(font = list(color = autoFontColor(fit.line.colors[i]),
                           size = hovertext.font.size, family = hovertext.font.family)),
                           line = list(dash = fit.line.type, width = fit.line.width,
-                          color = fit.line.colors[i], shape = 'spline'), opacity = fit.line.opacity)    
+                          color = fit.line.colors[i], shape = 'spline'), opacity = fit.line.opacity)
                 if (fit.CI.show && !is.null(tmp.fit$lb))
                 {
                     p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$lb, type = 'scatter',
@@ -432,7 +432,7 @@ Area <- function(x,
     }
     if (is.stacked)
     {
-        for (i in 1:ncol(chart.matrix))   
+        for (i in 1:ncol(chart.matrix))
         {
             y <- as.numeric(chart.matrix[, i])
             x <- x.labels
@@ -461,7 +461,7 @@ Area <- function(x,
          }
     }
 
-    for (i in 1:ncol(chart.matrix))   
+    for (i in 1:ncol(chart.matrix))
     {
         if (data.label.show[i])
         {

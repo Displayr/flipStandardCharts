@@ -318,13 +318,13 @@ SmallMultiples <- function(x,
     else if (chart.type == "Radar")
     {
         if (length(line.thickness) == 0)
-            line.thickness <- "" 
+            line.thickness <- ""
         if (is.character(line.thickness))
             line.thickness <- TextAsVector(line.thickness)
         line.thickness <- suppressWarnings(paste0(line.thickness, rep("", npanels)))
 
         plot.list <- lapply(1:npanels, function(i){chart(.bind_mean(x[,i, drop = FALSE], average.series),
-                                                     hovertext.show = c(TRUE, TRUE), 
+                                                     hovertext.show = c(TRUE, TRUE),
                                                      line.thickness = line.thickness[i],
                                                      colors = c(colors[i], average.color),
                                                      grid.show = FALSE, x.tick.show = FALSE,
@@ -355,6 +355,7 @@ SmallMultiples <- function(x,
         margin.right <- 0
         margin.bottom <- 0
     } else if (chart.type == "Bar" || chart.type == "Column")
+    {
         plot.list <- lapply(1:npanels, function(i){chart(x[,i, drop = FALSE],
                                                      colors = colors[i],
                                                      average.series = average.series,
@@ -373,6 +374,13 @@ SmallMultiples <- function(x,
                                                      global.font.family = global.font.family,
                                                      global.font.color = global.font.color,
                                                      ...)$htmlwidget})
+
+        # Remove second axis which is used for positioning data labels/hovertext
+        # on categorical/date axis - naming interferes with subplot
+        axis.name <- if (chart.type == "Bar") "yaxis2" else "xaxis2"
+        for (i in 1:npanels)
+            plot.list[[i]]$x$layoutAttrs[[1]][[axis.name]] <- NULL
+    }
     else if (chart.type == "Pyramid")
         plot.list <- lapply(1:npanels, function(i){chart(x[,i, drop = FALSE],
                                                      colors = colors,
@@ -389,7 +397,7 @@ SmallMultiples <- function(x,
     {
         # Line or Area chart
         if (length(line.thickness) == 0)
-            line.thickness <- "" 
+            line.thickness <- ""
         if (is.character(line.thickness))
             line.thickness <- TextAsVector(line.thickness)
         line.thickness <- suppressWarnings(paste0(line.thickness, rep("", npanels)))
