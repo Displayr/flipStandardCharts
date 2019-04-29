@@ -140,7 +140,7 @@ This should be input as a comma-seperated list of URLs.}
 \item{fit.CI.opacity}{Opacity of confidence interval ribbon as an alpha value (0 to 1).}
 
 \item{legend.show}{Controls whether legend is shown. This can be a logical (\code{TRUE} or \code{FALSE});
-or a string ("Show" or "Hide"). If it is \code{TRUE} or \code{NA} (the default), a legend will be 
+or a string ("Show" or "Hide"). If it is \code{TRUE} or \code{NA} (the default), a legend will be
 shown only if there is more than one data series. To force a legend to be shown even with 1
 data series, use "Show" instead.}
 
