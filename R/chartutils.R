@@ -279,7 +279,7 @@ setShowLegend <- function(legend.show, num.series = 2)
     # Default response is to only show legend if it there is more than 1 series
     if (isTRUE(legend.show) || is.na(legend.show) || grepl("Auto", legend.show))
         return(auto.show)
-    if (!isTRUE(legend.show))
+    if (isTRUE(legend.show == FALSE))
         return(FALSE)
 
     # If legend.show is not boolean, check for string inputs

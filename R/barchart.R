@@ -368,7 +368,7 @@ Bar <- function(x,
                        else            ifelse(x.sign >= 0, "middle right", "middle left")
             p <- add_trace(p, x = data.annotations$x[,i] + x.diff, type = "scatter",
                       mode = "markers+text", marker = list(color = 'rgba(0,0,0,0)',
-                      size = (!is.stacked & data.annotations$x[,i] < 0) * data.label.font.size,
+                      size = ifelse(!is.stacked & data.annotations$x[,i] < 0, 5, 0),
                       symbol = "circle-open"), cliponaxis = FALSE,
                       y = if (NCOL(chart.matrix) > 1) data.annotations$y[,i] else x,
                       yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y",

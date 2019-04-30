@@ -464,6 +464,7 @@ Area <- function(x,
 
     for (i in 1:ncol(chart.matrix))
     {
+        x.sign <- getSign(1.0, xaxis)
         if (data.label.show[i])
         {
             y <- as.numeric(chart.matrix[, i])
@@ -478,8 +479,8 @@ Area <- function(x,
 
             m <- nrow(chart.matrix)
             data.label.pos <- rep("top middle", m)
-            data.label.pos[1] <- gsub("middle", "right", data.label.pos[1])
-            data.label.pos[m] <- gsub("middle", "left",  data.label.pos[m])
+            data.label.pos[1] <- gsub("middle", if (x.sign > 0) "right" else "left", data.label.pos[1])
+            data.label.pos[m] <- gsub("middle", if (x.sign > 0) "left" else "right",  data.label.pos[m])
 
             p <- add_trace(p, type = "scatter", mode = "text", x = x, y = y,
                     legendgroup = i, showlegend = FALSE, name = y.label,
