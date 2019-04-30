@@ -360,6 +360,9 @@ Bar <- function(x,
                     size = hovertext.font.size, family = hovertext.font.family)),
                     line = list(color = average.color))
 
+        # Plotly text marker positions are not spaced properly when placed to
+        # the left of the bar (i.e. negative values or reversed axis).
+        # Adjusted by controlling the size of the marker
         if (data.label.show)
         {
             x.sign <- getSign(data.annotations$x[,i], xaxis)
