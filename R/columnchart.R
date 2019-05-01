@@ -514,9 +514,9 @@ Column <- function(x,
                     size = hovertext.font.size, family = hovertext.font.family)),
                     line = list(color = average.color))
 
-        
+
         # Plotly text marker positions are not spaced properly when placed to
-        # the below the bar (i.e. negative values or reversed axis). 
+        # the below the bar (i.e. negative values or reversed axis).
         # Adjusted by controlling the size of the marker
         if (data.label.show)
         {
@@ -529,7 +529,7 @@ Column <- function(x,
                 textpos <- ifelse(y.sign >= 0, "top center", "bottom center")
             p <- add_trace(p, y = data.annotations$y[,i], cliponaxis = FALSE,
                       type = "scatter", mode = "markers+text",
-                      marker = list(color = 'rgba(1,0,0,1)', symbol = "circle-open",
+                      marker = list(color = 'rgba(0,0,0,0)', symbol = "circle-open",
                       size = ifelse(y.sign < 0, 3, 0 + (is.stacked & !data.label.centered))),
                       x = if (NCOL(chart.matrix) > 1) data.annotations$x[,i] else x,
                       xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x",
