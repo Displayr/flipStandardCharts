@@ -6,10 +6,6 @@
 #' @param smoothing Numeric; smoothing if \code{shape} is "spline".
 #' @param line.type Character; one of 'solid', 'dot', 'dashed'.
 #' @param data.label.position Character; one of 'top' or 'bottom'.
-#' @examples
-#' z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L),
-#'       .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
-#' Line(z)
 #' @importFrom grDevices rgb
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
@@ -50,7 +46,7 @@ Line <-   function(x,
                     footer.wrap = TRUE,
                     footer.wrap.nchar = 100,
                     grid.show = TRUE,
-                    background.fill.color = "transparent", 
+                    background.fill.color = "transparent",
                     background.fill.opacity = 1,
                     charting.area.fill.color = background.fill.color,
                     charting.area.fill.opacity = 0,
@@ -183,7 +179,7 @@ Line <-   function(x,
     dlab.pos <- vectorize(tolower(data.label.position), ncol(chart.matrix))
     dlab.prefix <- vectorize(data.label.prefix, ncol(chart.matrix), split = NULL)
     dlab.suffix <- vectorize(data.label.suffix, ncol(chart.matrix), split = NULL)
-    data.label.font = lapply(dlab.color, 
+    data.label.font = lapply(dlab.color,
         function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
     subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
@@ -196,7 +192,7 @@ Line <-   function(x,
 
     legend.show <- setShowLegend(legend.show, NCOL(chart.matrix))
     legend <- setLegend(type, legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
-                        legend.border.color, legend.border.line.width, 
+                        legend.border.color, legend.border.line.width,
                         legend.position.x, legend.position.y, FALSE, legend.orientation)
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
 
@@ -229,8 +225,8 @@ Line <-   function(x,
     margins <- setMarginsForAxis(margins, axisFormat, xaxis)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
-    
-    legend.text <- autoFormatLongLabels(colnames(chart.matrix), legend.wrap, legend.wrap.nchar) 
+
+    legend.text <- autoFormatLongLabels(colnames(chart.matrix), legend.wrap, legend.wrap.nchar)
     margins <- setMarginsForLegend(margins, legend.show, legend, legend.text)
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
@@ -252,7 +248,7 @@ Line <-   function(x,
         if (length(na.ind) == 1)
             warning("Non-numeric line thickness value '", tmp.txt[na.ind], "' was ignored.")
         if (length(na.ind) > 1)
-            warning("Non-numeric line thickness values '", 
+            warning("Non-numeric line thickness values '",
             paste(tmp.txt[na.ind], collapse = "', '"), "' were ignored.")
     }
     line.thickness <- suppressWarnings(line.thickness * rep(1, ncol(chart.matrix)))
@@ -265,7 +261,7 @@ Line <-   function(x,
         lines <- list(width = line.thickness[i], dash = line.type[i],
                       shape = shape, smoothing = smoothing,
                       color = toRGB(colors[i], alpha = opacity[i]))
-        
+
         # add invisible line to force all categorical labels to be shown
         if (i == 1)
             p <- add_trace(p, x = x, y = rep(min(y,na.rm = T), length(x)),

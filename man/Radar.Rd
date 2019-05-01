@@ -242,8 +242,3 @@ line of the footer when \code{footer.wrap} \code{TRUE}.}
 \description{
 Radar chart, also known as web chart, spider chart, star chart, star plot, cobweb chart, irregular polygon, polar chart, or Kiviat diagram
 }
-\examples{
-z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L),
-      .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
-Column(z, type="Stacked Column")
-}

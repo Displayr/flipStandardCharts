@@ -153,11 +153,3 @@ See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 \description{
 Create small charts for displaying inline with text
 }
-\examples{
-xx <- rnorm(10)
-Sparkline(xx, background.fill.color = "black", background.fill.opacity = 1)
-Sparkline(xx, type = "Curve", end.points.show = TRUE, end.labels.position = "Next", 
-     end.labels.format = ".1\%")
-Sparkline(xx, type = "Line", x.axis.show = TRUE, y.axis.show = TRUE, 
-     x.tick.show = FALSE, y.tick.show = FALSE)
-}

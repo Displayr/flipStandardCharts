@@ -189,10 +189,6 @@
 #' @param data.label.threshold The proportion of the total range below which
 #' data labels should not be displayed. Only applicable for pie, bar and column
 #' charts.
-#' @examples
-#' z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L),
-#'       .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
-#' Column(z, type="Stacked Column")
 #' @importFrom grDevices rgb
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
@@ -533,7 +529,7 @@ Column <- function(x,
                 textpos <- ifelse(y.sign >= 0, "top center", "bottom center")
             p <- add_trace(p, y = data.annotations$y[,i], cliponaxis = FALSE,
                       type = "scatter", mode = "markers+text",
-                      marker = list(color = 'rgba(0,0,0,0)', symbol = "circle-open",
+                      marker = list(color = 'rgba(1,0,0,1)', symbol = "circle-open",
                       size = ifelse(y.sign < 0, 3, 0 + (is.stacked & !data.label.centered))),
                       x = if (NCOL(chart.matrix) > 1) data.annotations$x[,i] else x,
                       xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x",

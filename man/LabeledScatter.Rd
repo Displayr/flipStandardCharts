@@ -265,8 +265,3 @@ character format (e.g. "black") or an a hex code.}
 \description{
 Labeled Scatter Chart
 }
-\examples{
-z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L),
-      .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
-Column(z, type="Stacked Column")
-}

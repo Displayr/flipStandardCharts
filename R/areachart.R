@@ -14,10 +14,6 @@
 #' @param line.colors  Character; a vector containing one or more colors specified as hex codes.
 #' @param line.opacity Opacity for series lines as an alpha value (0 to 1).
 #' @inherit Column
-#' @examples
-#' z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L),
-#'       .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
-#' Area(z)
 #' @importFrom grDevices rgb
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar

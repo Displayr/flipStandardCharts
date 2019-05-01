@@ -68,13 +68,6 @@
 #' (e.g. "black") or an a hex code.
 #' @param font.unit Set to 'pt' (default) to get font sizing consistent with textboxes.
 #' Otherwise fonts will be taken to be specified in pixels.
-#' @examples
-#' xx <- rnorm(10)
-#' Sparkline(xx, background.fill.color = "black", background.fill.opacity = 1)
-#' Sparkline(xx, type = "Curve", end.points.show = TRUE, end.labels.position = "Next", 
-#'      end.labels.format = ".1%")
-#' Sparkline(xx, type = "Line", x.axis.show = TRUE, y.axis.show = TRUE, 
-#'      x.tick.show = FALSE, y.tick.show = FALSE)
 #' @importFrom plotly plot_ly config layout add_trace
 #' @export
 Sparkline <- function(x, 

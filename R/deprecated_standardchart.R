@@ -297,9 +297,6 @@
 #' @param us.date.format Whether to apply the US convention when parsing dates.
 #' @param logos Optional list of images to be used to label scatterplot instead of the row names. It should be inputted as a comma-seperated list of URLs.
 #' @param logo.size Numeric controlling the size of the logos.
-#' @examples
-#' z <- c(5, 6, 2, 1.5, 9, 2.2)
-#' Chart(y = z, type = "Area")
 #' @importFrom grDevices rgb
 #' @importFrom flipFormat FormatAsReal
 #' @importFrom flipTime AsDateTime

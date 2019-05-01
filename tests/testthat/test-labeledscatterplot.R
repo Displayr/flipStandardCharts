@@ -1,8 +1,14 @@
 context("Labeled scatter plot")
 
-set.seed(12358)
-dat <- matrix(rnorm(24), 12, 2,
-              dimnames=list(stringi::stri_rand_strings(12, 6), c("X", "Y")))
+dat <- structure(c(-0.378331991098098, -0.81165552109611, 0.217951487400431,
+1.5286107300616, -1.8772553732612, -0.427440736452652, 1.81260348695547,
+0.0210023953600193, 0.00559155278839169, 0.784822531228735, -1.46479949238719,
+-1.68259776871402, -1.51650839628927, 0.955458580527818, -1.34834878068353,
+0.876829966842232, -0.114809313591938, -0.293554423897848, -0.789860399916284,
+-0.609446296323656, -0.141567243052079, -0.453809127391586, 0.39578896667589,
+-0.37481125870847), .Dim = c(12L, 2L), .Dimnames = list(c("nLAGph",
+"7hVoOM", "iBnrwa", "o3Dw2c", "uMZoXB", "C1IrLI", "G3ueGs", "TveROQ",
+"QCBe1q", "z0bGc5", "zsakBj", "z60tz8"), c("X", "Y")))
 zgroup <- rep(LETTERS[1:3], 4)
 logos <- sprintf("https://displayrcors.azureedge.net/images/%s_grey.svg",
                  c("apple", "soup", "bread", "car", "chicken", "rocket",

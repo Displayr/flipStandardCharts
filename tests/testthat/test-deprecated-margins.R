@@ -72,12 +72,16 @@ test_that("Axis and data labels placement", {
     print(Chart(dat.longlabels[1:5], type="Column", x.title="Kilometers per hour<br>from city center<br>", x.title.font.size=20, footer="Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."))
     print(Chart(dat.longlabels[c(33:35, 31:32)], type="Column", x.title="Kilometers per hour", x.title.font.size=20, footer="Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."))
 
-    set.seed(123456)
-    require(stringi)
-    x <- matrix(rnorm(2000), ncol=2)
-    colnames(x) <- c("A", "B")
-    rownames(x) <- stri_rand_strings(nrow(x), 5)
 
+    x <- structure(c(0.833733170755138, -0.276047773214867, -0.355001838033406,
+        0.0874874238042033, 2.25225573054322, 0.834460129133672, 1.31241550858861,
+        2.50264540789068, 1.16823174338441, -0.426165577414356, -0.996129751611455,
+        0.690224528114173, -0.134164642588417, 0.953253005573708, -0.10334193865127,
+        -0.50703570126551, 0.102968160045374, -0.422491722827557, 0.614049435502584,
+        -1.23656291494856, 1.13514560752989, -0.623717030867438), .Dim = c(11L,
+        2L), .Dimnames = list(c("mNxRu", "ZH78N", "aJwAy", "4Wk8S", "l5pLl",
+        "Kfmye", "9AiND", "cCMaz", "1zMGx", "1wxia", "P9VVC"), c("A",
+        "B")))
     x.dates <- 1:10
     names(x.dates) <- sprintf("%02d/01/2017", x.dates)
 
