@@ -30,6 +30,9 @@
 #' @inherit Scatter
 #' @inherit GeographicMap
 #' @importFrom plotly subplot
+#' @examples
+#' x <- matrix(1:21, 7, 3, dimnames = list(letters[1:7], LETTERS[1:3]))
+#' SmallMultiples(x, "Column", colors=c("red","green","blue"))
 #' @export
 SmallMultiples <- function(x,
                            chart.type = "Area",

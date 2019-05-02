@@ -305,6 +305,9 @@
 #' @importFrom flipData GetTidyTwoDimensionalArray
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
+#' @examples
+#' z <- c(5, 6, 2, 1.5, 9, 2.2)
+#' Chart(y = z, type = "Area")
 #' @export
 Chart <-   function(y = NULL,
                     type = "Column",

@@ -439,7 +439,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
     if (!tickshow)
         tickfont$size <- 0
 
-    if (!is.null(labels) && !is.na(labels) && any(nchar(labels) > 0) &&
+    if (!is.null(labels) && any(!is.na(labels)) && any(nchar(labels) > 0) &&
          is.null(tickangle) && side %in% c("bottom", "top"))
     {
         lab.nchar <- max(c(0, nchar(unlist(strsplit(split = "<br>", as.character(labels))))), na.rm = TRUE)
@@ -973,7 +973,7 @@ autoFormatLongLabels <- function(x, wordwrap = FALSE, n = 21, truncate = FALSE, 
     output.text <- x
     if (wordwrap && length(output.text) > 0)
         output.text <- sapply(output.text, function(x) lineBreakEveryN(x, n, remove.empty = remove.empty))
-    if (is.null(output.text) || is.na(output.text) || length(output.text) == 0)
+    if (length(output.text) == 0 || all(is.na(output.text)))
         output.text <- ""
 
     attributes(output.text) <- NULL

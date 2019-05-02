@@ -299,3 +299,8 @@ bar or column charts, or between each cluster of bars or columns.}
 \description{
 Bar charts with a centred axis
 }
+\examples{
+z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L),
+      .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
+Bar(z, type="100\% Stacked Bar")
+}

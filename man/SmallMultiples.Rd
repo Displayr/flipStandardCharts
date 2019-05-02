@@ -204,7 +204,6 @@ A small multiple (sometimes called trellis chart, lattice chart,
    the same scale and axes, allowing them to be easily compared.
 }
 \examples{
-data <- seq(4)
-names(data) <- c("France", "China", "Brazil", "Canada")
-GeographicMap(data)
+x <- matrix(1:21, 7, 3, dimnames = list(letters[1:7], LETTERS[1:3]))
+SmallMultiples(x, "Column", colors=c("red","green","blue"))
 }

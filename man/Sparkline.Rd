@@ -32,7 +32,7 @@ Sparkline(x, type = c("Area", "Line", "Curve", "Column", "Box")[1],
   margin.top = 0, margin.bottom = 0)
 }
 \arguments{
-\item{x}{A numeric input vector to plot. Note that because sparklines is designed to be minimal 
+\item{x}{A numeric input vector to plot. Note that because sparklines is designed to be minimal
 there is no support for vector names, and the x-axis of these charts is always the numeric index.}
 
 \item{type}{The chart output type. One of 'Area', 'Line' (straight lines connecting points), 'Curve',
@@ -44,7 +44,7 @@ there is no support for vector names, and the x-axis of these charts is always t
 
 \item{line.thickness}{Thickness of line (in pixels) for Area, Line or Curve chart.}
 
-\item{line.color}{Character; Line color in Area, Line and Curve chart. For a line or curve chart, 
+\item{line.color}{Character; Line color in Area, Line and Curve chart. For a line or curve chart,
 setting either \code{fill.color} or \code{line.color} while retaining default values can be used.
 but if both arguments are used, then \code{fill.color} will be ignored in favour of \code{line.color}.}
 
@@ -59,7 +59,7 @@ font attribute for the chart unless specified individually.}
 \item{font.unit}{Set to 'pt' (default) to get font sizing consistent with textboxes.
 Otherwise fonts will be taken to be specified in pixels.}
 
-\item{end.points.show}{Logical; whether to show markers at either end of the series. 
+\item{end.points.show}{Logical; whether to show markers at either end of the series.
 This only applies for charts with \code{type} "Area", "Line", or "Curve".}
 
 \item{end.points.symbol}{Character; marker symbol used at end points. See \url{https://plot.ly/r/reference/#scatter-marker-symbol} for options.}
@@ -152,4 +152,12 @@ See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 }
 \description{
 Create small charts for displaying inline with text
+}
+\examples{
+xx <- rnorm(10)
+Sparkline(xx, background.fill.color = "black", background.fill.opacity = 1)
+Sparkline(xx, type = "Curve", end.points.show = TRUE, end.labels.position = "Next",
+     end.labels.format = ".1\%")
+Sparkline(xx, type = "Line", x.axis.show = TRUE, y.axis.show = TRUE,
+     x.tick.show = FALSE, y.tick.show = FALSE)
 }

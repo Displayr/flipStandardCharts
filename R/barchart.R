@@ -10,6 +10,10 @@
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
+#' @examples
+#' z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L),
+#'       .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
+#' Bar(z, type="100% Stacked Bar")
 #' @export
 Bar <- function(x,
                     type = "Bar",

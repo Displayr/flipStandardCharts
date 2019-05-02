@@ -589,3 +589,7 @@ corresponding to each row.}
 \description{
 \code{Chart} generates standard charts
 }
+\examples{
+z <- c(5, 6, 2, 1.5, 9, 2.2)
+Chart(y = z, type = "Area")
+}

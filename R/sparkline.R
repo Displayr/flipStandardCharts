@@ -1,18 +1,18 @@
 #' Sparkline charts
 #'
 #' Create small charts for displaying inline with text
-#' @param x A numeric input vector to plot. Note that because sparklines is designed to be minimal 
+#' @param x A numeric input vector to plot. Note that because sparklines is designed to be minimal
 #'  there is no support for vector names, and the x-axis of these charts is always the numeric index.
 #' @param type The chart output type. One of 'Area', 'Line' (straight lines connecting points), 'Curve',
 #'  'Column' or 'Box'.
 #' @param fill.color Character; Color of chart
 #' @param fill.opacity Opacity of \code{fill.color} as an alpha value (0 to 1).
-#' @param line.color Character; Line color in Area, Line and Curve chart. For a line or curve chart, 
+#' @param line.color Character; Line color in Area, Line and Curve chart. For a line or curve chart,
 #'  setting either \code{fill.color} or \code{line.color} while retaining default values can be used.
 #'  but if both arguments are used, then \code{fill.color} will be ignored in favour of \code{line.color}.
 #' @param line.opacity Opacity of \code{line.color} as an alpha value (0 to 1).
 #' @param line.thickness Thickness of line (in pixels) for Area, Line or Curve chart.
-#' @param end.points.show Logical; whether to show markers at either end of the series. 
+#' @param end.points.show Logical; whether to show markers at either end of the series.
 #' 	This only applies for charts with \code{type} "Area", "Line", or "Curve".
 #' @param end.points.symbol Character; marker symbol used at end points. See \url{https://plot.ly/r/reference/#scatter-marker-symbol} for options.
 #' @param end.points.size Numeric; marker size in pixels.
@@ -69,8 +69,15 @@
 #' @param font.unit Set to 'pt' (default) to get font sizing consistent with textboxes.
 #' Otherwise fonts will be taken to be specified in pixels.
 #' @importFrom plotly plot_ly config layout add_trace
+#' @examples
+#' xx <- rnorm(10)
+#' Sparkline(xx, background.fill.color = "black", background.fill.opacity = 1)
+#' Sparkline(xx, type = "Curve", end.points.show = TRUE, end.labels.position = "Next",
+#'      end.labels.format = ".1%")
+#' Sparkline(xx, type = "Line", x.axis.show = TRUE, y.axis.show = TRUE,
+#'      x.tick.show = FALSE, y.tick.show = FALSE)
 #' @export
-Sparkline <- function(x, 
+Sparkline <- function(x,
         type = c("Area", "Line", "Curve", "Column", "Box")[1],
         fill.color = "red",
         fill.opacity = 0.5,
@@ -145,7 +152,7 @@ Sparkline <- function(x,
         if (length(x) > 1)
         {
             warning("Sparkline charts only show a single series ",
-               "(", names(x)[1], "). ", 
+               "(", names(x)[1], "). ",
                "Use COLUMN MANIPULATIONS to choose a different data series.")
             x <- x[[1]]
         }
@@ -156,7 +163,7 @@ Sparkline <- function(x,
         if (!is.null(colnames(x)))
             tmp.name <- colnames(x)[1]
         if (is.list(x) && !is.null(attr(x[[1]], "label")))
-            tmp.name <- attr(x[[1]], "label") 
+            tmp.name <- attr(x[[1]], "label")
         if (NCOL(x) > 1)
         {
             warning("Sparkline charts only show a single series ",
@@ -194,20 +201,20 @@ Sparkline <- function(x,
 		values.tick.font.color = x.tick.font.color, values.tick.font.size = x.tick.font.size,
 		values.line.width = x.axis.width, values.line.color = x.axis.color,
 		values.tick.font.family = x.tick.font.family,
-		background.fill.color = background.fill.color, 
+		background.fill.color = background.fill.color,
         background.fill.opacity = background.fill.opacity, vertical = FALSE,
-        margin.bottom = margin.bottom, margin.top = margin.top, 
+        margin.bottom = margin.bottom, margin.top = margin.top,
         margin.left = margin.left, margin.right = margin.right))
 
     n <- length(x)
     annot <- NULL
-    
+
     axisFormat <- formatLabels(x, type = if (type == "Curve") "Line" else type,
                         label.wrap = FALSE, label.wrap.nchar = NULL,
                         x.format = x.tick.format, y.format = y.tick.format)
     x.labels <- axisFormat$labels
     x <- as.numeric(x)
-    xaxis <- list(side = "bottom", type = axisFormat$x.axis.type, categoryorder = "trace", 
+    xaxis <- list(side = "bottom", type = axisFormat$x.axis.type, categoryorder = "trace",
                 showgrid = FALSE, showline = x.axis.show, zeroline = FALSE, automargin = type != "Box",
                 showticklabels = x.axis.show, ticks = if (x.axis.show) "outside" else "",
                 tickfont = list(size = if (x.tick.show) x.tick.font.size else 1,
@@ -217,9 +224,9 @@ Sparkline <- function(x,
     yaxis <- list(side = "left", showgrid = FALSE, showline = y.axis.show, zeroline = FALSE,
                 automargin = type != "Box",
                 showticklabels = y.axis.show, ticks = if (y.axis.show) "outside" else "",
-                tickfont = list(size = if (y.tick.show) y.tick.font.size else 1, 
+                tickfont = list(size = if (y.tick.show) y.tick.font.size else 1,
 							 	color = if (y.tick.show) y.tick.font.color else "transparent",
-				family = y.tick.font.family), ticklen = y.tick.length, 
+				family = y.tick.font.family), ticklen = y.tick.length,
 				hoverformat = hover.format, tickformat = y.tick.format,
                 linewidth = y.axis.width, linecolor = y.axis.color, tickcolor = y.axis.color)
 
@@ -232,7 +239,7 @@ Sparkline <- function(x,
     else if (type %in% c("Line", "Curve"))
         p <- add_trace(p, x = x.labels, y = x, type = "scatter", mode = "lines",
                 hoverinfo = "x+y",
-                line = list(width = line.thickness, 
+                line = list(width = line.thickness,
                             shape = if (type == "Curve") "spline" else "linear",
                             color = toRGB(line.color, alpha = line.opacity)))
     else if (type == "Column")
@@ -247,7 +254,7 @@ Sparkline <- function(x,
         if (end.points.show)
             p <- add_trace(p, x = x.labels[c(1,n)], y = x[c(1,n)], type = "scatter", mode = "markers",
                 marker = list(color = end.points.color, opacity = end.points.opacity,
-                symbol = end.points.symbol, size = end.points.size), 
+                symbol = end.points.symbol, size = end.points.size),
                 hoverinfo = "skip", cliponaxis = FALSE)
         else
             end.points.size <- 1
@@ -256,19 +263,19 @@ Sparkline <- function(x,
 		{
 			end.lab.font = list(family = end.labels.font.family, color = end.labels.font.color,
 				size = end.labels.font.size)
-            annot <- list(setLabel(x[1], x.labels[1], 
-				text = formatByD3(x[1], end.labels.format, end.labels.prefix, 
+            annot <- list(setLabel(x[1], x.labels[1],
+				text = formatByD3(x[1], end.labels.format, end.labels.prefix,
 				end.labels.suffix, data.is.percent),
                 shift = end.points.size * 0.75, position = end.labels.position,
 				font = end.lab.font, index = 1),
                 setLabel(x[n], x.labels[n],
-				text = formatByD3(x[n], end.labels.format, end.labels.prefix, 
+				text = formatByD3(x[n], end.labels.format, end.labels.prefix,
 				end.labels.suffix, data.is.percent),
                 shift = end.points.size * 0.75, position = end.labels.position,
 				font = end.lab.font, index = n))
 		}
     }
-           
+
 
     p <- config(p, displayModeBar = FALSE)
     p$sizingPolicy$browser$padding <- 0
@@ -276,10 +283,10 @@ Sparkline <- function(x,
         xaxis = xaxis, yaxis = yaxis,
         annotations = annot,
         hovermode = "closest", showlegend = FALSE,
-        margin = list(t = margin.top, b = margin.bottom, l = margin.left, r = margin.right, 
+        margin = list(t = margin.top, b = margin.bottom, l = margin.left, r = margin.right,
           	autoexpand = x.axis.show | y.axis.show),
 		hoverlabel = list(bgcolor = hover.bg.color, bordercolor = hover.bg.color,
-			font = list(color = hover.font.color, size = hover.font.size, 
+			font = list(color = hover.font.color, size = hover.font.size,
 			family = hover.font.family)),
         plot_bgcolor = "transparent",
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity))
