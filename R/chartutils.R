@@ -676,6 +676,8 @@ setCustomMargins <- function(margins, margin.top, margin.bottom, margin.left,
         margins$r <- margin.right
     if (!is.null(margin.inner.pad))
         margins$pad <- margin.inner.pad
+    if (!is.null(margin.top) || !is.null(margin.bottom) || !is.null(margin.left) || !is.null(margin.right))
+        margins$autoexpand <- FALSE
     margins
 }
 
