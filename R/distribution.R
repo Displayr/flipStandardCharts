@@ -333,6 +333,8 @@ Distribution <-   function(x,
                                  10, 10)
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, 0)
+    if (!values.tick.show)
+        margins$autoexpand <- FALSE
 
     ## Initiate plotly object
     p <- plot_ly()
