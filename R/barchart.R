@@ -378,7 +378,8 @@ Bar <- function(x,
                       text = data.annotations$text[,i],
                       textposition = textpos,
                       textfont = data.label.font[[i]], hoverinfo = "skip",
-                      showlegend = FALSE, legendgroup = i)
+                      showlegend = FALSE, 
+                      legendgroup = if (is.stacked) "" else i)
         }
     }
     annotations <- NULL
@@ -406,10 +407,6 @@ Bar <- function(x,
         bargap = bar.gap,
         barmode = barmode
     )
-
-    # Disable legend toggling if there are data labels (DS-2393)
-    if (data.label.show && is.stacked)
-        p <- onRender(p, "function(el, x) { window.onload = function() { el.on('plotly_legendclick', function() { return false; })} }")
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     result

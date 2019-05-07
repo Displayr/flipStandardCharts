@@ -538,8 +538,8 @@ Column <- function(x,
                       x = if (NCOL(chart.matrix) > 1) data.annotations$x[,i] else x,
                       xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x",
                       text = data.annotations$text[,i], textfont = data.label.font[[i]],
-                      textposition = textpos,
-                      showlegend = FALSE, legendgroup = i, hoverinfo = "skip")
+                      textposition = textpos, showlegend = FALSE, 
+                      legendgroup = if (is.stacked) "" else i, hoverinfo = "skip")
         }
     }
 
@@ -563,8 +563,6 @@ Column <- function(x,
     }
 
     annotations <- NULL
-    #if (data.label.show && is.stacked)
-    #    annotations <- data.annotations
     n <- length(annotations)
     annotations[[n+1]] <- setTitle(title, title.font, margins)
     annotations[[n+2]] <- setFooter(footer, footer.font, margins)
@@ -589,10 +587,6 @@ Column <- function(x,
         bargap = bar.gap,
         barmode = barmode
     )
-
-    # Disable legend toggling if there are data labels (DS-2393)
-    if (data.label.show && is.stacked)
-        p <- onRender(p, "function(el, x) { window.onload = function() { el.on('plotly_legendclick', function() { return false; })} }")
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     result
