@@ -22,6 +22,26 @@ ErrorIfNotEnoughData <- function(x, require.tidy = TRUE)
 }
 
 
+setHoverTemplate <- function(i, axis, chart.matrix, is.bar = FALSE, hide.category = FALSE)
+{
+    if (hide.category)
+    {
+        # This is typically because the category info cannot be accurately repeated
+        formatStr <- if (is.bar) "%{x}" else "%{y}"
+
+    } else
+    {
+        formatStr <- if (axis$type == "category") "%{text}: %{y}"
+                     else                         "(%{x}, %{y})"
+        if (is.bar && axis$type == "category")
+            formatStr <- "%{text}: %{x}"
+    }
+
+    nameStr <- if (ncol(chart.matrix) == 1) "" else colnames(chart.matrix)[i]
+    formatStr <- paste0(formatStr, "<extra>", nameStr, "</extra>")
+    return(formatStr)
+}
+
 setHoverText <- function(axis, chart.matrix, is.bar = FALSE)
 {
     formatStr <- if (axis$type == "category") "text+y"

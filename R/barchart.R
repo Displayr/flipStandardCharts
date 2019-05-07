@@ -292,7 +292,7 @@ Bar <- function(x,
         {
             p <- add_trace(p, x = rep(min(y,na.rm = TRUE), length(y)), y = x,
                            type = "scatter", mode = "lines",
-                           hoverinfo = "none", showlegend = FALSE, opacity = 0)
+                           hoverinfo = "skip", showlegend = FALSE, opacity = 0)
         }
 
         # this is the main trace for each data series
@@ -302,22 +302,8 @@ Bar <- function(x,
                        text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family)),
-                       hoverinfo  = setHoverText(yaxis, chart.matrix, is.bar = TRUE), legendgroup = i)
-
-        # add scatter trace to ensure hover is always shown
-        if (!is.stacked)
-        {
-            ypos <- if (NCOL(chart.matrix) > 1) data.annotations$y[,i] else x
-            p <- add_trace(p, x = y.filled, y = ypos, type = "scatter", name = legend.text[i],
-                       mode = "markers", marker = list(color = colors[i], opacity = 0),
-                       text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
-                       hoverlabel = list(font = list(color = autoFontColor(colors[i]),
-                       size = hovertext.font.size, family = hovertext.font.family),
-                       bgcolor = colors[i]), showlegend = FALSE,
-                       yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y",
-                       hoverinfo  = gsub("+y", "+text", setHoverText(yaxis, chart.matrix, is.bar = TRUE),
-                            fixed = TRUE))
-        }
+                       hovertemplate = setHoverTemplate(i, yaxis, chart.matrix, is.bar = TRUE),
+                       legendgroup = i)
 
         if (fit.type != "None" && is.stacked && i == 1)
             warning("Line of best fit not shown for stacked charts.")
@@ -349,7 +335,6 @@ Bar <- function(x,
                         showlegend = FALSE, legendgroup = i,
                         line = list(color=fit.CI.colors[i], width=0, shape='spline'))
             }
-
         }
 
         # Only used for small multiples
@@ -370,17 +355,31 @@ Bar <- function(x,
             textpos <- if (is.stacked) "middle center"
                        else            ifelse(x.sign >= 0, "middle right", "middle left")
             p <- add_trace(p, x = data.annotations$x[,i] + x.diff, type = "scatter",
-                      mode = "markers+text", marker = list(color = 'rgba(0,0,0,0)',
-                      size = ifelse(!is.stacked & data.annotations$x[,i] < 0, 7, 0),
-                      symbol = "circle-open"), cliponaxis = FALSE,
+                      mode = "markers+text", marker = list(color = colors[i], opacity = 0,
+                      size = ifelse(!is.stacked & data.annotations$x[,i] < 0, 7, 0)),
                       y = if (NCOL(chart.matrix) > 1) data.annotations$y[,i] else x,
                       yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y",
-                      text = data.annotations$text[,i],
-                      textposition = textpos,
-                      textfont = data.label.font[[i]], hoverinfo = "skip",
-                      showlegend = FALSE, 
-                      legendgroup = if (is.stacked) "" else i)
+                      text = data.annotations$text[,i], textposition = textpos,
+                      textfont = data.label.font[[i]],
+                      hovertemplate = setHoverTemplate(i, yaxis, chart.matrix, 
+                      is.bar = TRUE, hide.category = TRUE),
+                      hoverlabel = list(font = list(color = autoFontColor(colors[i]),
+                      size = hovertext.font.size, family = hovertext.font.family)),
+                      showlegend = FALSE, legendgroup = if (is.stacked) "" else i)
         }
+
+        # add scatter trace to ensure hover is always shown
+        ypos <- if (NCOL(chart.matrix) > 1) data.annotations$y[,i] else x
+        p <- add_trace(p, x = y.filled, y = ypos, type = "scatter", name = legend.text[i],
+                   mode = "markers", marker = list(color = colors[i], opacity = 0),
+                   text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
+                   hovertemplate = setHoverTemplate(i, yaxis, chart.matrix,
+                   hide.category = yaxis$type == "date", is.bar = TRUE),
+                   hoverlabel = list(font = list(color = autoFontColor(colors[i]),
+                   size = hovertext.font.size, family = hovertext.font.family),
+                   bgcolor = colors[i]), showlegend = FALSE,
+                   yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y")
+
     }
     annotations <- NULL
     n <- length(annotations)
