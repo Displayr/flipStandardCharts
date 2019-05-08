@@ -477,7 +477,7 @@ Column <- function(x,
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family)),
                        hovertemplate = setHoverTemplate(i, xaxis, chart.matrix),
-                       legendgroup = i)
+                       legendgroup = if (is.stacked && data.label.show) "all" else i)
 
 
         if (fit.type != "None" && is.stacked && i == 1)
@@ -540,11 +540,11 @@ Column <- function(x,
                       x = if (NCOL(chart.matrix) > 1) data.annotations$x[,i] else x, #x2 = x,
                       xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x",
                       text = data.annotations$text[,i], textfont = data.label.font[[i]],
-                      textposition = textpos, showlegend = FALSE, hoverinfo = "none",
+                      textposition = textpos, showlegend = FALSE, hoverinfo = "skipped",
                       hovertemplate = setHoverTemplate(i, xaxis, chart.matrix, hide.category = TRUE),
                       hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                       size = hovertext.font.size, family = hovertext.font.family)),
-                      legendgroup = if (is.stacked) "" else i)
+                      legendgroup = if (is.stacked) "all" else i)
         }
     }
 

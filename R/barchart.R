@@ -303,7 +303,7 @@ Bar <- function(x,
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family)),
                        hovertemplate = setHoverTemplate(i, yaxis, chart.matrix, is.bar = TRUE),
-                       legendgroup = i)
+                       legendgroup = if (is.stacked && data.label.show) "all" else i)
 
         if (fit.type != "None" && is.stacked && i == 1)
             warning("Line of best fit not shown for stacked charts.")
@@ -365,7 +365,7 @@ Bar <- function(x,
                       is.bar = TRUE, hide.category = TRUE),
                       hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                       size = hovertext.font.size, family = hovertext.font.family)),
-                      showlegend = FALSE, legendgroup = if (is.stacked) "" else i)
+                      showlegend = FALSE, legendgroup = if (is.stacked) "all" else i)
         }
 
         # add scatter trace to ensure hover is always shown
