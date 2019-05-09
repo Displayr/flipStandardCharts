@@ -278,10 +278,12 @@ Bar <- function(x,
     ## Add a trace for each col of data in the matrix
     for (i in 1:ncol(chart.matrix))
     {
+        x <- x.labels
         y <- as.numeric(chart.matrix[, i])
         y.filled <- ifelse(is.finite(y), y, 0)
         y.hover.text <- formatByD3(y, x.hovertext.format, x.tick.prefix, x.tick.suffix) 
-        x <- x.labels
+        x.hover.text <- formatByD3(x, y.hovertext.format, y.tick.prefix, y.tick.suffix) 
+
 
         marker <- list(color = toRGB(colors[i], alpha = opacity),
                       line = list(color = toRGB(marker.border.colors[i],
@@ -370,13 +372,15 @@ Bar <- function(x,
         # The hover in the main trace does not show if bars are too small
         # or if covered by the data labels
         # Changing layout.hovermode will make it more responsive but text is diagonal
-        # For manual hovertext y-axis label is not shown because we do not handle date formatting properly.
         ypos <- if (NCOL(chart.matrix) > 1) data.annotations$y[,i] else x
         xpos <- if (NCOL(chart.matrix) > 1) data.annotations$x[,i] else y.filled
+        hover.text <- if (yaxis$type == "category") paste0(x.hover.text, ": ", y.hover.text)
+                      else paste0("(", y.hover.text, ", ", x.hover.text, ")")      
+
         p <- add_trace(p, x = xpos, y = ypos, type = "scatter", name = legend.text[i],
                    mode = "markers", marker = list(color = colors[i], opacity = 0),
                    hovertemplate = paste0("%{text}<extra>", legend.text[i], "</extra>"),
-                   text = y.hover.text,
+                   text = hover.text,
                    hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                    size = hovertext.font.size, family = hovertext.font.family),
                    bgcolor = colors[i]), showlegend = FALSE,
