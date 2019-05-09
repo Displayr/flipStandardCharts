@@ -248,6 +248,8 @@ Bar <- function(x,
                                  subtitle.font.size, footer.font.size)
 
     legend.text <- autoFormatLongLabels(colnames(chart.matrix), legend.wrap, legend.wrap.nchar)
+    if (!legend.show)
+        legend.text[1] <- ""
     margins <- setMarginsForLegend(margins, legend.show, legend, legend.text)
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
