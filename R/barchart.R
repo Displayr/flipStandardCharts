@@ -280,6 +280,7 @@ Bar <- function(x,
     {
         y <- as.numeric(chart.matrix[, i])
         y.filled <- ifelse(is.finite(y), y, 0)
+        y.hover.text <- formatByD3(y, x.hovertext.format, x.tick.prefix, x.tick.suffix) 
         x <- x.labels
 
         marker <- list(color = toRGB(colors[i], alpha = opacity),
@@ -360,21 +361,22 @@ Bar <- function(x,
                       y = if (NCOL(chart.matrix) > 1) data.annotations$y[,i] else x,
                       yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y",
                       text = data.annotations$text[,i], textposition = textpos,
-                      textfont = data.label.font[[i]],
-                      hovertemplate = setHoverTemplate(i, yaxis, chart.matrix, 
-                      is.bar = TRUE, hide.category = TRUE),
-                      hoverlabel = list(font = list(color = autoFontColor(colors[i]),
-                      size = hovertext.font.size, family = hovertext.font.family)),
+                      textfont = data.label.font[[i]], hoverinfo = "skip",
+                      cliponaxis = FALSE,
                       showlegend = FALSE, legendgroup = if (is.stacked) "all" else i)
         }
 
-        # add scatter trace to ensure hover is always shown
+        # Add scatter trace to ensure hover is always shown
+        # The hover in the main trace does not show if bars are too small
+        # or if covered by the data labels
+        # Changing layout.hovermode will make it more responsive but text is diagonal
+        # For manual hovertext y-axis label is not shown because we do not handle date formatting properly.
         ypos <- if (NCOL(chart.matrix) > 1) data.annotations$y[,i] else x
-        p <- add_trace(p, x = y.filled, y = ypos, type = "scatter", name = legend.text[i],
+        xpos <- if (NCOL(chart.matrix) > 1) data.annotations$x[,i] else y.filled
+        p <- add_trace(p, x = xpos, y = ypos, type = "scatter", name = legend.text[i],
                    mode = "markers", marker = list(color = colors[i], opacity = 0),
-                   text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
-                   hovertemplate = setHoverTemplate(i, yaxis, chart.matrix,
-                   hide.category = yaxis$type == "date", is.bar = TRUE),
+                   hovertemplate = paste0("%{text}<extra>", legend.text[i], "</extra>"),
+                   text = y.hover.text,
                    hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                    size = hovertext.font.size, family = hovertext.font.family),
                    bgcolor = colors[i]), showlegend = FALSE,
