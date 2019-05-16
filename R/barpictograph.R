@@ -85,13 +85,16 @@ BarPictograph <- function(x,
     stat <- attr(x, "statistic")
     if (NROW(x) == 1 && NCOL(x) > 1)
         x <- t(x)
+    n <- NROW(x)
+    if (n > 100)
+        stop("Input data containing ", n, " rows is too large to show (maximum 100 rows).")
     if (NCOL(x) > 1)
     {
         warning("Only the first series will be shown.")
         x <- x[,1]
     }
     x <- checkMatrixNames(x)[,1]
-    n <- NROW(x)
+
 
     # Set default values
     if (is.na(scale))
