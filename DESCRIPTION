@@ -58,7 +58,7 @@ Remotes:
     Displayr/rhtmlPalmTrees,
     Displayr/d3vennR,
     hrbrmstr/streamgraph,
-    timelyportfolio/parcoords
+    timelyportfolio/parcoords@324d00b
 Suggests:
     dplyr,
     flipExampleData,
