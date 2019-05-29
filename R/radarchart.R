@@ -258,7 +258,7 @@ Radar <- function(x,
         xlab <- autoFormatLongLabels(rownames(chart.matrix)[1:n],
                     x.tick.label.wrap, x.tick.label.wrap.nchar)
         font.asp <- fontAspectRatio(x.tick.font.family)
-        annotations <- lapply(1:n, function(ii) list(text = xlab[ii], font = x.tick.font
+        annotations <- lapply(1:n, function(ii) list(text = xlab[ii], font = x.tick.font,
                         x = outer[ii,1], y = outer[ii,2], xref = "x", yref = "y",
                         showarrow = FALSE, yshift = outer[ii,2]/r.max * 15,
                         xanchor = xanch[ii], xshift = outer[ii,1]/r.max))
