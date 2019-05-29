@@ -17,6 +17,8 @@ Donut(x, colors = NULL, pie.subslice.colors = NULL,
   data.label.prefix = "", data.label.suffix = "",
   data.label.font.size = 10, data.label.font.color = global.font.color,
   data.label.font.family = global.font.family,
+  hovertext.font.family = global.font.family, hovertext.font.size = 10,
+  hovertext.font.color = "#EFEFEF",
   pie.groups.font.size = data.label.font.size,
   pie.groups.font.color = data.label.font.color,
   pie.groups.font.family = data.label.font.family,
@@ -90,6 +92,12 @@ color, a vector of colors (1 for each series/column), or a comma separated list
 of colors}
 
 \item{data.label.font.family}{Character; font family for data label.}
+
+\item{hovertext.font.family}{Font family of hover text.}
+
+\item{hovertext.font.size}{Font size of hover text.}
+
+\item{hovertext.font.color}{Font color of hover text.}
 
 \item{pie.groups.font.size}{Font size for group labels.}
 

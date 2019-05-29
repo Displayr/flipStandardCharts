@@ -4,14 +4,27 @@
 \alias{Palm}
 \title{Generates a palm tree plot from a table of data.}
 \usage{
-Palm(table, global.font.family = "Arial",
-  x.tick.font.family = global.font.family, x.tick.font.size = 11,
+Palm(table, global.font.family = "Arial", global.font.color = rgb(44,
+  44, 44, maxColorValue = 255), title = "",
+  title.font.family = global.font.family,
+  title.font.color = global.font.color, title.font.size = 16,
+  subtitle = "", subtitle.font.family = global.font.family,
+  subtitle.font.color = global.font.color, subtitle.font.size = 12,
+  footer = "", footer.font.family = global.font.family,
+  footer.font.color = global.font.color, footer.font.size = 8,
+  x.tick.font.family = global.font.family,
+  x.tick.font.color = global.font.color, x.tick.font.size = 11,
   x.title = "", x.title.font.family = global.font.family,
-  x.title.font.size = 12, legend.font.family = global.font.family,
-  legend.font.size = 11, y.axis.show = TRUE, tooltip.show = TRUE,
-  y.tick.format = "", y.tick.font.family = global.font.family,
-  y.tick.font.size = 11, y.title = "",
-  y.title.font.family = global.font.family, y.title.font.size = 12,
+  x.title.font.color = global.font.color, x.title.font.size = 12,
+  legend.font.family = global.font.family,
+  legend.font.color = global.font.color, legend.font.size = 11,
+  legend.background.color = "transparent",
+  legend.border.color = "#000000", y.axis.show = TRUE,
+  tooltip.show = TRUE, y.tick.format = "",
+  y.tick.font.family = global.font.family,
+  y.tick.font.color = global.font.color, y.tick.font.size = 11,
+  y.title = "", y.title.font.family = global.font.family,
+  y.title.font.color = global.font.color, y.title.font.size = 12,
   y.tick.prefix = NULL, y.tick.suffix = NULL,
   hovertext.font.family = global.font.family, hovertext.font.size = 11,
   colors = NULL)
@@ -23,21 +36,68 @@ determines the area of a leaf on each palm tree.}
 \item{global.font.family}{Character; font family for all occurrences of any
 font attribute for the chart unless specified individually.}
 
+\item{global.font.color}{Global font color as a named color in character format
+(e.g. "black") or an a hex code.}
+
+\item{title}{Character; chart title.}
+
+\item{title.font.family}{Character; title font family. Can be "Arial Black",
+"Arial", "Comic Sans MS", "Courier New", "Georgia", "Impact",
+"Lucida Console", "Lucida Sans Unicode", "Marlett", "Symbol", "Tahoma",
+"Times New Roman", "Trebuchet MS", "Verdana", "Webdings"}
+
+\item{title.font.color}{Title font color as a named color in character
+format (e.g. "black") or a hex code.}
+
+\item{title.font.size}{Integer; Title font size; default = 10.}
+
+\item{subtitle}{Character}
+
+\item{subtitle.font.family}{Character; subtitle font family}
+
+\item{subtitle.font.color}{subtitle font color as a named color in
+character format (e.g. "black") or an a hex code.}
+
+\item{subtitle.font.size}{Integer; subtitle font size}
+
+\item{footer}{Character}
+
+\item{footer.font.family}{Character; footer font family}
+
+\item{footer.font.color}{footer font color as a named color in
+character format (e.g. "black") or an a hex code.}
+
+\item{footer.font.size}{Integer; footer font size}
+
 \item{x.tick.font.family}{Character; x-axis tick label font family}
 
-\item{x.tick.font.size}{x-axis tick label font size}
+\item{x.tick.font.color}{X-axis tick label font color as a named color in
+character format (e.g. "black") or an a hex code.}
 
-\item{x.title}{Character; x-axis title}
+\item{x.tick.font.size}{Integer; x-axis tick label font size}
+
+\item{x.title}{Character, x-axis title; defaults to chart input values;
+to turn off set to "FALSE".}
 
 \item{x.title.font.family}{Character; x-axis title font family}
 
-\item{x.title.font.size}{x-axis title font size}
+\item{x.title.font.color}{x-axis title font color as a named color in
+character format (e.g. "black") or an a hex code.}
 
-\item{legend.font.family}{Character; legend font family}
+\item{x.title.font.size}{Integer; x-axis title font size}
 
-\item{legend.font.size}{Legend font size}
+\item{legend.font.family}{Character; legend font family.}
 
-\item{y.axis.show}{Logical; whether to show the y-axis}
+\item{legend.font.color}{Legend font color as a named color in character
+format (e.g. "black") or a hex code.}
+
+\item{legend.font.size}{Integer; Legend font size.}
+
+\item{legend.background.color}{Background color of the legend.}
+
+\item{legend.border.color}{Color of the legend border.}
+
+\item{y.axis.show}{Logical; whether to show the y-axis.}
 
 \item{tooltip.show}{Logical; whether to show a tooltip on hover.}
 
@@ -46,13 +106,20 @@ See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 
 \item{y.tick.font.family}{Character; y-axis tick label font family}
 
-\item{y.tick.font.size}{y-axis tick label font size}
+\item{y.tick.font.color}{y-axis tick label font color as a named color
+in character format (e.g. "black") or an a hex code.}
 
-\item{y.title}{Character, y-axis title}
+\item{y.tick.font.size}{Integer; y-axis tick label font size}
+
+\item{y.title}{Character, y-axis title; defaults to chart input values;
+to turn off set to "FALSE".}
 
 \item{y.title.font.family}{Character; y-axis title font family}
 
-\item{y.title.font.size}{y-axis title font size}
+\item{y.title.font.color}{y-axis title font color as a named color in
+character format (e.g. "black") or a hex code.}
+
+\item{y.title.font.size}{Integer; y-axis title font size}
 
 \item{y.tick.prefix}{y-axis tick label prefix}
 
@@ -62,9 +129,7 @@ See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 
 \item{hovertext.font.size}{Font size of hover text.}
 
-\item{colors}{Character; a vector containing one or more named
-colors from grDevices OR one or more specified hex value colors OR a single
-named palette from grDevices, RColorBrewer, colorspace, or colorRamps.}
+\item{colors}{Character; a vector containing one or more colors specified as hex codes.}
 }
 \description{
 This function wraps the PalmTrees function in the rhtmlPalmTrees package and performs additional data preparation.
