@@ -258,15 +258,8 @@ Radar <- function(x,
         xlab <- autoFormatLongLabels(rownames(chart.matrix)[1:n],
                     x.tick.label.wrap, x.tick.label.wrap.nchar)
         font.asp <- fontAspectRatio(x.tick.font.family)
-
-        # X-axis label widths are fixed to avoid the chart width changing in
-        # Standard R regression tests. We avoided fixing the x-axis range
-        # because autorange handles variation in the xaxis labels quite well
-        xlab.width <- min(500,(font.asp + 0.5) * x.tick.font.size *
-                        max(nchar(unlist(strsplit(split="<br>", as.character(xlab))))))
-        annotations <- lapply(1:n, function(ii) list(text = xlab[ii],
+        annotations <- lapply(1:n, function(ii) list(text = xlab[ii], font = x.tick.font
                         x = outer[ii,1], y = outer[ii,2], xref = "x", yref = "y",
-                        width = xlab.width, font = x.tick.font,
                         showarrow = FALSE, yshift = outer[ii,2]/r.max * 15,
                         xanchor = xanch[ii], xshift = outer[ii,1]/r.max))
     }
