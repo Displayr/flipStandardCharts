@@ -30,6 +30,7 @@ r_github_packages:
   - Displayr/flipExampleData
   - Displayr/flipFormat
   - Displayr/flipTransformations
+  - Displayr/dygraphs
 
 script:
   - R CMD build --no-manual --no-build-vignettes --no-resave-data .
