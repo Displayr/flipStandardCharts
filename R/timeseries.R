@@ -9,7 +9,7 @@
 #' multiple series.
 #' @param colors Character; a named color from grDevices OR a hex value color.
 #' @param line.thickness Integer; The width of the lines connecting data points.
-#' @param legend.width Integer; Width (in pixels) of the legend. 
+#' @param legend.width Integer; Width (in pixels) of the legend.
 #'      Deprecated. Use \code{legend.position.x} instead.
 #' @param window.start The number of days before the end of the data series to start the range selector window.
 #' @param hovertext.font.color Legend font color as a named color in character
@@ -137,14 +137,16 @@ TimeSeries <- function(x = NULL,
     write(css, "dygraph.css")
 
     dg <- dygraph(x, main = title, xlab = x.title, ylab = y.title)
-    
+
     y.bounds.minimum <- charToNumeric(y.bounds.minimum)
     if (is.null(y.bounds.minimum))
         y.bounds.minimum <- min(0, x)
     dg <- dyAxis(dg, "y",
         valueRange = c(charToNumeric(y.bounds.minimum), charToNumeric(y.bounds.maximum)),
-        valueFormatter = if (percentFromD3(y.hovertext.format)) 'function(d){return Math.round(d*100) + "%"}' else NULL,
-        axisLabelFormatter = if (percentFromD3(y.tick.format)) 'function(d){return Math.round(d*100) + "%"}' else NULL)
+        valueFormatter = dygraphs::d3formatFn(y.hovertext.format),
+        axisLabelFormatter = dygraphs::d3formatFn(y.tick.format)
+    )
+
     if (range.bars)
     {
         dg <- dySeries(dg, colnames(x), label = colnames(x)[2], color = colors, strokeWidth = line.thickness)
@@ -165,9 +167,9 @@ TimeSeries <- function(x = NULL,
 
     width.constraint <- ""
     if (!is.null(legend.position.x) && legend.position.x < 1.0)
-        width.constraint <- paste0("document.querySelector('.dygraph-legend').style.left = '", 
+        width.constraint <- paste0("document.querySelector('.dygraph-legend').style.left = '",
                             legend.position.x * 100, "%';")
-    
+
     js <- paste0("function(){
         var elem = document.querySelector('.dygraph-legend');
         elem.removeAttribute('style', 'width');
