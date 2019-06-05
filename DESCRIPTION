@@ -57,6 +57,7 @@ Remotes:
     Displayr/rhtmlLabeledScatter,
     Displayr/rhtmlPalmTrees,
     Displayr/d3vennR,
+    Displayr/dygraphs,
     hrbrmstr/streamgraph,
     timelyportfolio/parcoords@324d00b
 Suggests:

@@ -36,7 +36,7 @@ multiple series.}
 
 \item{line.thickness}{Integer; The width of the lines connecting data points.}
 
-\item{legend.width}{Integer; Width (in pixels) of the legend. 
+\item{legend.width}{Integer; Width (in pixels) of the legend.
 Deprecated. Use \code{legend.position.x} instead.}
 
 \item{legend.orientation}{Character; One of 'Vertical' or 'Horizontal'}
