@@ -473,7 +473,6 @@ Column <- function(x,
         # this is the main trace for each data series
         p <- add_trace(p, x = x, y = y.filled, type = "bar",
                        orientation = "v", marker = marker, name = legend.text[i],
-                       text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family)),
                        hovertemplate = setHoverTemplate(i, xaxis, chart.matrix),
@@ -537,39 +536,13 @@ Column <- function(x,
                       type = "scatter", mode = "markers+text", name = legend.text[i],
                       marker = list(color = colors[i], opacity = 0,
                       size = ifelse(y.sign < 0, 3, 0 + (is.stacked & !data.label.centered))),
-                      x = if (NCOL(chart.matrix) > 1) data.annotations$x[,i] else x, #x2 = x,
+                      x = if (NCOL(chart.matrix) > 1) data.annotations$x[,i] else x, 
                       xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x",
                       text = data.annotations$text[,i], textfont = data.label.font[[i]],
                       textposition = textpos, showlegend = FALSE, hoverinfo = "skip",
-                      #hovertemplate = setHoverTemplate(i, xaxis, chart.matrix, hide.category = TRUE),
-                      #hoverlabel = list(font = list(color = autoFontColor(colors[i]),
-                      #size = hovertext.font.size, family = hovertext.font.family)),
                       legendgroup = if (is.stacked) "all" else i)
         }
     }
-
-    # add line trace to ensure hover is always shown
-    # using scatter trace will add extra space to either side of x-axis
-
-# Creating our own hover using text is difficult because
-# 1) The value in the stacked chart is not the same as the position
-# 2) How to format dates and determine a good format??
-#
-#    for (i in 1:ncol(chart.matrix))
-#    {
-#        y <- as.numeric(chart.matrix[, i])
-#        xpos <- if (NCOL(chart.matrix) > 1 && !is.stacked) data.annotations$x[,i] else x
-#        p <- add_trace(p, x = xpos, y = y, type = "scatter", name = legend.text[i],
-#                   mode = "lines", line = list(width = 0, color = colors[i]),
-#                   text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
-#                   hovertemplate = setHoverTemplate(i, xaxis, chart.matrix,
-#                   hide.category = xaxis$type == "date"),
-#                   hoverlabel = list(font = list(color = autoFontColor(colors[i]),
-#                   size = hovertext.font.size, family = hovertext.font.family),
-#                   bgcolor = colors[i]), showlegend = FALSE,
-#                   xaxis = if (!is.stacked && NCOL(chart.matrix) > 1) "x2" else "x")
-#    }
-
 
     annotations <- NULL
     n <- length(annotations)

@@ -304,10 +304,9 @@ Bar <- function(x,
         # need to use y.filled to avoid plotly bug affecting bar-width
         p <- add_trace(p, x = y.filled, y = x, type = "bar", orientation = "h",
                        marker = marker, name  =  legend.text[i],
-                       text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family)),
-                       hovertemplate = setHoverTemplate(i, yaxis, chart.matrix, is.bar = TRUE),
+                       hovertemplate = setHoverTemplate(i, yaxis, chart.matrix, is.bar = TRUE), 
                        legendgroup = if (is.stacked && data.label.show) "all" else i)
 
         if (fit.type != "None" && is.stacked && i == 1)
@@ -374,15 +373,17 @@ Bar <- function(x,
         # The hover in the main trace does not show if bars are too small
         # or if covered by the data labels
         # Changing layout.hovermode will make it more responsive but text is diagonal
+        # Hovertemplate changes when length of text is 1 (plotly expects a vector)
         ypos <- if (NCOL(chart.matrix) > 1) data.annotations$y[,i] else x
         xpos <- if (NCOL(chart.matrix) > 1) data.annotations$x[,i] else y.filled
         hover.text <- if (yaxis$type == "category") paste0(x.hover.text, ": ", y.hover.text)
-                      else paste0("(", y.hover.text, ", ", x.hover.text, ")")      
+                      else paste0("(", y.hover.text, ", ", x.hover.text, ")")
+        hover.template <- if (NROW(chart.matrix) == 1) paste0("%{x}<extra>", legend.text[i], "</extra>")
+                          else paste0("%{text}<extra>", legend.text[i], "</extra>")
 
         p <- add_trace(p, x = xpos, y = ypos, type = "scatter", name = legend.text[i],
                    mode = "markers", marker = list(color = colors[i], opacity = 0),
-                   hovertemplate = paste0("%{text}<extra>", legend.text[i], "</extra>"),
-                   text = hover.text,
+                   hovertemplate = hover.template, text = hover.text,
                    hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                    size = hovertext.font.size, family = hovertext.font.family),
                    bgcolor = colors[i]), showlegend = FALSE,

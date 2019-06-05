@@ -31,10 +31,10 @@ setHoverTemplate <- function(i, axis, chart.matrix, is.bar = FALSE, hide.categor
 
     } else
     {
-        formatStr <- if (axis$type == "category") "%{text}: %{y}"
+        formatStr <- if (axis$type == "category") "%{x}: %{y}"
                      else                         "(%{x}, %{y})"
         if (is.bar && axis$type == "category")
-            formatStr <- "%{text}: %{x}"
+            formatStr <- "%{y}: %{x}"
     }
 
     nameStr <- if (ncol(chart.matrix) == 1) "" else colnames(chart.matrix)[i]
