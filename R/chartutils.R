@@ -21,7 +21,9 @@ ErrorIfNotEnoughData <- function(x, require.tidy = TRUE)
         .stop()
 }
 
-
+# hovertemplate is preferrable to hoverinfo because it allows better control
+# of formatting. Specifically, we can re-order the x/y and control separators
+# and newlines. But the format is slightly more complex
 setHoverTemplate <- function(i, axis, chart.matrix, is.bar = FALSE, hide.category = FALSE)
 {
     if (hide.category)
@@ -41,7 +43,7 @@ setHoverTemplate <- function(i, axis, chart.matrix, is.bar = FALSE, hide.categor
     formatStr <- paste0(formatStr, "<extra>", nameStr, "</extra>")
     return(formatStr)
 }
-
+	
 setHoverText <- function(axis, chart.matrix, is.bar = FALSE)
 {
     formatStr <- if (axis$type == "category") "text+y"

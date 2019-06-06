@@ -314,7 +314,7 @@ Area <- function(x,
         p <- add_trace(p, type = "scatter", mode = "markers",
            x = x.labels, y = apply(chart.matrix, 1, max, na.rm = TRUE) * 1.01,
            marker = list(color = "red", opacity = 0.0),
-           hoverinfo = "none", showlegend = FALSE, cliponaxis = FALSE)
+           hoverinfo = "skip", showlegend = FALSE, cliponaxis = FALSE)
 
     ## Add a trace for each col of data in the matrix
     for (i in 1:ncol(chart.matrix))
@@ -392,11 +392,10 @@ Area <- function(x,
                            line = list(width = 0, color = colors[i]),
                            name = legend.text[i],
                            legendgroup = i,
-                           text = autoFormatLongLabels(x.labels.full, wordwrap = TRUE),
                            hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                            size = hovertext.font.size, family = hovertext.font.family),
                            bgcolor = colors[i]),
-                           hoverinfo = setHoverText(xaxis, chart.matrix),
+                           hovertemplate = setHoverTemplate(i, xaxis, chart.matrix),
                            marker = marker,
                            mode = series.mode)
 
@@ -447,14 +446,16 @@ Area <- function(x,
             source.text <- paste(data.label.prefix,
                  FormatAsReal(vals * data.label.mult, decimals = data.label.decimals),
                  data.label.suffix, sep = "")
+            hover.template <- if (xaxis$type == "category") "%{x}:%{text}" else "{%{x},%{text})"
+            if (NCOL(chart.matrix) > 1 || colnames(chart.matrix)[1] != "Series.1")
+                hover.template <- paste0(hover.template, "<extra>", legend.text[i], "</extra>")
 
             # Stacked traces cannot be interrupted by other traces
             y.label <- y.labels[i]
             p <- add_trace(p, type = "scatter", x = x, y = y, name = legend.text[i],
                     fill = fill.bound, fillcolor = toRGB(colors[i], alpha = opacity),
                     line = list(width = line.thickness[i], color = toRGB(line.colors[i], alpha = line.opacity)),
-                    legendgroup = i, text = source.text,
-                    hoverinfo = if (ncol(chart.matrix) > 1) "x+text+name" else "x+text",
+                    legendgroup = i, text = source.text, hovertemplate = hover.template,
                     hoverlabel = list(bgcolor=colors[i],
                     font = list(color = autoFontColor(colors[i]),
                     size = hovertext.font.size, family = hovertext.font.family)),

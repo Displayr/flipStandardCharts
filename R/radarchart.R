@@ -184,14 +184,13 @@ Radar <- function(x,
     pos <- do.call(rbind, lapply(as.data.frame(chart.matrix), getPolarCoord))
     pos <- data.frame(pos,
                       Name = rep(rownames(chart.matrix)[c(1:n,1)], m),
-                      Group = rep(colnames(chart.matrix),each = n+1),
+                      Group = if (NCOL(chart.matrix) == 1 && colnames(chart.matrix)[1] == "Series.1") ""
+                              else rep(colnames(chart.matrix),each = n+1),
                       stringsAsFactors  =  T, check.names = F)
     chart.matrix <- rbind(chart.matrix, chart.matrix[1,])
-    tmp.group <- if (ncol(chart.matrix) == 1) ""
-                 else paste0(pos$Group, ":", " ")
 
     pos <- cbind(pos,
-            HoverText=sprintf("%s%s: %s%s%s", tmp.group, pos$Name, y.tick.prefix,
+            HoverText=sprintf("%s: %s%s%s", pos$Name, y.tick.prefix,
                 hover.format.function(unlist(chart.matrix), decimals = y.hovertext.decimals,
                                       comma.for.thousands = commaFromD3(y.hovertext.format)), y.tick.suffix),
             DataLabels=sprintf("%s: %s%s%s", rownames(chart.matrix), data.label.prefix,
@@ -224,7 +223,7 @@ Radar <- function(x,
     x.offset[which.min(outer[,1])] <- -pad.left
     x.offset[which.max(outer[,1])] <- pad.right
     p <- add_trace(p, x = outer[,1] + x.offset, y = outer[,2], name = "Outer", showlegend = FALSE,
-                   type = "scatter", mode = "markers", opacity = 0, hoverinfo = "none")
+                   type = "scatter", mode = "markers", opacity = 0, hoverinfo = "skip")
 
     # Grid lines
     grid <- NULL
@@ -291,7 +290,7 @@ Radar <- function(x,
                     type = "scatter", mode = "lines", fill = "toself",
                     fillcolor = toRGB(colors[ggi], alpha = opacity[ggi]),
                     legendgroup = g.list[ggi], showlegend = TRUE,
-                    hoverinfo = "none", hoveron = "points",
+                    hoverinfo = "skip", hoveron = "points",
                     line = list(width = line.thickness[ggi], color = toRGB(colors[ggi])))
     }
 
@@ -303,7 +302,7 @@ Radar <- function(x,
         p <- add_trace(p, x = pos$x[ind], y = pos$y[ind], type = "scatter", mode = "markers",
                     name = g.list[ggi], legendgroup = g.list[ggi], opacity = 0,
                     showlegend = FALSE, text = pos$HoverText[ind],
-                    hoverinfo = if (hovertext.show[ggi]) "all+text" else "none",
+                    hovertemplate = paste0("%{text}<extra>", pos$Group[ind], "</extra>"),
                     hoverlabel = list(font = list(color = autoFontColor(colors[ggi]),
                     size = hovertext.font.size, family = hovertext.font.family)),
                     marker = list(size = 5, color = toRGB(colors[ggi])))
@@ -314,7 +313,7 @@ Radar <- function(x,
             y.offset <- sign(pos$y[ind]) * 0.1 * (r.max + abs(max(pos$y[ind])))/2
             p <- add_trace(p, x = pos$x[ind] + x.offset, y = pos$y[ind] + y.offset,
                     type = "scatter", mode = "text", legendgroup = g.list[ggi],
-                    showlegend = FALSE, hoverinfo = "none", text = pos$DataLabels[ind],
+                    showlegend = FALSE, hoverinfo = "skip", text = pos$DataLabels[ind],
                     textfont = data.label.font[[ggi]])
         }
     }

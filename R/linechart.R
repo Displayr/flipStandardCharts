@@ -292,7 +292,7 @@ Line <-   function(x,
                    text = autoFormatLongLabels(x.labels.full, wordwrap=T, truncate=F),
                    hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                    size = hovertext.font.size, family = hovertext.font.family)),
-                   hoverinfo  = setHoverText(xaxis, chart.matrix))
+                   hovertemplate = setHoverTemplate(i, xaxis, chart.matrix))
 
         # single points (no lines) need to be added separately
         not.na <- is.finite(y)
@@ -312,7 +312,7 @@ Line <-   function(x,
                        text = autoFormatLongLabels(x.labels.full[is.single], wordwrap=T, truncate=F),
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family)),
-                       hoverinfo  = setHoverText(xaxis, chart.matrix),
+                       hovertemplate = setHoverTemplate(i, xaxis, chart.matrix),
                        showlegend = FALSE)
         }
         if (fit.type != "None")
@@ -364,13 +364,13 @@ Line <-   function(x,
                 data.label.offset <- max(data.label.offset, marker.size)
             p <- add_trace(p, x = x, y = y, type = "scatter", name = y.label,
                    cliponaxis = FALSE, text = source.text, mode = "markers+text",
-                   marker = list(size = data.label.offset, color="transparent"),
+                   marker = list(size = data.label.offset, color=colors[i], opacity = 0),
                    textfont = data.label.font[[i]], textposition = dlab.pos[i],
                    showlegend = FALSE, legendgroup = tmp.group,
                    hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                    size = hovertext.font.size, family = hovertext.font.family),
                    bgcolor = toRGB(colors[i], alpha = opacity)),
-                   hoverinfo  = "x+y")
+                   hovertemplate = setHoverTemplate(i, xaxis, chart.matrix))
         }
     }
 
