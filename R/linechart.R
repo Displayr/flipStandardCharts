@@ -281,14 +281,13 @@ Line <-   function(x,
                        color = toRGB(marker.border.colors[i], alpha = marker.border.opacity),
                        width = marker.border.width))
         y.label <- y.labels[i]
-        tmp.group <- paste("group", i)
 
 
         # Draw line - main trace
         if (any(!is.na(y)))
             p <- add_trace(p, x = x, y = y, type = "scatter", mode = series.mode,
                    connectgaps = FALSE, line = lines, marker = marker, name = legend.text[i],
-                   showlegend = (type == "Line"), legendgroup = tmp.group,
+                   showlegend = (type == "Line"), legendgroup = i,
                    text = autoFormatLongLabels(x.labels.full, wordwrap=T, truncate=F),
                    hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                    size = hovertext.font.size, family = hovertext.font.family)),
@@ -304,7 +303,7 @@ Line <-   function(x,
                        mode = "markers",
                        x = x[is.single],
                        y = y[is.single],
-                       legendgroup = tmp.group,
+                       legendgroup = i,
                        name = y.label,
                        marker = if (!is.null(marker)) marker
                                 else list(color = toRGB(colors[i]),
@@ -321,7 +320,7 @@ Line <-   function(x,
                      else sprintf("%s: %s", fit.line.name, y.labels[i])
             tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type, fit.CI.show)
             p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$y, type = 'scatter', mode = "lines",
-                      name = tmp.fname, legendgroup = tmp.group, showlegend = FALSE,
+                      name = tmp.fname, legendgroup = i, showlegend = FALSE,
                       hoverlabel = list(font = list(color = autoFontColor(fit.line.colors[i]),
                       size = hovertext.font.size, family = hovertext.font.family)),
                       line = list(dash = fit.line.type, width = fit.line.width,
@@ -330,14 +329,14 @@ Line <-   function(x,
             {
                 p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$lb, type = 'scatter',
                         mode = 'lines', name = "Lower bound of 95%CI",
-                        showlegend = FALSE, legendgroup = tmp.group,
+                        showlegend = FALSE, legendgroup = i,
                         hoverlabel = list(font = list(color = autoFontColor(fit.CI.colors[i]),
                         size = hovertext.font.size, family = hovertext.font.family)),
                         line=list(color=fit.CI.colors[i], width=0, shape='spline'))
                 p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$ub, type = 'scatter',
                         mode = 'lines', name = "Upper bound of 95% CI",
                         fill = "tonexty", fillcolor = toRGB(fit.CI.colors[i], alpha = fit.CI.opacity),
-                        showlegend = FALSE, legendgroup = tmp.group,
+                        showlegend = FALSE, legendgroup = i,
                         hoverlabel = list(font = list(color = autoFontColor(fit.CI.colors[i]),
                         size = hovertext.font.size, family = hovertext.font.family)),
                         line = list(color=fit.CI.colors[i], width=0, shape='spline'))
@@ -366,7 +365,7 @@ Line <-   function(x,
                    cliponaxis = FALSE, text = source.text, mode = "markers+text",
                    marker = list(size = data.label.offset, color=colors[i], opacity = 0),
                    textfont = data.label.font[[i]], textposition = dlab.pos[i],
-                   showlegend = FALSE, legendgroup = tmp.group,
+                   showlegend = FALSE, legendgroup = i,
                    hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                    size = hovertext.font.size, family = hovertext.font.family),
                    bgcolor = toRGB(colors[i], alpha = opacity)),
