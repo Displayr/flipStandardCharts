@@ -446,7 +446,7 @@ Area <- function(x,
             source.text <- paste(data.label.prefix,
                  FormatAsReal(vals * data.label.mult, decimals = data.label.decimals),
                  data.label.suffix, sep = "")
-            hover.template <- if (xaxis$type == "category") "%{x}:%{text}" else "{%{x},%{text})"
+            hover.template <- if (xaxis$type == "category") "%{x}: %{text}" else "{%{x}, %{text})"
             if (NCOL(chart.matrix) > 1 || colnames(chart.matrix)[1] != "Series.1")
                 hover.template <- paste0(hover.template, "<extra>", legend.text[i], "</extra>")
 
@@ -455,7 +455,7 @@ Area <- function(x,
             p <- add_trace(p, type = "scatter", x = x, y = y, name = legend.text[i],
                     fill = fill.bound, fillcolor = toRGB(colors[i], alpha = opacity),
                     line = list(width = line.thickness[i], color = toRGB(line.colors[i], alpha = line.opacity)),
-                    legendgroup = i, text = source.text, hovertemplate = hover.template,
+                    legendgroup = "all", text = source.text, hovertemplate = hover.template,
                     hoverlabel = list(bgcolor=colors[i],
                     font = list(color = autoFontColor(colors[i]),
                     size = hovertext.font.size, family = hovertext.font.family)),
@@ -484,7 +484,8 @@ Area <- function(x,
             data.label.pos[m] <- gsub("middle", if (x.sign > 0) "left" else "right",  data.label.pos[m])
 
             p <- add_trace(p, type = "scatter", mode = "text", x = x, y = y,
-                    legendgroup = i, showlegend = FALSE, name = y.label,
+                    legendgroup = if (is.stacked) "all" else i, 
+                    showlegend = FALSE, name = y.label,
                     text = source.text, textfont = data.label.font[[i]],
                     textposition = data.label.pos, hoverinfo = "skip", cliponaxis = FALSE)
         }
