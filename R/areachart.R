@@ -162,11 +162,8 @@ Area <- function(x,
         warning("No stacking performed for only one series.")
         is.stacked <- FALSE
     }
-    is.hundred.percent.stacked <- grepl("100% Stacked", type, fixed = TRUE)
     if (is.stacked && (any(is.na(chart.matrix)) || any(chart.matrix < 0)))
         stop("Stacked Area charts cannot be produced with missing or negative values. Try using Bar or Column charts with stacking")
-    if (is.hundred.percent.stacked && any(rowSums(chart.matrix) == 0))
-        stop("100% stacked charts cannot be produced with rows that do not contain positive values.")
     if (any(is.na(as.matrix(chart.matrix))))
         warning("Missing values have been interpolated or omitted.")
 
@@ -201,11 +198,6 @@ Area <- function(x,
             line.thickness[na.ind] <- if (!has.gap || is.stacked) 0 else 3
     }
     line.thickness <- suppressWarnings(line.thickness * rep(1, ncol(chart.matrix)))
-
-    if (is.hundred.percent.stacked)
-        chart.matrix <- cum.data(chart.matrix, "cumulative.percentage")
-    else if (is.stacked)
-        chart.matrix <- cum.data(chart.matrix, "cumulative.sum")
 
     data.label.mult <- 1
     if (percentFromD3(data.label.format)) {
@@ -307,6 +299,13 @@ Area <- function(x,
     x.labels <- axisFormat$labels
     y.labels <- colnames(chart.matrix)
 
+    # Setting up info for data labels (may not be used)
+    x.sign <- getSign(1.0, xaxis)
+    m <- nrow(chart.matrix)
+    data.label.pos <- rep("top middle", m)
+    data.label.pos[1] <- gsub("middle", if (x.sign > 0) "right" else "left", data.label.pos[1])
+    data.label.pos[m] <- gsub("middle", if (x.sign > 0) "left" else "right",  data.label.pos[m])
+
     # Invisible trace to ensure enough space for data labels
     # and that tick bounds are shown properly
     # This must happen before ANY of the area traces are put in
@@ -316,88 +315,62 @@ Area <- function(x,
            marker = list(color = "red", opacity = 0.0),
            hoverinfo = "skip", showlegend = FALSE, cliponaxis = FALSE)
 
-    ## Add a trace for each col of data in the matrix
-    for (i in 1:ncol(chart.matrix))
+    if (!is.stacked)
     {
-        y <- as.numeric(chart.matrix[, i])
-        x <- x.labels
-        y.label <- y.labels[i]
-
-        lines <- list(width = line.thickness[i],
-                      color = toRGB(line.colors[i], alpha = line.opacity))
-
-        marker <- NULL
-        if (!is.null(series.mode) && regexpr('marker', series.mode) >= 1)
-            marker <- list(size = marker.size,
-                       color = toRGB(marker.colors[i], alpha = marker.opacity),
-                       symbol = marker.symbols[i],
-                       line = list(color = toRGB(marker.border.colors[i],
-                       alpha = marker.border.opacity),
-                       width = marker.border.width))
-
-        # add invisible line to force all categorical labels to be shown
-        if (i == 1)
-            p <- add_trace(p, x = x, y = rep(min(y,na.rm=T), length(x)),
-                           type = "scatter", mode = "lines",
-                           hoverinfo = "skip", showlegend = FALSE, opacity = 0)
-
-        if (!is.stacked)
+        for (i in 1:ncol(chart.matrix))
         {
-           # draw line
-           if (any(!is.na(y)) && (has.gap || line.thickness[i] > 0))
-                p <- add_trace(p,
-                           type = "scatter",
-                           x = x,
-                           y = y,
-                           connectgaps = FALSE,
-                           line = lines,
-                           name = y.label,
-                           showlegend = FALSE,
-                           legendgroup = i,
-                           hoverinfo = "skip",
-                           marker = marker,
-                           mode = series.mode)
+            y <- as.numeric(chart.matrix[, i])
+            x <- x.labels
+            y.label <- y.labels[i]
 
-            # single points (no lines) need to be added separately
+            lines <- list(width = line.thickness[i],
+                          color = toRGB(line.colors[i], alpha = line.opacity))
+
+            marker <- NULL
+            if (!is.null(series.mode) && regexpr('marker', series.mode) >= 1)
+                marker <- list(size = marker.size,
+                           color = toRGB(marker.colors[i], alpha = marker.opacity),
+                           symbol = marker.symbols[i],
+                           line = list(color = toRGB(marker.border.colors[i],
+                           alpha = marker.border.opacity),
+                           width = marker.border.width))
+
+            # Add invisible line to force all categorical labels to be shown
+            if (i == 1)
+                p <- add_trace(p, x = x, y = rep(min(y,na.rm=T), length(x)),
+                               type = "scatter", mode = "lines",
+                               hoverinfo = "skip", showlegend = FALSE, opacity = 0)
+
+            # Draw line
+            if (any(!is.na(y)) && (has.gap || line.thickness[i] > 0))
+                p <- add_trace(p, type = "scatter", x = x, y = y, name = y.label,
+                           connectgaps = FALSE, line = lines, marker = marker,
+                           showlegend = FALSE, legendgroup = i,
+                           hoverinfo = "skip", mode = series.mode)
+
+            # Single points (no lines) need to be added separately
             not.na <- is.finite(y)
             is.single <- not.na & c(TRUE, !not.na[-nrow(chart.matrix)]) & c(!not.na[-1], TRUE)
             if (any(is.single) && type == "Line")
-            {
-                p <- add_trace(p,
-                           type = "scatter",
-                           mode = "markers",
-                           x = x[is.single],
-                           y = y[is.single],
-                           legendgroup = i,
-                           name = y.label,
+                p <- add_trace(p, type = "scatter", mode = "markers", name = y.label,
+                           x = x[is.single], y = y[is.single], legendgroup = i,
                            marker = if (!is.null(marker)) marker
-                                    else list(color = toRGB(colors[i]),
-                                         size = marker.size),
-                           hoverinfo = "skip", #if(ncol(chart.matrix) > 1) "x+y+name" else "x+y",
-                           showlegend = FALSE)
-            }
+                                    else list(color = toRGB(colors[i]), size = marker.size),
+                           hoverinfo = "skip", showlegend = FALSE)
 
-            # Area chart (with no line)
+            # Area chart (with no line) - main trace
             # We need to do this separately because connectgaps = FALSE
             # has strange behaviour with single points
             # This is done last, to retain the hovertext
             if (any(!is.na(y)))
-                p <- add_trace(p,
-                           type = "scatter",
-                           x = x,
-                           y = y,
-                           fill = fill.bound,
-                           fillcolor = toRGB(colors[i], alpha = opacity),
-                           connectgaps = TRUE,
-                           line = list(width = 0, color = colors[i]),
-                           name = legend.text[i],
-                           legendgroup = i,
+                p <- add_trace(p, type = "scatter", x = x, y = y, name = legend.text[i],
+                           fill = fill.bound, fillcolor = toRGB(colors[i], alpha = opacity),
+                           connectgaps = TRUE, line = list(width = 0, color = colors[i]),
                            hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                            size = hovertext.font.size, family = hovertext.font.family),
-                           bgcolor = colors[i]),
+                           bgcolor = colors[i]), legendgroup = i,
                            hovertemplate = setHoverTemplate(i, xaxis, chart.matrix),
-                           marker = marker,
-                           mode = series.mode)
+                           marker = marker, mode = series.mode)
 
             if (fit.type != "None")
             {
@@ -427,6 +400,29 @@ Area <- function(x,
                             line = list(color=fit.CI.colors[i], width=0, shape='spline'))
                 }
             }
+            if (data.label.show[i])
+            {
+                y <- as.numeric(chart.matrix[, i])
+                x <- x.labels
+                y.label <- y.labels[i]
+
+                label.text <- paste(data.label.prefix,
+                     FormatAsReal(chart.matrix[,i] * data.label.mult, decimals = data.label.decimals),
+                     data.label.suffix, sep = "")
+
+                m <- nrow(chart.matrix)
+                data.label.pos <- rep("top middle", m)
+                data.label.pos[1] <- gsub("middle", if (x.sign > 0) "right" 
+                                                    else "left", data.label.pos[1])
+                data.label.pos[m] <- gsub("middle", if (x.sign > 0) "left" 
+                                                    else "right",  data.label.pos[m])
+
+                p <- add_trace(p, type = "scatter", mode = "text", x = x, y = y,
+                        legendgroup = if (is.stacked) "all" else i, 
+                        showlegend = FALSE, name = y.label,
+                        text = label.text, textfont = data.label.font[[i]],
+                    textposition = data.label.pos, hoverinfo = "skip", cliponaxis = FALSE)
+            }
         }
     }
     if (is.stacked)
@@ -440,56 +436,29 @@ Area <- function(x,
             if (fit.type != "None" && is.stacked && i == 1)
                 warning("Line of best fit not shown for stacked charts.")
             fill.bound <- if (is.stacked && i > 1) "tonexty" else "tozeroy"
-
-            vals <- if (is.stacked && i > 1) chart.matrix[,i] - chart.matrix[,i-1]
-                    else chart.matrix[,i]
-            source.text <- paste(data.label.prefix,
-                 FormatAsReal(vals * data.label.mult, decimals = data.label.decimals),
-                 data.label.suffix, sep = "")
-            hover.template <- if (xaxis$type == "category") "%{x}: %{text}" else "{%{x}, %{text})"
-            if (NCOL(chart.matrix) > 1 || colnames(chart.matrix)[1] != "Series.1")
-                hover.template <- paste0(hover.template, "<extra>", legend.text[i], "</extra>")
+            
+            label.text <- NULL
+            if (data.label.show[i])
+                label.text <- paste(data.label.prefix,
+                     FormatAsReal(chart.matrix[,i] * data.label.mult, decimals = data.label.decimals),
+                     data.label.suffix, sep = "")
 
             # Stacked traces cannot be interrupted by other traces
             y.label <- y.labels[i]
             p <- add_trace(p, type = "scatter", x = x, y = y, name = legend.text[i],
                     fill = fill.bound, fillcolor = toRGB(colors[i], alpha = opacity),
                     line = list(width = line.thickness[i], color = toRGB(line.colors[i], alpha = line.opacity)),
-                    legendgroup = "all", text = source.text, hovertemplate = hover.template,
+                    stackgroup = "all", legendgroup = i, 
+                    mode = if (data.label.show[i]) "lines+text" else "lines",
+                    text = label.text, textposition = if (data.label.show[i]) data.label.pos else NULL,
+                    hovertemplate = setHoverTemplate(i, xaxis, chart.matrix), 
                     hoverlabel = list(bgcolor=colors[i],
                     font = list(color = autoFontColor(colors[i]),
-                    size = hovertext.font.size, family = hovertext.font.family)),
-                    mode = "lines", marker = marker)
+                    size = hovertext.font.size, family = hovertext.font.family)))
+                    #marker = marker)
          }
     }
 
-    for (i in 1:ncol(chart.matrix))
-    {
-        x.sign <- getSign(1.0, xaxis)
-        if (data.label.show[i])
-        {
-            y <- as.numeric(chart.matrix[, i])
-            x <- x.labels
-            y.label <- y.labels[i]
-
-            vals <- if (is.stacked && i > 1) chart.matrix[,i] - chart.matrix[,i-1]
-                    else chart.matrix[,i]
-            source.text <- paste(data.label.prefix,
-                 FormatAsReal(vals * data.label.mult, decimals = data.label.decimals),
-                 data.label.suffix, sep = "")
-
-            m <- nrow(chart.matrix)
-            data.label.pos <- rep("top middle", m)
-            data.label.pos[1] <- gsub("middle", if (x.sign > 0) "right" else "left", data.label.pos[1])
-            data.label.pos[m] <- gsub("middle", if (x.sign > 0) "left" else "right",  data.label.pos[m])
-
-            p <- add_trace(p, type = "scatter", mode = "text", x = x, y = y,
-                    legendgroup = if (is.stacked) "all" else i, 
-                    showlegend = FALSE, name = y.label,
-                    text = source.text, textfont = data.label.font[[i]],
-                    textposition = data.label.pos, hoverinfo = "skip", cliponaxis = FALSE)
-        }
-    }
     annot <- list(setSubtitle(subtitle, subtitle.font, margins),
                            setTitle(title, title.font, margins),
                            setFooter(footer, footer.font, margins))
