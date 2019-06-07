@@ -39,12 +39,12 @@ setHoverTemplate <- function(i, axis, chart.matrix, is.bar = FALSE, hide.categor
             formatStr <- "%{y}: %{x}"
     }
 
-    nameStr <- if (ncol(chart.matrix) == 1 && colnames(chart.matrix)[1] == "Series.1") "" 
+    nameStr <- if (ncol(chart.matrix) == 1 && colnames(chart.matrix)[1] %in% c("Series.1", "Series 1")) ""
                else colnames(chart.matrix)[i]
     formatStr <- paste0(formatStr, "<extra>", nameStr, "</extra>")
     return(formatStr)
 }
-	
+
 setHoverText <- function(axis, chart.matrix, is.bar = FALSE)
 {
     formatStr <- if (axis$type == "category") "text+y"
