@@ -455,6 +455,8 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA,
 
     ## Read in custom css, modify user-specified values,
     ##   write to temp. file, and add it as a dependency of the widget
+    ## Note, this could also be achieved (less robustly) using
+    ##   htmlwidgets::prependContent(map, "<style>...</style>")
     css <- readLines(system.file("assets", "css", "leaflet-custom.css",
                                  package = "flipStandardCharts"))
     for (var in c("panel.bg", "ocean.color", "legend.font.color",
