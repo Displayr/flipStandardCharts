@@ -1,0 +1,36 @@
+.leaflet-container{
+    background-color: /*ocean.color*/;
+    font-size: /*legend.font.size*/px;
+    font-family: /*legend.font.family*/;
+}
+
+.info.legend.leaflet-control{
+    box-shadow: none;
+    border-radius: 2px;
+    background-color: /*panel.bg*/;
+    font-size: /*legend.font.size*/px;
+    font-family: /*legend.font.family*/;
+}
+
+.leaflet-control-zoom{
+    border: none;
+}
+
+.leaflet-control-zoom-out, .leaflet-control-zoom-in{
+    background-color: rgba(220,220,220,0.2);
+    border: none;
+    border-radius: 2px;
+    color: /*legend.font.color*/;
+}
+
+.legend svg text{
+    font-size: /*legend.font.size*/px;
+    font-family: /*legend.font.family*/;
+    color: /*legend.font.color*/;    
+}
+
+.leaflet-control-layers-expanded{
+    background-color : transparent;
+    border: none;
+    color: /*legend.font.color*/; 
+}
