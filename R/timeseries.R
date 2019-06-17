@@ -21,6 +21,7 @@
 #' @importFrom flipTime AsDate AsDateTime
 #' @importFrom flipU IsRServer
 #' @importFrom xts xts
+#' @importFrom htmlwidgets onRender
 #' @export
 TimeSeries <- function(x = NULL,
                     range.bars = FALSE,
