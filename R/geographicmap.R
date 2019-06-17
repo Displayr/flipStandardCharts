@@ -360,7 +360,8 @@ GeographicMap <- function(x,
 #' @importFrom leaflet addLayersControl layersControlOptions setView addTiles tileOptions
 #' @importFrom sp proj4string spTransform
 #' @importFrom stats as.formula
-#' @importFrom htmltools browsable tagList tags htmlDependency attachDependencies
+#' @importFrom htmltools browsable tagList tags
+#' @importFrom htmlwidgets onRender
 leafletMap <- function(coords, colors, min.value, max.range, color.NA,
                        legend.show, legend.title, legend.font.family,
                        legend.font.color, legend.font.size,
@@ -437,10 +438,10 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA,
                                               format.function(coords[[paste("table", i, sep = "")]],
                                                               decimals = decimals,
                                                               comma.for.thousands = commaFromD3(values.hovertext.format))))
-            ## categoryControls <- paste0("
-            ##     document.querySelector('.leaflet-control-layers-expanded').style.backgroundColor = 'transparent';
-            ##     document.querySelector('.leaflet-control-layers-expanded').style.border = 'none';
-            ##     document.querySelector('.leaflet-control-layers-expanded').style.color = '", legend.font.color, "';")
+            categoryControls <- paste0("
+                document.querySelector('.leaflet-control-layers-expanded').style.backgroundColor = 'transparent';
+                document.querySelector('.leaflet-control-layers-expanded').style.border = 'none';
+                document.querySelector('.leaflet-control-layers-expanded').style.color = '", legend.font.color, "';")
         }
         map <- addLayersControl(map, baseGroups = categories,
                                 options = layersControlOptions(collapsed = FALSE))
@@ -453,27 +454,33 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA,
     # Make legend semi-opaque if background is used to make it easier to read
     panel.bg <- if (background) 'rgba(220,220,220,0.4)' else 'transparent'
 
-    ## Read in custom css, modify user-specified values,
-    ##   write to temp. file, and add it as a dependency of the widget
-    ## Note, this could also be achieved (less robustly) using
-    ##   htmlwidgets::prependContent(map, "<style>...</style>")
-    css <- readLines(system.file("assets", "css", "leaflet-custom.css",
-                                 package = "flipStandardCharts"))
-    for (var in c("panel.bg", "ocean.color", "legend.font.color",
-                  "legend.font.family", "legend.font.size"))
-        css <- sub(paste0("/[*]", var, "[*]/"), get(var), css)
-    tf <- tempfile(fileext = ".css")
-    writeLines(css, con = tf)
-    dep <- htmlDependency(
-          name = "displayr-leaflet-css",
-          version = "0.0.1",
-        src = c(file = file.path(dirname(tf))),
-        stylesheet = basename(tf),
-    #      attachment = basename(tf),
-         all_files = FALSE
-    )
-
-    return(attachDependencies(map, dep))
+    # Apply setting for background color and adjust font/appearance
+    js <- paste0("function(){
+        document.querySelector('.leaflet-container').style.backgroundColor = '", ocean.color, "';
+        document.querySelector('.leaflet-container').style.font = '",
+            legend.font.size, "px ", legend.font.family, "';", categoryControls, "
+        document.querySelector('.info.legend.leaflet-control').style.boxShadow = 'none';
+        document.querySelector('.info.legend.leaflet-control').style.borderRadius = '2px';
+        document.querySelector('.info.legend.leaflet-control').style.backgroundColor = '", panel.bg, "';
+        document.querySelector('.info.legend.leaflet-control').style.font = '",
+            legend.font.size, "px ", legend.font.family, "';
+        document.querySelector('.leaflet-control-zoom').style.border = 'none';
+        document.querySelector('.leaflet-control-zoom-out').style.backgroundColor = 'rgba(220,220,220,0.2)';
+        document.querySelector('.leaflet-control-zoom-out').style.border = 'none';
+        document.querySelector('.leaflet-control-zoom-out').style.borderRadius = '2px';
+        document.querySelector('.leaflet-control-zoom-out').style.color = '", legend.font.color, "';
+        document.querySelector('.leaflet-control-zoom-in').style.backgroundColor = 'rgba(220,220,220,0.2)';
+        document.querySelector('.leaflet-control-zoom-in').style.border = 'none';
+        document.querySelector('.leaflet-control-zoom-in').style.borderRadius = '2px';
+        document.querySelector('.leaflet-control-zoom-in').style.color = '", legend.font.color, "';
+        var ticks = document.querySelectorAll('.legend svg text');
+        for (var i = 0; i < ticks.length; i++) {
+            ticks[i].style.font = '", legend.font.size, "px ", legend.font.family, "';
+            ticks[i].style.fill = '", legend.font.color, "';
+        }
+    }")
+    map <- onRender(map, js)
+    map
 }
 
 
