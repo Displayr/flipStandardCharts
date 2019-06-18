@@ -360,7 +360,7 @@ GeographicMap <- function(x,
 #' @importFrom leaflet addLayersControl layersControlOptions setView addTiles tileOptions
 #' @importFrom sp proj4string spTransform
 #' @importFrom stats as.formula
-#' @importFrom htmltools browsable tagList tags htmlDependency attachDependencies
+#' @importFrom htmltools browsable tagList tags htmlDependency
 leafletMap <- function(coords, colors, min.value, max.range, color.NA,
                        legend.show, legend.title, legend.font.family,
                        legend.font.color, legend.font.size,
@@ -453,6 +453,9 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA,
     # Make legend semi-opaque if background is used to make it easier to read
     panel.bg <- if (background) 'rgba(220,220,220,0.4)' else 'transparent'
 
+    if (is.null(ocean.color))  # old versions of Geo. Map Standard R could pass NULL for this
+        ocean.color <- formals(GeographicMap)$ocean.color
+
     ## Read in custom css, modify user-specified values,
     ##   write to temp. file, and add it as a dependency of the widget
     ## Note, this could also be achieved (less robustly) using
@@ -472,8 +475,12 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA,
     #      attachment = basename(tf),
          all_files = FALSE
     )
+    ## for some reason with v0.3.6 htmltools, attachDependencies(map, dep) doesn't work
+    ## An alternative, less robust way to do this is:
+    ##   htmlwidgets::prependContent(map, tags$style(paste0(css, collapse = "")))
+    map$dependencies <- list(dep)
 
-    return(attachDependencies(map, dep))
+    return(map)
 }
 
 
