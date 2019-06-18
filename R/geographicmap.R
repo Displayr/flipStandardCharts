@@ -437,10 +437,10 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA,
                                               format.function(coords[[paste("table", i, sep = "")]],
                                                               decimals = decimals,
                                                               comma.for.thousands = commaFromD3(values.hovertext.format))))
-            ## categoryControls <- paste0("
-            ##     document.querySelector('.leaflet-control-layers-expanded').style.backgroundColor = 'transparent';
-            ##     document.querySelector('.leaflet-control-layers-expanded').style.border = 'none';
-            ##     document.querySelector('.leaflet-control-layers-expanded').style.color = '", legend.font.color, "';")
+            categoryControls <- paste0("
+                document.querySelector('.leaflet-control-layers-expanded').style.backgroundColor = 'transparent';
+                document.querySelector('.leaflet-control-layers-expanded').style.border = 'none';
+                document.querySelector('.leaflet-control-layers-expanded').style.color = '", legend.font.color, "';")
         }
         map <- addLayersControl(map, baseGroups = categories,
                                 options = layersControlOptions(collapsed = FALSE))
