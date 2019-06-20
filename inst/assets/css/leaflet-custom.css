@@ -30,7 +30,7 @@
 }
 
 .leaflet-control-layers-expanded{
-    background-color : transparent;
-    border: none;
-    color: /*legend.font.color*/; 
+    background-color : transparent !important;
+    border: none !important;
+    color: /*legend.font.color*/ !important; 
 }
