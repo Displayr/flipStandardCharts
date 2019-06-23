@@ -54,6 +54,7 @@ Scatter <- function(x = NULL,
                          logos = NULL,
                          logo.size = 0.5,
                          fit.type = "None",
+                         fit.window.size = 3,
                          fit.ignore.last = FALSE,
                          fit.line.type = "dot",
                          fit.line.width = 1,
@@ -630,7 +631,8 @@ Scatter <- function(x = NULL,
 
         if (fit.type != "None" && num.series > 1)
         {
-            tmp.fit <- fitSeries(x[ind], y[ind], fit.type, fit.ignore.last, xaxis$type, fit.CI.show, warning.prefix)
+            tmp.fit <- fitSeries(x[ind], y[ind], fit.type, fit.ignore.last, xaxis$type, 
+                            fit.CI.show, fit.window.size, warning.prefix)
             tmp.fname <- sprintf("%s: %s", fit.line.name, g.list[ggi])
             p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$y, type = 'scatter', mode = "lines",
                       name = tmp.fname, legendgroup = ggi, showlegend = FALSE,
@@ -658,7 +660,8 @@ Scatter <- function(x = NULL,
     }
     if (fit.type != "None" && num.series == 1)
     {
-        tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type, fit.CI.show, warning.prefix)
+        tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type, fit.CI.show, 
+                             fit.window.size, warning.prefix)
         p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$y, type = 'scatter', mode = 'lines',
                     name = fit.line.name, showlegend = FALSE, 
                     hoverlabel = list(font = list(color = autoFontColor(fit.line.colors[1]),

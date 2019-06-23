@@ -222,10 +222,10 @@ isReversed <- function(axis)
 #' @param ignore.last Whether to ignore the last observation in \code{x}
 #'   and \code{y}.
 #' @param warning.prefix Used by small multiples for nice warning messages.
-#' @importFrom stats supsmu
+#' @importFrom stats supsmu filter
 #' @importFrom mgcv gam
 #' @noRd
-fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE, warning.prefix = "")
+fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE, fit.window.size = 3, warning.prefix = "")
 {
     if (!is.numeric(y))
     {
@@ -251,7 +251,7 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE, w
     ord <- order(tmp.dat$x)
     tmp.dat <- tmp.dat[ord,]
 
-    if (grepl("(friedman|super|supsmu)", fit.type, ignore.case = TRUE))
+    if (grepl("(friedman|super|supsmu|moving average)", fit.type, perl = TRUE, ignore.case = TRUE))
     {
         if (CI.show)
             warning("Confidence intervals cannot be computed for trend lines of this type.")
@@ -261,9 +261,22 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE, w
         indU <- which(!duplicated(tmp.dat$x))
         if (length(indU) < nrow(tmp.dat))
             warning(warning.prefix, "Multiple points at the same x-coordinate ignored for estimating line of best fit.\n")
-        tmp.fit <- suppressWarnings(try(supsmu(tmp.dat$x[indU], tmp.dat$y[indU]), silent = TRUE))
-        if (!inherits(tmp.fit, "try-error"))
-            return(list(x = tmp.dat$xorig[indU], y = tmp.fit$y))
+        if (grepl("moving average", fit.type, perl = TRUE, ignore.case = TRUE))
+        {
+            if (!is.finite(fit.window.size) && fit.window.size <= 0)
+                stop("Moving average must have a positive window size")
+            if (grepl("center|centre", fit.type, perl = TRUE, ignore.case = TRUE))
+                tmp.avg <- rev(filter(tmp.dat$y[rev(indU)], rep(1/fit.window.size, fit.window.size), sides = 2))
+            else
+                tmp.avg <- filter(tmp.dat$y[indU], rep(1/fit.window.size, fit.window.size), sides = 1)
+            return(list(x = tmp.dat$xorig[indU], y = as.numeric(tmp.avg)))
+        }
+        else
+        {
+            tmp.fit <- suppressWarnings(try(supsmu(tmp.dat$x[indU], tmp.dat$y[indU]), silent = TRUE))
+            if (!inherits(tmp.fit, "try-error"))
+                return(list(x = tmp.dat$xorig[indU], y = tmp.fit$y))
+        }
     }
     else if (grepl("(smooth|loess)", fit.type, ignore.case = TRUE) && nrow(tmp.dat) > 7)
         tmp.fit <- suppressWarnings(try(loess(y~x, data = tmp.dat), silent = TRUE))

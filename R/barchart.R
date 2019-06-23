@@ -20,6 +20,7 @@ Bar <- function(x,
                     colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
                     opacity = NULL,
                     fit.type = "None", # can be "Smooth" or anything else
+                    fit.window.size = 2,
                     fit.line.colors = colors,
                     fit.ignore.last = FALSE,
                     fit.line.type = "dot",
@@ -313,7 +314,7 @@ Bar <- function(x,
             warning("Line of best fit not shown for stacked charts.")
         if (fit.type != "None" && !is.stacked)
         {
-            tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, yaxis$type, fit.CI.show)
+            tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, yaxis$type, fit.CI.show, fit.window.size)
             tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                          else sprintf("%s: %s", fit.line.name, y.labels[i])
             p <- add_trace(p, x = tmp.fit$y, y = tmp.fit$x, type = 'scatter', mode = "lines",

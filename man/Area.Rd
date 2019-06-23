@@ -6,8 +6,9 @@
 \usage{
 Area(x, type = "Area", colors = ChartColors(max(1, ncol(x), na.rm =
   TRUE)), opacity = NULL, fit.line.colors = colors,
-  fit.type = "None", fit.ignore.last = FALSE, fit.line.type = "dot",
-  fit.line.width = 1, fit.line.name = "Fitted", fit.line.opacity = 1,
+  fit.type = "None", fit.ignore.last = FALSE, fit.window.size = 2,
+  fit.line.type = "dot", fit.line.width = 1,
+  fit.line.name = "Fitted", fit.line.opacity = 1,
   fit.CI.show = FALSE, fit.CI.opacity = 0.4,
   fit.CI.colors = fit.line.colors, global.font.family = "Arial",
   global.font.color = rgb(44, 44, 44, maxColorValue = 255), title = "",
@@ -82,9 +83,12 @@ will be parsed automatically.}
 \item{fit.line.colors}{Character; a vector containing one or more colors specified as hex codes.}
 
 \item{fit.type}{Character; type of line of best fit. Can be one of "None", "Linear", "LOESS",
-"Friedman's super smoother" or "Cubic spline".}
+"Friedman's super smoother", "Cubic spline", "Moving average", "Centered moving average".}
 
 \item{fit.ignore.last}{Logical; whether to ignore the last data point in the fit.}
+
+\item{fit.window.size}{Integer; Use to determine how the average is computed when \code{fit.type} 
+"Moving average" or "Centered moving average".}
 
 \item{fit.line.type}{Character; One of "solid", "dot", "dash, "dotdash", or length of dash "2px", "5px".}
 

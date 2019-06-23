@@ -13,8 +13,8 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1,
   scatter.colors.as.categorical = TRUE,
   scatter.labels.as.hovertext = TRUE, scatter.max.labels = 50,
   colors = ChartColors(12), trend.lines = FALSE, logos = NULL,
-  logo.size = 0.5, fit.type = "None", fit.ignore.last = FALSE,
-  fit.line.type = "dot", fit.line.width = 1,
+  logo.size = 0.5, fit.type = "None", fit.window.size = 3,
+  fit.ignore.last = FALSE, fit.line.type = "dot", fit.line.width = 1,
   fit.line.name = "Fitted", fit.line.colors = colors,
   fit.line.opacity = 1, fit.CI.show = FALSE,
   fit.CI.colors = fit.line.colors, fit.CI.opacity = 0.4,
@@ -119,7 +119,10 @@ This should be input as a comma-seperated list of URLs.}
 \item{logo.size}{Numeric controlling the size of the logos.}
 
 \item{fit.type}{Character; type of line of best fit. Can be one of "None", "Linear", "LOESS",
-"Friedman's super smoother" or "Cubic spline".}
+"Friedman's super smoother", "Cubic spline", "Moving average", "Centered moving average".}
+
+\item{fit.window.size}{Integer; Use to determine how the average is computed when \code{fit.type} 
+"Moving average" or "Centered moving average".}
 
 \item{fit.ignore.last}{Logical; whether to ignore the last data point in the fit.}
 

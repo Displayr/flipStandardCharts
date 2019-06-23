@@ -9,7 +9,9 @@
 #' @param average.series y-values of additional data series which is shown as a line. Used by \code{SmallMultiples}.
 #' @param average.color Color of the \code{average.series} as a hex code or string
 #' @param fit.type Character; type of line of best fit. Can be one of "None", "Linear", "LOESS",
-#'          "Friedman's super smoother" or "Cubic spline".
+#'          "Friedman's super smoother", "Cubic spline", "Moving average", "Centered moving average".
+#' @param fit.window.size Integer; Use to determine how the average is computed when \code{fit.type} 
+#'          "Moving average" or "Centered moving average".
 #' @param fit.ignore.last Logical; whether to ignore the last data point in the fit.
 #' @param fit.line.type Character; One of "solid", "dot", "dash, "dotdash", or length of dash "2px", "5px".
 #' @param fit.line.width Numeric; Line width of line of best fit.
@@ -203,6 +205,7 @@ Column <- function(x,
                     opacity = NULL,
                     type = "Column",
                     fit.type = "None", # can be "Smooth" or anything else
+                    fit.window.size = 2,
                     fit.line.colors = colors,
                     fit.ignore.last = FALSE,
                     fit.line.type = "dot",
@@ -483,7 +486,8 @@ Column <- function(x,
             warning("Line of best fit not shown for stacked charts.")
         if (fit.type != "None" && !is.stacked)
         {
-            tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type, fit.CI.show)
+            tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type, 
+                fit.CI.show, fit.window.size)
             tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                          else sprintf("%s: %s", fit.line.name, y.labels[i])
             p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$y, type = 'scatter', mode = "lines",

@@ -30,6 +30,7 @@ Area <- function(x,
                     fit.line.colors = colors,
                     fit.type = "None", # can be "Smooth" or anything else
                     fit.ignore.last = FALSE,
+                    fit.window.size = 2,
                     fit.line.type = "dot",
                     fit.line.width = 1,
                     fit.line.name = "Fitted",
@@ -376,7 +377,7 @@ Area <- function(x,
             {
                 tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                          else sprintf("%s: %s", fit.line.name, y.labels[i])
-                tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type, fit.CI.show)
+                tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type, fit.CI.show, fit.window.size)
                 p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$y, type = 'scatter', mode = "lines",
                           name = tmp.fname, legendgroup = i, showlegend = FALSE,
                           hoverlabel = list(font = list(color = autoFontColor(fit.line.colors[i]),

@@ -6,8 +6,8 @@
 \usage{
 Column(x, colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
   opacity = NULL, type = "Column", fit.type = "None",
-  fit.line.colors = colors, fit.ignore.last = FALSE,
-  fit.line.type = "dot", fit.line.width = 1,
+  fit.window.size = 2, fit.line.colors = colors,
+  fit.ignore.last = FALSE, fit.line.type = "dot", fit.line.width = 1,
   fit.line.name = "Fitted", fit.line.opacity = 1,
   fit.CI.show = FALSE, fit.CI.colors = fit.line.colors,
   fit.CI.opacity = 0.4, global.font.family = "Arial",
@@ -81,7 +81,10 @@ will be parsed automatically.}
 \item{type}{One of "Column", "Stacked Column" or "100\% Stacked Column"}
 
 \item{fit.type}{Character; type of line of best fit. Can be one of "None", "Linear", "LOESS",
-"Friedman's super smoother" or "Cubic spline".}
+"Friedman's super smoother", "Cubic spline", "Moving average", "Centered moving average".}
+
+\item{fit.window.size}{Integer; Use to determine how the average is computed when \code{fit.type} 
+"Moving average" or "Centered moving average".}
 
 \item{fit.line.colors}{Character; a vector containing one or more colors specified as hex codes.}
 

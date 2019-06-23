@@ -24,6 +24,7 @@ Line <-   function(x,
                     colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
                     opacity = NULL,
                     fit.type = "None", # can be "Smooth" or anything else
+                    fit.window.size = 2,
                     fit.line.colors = colors,
                     fit.ignore.last = FALSE,
                     fit.line.type = "dot",
@@ -318,7 +319,7 @@ Line <-   function(x,
         {
             tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                      else sprintf("%s: %s", fit.line.name, y.labels[i])
-            tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type, fit.CI.show)
+            tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type, fit.CI.show, fit.window.size)
             p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$y, type = 'scatter', mode = "lines",
                       name = tmp.fname, legendgroup = i, showlegend = FALSE,
                       hoverlabel = list(font = list(color = autoFontColor(fit.line.colors[i]),
