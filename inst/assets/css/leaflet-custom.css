@@ -26,7 +26,7 @@
 .legend svg text{
     font-size: /*legend.font.size*/px !important;
     font-family: /*legend.font.family*/ !important;
-    color: /*legend.font.color*/ !important;    
+    fill: /*legend.font.color*/ !important;    
 }
 
 .leaflet-control-layers-expanded{
