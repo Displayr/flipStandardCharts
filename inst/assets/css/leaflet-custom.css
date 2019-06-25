@@ -1,15 +1,15 @@
 .leaflet-container{
-    background-color: /*ocean.color*/;
-    font-size: /*legend.font.size*/px;
-    font-family: /*legend.font.family*/;
+    background-color: /*ocean.color*/  !important;
+    font-size: /*legend.font.size*/px !important;
+    font-family: /*legend.font.family*/ !important;
 }
 
 .info.legend.leaflet-control{
-    box-shadow: none;
-    border-radius: 2px;
-    background-color: /*panel.bg*/;
-    font-size: /*legend.font.size*/px;
-    font-family: /*legend.font.family*/;
+    box-shadow: none !important;
+    border-radius: 2px !important;
+    background-color: /*panel.bg*/ !important;
+    font-size: /*legend.font.size*/px !important;
+    font-family: /*legend.font.family*/ !important;
 }
 
 .leaflet-control-zoom{
@@ -19,14 +19,14 @@
 .leaflet-control-zoom-out, .leaflet-control-zoom-in{
     background-color: rgba(220,220,220,0.2) !important;
     border: none !important;
-    border-radius: 2px;
+    border-radius: 2px !important;
     color: /*legend.font.color*/ !important;
 }
 
 .legend svg text{
-    font-size: /*legend.font.size*/px;
-    font-family: /*legend.font.family*/;
-    color: /*legend.font.color*/;    
+    font-size: /*legend.font.size*/px !important;
+    font-family: /*legend.font.family*/ !important;
+    fill: /*legend.font.color*/ !important;    
 }
 
 .leaflet-control-layers-expanded{
