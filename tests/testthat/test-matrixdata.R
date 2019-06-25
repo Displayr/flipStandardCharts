@@ -28,6 +28,7 @@ opts <- c('default' = '',
           'datalabels' = 'data.label.show = TRUE, data.label.format = ".0f"',
           'linearfit' = 'fit.type = "Linear", fit.ignore.last = TRUE',
           'reversefit' = 'fit.type = "Smooth", fit.ignore.last = TRUE, x.data.reversed = TRUE, y.data.reversed = TRUE, legend.show = "Show"',
+          'movingavgfit' = 'fit.type = "Centered moving average", fit.ignore.last = FALSE, fit.line.color = "red"',
           'reversed' = 'x.data.reversed = TRUE, y.data.reversed = TRUE, data.label.show = TRUE, data.label.format = ".0f"')
 
 # data axis of stacked area chart gets chopped off
