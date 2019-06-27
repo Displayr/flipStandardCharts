@@ -20,9 +20,9 @@ TimeSeries(x = NULL, range.bars = FALSE, colors = NULL,
   y.title.font.family = global.font.family, y.title.font.size = 12,
   y.tick.font.color = global.font.color,
   y.tick.font.family = global.font.family, y.tick.font.size = 10,
-  y.tick.format = "", y.bounds.minimum = NULL,
-  y.bounds.maximum = NULL, hovertext.font.size = 11,
-  hovertext.font.color = global.font.color,
+  y.tick.format = "", y.tick.prefix = "", y.tick.suffix = "",
+  y.bounds.minimum = NULL, y.bounds.maximum = NULL,
+  hovertext.font.size = 11, hovertext.font.color = global.font.color,
   hovertext.font.family = global.font.family,
   y.hovertext.format = y.tick.format)
 }
@@ -103,6 +103,10 @@ in character format (e.g. "black") or an a hex code.}
 
 \item{y.tick.format}{A string representing a d3 formatting code.
 See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
+
+\item{y.tick.prefix}{y-axis tick label prefix}
+
+\item{y.tick.suffix}{y-axis tick label suffix}
 
 \item{y.bounds.minimum}{Minimum of range for plotting; For a date axis this should be supplied as a date string.
 For a categorical axis, the index of the category (0-based) should be used.}

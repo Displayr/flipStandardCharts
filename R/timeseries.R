@@ -53,6 +53,8 @@ TimeSeries <- function(x = NULL,
                     y.tick.font.family = global.font.family,
                     y.tick.font.size = 10,
                     y.tick.format = "",
+                    y.tick.prefix = "",
+                    y.tick.suffix = "",
                     y.bounds.minimum = NULL,
                     y.bounds.maximum = NULL,
                     hovertext.font.size = 11,
@@ -144,8 +146,8 @@ TimeSeries <- function(x = NULL,
         y.bounds.minimum <- min(0, x)
     dg <- dyAxis(dg, "y",
         valueRange = c(charToNumeric(y.bounds.minimum), charToNumeric(y.bounds.maximum)),
-        valueFormatter = dygraphs::d3formatFn(y.hovertext.format),
-        axisLabelFormatter = dygraphs::d3formatFn(y.tick.format)
+        valueFormatter = tickFormat(y.hovertext.format, y.tick.prefix, y.tick.suffix),
+        axisLabelFormatter =  tickFormat(y.tick.format, y.tick.prefix, y.tick.suffix)
     )
 
     if (range.bars)
@@ -187,4 +189,14 @@ TimeSeries <- function(x = NULL,
     result <- list(htmlwidget = dg)
     class(result) <- "StandardChart"
     result
+}
+
+tickFormat  <- function(format.str, prefix, suffix)
+{
+    # Set decimal places if none supplied
+    if (!grepl("[0-9]", format.str))
+        format.str <- paste0(".", if (grepl("%$", format.str)) 0 else 2, format.str)
+
+    return(sprintf("function(value) { return ('%s' + window.d3format.getOrCreate('%s')(value) + '%s'); }",
+            prefix, format.str, suffix))
 }
