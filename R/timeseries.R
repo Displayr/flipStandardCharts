@@ -144,6 +144,8 @@ TimeSeries <- function(x = NULL,
     y.bounds.minimum <- charToNumeric(y.bounds.minimum)
     if (is.null(y.bounds.minimum))
         y.bounds.minimum <- min(0, x)
+    if (nchar(y.hovertext.format) == 0)
+        y.hovertext.format <- y.tick.format
     dg <- dyAxis(dg, "y",
         valueRange = c(charToNumeric(y.bounds.minimum), charToNumeric(y.bounds.maximum)),
         valueFormatter = tickFormat(y.hovertext.format, y.tick.prefix, y.tick.suffix),
