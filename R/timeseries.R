@@ -146,10 +146,11 @@ TimeSeries <- function(x = NULL,
         y.bounds.minimum <- min(0, x)
     if (nchar(y.hovertext.format) == 0)
         y.hovertext.format <- y.tick.format
+    medium.values <- all(as.numeric(x) > 1 && as.numeric(x) < 1e5)
     dg <- dyAxis(dg, "y",
         valueRange = c(charToNumeric(y.bounds.minimum), charToNumeric(y.bounds.maximum)),
-        valueFormatter = tickFormat(y.hovertext.format, y.tick.prefix, y.tick.suffix),
-        axisLabelFormatter =  tickFormat(y.tick.format, y.tick.prefix, y.tick.suffix)
+        valueFormatter = tickFormat(y.hovertext.format, y.tick.prefix, y.tick.suffix, medium.values),
+        axisLabelFormatter =  tickFormat(y.tick.format, y.tick.prefix, y.tick.suffix, medium.values)
     )
 
     if (range.bars)
@@ -193,9 +194,14 @@ TimeSeries <- function(x = NULL,
     result
 }
 
-tickFormat  <- function(format.str, prefix, suffix)
+tickFormat  <- function(format.str, prefix, suffix, default.medium.values = TRUE)
 {
+    # Avoid showing 200 in scientific notation
+    if (sum(nchar(format.str), na.rm = TRUE) == 0 && default.medium.values)
+        format.str <- ".0f"
+
     # Set decimal places if none supplied
+    # This avoids getting scientific notation with 8 decimal places
     if (!grepl("[0-9]", format.str))
         format.str <- paste0(".", if (grepl("%$", format.str)) 0 else 2, format.str)
 
