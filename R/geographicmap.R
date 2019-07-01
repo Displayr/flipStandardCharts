@@ -545,28 +545,30 @@ plotlyMap <- function(table, name.map, colors, opacity, min.value, max.range, co
     }
 
     #opacity <- 0.5
-    bdry <- list(color = "#666666", width = 0)  # no boundary line between shaded regions
+    bdry <- list(color = rgb(0.4,0.4,0.4, alpha = opacity), width = 0)  # no boundary line between shaded regions
 
     # specify map projection/options
     g <- list(
         scope = scope,
         showframe = FALSE,
         showcoastlines = TRUE,
-        showland = opacity == 1.0,
+        showland = opacity == 1.0, # color will show through transparency
         landcolor = color.NA,
         showcountries = TRUE,
         coastlinecolor = ocean.color,
         coastlinewidth = 0.25,
-        countrycolor = "#666666",  # boundary line between NA regions
+        countrycolor = rgb(0.4,0.4,0.4, alpha = opacity),
         countrywidth = 0.25,
-        showocean = TRUE,
+        subunitcolor = rgb(0.4,0.4,0.4, alpha = opacity),
+        subunitwidth = 0.25,
+        showocean = opacity == 1.0,
         oceancolor = ocean.color,
-        showlakes = TRUE,
+        showlakes = opacity == 1.0,
         lakecolor = ocean.color,
         projection = list(type = 'Mercator'),
         resolution = ifelse(high.resolution, 50, 110),
         lataxis = lataxis,
-        bgcolor = toRGB("white", 0))  # transparent
+        bgcolor = ocean.color) #toRGB("white", 0))  # transparent
 
     p <- plot_geo(df, locationmode = locationmode)
     p <- add_trace(p, hoverinfo = "location+text",
