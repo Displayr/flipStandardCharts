@@ -108,7 +108,8 @@ GeographicMap <- function(x,
         legend.font.size <- 14
     if (length(hovertext.font.size) == 0)
         hovertext.font.size <- 11
-
+    if (is.null(opacity))
+        opacity <- if (mapping.package == "leaflet" && background) 0.5 else 1.0
 
     # Check for defined formats first, or if country or zip.country are specified.
     map.type <- definedFormatMapTypes(names, zip.country)
