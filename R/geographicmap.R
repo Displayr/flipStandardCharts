@@ -58,6 +58,7 @@ GeographicMap <- function(x,
                           treat.NA.as.0 = FALSE,
                           colors = c("#CCF3FF", "#23B0DB"),
                           ocean.color = "#DDDDDD",
+                          opacity = 1,
                           color.NA = "#808080",
                           global.font.family = "Arial",
                           global.font.color = rgb(44, 44, 44, maxColorValue = 255),
@@ -326,7 +327,7 @@ GeographicMap <- function(x,
     # Pass all data to a function specific to the package
     if (mapping.package == "leaflet") {
 
-        map <- leafletMap(coords, colors, values.bounds.minimum, values.bounds.maximum,
+        map <- leafletMap(coords, colors, opacity, values.bounds.minimum, values.bounds.maximum,
                    color.NA, legend.show, legend.title, legend.font.family,
                    legend.font.color, legend.font.size, mult, decimals, suffix,
                    values.hovertext.format, treat.NA.as.0, n.categories, categories,
@@ -336,7 +337,7 @@ GeographicMap <- function(x,
     } else
     {
         # mapping.package == "plotly"
-        map <- plotlyMap(table, name.map, colors, values.bounds.minimum,
+        map <- plotlyMap(table, name.map, colors, opacity, values.bounds.minimum,
                    values.bounds.maximum, color.NA, legend.show,
                    legend.title, mult, decimals, suffix, values.hovertext.format,
                    treat.NA.as.0, n.categories, categories, format.function, map.type,
@@ -361,7 +362,7 @@ GeographicMap <- function(x,
 #' @importFrom sp proj4string spTransform
 #' @importFrom stats as.formula
 #' @importFrom htmltools browsable tagList tags htmlDependency
-leafletMap <- function(coords, colors, min.value, max.range, color.NA,
+leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
                        legend.show, legend.title, legend.font.family,
                        legend.font.color, legend.font.size,
                        mult, decimals, suffix, values.hovertext.format,
@@ -382,7 +383,7 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA,
                            "")
     map <- addTiles(map, attribution = attribution, options = tileOptions(opacity = as.numeric(background)))
 
-    opacity <- 1
+    #opacity <- 1
     .pal <- colorNumeric(palette = colors, domain = c(min.value, max.range),
                          na.color = color.NA)
     .rev.pal <- colorNumeric(palette = rev(colors), domain = c(min.value, max.range),
@@ -486,7 +487,7 @@ leafletMap <- function(coords, colors, min.value, max.range, color.NA,
 
 # Helper function to plot the plotly map
 #' @importFrom plotly plot_geo colorbar
-plotlyMap <- function(table, name.map, colors, min.value, max.range, color.NA, legend.show,
+plotlyMap <- function(table, name.map, colors, opacity, min.value, max.range, color.NA, legend.show,
            legend.title, mult, decimals, suffix, values.hovertext.format,
            treat.NA.as.0, n.categories, categories, format.function, map.type,
            ocean.color, high.resolution, title, subtitle, footer,
@@ -543,7 +544,7 @@ plotlyMap <- function(table, name.map, colors, min.value, max.range, color.NA, l
         color.NA <- rgb(color.zero, maxColorValue = 255)
     }
 
-    opacity <- 0.5
+    #opacity <- 0.5
     bdry <- list(color = "#666666", width = 0)  # no boundary line between shaded regions
 
     # specify map projection/options
@@ -551,7 +552,7 @@ plotlyMap <- function(table, name.map, colors, min.value, max.range, color.NA, l
         scope = scope,
         showframe = FALSE,
         showcoastlines = TRUE,
-        showland = TRUE,
+        showland = opacity == 1.0,
         landcolor = color.NA,
         showcountries = TRUE,
         coastlinecolor = ocean.color,
@@ -573,7 +574,7 @@ plotlyMap <- function(table, name.map, colors, min.value, max.range, color.NA, l
             zmin = min.value,
             zmax = max.range,
             color = df[, 1],
-            colors = colors,
+            colors = rgb(t(col2rgb(colors)),maxColorValue = 255, alpha = opacity*255),
             locations = rownames(df),
             text = format.function(df[, 1], decimals = decimals,
                         comma.for.thousands = commaFromD3(values.hovertext.format)),

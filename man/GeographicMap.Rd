@@ -7,7 +7,7 @@
 GeographicMap(x, country, high.resolution = FALSE,
   show.missing.regions = TRUE, treat.NA.as.0 = FALSE,
   colors = c("#CCF3FF", "#23B0DB"), ocean.color = "#DDDDDD",
-  color.NA = "#808080", global.font.family = "Arial",
+  opacity = 1, color.NA = "#808080", global.font.family = "Arial",
   global.font.color = rgb(44, 44, 44, maxColorValue = 255),
   legend.show = TRUE, legend.title = "",
   legend.font.family = global.font.family,
@@ -48,6 +48,8 @@ geographical entities without data as having a zero value.}
 interpolating colors.}
 
 \item{ocean.color}{The color used for oceans (or background).}
+
+\item{opacity}{Opacity of bars as an alpha value (0 to 1).}
 
 \item{color.NA}{The color used to represent missing values. Not used when
 \code{treat.NA.as.0}, is set to missing.}
