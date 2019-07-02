@@ -166,8 +166,7 @@ getRange <- function(x, axis, axisFormat)
     }
     if (is.null(range))
     {
-        if ((!is.null(axis) && axis$type == "date") ||
-            (!is.null(axisFormat) && !is.null(axisFormat$ymd)))
+        if (!is.null(axisFormat) && length(axisFormat$ymd) >= 2)
         {
             tmp.dates <- as.numeric(axisFormat$ymd) * 1000
             diff <- min(diff(tmp.dates), na.rm = TRUE)
@@ -382,7 +381,7 @@ getAxisType <- function(labels, format)
     if (!any(is.na(suppressWarnings(as.numeric(gsub(",", "", labels))))))
         return("numeric")
     ymd <- suppressWarnings(AsDateTime(labels, on.parse.failure = "silent"))
-    if (all(!is.na(ymd)))
+    if (all(!is.na(ymd)) && length(ymd) > 1)
         return("date")
     else
         return("category")
@@ -500,7 +499,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
                 range <- rev(getDateAxisRange(axisLabels$ymd, range))
 
             # Override default tick positions if there are only a few bars
-            if (with.bars && length(axisLabels$labels) <= 10)
+            if (with.bars && length(axisLabels$labels) <= 10 && length(axisLabels$labels) >= 2)
             {
                 tmp.dist <- difftime(axisLabels$ymd[2], axisLabels$ymd[1], units = "secs")
                 if (difftime(max(axisLabels$ymd), min(axisLabels$ymd), units = "secs") < 11 * tmp.dist)
@@ -527,7 +526,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
         if (ticks$autorange != "reversed")
             range <- rev(range)
     }
-    else if (axis.type == "date" && !is.null(axisLabels$ymd))
+    else if (axis.type == "date" && length(axisLabels$ymd) >= 2)
     {
         autorange <- FALSE
         rev <- length(range) == 2 && range[2] < range[1]
