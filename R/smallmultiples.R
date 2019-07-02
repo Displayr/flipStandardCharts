@@ -380,8 +380,23 @@ SmallMultiples <- function(x,
         axis.name <- if (chart.type == "Bar") "yaxis2" else "xaxis2"
         for (i in 1:npanels)
             plot.list[[i]]$x$layoutAttrs[[1]][[axis.name]] <- NULL
-    }
-    else if (chart.type == "Pyramid")
+    } else if (chart.type == "BarMultiColor" || chart.type == "ColumnMultiColor")
+    {
+        plot.list <- lapply(1:npanels, function(i){chart(x[,i, drop = FALSE],
+                                                     colors = colors[i],
+                                                     x.title = x.title, x.title.font.size = x.title.font.size,
+                                                     y.title = y.title, y.title.font.size = y.title.font.size,
+                                                     grid.show = grid.show, data.label.show = data.label.show,
+                                                     data.label.font.color = data.label.font.color[i],
+                                                     x.tick.show = x.tick.show, x.tick.angle = x.tick.angle,
+                                                     y.bounds.maximum = y.bounds.maximum,
+                                                     y.bounds.minimum = y.bounds.minimum,
+                                                     x.bounds.maximum = x.bounds.maximum,
+                                                     x.bounds.minimum = x.bounds.minimum,
+                                                     global.font.family = global.font.family,
+                                                     global.font.color = global.font.color,
+                                                     ...)$htmlwidget})
+    } else if (chart.type == "Pyramid")
         plot.list <- lapply(1:npanels, function(i){chart(x[,i, drop = FALSE],
                                                      colors = colors,
                                                      x.title = x.title, x.title.font.size = x.title.font.size,

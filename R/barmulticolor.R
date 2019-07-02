@@ -1,11 +1,11 @@
-#' Pyramid
+#' BarMultiColor
 #'
-#' Bar charts with a centred axis
+#' Bar charts with many colors
 #' @inherit Bar
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom plotly plot_ly layout
 #' @export
-Pyramid <- function(x,
+BarMultiColor <- function(x,
                     colors = ChartColors(max(1, length(x))),
                     opacity = NULL,
                     global.font.family = "Arial",
@@ -33,6 +33,7 @@ Pyramid <- function(x,
                     margin.left = NULL,
                     margin.right = NULL,
                     margin.inner.pad = NULL,
+                    grid.show = TRUE,
                     y.title = "",
                     y.title.font.color = global.font.color,
                     y.title.font.family = global.font.family,
@@ -47,7 +48,7 @@ Pyramid <- function(x,
                     y.zero.line.width = 0,
                     y.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
                     y.data.reversed = FALSE,
-                    y.grid.width = 0,
+                    y.grid.width = 0 * grid.show,
                     y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                     y.tick.show = TRUE,
                     y.tick.suffix = "",
@@ -66,15 +67,16 @@ Pyramid <- function(x,
                     x.line.color = rgb(0, 0, 0, maxColorValue = 255),
                     x.tick.marks = "",
                     x.tick.mark.length = 5,
+                    x.bounds.minimum = NULL,
                     x.bounds.maximum = NULL,
                     x.tick.distance = NULL,
                     x.zero = TRUE,
                     x.zero.line.width = 0,
                     x.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
                     x.data.reversed = FALSE,
-                    x.grid.width = 0,
+                    x.grid.width = 1 * grid.show,
                     x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
-                    x.tick.show = FALSE,
+                    x.tick.show = TRUE,
                     x.tick.suffix = "",
                     x.tick.prefix = "",
                     x.tick.format = "",
@@ -109,14 +111,10 @@ Pyramid <- function(x,
             x <- t(x)
         if (NCOL(x) > 1)
         {
-            warning("'Pyramid' showing only the first column of the input data. ",
-                    "To show multiple series, use Small Multiples or change the chart type to 'Bar'.")
+            warning("To show multiple series use Small Multiples")
             x <- x[,1]
         }
     }
-    ss <- sign(x[is.finite(x)])
-    if (any(ss * ss[1] < 0))
-        stop("'Pyramid' charts cannot show a mixture of positive and negative values.")
     chart.matrix <- checkMatrixNames(x)
     if (bar.gap < 0.0 || bar.gap >= 1.0)
     {
@@ -158,11 +156,10 @@ Pyramid <- function(x,
     type <- "Bar"
     tmp.label <- formatByD3(max(chart.matrix), data.label.format,
                  data.label.prefix, data.label.suffix, decimals = 0)
+   
     if (is.null(x.bounds.maximum) || is.na(x.bounds.maximum) || x.bounds.maximum == "")
         x.bounds.maximum <- NULL
-    x.bounds.minimum <- if (!is.null(x.bounds.maximum)) -x.bounds.maximum
-                        else                             NULL
-    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, chart.matrix, FALSE, is.null(x.tick.distance))
+    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, chart.matrix, x.zero, is.null(x.tick.distance))
     xtick <- setTicks(x.range$min, x.range$max, x.tick.distance, x.data.reversed,
                   data = NULL, type = type,
                   labels = tmp.label, label.font.size = data.label.font.size)
@@ -201,10 +198,8 @@ Pyramid <- function(x,
     hoverfont <- list(color = autoFontColor(colors), size = hovertext.font.size, 
                 family = hovertext.font.family)
 
-    # Using 'base' is preferrable to plotting two bars because semi-transparency 
-    # and borders is now handled properly
     p <- plot_ly(as.data.frame(chart.matrix))
-    p <- add_trace(p, x = 2 * y, y = x, base = -y, type = "bar", orientation = "h",
+    p <- add_trace(p, x = y, y = x, type = "bar", orientation = "h",
                    marker = marker, hoverlabel = list(font = hoverfont), cliponaxis = FALSE,
                    hovertemplate = "%{x}<extra>%{y}</extra>") 
 
@@ -212,9 +207,12 @@ Pyramid <- function(x,
     {
         source.text <- formatByD3(y, data.label.format,
                data.label.prefix, data.label.suffix, decimals = 0)
-        p <- add_trace(p, y = x, x = 0, showlegend = FALSE,
-               type = "scatter", mode = "text", text = source.text, hoverinfo = "skip",
-               textfont = data.label.font, textposition = "middle center")
+        x.sign <- getSign(y, xaxis)
+        p <- add_trace(p, y = x, x = y, text = source.text, showlegend = FALSE,
+               type = "scatter", mode = "markers+text", hoverinfo = "skip",
+               textfont = data.label.font, marker = list(size = 3, opacity = 0), 
+               textposition = ifelse(x.sign >= 0, "middle right", "middle left"),
+               cliponaxis = FALSE)
     }
 
     # add scatter trace to ensure hover is always shown
@@ -223,7 +221,7 @@ Pyramid <- function(x,
                    hoverlabel = list(font = list(color = autoFontColor(colors),
                    size = hovertext.font.size, family = hovertext.font.family),
                    bgcolor = colors), hovertemplate = "%{x}<extra>%{y}</extra>") 
-
+    
     annot <- list(setSubtitle(subtitle, subtitle.font, margins),
                            setTitle(title, title.font, margins),
                            setFooter(footer, footer.font, margins))
