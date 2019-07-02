@@ -20,7 +20,7 @@ test.args <- c('default' = '',
     'reversed' = 'x.data.reversed=TRUE, y.data.reversed=TRUE',
     #'legendpos' = 'legend.position.y=0.5, legend.position.x=0, legend.font.color="red", legend.fill.opacity=0',
     #'legendbg' = 'legend.fill.color="blue", legend.fill.opacity=0.5, legend.border.color="red", legend.border.line.width=2',
-    'margins' = 'margin.left=0, margin.right=0, margin.top=0, margin.inner.pad=10, margin.bottom=0, background.fill.color="blue", charting.area.fill.color="red", legend.show=FALSE, grid.show=FALSE',
+    'margins' = 'margin.left=0, margin.right=0, margin.top=0, margin.inner.pad=10, margin.bottom=0, background.fill.color="blue", charting.area.fill.color="red", grid.show=FALSE',
     'font' = 'global.font.family="Courier", global.font.color="red"',
     'modebar' = 'modebar.show = TRUE')
 
@@ -58,7 +58,7 @@ for (ff in funcs)
         {
             # filestem is both the name of the image in accepted-snapshots
             # and the error msg expected on the output of devtools::test()
-            filestem <- paste("mc", tolower(ff), dat,
+            filestem <- paste("multicolor", tolower(ff), dat,
                               names(test.args)[i], sep="-")
 
             if (grepl("bar-.*-ticklabel", filestem))
