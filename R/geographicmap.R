@@ -556,8 +556,9 @@ plotlyMap <- function(table, name.map, colors, opacity, min.value, max.range, co
         showland = opacity == 1.0, # color will show through transparency
         landcolor = color.NA,
         showcountries = TRUE,
-        coastlinecolor = ocean.color,
-        coastlinewidth = 0.25,
+        coastlinecolor = rgb(0.4,0.4,0.4, alpha = opacity),
+        #coastlinecolor = ocean.color,
+        coastlinewidth = 1,
         countrycolor = rgb(0.4,0.4,0.4, alpha = opacity),
         countrywidth = 0.25,
         subunitcolor = rgb(0.4,0.4,0.4, alpha = opacity),
@@ -569,7 +570,7 @@ plotlyMap <- function(table, name.map, colors, opacity, min.value, max.range, co
         projection = list(type = 'Mercator'),
         resolution = ifelse(high.resolution, 50, 110),
         lataxis = lataxis,
-        bgcolor = ocean.color) #toRGB("white", 0))  # transparent
+        bgcolor = ocean.color)
 
     p <- plot_geo(df, locationmode = locationmode)
     p <- add_trace(p, hoverinfo = "location+text",
