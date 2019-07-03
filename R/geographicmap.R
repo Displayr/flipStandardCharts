@@ -545,7 +545,7 @@ plotlyMap <- function(table, name.map, colors, opacity, min.value, max.range, co
         color.NA <- rgb(color.zero, maxColorValue = 255)
     }
 
-    #opacity <- 0.5
+    line.color <- rgb(0.4, 0.4, 0.4, alpha = opacity)
     bdry <- list(color = rgb(0.4,0.4,0.4, alpha = opacity), width = 0)  # no boundary line between shaded regions
 
     # specify map projection/options
@@ -556,12 +556,11 @@ plotlyMap <- function(table, name.map, colors, opacity, min.value, max.range, co
         showland = opacity == 1.0, # color will show through transparency
         landcolor = color.NA,
         showcountries = TRUE,
-        coastlinecolor = rgb(0.4,0.4,0.4, alpha = opacity),
-        #coastlinecolor = ocean.color,
-        coastlinewidth = 1,
-        countrycolor = rgb(0.4,0.4,0.4, alpha = opacity),
+        coastlinecolor = if (ocean.color == color.NA) line.color else ocean.color,
+        coastlinewidth = 0.25,
+        countrycolor = line.color,
         countrywidth = 0.25,
-        subunitcolor = rgb(0.4,0.4,0.4, alpha = opacity),
+        subunitcolor = line.color, 
         subunitwidth = 0.25,
         showocean = opacity == 1.0,
         oceancolor = ocean.color,
