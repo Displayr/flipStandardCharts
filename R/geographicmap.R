@@ -557,7 +557,7 @@ plotlyMap <- function(table, name.map, colors, opacity, min.value, max.range, co
         landcolor = color.NA,
         showcountries = TRUE,
         coastlinecolor = if (ocean.color == color.NA) line.color else ocean.color,
-        coastlinewidth = 0.25,
+        coastlinewidth = 1.0,
         countrycolor = line.color,
         countrywidth = 0.25,
         subunitcolor = line.color, 
