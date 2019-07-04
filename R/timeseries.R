@@ -82,6 +82,10 @@ TimeSeries <- function(x = NULL,
     is.time <- !all(format(row.names, format = "%H:%M:%S") == "00:00:00")
     rownames(x) <- as.character(row.names)
 
+    # Make sure input data is ordered - this is required for dygraphs
+    ord <- order(row.names)
+    x <- x[ord,,drop = FALSE]
+
     if (range.bars)
     {
         if (ncol(x) != 3)
