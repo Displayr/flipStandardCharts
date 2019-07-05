@@ -111,7 +111,7 @@ BarMultiColor <- function(x,
             x <- t(x)
         if (NCOL(x) > 1)
         {
-            warning("To show multiple series use Small Multiples")
+            warning("Bar charts with multi color series can only show a single series. To show multiple series use Small Multiples")
             x <- x[,1]
         }
     }
@@ -156,7 +156,7 @@ BarMultiColor <- function(x,
     type <- "Bar"
     tmp.label <- formatByD3(max(chart.matrix), data.label.format,
                  data.label.prefix, data.label.suffix, decimals = 0)
-   
+
     if (is.null(x.bounds.maximum) || is.na(x.bounds.maximum) || x.bounds.maximum == "")
         x.bounds.maximum <- NULL
     x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, chart.matrix, x.zero, is.null(x.tick.distance))
@@ -192,16 +192,16 @@ BarMultiColor <- function(x,
     x <- axisFormat$labels
     y <- as.numeric(chart.matrix[,1])
     x.text <- formatByD3(y, x.hovertext.format)
-    marker = list(color = toRGB(colors, alpha = opacity), 
-                line = list(color = toRGB(marker.border.colors, 
+    marker = list(color = toRGB(colors, alpha = opacity),
+                line = list(color = toRGB(marker.border.colors,
                 alpha = marker.border.opacity), width = marker.border.width))
-    hoverfont <- list(color = autoFontColor(colors), size = hovertext.font.size, 
+    hoverfont <- list(color = autoFontColor(colors), size = hovertext.font.size,
                 family = hovertext.font.family)
 
     p <- plot_ly(as.data.frame(chart.matrix))
     p <- add_trace(p, x = y, y = x, type = "bar", orientation = "h",
                    marker = marker, hoverlabel = list(font = hoverfont), cliponaxis = FALSE,
-                   hovertemplate = "%{x}<extra>%{y}</extra>") 
+                   hovertemplate = "%{x}<extra>%{y}</extra>")
 
     if (data.label.show)
     {
@@ -210,7 +210,7 @@ BarMultiColor <- function(x,
         x.sign <- getSign(y, xaxis)
         p <- add_trace(p, y = x, x = y, text = source.text, showlegend = FALSE,
                type = "scatter", mode = "markers+text", hoverinfo = "skip",
-               textfont = data.label.font, marker = list(size = 3, opacity = 0), 
+               textfont = data.label.font, marker = list(size = 3, opacity = 0),
                textposition = ifelse(x.sign >= 0, "middle right", "middle left"),
                cliponaxis = FALSE)
     }
@@ -220,8 +220,8 @@ BarMultiColor <- function(x,
                    mode = "markers", marker = list(color = colors, opacity = 0),
                    hoverlabel = list(font = list(color = autoFontColor(colors),
                    size = hovertext.font.size, family = hovertext.font.family),
-                   bgcolor = colors), hovertemplate = "%{x}<extra>%{y}</extra>") 
-    
+                   bgcolor = colors), hovertemplate = "%{x}<extra>%{y}</extra>")
+
     annot <- list(setSubtitle(subtitle, subtitle.font, margins),
                            setTitle(title, title.font, margins),
                            setFooter(footer, footer.font, margins))

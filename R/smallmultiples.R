@@ -151,9 +151,9 @@ SmallMultiples <- function(x,
     }
     if (npanels > 100)
         stop("Small multiples cannot show more than 100 panels (current dataset contains ", npanels, " series).\n")
-    if (length(colors) < npanels && !chart.type %in% c("GeographicMap", "Pyramid", "Scatter"))
+    if (length(colors) < npanels && !chart.type %in% c("GeographicMap", "Pyramid", "Scatter", "BarMultiColor", "ColumnMultiColor"))
         colors <- paste0(rep("", npanels), colors)
-    if (chart.type != "Pyramid")
+    if (!chart.type %in% c("Pyramid", "BarMultiColor", "ColumnMultiColor"))
         data.label.font.color <- vectorize(data.label.font.color, npanels)
 
     all.values <- if (chart.type == "Scatter") x[,scatter.y.column]
@@ -182,7 +182,7 @@ SmallMultiples <- function(x,
             values.bounds.maximum <- max(values.bounds.maximum, values.max)
             values.bounds.minimum <- min(values.bounds.minimum, values.min)
         }
-        else if (chart.type %in% c("Bar", "Pyramid"))
+        else if (chart.type %in% c("Bar", "Pyramid", "BarMultiColor"))
         {
             if (is.null(x.bounds.maximum))
                 x.bounds.maximum <- values.max
@@ -383,11 +383,11 @@ SmallMultiples <- function(x,
     } else if (chart.type == "BarMultiColor" || chart.type == "ColumnMultiColor")
     {
         plot.list <- lapply(1:npanels, function(i){chart(x[,i, drop = FALSE],
-                                                     colors = colors[i],
+                                                     colors = colors,
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
                                                      grid.show = grid.show, data.label.show = data.label.show,
-                                                     data.label.font.color = data.label.font.color[i],
+                                                     data.label.font.color = data.label.font.color,
                                                      x.tick.show = x.tick.show, x.tick.angle = x.tick.angle,
                                                      y.bounds.maximum = y.bounds.maximum,
                                                      y.bounds.minimum = y.bounds.minimum,

@@ -111,7 +111,7 @@ ColumnMultiColor <- function(x,
             x <- t(x)
         if (NCOL(x) > 1)
         {
-            warning("To show multiple series use Small Multiples")
+            warning("Column chart with multi color series can only show a single series. To show multiple series use Small Multiples")
             x <- x[,1]
         }
     }
@@ -187,16 +187,16 @@ ColumnMultiColor <- function(x,
     x <- axisFormat$labels
     y <- as.numeric(chart.matrix[,1])
     x.text <- formatByD3(y, x.hovertext.format)
-    marker = list(color = toRGB(colors, alpha = opacity), 
-                line = list(color = toRGB(marker.border.colors, 
+    marker = list(color = toRGB(colors, alpha = opacity),
+                line = list(color = toRGB(marker.border.colors,
                 alpha = marker.border.opacity), width = marker.border.width))
-    hoverfont <- list(color = autoFontColor(colors), size = hovertext.font.size, 
+    hoverfont <- list(color = autoFontColor(colors), size = hovertext.font.size,
                 family = hovertext.font.family)
 
     p <- plot_ly(as.data.frame(chart.matrix))
     p <- add_trace(p, x = x, y = y, type = "bar", orientation = "v",
                    marker = marker, hoverlabel = list(font = hoverfont), cliponaxis = FALSE,
-                   hovertemplate = "%{y}<extra>%{x}</extra>") 
+                   hovertemplate = "%{y}<extra>%{x}</extra>")
 
     if (data.label.show)
     {
@@ -205,7 +205,7 @@ ColumnMultiColor <- function(x,
         y.sign <- getSign(y, yaxis)
         p <- add_trace(p, y = y, x = x, text = source.text, showlegend = FALSE,
                type = "scatter", mode = "markers+text", hoverinfo = "skip",
-               textfont = data.label.font, marker = list(size = 3, opacity = 0), 
+               textfont = data.label.font, marker = list(size = 3, opacity = 0),
                textposition = ifelse(y.sign >= 0, "top center", "bottom center"),
                cliponaxis = FALSE)
     }
@@ -215,8 +215,8 @@ ColumnMultiColor <- function(x,
     #               mode = "markers", marker = list(color = colors, opacity = 0),
     #               hoverlabel = list(font = list(color = autoFontColor(colors),
     #               size = hovertext.font.size, family = hovertext.font.family),
-    #               bgcolor = colors), hovertemplate = "%{y}<extra>%{x}</extra>") 
-    
+    #               bgcolor = colors), hovertemplate = "%{y}<extra>%{x}</extra>")
+
     annot <- list(setSubtitle(subtitle, subtitle.font, margins),
                            setTitle(title, title.font, margins),
                            setFooter(footer, footer.font, margins))
