@@ -490,7 +490,7 @@ Scatter <- function(x = NULL,
                         legend.border.color, legend.border.line.width,
                         legend.position.x, legend.position.y,
                         orientation = legend.orientation)
-    legend$itemsizing <- "constant"
+    legend$itemsizing <- if (!is.null(scatter.sizes)) "constant" else "trace"
     if (length(footer) == 0 || nchar(footer) == 0)
     {
         footer <- ""
