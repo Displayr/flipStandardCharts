@@ -208,9 +208,10 @@ GeographicMap <- function(x,
     # Fix unmatched names
     if (!is.null(name.map))
     {
-        for (correct in names(name.map))
+        correct.all <- names(name.map)
+        for (correct in correct.all)
         {
-            incorrect <- name.map[[correct]]
+            incorrect <- setdiff(name.map[[correct]], correct.all)
             matches <- match(tolower(incorrect), tolower(rownames(table)))
 
             if (!all(is.na(matches)))
