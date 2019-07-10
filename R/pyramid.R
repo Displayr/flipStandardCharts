@@ -219,7 +219,7 @@ Pyramid <- function(x,
     }
 
     # add scatter trace to ensure hover is always shown
-    p <- add_trace(p, x = y, y = x, type = "scatter", name = x,
+    p <- add_trace(p, x = y, y = x, type = "scatter",
                    mode = "markers", marker = list(color = colors, opacity = 0),
                    hoverlabel = list(font = list(color = autoFontColor(colors),
                    size = hovertext.font.size, family = hovertext.font.family),
