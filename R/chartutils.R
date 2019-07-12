@@ -224,7 +224,8 @@ isReversed <- function(axis)
 #' @importFrom stats supsmu filter
 #' @importFrom mgcv gam
 #' @noRd
-fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE, fit.window.size = 3, warning.prefix = "")
+fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE,
+                      fit.window.size = 3, warning.prefix = "")
 {
     if (!is.numeric(y))
     {
@@ -254,9 +255,12 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE, f
     {
         if (CI.show)
             warning("Confidence intervals cannot be computed for trend lines of this type.")
-        ind.na <- which(!is.finite(tmp.dat$x) | !is.finite(tmp.dat$y))
-        if (length(ind.na) > 0)
-            tmp.dat <- tmp.dat[-ind.na,]
+        if (!grepl("moving average", fit.type, perl = TRUE, ignore.case = TRUE))
+        {
+            ind.na <- which(!is.finite(tmp.dat$x) | !is.finite(tmp.dat$y))
+            if (length(ind.na) > 0)
+                mp.dat <- tmp.dat[-ind.na,]
+        }
         indU <- which(!duplicated(tmp.dat$x))
         if (length(indU) < nrow(tmp.dat))
             warning(warning.prefix, "Multiple points at the same x-coordinate ignored for estimating line of best fit.\n")
@@ -264,6 +268,8 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE, f
         {
             if (!is.finite(fit.window.size) && fit.window.size <= 0)
                 stop("Moving average must have a positive window size")
+            if (length(unique(diff(tmp.dat$x[indU]))) > 1)
+                warning("Moving averages do not account for the different intervals between values.")
             if (grepl("center|centre", fit.type, perl = TRUE, ignore.case = TRUE))
                 tmp.avg <- rev(filter(tmp.dat$y[rev(indU)], rep(1/fit.window.size, fit.window.size), sides = 2))
             else

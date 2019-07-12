@@ -43,7 +43,7 @@ for (func in charting.funcs)
 
                 cmd <- paste0("pp <- ", func, "(", dat, "," , opts[ii], ")")
 
-                if (grepl("missing", filestem))
+                if (grepl("missing|gapped-movingavgfit|gapdated-movingavgfit", filestem))
                     expect_warning(eval(parse(text=cmd)))
                 else
                     expect_error(eval(parse(text=cmd)), NA)
