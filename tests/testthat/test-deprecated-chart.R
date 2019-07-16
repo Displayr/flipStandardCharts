@@ -288,7 +288,7 @@ test_that("Line of best fit", {
 test_that("Color palette warnings", {
     expect_warning(Chart(named.vector, type="Pie", colors="Custom color",
                          colors.custom.color = "red"), "Only a single color specified")
-    expect_warning(Chart(named.vector[1:4], type="Pie", colors="Custom palette", colors.custom.palette = "red,orange,abc,blue"), "Invalid color 'abc' replaced with '#000000'")
+    expect_warning(Chart(named.vector[1:4], type="Pie", colors="Custom palette", colors.custom.palette = "red,orange,abc,blue"), "Invalid color 'abc'")
 })
 
 test_that("Annotations", {
