@@ -1,7 +1,7 @@
 Package: flipStandardCharts
 Type: Package
 Title: Standard R interactive charts
-Version: 1.7.7
+Version: 1.7.8
 Author: Displayr <opensource@displayr.com>
 Maintainer: Displayr <opensource@displayr.com>
 Description: Wrapper for other charting packages. The goal is to provide a
@@ -20,7 +20,7 @@ Imports:
     flipTables (>= 2.0.0),
     flipTime (>= 2.0.0),
     flipTransformations (>= 1.1.2),
-    flipU,
+    flipU (>= 1.2.6),
     Hmisc,
     mgcv,
     htmltools,

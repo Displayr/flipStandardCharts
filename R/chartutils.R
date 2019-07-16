@@ -259,7 +259,7 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE,
         {
             ind.na <- which(!is.finite(tmp.dat$x) | !is.finite(tmp.dat$y))
             if (length(ind.na) > 0)
-                mp.dat <- tmp.dat[-ind.na,]
+                tmp.dat <- tmp.dat[-ind.na,]
         }
         indU <- which(!duplicated(tmp.dat$x))
         if (length(indU) < nrow(tmp.dat))
@@ -268,7 +268,14 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE,
         {
             if (!is.finite(fit.window.size) && fit.window.size <= 0)
                 stop("Moving average must have a positive window size")
-            if (length(unique(diff(tmp.dat$x[indU]))) > 1)
+            if (length(indU) <= fit.window.size)
+            {
+                warning("Trend line could not be shown. The length of the data series ",
+                        "must be larger than the window size (", fit.window.size, ")")
+                return(list(x = NULL, y = NULL))
+            }
+            tmp.gaps <- unique(diff(tmp.dat$x[indU]))
+            if (any(tmp.gaps > min(tmp.gaps) * 1.1)) # allow some variation for dates
                 warning("Moving averages do not account for the different intervals between values.")
             if (grepl("center|centre", fit.type, perl = TRUE, ignore.case = TRUE))
                 tmp.avg <- rev(filter(tmp.dat$y[rev(indU)], rep(1/fit.window.size, fit.window.size), sides = 2))

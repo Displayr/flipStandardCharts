@@ -18,10 +18,28 @@ dup.values <- structure(c(6L, 5L, 3L, 3L, 3L, 2L, 4L, 2L, 9L, 2L, 6L, 4L, 7L,
     6L, 10L, 7L, 6L, 2L, 3L, 5L), .Dim = c(10L, 2L), .Dimnames = list(
     c("A", "B", "C", "A", "B", "C", "D", "D", "D", "D"), NULL))
 
+dat <- structure(c(0.326848249027237, 0.350194552529183, 0.32295719844358,
+    0.354838709677419, 0.338709677419355, 0.306451612903226, 0.317307692307692,
+    0.326923076923077, 0.355769230769231, 0.309090909090909, 0.363636363636364,
+    0.327272727272727, 0.25, 0.4375, 0.3125, 0.393617021276596, 0.25531914893617,
+    0.351063829787234, 0, 0.5, 0.5, 0.375, 0.25, 0.375), .Dim = c(3L,
+    8L), statistic = "Column %", name = "table.Date.of.Interview.by.Q3.Preferred.cola", questions = c("Date of Interview",
+    "Q3 - Preferred cola"), assigned.rownames = TRUE, .Dimnames = list(
+        c("Jan-Mar 17", "Apr-Jun 17", "Jul-Sep 17"), c("Coca-Cola",
+        "Diet Coke", "Coke Zero", "Pepsi ", "Diet Pepsi", "Pepsi Max",
+        "Dislike all cola", "Don't care")))
+xx <- c(`1` = 1, `2` = 2, `3` = 3, `5` = 4, `6` = 5, `7` = 6, `8` = 7)
+
 test_that("line-of-best-fit",
 {
     expect_warning(Column(search.share, fit.type = "Friedman"), "Missing values have been set to zero")
     expect_warning(Column(search.share, fit.type = "LOESS"), "Missing values have been set to zero")
     expect_warning(Column(search.share, fit.type = "Linear"), "Missing values have been set to zero")
     expect_warning(Scatter(dup.values, fit.type = "Friedman"), "Multiple points at the same x-coordinate ignored for estimating line of best fit.")
+
+    expect_error(SmallMultiples(dat, "Column", fit.type = "Moving averages", fit.window.size = 2), NA) # no warnings
+    expect_warning(Column(dat[,1,drop=FALSE], fit.type = "Moving average", fit.window.size = 3), "Trend line could not be shown")
+    expect_warning(Column(xx, fit.type = "Moving average"), "Moving averages do not account for the different intervals between values")
+
 })
+

@@ -30,6 +30,7 @@
 #' @inherit Scatter
 #' @inherit GeographicMap
 #' @importFrom plotly subplot
+#' @importFrom flipU CollectWarnings
 #' @examples
 #' x <- matrix(1:21, 7, 3, dimnames = list(letters[1:7], LETTERS[1:3]))
 #' SmallMultiples(x, "Column", colors=c("red","green","blue"))
@@ -288,7 +289,7 @@ SmallMultiples <- function(x,
         } else
             colors <- as.list(colors)
 
-        plot.list <- lapply(1:npanels, function(i){chart(x[indexes[[i]],],
+        plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(x[indexes[[i]],],
                                                      scatter.x.column = scatter.x.column,
                                                      scatter.y.column = scatter.y.column,
                                                      scatter.sizes.column = scatter.sizes.column,
@@ -313,7 +314,7 @@ SmallMultiples <- function(x,
                                                      small.mult.index = i,
                                                      sz.min = sz.min, sz.max = sz.max,
                                                      col.min = col.min, col.max = col.max,
-                                                    ...)$htmlwidget})
+                                                    ...)$htmlwidget}))
     }
     else if (chart.type == "Radar")
     {
@@ -323,7 +324,7 @@ SmallMultiples <- function(x,
             line.thickness <- TextAsVector(line.thickness)
         line.thickness <- suppressWarnings(paste0(line.thickness, rep("", npanels)))
 
-        plot.list <- lapply(1:npanels, function(i){chart(.bind_mean(x[,i, drop = FALSE], average.series),
+        plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(.bind_mean(x[,i, drop = FALSE], average.series),
                                                      hovertext.show = c(TRUE, TRUE),
                                                      line.thickness = line.thickness[i],
                                                      colors = c(colors[i], average.color),
@@ -335,14 +336,14 @@ SmallMultiples <- function(x,
                                                      global.font.family = global.font.family,
                                                      global.font.color = global.font.color,
                                                      pad.left = pad.left, pad.right = pad.right,
-                                                     ...)$htmlwidget})
+                                                     ...)$htmlwidget}))
         margin.left <- 0
         margin.right <- 0
         margin.bottom <- 0
     }
     else if (chart.type == "GeographicMap")
     {
-         plot.list <- lapply(1:npanels, function(i){chart(x[,i, drop = FALSE],
+         plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(x[,i, drop = FALSE],
                                                      colors = colors,
                                                      mapping.package = "plotly",
                                                      legend.show = legend.show && (i == 1),
@@ -350,13 +351,13 @@ SmallMultiples <- function(x,
                                                      values.bounds.minimum = values.bounds.minimum,
                                                      global.font.family = global.font.family,
                                                      global.font.color = global.font.color,
-                                                     ...)$htmlwidget})
+                                                     ...)$htmlwidget}))
         margin.left <- 0
         margin.right <- 0
         margin.bottom <- 0
     } else if (chart.type == "Bar" || chart.type == "Column")
     {
-        plot.list <- lapply(1:npanels, function(i){chart(x[,i, drop = FALSE],
+        plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(x[,i, drop = FALSE],
                                                      colors = colors[i],
                                                      average.series = average.series,
                                                      average.color = average.color,
@@ -373,7 +374,7 @@ SmallMultiples <- function(x,
                                                      x.bounds.minimum = x.bounds.minimum,
                                                      global.font.family = global.font.family,
                                                      global.font.color = global.font.color,
-                                                     ...)$htmlwidget})
+                                                     ...)$htmlwidget}))
 
         # Remove second axis which is used for positioning data labels/hovertext
         # on categorical/date axis - naming interferes with subplot
@@ -382,7 +383,7 @@ SmallMultiples <- function(x,
             plot.list[[i]]$x$layoutAttrs[[1]][[axis.name]] <- NULL
     } else if (chart.type == "BarMultiColor" || chart.type == "ColumnMultiColor")
     {
-        plot.list <- lapply(1:npanels, function(i){chart(x[,i, drop = FALSE],
+        plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(x[,i, drop = FALSE],
                                                      colors = colors,
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
@@ -395,9 +396,9 @@ SmallMultiples <- function(x,
                                                      x.bounds.minimum = x.bounds.minimum,
                                                      global.font.family = global.font.family,
                                                      global.font.color = global.font.color,
-                                                     ...)$htmlwidget})
+                                                     ...)$htmlwidget}))
     } else if (chart.type == "Pyramid")
-        plot.list <- lapply(1:npanels, function(i){chart(x[,i, drop = FALSE],
+        plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(x[,i, drop = FALSE],
                                                      colors = colors,
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
@@ -407,7 +408,7 @@ SmallMultiples <- function(x,
                                                      x.bounds.maximum = x.bounds.maximum,
                                                      global.font.family = global.font.family,
                                                      global.font.color = global.font.color,
-                                                     ...)$htmlwidget})
+                                                     ...)$htmlwidget}))
     else
     {
         # Line or Area chart
@@ -417,7 +418,7 @@ SmallMultiples <- function(x,
             line.thickness <- TextAsVector(line.thickness)
         line.thickness <- suppressWarnings(paste0(line.thickness, rep("", npanels)))
 
-        plot.list <- lapply(1:npanels, function(i){chart(.bind_mean(x[,i, drop = FALSE], average.series),
+        plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(.bind_mean(x[,i, drop = FALSE], average.series),
                                                      colors = c(colors[i], average.color),
                                                      line.thickness = line.thickness[i],
                                                      fit.line.colors = c(fit.line.colors[i], average.color),
@@ -434,7 +435,7 @@ SmallMultiples <- function(x,
                                                      x.bounds.minimum = x.bounds.minimum,
                                                      global.font.family = global.font.family,
                                                      global.font.color = global.font.color,
-                                                     ...)$htmlwidget})
+                                                     ...)$htmlwidget}))
     }
 
     is.geo <- chart.type == "GeographicMap"
