@@ -1,4 +1,1 @@
-^.*\.Rproj$
-^\.Rproj\.user$
-^data-raw$
-.travis.yml
+tools/travis_run_before_install.R$
