@@ -6,7 +6,11 @@
 #'
 #' @param x A \link{data.frame} \code{logical} (converted to logical using >= 1 if not) or a JSON-like list.
 #' @param weights An optional vector of weights, or, the name or, the name of a variable in \code{x}. It may not be an expression.
+#' @param colors A character vector specifying the color of each circle.
+#' @param opacity Numeric; Opacity of circles as an alpha value (0 to 1).
+#' @param data.label.font.autocolor Logical; Whether font color should be automatically set to the same as the circle color. When this is true, \code{data.label.font.color} is ignored.
 #' @param global.font.family Font family of all text elements. These can be overriden for individual text elements.
+#' @param data.label.font.color Font color of data labels (ignored if \code{data.label.font.autocolor}).
 #' @param data.label.font.family Font family of data labels.
 #' @param data.label.font.size The font size of the labels. Defaults to 20.
 #' @param hovertext.font.family Font family of hovertext (i.e tooltips).
@@ -28,7 +32,11 @@
 #' @export
 Venn <- function(x = NULL,
                  weights = NULL,
+                 colors = NULL,
+                 opacity = NULL,
                  global.font.family = "Arial",
+                 data.label.font.autocolor = TRUE,
+                 data.label.font.color = "#FFFFFF",
                  data.label.font.family = global.font.family,
                  data.label.font.size = 14,
                  hovertext.font.family = global.font.family,
@@ -69,28 +77,47 @@ Venn <- function(x = NULL,
         for (i in seq(length(x)))
             x[[i]]$size <- x[[i]]$size * 100
     }
-
+    
+    # Tidying up parameters
+    n.sets <- length(unique(unlist(sapply(x, function(s) return(unlist(s$sets))))))
+    if (!is.null(colors))
+        colors <- rep(colors, length = n.sets)
+    if (is.null(opacity))
+        opacity <- 0.25
+    if (data.label.font.autocolor)
+        data.label.font.color <- NULL
+    else
+        data.label.font.color <- rep(data.label.font.color, length = n.sets)
+    
     # Creating the Venn diagram
     vv <- d3vennR(data = x, fontSize = data.label.font.size)
     vv$x$tasks <- list(
+        venn_circles(colors, opacity, data.label.font.family, data.label.font.color),
         venn_tooltip(suffix = suffix, font.family = hovertext.font.family,
-                     font.size = hovertext.font.size),
-        venn_fontfamily(data.label.font.family))
+                     font.size = hovertext.font.size, opacity = opacity))
     vv$sizingPolicy$browser$fill <- TRUE
     result <- list(htmlwidget = vv)
     class(result) <- "StandardChart"
     result
 }
 
-venn_fontfamily <- function(font.family){
+venn_circles <- function(colors, opacity, font.family, font.colors)
+{
     JS(paste0('
 function(){
+    var colors = ', if (is.null(colors)) 'd3.schemeCategory10' else toJSON(colors), ';
+    var fontcolors = ', if (is.null(font.colors)) 'colors' else toJSON(font.colors), ';
+    d3.select(this).selectAll(".venn-circle path")
+          .style("fill", function(d,i) { return colors[i]; })
+          .style("fill-opacity", ', opacity, ');
     d3.select(this).selectAll(".venn-circle text")
         .style("font-family", "', font.family, '")
+        .style("fill", function(d,i) { return fontcolors[i]; })
 }'
 ))}
 
-venn_tooltip <- function(suffix = "", font.family, font.size){
+venn_tooltip <- function(suffix = "", opacity, font.family, font.size)
+{
     JS(paste0('
 function(){
     var div = d3.select(this);
@@ -143,7 +170,7 @@ function(){
         var selection = d3.select(this).transition("tooltip").duration(400);
         selection.select("path")
         .style("stroke-width", 0)
-        .style("fill-opacity", d.sets.length == 1 ? .25 : .0)
+        .style("fill-opacity", d.sets.length == 1 ? ', opacity, ': .0)
         .style("stroke-opacity", 0);
     });
 }'

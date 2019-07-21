@@ -4,7 +4,9 @@
 \alias{Venn}
 \title{\code{Venn}}
 \usage{
-Venn(x = NULL, weights = NULL, global.font.family = "Arial",
+Venn(x = NULL, weights = NULL, colors = NULL, opacity = NULL,
+  global.font.family = "Arial", data.label.font.autocolor = TRUE,
+  data.label.font.color = "#FFFFFF",
   data.label.font.family = global.font.family,
   data.label.font.size = 14,
   hovertext.font.family = global.font.family, hovertext.font.size = 14,
@@ -15,7 +17,15 @@ Venn(x = NULL, weights = NULL, global.font.family = "Arial",
 
 \item{weights}{An optional vector of weights, or, the name or, the name of a variable in \code{x}. It may not be an expression.}
 
+\item{colors}{A character vector specifying the color of each circle.}
+
+\item{opacity}{Numeric; Opacity of circles as an alpha value (0 to 1).}
+
 \item{global.font.family}{Font family of all text elements. These can be overriden for individual text elements.}
+
+\item{data.label.font.autocolor}{Logical; Whether font color should be automatically set to the same as the circle color. When this is true, \code{data.label.font.color} is ignored.}
+
+\item{data.label.font.color}{Font color of data labels (ignored if \code{data.label.font.autocolor}).}
 
 \item{data.label.font.family}{Font family of data labels.}
 
