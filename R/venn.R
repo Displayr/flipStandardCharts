@@ -94,7 +94,7 @@ Venn <- function(x = NULL,
     if (data.label.font.autocolor)
         data.label.font.color <- NULL
     else
-        data.label.font.color <- rep(data.label.font.color, length = n.sets)
+        data.label.font.color <- rep(vectorize(data.label.font.color), length = n.sets)
     
     # Creating the Venn diagram
     vv <- d3vennR(data = x, fontSize = data.label.font.size)
