@@ -32,7 +32,8 @@
 #' @export
 Venn <- function(x = NULL,
                  weights = NULL,
-                 colors = NULL,
+                 colors = c("#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", 
+                            "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"),
                  opacity = NULL,
                  global.font.family = "Arial",
                  data.label.font.autocolor = TRUE,
@@ -80,9 +81,13 @@ Venn <- function(x = NULL,
     
     # Tidying up parameters
     n.sets <- length(unique(unlist(sapply(x, function(s) return(unlist(s$sets))))))
-    if (is.null(colors)) # d3.schemeCategory10
+    if (is.null(colors))
+    {
+         # d3.schemeCategory10
         colors <- c("#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", 
                     "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf")
+        data.label.font.autocolor <- TRUE # for compatibility with old wiki forms
+    }
     colors <- rep(colors, length = n.sets)
     if (is.null(opacity))
         opacity <- 0.25
