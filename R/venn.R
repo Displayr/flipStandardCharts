@@ -109,7 +109,7 @@ function(){
     var fontcolors = ', if (is.null(font.colors)) 'colors' else toJSON(font.colors), ';
     d3.select(this).selectAll(".venn-circle path")
           .style("fill", function(d,i) { return colors[i]; })
-          .style("fill-opacity", ', opacity, ');
+          .style("fill-opacity", ', opacity, ')
     d3.select(this).selectAll(".venn-circle text")
         .style("font-family", "', font.family, '")
         .style("fill", function(d,i) { return fontcolors[i]; })
