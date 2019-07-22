@@ -28,6 +28,7 @@
 #'    list("sets"= list(2, 3), "size"= 50)))
 #' @importFrom flipData CleanSubset CleanWeights
 #' @importFrom flipFormat Labels
+#' @importFrom flipChartBasics StripAlphaChannel
 #' @importFrom d3vennR d3vennR
 #' @export
 Venn <- function(x = NULL,
@@ -88,7 +89,7 @@ Venn <- function(x = NULL,
                     "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf")
         data.label.font.autocolor <- TRUE # for compatibility with old wiki forms
     }
-    colors <- rep(colors, length = n.sets)
+    colors <- rep(StripAlphaChannel(colors), length = n.sets)
     if (is.null(opacity))
         opacity <- 0.25
     if (data.label.font.autocolor)
