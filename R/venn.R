@@ -80,8 +80,10 @@ Venn <- function(x = NULL,
     
     # Tidying up parameters
     n.sets <- length(unique(unlist(sapply(x, function(s) return(unlist(s$sets))))))
-    if (!is.null(colors))
-        colors <- rep(colors, length = n.sets)
+    if (is.null(colors)) # d3.schemeCategory10
+        colors <- c("#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", 
+                    "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf")
+    colors <- rep(colors, length = n.sets)
     if (is.null(opacity))
         opacity <- 0.25
     if (data.label.font.autocolor)
@@ -105,7 +107,7 @@ venn_circles <- function(colors, opacity, font.family, font.colors)
 {
     JS(paste0('
 function(){
-    var colors = ', if (is.null(colors)) 'd3.schemeCategory10' else toJSON(colors), ';
+    var colors = ', toJSON(colors), ';
     var fontcolors = ', if (is.null(font.colors)) 'colors' else toJSON(font.colors), ';
     d3.select(this).selectAll(".venn-circle path")
           .style("fill", function(d,i) { return colors[i]; })
