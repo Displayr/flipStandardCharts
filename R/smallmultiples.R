@@ -387,7 +387,7 @@ SmallMultiples <- function(x,
         if (NCOL(colors) != npanels && NCOL(colors) > 1)
             warning("Only the first column of 'colors' was used. ",
                     "To apply a different for each panel, 'colors' should be a table with ",
-                    npanels, "columns")
+                    npanels, " columns")
         plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(x[,i, drop = FALSE],
                                                      colors = if (color.as.matrix) colors[,i] else colors,
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
@@ -408,7 +408,7 @@ SmallMultiples <- function(x,
         if (NCOL(colors) != npanels && NCOL(colors) > 1)
             warning("Only the first column of 'colors' was used. ",
                     "To apply a different for each panel, 'colors' should be a table with ",
-                    npanels, "columns")
+                    npanels, " columns")
         plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(x[,i, drop = FALSE],
                                                      colors = if (color.as.matrix) colors[,i] else colors,
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
