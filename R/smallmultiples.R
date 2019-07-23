@@ -52,7 +52,7 @@ SmallMultiples <- function(x,
                            x.bounds.minimum = NULL,
                            values.bounds.maximum = NULL,
                            values.bounds.minimum = NULL,
-                           colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
+                           colors = ChartColors(max(1, ncol(x), nrow(x), na.rm = TRUE)),
                            fit.line.colors = colors,
                            fit.CI.colors = colors,
                            global.font.family = "Arial",
@@ -383,8 +383,13 @@ SmallMultiples <- function(x,
             plot.list[[i]]$x$layoutAttrs[[1]][[axis.name]] <- NULL
     } else if (chart.type == "BarMultiColor" || chart.type == "ColumnMultiColor")
     {
+        color.as.matrix <- NCOL(colors) == npanels
+        if (NCOL(colors) != npanels && NCOL(colors) > 1)
+            warning("Only the first column of 'colors' was used. ",
+                    "To apply a different for each panel, 'colors' should be a table with ",
+                    npanels, "columns")
         plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(x[,i, drop = FALSE],
-                                                     colors = colors,
+                                                     colors = if (color.as.matrix) colors[,i] else colors,
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
                                                      grid.show = grid.show, data.label.show = data.label.show,
@@ -398,8 +403,14 @@ SmallMultiples <- function(x,
                                                      global.font.color = global.font.color,
                                                      ...)$htmlwidget}))
     } else if (chart.type == "Pyramid")
+    {
+        color.as.matrix <- NCOL(colors) == npanels
+        if (NCOL(colors) != npanels && NCOL(colors) > 1)
+            warning("Only the first column of 'colors' was used. ",
+                    "To apply a different for each panel, 'colors' should be a table with ",
+                    npanels, "columns")
         plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(x[,i, drop = FALSE],
-                                                     colors = colors,
+                                                     colors = if (color.as.matrix) colors[,i] else colors,
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
                                                      data.label.show = data.label.show,
@@ -409,7 +420,7 @@ SmallMultiples <- function(x,
                                                      global.font.family = global.font.family,
                                                      global.font.color = global.font.color,
                                                      ...)$htmlwidget}))
-    else
+    } else
     {
         # Line or Area chart
         if (length(line.thickness) == 0)
