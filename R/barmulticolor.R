@@ -187,6 +187,7 @@ BarMultiColor <- function(x,
     margins <- setMarginsForAxis(margins, as.character(range(x)), xaxis)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
+    margins <- setMarginsForLegend(margins, FALSE, NULL, NULL)
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
 
