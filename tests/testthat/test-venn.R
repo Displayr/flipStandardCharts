@@ -145,5 +145,10 @@ test_that("Venn",
                 expect_error(Venn(x[,1]))
                 # Factor input
                 expect_error(Venn(data.frame(sapply(x, as.factor))))
+                expect_error(Venn(r.output, colors = c("red", "green", "blue"), data.label.font.autocolor = TRUE,
+                    data.label.font.family = "Impact"), NA)
+                expect_error(Venn(r.output, colors = rainbow(9, start = 0, end =2/3), opacity = 0.8,
+                    data.label.font.autocolor = FALSE, data.label.font.color = "#FFFFFF",
+                    data.label.font.family = "Impact"), NA)
           })
 
