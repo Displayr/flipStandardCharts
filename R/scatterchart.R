@@ -179,7 +179,8 @@ Scatter <- function(x = NULL,
                          sz.max = NULL,
                          sz.scale = NULL,
                          col.min = NULL,
-                         col.max = NULL)
+                         col.max = NULL,
+                         ...)
 {
     # Use labeled scatterplots if multiple tables are provided
     if ((is.list(x) && !is.data.frame(x)) || !scatter.labels.as.hovertext)

@@ -74,7 +74,7 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1,
   marker.border.colors = colors, marker.border.opacity = NULL,
   marker.size = 6, swap.x.and.y = FALSE, small.mult.index = NULL,
   sz.min = NULL, sz.max = NULL, sz.scale = NULL, col.min = NULL,
-  col.max = NULL)
+  col.max = NULL, ...)
 }
 \arguments{
 \item{x}{A numeric vector for the x-axis coordinates (which may be named); or a matrix or datarame; or a list of matrices where each matrix share the same row and column names.}

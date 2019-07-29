@@ -10,8 +10,9 @@ LabeledScatter(x = NULL, y = NULL, scatter.x.column = 1,
   scatter.sizes.name = NULL, scatter.sizes.column = 3,
   scatter.colors = NULL, scatter.colors.name = NULL,
   scatter.colors.column = 4, scatter.colors.as.categorical = TRUE,
-  trend.lines = FALSE, logos = NULL, logo.size = 0.5,
-  colors = ChartColors(12), opacity = NULL, legend.show = TRUE,
+  label.auto.placement = TRUE, trend.lines = FALSE, logos = NULL,
+  logo.size = 0.5, colors = ChartColors(12), opacity = NULL,
+  legend.show = TRUE, legend.bubbles.show = TRUE,
   global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
   maxColorValue = 255), title = "",
   title.font.family = global.font.family,
@@ -76,6 +77,9 @@ LabeledScatter(x = NULL, y = NULL, scatter.x.column = 1,
 
 \item{scatter.colors.as.categorical}{Boolean; Whether to treat colors as a categorical groups, or a numeric scale.}
 
+\item{label.auto.placement}{Logical; whether the scatter plot labels are positioned automatically
+to reduce overlap.}
+
 \item{trend.lines}{Boolean indicating whether to plot trend lines for multiple tables.}
 
 \item{logos}{Optional list of images to be used to label scatterplot instead of the row names.
@@ -91,6 +95,8 @@ This should be input as a comma-seperated list of URLs.}
 or a string ("Show" or "Hide"). If it is \code{TRUE} or \code{NA} (the default), a legend will be
 shown only if there is more than one data series. To force a legend to be shown even with 1
 data series, use "Show" instead.}
+
+\item{legend.bubbles.show}{Logical; show legend for bubble sizes.}
 
 \item{global.font.family}{Character; font family for all occurrences of any
 font attribute for the chart unless specified individually.}
