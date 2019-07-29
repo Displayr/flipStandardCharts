@@ -367,7 +367,10 @@ LabeledScatter <- function(x = NULL,
         tooltips.text <- sprintf("%s\n%s: %s", tooltips.text, scatter.colors.name,
         formatByD3(scatter.colors[not.na], ""))
     
-    p <- rhtmlLabeledScatter::LabeledScatter(X = as.vector(x[not.na]),
+    if (!inherits(x, "Date") && !inherits(x, "POSIXct") && !inherits(x, "POSIXt"))
+        x <- as.vector(x)
+    
+    p <- rhtmlLabeledScatter::LabeledScatter(X = x[not.na], #as.vector(x[not.na]),
                        Y = y[not.na],
                        Z = if (is.null(scatter.sizes)) NULL else abs(scatter.sizes[not.na]),
                        group = groups[not.na],
