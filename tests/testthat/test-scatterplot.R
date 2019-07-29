@@ -50,3 +50,8 @@ for (func in c("Scatter", "LabeledScatter"))
     }
 }
 
+test_that("Labeled Scatter arguments",
+{
+    expect_error(LabeledScatter(dat, scatter.y.column = 4, scatter.x.column = 6, y.tick.prefix = "$",
+        label.auto.placement = TRUE, legend.bubbles.show = FALSE), NA)
+})

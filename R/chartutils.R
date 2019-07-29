@@ -1124,6 +1124,8 @@ formatByD3 <- function(x, format, prefix = "", suffix = "", percent = FALSE, dec
         else
             x.str <- formatC(x, format = tmp.fmt, digits = decimalsFromD3(format, decimals), big.mark = big.mark)
     }
+    if (inherits(x, "Date") || inherits(x, "POSIXct") || inherits(x, "POSIXt"))
+        x.str <- format(x, format)
     x.str <- paste0(prefix, x.str, suffix)
     return(x.str)
 }
