@@ -350,11 +350,33 @@ LabeledScatter <- function(x = NULL,
     if (sum(nchar(footer)) > 0 && footer != " ")
         footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
 
+    # Check for date variables and parse if needed)
+    x.is.date <- inherits(x, "Date") || inherits(x, "POSIXct")
+    if (!x.is.date && !is.numeric(x))
+    {
+        x.tmp <- suppressWarnings(AsDateTime(as.character(x), on.parse.failure = "silent"))
+        if (!any(is.na(x.tmp)))
+        {
+            x <- x.tmp
+            x.is.date <- TRUE
+        }
+    }
+    y.is.date <- inherits(y, "Date") || inherits(y, "POSIXct")
+    if (!y.is.date && !is.numeric(y))
+    {
+        y.tmp <- suppressWarnings(AsDateTime(as.character(y), on.parse.failure = "silent"))
+        if (!any(is.na(y.tmp)))
+        {
+            y <- y.tmp
+            y.is.date <- TRUE
+        }
+    }
+
     # Convert d3 formatting
     # Dates do not show if no format string is provided - we use plotly defaults
-    if (nchar(x.tick.format) == 0 && (inherits(x, "Date") || inherits(x, "POSIXct")))
+    if (nchar(x.tick.format) == 0 && x.is.date)
         x.tick.format <- "%b %d %Y"
-    if (nchar(y.tick.format) == 0 && (inherits(y, "Date") || inherits(y, "POSIXct")))
+    if (nchar(y.tick.format) == 0 && y.is.date) 
         y.tick.format <- "%b %d %Y"
 
     tooltips.text <- sprintf("%s (%s, %s)", scatter.labels[not.na],
@@ -367,8 +389,10 @@ LabeledScatter <- function(x = NULL,
         tooltips.text <- sprintf("%s\n%s: %s", tooltips.text, scatter.colors.name,
         formatByD3(scatter.colors[not.na], ""))
     
-    if (!inherits(x, "Date") && !inherits(x, "POSIXct") && !inherits(x, "POSIXt"))
+    if (!x.is.date)
         x <- as.vector(x)
+    if (!y.is.date)
+        y <- as.vector(y)
     
     p <- rhtmlLabeledScatter::LabeledScatter(X = x[not.na], #as.vector(x[not.na]),
                        Y = y[not.na],
