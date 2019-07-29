@@ -177,6 +177,7 @@ Pyramid <- function(x,
                   y.tick.format, y.tick.prefix, y.tick.suffix, y.tick.show,
                   y.zero, y.zero.line.width, y.zero.line.color,
                   y.hovertext.format)
+    yaxis$nticks = NROW(chart.matrix)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance,
