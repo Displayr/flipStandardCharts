@@ -230,7 +230,10 @@ LabeledScatter <- function(x = NULL,
         warning("Chart contains overlapping points in the same position.")
     if (is.null(marker.size) || is.na(marker.size))
         marker.size <- 6
-    not.na <- is.finite(x) & is.finite(y)
+    
+    x.not.na <- if (is.numeric(x)) is.finite(x) else !is.na(x)
+    y.not.na <- if (is.numeric(y)) is.finite(y) else !is.na(y)
+    not.na <- x.not.na & y.not.na
     if (sum(not.na) != n)
         warning("Data points with missing values have been omitted.")
 
@@ -350,34 +353,14 @@ LabeledScatter <- function(x = NULL,
     if (sum(nchar(footer)) > 0 && footer != " ")
         footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
 
-    # Check for date variables and parse if needed)
-    x.is.date <- inherits(x, "Date") || inherits(x, "POSIXct")
-    if (!x.is.date && !is.numeric(x))
-    {
-        x.tmp <- suppressWarnings(AsDateTime(as.character(x), on.parse.failure = "silent"))
-        if (!any(is.na(x.tmp)))
-        {
-            x <- x.tmp
-            x.is.date <- TRUE
-        }
-    }
-    y.is.date <- inherits(y, "Date") || inherits(y, "POSIXct")
-    if (!y.is.date && !is.numeric(y))
-    {
-        y.tmp <- suppressWarnings(AsDateTime(as.character(y), on.parse.failure = "silent"))
-        if (!any(is.na(y.tmp)))
-        {
-            y <- y.tmp
-            y.is.date <- TRUE
-        }
-    }
-
-    # Convert d3 formatting
-    # Dates do not show if no format string is provided - we use plotly defaults
-    if (nchar(x.tick.format) == 0 && x.is.date)
-        x.tick.format <- "%b %d %Y"
-    if (nchar(y.tick.format) == 0 && y.is.date) 
-        y.tick.format <- "%b %d %Y"
+    # Convert axis to the appropriate type based on axis values and tick format
+    # Give warning where possible
+    x.axis.type <- getAxisType(x[not.na], "")
+    x.tick.format <- checkD3Format(x.tick.format, x.axis.type, "X axis", convert = TRUE)
+    x <- convertAxis(x, x.axis.type)
+    y.axis.type <- getAxisType(y[not.na], "")
+    y <- convertAxis(y, y.axis.type)
+    y.tick.format <- checkD3Format(y.tick.format, y.axis.type, "Y axis", convert = TRUE)
 
     tooltips.text <- sprintf("%s (%s, %s)", scatter.labels[not.na],
         formatByD3(x[not.na], x.tick.format, x.tick.prefix, x.tick.suffix), 
@@ -389,14 +372,10 @@ LabeledScatter <- function(x = NULL,
         tooltips.text <- sprintf("%s\n%s: %s", tooltips.text, scatter.colors.name,
         formatByD3(scatter.colors[not.na], ""))
     
-    if (!x.is.date)
-        x <- as.vector(x)
-    if (!y.is.date)
-        y <- as.vector(y)
-    
-    p <- rhtmlLabeledScatter::LabeledScatter(X = x[not.na], #as.vector(x[not.na]),
+    p <- rhtmlLabeledScatter::LabeledScatter(X = x[not.na], 
                        Y = y[not.na],
                        Z = if (is.null(scatter.sizes)) NULL else abs(scatter.sizes[not.na]),
+                       x.levels = levels(x),
                        group = groups[not.na],
                        colors = colors,
                        color.transparency = opacity,

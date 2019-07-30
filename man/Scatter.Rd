@@ -73,8 +73,9 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1,
   line.thickness = 0, line.colors = colors, marker.border.width = 1,
   marker.border.colors = colors, marker.border.opacity = NULL,
   marker.size = 6, swap.x.and.y = FALSE, small.mult.index = NULL,
+  legend.bubbles.show = TRUE, label.auto.placement = TRUE,
   sz.min = NULL, sz.max = NULL, sz.scale = NULL, col.min = NULL,
-  col.max = NULL, ...)
+  col.max = NULL)
 }
 \arguments{
 \item{x}{A numeric vector for the x-axis coordinates (which may be named); or a matrix or datarame; or a list of matrices where each matrix share the same row and column names.}
@@ -418,6 +419,11 @@ if \code{scatter.colors.as.categorical}.}
 \item{swap.x.and.y}{Swap the x and y axis around on the chart.}
 
 \item{small.mult.index}{Used by Small Multiples to add prefixes to warnings.}
+
+\item{legend.bubbles.show}{Logical; show legend for bubble sizes.}
+
+\item{label.auto.placement}{Logical; whether the scatter plot labels are positioned automatically
+to reduce overlap.}
 
 \item{sz.min}{Parameter to control scaling of scatter.sizes, used by SmallMultiples}
 
