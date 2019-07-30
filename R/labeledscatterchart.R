@@ -27,6 +27,9 @@
 #' @param logo.size Numeric controlling the size of the logos.
 #' @param marker.size Size in pixels of marker.
 #' @param swap.x.and.y Swap the x and y axis around on the chart.
+#' @param label.auto.placement Logical; whether the scatter plot labels are positioned automatically
+#'  to reduce overlap.
+#' @param legend.bubbles.show Logical; show legend for bubble sizes.
 #' @param ... Other arguments which are ignored.
 #' @importFrom grDevices rgb
 #' @importFrom flipTransformations AsNumeric
@@ -47,12 +50,14 @@ LabeledScatter <- function(x = NULL,
                                 scatter.colors.name = NULL,
                                 scatter.colors.column = 4,
                                 scatter.colors.as.categorical = TRUE,
+                                label.auto.placement = TRUE,
                                 trend.lines = FALSE,
                                 logos = NULL,
                                 logo.size  = 0.5,
                                 colors = ChartColors(12),
                                 opacity = NULL,
                                 legend.show = TRUE,
+                                legend.bubbles.show = TRUE,
                                 global.font.family = "Arial",
                                 global.font.color = rgb(44, 44, 44, maxColorValue = 255),
                                 title = "",
@@ -129,14 +134,6 @@ LabeledScatter <- function(x = NULL,
         ErrorIfNotEnoughData(cbind(x, y))
     else
         ErrorIfNotEnoughData(x, require.tidy = FALSE)
-
-    # Adjust some of the the default default tick formats
-    tmp.stat <- attr(x, "statistic")
-    if (!is.null(tmp.stat) && grepl("%$", tmp.stat))
-    {
-        if (nchar(x.tick.format) == 0 || grepl("[0-9]$", x.tick.format))
-            x.tick.format = paste0(x.tick.format, "%")
-    }
 
     logo.urls <- NULL
     if (!is.null(logos) && any(nchar(logos) != 0))
@@ -233,17 +230,14 @@ LabeledScatter <- function(x = NULL,
         warning("Chart contains overlapping points in the same position.")
     if (is.null(marker.size) || is.na(marker.size))
         marker.size <- 6
-
-    # Unlike plotly scatterplots, axis can only deal with numeric data
-    x <- AsNumeric(x, binary = FALSE)
-    y <- AsNumeric(y, binary = FALSE)
-    not.na <- is.finite(x) & is.finite(y)
+    
+    x.not.na <- if (is.numeric(x)) is.finite(x) else !is.na(x)
+    y.not.na <- if (is.numeric(y)) is.finite(y) else !is.na(y)
+    not.na <- x.not.na & y.not.na
     if (sum(not.na) != n)
         warning("Data points with missing values have been omitted.")
 
     n <- length(x)
-    x <- as.numeric(x)
-    y <- as.numeric(y)
     if (!is.null(scatter.sizes))
     {
         if (length(scatter.sizes) != n)
@@ -359,23 +353,29 @@ LabeledScatter <- function(x = NULL,
     if (sum(nchar(footer)) > 0 && footer != " ")
         footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
 
-    # Convert d3 formatting
-    x.decimals <- decimalsFromD3(x.tick.format, decimalsToDisplay(x))
-    y.decimals <- decimalsFromD3(y.tick.format, decimalsToDisplay(y))
-    if (percentFromD3(x.tick.format))
-    {
-        x <- x * 100
-        x.tick.suffix <- paste0("%", x.tick.suffix)
-    }
-    if (percentFromD3(y.tick.format))
-    {
-        y <- y * 100
-        y.tick.suffix <- paste0("%", y.tick.suffix)
-    }
+    # Convert axis to the appropriate type based on axis values and tick format
+    # Give warning where possible
+    x.axis.type <- getAxisType(x[not.na], "")
+    x.tick.format <- checkD3Format(x.tick.format, x.axis.type, "X axis", convert = TRUE)
+    x <- convertAxis(x, x.axis.type)
+    y.axis.type <- getAxisType(y[not.na], "")
+    y <- convertAxis(y, y.axis.type)
+    y.tick.format <- checkD3Format(y.tick.format, y.axis.type, "Y axis", convert = TRUE)
 
-    p <- rhtmlLabeledScatter::LabeledScatter(X = x[not.na],
+    tooltips.text <- sprintf("%s (%s, %s)", scatter.labels[not.na],
+        formatByD3(x[not.na], x.tick.format, x.tick.prefix, x.tick.suffix), 
+        formatByD3(y[not.na], y.tick.format, y.tick.prefix, y.tick.suffix))
+    if (!is.null(scatter.sizes.name))
+        tooltips.text <- sprintf("%s\n%s: %s", tooltips.text, scatter.sizes.name, 
+        formatByD3(scatter.sizes[not.na], ""))
+    if (!is.null(scatter.colors.name))
+        tooltips.text <- sprintf("%s\n%s: %s", tooltips.text, scatter.colors.name,
+        formatByD3(scatter.colors[not.na], ""))
+    
+    p <- rhtmlLabeledScatter::LabeledScatter(X = x[not.na], 
                        Y = y[not.na],
                        Z = if (is.null(scatter.sizes)) NULL else abs(scatter.sizes[not.na]),
+                       x.levels = levels(x),
                        group = groups[not.na],
                        colors = colors,
                        color.transparency = opacity,
@@ -386,8 +386,9 @@ LabeledScatter <- function(x = NULL,
                        origin = FALSE,
                        origin.align = FALSE,
                        labels.show = TRUE,
+                       label.placement.numSweeps = if (label.auto.placement) 500 else 0,
                        legend.show = legend.show && length(g.list) > 1,
-                       legend.bubbles.show = !is.null(scatter.sizes),
+                       legend.bubbles.show = !is.null(scatter.sizes) && legend.bubbles.show,
                        legend.font.color = legend.font.color,
                        legend.font.family = legend.font.family,
                        legend.font.size = legend.font.size,
@@ -417,8 +418,8 @@ LabeledScatter <- function(x = NULL,
                        x.title.font.color = x.title.font.color,
                        x.title.font.size = x.title.font.size,
                        z.title = scatter.sizes.name,
-                       x.decimals = x.decimals,
-                       y.decimals = y.decimals,
+                       x.format = x.tick.format,
+                       y.format = y.tick.format,
                        x.prefix = x.tick.prefix,
                        y.prefix = y.tick.prefix,
                        x.suffix = x.tick.suffix,
@@ -440,6 +441,7 @@ LabeledScatter <- function(x = NULL,
                        x.axis.show = x.tick.show,
                        tooltip.font.family = hovertext.font.family,
                        tooltip.font.size = hovertext.font.size,
+                       tooltip.text = tooltips.text,
                        plot.border.show = FALSE,
                        title = title,
                        trend.lines.show = trend.lines,

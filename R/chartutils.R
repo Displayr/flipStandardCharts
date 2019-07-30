@@ -400,6 +400,24 @@ getAxisType <- function(labels, format)
         return("category")
 }
 
+# This is only used in labeledscatter
+convertAxis <- function(values, axis.type)
+{
+    if (axis.type == "date")
+        return(AsDateTime(values, on.parse.failure = "silent"))
+    if (axis.type == "category")
+    {
+        # Do not use flipTransformations::Factor because we don't want to aggregate by QDate
+        if (inherits(values, "factor"))
+            return(values)
+        return(factor(values, levels = unique(as.character(values))))
+    }
+    if (axis.type == "numeric")
+        return(as.numeric(values))
+    # not sure what type this is?
+        return(as.vector(values))
+}
+
 d3FormatType <- function(format)
 {
     if (is.null(format) || is.na(format) || format == "")
@@ -1124,6 +1142,8 @@ formatByD3 <- function(x, format, prefix = "", suffix = "", percent = FALSE, dec
         else
             x.str <- formatC(x, format = tmp.fmt, digits = decimalsFromD3(format, decimals), big.mark = big.mark)
     }
+    if (inherits(x, "Date") || inherits(x, "POSIXct") || inherits(x, "POSIXt"))
+        x.str <- format(x, format)
     x.str <- paste0(prefix, x.str, suffix)
     return(x.str)
 }
@@ -1143,8 +1163,13 @@ commaFromD3 <- function(format)
 
 # Gives a warning if the axis.type is incompatible
 # Will also specify a numeric format if none is supplied
-checkD3Format <- function(format, axis.type, warning.type = "Axis label")
+# convert is only used by LabeledScatter
+checkD3Format <- function(format, axis.type, warning.type = "Axis label", convert = FALSE)
 {
+    # This is to avoid LabeledScatter's problem with date formatting
+    if (convert && axis.type == "date" && sum(nchar(format), na.rm = TRUE) == 0)
+        return("%b %d %Y")
+
     if (sum(nchar(format), na.rm = TRUE) == 0)
         return("")
     if (substr(format, nchar(format), nchar(format)) %in% c("", 0:9)) # automatic formatting
@@ -1157,6 +1182,10 @@ checkD3Format <- function(format, axis.type, warning.type = "Axis label")
     if (d3FormatType(format) != axis.type)
         warning(warning.type, " format of type '", d3FormatType(format),
                 "' incompatible with axis type '", axis.type, "'")
+    if (convert && axis.type == "date" && d3FormatType(format) != axis.type)
+        return("%b %d %Y")
+    if (convert && format == "Category")
+        return ("")
     return(format)
 }
 
