@@ -212,10 +212,22 @@ LabeledScatter <- function(x = NULL,
     if (is.null(x) && is.null(y))
         stop("At least one of x or y must be supplied.")
     if (is.null(x))
+    {
         x <- rep(0, length(y))
+        if (sum(nchar(x.bounds.minimum)) == 0)
+            x.bounds.minimum = -0.25
+        if (sum(nchar(x.bounds.maximum)) == 0)
+            x.bounds.maximum = 0.25
+    }
     n <- length(x)
     if (is.null(y))
+    {
         y <- rep(0, n)
+        if (sum(nchar(y.bounds.minimum)) == 0)
+            y.bounds.minimum = -0.25
+        if (sum(nchar(y.bounds.maximum)) == 0)
+            y.bounds.maximum = 0.25
+    }
     if (swap.x.and.y)
     {
         tmp <- x
