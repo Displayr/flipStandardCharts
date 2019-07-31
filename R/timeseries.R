@@ -207,7 +207,13 @@ tickFormat  <- function(format.str, prefix, suffix, default.medium.values = TRUE
     # Set decimal places if none supplied
     # This avoids getting scientific notation with 8 decimal places
     if (!grepl("[0-9]", format.str))
+    {
+        has.comma <- grepl(",", format.str, fixed = TRUE)
+        format.str <- gsub(",", "", format.str)
         format.str <- paste0(".", if (grepl("%$", format.str)) 0 else 2, format.str)
+        if (has.comma)
+            format.str <- paste0(",", format.str)
+    }
 
     return(sprintf("function(value) { return ('%s' + window.d3format.getOrCreate('%s')(value) + '%s'); }",
             prefix, format.str, suffix))
