@@ -351,14 +351,15 @@ LabeledScatter <- function(x = NULL,
     }
     if (!is.null(logo.urls))
         lab.tidy <- logo.urls
+    .isEmptyName <- function(x) { sum(nchar(trimws(x)), na.rm = TRUE) == 0 }
     if (length(footer) == 0 || nchar(footer) == 0)
     {
         footer <- ""
-        if (!is.null(scatter.labels.name))
+        if (!.isEmptyName(scatter.labels.name))
             footer <- sprintf("%sPoints labeled by '%s'; ", footer, scatter.labels.name)
-        if (!is.null(scatter.colors.name) && !scatter.mult.yvals)
+        if (!.isEmptyName(scatter.colors.name) && !scatter.mult.yvals)
             footer <- sprintf("%sPoints colored according to '%s'; ", footer, scatter.colors.name)
-        if (!is.null(scatter.sizes.name) && !scatter.mult.yvals)
+        if (!.isEmptyName(scatter.sizes.name) && !scatter.mult.yvals)
             footer <- sprintf("%sArea of points are proportional to absolute value of '%s'; ",
                               footer, scatter.sizes.name)
     }
@@ -377,10 +378,10 @@ LabeledScatter <- function(x = NULL,
     tooltips.text <- sprintf("%s (%s, %s)", scatter.labels[not.na],
         formatByD3(x[not.na], x.tick.format, x.tick.prefix, x.tick.suffix), 
         formatByD3(y[not.na], y.tick.format, y.tick.prefix, y.tick.suffix))
-    if (!is.null(scatter.sizes.name))
+    if (!.isEmptyName(scatter.sizes.name))
         tooltips.text <- sprintf("%s\n%s: %s", tooltips.text, scatter.sizes.name, 
         formatByD3(scatter.sizes[not.na], ""))
-    if (!is.null(scatter.colors.name))
+    if (!.isEmptyName(scatter.colors.name))
         tooltips.text <- sprintf("%s\n%s: %s", tooltips.text, scatter.colors.name,
         formatByD3(scatter.colors[not.na], ""))
     

@@ -465,12 +465,12 @@ Scatter <- function(x = NULL,
     # hovertext
     source.text <- paste0(scatter.labels, " (", formatByD3(x, x.hovertext.format, x.tick.prefix, x.tick.suffix), ", ",
                           formatByD3(y, y.hovertext.format, y.tick.prefix, y.tick.suffix), ")")
-    if (!is.null(scatter.colors.name) && !scatter.mult.yvals)
+    if (!.isEmptyName(scatter.colors.name) && !scatter.mult.yvals)
     {
         colors.str <- if (is.numeric(scatter.colors)) FormatAsReal(scatter.colors, decimals = decimalsFromD3(x.hovertext.format)) else as.character(scatter.colors)
         source.text <- paste0(source.text, "<br>", scatter.colors.name, ": ", colors.str)
     }
-    if (!is.null(scatter.sizes.name) && !scatter.mult.yvals)
+    if (!.isEmptyName(scatter.sizes.name) && !scatter.mult.yvals)
     {
         sizes.str <- if (is.numeric(scatter.sizes)) FormatAsReal(scatter.sizes, decimals = decimalsFromD3(x.hovertext.format)) else as.character(scatter.sizes)
         source.text <- paste0(source.text, "<br>", scatter.sizes.name, ": ", sizes.str)
@@ -493,16 +493,17 @@ Scatter <- function(x = NULL,
                         legend.position.x, legend.position.y,
                         orientation = legend.orientation)
     legend$itemsizing <- if (!is.null(scatter.sizes)) "constant" else "trace"
+    .isEmptyName <- function(x) { sum(nchar(trimws(x)), na.rm = TRUE) == 0 }
     if (length(footer) == 0 || nchar(footer) == 0)
     {
         footer <- ""
-        if (!is.null(scatter.labels.name))
+        if (!.isEmptyName(scatter.labels.name))
             footer <- sprintf("%sPoints labeled by '%s'; ",
                                footer, scatter.labels.name[1])
-        if (!is.null(scatter.colors.name) && !scatter.mult.yvals)
+        if (!.isEmptyName(scatter.colors.name) && !scatter.mult.yvals)
             footer <- sprintf("%sPoints colored according to '%s'; ",
                               footer, scatter.colors.name[1])
-        if (!is.null(scatter.sizes.name) && !scatter.mult.yvals)
+        if (!.isEmptyName(scatter.sizes.name) && !scatter.mult.yvals)
             footer <- sprintf("%s%s of points are proportional to absolute value of '%s'; ",
                               footer,
                               if (scatter.sizes.as.diameter) "Diameter" else "Area",
