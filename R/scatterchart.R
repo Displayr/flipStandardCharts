@@ -463,6 +463,7 @@ Scatter <- function(x = NULL,
 
 
     # hovertext
+    .isEmptyName <- function(x) { sum(nchar(trimws(x)), na.rm = TRUE) == 0 }
     source.text <- paste0(scatter.labels, " (", formatByD3(x, x.hovertext.format, x.tick.prefix, x.tick.suffix), ", ",
                           formatByD3(y, y.hovertext.format, y.tick.prefix, y.tick.suffix), ")")
     if (!.isEmptyName(scatter.colors.name) && !scatter.mult.yvals)
@@ -493,7 +494,6 @@ Scatter <- function(x = NULL,
                         legend.position.x, legend.position.y,
                         orientation = legend.orientation)
     legend$itemsizing <- if (!is.null(scatter.sizes)) "constant" else "trace"
-    .isEmptyName <- function(x) { sum(nchar(trimws(x)), na.rm = TRUE) == 0 }
     if (length(footer) == 0 || nchar(footer) == 0)
     {
         footer <- ""
