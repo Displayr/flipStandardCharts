@@ -503,8 +503,6 @@ addDensities <- function(p,
         }
     } else if (density.type == "Histogram")
     {
-        if (is.null(bins$size))
-            bins <- NULL 
         p <- add_trace(p,
                       xbins = if (!vertical) bins else NULL,
                       ybins = if (vertical) bins else NULL,
