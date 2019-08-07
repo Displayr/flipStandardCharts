@@ -380,7 +380,9 @@ getAxisType <- function(labels, format)
 
     if (d3.type == "date")
     {
-        ymd <- suppressWarnings(AsDateTime(labels, on.parse.failure = "silent"))
+        if (inherits(labels, "Date") || inherits(labels, "POSIXt") || inherits(labels, "POSIXct"))
+            return("date")
+        ymd <- suppressWarnings(AsDateTime(as.character(labels), on.parse.failure = "silent"))
         if (!any(is.na(ymd)))
             return("date")
     }
@@ -1129,6 +1131,8 @@ percentFromD3 <- function(format)
 formatByD3 <- function(x, format, prefix = "", suffix = "", percent = FALSE, decimals = 2)
 {
     x.str <- as.character(x)
+    if (format == "Category")
+        return(x.str)
     if (is.numeric(x))
     {
         use.comma <- commaFromD3(format) || format == ""
@@ -1179,12 +1183,16 @@ checkD3Format <- function(format, axis.type, warning.type = "Axis label", conver
         else
             return(format)
     }
+    mismatch <- FALSE
     if (d3FormatType(format) != axis.type)
+    {
         warning(warning.type, " format of type '", d3FormatType(format),
                 "' incompatible with axis type '", axis.type, "'")
+        mismatch <- TRUE
+    }
     if (convert && axis.type == "date" && d3FormatType(format) != axis.type)
         return("%b %d %Y")
-    if (convert && format == "Category")
+    if (mismatch)
         return ("")
     return(format)
 }

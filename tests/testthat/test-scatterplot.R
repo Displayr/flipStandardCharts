@@ -60,15 +60,16 @@ test_that("Labeled Scatter axis type",
 {
     # X axis is being reordered categorically
     expect_error(LabeledScatter(c("dog", "bird", "apple"), 1:3), NA)
+    expect_error(LabeledScatter(dat, scatter.x.column = 4, scatter.y.column = 1,
+        x.tick.format = "Category", y.tick.format = "Category"), NA)
+    expect_error(LabeledScatter(dat, scatter.x.column = 6, scatter.y.column = 1,
+        x.tick.format = "Category", y.tick.format = "Category"), NA)
 
-    # currently we give a warning but ideally we want to allow
-    # date and numeric axis to be convertable to a string
-    expect_warning(LabeledScatter(dat, scatter.x.column = 4, scatter.y.column = 1,
-        x.tick.format = "Category", y.tick.format = "Category"))
-    expect_warning(LabeledScatter(dat, scatter.x.column = 6, scatter.y.column = 1,
-        x.tick.format = "Category", y.tick.format = "Category"))
+    expect_warning(LabeledScatter(c("dog", "bird", "apple"), 1:3, x.tick.format = ".2f"),
+        "incompatible with axis type")
+    expect_warning(LabeledScatter(1:4, Sys.Date() + 1:4, y.tick.format = ".2f"),
+        "incompatible with axis type")
 
-    # This is correct
     expect_error(LabeledScatter(dat, scatter.x.column = 6, scatter.y.column = 1,
         x.tick.format = "%B %d"), NA)
 })
