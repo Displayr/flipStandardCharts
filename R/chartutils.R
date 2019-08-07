@@ -275,7 +275,7 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE,
                 return(list(x = NULL, y = NULL))
             }
             tmp.gaps <- unique(diff(tmp.dat$x[indU]))
-            if (any(tmp.gaps > min(tmp.gaps) * 1.1)) # allow some variation for dates
+            if (any(tmp.gaps > min(tmp.gaps) * 1.2)) # allow some variation for dates
                 warning("Moving averages do not account for the different intervals between values.")
             if (grepl("center|centre", fit.type, perl = TRUE, ignore.case = TRUE))
                 tmp.avg <- rev(filter(tmp.dat$y[rev(indU)], rep(1/fit.window.size, fit.window.size), sides = 2))
