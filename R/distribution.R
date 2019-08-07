@@ -354,8 +354,8 @@ Distribution <-   function(x,
     if (density.type == "Histogram")
         rng <- rng  + c(-1, 1) * bin.offset
     bin.size = (rng[2] - rng[1])/maximum.bins
-    bins <- list(start = rng[1], end = rng[2], size = bin.size) 
-                 #size = if (bin.size < 0.5) bin.size else NULL) # avoiding bug for small ranges
+    bins <- list(start = rng[1], end = rng[2],
+                 size = if (bin.size < 0.5) bin.size else NULL) # avoiding bug for small ranges
     # Creating the violin plot
     for (v in 1:n.variables)
     {
@@ -503,6 +503,8 @@ addDensities <- function(p,
         }
     } else if (density.type == "Histogram")
     {
+        if (is.null(bins$size))
+            bins <- NULL 
         p <- add_trace(p,
                       xbins = if (!vertical) bins else NULL,
                       ybins = if (vertical) bins else NULL,
