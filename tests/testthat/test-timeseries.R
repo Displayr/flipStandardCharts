@@ -90,5 +90,11 @@ test_that("Time series inputs",
 
 })
 
+test_that("Tick formats are checked",
+{
+    expect_warning(TimeSeries(google.trends, y.tick.format = "%B %d"))
+})
+
+
 
 

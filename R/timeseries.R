@@ -148,12 +148,22 @@ TimeSeries <- function(x = NULL,
     y.bounds.minimum <- charToNumeric(y.bounds.minimum)
     if (is.null(y.bounds.minimum))
         y.bounds.minimum <- min(0, x)
+    y.tick.format <- checkD3Format(y.tick.format, "numeric", warning.type = "Y axis tick")
     if (nchar(y.hovertext.format) == 0)
         y.hovertext.format <- y.tick.format
+    else
+        y.hovertext.format <- checkD3Format(y.hovertext.format, "numeric", warning.type = "Hover text")
     medium.values <- all(as.numeric(x) > 1 && as.numeric(x) < 1e5)
+    y.hover.prefix <- ""
+    y.hover.suffix <- ""
+    if (gsub("[,.\\d]", "", y.tick.format, perl = TRUE) == gsub("[,.\\d]", "", y.hovertext.format, perl = TRUE))
+    {
+        y.hover.prefix <- y.tick.prefix
+        y.hover.suffix <- y.tick.suffix
+    }
     dg <- dyAxis(dg, "y",
         valueRange = c(charToNumeric(y.bounds.minimum), charToNumeric(y.bounds.maximum)),
-        valueFormatter = tickFormat(y.hovertext.format, y.tick.prefix, y.tick.suffix, medium.values),
+        valueFormatter = tickFormat(y.hovertext.format, y.hover.prefix, y.hover.suffix, medium.values),
         axisLabelFormatter =  tickFormat(y.tick.format, y.tick.prefix, y.tick.suffix, medium.values)
     )
 
