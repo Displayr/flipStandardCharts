@@ -16,6 +16,8 @@
 #' format (e.g. "black") or a hex code.
 #' @param hovertext.font.family Character; legend font family.
 #' @param hovertext.font.size Integer; Legend font size.
+#' @param y.hovertext.prefix String to prepend to hovertext showing y-values.
+#' @param y.hovertext.suffix String to append to hovertext showing y-values.
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom dygraphs dygraph dySeries dyCSS dyRangeSelector %>% dyOptions dyLegend dyAxis
 #' @importFrom flipTime AsDate AsDateTime
@@ -60,7 +62,9 @@ TimeSeries <- function(x = NULL,
                     hovertext.font.size = 11,
                     hovertext.font.color = global.font.color,
                     hovertext.font.family = global.font.family,
-                    y.hovertext.format = y.tick.format)
+                    y.hovertext.format = y.tick.format,
+                    y.hovertext.prefix = y.tick.prefix,
+                    y.hovertext.suffix = y.tick.suffix)
 {
 
     if (is.null(dim(x)) || length(dim(x)) == 1L)
@@ -154,16 +158,9 @@ TimeSeries <- function(x = NULL,
     else
         y.hovertext.format <- checkD3Format(y.hovertext.format, "numeric", warning.type = "Hover text")
     medium.values <- all(as.numeric(x) > 1 && as.numeric(x) < 1e5)
-    y.hover.prefix <- ""
-    y.hover.suffix <- ""
-    if (gsub("[,.\\d]", "", y.tick.format, perl = TRUE) == gsub("[,.\\d]", "", y.hovertext.format, perl = TRUE))
-    {
-        y.hover.prefix <- y.tick.prefix
-        y.hover.suffix <- y.tick.suffix
-    }
     dg <- dyAxis(dg, "y",
         valueRange = c(charToNumeric(y.bounds.minimum), charToNumeric(y.bounds.maximum)),
-        valueFormatter = tickFormat(y.hovertext.format, y.hover.prefix, y.hover.suffix, medium.values),
+        valueFormatter = tickFormat(y.hovertext.format, y.hovertext.prefix, y.hovertext.suffix, medium.values),
         axisLabelFormatter =  tickFormat(y.tick.format, y.tick.prefix, y.tick.suffix, medium.values)
     )
 

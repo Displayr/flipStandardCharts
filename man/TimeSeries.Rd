@@ -24,7 +24,9 @@ TimeSeries(x = NULL, range.bars = FALSE, colors = NULL,
   y.bounds.minimum = NULL, y.bounds.maximum = NULL,
   hovertext.font.size = 11, hovertext.font.color = global.font.color,
   hovertext.font.family = global.font.family,
-  y.hovertext.format = y.tick.format)
+  y.hovertext.format = y.tick.format,
+  y.hovertext.prefix = y.tick.prefix,
+  y.hovertext.suffix = y.tick.suffix)
 }
 \arguments{
 \item{x}{Input data may be a matrix or a vector, wth dates as the rownames and data series along the columns.}
@@ -122,6 +124,10 @@ format (e.g. "black") or a hex code.}
 
 \item{y.hovertext.format}{A string representing a d3 formatting code
 See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
+
+\item{y.hovertext.prefix}{String to prepend to hovertext showing y-values.}
+
+\item{y.hovertext.suffix}{String to append to hovertext showing y-values.}
 }
 \description{
 Plots interactive time series. Either multiple series may be plotted, or a single series with high and low
