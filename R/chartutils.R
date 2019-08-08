@@ -1138,6 +1138,7 @@ formatByD3 <- function(x, format, prefix = "", suffix = "", percent = FALSE, dec
         use.comma <- commaFromD3(format) || format == ""
         big.mark <- if (use.comma) "," else ""
         tmp.fmt <- gsub("[^deEfgGs]", "", format)
+        tmp.fmt <- gsub("s", "g", tmp.fmt) # switch d3 SI-prefix format to scientific 
 
         if (percentFromD3(format) || percent)
             x.str <- paste0(formatC(x*100, format = "f", digits = decimalsFromD3(format, 0), big.mark = big.mark), "%")
