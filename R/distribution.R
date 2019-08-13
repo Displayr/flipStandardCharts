@@ -346,8 +346,13 @@ Distribution <-   function(x,
         density.color <- rep(density.color, n.variables)
     if (length(density.color) != n.variables)
         warning("The number of colors provided for shading the densities is not consistent with the number of variables.")
-    # working out the range of the data
+
+    # Histograms can be specified using 'maximum.bins' or 'size' (which overrides the former)
+    # 'maximum.bins' is not always respected so use 'size' instead when
+    # bin size is small or the number of bins is small
+    # but otherwise use 'maximum.bins' because it tends to find more rounded breakpoints
     rng <- range(unlist(x), na.rm = TRUE)
+    default.bins <- is.null(maximum.bins) || is.na(maximum.bins)
     if (is.null(maximum.bins) || is.na(maximum.bins))
         maximum.bins <- min(length(unique(unlist(x))), 50)
     bin.offset <- min(diff(sort(unique(unlist(x)))))/2
@@ -355,7 +360,8 @@ Distribution <-   function(x,
         rng <- rng  + c(-1, 1) * bin.offset
     bin.size = (rng[2] - rng[1])/maximum.bins
     bins <- list(start = rng[1], end = rng[2],
-                 size = if (bin.size < 0.5) bin.size else NULL) # avoiding bug for small ranges
+                 size = if (bin.size < 0.5 || !default.bins) bin.size else NULL)
+    
     # Creating the violin plot
     for (v in 1:n.variables)
     {
