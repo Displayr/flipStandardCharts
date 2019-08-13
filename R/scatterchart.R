@@ -19,6 +19,8 @@
 #' @param marker.border.opacity Opacity of border/line around markers as an alpha value (0 to 1).
 #' @param swap.x.and.y Swap the x and y axis around on the chart.
 #' @param small.mult.index Used by Small Multiples to add prefixes to warnings.
+#' @param y.tick.on.label Logical; Set to FALSE to move grid lines between categories.
+#' @param x.tick.on.label Logical; Set to FALSE to move grid lines between categories.
 #' @param sz.min Parameter to control scaling of scatter.sizes, used by SmallMultiples
 #' @param sz.max Parameter to control scaling of scatter.sizes, used by SmallMultiples
 #' @param sz.scale Parameter to control scaling of scatter.sizes. Marker size (in pixels) of 
@@ -130,6 +132,7 @@ Scatter <- function(x = NULL,
                          y.grid.width = 1 * grid.show,
                          y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                          y.tick.show = TRUE,
+                         y.tick.on.label = TRUE,
                          y.tick.suffix = "",
                          y.tick.prefix = "",
                          y.tick.format = "",
@@ -155,6 +158,7 @@ Scatter <- function(x = NULL,
                          x.grid.width = 1 * grid.show,
                          x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                          x.tick.show = TRUE,
+                         x.tick.on.label = TRUE,
                          x.tick.suffix = "",
                          x.tick.prefix = "",
                          x.tick.format = "",
@@ -553,6 +557,11 @@ Scatter <- function(x = NULL,
                   x.tick.distance, x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show,
                   x.zero, x.zero.line.width, x.zero.line.color,
                   x.hovertext.format, axisFormat$labels)
+    if (!y.tick.on.label)
+        yaxis$tickson <- "boundaries"
+    if (!x.tick.on.label)
+        xaxis$tickson <- "boundaries"
+
 
     if (xaxis$type == "date")
         x <- AsDateTime(as.character(x), on.parse.failure = "silent")

@@ -52,9 +52,9 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1,
   y.zero.line.width = 0, y.zero.line.color = rgb(225, 225, 225,
   maxColorValue = 255), y.data.reversed = FALSE, y.grid.width = 1 *
   grid.show, y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
-  y.tick.show = TRUE, y.tick.suffix = "", y.tick.prefix = "",
-  y.tick.format = "", y.hovertext.format = "", y.tick.angle = NULL,
-  y.tick.font.color = global.font.color,
+  y.tick.show = TRUE, y.tick.on.label = TRUE, y.tick.suffix = "",
+  y.tick.prefix = "", y.tick.format = "", y.hovertext.format = "",
+  y.tick.angle = NULL, y.tick.font.color = global.font.color,
   y.tick.font.family = global.font.family, y.tick.font.size = 10,
   x.title = "", x.title.font.color = global.font.color,
   x.title.font.family = global.font.family, x.title.font.size = 12,
@@ -64,9 +64,9 @@ Scatter(x = NULL, y = NULL, scatter.x.column = 1,
   x.zero.line.width = 0, x.zero.line.color = rgb(225, 225, 225,
   maxColorValue = 255), x.data.reversed = FALSE, x.grid.width = 1 *
   grid.show, x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
-  x.tick.show = TRUE, x.tick.suffix = "", x.tick.prefix = "",
-  x.tick.format = "", x.hovertext.format = "", x.tick.angle = NULL,
-  x.tick.font.color = global.font.color,
+  x.tick.show = TRUE, x.tick.on.label = TRUE, x.tick.suffix = "",
+  x.tick.prefix = "", x.tick.format = "", x.hovertext.format = "",
+  x.tick.angle = NULL, x.tick.font.color = global.font.color,
   x.tick.font.family = global.font.family, x.tick.font.size = 10,
   x.tick.label.wrap = TRUE, x.tick.label.wrap.nchar = 21,
   hovertext.font.family = global.font.family, hovertext.font.size = 11,
@@ -310,6 +310,8 @@ format (e.g. "black") or a hex code.}
 
 \item{y.tick.show}{Whether to display the y-axis tick labels}
 
+\item{y.tick.on.label}{Logical; Set to FALSE to move grid lines between categories.}
+
 \item{y.tick.suffix}{y-axis tick label suffix}
 
 \item{y.tick.prefix}{y-axis tick label prefix}
@@ -373,6 +375,8 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 format (e.g. "black") or a hex code.}
 
 \item{x.tick.show}{Whether to display the x-axis tick labels}
+
+\item{x.tick.on.label}{Logical; Set to FALSE to move grid lines between categories.}
 
 \item{x.tick.suffix}{x-axis tick label suffix}
 
