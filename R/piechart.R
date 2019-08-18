@@ -217,7 +217,7 @@ Pie <- function(x,
 
     donut <- rhtmlDonut::Donut(values = y.values,
                   labels = x.labels,
-                  values.color = pie.values.colors,
+                  values.color = rep(pie.values.colors, length = length(y.values)),
                   values.order = pie.values.order,
                   values.font.family = data.label.font.family,
                   values.font.size = data.label.font.size,

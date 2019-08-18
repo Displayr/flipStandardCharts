@@ -141,7 +141,7 @@ pieChart <- function(chart.matrix,
 
     rhtmlDonut::Donut(values = d.values,
                       labels = d.labels,
-                      values.color = pie.colors,
+                      values.color = rep(pie.colors, length = length(d.values)),
                       values.order = pie.values.order,
                       values.font.family = pie.values.font.family,
                       values.font.size = pie.values.font.size,
