@@ -131,9 +131,6 @@ SmallMultiples <- function(x,
     } else
         npanels <- NCOL(x)
 
-    if (npanels <= 1)
-        stop("Small Multiples can only be used for data containing multiple series.")
-
     # Data manipulation
     if (!is.null(x.order))
     {
@@ -146,10 +143,11 @@ SmallMultiples <- function(x,
             if (chart.type == "Scatter")
                 indexes <- indexes[x.order]
             else
-                x <- x[, x.order]
+                x <- x[, x.order, drop = FALSE]
             npanels <- length(x.order)
         }
     }
+    nrows <- min(npanels, nrows)
     if (npanels > 100)
         stop("Small multiples cannot show more than 100 panels (current dataset contains ", npanels, " series).\n")
     if (length(colors) < npanels && !chart.type %in% c("GeographicMap", "Pyramid", "Scatter", "BarMultiColor", "ColumnMultiColor"))
@@ -383,7 +381,7 @@ SmallMultiples <- function(x,
             plot.list[[i]]$x$layoutAttrs[[1]][[axis.name]] <- NULL
     } else if (chart.type == "BarMultiColor" || chart.type == "ColumnMultiColor")
     {
-        color.as.matrix <- NCOL(colors) == npanels
+        color.as.matrix <- NCOL(colors) == npanels && npanels > 1
         if (NCOL(colors) != npanels && NCOL(colors) > 1)
             warning("Only the first column of 'colors' was used. ",
                     "To apply a different for each panel, 'colors' should be a table with ",
@@ -404,7 +402,7 @@ SmallMultiples <- function(x,
                                                      ...)$htmlwidget}))
     } else if (chart.type == "Pyramid")
     {
-        color.as.matrix <- NCOL(colors) == npanels
+        color.as.matrix <- NCOL(colors) == npanels && npanels > 1
         if (NCOL(colors) != npanels && NCOL(colors) > 1)
             warning("Only the first column of 'colors' was used. ",
                     "To apply a different for each panel, 'colors' should be a table with ",
