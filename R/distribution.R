@@ -359,8 +359,18 @@ Distribution <-   function(x,
     if (density.type == "Histogram")
         rng <- rng  + c(-1, 1) * bin.offset
     bin.size = (rng[2] - rng[1])/maximum.bins
+    
+    # Override default bin sizes in certain cases which plotly does not handle well
+    if (length(unique(unlist(x))) < 10 && default.bins)
+    {
+        bin.size <- min(diff(sort(unique(unlist(x)))), na.rm = TRUE)
+        default.bins <- FALSE
+    }
+    if (bin.size < 0.5)
+        default.bins <- FALSE
+    
     bins <- list(start = rng[1], end = rng[2],
-                 size = if (bin.size < 0.5 || !default.bins) bin.size else NULL)
+                 size = if (!default.bins) bin.size else NULL)
     
     # Creating the violin plot
     for (v in 1:n.variables)
