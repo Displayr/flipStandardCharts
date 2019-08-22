@@ -22,6 +22,7 @@ test_that("Small Multiples",
     expect_error(SmallMultiples(dat, "Area", x.order="2,1,3,4,5,6"), NA) # only 6 out 7 columns shown
     expect_error(SmallMultiples(dat, "Column", x.order="5", average.show = TRUE), NA)
     expect_error(SmallMultiples(dat[,1,drop=F], "Pyramid"), NA)
+    expect_warning(SmallMultiples(dat[,1,drop=T], "Pyramid"))
     expect_error(SmallMultiples(dat, "Area", x.order=""), NA)
     expect_error(SmallMultiples(dat2, "Scatter", scatter.sizes.column = NA,
                                 scatter.colors.column = NA), NA)

@@ -114,6 +114,12 @@ SmallMultiples <- function(x,
     if (is.null(footer.font.size))
         footer.font.size <- 8
 
+    if (length(dim(x)) < 2)
+    {
+        x <- as.matrix(x)
+        warning("Unselect 'Automatically tidy the data' to avoid flattening 1-column matrices")
+    }
+
     if (chart.type == "Scatter")
     {
         if (sum(scatter.groups.column, na.rm = TRUE) <= 0)
