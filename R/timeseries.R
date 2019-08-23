@@ -67,7 +67,7 @@ TimeSeries <- function(x = NULL,
                     y.hovertext.suffix = y.tick.suffix)
 {
 
-    if (is.null(dim(x)) || length(dim(x)) == 1L)
+    if (is.null(dim(x)) || length(dim(x)) == 1L || !is.matrix(x))
         x <- as.matrix(x)
 
     if (is.null(colors))
