@@ -61,7 +61,7 @@ GeographicMap <- function(x,
                           opacity = 1,
                           color.NA = "#808080",
                           global.font.family = "Arial",
-                          global.font.color = rgb(44, 44, 44, maxColorValue = 255),
+                          global.font.color = "#2C2C2C",
                           legend.show = TRUE,
                           legend.title = "",
                           legend.font.family = global.font.family,
@@ -456,8 +456,15 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
     # Make legend semi-opaque if background is used to make it easier to read
     panel.bg <- if (background) 'rgba(220,220,220,0.4)' else 'transparent'
 
-    if (is.null(ocean.color))  # old versions of Geo. Map Standard R could pass NULL for this
+    # old versions of Geo. Map Standard R could pass NULL for this
+    if (is.null(ocean.color))  
         ocean.color <- formals(GeographicMap)$ocean.color
+    if (is.null(legend.font.color))  
+        legend.font.color <- formals(GeographicMap)$global.font.color
+    if (is.null(legend.font.family))  
+        legend.font.family <- formals(GeographicMap)$global.font.family
+    if (is.null(legend.font.size))  
+        legend.font.size <- formals(GeographicMap)$legend.font.size
 
     ## Read in custom css, modify user-specified values,
     ##   write to temp. file, and add it as a dependency of the widget
