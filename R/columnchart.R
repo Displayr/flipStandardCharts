@@ -493,6 +493,7 @@ Column <- function(x,
     yaxis2 <- NULL
     if (!is.null(x2))
     {
+        # Set up second y-axis
         y2.range <- setValRange(y2.bounds.minimum, y2.bounds.maximum, x2, y2.zero, is.null(y2.tick.distance))
         y2.tick  <- setTicks(y2.range$min, y2.range$max, y2.tick.distance, y2.data.reversed)
         yaxis2   <- setAxis(y2.title, "right", axisFormat, y2.title.font,
@@ -501,6 +502,24 @@ Column <- function(x,
                           y2.tick.format, y2.tick.prefix, y2.tick.suffix,
                           y2.tick.show, y2.zero, y2.zero.line.width, y2.zero.line.color,
                           y2.hovertext.format)
+
+        # Set up x-axis values for x2
+        x2 <- checkMatrixNames(x2)
+        x2.axis.type <- getAxisType(rownames(x2), format = x.tick.format)
+        if (x2.axis.type != xaxis$type)
+            stop("Rownames in data for second axis (", x2.axis.type, 
+                 ") do not have the same type as the input data (",
+                 xaxis$type, ").")
+        x2.labels <- formatLabels(x2, "Column", x.tick.label.wrap, x.tick.label.wrap.nchar,
+            x.tick.format, y2.tick.format)$labels 
+        #if (!is.null(xaxis$range) && x2.axis.type == "date")
+        #{
+        #    print(dput(xaxis$range))
+        #    xaxis$range[1] <- if (!isReversed(xaxis)) min(axisFormat$labels, x2.labels)
+        #                      else                    max(axisFormat$labels, x2.labels)
+        #    xaxis$range[2] <- if (!isReversed(xaxis)) max(axisFormat$labels, x2.labels)
+        #                      else                    min(axisFormat$labels, x2.labels)
+        #}
     }
 
     # Work out margin spacing
@@ -639,9 +658,9 @@ Column <- function(x,
         # if x axis is numeric or date, it doesn't need to match?
         for (i in 1:ncol(x2))
         {
-            p <- add_trace(p, x = x, y = x2[,i], name = colnames(x2)[i],
+            p <- add_trace(p, x = x2.labels, y = x2[,i], name = colnames(x2)[i],
                     type = "scatter", mode = "lines", yaxis = "y2",
-                    line = list(color = colors2[i]),
+                    line = list(color = colors2[i]), 
                     hoverlabel = list(font = list(color = autoFontColor(colors2[i]),
                     size = hovertext.font.size, family = hovertext.font.family)),
                     hovertemplate = setHoverTemplate(i, xaxis, x2),

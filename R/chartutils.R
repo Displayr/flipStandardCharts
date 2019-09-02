@@ -355,7 +355,7 @@ setLegend <- function(type, font, ascending, fill.color, fill.opacity, border.co
         if (is.null(x.pos))
             x.pos <- if (orientation == "v") 1.15 else 0.5
         if (is.null(y.pos))
-            y.pos <- if (orientation == "v") 1.0 else -0.5
+            y.pos <- if (orientation == "v") 1.0 else -0.3
     } else 
     {
         if (is.null(x.pos))
