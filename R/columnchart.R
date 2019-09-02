@@ -5,6 +5,8 @@
 #' @param x Input data may be a matrix or a vector, containing the height of the columns
 #' to be plotted, with the name/rownames used as the column names of the chart. Numeric and date labels
 #' will be parsed automatically.
+#' @param x2 Optional input data which is shown as lines on top of the column chart.
+#'  a separate axis for these lines will be shown on the right.
 #' @param type One of "Column", "Stacked Column" or "100\% Stacked Column"
 #' @param average.series y-values of additional data series which is shown as a line. Used by \code{SmallMultiples}.
 #' @param average.color Color of the \code{average.series} as a hex code or string
@@ -45,6 +47,8 @@
 #' @param grid.show Logical; whether to show grid lines.
 #' @param opacity Opacity of bars as an alpha value (0 to 1).
 #' @param colors Character; a vector containing one or more colors specified as hex codes.
+#' @param colors2 Character; a vector containing one or more colors for \code{x2} 
+#'  specified as hex codes.
 #' @param background.fill.color Background color in character format (e.g. "black") or a hex code.
 #' @param background.fill.opacity Background opacity as an alpha value (0 to 1).
 #' @param charting.area.fill.color Charting area background color as
@@ -117,6 +121,43 @@
 #' in character format (e.g. "black") or an a hex code.
 #' @param y.tick.font.family Character; y-axis tick label font family
 #' @param y.tick.font.size Integer; y-axis tick label font size
+#' @param y2.title Character, y-axis title; defaults to chart input values;
+#' to turn off set to "FALSE".
+#' @param y2.title.font.color y-axis title font color as a named color in
+#' character format (e.g. "black") or a hex code.
+#' @param y2.title.font.family Character; y-axis title font family
+#' @param y2.title.font.size Integer; y-axis title font size
+#' @param y2.line.width y-axis line width in pixels (0 = no line).
+#' @param y2.line.color y-axis line color as a named color in character format
+#' (e.g. "black") or a hex code.
+#' @param y2.tick.mark.length Length of tick marks in pixels. Ticks are only shown when \code{y.line.width > 0}.
+#' @param y2.bounds.minimum Minimum of range for plotting; For a date axis this should be supplied as a date string.
+#'  For a categorical axis, the index of the category (0-based) should be used.
+#' @param y2.bounds.maximum Maximum of range for plotting; NULL = no manual range set.
+#' @param y2.tick.distance Distance between tick marks. Requires that \code{y.bounds.minimum} and \code{y.bounds.maximum} have been set.
+#' @param y2.zero Whether the y-axis should include zero.
+#' @param y2.zero.line.width Width in pixels of zero line;
+#' @param y2.zero.line.color Color of horizontal zero line as a named
+#' color in character format (e.g. "black") or an rgb value (e.g.
+#' rgb(0, 0, 0, maxColorValue = 255)).
+#' @param y2.data.reversed Logical; whether to reverse y-axis or not
+#' @param y2.grid.width Width of y-grid lines in pixels; 0 = no line
+#' @param y2.grid.color Color of y-grid lines as a named color in character
+#' format (e.g. "black") or a hex code.
+#' @param y2.tick.show Whether to display the y-axis tick labels
+#' @param y2.tick.suffix y-axis tick label suffix
+#' @param y2.tick.prefix y-axis tick label prefix
+#' @param y2.tick.format A string representing a d3 formatting code.
+#' See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format
+#' @param y2.hovertext.format A string representing a d3 formatting code
+#' See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format
+#' @param y2.tick.angle y-axis tick label angle in degrees.
+#' 90 = vertical; 0 = horizontal
+#' @param y2.tick.font.color y-axis tick label font color as a named color
+#' in character format (e.g. "black") or an a hex code.
+#' @param y2.tick.font.family Character; y-axis tick label font family
+#' @param y2.tick.font.size Integer; y-axis tick label font size
+
 #' @param x.title Character, x-axis title; defaults to chart input values;
 #' to turn off set to "FALSE".
 #' @param x.title.font.color x-axis title font color as a named color in
@@ -201,7 +242,9 @@
 #' Column(z, type="Stacked Column")
 #' @export
 Column <- function(x,
-                    colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
+                    x2 = NULL,
+                    colors = ChartColors(max(1, NCOL(x), na.rm = TRUE)),
+                    colors2 = ChartColors(max(1, NCOL(x2), na.rm = TRUE)),
                     opacity = NULL,
                     type = "Column",
                     fit.type = "None", # can be "Smooth" or anything else
@@ -282,6 +325,31 @@ Column <- function(x,
                     y.tick.font.color = global.font.color,
                     y.tick.font.family = global.font.family,
                     y.tick.font.size = 10,
+                    y2.title = "",
+                    y2.title.font.color = global.font.color,
+                    y2.title.font.family = global.font.family,
+                    y2.title.font.size = 12,
+                    y2.line.width = 0,
+                    y2.line.color = rgb(0, 0, 0, maxColorValue = 255),
+                    y2.tick.mark.length = 5,
+                    y2.bounds.minimum = NULL,
+                    y2.bounds.maximum = NULL,
+                    y2.tick.distance = NULL,
+                    y2.zero = TRUE,
+                    y2.zero.line.width = 0,
+                    y2.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
+                    y2.data.reversed = FALSE,
+                    y2.grid.width = 0 * grid.show,
+                    y2.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+                    y2.tick.show = TRUE,
+                    y2.tick.suffix = "",
+                    y2.tick.prefix = "",
+                    y2.tick.format = "",
+                    y2.hovertext.format = y.tick.format,
+                    y2.tick.angle = NULL,
+                    y2.tick.font.color = global.font.color,
+                    y2.tick.font.family = global.font.family,
+                    y2.tick.font.size = 10,
                     x.title = "",
                     x.title.font.color = global.font.color,
                     x.title.font.family = global.font.family,
@@ -387,7 +455,9 @@ Column <- function(x,
     subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
     x.title.font = list(family = x.title.font.family, size = x.title.font.size, color = x.title.font.color)
     y.title.font = list(family = y.title.font.family, size = y.title.font.size, color = y.title.font.color)
+    y2.title.font = list(family = y2.title.font.family, size = y2.title.font.size, color = y2.title.font.color)
     ytick.font = list(family = y.tick.font.family, size = y.tick.font.size, color = y.tick.font.color)
+    y2.tick.font = list(family = y2.tick.font.family, size = y2.tick.font.size, color = y2.tick.font.color)
     xtick.font = list(family = x.tick.font.family, size = x.tick.font.size, color = x.tick.font.color)
     footer.font = list(family = footer.font.family, size = footer.font.size, color = footer.font.color)
     legend.font = list(family = legend.font.family, size = legend.font.size, color = legend.font.color)
@@ -395,7 +465,8 @@ Column <- function(x,
     legend.show <- setShowLegend(legend.show, NCOL(chart.matrix))
     legend <- setLegend(type, legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
                         legend.border.color, legend.border.line.width,
-                        legend.position.x, legend.position.y, y.data.reversed, legend.orientation)
+                        legend.position.x, legend.position.y, y.data.reversed, 
+                        legend.orientation, y2.show = !is.null(x2))
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate = FALSE)
 
     # Format axis labels
@@ -418,6 +489,19 @@ Column <- function(x,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, x.tick.format,
                   x.tick.prefix, x.tick.suffix, x.tick.show, x.zero, x.zero.line.width, x.zero.line.color,
                   x.hovertext.format, axisFormat$labels, num.series = NCOL(chart.matrix), with.bars = TRUE)
+
+    yaxis2 <- NULL
+    if (!is.null(x2))
+    {
+        y2.range <- setValRange(y2.bounds.minimum, y2.bounds.maximum, x2, y2.zero, is.null(y2.tick.distance))
+        y2.tick  <- setTicks(y2.range$min, y2.range$max, y2.tick.distance, y2.data.reversed)
+        yaxis2   <- setAxis(y2.title, "right", axisFormat, y2.title.font,
+                          y2.line.color, y2.line.width, y2.grid.width * grid.show, y2.grid.color,
+                          y2.tick, y2.tick.font, y2.tick.angle, y2.tick.mark.length, y2.tick.distance, 
+                          y2.tick.format, y2.tick.prefix, y2.tick.suffix,
+                          y2.tick.show, y2.zero, y2.zero.line.width, y2.zero.line.color,
+                          y2.hovertext.format)
+    }
 
     # Work out margin spacing
     margins <- list(t = 20, b = 20, r = 60, l = 80, pad = 0)
@@ -548,6 +632,23 @@ Column <- function(x,
         }
     }
 
+    # use secondary axis on the right
+    if (!is.null(x2))
+    {
+        # convert x2 to matrix and match it against chart.matrix
+        # if x axis is numeric or date, it doesn't need to match?
+        for (i in 1:ncol(x2))
+        {
+            p <- add_trace(p, x = x, y = x2[,i], name = colnames(x2)[i],
+                    type = "scatter", mode = "lines", yaxis = "y2",
+                    line = list(color = colors2[i]),
+                    hoverlabel = list(font = list(color = autoFontColor(colors2[i]),
+                    size = hovertext.font.size, family = hovertext.font.family)),
+                    hovertemplate = setHoverTemplate(i, xaxis, x2),
+                    legendgroup = NCOL(chart.matrix) + i)
+        }
+    }
+
     annotations <- NULL
     n <- length(annotations)
     annotations[[n+1]] <- setTitle(title, title.font, margins)
@@ -561,6 +662,7 @@ Column <- function(x,
         showlegend = legend.show,
         legend = legend,
         yaxis = yaxis,
+        yaxis2 = yaxis2,
         xaxis2 = xaxis2,
         xaxis = xaxis,
         margin = margins,

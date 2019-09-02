@@ -4,7 +4,8 @@
 \alias{Column}
 \title{Column}
 \usage{
-Column(x, colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
+Column(x, x2 = NULL, colors = ChartColors(max(1, NCOL(x), na.rm =
+  TRUE)), colors2 = ChartColors(max(1, NCOL(x2), na.rm = TRUE)),
   opacity = NULL, type = "Column", fit.type = "None",
   fit.window.size = 2, fit.line.colors = colors,
   fit.ignore.last = FALSE, fit.line.type = "dot", fit.line.width = 1,
@@ -45,6 +46,18 @@ Column(x, colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
   y.tick.format = "", y.hovertext.format = y.tick.format,
   y.tick.angle = NULL, y.tick.font.color = global.font.color,
   y.tick.font.family = global.font.family, y.tick.font.size = 10,
+  y2.title = "", y2.title.font.color = global.font.color,
+  y2.title.font.family = global.font.family, y2.title.font.size = 12,
+  y2.line.width = 0, y2.line.color = rgb(0, 0, 0, maxColorValue = 255),
+  y2.tick.mark.length = 5, y2.bounds.minimum = NULL,
+  y2.bounds.maximum = NULL, y2.tick.distance = NULL, y2.zero = TRUE,
+  y2.zero.line.width = 0, y2.zero.line.color = rgb(225, 225, 225,
+  maxColorValue = 255), y2.data.reversed = FALSE, y2.grid.width = 0 *
+  grid.show, y2.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+  y2.tick.show = TRUE, y2.tick.suffix = "", y2.tick.prefix = "",
+  y2.tick.format = "", y2.hovertext.format = y.tick.format,
+  y2.tick.angle = NULL, y2.tick.font.color = global.font.color,
+  y2.tick.font.family = global.font.family, y2.tick.font.size = 10,
   x.title = "", x.title.font.color = global.font.color,
   x.title.font.family = global.font.family, x.title.font.size = 12,
   x.line.width = 0, x.line.color = rgb(0, 0, 0, maxColorValue = 255),
@@ -74,7 +87,13 @@ Column(x, colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
 to be plotted, with the name/rownames used as the column names of the chart. Numeric and date labels
 will be parsed automatically.}
 
+\item{x2}{Optional input data which is shown as lines on top of the column chart.
+a separate axis for these lines will be shown on the right.}
+
 \item{colors}{Character; a vector containing one or more colors specified as hex codes.}
+
+\item{colors2}{Character; a vector containing one or more colors for \code{x2} 
+specified as hex codes.}
 
 \item{opacity}{Opacity of bars as an alpha value (0 to 1).}
 
@@ -270,6 +289,67 @@ in character format (e.g. "black") or an a hex code.}
 \item{y.tick.font.family}{Character; y-axis tick label font family}
 
 \item{y.tick.font.size}{Integer; y-axis tick label font size}
+
+\item{y2.title}{Character, y-axis title; defaults to chart input values;
+to turn off set to "FALSE".}
+
+\item{y2.title.font.color}{y-axis title font color as a named color in
+character format (e.g. "black") or a hex code.}
+
+\item{y2.title.font.family}{Character; y-axis title font family}
+
+\item{y2.title.font.size}{Integer; y-axis title font size}
+
+\item{y2.line.width}{y-axis line width in pixels (0 = no line).}
+
+\item{y2.line.color}{y-axis line color as a named color in character format
+(e.g. "black") or a hex code.}
+
+\item{y2.tick.mark.length}{Length of tick marks in pixels. Ticks are only shown when \code{y.line.width > 0}.}
+
+\item{y2.bounds.minimum}{Minimum of range for plotting; For a date axis this should be supplied as a date string.
+For a categorical axis, the index of the category (0-based) should be used.}
+
+\item{y2.bounds.maximum}{Maximum of range for plotting; NULL = no manual range set.}
+
+\item{y2.tick.distance}{Distance between tick marks. Requires that \code{y.bounds.minimum} and \code{y.bounds.maximum} have been set.}
+
+\item{y2.zero}{Whether the y-axis should include zero.}
+
+\item{y2.zero.line.width}{Width in pixels of zero line;}
+
+\item{y2.zero.line.color}{Color of horizontal zero line as a named
+color in character format (e.g. "black") or an rgb value (e.g.
+rgb(0, 0, 0, maxColorValue = 255)).}
+
+\item{y2.data.reversed}{Logical; whether to reverse y-axis or not}
+
+\item{y2.grid.width}{Width of y-grid lines in pixels; 0 = no line}
+
+\item{y2.grid.color}{Color of y-grid lines as a named color in character
+format (e.g. "black") or a hex code.}
+
+\item{y2.tick.show}{Whether to display the y-axis tick labels}
+
+\item{y2.tick.suffix}{y-axis tick label suffix}
+
+\item{y2.tick.prefix}{y-axis tick label prefix}
+
+\item{y2.tick.format}{A string representing a d3 formatting code.
+See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
+
+\item{y2.hovertext.format}{A string representing a d3 formatting code
+See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
+
+\item{y2.tick.angle}{y-axis tick label angle in degrees.
+90 = vertical; 0 = horizontal}
+
+\item{y2.tick.font.color}{y-axis tick label font color as a named color
+in character format (e.g. "black") or an a hex code.}
+
+\item{y2.tick.font.family}{Character; y-axis tick label font family}
+
+\item{y2.tick.font.size}{Integer; y-axis tick label font size}
 
 \item{x.title}{Character, x-axis title; defaults to chart input values;
 to turn off set to "FALSE".}
