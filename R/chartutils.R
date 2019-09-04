@@ -343,17 +343,26 @@ setShowLegend <- function(legend.show, num.series = 2)
 }
 
 setLegend <- function(type, font, ascending, fill.color, fill.opacity, border.color, border.line.width,
-                      x.pos = NULL, y.pos = NULL, reversed = FALSE, orientation = 'Vertical')
+                      x.pos = NULL, y.pos = NULL, reversed = FALSE, orientation = 'Vertical', y2.show = FALSE)
 {
     if (tolower(substr(orientation, 1, 1)) == "h")
         orientation <- "h"
     else
         orientation <- "v"
 
-    if (is.null(x.pos))
-        x.pos <- if (orientation == "v") 1.02 else 0.5
-    if (is.null(y.pos))
-        y.pos <- if (orientation == "v") 1.0 else -0.2
+    if (y2.show)
+    {
+        if (is.null(x.pos))
+            x.pos <- if (orientation == "v") 1.15 else 0.5
+        if (is.null(y.pos))
+            y.pos <- if (orientation == "v") 1.0 else -0.3
+    } else 
+    {
+        if (is.null(x.pos))
+            x.pos <- if (orientation == "v") 1.02 else 0.5
+        if (is.null(y.pos))
+            y.pos <- if (orientation == "v") 1.0 else -0.2
+    }
 
     if (is.na(ascending))
         ascending <- !(grepl("Stacked", type) && !reversed) || grepl("Stacked Bar", type)
@@ -365,8 +374,8 @@ setLegend <- function(type, font, ascending, fill.color, fill.opacity, border.co
             font = font,
             xanchor = if (x.pos == 0.5) "center" else "left",
             yanchor = if (y.pos > 1.0) "bottom" else "auto",
-            y = max(-0.5, min(1.0, y.pos)),
-            x = max(-0.5, min(1.02, x.pos)),
+            y = max(-2, min(3, y.pos)),
+            x = max(-2, min(3, x.pos)),
             traceorder = order))
 }
 
