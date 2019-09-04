@@ -20,15 +20,18 @@ rownames(dated) <- sprintf("%02d/01/2017", 1:20)
 gapdated <- dated
 rownames(gapdated) <- sprintf("%02d/01/2017", c(1:10, 21:30))
 
-x2.numeric <- structure(rnorm(10), .Names = (1:10) + 4)
+x2.numeric <- structure(rnorm(10), .Names = (1:10) + 14)
 x2.named <- structure((1:10)/100, .Names = letters[c(1:9, 26)])
 
 test_that("Axis types",
 {
     expect_error(Column(unnamed, x2 = x2.named), "do not have the same type")
-    expect_error(Column(unnamed, x2 = x2.numeric, type = "Stacked", opacity = 0.7), NA)
+    expect_error(Column(unnamed, x2 = x2.numeric, opacity = 0.7, data.label.show = TRUE), NA)
+    expect_error(Column(unnamed, x2 = x2.numeric, type = "Stacked", opacity = 0.7,
+        data.label.show = TRUE, x.data.reversed = TRUE), NA)
     expect_error(Column(named, x2 = x2.named, y2.tick.format = "%", legend.orientation = "horizontal"), NA)
-    expect_error(Column(dated, x2 = gapdated, opacity = 0.3, colors2 = c("red", "green", "blue")), NA)
+    expect_error(Column(gapdated, x2 = dated, opacity = 0.3,
+        colors2 = c("red", "green", "blue"), data.label.show = T), NA)
 })
 
 

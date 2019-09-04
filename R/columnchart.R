@@ -491,36 +491,6 @@ Column <- function(x,
                   x.hovertext.format, axisFormat$labels, num.series = NCOL(chart.matrix), with.bars = TRUE)
 
     yaxis2 <- NULL
-    if (!is.null(x2))
-    {
-        # Set up second y-axis
-        y2.range <- setValRange(y2.bounds.minimum, y2.bounds.maximum, x2, y2.zero, is.null(y2.tick.distance))
-        y2.tick  <- setTicks(y2.range$min, y2.range$max, y2.tick.distance, y2.data.reversed)
-        yaxis2   <- setAxis(y2.title, "right", axisFormat, y2.title.font,
-                          y2.line.color, y2.line.width, y2.grid.width * grid.show, y2.grid.color,
-                          y2.tick, y2.tick.font, y2.tick.angle, y2.tick.mark.length, y2.tick.distance, 
-                          y2.tick.format, y2.tick.prefix, y2.tick.suffix,
-                          y2.tick.show, y2.zero, y2.zero.line.width, y2.zero.line.color,
-                          y2.hovertext.format)
-
-        # Set up x-axis values for x2
-        x2 <- checkMatrixNames(x2)
-        x2.axis.type <- getAxisType(rownames(x2), format = x.tick.format)
-        if (x2.axis.type != xaxis$type)
-            stop("Rownames in data for second axis (", x2.axis.type, 
-                 ") do not have the same type as the input data (",
-                 xaxis$type, ").")
-        x2.labels <- formatLabels(x2, "Column", x.tick.label.wrap, x.tick.label.wrap.nchar,
-            x.tick.format, y2.tick.format)$labels 
-        #if (!is.null(xaxis$range) && x2.axis.type == "date")
-        #{
-        #    print(dput(xaxis$range))
-        #    xaxis$range[1] <- if (!isReversed(xaxis)) min(axisFormat$labels, x2.labels)
-        #                      else                    max(axisFormat$labels, x2.labels)
-        #    xaxis$range[2] <- if (!isReversed(xaxis)) max(axisFormat$labels, x2.labels)
-        #                      else                    min(axisFormat$labels, x2.labels)
-        #}
-    }
 
     # Work out margin spacing
     margins <- list(t = 20, b = 20, r = 60, l = 80, pad = 0)
@@ -555,6 +525,62 @@ Column <- function(x,
                         reversed = isReversed(yaxis),
                         font = data.label.font,
                         center.data.labels = data.label.centered)
+
+    # Set up second y-axis
+    if (!is.null(x2))
+    {
+        y2.range <- setValRange(y2.bounds.minimum, y2.bounds.maximum, x2, y2.zero, is.null(y2.tick.distance))
+        y2.tick  <- setTicks(y2.range$min, y2.range$max, y2.tick.distance, y2.data.reversed)
+        yaxis2   <- setAxis(y2.title, "right", axisFormat, y2.title.font,
+                          y2.line.color, y2.line.width, y2.grid.width * grid.show, y2.grid.color,
+                          y2.tick, y2.tick.font, y2.tick.angle, y2.tick.mark.length, y2.tick.distance, 
+                          y2.tick.format, y2.tick.prefix, y2.tick.suffix,
+                          y2.tick.show, y2.zero, y2.zero.line.width, y2.zero.line.color,
+                          y2.hovertext.format)
+
+        # Set up x-axis values for x2
+        x2 <- checkMatrixNames(x2)
+        x2.axis.type <- getAxisType(rownames(x2), format = x.tick.format)
+        if (x2.axis.type != xaxis$type)
+            stop("Rownames in data for second axis (", x2.axis.type, 
+                 ") do not have the same type as the input data (",
+                 xaxis$type, ").")
+        x2.labels <- formatLabels(x2, "Column", x.tick.label.wrap, x.tick.label.wrap.nchar,
+            x.tick.format, y2.tick.format)$labels 
+
+        if (x2.axis.type == "numeric")
+        {
+            x2vals <- as.numeric(x2.labels)
+            if (x.range[1] < x.range[2])
+            {
+                xaxis2$range[1] <- min(xaxis2$range[1], x2vals)
+                xaxis2$range[2] <- max(xaxis2$range[2], x2vals)
+            } else
+            {
+                xaxis2$range[1] <- max(xaxis2$range[1], x2vals)
+                xaxis2$range[2] <- min(xaxis2$range[2], x2vals)
+            }
+        }
+    }
+
+
+    # Plot trace for second y-axis first so that they are shown last in legend 
+    if (!is.null(x2) && is.stacked)
+    {
+        # convert x2 to matrix and match it against chart.matrix
+        # if x axis is numeric or date, it doesn't need to match?
+        for (i in 1:ncol(x2))
+        {
+            p <- add_trace(p, x = x2.labels, y = x2[,i], name = colnames(x2)[i],
+                    type = "scatter", mode = "lines", yaxis = "y2",
+                    line = list(color = colors2[i]), hoverinfo = "skip", hoveron = "lines",
+                    hoverlabel = list(font = list(color = autoFontColor(colors2[i]),
+                    size = hovertext.font.size, family = hovertext.font.family)),
+                    hovertemplate = setHoverTemplate(i, xaxis, x2), cliponaxis = TRUE,
+                    legendgroup = NCOL(chart.matrix) + i)
+        }
+    }
+
 
     ## Add a trace for each col of data in the matrix
     for (i in 1:ncol(chart.matrix))
@@ -651,8 +677,8 @@ Column <- function(x,
         }
     }
 
-    # use secondary axis on the right
-    if (!is.null(x2))
+    # Plot trace for second y-axis last so that they are shown last in legend 
+    if (!is.null(x2) && !is.stacked)
     {
         # convert x2 to matrix and match it against chart.matrix
         # if x axis is numeric or date, it doesn't need to match?
@@ -660,13 +686,14 @@ Column <- function(x,
         {
             p <- add_trace(p, x = x2.labels, y = x2[,i], name = colnames(x2)[i],
                     type = "scatter", mode = "lines", yaxis = "y2",
-                    line = list(color = colors2[i]), 
+                    line = list(color = colors2[i]), hoverinfo = "skip", hoveron = "lines",
                     hoverlabel = list(font = list(color = autoFontColor(colors2[i]),
                     size = hovertext.font.size, family = hovertext.font.family)),
-                    hovertemplate = setHoverTemplate(i, xaxis, x2),
+                    hovertemplate = setHoverTemplate(i, xaxis, x2), cliponaxis = TRUE,
                     legendgroup = NCOL(chart.matrix) + i)
         }
     }
+
 
     annotations <- NULL
     n <- length(annotations)
@@ -680,8 +707,8 @@ Column <- function(x,
     p <- layout(p,
         showlegend = legend.show,
         legend = legend,
-        yaxis = yaxis,
         yaxis2 = yaxis2,
+        yaxis = yaxis,
         xaxis2 = xaxis2,
         xaxis = xaxis,
         margin = margins,
@@ -690,7 +717,7 @@ Column <- function(x,
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
         hoverlabel = list(namelength = -1, bordercolor = "transparent",
             font = list(size = hovertext.font.size, family = hovertext.font.family)),
-        hovermode = if (tooltip.show) "x" else FALSE,
+        hovermode = if (tooltip.show) "x" else FALSE, dragmode = FALSE, clickmode = "none",
         bargap = bar.gap,
         barmode = barmode
     )
