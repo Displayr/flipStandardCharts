@@ -537,6 +537,7 @@ Column <- function(x,
                           y2.tick.format, y2.tick.prefix, y2.tick.suffix,
                           y2.tick.show, y2.zero, y2.zero.line.width, y2.zero.line.color,
                           y2.hovertext.format)
+        yaxis2$overlaying <- "y"
 
         # Set up x-axis values for x2
         x2 <- checkMatrixNames(x2)
@@ -573,7 +574,7 @@ Column <- function(x,
         {
             p <- add_trace(p, x = x2.labels, y = x2[,i], name = colnames(x2)[i],
                     type = "scatter", mode = "lines", yaxis = "y2",
-                    line = list(color = colors2[i]), hoverinfo = "skip", hoveron = "lines",
+                    line = list(color = colors2[i]), 
                     hoverlabel = list(font = list(color = autoFontColor(colors2[i]),
                     size = hovertext.font.size, family = hovertext.font.family)),
                     hovertemplate = setHoverTemplate(i, xaxis, x2), cliponaxis = TRUE,
@@ -686,7 +687,7 @@ Column <- function(x,
         {
             p <- add_trace(p, x = x2.labels, y = x2[,i], name = colnames(x2)[i],
                     type = "scatter", mode = "lines", yaxis = "y2",
-                    line = list(color = colors2[i]), hoverinfo = "skip", hoveron = "lines",
+                    line = list(color = colors2[i]), 
                     hoverlabel = list(font = list(color = autoFontColor(colors2[i]),
                     size = hovertext.font.size, family = hovertext.font.family)),
                     hovertemplate = setHoverTemplate(i, xaxis, x2), cliponaxis = TRUE,
@@ -717,7 +718,7 @@ Column <- function(x,
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
         hoverlabel = list(namelength = -1, bordercolor = "transparent",
             font = list(size = hovertext.font.size, family = hovertext.font.family)),
-        hovermode = if (tooltip.show) "x" else FALSE, dragmode = FALSE, clickmode = "none",
+        hovermode = if (tooltip.show) "x" else FALSE,
         bargap = bar.gap,
         barmode = barmode
     )
