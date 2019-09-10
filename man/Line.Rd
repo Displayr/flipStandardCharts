@@ -88,7 +88,7 @@ will be parsed automatically.}
 \item{fit.type}{Character; type of line of best fit. Can be one of "None", "Linear", "LOESS",
 "Friedman's super smoother", "Cubic spline", "Moving average", "Centered moving average".}
 
-\item{fit.window.size}{Integer; Use to determine how the average is computed when \code{fit.type} 
+\item{fit.window.size}{Integer; Use to determine how the average is computed when \code{fit.type}
 "Moving average" or "Centered moving average".}
 
 \item{fit.line.colors}{Character; a vector containing one or more colors specified as hex codes.}

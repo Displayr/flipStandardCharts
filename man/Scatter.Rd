@@ -122,7 +122,7 @@ This should be input as a comma-seperated list of URLs.}
 \item{fit.type}{Character; type of line of best fit. Can be one of "None", "Linear", "LOESS",
 "Friedman's super smoother", "Cubic spline", "Moving average", "Centered moving average".}
 
-\item{fit.window.size}{Integer; Use to determine how the average is computed when \code{fit.type} 
+\item{fit.window.size}{Integer; Use to determine how the average is computed when \code{fit.type}
 "Moving average" or "Centered moving average".}
 
 \item{fit.ignore.last}{Logical; whether to ignore the last data point in the fit.}

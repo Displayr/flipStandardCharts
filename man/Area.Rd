@@ -87,7 +87,7 @@ will be parsed automatically.}
 
 \item{fit.ignore.last}{Logical; whether to ignore the last data point in the fit.}
 
-\item{fit.window.size}{Integer; Use to determine how the average is computed when \code{fit.type} 
+\item{fit.window.size}{Integer; Use to determine how the average is computed when \code{fit.type}
 "Moving average" or "Centered moving average".}
 
 \item{fit.line.type}{Character; One of "solid", "dot", "dash, "dotdash", or length of dash "2px", "5px".}

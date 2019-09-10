@@ -12,7 +12,7 @@
 #' @param average.color Color of the \code{average.series} as a hex code or string
 #' @param fit.type Character; type of line of best fit. Can be one of "None", "Linear", "LOESS",
 #'          "Friedman's super smoother", "Cubic spline", "Moving average", "Centered moving average".
-#' @param fit.window.size Integer; Use to determine how the average is computed when \code{fit.type} 
+#' @param fit.window.size Integer; Use to determine how the average is computed when \code{fit.type}
 #'          "Moving average" or "Centered moving average".
 #' @param fit.ignore.last Logical; whether to ignore the last data point in the fit.
 #' @param fit.line.type Character; One of "solid", "dot", "dash, "dotdash", or length of dash "2px", "5px".
@@ -47,7 +47,7 @@
 #' @param grid.show Logical; whether to show grid lines.
 #' @param opacity Opacity of bars as an alpha value (0 to 1).
 #' @param colors Character; a vector containing one or more colors specified as hex codes.
-#' @param colors2 Character; a vector containing one or more colors for \code{x2} 
+#' @param x2.colors Character; a vector containing one or more colors for \code{x2}
 #'  specified as hex codes.
 #' @param background.fill.color Background color in character format (e.g. "black") or a hex code.
 #' @param background.fill.opacity Background opacity as an alpha value (0 to 1).
@@ -244,7 +244,7 @@
 Column <- function(x,
                     x2 = NULL,
                     colors = ChartColors(max(1, NCOL(x), na.rm = TRUE)),
-                    colors2 = ChartColors(max(1, NCOL(x2), na.rm = TRUE)),
+                    x2.colors = ChartColors(max(1, NCOL(x2), na.rm = TRUE)),
                     opacity = NULL,
                     type = "Column",
                     fit.type = "None", # can be "Smooth" or anything else
@@ -465,7 +465,7 @@ Column <- function(x,
     legend.show <- setShowLegend(legend.show, NCOL(chart.matrix))
     legend <- setLegend(type, legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
                         legend.border.color, legend.border.line.width,
-                        legend.position.x, legend.position.y, y.data.reversed, 
+                        legend.position.x, legend.position.y, y.data.reversed,
                         legend.orientation, y2.show = !is.null(x2))
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate = FALSE)
 
@@ -533,7 +533,7 @@ Column <- function(x,
         y2.tick  <- setTicks(y2.range$min, y2.range$max, y2.tick.distance, y2.data.reversed)
         yaxis2   <- setAxis(y2.title, "right", axisFormat, y2.title.font,
                           y2.line.color, y2.line.width, y2.grid.width * grid.show, y2.grid.color,
-                          y2.tick, y2.tick.font, y2.tick.angle, y2.tick.mark.length, y2.tick.distance, 
+                          y2.tick, y2.tick.font, y2.tick.angle, y2.tick.mark.length, y2.tick.distance,
                           y2.tick.format, y2.tick.prefix, y2.tick.suffix,
                           y2.tick.show, y2.zero, y2.zero.line.width, y2.zero.line.color,
                           y2.hovertext.format)
@@ -543,11 +543,11 @@ Column <- function(x,
         x2 <- checkMatrixNames(x2)
         x2.axis.type <- getAxisType(rownames(x2), format = x.tick.format)
         if (x2.axis.type != xaxis$type)
-            stop("Rownames in data for second axis (", x2.axis.type, 
+            stop("Rownames in data for second axis (", x2.axis.type,
                  ") do not have the same type as the input data (",
                  xaxis$type, ").")
         x2.labels <- formatLabels(x2, "Column", x.tick.label.wrap, x.tick.label.wrap.nchar,
-            x.tick.format, y2.tick.format)$labels 
+            x.tick.format, y2.tick.format)$labels
 
         if (x2.axis.type == "numeric")
         {
@@ -565,7 +565,7 @@ Column <- function(x,
     }
 
 
-    # Plot trace for second y-axis first so that they are shown last in legend 
+    # Plot trace for second y-axis first so that they are shown last in legend
     if (!is.null(x2) && is.stacked)
     {
         # convert x2 to matrix and match it against chart.matrix
@@ -574,8 +574,8 @@ Column <- function(x,
         {
             p <- add_trace(p, x = x2.labels, y = x2[,i], name = colnames(x2)[i],
                     type = "scatter", mode = "lines", yaxis = "y2",
-                    line = list(color = colors2[i]), 
-                    hoverlabel = list(font = list(color = autoFontColor(colors2[i]),
+                    line = list(color = x2.colors[i]),
+                    hoverlabel = list(font = list(color = autoFontColor(x2.colors[i]),
                     size = hovertext.font.size, family = hovertext.font.family)),
                     hovertemplate = setHoverTemplate(i, xaxis, x2), cliponaxis = TRUE,
                     legendgroup = NCOL(chart.matrix) + i)
@@ -616,7 +616,7 @@ Column <- function(x,
             warning("Line of best fit not shown for stacked charts.")
         if (fit.type != "None" && !is.stacked)
         {
-            tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type, 
+            tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type,
                 fit.CI.show, fit.window.size)
             tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                          else sprintf("%s: %s", fit.line.name, y.labels[i])
@@ -670,7 +670,7 @@ Column <- function(x,
                       type = "scatter", mode = "markers+text", name = legend.text[i],
                       marker = list(color = colors[i], opacity = 0,
                       size = ifelse(y.sign < 0, 3, 0 + (is.stacked & !data.label.centered))),
-                      x = if (NCOL(chart.matrix) > 1) data.annotations$x[,i] else x, 
+                      x = if (NCOL(chart.matrix) > 1) data.annotations$x[,i] else x,
                       xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x",
                       text = data.annotations$text[,i], textfont = data.label.font[[i]],
                       textposition = textpos, showlegend = FALSE, hoverinfo = "skip",
@@ -678,7 +678,7 @@ Column <- function(x,
         }
     }
 
-    # Plot trace for second y-axis last so that they are shown last in legend 
+    # Plot trace for second y-axis last so that they are shown last in legend
     if (!is.null(x2) && !is.stacked)
     {
         # convert x2 to matrix and match it against chart.matrix
@@ -687,8 +687,8 @@ Column <- function(x,
         {
             p <- add_trace(p, x = x2.labels, y = x2[,i], name = colnames(x2)[i],
                     type = "scatter", mode = "lines", yaxis = "y2",
-                    line = list(color = colors2[i]), 
-                    hoverlabel = list(font = list(color = autoFontColor(colors2[i]),
+                    line = list(color = x2.colors[i]),
+                    hoverlabel = list(font = list(color = autoFontColor(x2.colors[i]),
                     size = hovertext.font.size, family = hovertext.font.family)),
                     hovertemplate = setHoverTemplate(i, xaxis, x2), cliponaxis = TRUE,
                     legendgroup = NCOL(chart.matrix) + i)

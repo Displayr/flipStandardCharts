@@ -5,7 +5,7 @@
 \title{Column}
 \usage{
 Column(x, x2 = NULL, colors = ChartColors(max(1, NCOL(x), na.rm =
-  TRUE)), colors2 = ChartColors(max(1, NCOL(x2), na.rm = TRUE)),
+  TRUE)), x2.colors = ChartColors(max(1, NCOL(x2), na.rm = TRUE)),
   opacity = NULL, type = "Column", fit.type = "None",
   fit.window.size = 2, fit.line.colors = colors,
   fit.ignore.last = FALSE, fit.line.type = "dot", fit.line.width = 1,
@@ -92,7 +92,7 @@ a separate axis for these lines will be shown on the right.}
 
 \item{colors}{Character; a vector containing one or more colors specified as hex codes.}
 
-\item{colors2}{Character; a vector containing one or more colors for \code{x2} 
+\item{x2.colors}{Character; a vector containing one or more colors for \code{x2}
 specified as hex codes.}
 
 \item{opacity}{Opacity of bars as an alpha value (0 to 1).}
@@ -102,7 +102,7 @@ specified as hex codes.}
 \item{fit.type}{Character; type of line of best fit. Can be one of "None", "Linear", "LOESS",
 "Friedman's super smoother", "Cubic spline", "Moving average", "Centered moving average".}
 
-\item{fit.window.size}{Integer; Use to determine how the average is computed when \code{fit.type} 
+\item{fit.window.size}{Integer; Use to determine how the average is computed when \code{fit.type}
 "Moving average" or "Centered moving average".}
 
 \item{fit.line.colors}{Character; a vector containing one or more colors specified as hex codes.}

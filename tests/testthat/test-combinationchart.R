@@ -31,7 +31,7 @@ test_that("Axis types",
         data.label.show = TRUE, x.data.reversed = TRUE), NA)
     expect_error(Column(named, x2 = x2.named, y2.tick.format = "%", legend.orientation = "horizontal"), NA)
     expect_error(Column(gapdated, x2 = dated, opacity = 0.3,
-        colors2 = c("red", "green", "blue"), data.label.show = T), NA)
+        x2.colors = c("red", "green", "blue"), data.label.show = T), NA)
 })
 
 
