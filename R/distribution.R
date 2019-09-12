@@ -351,19 +351,20 @@ Distribution <-   function(x,
     # 'maximum.bins' is not always respected so use 'size' instead when
     # bin size is small or the number of bins is small
     # but otherwise use 'maximum.bins' because it tends to find more rounded breakpoints
-    rng <- range(unlist(x), na.rm = TRUE)
+    x.sorted <- sort(unique(unlist(x)))
+    rng <- x.sorted[c(1, length(x.sorted))]
     default.bins <- is.null(maximum.bins) || is.na(maximum.bins)
     if (is.null(maximum.bins) || is.na(maximum.bins))
-        maximum.bins <- min(length(unique(unlist(x))), 50)
-    bin.offset <- min(diff(sort(unique(unlist(x)))))/2
+        maximum.bins <- min(length(x.sorted), 50)
+    bin.offset <- min(diff(x.sorted))/2
     if (density.type == "Histogram")
         rng <- rng  + c(-1, 1) * bin.offset
     bin.size = (rng[2] - rng[1])/maximum.bins
     
     # Override default bin sizes in certain cases which plotly does not handle well
-    if (length(unique(unlist(x))) < 10 && default.bins)
+    if (length(x.sorted) < 10 && default.bins)
     {
-        bin.size <- min(diff(sort(unique(unlist(x)))), na.rm = TRUE)
+        bin.size <- min(diff(x.sorted), na.rm = TRUE)
         default.bins <- FALSE
     }
     if (bin.size < 0.5)
