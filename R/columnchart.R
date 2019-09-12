@@ -493,13 +493,13 @@ Column <- function(x,
     yaxis2 <- NULL
 
     # Work out margin spacing
-    margins <- list(t = 20, b = 20, r = 60, l = 80, pad = 0)
+    margins <- list(t = 20, b = 20, r = if (!legend.show && !is.null(x2)) 80 else 60, l = 80, pad = 0)
     margins <- setMarginsForAxis(margins, axisFormat, xaxis)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
 
     legend.text <- autoFormatLongLabels(colnames(chart.matrix), legend.wrap, legend.wrap.nchar)
-    margins <- setMarginsForLegend(margins, legend.show, legend, legend.text)
+    margins <- setMarginsForLegend(margins, legend.show, legend, legend.text, right.axis = !is.null(x2))
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
 
@@ -543,9 +543,17 @@ Column <- function(x,
         x2 <- checkMatrixNames(x2)
         x2.axis.type <- getAxisType(rownames(x2), format = x.tick.format)
         if (x2.axis.type != xaxis$type)
-            stop("Rownames in data for second axis (", x2.axis.type,
-                 ") do not have the same type as the input data (",
-                 xaxis$type, ").")
+        {
+            if (x2.axis.type == "numeric" && NROW(x2) == NROW(chart.matrix))
+            {
+                rownames(x2) <- rownames(chart.matrix)
+                x2.axis.type <- xaxis$type
+            }
+            else
+                stop("Rownames in data for second axis (", x2.axis.type,
+                     ") do not have the same type as the input data (",
+                     xaxis$type, ").")
+        }
         x2.labels <- formatLabels(x2, "Column", x.tick.label.wrap, x.tick.label.wrap.nchar,
             x.tick.format, y2.tick.format)$labels
 

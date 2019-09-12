@@ -726,7 +726,8 @@ setMarginsForText <- function(margins, title, subtitle, footer,
     margins
 }
 
-setMarginsForLegend <- function(margins, showlegend, legend, text, type = "")
+setMarginsForLegend <- function(margins, showlegend, legend, text, 
+                                type = "", right.axis = FALSE)
 {
     if (showlegend && legend$x > 0.99)
     {
@@ -735,7 +736,7 @@ setMarginsForLegend <- function(margins, showlegend, legend, text, type = "")
             text <- levels(text)
         len <- max(c(0,nchar(unlist(strsplit(split = "<br>", text)))), na.rm = TRUE)
         margins$r <- min(300, 70 + (legend$font$size * max(0, len) * 0.7))
-    } else if (type != "radar")
+    } else if (type != "radar" && !right.axis)
         margins$r <- 20
     margins
 }
