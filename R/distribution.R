@@ -356,23 +356,25 @@ Distribution <-   function(x,
     default.bins <- is.null(maximum.bins) || is.na(maximum.bins)
     if (is.null(maximum.bins) || is.na(maximum.bins))
         maximum.bins <- min(length(x.sorted), 50)
-    bin.offset <- min(diff(x.sorted))/2
+    bin.min.size <- min(diff(x.sorted))
     if (density.type == "Histogram")
-        rng <- rng  + c(-1, 1) * bin.offset
+        rng <- rng  + c(-1, 1) * bin.min.size/2 # expand range if values are integers
     bin.size = (rng[2] - rng[1])/maximum.bins
-    
+
     # Override default bin sizes in certain cases which plotly does not handle well
     if (length(x.sorted) < 10 && default.bins)
     {
-        bin.size <- min(diff(x.sorted), na.rm = TRUE)
+        # Use smaller bins when there are only a few values. This avoids grouping
+        # values together if they are unevenly spaced inside larger range.
+        bin.size <- bin.min.size
         default.bins <- FALSE
     }
     if (bin.size < 0.5)
         default.bins <- FALSE
-    
+
     bins <- list(start = rng[1], end = rng[2],
                  size = if (!default.bins) bin.size else NULL)
-    
+
     # Creating the violin plot
     for (v in 1:n.variables)
     {
@@ -427,7 +429,7 @@ Distribution <-   function(x,
         annotations = list(setSubtitle(subtitle, subtitle.font, margins),
                            setTitle(title, title.font, margins),
                            setFooter(footer, footer.font, margins)),
-        hoverlabel = list(namelength = -1, 
+        hoverlabel = list(namelength = -1,
             font = list(size = hovertext.font.size, family = hovertext.font.family)),
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity))")
@@ -503,7 +505,7 @@ addDensities <- function(p,
         {
             # Unlike violin plots, box plots do not accept weights
             # For consistency with plotly we use type = 5 (midpoints)
-            # this differs from violin plot quantiles (type = 6; i/n+1) 
+            # this differs from violin plot quantiles (type = 6; i/n+1)
             five.num <- quantile(values, type = 5)
             names(five.num) <- c("Minimum:", "Lower quartile:", "Median:", "Upper quartile:", "Maximum:")
             five.pos <- rep(0, length(five.num))
