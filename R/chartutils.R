@@ -544,7 +544,8 @@ setAxis <- function(title, side, axisLabels, titlefont,
             if (with.bars && length(axisLabels$labels) <= 10 && length(axisLabels$labels) >= 2)
             {
                 tmp.dist <- difftime(axisLabels$ymd[2], axisLabels$ymd[1], units = "secs")
-                if (difftime(max(axisLabels$ymd), min(axisLabels$ymd), units = "secs") < 11 * tmp.dist)
+                hide.days <- length(unique(format(axisLabels$ymd, "%d"))) == 1 && tmp.dist > 86400
+                if (!hide.days && difftime(max(axisLabels$ymd), min(axisLabels$ymd), units = "secs") < 11 * tmp.dist)
                 {
                     tickmode <- "linear"
                     tick0 <- axisLabels$ymd[1]
@@ -581,7 +582,8 @@ setAxis <- function(title, side, axisLabels, titlefont,
         if (with.bars && length(axisLabels$labels) <= 10)
         {
             tmp.dist <- difftime(axisLabels$ymd[2], axisLabels$ymd[1], units = "secs")
-            if (difftime(max(axisLabels$ymd), min(axisLabels$ymd), units = "secs") < 11 * tmp.dist)
+            hide.days <- length(unique(format(axisLabels$ymd, "%d"))) == 1 && tmp.dist > 86400
+            if (!hide.days && difftime(max(axisLabels$ymd), min(axisLabels$ymd), units = "secs") < 11 * tmp.dist)
             {
                 tickmode <- "linear"
                 tick0 <- axisLabels$ymd[1]
