@@ -543,9 +543,18 @@ setAxis <- function(title, side, axisLabels, titlefont,
             # Override default tick positions if there are only a few bars
             if (with.bars && length(axisLabels$labels) <= 10 && length(axisLabels$labels) >= 2)
             {
-                tmp.dist <- difftime(axisLabels$ymd[2], axisLabels$ymd[1], units = "secs")
-                hide.days <- length(unique(format(axisLabels$ymd, "%d"))) == 1 && tmp.dist > 86400
-                if (!hide.days && difftime(max(axisLabels$ymd), min(axisLabels$ymd), units = "secs") < 11 * tmp.dist)
+                tmp.n <- length(axisLabels$ymd)
+                tmp.dist <- (difftime(axisLabels$ymd[tmp.n], axisLabels$ymd[1], units = "secs"))/
+                                (tmp.n - 1)
+                use.auto.ticks <- TRUE
+                if (tmp.dist <= 86400) # days
+                    use.auto.ticks <- FALSE
+                else if (tmp.dist <= 0.9 * 31536000) # whether to show day
+                    use.auto.ticks <- all(as.numeric(format(axisLabels$ymd, "%d")) == 1)
+                else # whether to show month/day
+                    use.auto.ticks <- all(as.numeric(format(axisLabels$ymd, "%j")) == 1)
+
+                if (!use.auto.ticks && difftime(max(axisLabels$ymd), min(axisLabels$ymd), units = "secs") < 11 * tmp.dist)
                 {
                     tickmode <- "linear"
                     tick0 <- axisLabels$ymd[1]
@@ -581,10 +590,20 @@ setAxis <- function(title, side, axisLabels, titlefont,
         # and if there will not be too many ticks
         if (with.bars && length(axisLabels$labels) <= 10)
         {
-            tmp.dist <- difftime(axisLabels$ymd[2], axisLabels$ymd[1], units = "secs")
-            hide.days <- length(unique(format(axisLabels$ymd, "%d"))) == 1 && tmp.dist > 86400
-            if (!hide.days && difftime(max(axisLabels$ymd), min(axisLabels$ymd), units = "secs") < 11 * tmp.dist)
+            tmp.n <- length(axisLabels$ymd)
+            tmp.dist <- (difftime(axisLabels$ymd[tmp.n], axisLabels$ymd[1], units = "secs"))/
+                            (tmp.n - 1)
+            use.auto.ticks <- TRUE
+            if (tmp.dist <= 86400) # days
+                use.auto.ticks <- FALSE
+            else if (tmp.dist <= 0.9 * 31536000) # whether to show day
+                use.auto.ticks <- all(as.numeric(format(axisLabels$ymd, "%d")) == 1)
+            else # whether to show month/day
+                use.auto.ticks <- all(as.numeric(format(axisLabels$ymd, "%j")) == 1)
+
+            if (!use.auto.ticks && difftime(max(axisLabels$ymd), min(axisLabels$ymd), units = "secs") < 11 * tmp.dist)
             {
+                # ensure that ticks are shown at each bar
                 tickmode <- "linear"
                 tick0 <- axisLabels$ymd[1]
                 tickdistance <- tmp.dist * 1000
