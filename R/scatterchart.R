@@ -453,7 +453,8 @@ Scatter <- function(x = NULL,
     }
 
     if (!is.null(scatter.colors) && scatter.colors.as.categorical)
-        groups <- as.factor(scatter.colors)
+        groups <- scatter.colors
+    
     if (is.factor(groups))
         g.list <- levels(groups) # fix legend order
     else
