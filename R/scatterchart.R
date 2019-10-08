@@ -457,8 +457,12 @@ Scatter <- function(x = NULL,
     
     if (is.factor(groups))
         g.list <- levels(groups) # fix legend order
+    else if (any(class(groups) %in% c("Date", "POSIXct", "POSIXt", "integer", "numeric")))
+        g.list <- sort(unique(groups)) 
     else
         g.list <- unique(groups)
+    if (length(colors) < length(g.list))
+        colors <- paste0(colors, rep("", length(g.list)))
 
     num.groups <- length(g.list)
     num.series <- if (scatter.colors.as.numeric) 1 else num.groups
