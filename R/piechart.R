@@ -110,8 +110,11 @@ Pie <- function(x,
     # Give warning about missing values
     ind.missing <- which(!is.finite(y.values) | y.values <= 0)
     if (length(ind.missing) > 0)
+    {
+        y.values[ind.missing] <- 0 # Needed for missing values in 2d tables
         warning("Missing and non-positive values have been omitted. The color palette may not be shown in the way expected. ",
             "To remove values before assigning colors use 'Inputs > ROW MANIPULATIONS > Hide empty rows'.")
+    }
 
     if (is.null(groups)) # 1-d data
     {
@@ -136,7 +139,7 @@ Pie <- function(x,
             warning("'Colors' does not have length equal to the number of groups (", num.groups, "). Colors will be recycled to make up the required number.")
 
         num.values <- if (!pie.subslice.colors.repeat) max(tapply(x.labels, groups, length))
-                      else                             length(unique(x.labels)) 
+                      else                             length(unique(x.labels))
         if (length(pie.values.colors) > 1 && length(pie.values.colors) < num.values)
             warning("'Outer ring colors' should be a vector of colors of length ", num.values, ".")
 
