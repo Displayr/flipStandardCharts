@@ -173,6 +173,7 @@ FindCountryFromRegions <- function(states) {
 }
 
 # Check and standarize input format
+#' @importFrom flipU TrimWhitespace
 cleanMapInput <- function(table)
 {
     # Correcting rowname errors for country names.
@@ -210,7 +211,7 @@ cleanMapInput <- function(table)
     if (!is.null(statistic))
         attr(table, "statistic") <- statistic
 
-    #rownames(table) <- trimws(rownames(table))
+    rownames(table) <- TrimWhitespace(rownames(table))
     table[!is.finite(table)] <- NA       # convert NaN, inf etc to NA
 
     return(table)

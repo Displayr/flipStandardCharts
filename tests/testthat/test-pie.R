@@ -75,3 +75,62 @@ test_that("DS-1768: One-column matrix", {
     expect_error(Pie(dat), NA)
 })
 
+dat <- c(Red = 1, Orange = 0, Blue = 2, Purple = 0, Green = 1)
+col <- structure(c(Red = "#FF0000", Orange = "#FF905A", Blue = "#0080FF",
+   Purple = "#8000FF", Green = "#008080")) #, palette.type = c(Red = "#FF0000"))
+
+
+datNA <- structure(list(V1 = c(11711, 93, NaN, 2762, NaN, NaN, NaN, NaN,
+NaN, NaN, NaN, NaN, NaN, NaN), `brand:datacracker` = c(NaN, NaN,
+NaN, NaN, NaN, NaN, NaN, 5, NaN, NaN, NaN, NaN, NaN, NaN), `brand:datacracker, dispatch:chrisfacer` = c(NaN,
+NaN, NaN, NaN, NaN, NaN, NaN, NaN, 93, NaN, 259, NaN, NaN, 90
+), `brand:datacracker, dispatch:chrisfacer, dispatch:timali` = c(NaN,
+NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, 1, NaN, NaN, NaN, NaN
+), `brand:datacracker, dispatch:chrisfacer, dispatch:timbock` = c(NaN,
+NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, 627, NaN, 1002
+), `brand:datacracker, dispatch:mattiasengdahl` = c(NaN, NaN,
+NaN, NaN, NaN, NaN, NaN, NaN, 594, 8, 16, 347, 22, NA), `brand:datacracker, dispatch:mattiasengdahl, dispatch:timali` = c(NaN,
+NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, 60, NaN, NaN, 68, NaN
+), `brand:datacracker, dispatch:mattiasengdahl, dispatch:timali, dispatch:timbock` = c(NaN,
+NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, 489, NaN
+), `brand:datacracker, dispatch:mattsteele, dispatch:timbock` = c(NaN,
+NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NA
+), `brand:datacracker, dispatch:timali` = c(NaN, NaN, NaN, NaN,
+NaN, NaN, NaN, NaN, NaN, 180, 26, 134, 130, 220), `brand:datacracker, dispatch:timali, dispatch:timbock` = c(NaN,
+NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, 460
+), `brand:datacracker, dispatch:timbock` = c(NaN, NaN, NaN, NaN,
+NaN, NaN, NaN, 169, 171, 325, 193, 1158, 1583, 664), `brand:displayr, dispatch:chrisfacer` = c(NaN,
+NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, 111, NaN, NaN
+), `brand:displayr, dispatch:chrisfacer, dispatch:timbock` = c(NaN,
+NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, 150, NaN, NaN
+), `brand:displayr, dispatch:mattiasengdahl` = c(NaN, NaN, NaN,
+NaN, NaN, NaN, NaN, 4, NaN, NaN, NaN, NaN, NaN, 2925), `brand:displayr, dispatch:timali` = c(NaN,
+NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, 137, NaN, 2, NaN, NaN
+), `brand:displayr, dispatch:timbock` = c(NaN, NaN, NaN, NaN,
+NaN, NaN, NaN, NaN, NaN, 157, 600, NaN, NaN, 423), `dispatch:chrisfacer` = c(NaN,
+43, 1034, 9, 156, 47, 1004, NaN, NaN, NaN, NaN, NaN, NaN, NaN
+), `dispatch:chrisfacer, dispatch:mattiasengdahl` = c(NaN, NaN,
+657, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN),
+    `dispatch:chrisfacer, dispatch:timbock` = c(NaN, NaN, NaN,
+    2532, NaN, 3, NaN, NaN, NaN, NaN, NaN, NaN, NaN, NaN), `dispatch:mattiasengdahl` = c(NaN,
+    163, 2730, 411, 2, 22, 50, 9, NaN, NaN, NaN, NaN, NaN, NaN
+    ), `dispatch:mattiasengdahl, dispatch:timbock` = c(NaN, 2344,
+    NaN, NaN, NaN, NaN, 249, NaN, NaN, NaN, NaN, NaN, NaN, NaN
+    ), `dispatch:timali` = c(NaN, 1737, 602, 3007, 2218, 2106,
+    57, NaN, NaN, NaN, NaN, NaN, NaN, NaN), `dispatch:timbock` = c(NaN,
+    113, 1938, 1028, 1666, 306, 1067, NaN, NaN, NaN, NaN, NaN,
+    NaN, NaN)), .Names = c("V1", "brand:datacracker", "brand:datacracker, dispatch:chrisfacer",
+"brand:datacracker, dispatch:chrisfacer, dispatch:timali", "brand:datacracker, dispatch:chrisfacer, dispatch:timbock",
+"brand:datacracker, dispatch:mattiasengdahl", "brand:datacracker, dispatch:mattiasengdahl, dispatch:timali",
+"brand:datacracker, dispatch:mattiasengdahl, dispatch:timali, dispatch:timbock",
+"brand:datacracker, dispatch:mattsteele, dispatch:timbock", "brand:datacracker, dispatch:timali",
+"brand:datacracker, dispatch:timali, dispatch:timbock", "brand:datacracker, dispatch:timbock",
+"brand:displayr, dispatch:chrisfacer", "brand:displayr, dispatch:chrisfacer, dispatch:timbock",
+"brand:displayr, dispatch:mattiasengdahl", "brand:displayr, dispatch:timali",
+"brand:displayr, dispatch:timbock", "dispatch:chrisfacer", "dispatch:chrisfacer, dispatch:mattiasengdahl",
+"dispatch:chrisfacer, dispatch:timbock", "dispatch:mattiasengdahl",
+"dispatch:mattiasengdahl, dispatch:timbock", "dispatch:timali",
+"dispatch:timbock"), class = "data.frame", row.names = c("2017-02-12",
+"2017-03-05", "2017-03-12", "2017-03-19", "2017-03-26", "2017-04-02",
+"2017-04-09", "2017-04-16", "2017-04-23", "2017-04-30", "2017-05-07",
+"2017-05-14", "2017-05-21", "2017-05-28"))
