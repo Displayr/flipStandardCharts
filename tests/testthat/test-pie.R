@@ -134,3 +134,15 @@ NaN, NaN, NaN, NaN, NaN, 157, 600, NaN, NaN, 423), `dispatch:chrisfacer` = c(NaN
 "2017-03-05", "2017-03-12", "2017-03-19", "2017-03-26", "2017-04-02",
 "2017-04-09", "2017-04-16", "2017-04-23", "2017-04-30", "2017-05-07",
 "2017-05-14", "2017-05-21", "2017-05-28"))
+
+test_that("Warning messages for missing values",
+{
+    # Warning message for 1-d Pie
+    expect_warning(Pie(datNA[10,]), "Missing and non-positive values have been omitted. The color palette may not be shown in the way expected. To remove values before assigning colors use 'Inputs > ROW MANIPULATIONS > Hide empty rows'.", fixed = TRUE)
+
+    # Warning message for 2-d Pie with 1 full column of missing values
+    expect_warning(Pie(datNA), "Missing and non-positive values have been omitted. The color palette may not be shown in the way expected. To remove values before assigning colors use 'Inputs > ROW/COLUMN MANIPULATIONS > Hide empty rows/columns'.", fixed = TRUE)
+
+    # Short warning if missing values are scattered
+    expect_warning(Pie(datNA[,-9]), "Missing and non-positive values have been omitted.$")
+})

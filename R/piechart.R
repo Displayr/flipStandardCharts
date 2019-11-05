@@ -111,9 +111,17 @@ Pie <- function(x,
     ind.missing <- which(!is.finite(y.values) | y.values <= 0)
     if (length(ind.missing) > 0)
     {
+
+        missing.msg <- "Missing and non-positive values have been omitted."
+        if (is.null(groups))
+            missing.msg <- paste(missing.msg, "The color palette may not be shown in the way expected.",
+                "To remove values before assigning colors use 'Inputs > ROW MANIPULATIONS > Hide empty rows'.")
+        else if (length(dim(x)) == 2 && (any(apply(x, 1, function(u) all(is.na(u)))) ||
+            any(apply(x, 2, function(u) all(is.na(u))))))
+            missing.msg <- paste(missing.msg, "The color palette may not be shown in the way expected.",
+                "To remove values before assigning colors use 'Inputs > ROW/COLUMN MANIPULATIONS > Hide empty rows/columns'.")
+        warning(missing.msg)
         y.values[ind.missing] <- 0 # Needed for missing values in 2d tables
-        warning("Missing and non-positive values have been omitted. The color palette may not be shown in the way expected. ",
-            "To remove values before assigning colors use 'Inputs > ROW MANIPULATIONS > Hide empty rows'.")
     }
 
     if (is.null(groups)) # 1-d data
