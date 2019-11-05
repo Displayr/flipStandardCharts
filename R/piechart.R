@@ -17,7 +17,11 @@
 #' @param pie.data.threshold Labels with values smaller than the theshold are not shown.
 #' @param data.label.prefix Character; prefix for data values.
 #' @param data.label.suffix Character; suffix for data values.
-#' @param hovertext.font.color Font color of hover text.
+#' @param hovertext.bg.color Color of the hover text background. If \code{NULL},
+#'   the background will be the same color as the segment.
+#' @param hovertext.bg.opacity Opacity of the hover text background.
+#' @param hovertext.font.color Font color of hover text. If \code{NULL}, this will be
+#'   black or white depending on the color of the hover text background.
 #' @param pie.border.color A single color for space around pie and between segments.
 #' @param pie.inner.radius The size of the inner radius of pie and
 #' donut charts as a proportion out of 100. Defaults to 70.
@@ -60,7 +64,9 @@ Pie <- function(x,
                      data.label.font.family = global.font.family,
                      hovertext.font.family = global.font.family,
                      hovertext.font.size = 10,
-                     hovertext.font.color = "#EFEFEF",
+                     hovertext.font.color = NULL,
+                     hovertext.bg.color = NULL,
+                     hovertext.bg.opacity = 0.8,
                      pie.groups.font.size = data.label.font.size,
                      pie.groups.font.color = data.label.font.color,
                      pie.groups.font.family = data.label.font.family,
@@ -228,6 +234,8 @@ Pie <- function(x,
                   tooltips.font.family = hovertext.font.family,
                   tooltips.font.size = hovertext.font.size,
                   tooltips.font.color = hovertext.font.color,
+                  tooltips.bg.color = hovertext.bg.color,
+                  tooltips.bg.opacity = hovertext.bg.opacity,
                   prefix = data.label.prefix,
                   suffix = data.label.suffix,
                   border.color = StripAlphaChannel(pie.border.color),

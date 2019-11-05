@@ -97,7 +97,8 @@ of colors}
 
 \item{hovertext.font.size}{Font size of hover text.}
 
-\item{hovertext.font.color}{Font color of hover text.}
+\item{hovertext.font.color}{Font color of hover text. If \code{NULL}, this will be
+black or white depending on the color of the hover text background.}
 
 \item{pie.groups.font.size}{Font size for group labels.}
 
