@@ -33,7 +33,7 @@ for (ff in funcs)
 
             cmd <- paste0("pp <-", ff, "(", test.cases[i], ")")
             if (ff == "Pie")
-                expect_warning(eval(parse(text=cmd)), "Missing and non-positive values have been omitted. The color palette may not be shown in the way expected.")
+                expect_warning(eval(parse(text=cmd)), "Missing and non-positive values have been omitted.")
             else
                 expect_error(eval(parse(text=cmd)), NA)
 
