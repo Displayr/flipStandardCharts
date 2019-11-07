@@ -75,3 +75,20 @@ for (ff in funcs)
         }
     }
 }
+
+test_that("No warnings",
+{
+    tb <- structure(c(`18 to 24` = 12.1877350324422, `25 to 29` = 11.630627444206,
+        `30 to 34` = 9.25844425314238, `35 to 39` = 12.3248525259547,
+        `40 to 44` = 11.6035118837654, `45 to 49` = 7.86797917530882,
+        `50 to 54` = 12.2980666219383, `55 to 64` = 15.8381229204451,
+        `65+` = 6.99066014279715), .Dim = 9L, .Dimnames = list(
+        c("18 to 24", "25 to 29", "30 to 34", "35 to 39", "40 to 44",
+        "45 to 49", "50 to 54", "55 to 64", "65+")),
+        statistic = "%", name = "D1 - Age", questions = c("D1 - Age",
+        "SUMMARY"), weight.name = "weight_", weight.label = "weighting")
+    expect_error(ColumnMultiColor(tb, data.label.show = TRUE, data.label.format = ".0f"), NA)
+    expect_error(BarMultiColor(tb, data.label.show = TRUE, data.label.format = ".0f"), NA)
+})
+pto
+

@@ -52,7 +52,7 @@ ColumnMultiColor(x, colors = ChartColors(max(1, length(x))),
   data.label.font.size = 10, data.label.font.color = global.font.color,
   data.label.format = "", data.label.prefix = "",
   data.label.suffix = "", data.label.threshold = NULL,
-  x.hovertext.format = data.label.format, tooltip.show = TRUE,
+  x.hovertext.format = x.tick.format, tooltip.show = TRUE,
   modebar.show = FALSE, bar.gap = 0.15)
 }
 \arguments{

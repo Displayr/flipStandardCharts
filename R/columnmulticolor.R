@@ -100,7 +100,7 @@ ColumnMultiColor <- function(x,
                     data.label.prefix = "",
                     data.label.suffix = "",
                     data.label.threshold = NULL,
-                    x.hovertext.format = data.label.format,
+                    x.hovertext.format = x.tick.format,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
                     bar.gap = 0.15)
