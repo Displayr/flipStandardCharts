@@ -90,5 +90,4 @@ test_that("No warnings",
     expect_error(ColumnMultiColor(tb, data.label.show = TRUE, data.label.format = ".0f"), NA)
     expect_error(BarMultiColor(tb, data.label.show = TRUE, data.label.format = ".0f"), NA)
 })
-pto
 
