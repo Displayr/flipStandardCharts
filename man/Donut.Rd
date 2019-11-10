@@ -18,7 +18,8 @@ Donut(x, colors = NULL, pie.subslice.colors = NULL,
   data.label.font.size = 10, data.label.font.color = global.font.color,
   data.label.font.family = global.font.family,
   hovertext.font.family = global.font.family, hovertext.font.size = 10,
-  hovertext.font.color = "#EFEFEF",
+  hovertext.font.color = NULL, hovertext.bg.color = NULL,
+  hovertext.bg.opacity = 0.8,
   pie.groups.font.size = data.label.font.size,
   pie.groups.font.color = data.label.font.color,
   pie.groups.font.family = data.label.font.family,
@@ -99,6 +100,11 @@ of colors}
 
 \item{hovertext.font.color}{Font color of hover text. If \code{NULL}, this will be
 black or white depending on the color of the hover text background.}
+
+\item{hovertext.bg.color}{Color of the hover text background. If \code{NULL},
+the background will be the same color as the segment.}
+
+\item{hovertext.bg.opacity}{Opacity of the hover text background.}
 
 \item{pie.groups.font.size}{Font size for group labels.}
 
