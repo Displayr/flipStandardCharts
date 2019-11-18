@@ -145,6 +145,7 @@ Pie <- function(x,
     {
         pie.groups.colors <- if (!is.null(colors)) StripAlphaChannel(colors) else NULL
         pie.values.colors <- if (!is.null(pie.subslice.colors)) StripAlphaChannel(pie.subslice.colors) else NULL
+        x.labels[which(nchar(x.labels)==0)] <- " "
 
         # We allow the number of groups to be 1
         # For dynamic data, one or more of the group categories may disappear occasionally
