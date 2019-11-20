@@ -59,6 +59,7 @@ Palm <- function(table,
                  hovertext.font.size = 11,
                  colors = NULL)
 {
+    ErrorIfNotEnoughData(table)
     stat <- attr(table, "statistic")
     #  Automatic formatting with statistic of '%'
     if (y.tick.format == "" && !is.null(stat) && grepl("%", stat, fixed = TRUE))

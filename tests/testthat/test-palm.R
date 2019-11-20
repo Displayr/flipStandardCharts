@@ -77,6 +77,12 @@ for (dat in dat.list)
     }
 }
 
+test_that("No data",
+{
+    expect_error(Palm(matrix(NA, 0, 0)), "There is not enough data to create a plot")
+    expect_error(Palm(c()), "The data is not in an appropriate format")
+
+})
 
 
 
