@@ -8,6 +8,7 @@
 #' @param x2 Optional input data which is shown as lines on top of the column chart.
 #'  a separate axis for these lines will be shown on the right.
 #' @param type One of "Column", "Stacked Column" or "100\% Stacked Column"
+#' @param annotation.list Optional list of annotations to modify the data labels.
 #' @param average.series y-values of additional data series which is shown as a line. Used by \code{SmallMultiples}.
 #' @param average.color Color of the \code{average.series} as a hex code or string
 #' @param fit.type Character; type of line of best fit. Can be one of "None", "Linear", "LOESS",
@@ -234,6 +235,7 @@
 #' charts.
 #' @importFrom grDevices rgb
 #' @importFrom flipChartBasics ChartColors
+#' @importFrom flipTables AsTidyTabularData
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
 #' @examples
@@ -247,6 +249,7 @@ Column <- function(x,
                     x2.colors = ChartColors(max(1, NCOL(x2), na.rm = TRUE)),
                     opacity = NULL,
                     type = "Column",
+                    annotation.list = NULL, #list(list(name="p", type = "arrow")),
                     fit.type = "None", # can be "Smooth" or anything else
                     fit.window.size = 2,
                     fit.line.colors = colors,
@@ -405,7 +408,11 @@ Column <- function(x,
         bar.gap <- 0.15
     }
 
-    chart.matrix <- checkMatrixNames(x)
+    # Store data for chart annotations
+    annot.data <- x
+
+    # Prepare data for plotting chart
+    chart.matrix <- checkMatrixNames(x, use.annot = TRUE)
     if (!is.numeric(chart.matrix))
         stop("Input data should be numeric.")
     x.labels.full <- rownames(chart.matrix)
@@ -674,15 +681,91 @@ Column <- function(x,
                 textpos <- "middle center"
             else
                 textpos <- ifelse(y.sign >= 0, "top center", "bottom center")
+            data.label.pos <- ifelse(y.sign < 0, 3, 0 + (is.stacked & !data.label.centered))
+            d.space <- gsub("\\S", " ", data.annotations$text[,i])
+
+            # variables:
+            #   color - from annot.data
+            #   size - scalar from user
+
+            # up caret: &#9650;
+            # down caret: &9660;
+            # up arrow (small head): &#x2191;
+            # down arrow: &#x2193;
+            # open circle: &#9711;
+            # closed circle: &#11044;
+            max.diam <- 0
+            for (j in seq_along(annotation.list))
+            {
+                a.tmp <- annotation.list[[j]]
+                if (grepl("circle", a.tmp$type) && a.tmp$size > max.diam)
+                    max.diam <- a.tmp$size + 0.01
+            }
+
+            for (j in seq_along(annotation.list))
+            {
+                a.tmp <- annotation.list[[j]]
+                if (is.null(a.tmp$data))
+                    a.tmp$data <- 1
+                tmp.dat <- if (length(dim(annot.data)) == 3) annot.data[,i,a.tmp$data] 
+                           else                              annot.data[,a.tmp$data]
+
+                if (a.tmp$type == "arrow")
+                {
+                    ind.up <- which(tmp.dat > a.tmp$threshold)
+                    ind.down <- which(tmp.dat < -a.tmp$threshold)
+                    if (is.null(a.tmp$pad) || !is.finite(a.tmp$pad))
+                        a.tmp$pad <- 5
+                    pad.str <- paste(rep(" ", a.tmp$pad), collapse = "")
+                    tmp.text <- rep("", nrow(chart.matrix))
+                    tmp.text[ind.up] <- paste0(d.space[ind.up], pad.str, "&#9650;")
+                    tmp.text[ind.down] <- paste0(d.space[ind.down], pad.str, "&#9660;")
+                    tmp.col <- rep("#000000", nrow(chart.matrix))
+                    tmp.col[ind.up] <- a.tmp$upcolor
+                    tmp.col[ind.down] <- a.tmp$downcolor
+                    tmp.font <- list(family = data.label.font.family,
+                                     size = data.label.font.size, color = tmp.col)
+                    tmp.pos <- data.label.pos
+                } else if (grepl("circle", a.tmp$type))
+                {
+                    ind.circle <- which(tmp.dat < 0.05)
+                    tmp.text <- rep("", nrow(chart.matrix))
+                    tmp.text[ind.circle] <- switch(a.tmp$type, 
+                        "open-circle" = "&#9711;", "filled-circle" = "&#11044;")
+                    tmp.font <- list(family = data.label.font.family,
+                                     size = a.tmp$size, color = a.tmp$color)
+                    tmp.pos <- max(0.01, (max.diam - a.tmp$size))
+                }
+
+                # determine content of annotation
+                #   'arrows' need to be prepended with spaces
+                #   'filled circles/open circle/thick border' add extra space below data labels
+                #       size is a scalar, but color can be a palette
+                #   'hide' is dealt with in the data.label trace
+                #   'text'????
+           
+                p <- add_trace(p, y = data.annotations$y[,i], cliponaxis = FALSE,
+                      type = "scatter", mode = "markers+text", name = legend.text[i],
+                      text = tmp.text, textfont = tmp.font,
+                      marker = list(color = "red", opacity = 0, size = tmp.pos),
+                      x = if (NCOL(chart.matrix) > 1) data.annotations$x[,i] else x,
+                      xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x",
+                      textposition = "top middle", 
+                      showlegend = FALSE, hoverinfo = "skip",
+                      legendgroup = if (is.stacked) "all" else i)
+
+            }
+            tmp.offset <- max(0, (max.diam - data.label.font.size))
+            data.label.pos <- data.label.pos + tmp.offset
             p <- add_trace(p, y = data.annotations$y[,i], cliponaxis = FALSE,
                       type = "scatter", mode = "markers+text", name = legend.text[i],
-                      marker = list(color = colors[i], opacity = 0,
-                      size = ifelse(y.sign < 0, 3, 0 + (is.stacked & !data.label.centered))),
+                      marker = list(color = colors[i], opacity = 0.0, size = data.label.pos),
                       x = if (NCOL(chart.matrix) > 1) data.annotations$x[,i] else x,
                       xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x",
                       text = data.annotations$text[,i], textfont = data.label.font[[i]],
                       textposition = textpos, showlegend = FALSE, hoverinfo = "skip",
                       legendgroup = if (is.stacked) "all" else i)
+
         }
     }
 
@@ -703,13 +786,32 @@ Column <- function(x,
         }
     }
 
-
+    # Add text elements surrounding chart 
     annotations <- NULL
     n <- length(annotations)
     annotations[[n+1]] <- setTitle(title, title.font, margins)
     annotations[[n+2]] <- setFooter(footer, footer.font, margins)
     annotations[[n+3]] <- setSubtitle(subtitle, subtitle.font, margins)
     annotations <- Filter(Negate(is.null), annotations)
+
+    # Add annotations on top of chart
+    if (!data.label.show && length(annotation.list) > 0)
+    {
+        warning("Annotations are ignored when data labels are not shown.")
+
+    } else if (FALSE)
+    {    
+        n <- length(annotations)
+        annot.y <- data.annotations$y
+        annot.x <- if (NCOL(chart.matrix) > 1) data.annotations$x else x.labels
+        annot.xaxis <- if (NCOL(chart.matrix) > 1) "x2" else "x"
+        for (i in seq_along(annotation.list))
+        {
+            annotations[[n+i]] <- list(x = annot.x[1], y = annot.y[1], text = "ABC",
+                yref = "y", xref = annot.xaxis, showarrow = FALSE, symbol = "circle")
+
+        }
+    }
 
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0

@@ -6,8 +6,8 @@
 \usage{
 Column(x, x2 = NULL, colors = ChartColors(max(1, NCOL(x), na.rm =
   TRUE)), x2.colors = ChartColors(max(1, NCOL(x2), na.rm = TRUE)),
-  opacity = NULL, type = "Column", fit.type = "None",
-  fit.window.size = 2, fit.line.colors = colors,
+  opacity = NULL, type = "Column", annotation.list = NULL,
+  fit.type = "None", fit.window.size = 2, fit.line.colors = colors,
   fit.ignore.last = FALSE, fit.line.type = "dot", fit.line.width = 1,
   fit.line.name = "Fitted", fit.line.opacity = 1,
   fit.CI.show = FALSE, fit.CI.colors = fit.line.colors,
@@ -98,6 +98,8 @@ specified as hex codes.}
 \item{opacity}{Opacity of bars as an alpha value (0 to 1).}
 
 \item{type}{One of "Column", "Stacked Column" or "100\% Stacked Column"}
+
+\item{annotation.list}{Optional list of annotations to modify the data labels.}
 
 \item{fit.type}{Character; type of line of best fit. Can be one of "None", "Linear", "LOESS",
 "Friedman's super smoother", "Cubic spline", "Moving average", "Centered moving average".}

@@ -71,7 +71,7 @@ minPosition <- function(x, n = 1)
 }
 
 #' @importFrom flipU CopyAttributes
-checkMatrixNames <- function(x, assign.col.names = TRUE)
+checkMatrixNames <- function(x, assign.col.names = TRUE, use.annot = FALSE)
 {
     tInfo <- attr(x, "tsp")
     if (length(tInfo) == 3)    # time-series object
@@ -81,7 +81,8 @@ checkMatrixNames <- function(x, assign.col.names = TRUE)
         rownames(x) <- t.seq
         return(x)
     }
-    x <- CopyAttributes(as.matrix(x), x)
+    new.x <- as.matrix(suppressWarnings(AsTidyTabularData(x)))
+    x <- CopyAttributes(new.x, x)
     if (is.null(rownames(x)))
         rownames(x) <- 1:nrow(x)
     if (is.null(colnames(x)) && assign.col.names)
