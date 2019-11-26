@@ -328,7 +328,7 @@ SmallMultiples <- function(x,
             line.thickness <- TextAsVector(line.thickness)
         line.thickness <- suppressWarnings(paste0(line.thickness, rep("", npanels)))
 
-        plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(.bind_mean(x[,i, drop = FALSE], average.series),
+        plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(.bind_mean(getColumn(x, i), average.series),
                                                      hovertext.show = c(TRUE, TRUE),
                                                      line.thickness = line.thickness[i],
                                                      colors = c(colors[i], average.color),
@@ -347,7 +347,7 @@ SmallMultiples <- function(x,
     }
     else if (chart.type == "GeographicMap")
     {
-         plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(x[,i, drop = FALSE],
+         plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(getColumn(x, i),
                                                      colors = colors,
                                                      mapping.package = "plotly",
                                                      legend.show = legend.show && (i == 1),
@@ -361,7 +361,7 @@ SmallMultiples <- function(x,
         margin.bottom <- 0
     } else if (chart.type == "Bar" || chart.type == "Column")
     {
-        plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(x[,i, drop = FALSE],
+        plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(getColumn(x, i),
                                                      colors = colors[i],
                                                      average.series = average.series,
                                                      average.color = average.color,
@@ -392,7 +392,7 @@ SmallMultiples <- function(x,
             warning("Only the first column of 'colors' was used. ",
                     "To apply a different for each panel, 'colors' should be a table with ",
                     npanels, " columns")
-        plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(x[,i, drop = FALSE],
+        plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(getColumn(x, i),
                                                      colors = if (color.as.matrix) colors[,i] else colors,
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
@@ -413,7 +413,7 @@ SmallMultiples <- function(x,
             warning("Only the first column of 'colors' was used. ",
                     "To apply a different for each panel, 'colors' should be a table with ",
                     npanels, " columns")
-        plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(x[,i, drop = FALSE],
+        plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(getColumn(x, i),
                                                      colors = if (color.as.matrix) colors[,i] else colors,
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
@@ -433,7 +433,7 @@ SmallMultiples <- function(x,
             line.thickness <- TextAsVector(line.thickness)
         line.thickness <- suppressWarnings(paste0(line.thickness, rep("", npanels)))
 
-        plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(.bind_mean(x[,i, drop = FALSE], average.series),
+        plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(.bind_mean(getColumn(x, i), average.series),
                                                      colors = c(colors[i], average.color),
                                                      line.thickness = line.thickness[i],
                                                      fit.line.colors = c(fit.line.colors[i], average.color),
@@ -494,3 +494,4 @@ SmallMultiples <- function(x,
     class(result) <- "StandardChart"
     result
 }
+

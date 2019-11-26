@@ -673,100 +673,16 @@ Column <- function(x,
         # Adjusted by controlling the size of the marker
         # Hover must be included because this trace hides existing hover items
         if (data.label.show)
-        {
-            y.sign <- getSign(data.annotations$y[,i], yaxis)
-            if (is.stacked)
-                y.sign <- -1 * y.sign
-            if (is.stacked && data.label.centered)
-                textpos <- "middle center"
-            else
-                textpos <- ifelse(y.sign >= 0, "top center", "bottom center")
-            data.label.pos <- ifelse(y.sign < 0, 3, 0 + (is.stacked & !data.label.centered))
-            d.space <- gsub("\\S", " ", data.annotations$text[,i])
+            p <- columnDataLabelAnnotations(p, 
+                    data.label.xpos = if (NCOL(chart.matrix) > 1) data.annotations$x[,i] else x,
+                    data.label.ypos = data.annotations$y[,i],
+                    data.label.text = data.annotations$text[,i],
+                    y.sign = getSign(data.annotations$y[,i], yaxis),
+                    annotation.list,
+                    annot.data, i,
+                    xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x",
+                    data.label.font[[i]], is.stacked, data.label.centered)
 
-            # variables:
-            #   color - from annot.data
-            #   size - scalar from user
-
-            # up caret: &#9650;
-            # down caret: &9660;
-            # up arrow (small head): &#x2191;
-            # down arrow: &#x2193;
-            # open circle: &#9711;
-            # closed circle: &#11044;
-            max.diam <- 0
-            for (j in seq_along(annotation.list))
-            {
-                a.tmp <- annotation.list[[j]]
-                if (grepl("circle", a.tmp$type) && a.tmp$size > max.diam)
-                    max.diam <- a.tmp$size + 0.01
-            }
-
-            for (j in seq_along(annotation.list))
-            {
-                a.tmp <- annotation.list[[j]]
-                if (is.null(a.tmp$data))
-                    a.tmp$data <- 1
-                tmp.dat <- if (length(dim(annot.data)) == 3) annot.data[,i,a.tmp$data] 
-                           else                              annot.data[,a.tmp$data]
-
-                if (a.tmp$type == "arrow")
-                {
-                    ind.up <- which(tmp.dat > a.tmp$threshold)
-                    ind.down <- which(tmp.dat < -a.tmp$threshold)
-                    if (is.null(a.tmp$pad) || !is.finite(a.tmp$pad))
-                        a.tmp$pad <- 5
-                    pad.str <- paste(rep(" ", a.tmp$pad), collapse = "")
-                    tmp.text <- rep("", nrow(chart.matrix))
-                    tmp.text[ind.up] <- paste0(d.space[ind.up], pad.str, "&#9650;")
-                    tmp.text[ind.down] <- paste0(d.space[ind.down], pad.str, "&#9660;")
-                    tmp.col <- rep("#000000", nrow(chart.matrix))
-                    tmp.col[ind.up] <- a.tmp$upcolor
-                    tmp.col[ind.down] <- a.tmp$downcolor
-                    tmp.font <- list(family = data.label.font.family,
-                                     size = data.label.font.size, color = tmp.col)
-                    tmp.pos <- data.label.pos
-                } else if (grepl("circle", a.tmp$type))
-                {
-                    ind.circle <- which(tmp.dat < 0.05)
-                    tmp.text <- rep("", nrow(chart.matrix))
-                    tmp.text[ind.circle] <- switch(a.tmp$type, 
-                        "open-circle" = "&#9711;", "filled-circle" = "&#11044;")
-                    tmp.font <- list(family = data.label.font.family,
-                                     size = a.tmp$size, color = a.tmp$color)
-                    tmp.pos <- max(0.01, (max.diam - a.tmp$size))
-                }
-
-                # determine content of annotation
-                #   'arrows' need to be prepended with spaces
-                #   'filled circles/open circle/thick border' add extra space below data labels
-                #       size is a scalar, but color can be a palette
-                #   'hide' is dealt with in the data.label trace
-                #   'text'????
-           
-                p <- add_trace(p, y = data.annotations$y[,i], cliponaxis = FALSE,
-                      type = "scatter", mode = "markers+text", name = legend.text[i],
-                      text = tmp.text, textfont = tmp.font,
-                      marker = list(color = "red", opacity = 0, size = tmp.pos),
-                      x = if (NCOL(chart.matrix) > 1) data.annotations$x[,i] else x,
-                      xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x",
-                      textposition = "top middle", 
-                      showlegend = FALSE, hoverinfo = "skip",
-                      legendgroup = if (is.stacked) "all" else i)
-
-            }
-            tmp.offset <- max(0, (max.diam - data.label.font.size))
-            data.label.pos <- data.label.pos + tmp.offset
-            p <- add_trace(p, y = data.annotations$y[,i], cliponaxis = FALSE,
-                      type = "scatter", mode = "markers+text", name = legend.text[i],
-                      marker = list(color = colors[i], opacity = 0.0, size = data.label.pos),
-                      x = if (NCOL(chart.matrix) > 1) data.annotations$x[,i] else x,
-                      xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x",
-                      text = data.annotations$text[,i], textfont = data.label.font[[i]],
-                      textposition = textpos, showlegend = FALSE, hoverinfo = "skip",
-                      legendgroup = if (is.stacked) "all" else i)
-
-        }
     }
 
     # Plot trace for second y-axis last so that they are shown last in legend
