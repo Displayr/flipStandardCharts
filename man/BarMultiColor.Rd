@@ -4,8 +4,8 @@
 \alias{BarMultiColor}
 \title{BarMultiColor}
 \usage{
-BarMultiColor(x, colors = ChartColors(max(1, length(x))),
-  opacity = NULL, global.font.family = "Arial",
+BarMultiColor(x, annotation.list = NULL, colors = ChartColors(max(1,
+  length(x))), opacity = NULL, global.font.family = "Arial",
   global.font.color = rgb(44, 44, 44, maxColorValue = 255), title = "",
   title.font.family = global.font.family,
   title.font.color = global.font.color, title.font.size = 16,
@@ -59,6 +59,8 @@ BarMultiColor(x, colors = ChartColors(max(1, length(x))),
 \item{x}{Input data may be a matrix or a vector, containing the height of the columns
 to be plotted, with the name/rownames used as the column names of the chart. Numeric and date labels
 will be parsed automatically.}
+
+\item{annotation.list}{Optional list of annotations to modify the data labels.}
 
 \item{colors}{Character; a vector containing one or more colors specified as hex codes.}
 

@@ -1271,17 +1271,27 @@ vectorize <- function(x, n, split = ",")
     return(suppressWarnings(paste0(x, rep("", n))))
 }
 
-columnDataLabelAnnotations <- function(p, data.label.xpos, data.label.ypos, 
-        data.label.text, y.sign, annotation.list, annot.data, i,
-        xaxis, data.label.font, is.stacked, data.label.centered)
+addDataLabelAnnotations <- function(p, type, data.label.xpos, data.label.ypos, 
+        data.label.text, data.label.sign, annotation.list, annot.data, i,
+        xaxis, yaxis, data.label.font, is.stacked, data.label.centered)
 {
-    if (is.stacked)
-        y.sign <- -1 * y.sign
-    if (is.stacked && data.label.centered)
-        textalign <- "middle center"
-    else
-        textalign <- ifelse(y.sign >= 0, "top center", "bottom center")
-    data.label.pos <- ifelse(y.sign < 0, 3, 0 + (is.stacked & !data.label.centered))
+    if (type == "Column")
+    {
+        if (is.stacked)
+            data.label.sign <- -1 * data.label.sign
+        if (is.stacked && data.label.centered)
+            textalign <- "middle center"
+        else
+            textalign <- ifelse(data.label.sign >= 0, "top center", "bottom center")
+        data.label.pos <- ifelse(data.label.sign < 0, 3, 0 + (is.stacked & !data.label.centered))
+    } else
+    {
+        textalign <- if (is.stacked) "middle center"
+                     else            ifelse(data.label.sign >= 0, "middle right", "middle left")
+        data.label.pos <- if (is.stacked) 0
+                          else            ifelse(data.label.xpos < 0, 7, 3) 
+    }
+
     d.space <- gsub("\\S", " ", data.label.text)
     n <- length(data.label.xpos)
 
@@ -1311,7 +1321,6 @@ columnDataLabelAnnotations <- function(p, data.label.xpos, data.label.ypos,
         tmp.dat <- if (length(dim(annot.data)) == 3) annot.data[,i,a.tmp$data] 
                    else                              annot.data[,a.tmp$data]
         
-
         if (a.tmp$type == "arrow")
         {
             ind.up <- which(tmp.dat > a.tmp$threshold)
@@ -1350,7 +1359,7 @@ columnDataLabelAnnotations <- function(p, data.label.xpos, data.label.ypos,
               type = "scatter", mode = "markers+text", 
               text = tmp.text, textfont = tmp.font,
               marker = list(opacity = 0, size = tmp.pos),
-              xaxis = xaxis,
+              xaxis = xaxis, yaxis = yaxis,
               textposition = textalign, 
               showlegend = FALSE, hoverinfo = "skip",
               legendgroup = if (is.stacked) "all" else i)
@@ -1361,7 +1370,7 @@ columnDataLabelAnnotations <- function(p, data.label.xpos, data.label.ypos,
     p <- add_trace(p, x = data.label.xpos, y = data.label.ypos, cliponaxis = FALSE,
               type = "scatter", mode = "markers+text", 
               marker = list(opacity = 0.0, size = data.label.pos),
-              xaxis = xaxis,
+              xaxis = xaxis, yaxis = yaxis,
               text = data.label.text, textfont = data.label.font,
               textposition = textalign, showlegend = FALSE, hoverinfo = "skip",
               legendgroup = if (is.stacked) "all" else i)

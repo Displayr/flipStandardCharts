@@ -673,14 +673,13 @@ Column <- function(x,
         # Adjusted by controlling the size of the marker
         # Hover must be included because this trace hides existing hover items
         if (data.label.show)
-            p <- columnDataLabelAnnotations(p, 
+            p <- addDataLabelAnnotations(p, type = "Column",
                     data.label.xpos = if (NCOL(chart.matrix) > 1) data.annotations$x[,i] else x,
                     data.label.ypos = data.annotations$y[,i],
                     data.label.text = data.annotations$text[,i],
-                    y.sign = getSign(data.annotations$y[,i], yaxis),
-                    annotation.list,
-                    annot.data, i,
-                    xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x",
+                    data.label.sign = getSign(data.annotations$y[,i], yaxis),
+                    annotation.list, annot.data, i,
+                    xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x", yaxis = "y",
                     data.label.font[[i]], is.stacked, data.label.centered)
 
     }

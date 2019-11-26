@@ -206,11 +206,11 @@ ColumnMultiColor <- function(x,
     {
         source.text <- formatByD3(y, data.label.format,
                data.label.prefix, data.label.suffix, decimals = 0)
-        p <- columnDataLabelAnnotations(p, 
+        p <- addDataLabelAnnotations(p, type = "Column",
                 data.label.xpos = x, data.label.ypos = y, data.label.text = source.text,
-                y.sign = getSign(y, yaxis),
+                data.label.sign = getSign(y, yaxis),
                 annotation.list, annot.data, i = 1,
-                xaxis = "x", data.label.font, is.stacked = FALSE, data.label.centered = FALSE)
+                xaxis = "x", yaxis = "y", data.label.font, is.stacked = FALSE, data.label.centered = FALSE)
     }
 
     annot <- list(setSubtitle(subtitle, subtitle.font, margins),
