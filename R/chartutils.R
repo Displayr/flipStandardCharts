@@ -1292,80 +1292,93 @@ addDataLabelAnnotations <- function(p, type, data.label.xpos, data.label.ypos,
                           else            ifelse(data.label.xpos < 0, 7, 3) 
     }
 
-    d.space <- gsub("\\S", " ", data.label.text)
     n <- length(data.label.xpos)
-
-    # variables:
-    #   color - from annot.data
-    #   size - scalar from user
-
-    # up caret: &#9650;
-    # down caret: &9660;
-    # up arrow (small head): &#x2191;
-    # down arrow: &#x2193;
-    # open circle: &#9711;
-    # closed circle: &#11044;
     max.diam <- 0
+    # add arrow and text annotations as a prefix/suffix to existing data labels
     for (j in seq_along(annotation.list))
     {
         a.tmp <- annotation.list[[j]]
         if (grepl("circle", a.tmp$type) && a.tmp$size > max.diam)
-            max.diam <- a.tmp$size + 0.01
+            max.diam <- a.tmp$size + 0.001
+        else
+        {
+            # If no data is specified use chart data
+            if (is.null(a.tmp$data))
+                a.tmp$data <- 1
+            tmp.dat <- if (length(dim(annot.data)) == 3) annot.data[,i,a.tmp$data] 
+                       else                              annot.data[,a.tmp$data]
+
+            ind.sel <- if (is.null(a.tmp$threstype) || is.null(a.tmp$threshold))    1:n
+                       else if (a.tmp$threstype == "above threshold")               which(tmp.dat > a.tmp$threshold)
+                       else                                                         which(tmp.dat < a.tmp$threshold)
+
+            new.style <- ""
+            if (!is.null(a.tmp$color))
+                new.style <- paste0(new.style, "color:", a.tmp$color, ";")
+            if (!is.null(a.tmp$size))
+                new.style <- paste0(new.style, "font-size:", a.tmp$size, ";")
+            if (!is.null(a.tmp$font.family))
+                new.style <- paste0(new.style, "font-family:", a.tmp$font.family, ";")
+            if (!is.null(a.tmp$font.weight))
+                new.style <- paste0(new.style, "font-weight:", a.tmp$font.weight, ";")
+            if (!is.null(a.tmp$font.style))
+                new.style <- paste0(new.style, "font-style:", a.tmp$font.style, ";")
+            
+            new.text <- ""
+            if (a.tmp$type == "Up arrow")
+                new.text <- "&#129049;"
+            else if (a.tmp$type == "Down arrow")
+                new.text <- "&#129051;"
+            else
+                new.text <- tmp.dat
+
+            if (nchar(new.style) > 0)
+                new.text <- paste0("<span style='", new.style, "'>", new.text, "</span>")
+
+            if (a.tmp$type == "Hide")
+                data.label.text[ind.sel] <- ""
+            else if (a.tmp$type == "Text (prefix)")
+                data.label.text[ind.sel] <- paste0(new.text, data.label.text[ind.sel])
+            else if (a.tmp$type == "Up arrow")
+                data.label.text[ind.sel] <- paste0(data.label.text[ind.sel], new.text)
+        }
     }
 
+    # Circle annotations
     for (j in seq_along(annotation.list))
     {
         a.tmp <- annotation.list[[j]]
-        if (is.null(a.tmp$data))
-            a.tmp$data <- 1
-        tmp.dat <- if (length(dim(annot.data)) == 3) annot.data[,i,a.tmp$data] 
-                   else                              annot.data[,a.tmp$data]
-        
-        if (a.tmp$type == "arrow")
+        if (grepl("circle", a.tmp$type))
         {
-            ind.up <- which(tmp.dat > a.tmp$threshold)
-            ind.down <- which(tmp.dat < -a.tmp$threshold)
-            if (is.null(a.tmp$pad) || !is.finite(a.tmp$pad))
-                a.tmp$pad <- 5
-            pad.str <- paste(rep(" ", a.tmp$pad), collapse = "")
+            if (is.null(a.tmp$data))
+                a.tmp$data <- 1
+            tmp.dat <- if (length(dim(annot.data)) == 3) annot.data[,i,a.tmp$data] 
+                       else                              annot.data[,a.tmp$data]
+
+            ind.sel <- if (is.null(a.tmp$threstype) || is.null(a.tmp$threshold))    1:n
+                       else if (a.tmp$threstype == "above threshold")               which(tmp.dat > a.tmp$threshold)
+                       else                                                         which(tmp.dat < a.tmp$threshold)
+
             tmp.text <- rep("", n)
-            tmp.text[ind.up] <- paste0(d.space[ind.up], pad.str, "&#9650;")
-            tmp.text[ind.down] <- paste0(d.space[ind.down], pad.str, "&#9660;")
-            tmp.col <- rep("#000000", n)
-            tmp.col[ind.up] <- a.tmp$upcolor
-            tmp.col[ind.down] <- a.tmp$downcolor
-            tmp.font <- list(family = data.label.font$family,
-                             size = data.label.font$size, color = tmp.col)
-            tmp.pos <- data.label.pos
-        } else if (grepl("circle", a.tmp$type))
-        {
-            ind.circle <- which(tmp.dat < 0.05)
-            tmp.text <- rep("", n)
-            tmp.text[ind.circle] <- switch(a.tmp$type, 
-                "open-circle" = "&#x26AA;", "filled-circle" = "&#x26AB;")
+            tmp.text[ind.sel] <- switch(a.tmp$type, 
+                "Unfilled circle" = "&#11096;", "Filled circle" = "&#11044;")
             tmp.font <- list(family = data.label.font$family,
                              size = a.tmp$size, color = a.tmp$color)
             tmp.pos <- max(0.01, (max.diam - a.tmp$size))
+        
+            p <- add_trace(p, x = data.label.xpos, y = data.label.ypos, cliponaxis = FALSE,
+                  type = "scatter", mode = "markers+text", 
+                  text = tmp.text, textfont = tmp.font,
+                  marker = list(opacity = 0, size = tmp.pos),
+                  xaxis = xaxis, yaxis = yaxis,
+                  textposition = textalign, 
+                  showlegend = FALSE, hoverinfo = "skip",
+                  legendgroup = if (is.stacked) "all" else i)
         }
-
-        # determine content of annotation
-        #   'arrows' need to be prepended with spaces
-        #   'filled circles/open circle/thick border' add extra space below data labels
-        #       size is a scalar, but color can be a palette
-        #   'hide' is dealt with in the data.label trace
-        #   'text'????
-   
-        p <- add_trace(p, x = data.label.xpos, y = data.label.ypos, cliponaxis = FALSE,
-              type = "scatter", mode = "markers+text", 
-              text = tmp.text, textfont = tmp.font,
-              marker = list(opacity = 0, size = tmp.pos),
-              xaxis = xaxis, yaxis = yaxis,
-              textposition = textalign, 
-              showlegend = FALSE, hoverinfo = "skip",
-              legendgroup = if (is.stacked) "all" else i)
-
     }
-    tmp.offset <- max(0, (max.diam - data.label.font$size))
+
+    # Add data annotations
+    tmp.offset <- max(0, (max.diam - data.label.font$size)) # so that the data labels sit in the center of the circle
     data.label.pos <- data.label.pos + tmp.offset
     p <- add_trace(p, x = data.label.xpos, y = data.label.ypos, cliponaxis = FALSE,
               type = "scatter", mode = "markers+text", 

@@ -18,7 +18,7 @@ data.with.stats <- structure(c(2.75482093663912, 6.06060606060606, 12.6721763085
 "Female", "NET"), c("Column %", "p")), name = "Income by Gender", questions = c("Income",
 "Gender"))
 
-Column(data.with.stats, data.label.show = TRUE, annotation.list=list(list(data="p", type = "arrow", threshold = 0.05, upcolor = "#0000FF", downcolor = "#FF0000", pad = 5)))
+Column(data.with.stats, data.label.show = TRUE, annotation.list=list(list(data="p", type = "Up arrow", threstype = "above threshold", threshold = 0.05, color = "#FF0000")))
 
 vec.with.stats <- structure(c(3.25318246110325, 10.8910891089109, 10.3253182461103,
 18.2461103253182, 22.3479490806223, 14.5685997171146, 8.34512022630834,
@@ -32,13 +32,13 @@ vec.with.stats <- structure(c(3.25318246110325, 10.8910891089109, 10.32531824611
     "NET"), c("%", "p")), name = "Income", questions = c("Income",
 "SUMMARY"))
 
-Column(vec.with.stats, data.label.show = TRUE, annotation.list=list(list(data="p", type = "arrow", threshold = 0.05, upcolor = "#0000FF", downcolor = "#FF0000", pad = 5)))
+Column(vec.with.stats, data.label.show = TRUE, annotation.list=list(list(data="p", type = "Up arrow", threstype = "above threshold", threshold = 0.05, color = "#0000FF")))
 
 Column(vec.with.stats, data.label.show = TRUE, annotation.list = list(list(data = "p",
-    type = "filled-circle", size = 30, color = "red"), list(data = "p", type = "open-circle", size = 30, color = "blue")))
+    type = "Filled circle", size = 30, color = "red", threstype = "above threshold", threshold = 0.05), list(data = "p", type = "Unfilled circle", size = 34, color = "blue")))
 
 Column(vec.with.stats, data.label.show = TRUE, annotation.list = list(list(data = "p",
-    type = "filled-circle", size = 35, color = "blue"), list(data = "p", type = "filled-circle", size = 30, color = "red")))
+    type = "Filled circle", size = 35, color = "blue"), list(data = "p", type = "Filled circle", size = 30, color = "red")))
 
 Column(vec.with.stats, data.label.show = TRUE, annotation.list = list(list(data = "p",
-    type = "filled-circle", size = 40, color = "red"), list(data = "p", type = "filled-circle", size = 30, color = "orange"), list(data = "p", type = "filled-circle", size = 20, color = "yellow")))
+    type = "Filled circle", size = 40, color = "red"), list(data = "p", type = "Filled circle", size = 30, color = "orange"), list(data = "p", type = "Filled circle", size = 20, color = "yellow")))
