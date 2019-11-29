@@ -1298,49 +1298,57 @@ addDataLabelAnnotations <- function(p, type, data.label.xpos, data.label.ypos,
     for (j in seq_along(annotation.list))
     {
         a.tmp <- annotation.list[[j]]
+        if (!is.null(a.tmp$threshold))
+            a.tmp$threshold <- as.numeric(a.tmp$threshold)
         if (grepl("circle", a.tmp$type) && a.tmp$size > max.diam)
             max.diam <- a.tmp$size + 0.001
         else
         {
-            # If no data is specified use chart data
-            if (is.null(a.tmp$data))
-                a.tmp$data <- 1
-            tmp.dat <- if (length(dim(annot.data)) == 3) annot.data[,i,a.tmp$data] 
-                       else                              annot.data[,a.tmp$data]
-
+            tmp.dat <- getAnnotData(annot.data, a.tmp$data, i)
             ind.sel <- if (is.null(a.tmp$threstype) || is.null(a.tmp$threshold))    1:n
                        else if (a.tmp$threstype == "above threshold")               which(tmp.dat > a.tmp$threshold)
                        else                                                         which(tmp.dat < a.tmp$threshold)
 
-            new.style <- ""
-            if (!is.null(a.tmp$color))
-                new.style <- paste0(new.style, "color:", a.tmp$color, ";")
-            if (!is.null(a.tmp$size))
-                new.style <- paste0(new.style, "font-size:", a.tmp$size, ";")
-            if (!is.null(a.tmp$font.family))
-                new.style <- paste0(new.style, "font-family:", a.tmp$font.family, ";")
-            if (!is.null(a.tmp$font.weight))
-                new.style <- paste0(new.style, "font-weight:", a.tmp$font.weight, ";")
-            if (!is.null(a.tmp$font.style))
-                new.style <- paste0(new.style, "font-style:", a.tmp$font.style, ";")
-            
-            new.text <- ""
-            if (a.tmp$type == "Up arrow")
-                new.text <- "&#129049;"
-            else if (a.tmp$type == "Down arrow")
-                new.text <- "&#129051;"
+            if (a.tmp$type == "Shadow")
+                data.label.text[ind.sel] <- paste0("<span style='text-shadow: 1px 1px ",
+                    a.tmp$size, "px ", a.tmp$color, ", -1px -1px ", a.tmp$size, "px ", a.tmp$color, ";'>",
+                    data.label.text[ind.sel], "</span>")
+            else if (a.tmp$type == "Border")
+                data.label.text[ind.sel] <- paste0("<span style='outline: ", a.tmp$width, "px solid ",
+                    a.tmp$color, "; outline-offset: ", a.tmp$offset, "px;'>", data.label.text[ind.sel], "</span>")
             else
-                new.text <- tmp.dat
+            {
+                new.style <- ""
+                if (!is.null(a.tmp$color))
+                    new.style <- paste0(new.style, "color:", a.tmp$color, ";")
+                if (!is.null(a.tmp$size))
+                    new.style <- paste0(new.style, "font-size:", a.tmp$size, ";")
+                if (!is.null(a.tmp$font.family))
+                    new.style <- paste0(new.style, "font-family:", a.tmp$font.family, ";")
+                if (!is.null(a.tmp$font.weight))
+                    new.style <- paste0(new.style, "font-weight:", a.tmp$font.weight, ";")
+                if (!is.null(a.tmp$font.style))
+                    new.style <- paste0(new.style, "font-style:", a.tmp$font.style, ";")
+                
+                new.text <- ""
+                if (a.tmp$type == "Up arrow")
+                    new.text <- "&#129049;"
+                else if (a.tmp$type == "Down arrow")
+                    new.text <- "&#129051;"
+                else
+                    new.text <- tmp.dat[ind.sel]
 
-            if (nchar(new.style) > 0)
-                new.text <- paste0("<span style='", new.style, "'>", new.text, "</span>")
+                if (nchar(new.style) > 0)
+                    new.text <- paste0("<span style='", new.style, "'>", new.text, "</span>")
 
-            if (a.tmp$type == "Hide")
-                data.label.text[ind.sel] <- ""
-            else if (a.tmp$type == "Text (prefix)")
-                data.label.text[ind.sel] <- paste0(new.text, data.label.text[ind.sel])
-            else if (a.tmp$type == "Up arrow")
-                data.label.text[ind.sel] <- paste0(data.label.text[ind.sel], new.text)
+                if (a.tmp$type == "Hide")
+                    data.label.text[ind.sel] <- ""
+                else if (a.tmp$type == "Text (prefix)")
+                    data.label.text[ind.sel] <- paste0(new.text, data.label.text[ind.sel])
+                else
+                    data.label.text[ind.sel] <- paste0(data.label.text[ind.sel], new.text)
+            }
+
         }
     }
 
@@ -1350,11 +1358,7 @@ addDataLabelAnnotations <- function(p, type, data.label.xpos, data.label.ypos,
         a.tmp <- annotation.list[[j]]
         if (grepl("circle", a.tmp$type))
         {
-            if (is.null(a.tmp$data))
-                a.tmp$data <- 1
-            tmp.dat <- if (length(dim(annot.data)) == 3) annot.data[,i,a.tmp$data] 
-                       else                              annot.data[,a.tmp$data]
-
+            tmp.dat <- getAnnotData(annot.data, a.tmp$data, i)
             ind.sel <- if (is.null(a.tmp$threstype) || is.null(a.tmp$threshold))    1:n
                        else if (a.tmp$threstype == "above threshold")               which(tmp.dat > a.tmp$threshold)
                        else                                                         which(tmp.dat < a.tmp$threshold)
@@ -1396,5 +1400,31 @@ getColumn <- function(x, i)
         return(x[,i,drop = FALSE])
     if (length(dim(x)) == 3)
         return(x[,i, , drop = FALSE])
+}
+
+getAnnotData <- function(data, name, series)
+{
+    if (is.null(data))
+        stop("No data has been provided for annotations")
+    if (is.null(dim(data)))
+        data <- as.matrix(data)
+    
+    d.dim <- dim(data)
+    d.len <- length(d.dim)
+    d.names <- dimnames(data)[[d.len]]
+    if (is.null(d.names))
+        d.names <- as.character(1:d.len)
+    ind <- match(paste0("", name), d.names)
+    if (is.na(ind))
+    {
+        warning("Annotation data does not contain a statistic named '", name, "'. ",
+                "Allowable names are: '", paste(d.names, collapse = "', '"), "'. ",
+                "Using the chart data instead.")
+        ind <- 1
+    }
+    if (length(d.dim) == 3)
+        return(data[,series, ind])
+    else
+        return(data[,ind])
 }
 
