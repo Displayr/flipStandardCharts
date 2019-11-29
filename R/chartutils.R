@@ -1385,7 +1385,7 @@ addDataLabelAnnotations <- function(p, type, data.label.xpos, data.label.ypos,
 
     # Add data annotations
     tmp.offset <- max(0, (max.diam - data.label.font$size)) # so that the data labels sit in the center of the circle
-    data.label.pos <- data.label.pos + tmp.offset
+    data.label.pos <- data.label.pos# + tmp.offset
     p <- add_trace(p, x = data.label.xpos, y = data.label.ypos, cliponaxis = FALSE,
               type = "scatter", mode = "markers+text", 
               marker = list(opacity = 0.0, size = data.label.pos),
