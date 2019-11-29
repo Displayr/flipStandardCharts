@@ -1300,9 +1300,11 @@ addDataLabelAnnotations <- function(p, type, data.label.xpos, data.label.ypos,
         a.tmp <- annotation.list[[j]]
         if (!is.null(a.tmp$threshold))
             a.tmp$threshold <- as.numeric(a.tmp$threshold)
-        if (grepl("circle", a.tmp$type) && a.tmp$size > max.diam)
-            max.diam <- a.tmp$size + 0.001
-        else
+        if (grepl("circle", a.tmp$type))
+        { 
+            if (a.tmp$size > max.diam)
+                max.diam <- a.tmp$size + 0.001
+        } else
         {
             tmp.dat <- getAnnotData(annot.data, a.tmp$data, i)
             ind.sel <- if (is.null(a.tmp$threstype) || is.null(a.tmp$threshold))    1:n
