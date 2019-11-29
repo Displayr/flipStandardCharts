@@ -81,7 +81,8 @@ checkMatrixNames <- function(x, assign.col.names = TRUE, use.annot = FALSE)
         rownames(x) <- t.seq
         return(x)
     }
-    new.x <- as.matrix(suppressWarnings(AsTidyTabularData(x)))
+    new.x <- if (length(dim(x)) == 3) as.matrix(x[,,1])
+             else as.matrix(suppressWarnings(AsTidyTabularData(x))) # handles 1d data + statistic properly
     x <- CopyAttributes(new.x, x)
     if (is.null(rownames(x)))
         rownames(x) <- 1:nrow(x)
@@ -1385,7 +1386,7 @@ addDataLabelAnnotations <- function(p, type, data.label.xpos, data.label.ypos,
 
     # Add data annotations
     tmp.offset <- max(0, (max.diam - data.label.font$size)) # so that the data labels sit in the center of the circle
-    data.label.pos <- data.label.pos# + tmp.offset
+    data.label.pos <- data.label.pos + tmp.offset
     p <- add_trace(p, x = data.label.xpos, y = data.label.ypos, cliponaxis = FALSE,
               type = "scatter", mode = "markers+text", 
               marker = list(opacity = 0.0, size = data.label.pos),
