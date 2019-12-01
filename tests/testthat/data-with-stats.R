@@ -47,7 +47,7 @@ Column(vec.with.stats, data.label.show = TRUE, annotation.list = list(list(data 
 aa <- list(list(type = "Filled circle", data = "p", threstype = "above threshold",
     threshold = "-Inf", color = "#FFFF80", size = 15, width = 1,
     offset = 0, font.family = "Arial", font.weight = "normal",
-    font.style = "normal"), list(type = "Shadow", data = "p",
+    font.style = "normal"), list(type = "Unfilled circle", data = "p",
     threstype = "above threshold", threshold = "0.05", color = "#CD343C",
-    size = 10, width = 1, offset = 0, font.family = "Arial",
+    size = 20, width = 1, offset = 0, font.family = "Arial",
     font.weight = "normal", font.style = "normal"))

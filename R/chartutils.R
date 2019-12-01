@@ -1371,7 +1371,12 @@ addDataLabelAnnotations <- function(p, type, data.label.xpos, data.label.ypos,
                 "Unfilled circle" = "&#11096;", "Filled circle" = "&#11044;")
             tmp.font <- list(family = data.label.font$family,
                              size = a.tmp$size, color = a.tmp$color)
+            
             tmp.pos <- max(0.01, (max.diam - a.tmp$size))
+            if (is.stacked)
+                tmp.pos <- 0.01
+            else if (type == "Bar" && !is.stacked)
+                tmp.pos <- tmp.pos + (nchar(data.label.text) * data.label.font$size * 0.3)
         
             p <- add_trace(p, x = data.label.xpos, y = data.label.ypos, cliponaxis = FALSE,
                   type = "scatter", mode = "markers+text", 
@@ -1385,7 +1390,8 @@ addDataLabelAnnotations <- function(p, type, data.label.xpos, data.label.ypos,
     }
 
     # Add data annotations
-    tmp.offset <- max(0, (max.diam - data.label.font$size)) # so that the data labels sit in the center of the circle
+    tmp.offset <- if (!is.stacked) max(0, (max.diam - data.label.font$size))
+                  else             0.01
     data.label.pos <- data.label.pos + tmp.offset
     p <- add_trace(p, x = data.label.xpos, y = data.label.ypos, cliponaxis = FALSE,
               type = "scatter", mode = "markers+text", 
