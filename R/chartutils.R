@@ -1294,6 +1294,7 @@ addDataLabelAnnotations <- function(p, type, data.label.xpos, data.label.ypos,
     }
 
     n <- length(data.label.xpos)
+    data.label.nchar <- nchar(data.label.text) # get length before adding html tags
     max.diam <- 0
     # add arrow and text annotations as a prefix/suffix to existing data labels
     for (j in seq_along(annotation.list))
@@ -1371,12 +1372,12 @@ addDataLabelAnnotations <- function(p, type, data.label.xpos, data.label.ypos,
                 "Circle - thick outline" = "<b>&#11096;</b>", "Circle - thin outline" = "&#11096;", "Circle - filled" = "&#11044;")
             tmp.font <- list(family = data.label.font$family, color = a.tmp$color,
                              size = a.tmp$size + (5 * (a.tmp$type != "Circle - filled")))
-            
+           
             tmp.pos <- max(0.01, (max.diam - a.tmp$size))
             if (is.stacked)
                 tmp.pos <- 0.01
             else if (type == "Bar" && !is.stacked)
-                tmp.pos <- tmp.pos + (nchar(data.label.text) * data.label.font$size * 0.3)
+                tmp.pos <- tmp.pos + (data.label.nchar * data.label.font$size * 0.3)
             if (type == "Column" && !is.stacked)
                 tmp.pos <- tmp.pos + (data.label.sign < 0) * 5
         

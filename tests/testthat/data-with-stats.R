@@ -44,10 +44,22 @@ Column(vec.with.stats, data.label.show = TRUE, annotation.list = list(list(data 
     type = "Circle - filled", size = 40, color = "red"), list(data = "p", type = "Circle - filled", size = 30, color = "orange"), list(data = "p", type = "Circle - filled", size = 20, color = "yellow")))
 
 
-aa <- list(list(type = "Circle - filled", data = "p", threstype = "above threshold",
-    threshold = "-Inf", color = "#FFFF80", size = 15, width = 1,
+aa <- list(list(type = "Circle - thin outline", data = "p", threstype = "above threshold",
+    threshold = "-Inf", color = "red", size = 20, width = 1,
     offset = 0, font.family = "Arial", font.weight = "normal",
     font.style = "normal"), list(type = "Circle - thick outline", data = "p",
-    threstype = "above threshold", threshold = "0.05", color = "#CD343C",
-    size = 15, width = 1, offset = 0, font.family = "Arial",
+    threstype = "above threshold", threshold = "0.05", color = "blue",
+    size = 20, width = 1, offset = 0, font.family = "Arial",
     font.weight = "normal", font.style = "normal"))
+
+a2 <- list(list(type = "Circle - filled", data = "p", threstype = "below threshold",
+    threshold = "0.10", color = "#C0C0C0", size = 25, width = NULL,
+    offset = NULL, font.family = NULL, font.weight = NULL, font.style = NULL),
+    list(type = "Circle - filled", data = "p", threstype = "below threshold",
+        threshold = "0.05", color = "#80FFFF", size = 20, width = NULL,
+        offset = NULL, font.family = NULL, font.weight = NULL,
+        font.style = NULL), list(type = "Arrow - up", data = "p",
+        threstype = "below threshold", threshold = "0.05", color = "#CD343C",
+        size = 15, width = NULL, offset = NULL, font.family = NULL,
+        font.weight = NULL, font.style = NULL))
+
