@@ -62,4 +62,12 @@ a2 <- list(list(type = "Circle - filled", data = "p", threstype = "below thresho
         threstype = "below threshold", threshold = "0.05", color = "#CD343C",
         size = 15, width = NULL, offset = NULL, font.family = NULL,
         font.weight = NULL, font.style = NULL))
+a3 <- list(list(type = "Circle - filled", data = "p", threstype = "above threshold",
+    threshold = "-Inf", color = "red", size = 20, width = 1,
+    offset = 0, font.family = "Arial", font.weight = "normal",
+    font.style = "normal"), list(type = "Circle - thin outline", data = "p",
+    threstype = "above threshold", threshold = "0.05", color = "blue",
+    size = 20, width = 1, offset = 0, font.family = "Arial",
+    font.weight = "normal", font.style = "normal"))
+
 

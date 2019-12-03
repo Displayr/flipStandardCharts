@@ -1304,8 +1304,13 @@ addDataLabelAnnotations <- function(p, type, data.label.xpos, data.label.ypos,
             a.tmp$threshold <- as.numeric(a.tmp$threshold)
         if (grepl("Circle", a.tmp$type))
         { 
+            if (a.tmp$type != "Circle - filled")
+            {
+                a.tmp$size <- a.tmp$size + 5
+                annotation.list[[j]]$size <- a.tmp$size
+            }   
             if (a.tmp$size > max.diam)
-                max.diam <- a.tmp$size + 0.001
+                max.diam <- a.tmp$size + 0.01
         } else
         {
             tmp.dat <- getAnnotData(annot.data, a.tmp$data, i)
@@ -1370,17 +1375,17 @@ addDataLabelAnnotations <- function(p, type, data.label.xpos, data.label.ypos,
             tmp.text <- rep("", n)
             tmp.text[ind.sel] <- switch(a.tmp$type, 
                 "Circle - thick outline" = "<b>&#11096;</b>", "Circle - thin outline" = "&#11096;", "Circle - filled" = "&#11044;")
-            tmp.font <- list(family = data.label.font$family, color = a.tmp$color,
-                             size = a.tmp$size + (5 * (a.tmp$type != "Circle - filled")))
-           
-            tmp.pos <- max(0.01, (max.diam - a.tmp$size))
-            if (is.stacked)
-                tmp.pos <- 0.01
-            else if (type == "Bar" && !is.stacked)
+            tmp.font <- list(family = data.label.font$family, color = a.tmp$color, size = a.tmp$size)
+
+            # Adjusting circle position
+            tmp.pos <- 0.01         # setting to 0 will result in default = 3 being used
+            if (!is.stacked)
+                tmp.pos <- max(0.01, (max.diam - a.tmp$size))
+            if (type == "Bar" && !is.stacked)
                 tmp.pos <- tmp.pos + (data.label.nchar * data.label.font$size * 0.3)
             if (type == "Column" && !is.stacked)
                 tmp.pos <- tmp.pos + (data.label.sign < 0) * 5
-        
+            
             p <- add_trace(p, x = data.label.xpos, y = data.label.ypos, cliponaxis = FALSE,
                   type = "scatter", mode = "markers+text", 
                   text = tmp.text, textfont = tmp.font,
