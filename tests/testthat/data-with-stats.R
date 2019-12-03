@@ -18,7 +18,7 @@ data.with.stats <- structure(c(2.75482093663912, 6.06060606060606, 12.6721763085
 "Female", "NET"), c("Column %", "p")), name = "Income by Gender", questions = c("Income",
 "Gender"))
 
-Column(data.with.stats, data.label.show = TRUE, annotation.list=list(list(data="p", type = "Up arrow", threstype = "above threshold", threshold = 0.05, color = "#FF0000")))
+Column(data.with.stats, data.label.show = TRUE, annotation.list=list(list(data="p", type = "Arrow - up", threstype = "above threshold", threshold = 0.05, color = "#FF0000", size = 15)))
 
 vec.with.stats <- structure(c(3.25318246110325, 10.8910891089109, 10.3253182461103,
 18.2461103253182, 22.3479490806223, 14.5685997171146, 8.34512022630834,
@@ -35,19 +35,19 @@ vec.with.stats <- structure(c(3.25318246110325, 10.8910891089109, 10.32531824611
 Column(vec.with.stats, data.label.show = TRUE, annotation.list=list(list(data="p", type = "Up arrow", threstype = "above threshold", threshold = 0.05, color = "#0000FF")))
 
 Column(vec.with.stats, data.label.show = TRUE, annotation.list = list(list(data = "p",
-    type = "Filled circle", size = 30, color = "red", threstype = "above threshold", threshold = 0.05), list(data = "p", type = "Unfilled circle", size = 34, color = "blue")))
+    type = "Circle - filled", size = 30, color = "red", threstype = "above threshold", threshold = 0.05), list(data = "p", type = "Circle - thin outline", size = 30, color = "blue")))
 
 Column(vec.with.stats, data.label.show = TRUE, annotation.list = list(list(data = "p",
     type = "Filled circle", size = 35, color = "blue"), list(data = "p", type = "Filled circle", size = 30, color = "red")))
 
 Column(vec.with.stats, data.label.show = TRUE, annotation.list = list(list(data = "p",
-    type = "Filled circle", size = 40, color = "red"), list(data = "p", type = "Filled circle", size = 30, color = "orange"), list(data = "p", type = "Filled circle", size = 20, color = "yellow")))
+    type = "Circle - filled", size = 40, color = "red"), list(data = "p", type = "Circle - filled", size = 30, color = "orange"), list(data = "p", type = "Circle - filled", size = 20, color = "yellow")))
 
 
-aa <- list(list(type = "Filled circle", data = "p", threstype = "above threshold",
+aa <- list(list(type = "Circle - filled", data = "p", threstype = "above threshold",
     threshold = "-Inf", color = "#FFFF80", size = 15, width = 1,
     offset = 0, font.family = "Arial", font.weight = "normal",
-    font.style = "normal"), list(type = "Unfilled circle", data = "p",
+    font.style = "normal"), list(type = "Circle - thick outline", data = "p",
     threstype = "above threshold", threshold = "0.05", color = "#CD343C",
-    size = 20, width = 1, offset = 0, font.family = "Arial",
+    size = 15, width = 1, offset = 0, font.family = "Arial",
     font.weight = "normal", font.style = "normal"))

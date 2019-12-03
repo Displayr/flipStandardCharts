@@ -1301,7 +1301,7 @@ addDataLabelAnnotations <- function(p, type, data.label.xpos, data.label.ypos,
         a.tmp <- annotation.list[[j]]
         if (!is.null(a.tmp$threshold))
             a.tmp$threshold <- as.numeric(a.tmp$threshold)
-        if (grepl("circle", a.tmp$type))
+        if (grepl("Circle", a.tmp$type))
         { 
             if (a.tmp$size > max.diam)
                 max.diam <- a.tmp$size + 0.001
@@ -1334,9 +1334,9 @@ addDataLabelAnnotations <- function(p, type, data.label.xpos, data.label.ypos,
                     new.style <- paste0(new.style, "font-style:", a.tmp$font.style, ";")
                 
                 new.text <- ""
-                if (a.tmp$type == "Up arrow")
+                if (a.tmp$type == "Arrow - up")
                     new.text <- "&#129049;"
-                else if (a.tmp$type == "Down arrow")
+                else if (a.tmp$type == "Arrow - down")
                     new.text <- "&#129051;"
                 else
                     new.text <- tmp.dat[ind.sel]
@@ -1346,7 +1346,7 @@ addDataLabelAnnotations <- function(p, type, data.label.xpos, data.label.ypos,
 
                 if (a.tmp$type == "Hide")
                     data.label.text[ind.sel] <- ""
-                else if (a.tmp$type == "Text (prefix)")
+                else if (a.tmp$type == "Text - before data labels")
                     data.label.text[ind.sel] <- paste0(new.text, data.label.text[ind.sel])
                 else
                     data.label.text[ind.sel] <- paste0(data.label.text[ind.sel], new.text)
@@ -1359,7 +1359,7 @@ addDataLabelAnnotations <- function(p, type, data.label.xpos, data.label.ypos,
     for (j in seq_along(annotation.list))
     {
         a.tmp <- annotation.list[[j]]
-        if (grepl("circle", a.tmp$type))
+        if (grepl("Circle", a.tmp$type))
         {
             tmp.dat <- getAnnotData(annot.data, a.tmp$data, i)
             ind.sel <- if (is.null(a.tmp$threstype) || is.null(a.tmp$threshold))    1:n
@@ -1368,20 +1368,22 @@ addDataLabelAnnotations <- function(p, type, data.label.xpos, data.label.ypos,
 
             tmp.text <- rep("", n)
             tmp.text[ind.sel] <- switch(a.tmp$type, 
-                "Unfilled circle" = "&#11096;", "Filled circle" = "&#11044;")
-            tmp.font <- list(family = data.label.font$family,
-                             size = a.tmp$size, color = a.tmp$color)
+                "Circle - thick outline" = "<b>&#11096;</b>", "Circle - thin outline" = "&#11096;", "Circle - filled" = "&#11044;")
+            tmp.font <- list(family = data.label.font$family, color = a.tmp$color,
+                             size = a.tmp$size + (5 * (a.tmp$type != "Circle - filled")))
             
             tmp.pos <- max(0.01, (max.diam - a.tmp$size))
             if (is.stacked)
                 tmp.pos <- 0.01
             else if (type == "Bar" && !is.stacked)
                 tmp.pos <- tmp.pos + (nchar(data.label.text) * data.label.font$size * 0.3)
+            if (type == "Column" && !is.stacked)
+                tmp.pos <- tmp.pos + (data.label.sign < 0) * 5
         
             p <- add_trace(p, x = data.label.xpos, y = data.label.ypos, cliponaxis = FALSE,
                   type = "scatter", mode = "markers+text", 
                   text = tmp.text, textfont = tmp.font,
-                  marker = list(opacity = 0, size = tmp.pos),
+                  marker = list(opacity = 0.0, color = "red", size = tmp.pos),
                   xaxis = xaxis, yaxis = yaxis,
                   textposition = textalign, 
                   showlegend = FALSE, hoverinfo = "skip",
