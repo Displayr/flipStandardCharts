@@ -1384,8 +1384,12 @@ addDataLabelAnnotations <- function(p, type, data.label.xpos, data.label.ypos,
                        else                                                         which(tmp.dat < a.tmp$threshold)
 
             tmp.text <- rep("", n)
-            tmp.text[ind.sel] <- switch(a.tmp$type, 
-                "Circle - thick outline" = "<b>&#11096;</b>", "Circle - thin outline" = "&#11096;", "Circle - filled" = "&#11044;")
+            left.pad <- paste(rep(" ", sum(a.tmp$shiftright, na.rm = TRUE)), collapse = "")
+            right.pad <- paste(rep(" ", sum(a.tmp$shiftleft, na.rm = TRUE)), collapse = "")
+            tmp.text[ind.sel] <- paste0(left.pad, switch(a.tmp$type, 
+                "Circle - thick outline" = "<b>&#11096;</b>", 
+                "Circle - thin outline" = "&#11096;", 
+                "Circle - filled" = "&#11044;"), right.pad)
             tmp.font <- list(family = data.label.font$family, color = a.tmp$color, size = a.tmp$size)
 
             # Adjusting circle position
