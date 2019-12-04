@@ -1346,6 +1346,14 @@ addDataLabelAnnotations <- function(p, type, data.label.xpos, data.label.ypos,
                     new.text <- "&#129051;"
                 else if (grepl("Text", a.tmp$type))
                     new.text <- formatByD3(tmp.dat[ind.sel], a.tmp$format, a.tmp$prefix, a.tmp$suffix)
+                else
+                {
+                    warning("Unknown annotation type: '", a.tmp$type, "'. ",
+                        "Valid types are 'Arrow - up', 'Arrow - down', 'Border', ",
+                        "'Circle - filled', 'Circle - thick outline', ", "'Circle - thin outline', ",
+                        "'Hide', 'Shadow', 'Text - after data label', 'Text - before data label'.")
+                    return(p)
+                }
 
                 if (nchar(new.style) > 0)
                     new.text <- paste0("<span style='", new.style, "'>", new.text, "</span>")

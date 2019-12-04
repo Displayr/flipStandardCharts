@@ -66,13 +66,16 @@ test_that("Annotations",
 {
     expect_error(Column(data.with.stats, data.label.show = TRUE, annotation.list=list(list(data="p", type = "Arrow - up", threstype = "above threshold", threshold = 0.05, color = "#FF0000", size = 15))), NA)
 
-    expect_error(Column(vec.with.stats, data.label.show = TRUE, annotation.list=list(list(data="p", type = "Up arrow", threstype = "above threshold", threshold = 0.05, color = "#0000FF"))), NA)
+    expect_error(Column(vec.with.stats, data.label.show = TRUE, annotation.list=list(list(data="p", type = "Arrow - up", threstype = "above threshold", threshold = 0.05, color = "#0000FF"))), NA)
 
     expect_error(Column(vec.with.stats, data.label.show = TRUE, annotation.list = list(list(data = "p",
     type = "Circle - filled", size = 30, color = "red", threstype = "above threshold", threshold = 0.05), list(data = "p", type = "Circle - thin outline", size = 30, color = "blue"))), NA)
 
     expect_error(Column(vec.with.stats, data.label.show = TRUE, annotation.list = list(list(data = "p",
-    type = "Filled circle", size = 35, color = "blue"), list(data = "p", type = "Filled circle", size = 30, color = "red"))), NA)
+    type = "Circle - filled", size = 35, color = "blue"), list(data = "p", type = "Circle - filled", size = 30, color = "red"))), NA)
+
+    expect_warning(Column(vec.with.stats, data.label.show = TRUE, annotation.list = list(list(data = "p",
+    type = "Filled circle", size = 35, color = "blue"), list(data = "p", type = "Filled circle", size = 30, color = "red"))), "Unknown annotation type")
 
     expect_error(Column(vec.with.stats, data.label.show = TRUE, annotation.list = list(list(data = "p",
     type = "Circle - filled", size = 40, color = "red"), list(data = "p", type = "Circle - filled", size = 30, color = "orange"), list(data = "p", type = "Circle - filled", size = 20, color = "yellow"))), NA)
@@ -85,6 +88,16 @@ test_that("Annotations",
 
     expect_error(SmallMultiples(data.with.stats, "ColumnMultiColor", data.label.show = TRUE, annotation.list = a4), NA)
 })
+
+dat2 <- structure(c(38.8888888888889, 0, 0, 11.1111111111111, 18.1818181818182,
+9.09090909090909, 0, 7.27272727272727, 17.5438596491228, 5.26315789473684,
+8.7719298245614, 10.5263157894737, 13.5416666666667, 7.29166666666667,
+13.5416666666667, 10.4166666666667, 18, 18, 18, 18, 55, 55, 55,
+55, 57, 57, 57, 57, 96, 96, 96, 96), .Dim = c(4L, 4L, 2L), .Dimnames = list(
+    c("18 to 24", "25 to 29", "30 to 34", "35 to 39"), c("Less than $15,000",
+    "$15,001 to $30,000", "$30,001 to $45,000", "$45,001 to $60,000"
+    ), c("Column %", "Column Sample Size")), name = "table.D1.Age.by.D2.Income", questions = c("D1 - Age",
+"D2 - Income"), assigned.rownames = TRUE)
 
 
 
