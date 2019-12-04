@@ -1301,7 +1301,10 @@ addDataLabelAnnotations <- function(p, type, data.label.xpos, data.label.ypos,
     {
         a.tmp <- annotation.list[[j]]
         if (!is.null(a.tmp$threshold))
+        {
             a.tmp$threshold <- as.numeric(a.tmp$threshold)
+            annotation.list[[j]]$threshold <- a.tmp$threshold
+        }
         if (grepl("Circle", a.tmp$type))
         { 
             if (a.tmp$type != "Circle - filled")
