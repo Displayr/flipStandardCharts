@@ -1344,8 +1344,8 @@ addDataLabelAnnotations <- function(p, type, data.label.xpos, data.label.ypos,
                     new.text <- "&#129049;"
                 else if (a.tmp$type == "Arrow - down")
                     new.text <- "&#129051;"
-                else
-                    new.text <- tmp.dat[ind.sel]
+                else if (grepl("Text", a.tmp$type))
+                    new.text <- formatByD3(tmp.dat[ind.sel], a.tmp$format, a.tmp$prefix, a.tmp$suffix)
 
                 if (nchar(new.style) > 0)
                     new.text <- paste0("<span style='", new.style, "'>", new.text, "</span>")
