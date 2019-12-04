@@ -1,3 +1,6 @@
+context("Annotations")
+library(flipStandardCharts)
+
 data.with.stats <- structure(c(2.75482093663912, 6.06060606060606, 12.6721763085399,
 18.4573002754821, 24.7933884297521, 15.9779614325069, 6.06060606060606,
 8.26446280991736, 4.95867768595041, 100, 3.77906976744186, 15.9883720930233,
@@ -18,8 +21,6 @@ data.with.stats <- structure(c(2.75482093663912, 6.06060606060606, 12.6721763085
 "Female", "NET"), c("Column %", "p")), name = "Income by Gender", questions = c("Income",
 "Gender"))
 
-Column(data.with.stats, data.label.show = TRUE, annotation.list=list(list(data="p", type = "Arrow - up", threstype = "above threshold", threshold = 0.05, color = "#FF0000", size = 15)))
-
 vec.with.stats <- structure(c(3.25318246110325, 10.8910891089109, 10.3253182461103,
 18.2461103253182, 22.3479490806223, 14.5685997171146, 8.34512022630834,
 6.22347949080622, 5.7991513437058, 100, 2.96352779053704e-11,
@@ -32,18 +33,7 @@ vec.with.stats <- structure(c(3.25318246110325, 10.8910891089109, 10.32531824611
     "NET"), c("%", "p")), name = "Income", questions = c("Income",
 "SUMMARY"))
 
-Column(vec.with.stats, data.label.show = TRUE, annotation.list=list(list(data="p", type = "Up arrow", threstype = "above threshold", threshold = 0.05, color = "#0000FF")))
-
-Column(vec.with.stats, data.label.show = TRUE, annotation.list = list(list(data = "p",
-    type = "Circle - filled", size = 30, color = "red", threstype = "above threshold", threshold = 0.05), list(data = "p", type = "Circle - thin outline", size = 30, color = "blue")))
-
-Column(vec.with.stats, data.label.show = TRUE, annotation.list = list(list(data = "p",
-    type = "Filled circle", size = 35, color = "blue"), list(data = "p", type = "Filled circle", size = 30, color = "red")))
-
-Column(vec.with.stats, data.label.show = TRUE, annotation.list = list(list(data = "p",
-    type = "Circle - filled", size = 40, color = "red"), list(data = "p", type = "Circle - filled", size = 30, color = "orange"), list(data = "p", type = "Circle - filled", size = 20, color = "yellow")))
-
-
+# Annotations
 aa <- list(list(type = "Circle - thin outline", data = "p", threstype = "above threshold",
     threshold = "-Inf", color = "red", size = 20, width = 1,
     offset = 0, font.family = "Arial", font.weight = "normal",
@@ -71,5 +61,32 @@ a3 <- list(list(type = "Circle - filled", data = "p", threstype = "above thresho
     font.weight = "normal", font.style = "normal"))
 
 a4 <- list(list(type = "Text - after data labels", data = "p", threstype = "above threshold", threshold = "-Inf", color = "red", size = 8, width = 1, font.family = "Arial", font.weight = "normal", font.style = "normal", format = ".3f", prefix = " +/-"))
+
+test_that("Annotations",
+{
+    expect_error(Column(data.with.stats, data.label.show = TRUE, annotation.list=list(list(data="p", type = "Arrow - up", threstype = "above threshold", threshold = 0.05, color = "#FF0000", size = 15))), NA)
+
+    expect_error(Column(vec.with.stats, data.label.show = TRUE, annotation.list=list(list(data="p", type = "Up arrow", threstype = "above threshold", threshold = 0.05, color = "#0000FF"))), NA)
+
+    expect_error(Column(vec.with.stats, data.label.show = TRUE, annotation.list = list(list(data = "p",
+    type = "Circle - filled", size = 30, color = "red", threstype = "above threshold", threshold = 0.05), list(data = "p", type = "Circle - thin outline", size = 30, color = "blue"))), NA)
+
+    expect_error(Column(vec.with.stats, data.label.show = TRUE, annotation.list = list(list(data = "p",
+    type = "Filled circle", size = 35, color = "blue"), list(data = "p", type = "Filled circle", size = 30, color = "red"))), NA)
+
+    expect_error(Column(vec.with.stats, data.label.show = TRUE, annotation.list = list(list(data = "p",
+    type = "Circle - filled", size = 40, color = "red"), list(data = "p", type = "Circle - filled", size = 30, color = "orange"), list(data = "p", type = "Circle - filled", size = 20, color = "yellow"))), NA)
+
+    expect_error(Bar(data.with.stats, data.label.show = TRUE, type = "Stacked", annotation.list = a1), NA)
+
+    expect_error(SmallMultiples(data.with.stats, "Bar", data.label.show = TRUE, annotation.list = a2), NA)
+
+    expect_error(SmallMultiples(data.with.stats, "BarMultiColor", data.label.show = TRUE, annotation.list = a3), NA)
+
+    expect_error(SmallMultiples(data.with.stats, "ColumnMultiColor", data.label.show = TRUE, annotation.list = a4), NA)
+})
+
+
+
 
 
