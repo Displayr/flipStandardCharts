@@ -34,7 +34,7 @@ vec.with.stats <- structure(c(3.25318246110325, 10.8910891089109, 10.32531824611
 "SUMMARY"))
 
 # Annotations
-aa <- list(list(type = "Circle - thin outline", data = "p", threstype = "above threshold",
+a1 <- list(list(type = "Circle - thin outline", data = "p", threstype = "above threshold",
     threshold = "-Inf", color = "red", size = 20, width = 1,
     offset = 0, font.family = "Arial", font.weight = "normal",
     font.style = "normal"), list(type = "Circle - thick outline", data = "p",
