@@ -4,10 +4,10 @@
 \alias{Bar}
 \title{Bar}
 \usage{
-Bar(x, type = "Bar", colors = ChartColors(max(1, ncol(x), na.rm =
-  TRUE)), opacity = NULL, fit.type = "None", fit.window.size = 2,
-  fit.line.colors = colors, fit.ignore.last = FALSE,
-  fit.line.type = "dot", fit.line.width = 1,
+Bar(x, type = "Bar", annotation.list = NULL,
+  colors = ChartColors(max(1, ncol(x), na.rm = TRUE)), opacity = NULL,
+  fit.type = "None", fit.window.size = 2, fit.line.colors = colors,
+  fit.ignore.last = FALSE, fit.line.type = "dot", fit.line.width = 1,
   fit.line.name = "Fitted", fit.line.opacity = 1,
   fit.CI.show = FALSE, fit.CI.colors = fit.line.colors,
   fit.CI.opacity = 0.4, global.font.family = "Arial",
@@ -74,6 +74,8 @@ to be plotted, with the name/rownames used as the column names of the chart. Num
 will be parsed automatically.}
 
 \item{type}{One of "Column", "Stacked Column" or "100\% Stacked Column"}
+
+\item{annotation.list}{Optional list of annotations to modify the data labels.}
 
 \item{colors}{Character; a vector containing one or more colors specified as hex codes.}
 

@@ -71,7 +71,7 @@ minPosition <- function(x, n = 1)
 }
 
 #' @importFrom flipU CopyAttributes
-checkMatrixNames <- function(x, assign.col.names = TRUE)
+checkMatrixNames <- function(x, assign.col.names = TRUE, use.annot = FALSE)
 {
     tInfo <- attr(x, "tsp")
     if (length(tInfo) == 3)    # time-series object
@@ -81,7 +81,9 @@ checkMatrixNames <- function(x, assign.col.names = TRUE)
         rownames(x) <- t.seq
         return(x)
     }
-    x <- CopyAttributes(as.matrix(x), x)
+    new.x <- if (length(dim(x)) == 3) as.matrix(x[,,1])
+             else as.matrix(suppressWarnings(AsTidyTabularData(x))) # handles 1d data + statistic properly
+    x <- CopyAttributes(new.x, x)
     if (is.null(rownames(x)))
         rownames(x) <- 1:nrow(x)
     if (is.null(colnames(x)) && assign.col.names)
@@ -1269,3 +1271,192 @@ vectorize <- function(x, n, split = ",")
         x <- TextAsVector(x, split = split)
     return(suppressWarnings(paste0(x, rep("", n))))
 }
+
+addDataLabelAnnotations <- function(p, type, data.label.xpos, data.label.ypos, 
+        data.label.text, data.label.sign, annotation.list, annot.data, i,
+        xaxis, yaxis, data.label.font, is.stacked, data.label.centered)
+{
+    if (type == "Column")
+    {
+        if (is.stacked)
+            data.label.sign <- -1 * data.label.sign
+        if (is.stacked && data.label.centered)
+            textalign <- "middle center"
+        else
+            textalign <- ifelse(data.label.sign >= 0, "top center", "bottom center")
+        data.label.pos <- ifelse(data.label.sign < 0, 3, 0 + (is.stacked & !data.label.centered))
+    } else
+    {
+        textalign <- if (is.stacked) "middle center"
+                     else            ifelse(data.label.sign >= 0, "middle right", "middle left")
+        data.label.pos <- if (is.stacked) 0
+                          else            ifelse(data.label.xpos < 0, 7, 3) 
+    }
+
+    n <- length(data.label.xpos)
+    data.label.nchar <- nchar(data.label.text) # get length before adding html tags
+    max.diam <- 0
+    # add arrow and text annotations as a prefix/suffix to existing data labels
+    for (j in seq_along(annotation.list))
+    {
+        a.tmp <- annotation.list[[j]]
+        if (!is.null(a.tmp$threshold))
+        {
+            a.tmp$threshold <- as.numeric(a.tmp$threshold)
+            annotation.list[[j]]$threshold <- a.tmp$threshold
+        }
+        if (grepl("Circle", a.tmp$type))
+        { 
+            if (a.tmp$type != "Circle - filled")
+            {
+                a.tmp$size <- a.tmp$size + 5
+                annotation.list[[j]]$size <- a.tmp$size
+            }   
+            if (a.tmp$size > max.diam)
+                max.diam <- a.tmp$size + 0.01
+        } else
+        {
+            tmp.dat <- getAnnotData(annot.data, a.tmp$data, i)
+            ind.sel <- if (is.null(a.tmp$threstype) || is.null(a.tmp$threshold))    1:n
+                       else if (a.tmp$threstype == "above threshold")               which(tmp.dat > a.tmp$threshold)
+                       else                                                         which(tmp.dat < a.tmp$threshold)
+
+            if (a.tmp$type == "Shadow")
+                data.label.text[ind.sel] <- paste0("<span style='text-shadow: 1px 1px ",
+                    a.tmp$size, "px ", a.tmp$color, ", -1px -1px ", a.tmp$size, "px ", a.tmp$color, ";'>",
+                    data.label.text[ind.sel], "</span>")
+            else if (a.tmp$type == "Border")
+                data.label.text[ind.sel] <- paste0("<span style='outline: ", a.tmp$width, "px solid ",
+                    a.tmp$color, "; outline-offset: ", a.tmp$offset, "px;'>", data.label.text[ind.sel], "</span>")
+            else
+            {
+                new.style <- ""
+                if (!is.null(a.tmp$color))
+                    new.style <- paste0(new.style, "color:", a.tmp$color, ";")
+                if (!is.null(a.tmp$size))
+                    new.style <- paste0(new.style, "font-size:", a.tmp$size, ";")
+                if (!is.null(a.tmp$font.family))
+                    new.style <- paste0(new.style, "font-family:", a.tmp$font.family, ";")
+                if (!is.null(a.tmp$font.weight))
+                    new.style <- paste0(new.style, "font-weight:", a.tmp$font.weight, ";")
+                if (!is.null(a.tmp$font.style))
+                    new.style <- paste0(new.style, "font-style:", a.tmp$font.style, ";")
+                
+                new.text <- ""
+                if (a.tmp$type == "Arrow - up")
+                    new.text <- "&#129049;"
+                else if (a.tmp$type == "Arrow - down")
+                    new.text <- "&#129051;"
+                else if (grepl("Text", a.tmp$type))
+                    new.text <- formatByD3(tmp.dat[ind.sel], a.tmp$format, a.tmp$prefix, a.tmp$suffix)
+                else
+                {
+                    warning("Unknown annotation type: '", a.tmp$type, "'. ",
+                        "Valid types are 'Arrow - up', 'Arrow - down', 'Border', ",
+                        "'Circle - filled', 'Circle - thick outline', ", "'Circle - thin outline', ",
+                        "'Hide', 'Shadow', 'Text - after data label', 'Text - before data label'.")
+                    return(p)
+                }
+
+                if (nchar(new.style) > 0)
+                    new.text <- paste0("<span style='", new.style, "'>", new.text, "</span>")
+
+                if (a.tmp$type == "Hide")
+                    data.label.text[ind.sel] <- ""
+                else if (a.tmp$type == "Text - before data labels")
+                    data.label.text[ind.sel] <- paste0(new.text, data.label.text[ind.sel])
+                else
+                    data.label.text[ind.sel] <- paste0(data.label.text[ind.sel], new.text)
+            }
+
+        }
+    }
+
+    # Circle annotations
+    for (j in seq_along(annotation.list))
+    {
+        a.tmp <- annotation.list[[j]]
+        if (grepl("Circle", a.tmp$type))
+        {
+            tmp.dat <- getAnnotData(annot.data, a.tmp$data, i)
+            ind.sel <- if (is.null(a.tmp$threstype) || is.null(a.tmp$threshold))    1:n
+                       else if (a.tmp$threstype == "above threshold")               which(tmp.dat > a.tmp$threshold)
+                       else                                                         which(tmp.dat < a.tmp$threshold)
+
+            tmp.text <- rep("", n)
+            left.pad <- paste(rep(" ", sum(a.tmp$shiftright, na.rm = TRUE)), collapse = "")
+            right.pad <- paste(rep(" ", sum(a.tmp$shiftleft, na.rm = TRUE)), collapse = "")
+            tmp.text[ind.sel] <- paste0(left.pad, switch(a.tmp$type, 
+                "Circle - thick outline" = "<b>&#11096;</b>", 
+                "Circle - thin outline" = "&#11096;", 
+                "Circle - filled" = "&#11044;"), right.pad)
+            tmp.font <- list(family = data.label.font$family, color = a.tmp$color, size = a.tmp$size)
+
+            # Adjusting circle position
+            tmp.pos <- 0.01         # setting to 0 will result in default = 3 being used
+            if (!is.stacked)
+                tmp.pos <- max(0.01, (max.diam - a.tmp$size))
+            if (type == "Bar" && !is.stacked)
+                tmp.pos <- tmp.pos + (data.label.nchar * data.label.font$size * 0.3)
+            if (type == "Column" && !is.stacked)
+                tmp.pos <- tmp.pos + (data.label.sign < 0) * 5
+            
+            p <- add_trace(p, x = data.label.xpos, y = data.label.ypos, cliponaxis = FALSE,
+                  type = "scatter", mode = "markers+text", 
+                  text = tmp.text, textfont = tmp.font,
+                  marker = list(opacity = 0.0, color = "red", size = tmp.pos),
+                  xaxis = xaxis, yaxis = yaxis,
+                  textposition = textalign, 
+                  showlegend = FALSE, hoverinfo = "skip",
+                  legendgroup = if (is.stacked) "all" else i)
+        }
+    }
+
+    # Add data annotations
+    tmp.offset <- if (!is.stacked) max(0, (max.diam - data.label.font$size))
+                  else             0.01
+    data.label.pos <- data.label.pos + tmp.offset
+    p <- add_trace(p, x = data.label.xpos, y = data.label.ypos, cliponaxis = FALSE,
+              type = "scatter", mode = "markers+text", 
+              marker = list(opacity = 0.0, size = data.label.pos),
+              xaxis = xaxis, yaxis = yaxis,
+              text = data.label.text, textfont = data.label.font,
+              textposition = textalign, showlegend = FALSE, hoverinfo = "skip",
+              legendgroup = if (is.stacked) "all" else i)
+
+}
+
+getColumn <- function(x, i)
+{
+    if (length(dim(x)) == 2)
+        return(x[,i,drop = FALSE])
+    if (length(dim(x)) == 3)
+        return(x[,i, , drop = FALSE])
+}
+
+getAnnotData <- function(data, name, series)
+{
+    if (is.null(data))
+        stop("No data has been provided for annotations")
+    if (is.null(dim(data)))
+        data <- as.matrix(data)
+    
+    d.dim <- dim(data)
+    d.len <- length(d.dim)
+    d.names <- dimnames(data)[[d.len]]
+    if (is.null(d.names))
+        d.names <- as.character(1:d.len)
+    ind <- match(paste0("", name), d.names)
+    if (is.na(ind))
+    {
+        warning("Annotation data does not contain a statistic named '", name, "'. ",
+                "Allowable names are: '", paste(d.names, collapse = "', '"), "'. ",
+                "Using the chart data instead.")
+        ind <- 1
+    }
+    if (length(d.dim) == 3)
+        return(data[,series, ind])
+    else
+        return(data[,ind])
+}
+

@@ -6,6 +6,7 @@
 #' @importFrom plotly plot_ly layout
 #' @export
 ColumnMultiColor <- function(x,
+                    annotation.list = NULL,
                     colors = ChartColors(max(1, length(x))),
                     opacity = NULL,
                     global.font.family = "Arial",
@@ -105,6 +106,8 @@ ColumnMultiColor <- function(x,
                     modebar.show = FALSE,
                     bar.gap = 0.15)
 {
+    ErrorIfNotEnoughData(x)
+    annot.data <- x
     if (length(dim(x)) > 1)
     {
         if (NROW(x) == 1 && NCOL(x) > 1)
@@ -115,7 +118,7 @@ ColumnMultiColor <- function(x,
             x <- x[,1]
         }
     }
-    chart.matrix <- checkMatrixNames(x)
+    chart.matrix <- checkMatrixNames(x, use.annot = TRUE)
     if (bar.gap < 0.0 || bar.gap >= 1.0)
     {
         warning("Parameter 'bar gap' must be between 0 and 1. ",
@@ -203,20 +206,12 @@ ColumnMultiColor <- function(x,
     {
         source.text <- formatByD3(y, data.label.format,
                data.label.prefix, data.label.suffix, decimals = 0)
-        y.sign <- getSign(y, yaxis)
-        p <- add_trace(p, y = y, x = x, text = source.text, showlegend = FALSE,
-               type = "scatter", mode = "markers+text", hoverinfo = "skip",
-               textfont = data.label.font, marker = list(size = 3, opacity = 0),
-               textposition = ifelse(y.sign >= 0, "top center", "bottom center"),
-               cliponaxis = FALSE)
+        p <- addDataLabelAnnotations(p, type = "Column",
+                data.label.xpos = x, data.label.ypos = y, data.label.text = source.text,
+                data.label.sign = getSign(y, yaxis),
+                annotation.list, annot.data, i = 1,
+                xaxis = "x", yaxis = "y", data.label.font, is.stacked = FALSE, data.label.centered = FALSE)
     }
-
-    # add scatter trace to ensure hover is always shown
-    #p <- add_trace(p, x = x, y = x, type = "scatter", name = x,
-    #               mode = "markers", marker = list(color = colors, opacity = 0),
-    #               hoverlabel = list(font = list(color = autoFontColor(colors),
-    #               size = hovertext.font.size, family = hovertext.font.family),
-    #               bgcolor = colors), hovertemplate = "%{y}<extra>%{x}</extra>")
 
     annot <- list(setSubtitle(subtitle, subtitle.font, margins),
                            setTitle(title, title.font, margins),

@@ -17,6 +17,7 @@
 #' @export
 Bar <- function(x,
                     type = "Bar",
+                    annotation.list = NULL,
                     colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
                     opacity = NULL,
                     fit.type = "None", # can be "Smooth" or anything else
@@ -151,8 +152,9 @@ Bar <- function(x,
                 "Invalid 'bar gap' set to default value of 0.15.")
         bar.gap <- 0.15
     }
+    annot.data <- x
 
-    chart.matrix <- checkMatrixNames(x)
+    chart.matrix <- checkMatrixNames(x, use.annot = TRUE)
     is.stacked <- grepl("Stacked", type, fixed=T)
     if (is.stacked && ncol(chart.matrix) < 2)
     {
@@ -358,19 +360,14 @@ Bar <- function(x,
         # Adjusted by controlling the size of the marker
         if (data.label.show)
         {
-            x.sign <- getSign(data.annotations$x[,i], xaxis)
-            x.diff <- if (is.stacked) 0 else diff(range(data.annotations$x))/100
-            textpos <- if (is.stacked) "middle center"
-                       else            ifelse(x.sign >= 0, "middle right", "middle left")
-            p <- add_trace(p, x = data.annotations$x[,i] + x.diff, type = "scatter",
-                      mode = "markers+text", marker = list(color = colors[i], opacity = 0,
-                      size = ifelse(!is.stacked & data.annotations$x[,i] < 0, 7, 0)),
-                      y = if (NCOL(chart.matrix) > 1) data.annotations$y[,i] else x,
-                      yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y",
-                      text = data.annotations$text[,i], textposition = textpos,
-                      textfont = data.label.font[[i]], hoverinfo = "skip",
-                      cliponaxis = FALSE,
-                      showlegend = FALSE, legendgroup = if (is.stacked) "all" else i)
+            p <- addDataLabelAnnotations(p, type = "Bar",
+                    data.label.xpos = data.annotations$x[,i], 
+                    data.label.ypos = if (NCOL(chart.matrix) > 1) data.annotations$y[,i] else x,
+                    data.label.text = data.annotations$text[,i],
+                    data.label.sign = getSign(data.annotations$x[,i], xaxis),
+                    annotation.list, annot.data, i,
+                    yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y", xaxis = "x",
+                    data.label.font[[i]], is.stacked, data.label.centered = FALSE)
         }
 
         # Add scatter trace to ensure hover is always shown

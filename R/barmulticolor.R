@@ -6,6 +6,7 @@
 #' @importFrom plotly plot_ly layout
 #' @export
 BarMultiColor <- function(x,
+                    annotation.list = NULL,
                     colors = ChartColors(max(1, length(x))),
                     opacity = NULL,
                     global.font.family = "Arial",
@@ -105,6 +106,8 @@ BarMultiColor <- function(x,
                     modebar.show = FALSE,
                     bar.gap = 0.15)
 {
+    ErrorIfNotEnoughData(x)
+    annot.data <- x
     if (length(dim(x)) > 1)
     {
         if (NROW(x) == 1 && NCOL(x) > 1)
@@ -115,7 +118,7 @@ BarMultiColor <- function(x,
             x <- x[,1]
         }
     }
-    chart.matrix <- checkMatrixNames(x)
+    chart.matrix <- checkMatrixNames(x, use.annot = TRUE)
     if (bar.gap < 0.0 || bar.gap >= 1.0)
     {
         warning("Parameter 'bar gap' must be between 0 and 1. ",
@@ -209,12 +212,11 @@ BarMultiColor <- function(x,
     {
         source.text <- formatByD3(y, data.label.format,
                data.label.prefix, data.label.suffix, decimals = 0)
-        x.sign <- getSign(y, xaxis)
-        p <- add_trace(p, y = x, x = y, text = source.text, showlegend = FALSE,
-               type = "scatter", mode = "markers+text", hoverinfo = "skip",
-               textfont = data.label.font, marker = list(size = 3, opacity = 0),
-               textposition = ifelse(x.sign >= 0, "middle right", "middle left"),
-               cliponaxis = FALSE)
+        p <- addDataLabelAnnotations(p, type = "Bar",
+                data.label.xpos = y, data.label.ypos = x, data.label.text = source.text,
+                data.label.sign = getSign(y, xaxis),
+                annotation.list, annot.data, i = 1,
+                xaxis = "x", yaxis = "y", data.label.font, is.stacked = FALSE, data.label.centered = FALSE)
     }
 
     # add scatter trace to ensure hover is always shown
