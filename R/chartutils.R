@@ -1349,6 +1349,8 @@ addDataLabelAnnotations <- function(p, type, data.label.xpos, data.label.ypos,
                     new.text <- "&#129051;"
                 else if (grepl("Text", a.tmp$type))
                     new.text <- formatByD3(tmp.dat[ind.sel], a.tmp$format, a.tmp$prefix, a.tmp$suffix)
+                else if (a.tmp$type == "Hide")
+                    new.text <- ""
                 else
                 {
                     warning("Unknown annotation type: '", a.tmp$type, "'. ",
