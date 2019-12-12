@@ -83,6 +83,14 @@ checkMatrixNames <- function(x, assign.col.names = TRUE, use.annot = FALSE)
     }
     new.x <- if (length(dim(x)) == 3) as.matrix(x[,,1])
              else as.matrix(suppressWarnings(AsTidyTabularData(x))) # handles 1d data + statistic properly
+    old.dim <- dim(new.x)
+    old.names <- dimnames(new.x)
+    if (is.character(new.x))
+    {
+        new.x <- as.numeric(new.x)
+        dim(new.x) <- old.dim
+        dimnames(new.x) <- old.names
+    }
     x <- CopyAttributes(new.x, x)
     if (is.null(rownames(x)))
         rownames(x) <- 1:nrow(x)
@@ -1302,8 +1310,12 @@ addDataLabelAnnotations <- function(p, type, data.label.xpos, data.label.ypos,
         a.tmp <- annotation.list[[j]]
         if (!is.null(a.tmp$threshold))
         {
-            a.tmp$threshold <- as.numeric(a.tmp$threshold)
-            annotation.list[[j]]$threshold <- a.tmp$threshold
+            tmp.thres <- suppressWarnings(a.tmp$threshold)
+            if (!is.na(tmp.thres))
+            {
+                a.tmp$threshold <- tmp.thres
+                annotation.list[[j]]$threshold <- tmp.thres
+            }
         }
         if (grepl("Circle", a.tmp$type))
         { 

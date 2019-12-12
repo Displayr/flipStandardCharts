@@ -99,6 +99,43 @@ dat2 <- structure(c(38.8888888888889, 0, 0, 11.1111111111111, 18.1818181818182,
     ), c("Column %", "Column Sample Size")), name = "table.D1.Age.by.D2.Income", questions = c("D1 - Age",
 "D2 - Income"), assigned.rownames = TRUE)
 
+dat.with.text <- structure(c("0", "8.55263157894737", "7.23684210526316", "7.89473684210526",
+"9.86842105263158", "10.5263157894737", "8.55263157894737", "10.5263157894737",
+"21.0526315789474", "15.7894736842105", "100", "0", "4.375",
+"7.5", "11.875", "11.875", "11.25", "9.375", "10.625", "17.5",
+"15.625", "100", "-", "B", NA, NA, NA, NA, NA, NA, "b", NA, "-",
+"-", NA, NA, "A", "a", NA, NA, NA, NA, NA, "-"), .Dim = c(11L,
+2L, 2L), .Dimnames = list(c("Less than 18 years", "18 to 24 years",
+"25 to 29 years", "30 to 34 years", "35 to 39 years", "40 to 44 years",
+"45 to 49 years", "50 to 54 years", "55 to 64 years", "65 years or more",
+"NET"), c("Male", "Female"), c("Column %", "Column Comparisons"
+)), name = "table.Q2.Age.by.Q1.Gender", questions = c("Q2. Age",
+"Q1. Gender"))
+
+test_that("Input matrix converted to character",
+{
+    expect_error(Column(dat.with.text, data.label.show = TRUE,
+        annotation.list = list(
+        list(type = "Text = after data labels", data = "Column Comparisons",
+             font.style = "normal", font.weight = "normal",
+             format = ".3f", prefix = "", suffix = "",
+             threshold = "-", threstype = "above threshold",
+             color = "red", font.family = "Courier New"))), NA)
+
+})
+
+test_that("No errors for all chart types",
+{
+    charting.funcs <- c("Column", "Bar", "Area", "Line", "Pie", "Radar", #"Donut",
+                    "Scatter", "LabeledScatter")
+                    #"Box", "Bean", "Distribution", "Density", "Violin")
+    for (func in charting.funcs)
+    {
+        cmd <- paste0("pp <- ", func, "(dat.with.text)")
+        expect_error(suppressWarnings(eval(parse(text=cmd))), NA)
+    }
+})
+
 
 
 

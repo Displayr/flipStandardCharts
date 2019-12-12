@@ -84,7 +84,7 @@ Pie <- function(x,
             x.labels <- as.character(1:length(x))
         y.values <- as.numeric(x)
     }
-    else if (is.matrix(x) && is.numeric(x) || all(unlist(lapply(x, is.numeric))))
+    else if (is.array(x) || is.matrix(x) && is.numeric(x) || all(unlist(lapply(x, is.numeric))))
     {
         x <- checkMatrixNames(x)
         x.labels <- rep(rownames(x), ncol(x))
