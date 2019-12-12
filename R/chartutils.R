@@ -83,6 +83,14 @@ checkMatrixNames <- function(x, assign.col.names = TRUE, use.annot = FALSE)
     }
     new.x <- if (length(dim(x)) == 3) as.matrix(x[,,1])
              else as.matrix(suppressWarnings(AsTidyTabularData(x))) # handles 1d data + statistic properly
+    old.dim <- dim(new.x)
+    old.names <- dimnames(new.x)
+    if (is.character(new.x))
+    {
+        new.x <- as.numeric(new.x)
+        dim(new.x) <- old.dim
+        dimnames(new.x) <- old.names
+    }
     x <- CopyAttributes(new.x, x)
     if (is.null(rownames(x)))
         rownames(x) <- 1:nrow(x)
@@ -1302,8 +1310,12 @@ addDataLabelAnnotations <- function(p, type, data.label.xpos, data.label.ypos,
         a.tmp <- annotation.list[[j]]
         if (!is.null(a.tmp$threshold))
         {
-            a.tmp$threshold <- as.numeric(a.tmp$threshold)
-            annotation.list[[j]]$threshold <- a.tmp$threshold
+            tmp.thres <- suppressWarnings(a.tmp$threshold)
+            if (!is.na(tmp.thres))
+            {
+                a.tmp$threshold <- tmp.thres
+                annotation.list[[j]]$threshold <- tmp.thres
+            }
         }
         if (grepl("Circle", a.tmp$type))
         { 
@@ -1316,7 +1328,7 @@ addDataLabelAnnotations <- function(p, type, data.label.xpos, data.label.ypos,
                 max.diam <- a.tmp$size + 0.01
         } else
         {
-            tmp.dat <- getAnnotData(annot.data, a.tmp$data, i)
+            tmp.dat <- getAnnotData(annot.data, a.tmp$data, i, as.numeric = !grepl("Text", a.tmp$type))
             ind.sel <- if (is.null(a.tmp$threstype) || is.null(a.tmp$threshold))    1:n
                        else if (a.tmp$threstype == "above threshold")               which(tmp.dat > a.tmp$threshold)
                        else                                                         which(tmp.dat < a.tmp$threshold)
@@ -1349,6 +1361,8 @@ addDataLabelAnnotations <- function(p, type, data.label.xpos, data.label.ypos,
                     new.text <- "&#129051;"
                 else if (grepl("Text", a.tmp$type))
                     new.text <- formatByD3(tmp.dat[ind.sel], a.tmp$format, a.tmp$prefix, a.tmp$suffix)
+                else if (a.tmp$type == "Hide")
+                    new.text <- ""
                 else
                 {
                     warning("Unknown annotation type: '", a.tmp$type, "'. ",
@@ -1434,7 +1448,7 @@ getColumn <- function(x, i)
         return(x[,i, , drop = FALSE])
 }
 
-getAnnotData <- function(data, name, series)
+getAnnotData <- function(data, name, series, as.numeric = TRUE)
 {
     if (is.null(data))
         stop("No data has been provided for annotations")
@@ -1455,8 +1469,11 @@ getAnnotData <- function(data, name, series)
         ind <- 1
     }
     if (length(d.dim) == 3)
-        return(data[,series, ind])
+        new.dat <- data[,series, ind]
     else
-        return(data[,ind])
+        new.dat <- data[,ind]
+    if (as.numeric)
+        new.dat <- as.numeric(new.dat)
+    return(new.dat)
 }
 
