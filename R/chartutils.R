@@ -1316,7 +1316,7 @@ addDataLabelAnnotations <- function(p, type, data.label.xpos, data.label.ypos,
                 max.diam <- a.tmp$size + 0.01
         } else
         {
-            tmp.dat <- getAnnotData(annot.data, a.tmp$data, i)
+            tmp.dat <- getAnnotData(annot.data, a.tmp$data, i, as.numeric = !grepl("Text", a.tmp$type))
             ind.sel <- if (is.null(a.tmp$threstype) || is.null(a.tmp$threshold))    1:n
                        else if (a.tmp$threstype == "above threshold")               which(tmp.dat > a.tmp$threshold)
                        else                                                         which(tmp.dat < a.tmp$threshold)
@@ -1434,7 +1434,7 @@ getColumn <- function(x, i)
         return(x[,i, , drop = FALSE])
 }
 
-getAnnotData <- function(data, name, series)
+getAnnotData <- function(data, name, series, as.numeric = TRUE)
 {
     if (is.null(data))
         stop("No data has been provided for annotations")
@@ -1455,8 +1455,11 @@ getAnnotData <- function(data, name, series)
         ind <- 1
     }
     if (length(d.dim) == 3)
-        return(data[,series, ind])
+        new.dat <- data[,series, ind]
     else
-        return(data[,ind])
+        new.dat <- data[,ind]
+    if (as.numeric)
+        new.dat <- as.numeric(new.dat)
+    return(new.dat)
 }
 
