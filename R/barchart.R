@@ -360,7 +360,7 @@ Bar <- function(x,
         # Adjusted by controlling the size of the marker
         if (data.label.show)
         {
-            p <- addDataLabelAnnotations(p, type = "Bar",
+            p <- addDataLabelAnnotations(p, type = "Bar", legend.text[i],
                     data.label.xpos = data.annotations$x[,i], 
                     data.label.ypos = if (NCOL(chart.matrix) > 1) data.annotations$y[,i] else x,
                     data.label.text = data.annotations$text[,i],

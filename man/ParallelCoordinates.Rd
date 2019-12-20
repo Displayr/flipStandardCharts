@@ -4,17 +4,34 @@
 \alias{ParallelCoordinates}
 \title{Parallel coordinates}
 \usage{
-ParallelCoordinates(x, opacity = 0.4, group = NULL,
-  colors = ChartColors(5, "Spectral"), reverse.axes = TRUE,
-  global.font.family = "Arial", global.font.color = rgb(44, 44, 44,
-  maxColorValue = 255), label.font.family = global.font.family,
-  label.font.color = global.font.color, label.font.size = 12,
-  label.rotate = FALSE, tick.font.family = global.font.family,
-  tick.font.color = global.font.color, tick.font.size = 10,
-  margin.top = 0, margin.bottom = 0, margin.left = 0,
-  margin.right = 0, auto.resize = TRUE, interactive = TRUE,
-  queue = FALSE, queue.rate = NULL, font.unit = "px", width = NULL,
-  height = NULL, ...)
+ParallelCoordinates(
+  x,
+  opacity = 0.4,
+  group = NULL,
+  colors = ChartColors(5, "Spectral"),
+  reverse.axes = TRUE,
+  global.font.family = "Arial",
+  global.font.color = rgb(44, 44, 44, maxColorValue = 255),
+  label.font.family = global.font.family,
+  label.font.color = global.font.color,
+  label.font.size = 12,
+  label.rotate = FALSE,
+  tick.font.family = global.font.family,
+  tick.font.color = global.font.color,
+  tick.font.size = 10,
+  margin.top = 0,
+  margin.bottom = 0,
+  margin.left = 0,
+  margin.right = 0,
+  auto.resize = TRUE,
+  interactive = TRUE,
+  queue = FALSE,
+  queue.rate = NULL,
+  font.unit = "px",
+  width = NULL,
+  height = NULL,
+  ...
+)
 }
 \arguments{
 \item{x}{A dataframe containing multiple variables (as columns)}

@@ -206,7 +206,7 @@ ColumnMultiColor <- function(x,
     {
         source.text <- formatByD3(y, data.label.format,
                data.label.prefix, data.label.suffix, decimals = 0)
-        p <- addDataLabelAnnotations(p, type = "Column",
+        p <- addDataLabelAnnotations(p, type = "Column", NULL,
                 data.label.xpos = x, data.label.ypos = y, data.label.text = source.text,
                 data.label.sign = getSign(y, yaxis),
                 annotation.list, annot.data, i = 1,

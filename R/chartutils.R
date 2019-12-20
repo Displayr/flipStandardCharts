@@ -1280,7 +1280,7 @@ vectorize <- function(x, n, split = ",")
     return(suppressWarnings(paste0(x, rep("", n))))
 }
 
-addDataLabelAnnotations <- function(p, type, data.label.xpos, data.label.ypos, 
+addDataLabelAnnotations <- function(p, type, name, data.label.xpos, data.label.ypos, 
         data.label.text, data.label.sign, annotation.list, annot.data, i,
         xaxis, yaxis, data.label.font, is.stacked, data.label.centered)
 {
@@ -1430,7 +1430,8 @@ addDataLabelAnnotations <- function(p, type, data.label.xpos, data.label.ypos,
     tmp.offset <- if (!is.stacked) max(0, (max.diam - data.label.font$size))
                   else             0.01
     data.label.pos <- data.label.pos + tmp.offset
-    p <- add_trace(p, x = data.label.xpos, y = data.label.ypos, cliponaxis = FALSE,
+    p <- add_trace(p, name = name,
+              x = data.label.xpos, y = data.label.ypos, cliponaxis = FALSE,
               type = "scatter", mode = "markers+text", 
               marker = list(opacity = 0.0, size = data.label.pos),
               xaxis = xaxis, yaxis = yaxis,

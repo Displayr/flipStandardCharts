@@ -4,20 +4,37 @@
 \alias{HeatMap}
 \title{Generates a heatmap from a table of data.}
 \usage{
-HeatMap(table, data.type = "Use an existing table",
-  ignore.rows = "NET, Total, SUM", ignore.columns = "NET, Total, SUM",
-  transpose = FALSE, sort.rows = "None", sort.columns = "None",
-  color = "Blues", standardization = "None",
-  show.cell.values = "Automatic", cell.decimals = 2,
-  show.row.labels = "Yes", show.column.labels = "Yes",
-  show.legend = TRUE, chart.title = "", x.axis.title = "",
-  y.axis.title = "", font.family = "sans-serif",
-  font.color = "#000000", title.font.size = 24,
-  xaxis.title.font.size = 14, yaxis.title.font.size = 14,
-  legend.font.size = 11, value.font.size = 11,
-  axis.label.font.size = 11, left.columns = NULL,
-  left.column.headings = "", right.columns = NULL,
-  right.column.headings = "")
+HeatMap(
+  table,
+  data.type = "Use an existing table",
+  ignore.rows = "NET, Total, SUM",
+  ignore.columns = "NET, Total, SUM",
+  transpose = FALSE,
+  sort.rows = "None",
+  sort.columns = "None",
+  color = "Blues",
+  standardization = "None",
+  show.cell.values = "Automatic",
+  cell.decimals = 2,
+  show.row.labels = "Yes",
+  show.column.labels = "Yes",
+  show.legend = TRUE,
+  chart.title = "",
+  x.axis.title = "",
+  y.axis.title = "",
+  font.family = "sans-serif",
+  font.color = "#000000",
+  title.font.size = 24,
+  xaxis.title.font.size = 14,
+  yaxis.title.font.size = 14,
+  legend.font.size = 11,
+  value.font.size = 11,
+  axis.label.font.size = 11,
+  left.columns = NULL,
+  left.column.headings = "",
+  right.columns = NULL,
+  right.column.headings = ""
+)
 }
 \arguments{
 \item{table}{A matrix of data to be displayed.}

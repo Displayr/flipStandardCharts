@@ -4,14 +4,21 @@
 \alias{Venn}
 \title{\code{Venn}}
 \usage{
-Venn(x = NULL, weights = NULL, colors = c("#1f77b4", "#ff7f0e",
-  "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2", "#7f7f7f",
-  "#bcbd22", "#17becf"), opacity = NULL, global.font.family = "Arial",
-  data.label.font.autocolor = TRUE, data.label.font.color = "#FFFFFF",
+Venn(
+  x = NULL,
+  weights = NULL,
+  colors = c("#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b",
+    "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"),
+  opacity = NULL,
+  global.font.family = "Arial",
+  data.label.font.autocolor = TRUE,
+  data.label.font.color = "#FFFFFF",
   data.label.font.family = global.font.family,
   data.label.font.size = 14,
-  hovertext.font.family = global.font.family, hovertext.font.size = 14,
-  values.hovertext.format = "")
+  hovertext.font.family = global.font.family,
+  hovertext.font.size = 14,
+  values.hovertext.format = ""
+)
 }
 \arguments{
 \item{x}{A \link{data.frame} \code{logical} (converted to logical using >= 1 if not) or a JSON-like list.}

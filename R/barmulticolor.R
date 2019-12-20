@@ -212,7 +212,7 @@ BarMultiColor <- function(x,
     {
         source.text <- formatByD3(y, data.label.format,
                data.label.prefix, data.label.suffix, decimals = 0)
-        p <- addDataLabelAnnotations(p, type = "Bar",
+        p <- addDataLabelAnnotations(p, type = "Bar", NULL,
                 data.label.xpos = y, data.label.ypos = x, data.label.text = source.text,
                 data.label.sign = getSign(y, xaxis),
                 annotation.list, annot.data, i = 1,
