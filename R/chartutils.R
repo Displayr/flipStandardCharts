@@ -1310,7 +1310,8 @@ addDataLabelAnnotations <- function(p, type, name, data.label.xpos, data.label.y
         a.tmp <- annotation.list[[j]]
         if (!is.null(a.tmp$threshold))
         {
-            tmp.thres <- suppressWarnings(a.tmp$threshold)
+            # Convert string to numeric where possible - otherwise string comparison will be used
+            tmp.thres <- suppressWarnings(as.numeric(a.tmp$threshold))
             if (!is.na(tmp.thres))
             {
                 a.tmp$threshold <- tmp.thres
