@@ -60,7 +60,7 @@ a3 <- list(list(type = "Circle - filled", data = "p", threstype = "above thresho
     size = 20, width = 1, offset = 0, font.family = "Arial",
     font.weight = "normal", font.style = "normal"))
 
-a4 <- list(list(type = "Text - after data labels", data = "p", threstype = "above threshold", threshold = "-Inf", color = "red", size = 8, width = 1, font.family = "Arial", font.weight = "normal", font.style = "normal", format = ".3f", prefix = " +/-"))
+a4 <- list(list(type = "Text - after data label", data = "p", threstype = "above threshold", threshold = "-Inf", color = "red", size = 8, width = 1, font.family = "Arial", font.weight = "normal", font.style = "normal", format = ".3f", prefix = " +/-"))
 
 test_that("Annotations",
 {

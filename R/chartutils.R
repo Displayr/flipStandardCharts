@@ -1339,7 +1339,8 @@ addDataLabelAnnotations <- function(p, type, name, data.label.xpos, data.label.y
                         'Hide', 'Shadow', 'Text - after data label', 'Text - before data label')   
             if (!a.tmp$type %in% all.annot.types)
             {
-                warning("Unknown annotation type: '", paste(all.annot.types, collapse = "', '"), "'.")
+                warning("Unknown annotation type: '", a.tmp$type, "'. ",
+                        "Valid types are '", paste(all.annot.types, collapse = "', '"), "'.")
                 return(p)
             }
             data.label.text[ind.sel] <- addAnnotToDataLabel(data.label.text[ind.sel], a.tmp, tmp.dat[ind.sel])
@@ -1470,6 +1471,7 @@ addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat)
             new.text <- formatByD3(tmp.dat, annotation$format, annotation$prefix, annotation$suffix)
         else if (annotation$type == "Hide")
             new.text <- ""
+
         if (nchar(new.style) > 0)
             new.text <- paste0("<span style='", new.style, "'>", new.text, "</span>")
 
