@@ -31,7 +31,7 @@
 #' @importFrom grDevices rgb col2rgb
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom flipTime AsDateTime
-#' @importFrom flipTransformations AsNumeric
+#' @importFrom flipTransformations AsNumeric ParseText
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
 #' @export
@@ -51,6 +51,7 @@ Scatter <- function(x = NULL,
                          scatter.colors.as.categorical = TRUE,
                          scatter.labels.as.hovertext = TRUE,
                          scatter.max.labels = 50,
+                         annotation.list = NULL,
                          colors = ChartColors(12),
                          trend.lines = FALSE,
                          logos = NULL,
@@ -200,6 +201,7 @@ Scatter <- function(x = NULL,
         else if (!scatter.labels.as.hovertext)
             warning("Labels not provided.")
     }
+    annot.data <- x
 
     # Adjust some of the the default default tick formats
     tmp.stat <- attr(x, "statistic")
@@ -632,9 +634,38 @@ Scatter <- function(x = NULL,
                        mode = "lines", hoverinfo = "none", showlegend = F, opacity = 0)
         }
 
+        # Traces for annotation need to occur before main trace to avoid hiding hover info
+        annot.text <- rep("", length(ind))
+        for (j in seq_along(annotation.list))
+        {
+            a.tmp <- annotation.list[[j]]
+            tmp.dat <- getAnnotScatterData(annot.data, a.tmp$data, ind)
+            a.tmp$threshold <- ParseText(a.tmp$threshold, tmp.dat)
+            ind.sel <- if (is.null(a.tmp$threstype) || is.null(a.tmp$threshold))    1:length(tmp.dat)
+                       else if (a.tmp$threstype == "above threshold")               which(tmp.dat > a.tmp$threshold)
+                       else                                                         which(tmp.dat < a.tmp$threshold)
+            if (length(ind.sel) > 0)
+            {
+                if (a.tmp$type == "Marker border")
+                    p <- add_trace(p, x = x[ind[ind.sel]], y = y[ind[ind.sel]], showlegend = FALSE, cliponaxis = FALSE,
+                       type = "scatter", mode = "markers", hoverinfo = "skip",
+                       marker = list(size = tmp.size, sizemode = "diameter", color = "transparent",
+                       line = list(width = a.tmp$width, color = a.tmp$color)), 
+                       legendgroup = if (num.series > 1) ggi else 1, symbols = marker.symbols)
+                else 
+                    annot.text[ind.sel] <- addAnnotToDataLabel(annot.text[ind.sel], a.tmp, tmp.dat[ind.sel])
+            } 
+        }
+        if (any(nchar(annot.text) > 0))
+            p <- add_trace(p, x = x[ind], y = y[ind], showlegend = FALSE, cliponaxis = FALSE,
+                   type = "scatter", mode = "markers+text", hoverinfo = "skip",
+                   marker = list(size = pmax(1.0, tmp.size - 7), sizemode = "diameter", color = "transparent",
+                   line = list(width = 0)), legendgroup = if (num.series > 1) ggi else 1,
+                   text = annot.text, textposition = "middle right", symbols = marker.symbols)
+
+
         # Main trace
         p <- add_trace(p, x = x[ind], y = y[ind],
-                #name  =  autoFormatLongLabels(paste0(g.list[ggi], " "), legend.wrap, legend.wrap.nchar),
                 name = legend.text[ggi],
                 showlegend = (legend.show && !scatter.colors.as.numeric),
                 legendgroup = if (num.series > 1) ggi else 1,
@@ -645,6 +676,7 @@ Scatter <- function(x = NULL,
                 hoverlabel = list(font = list(color = autoFontColor(colors[ggi]),
                 size = hovertext.font.size, family = hovertext.font.family)),
                 type = "scatter", mode = series.mode, symbols = marker.symbols)
+
 
         if (fit.type != "None" && num.series > 1)
         {
@@ -700,6 +732,7 @@ Scatter <- function(x = NULL,
                     line = list(color=fit.CI.colors[1], width=0, shape='spline'))
         }
     }
+                    
     annot <- list(setSubtitle(subtitle, subtitle.font, margins),
                   setTitle(title, title.font, margins),
                   if (is.null(small.mult.index)) setFooter(footer, footer.font, margins) else NULL)
@@ -724,4 +757,9 @@ Scatter <- function(x = NULL,
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     result
+}
+
+getAnnotScatterData <- function(data, name, ind)
+{
+    return(data[ind, name])
 }
