@@ -116,7 +116,7 @@ test_that("Input matrix converted to character",
 {
     expect_error(Column(dat.with.text, data.label.show = TRUE,
         annotation.list = list(
-        list(type = "Text = after data labels", data = "Column Comparisons",
+        list(type = "Text - after data label", data = "Column Comparisons",
              font.style = "normal", font.weight = "normal",
              format = ".3f", prefix = "", suffix = "",
              threshold = "-", threstype = "above threshold",
