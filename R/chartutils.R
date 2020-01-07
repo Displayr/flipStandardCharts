@@ -1333,57 +1333,16 @@ addDataLabelAnnotations <- function(p, type, name, data.label.xpos, data.label.y
             ind.sel <- if (is.null(a.tmp$threstype) || is.null(a.tmp$threshold))    1:n
                        else if (a.tmp$threstype == "above threshold")               which(tmp.dat > a.tmp$threshold)
                        else                                                         which(tmp.dat < a.tmp$threshold)
-
-            if (a.tmp$type == "Shadow")
-                data.label.text[ind.sel] <- paste0("<span style='text-shadow: 1px 1px ",
-                    a.tmp$size, "px ", a.tmp$color, ", -1px -1px ", a.tmp$size, "px ", a.tmp$color, ";'>",
-                    data.label.text[ind.sel], "</span>")
-            else if (a.tmp$type == "Border")
-                data.label.text[ind.sel] <- paste0("<span style='outline: ", a.tmp$width, "px solid ",
-                    a.tmp$color, "; outline-offset: ", a.tmp$offset, "px;'>", data.label.text[ind.sel], "</span>")
-            else
+            
+            all.annot.types <- c('Arrow - up', 'Arrow - down', 'Border', 
+                        'Circle - filled', 'Circle - thick outline', 'Circle - thin outline',
+                        'Hide', 'Shadow', 'Text - after data label', 'Text - before data label')   
+            if (!a.tmp$type %in% all.annot.types)
             {
-                new.style <- ""
-                if (!is.null(a.tmp$color))
-                    new.style <- paste0(new.style, "color:", a.tmp$color, ";")
-                if (!is.null(a.tmp$size))
-                    new.style <- paste0(new.style, "font-size:", a.tmp$size, ";")
-                if (!is.null(a.tmp$font.family))
-                    new.style <- paste0(new.style, "font-family:", a.tmp$font.family, ";")
-                if (!is.null(a.tmp$font.weight))
-                    new.style <- paste0(new.style, "font-weight:", a.tmp$font.weight, ";")
-                if (!is.null(a.tmp$font.style))
-                    new.style <- paste0(new.style, "font-style:", a.tmp$font.style, ";")
-                
-                new.text <- ""
-                if (a.tmp$type == "Arrow - up")
-                    new.text <- "&#129049;"
-                else if (a.tmp$type == "Arrow - down")
-                    new.text <- "&#129051;"
-                else if (grepl("Text", a.tmp$type))
-                    new.text <- formatByD3(tmp.dat[ind.sel], a.tmp$format, a.tmp$prefix, a.tmp$suffix)
-                else if (a.tmp$type == "Hide")
-                    new.text <- ""
-                else
-                {
-                    warning("Unknown annotation type: '", a.tmp$type, "'. ",
-                        "Valid types are 'Arrow - up', 'Arrow - down', 'Border', ",
-                        "'Circle - filled', 'Circle - thick outline', ", "'Circle - thin outline', ",
-                        "'Hide', 'Shadow', 'Text - after data label', 'Text - before data label'.")
-                    return(p)
-                }
-
-                if (nchar(new.style) > 0)
-                    new.text <- paste0("<span style='", new.style, "'>", new.text, "</span>")
-
-                if (a.tmp$type == "Hide")
-                    data.label.text[ind.sel] <- ""
-                else if (a.tmp$type == "Text - before data labels")
-                    data.label.text[ind.sel] <- paste0(new.text, data.label.text[ind.sel])
-                else
-                    data.label.text[ind.sel] <- paste0(data.label.text[ind.sel], new.text)
+                warning("Unknown annotation type: '", paste(all.annot.types, collapse = "', '"), "'.")
+                return(p)
             }
-
+            data.label.text[ind.sel] <- addAnnotToDataLabel(data.label.text[ind.sel], a.tmp, tmp.dat[ind.sel])
         }
     }
 
@@ -1477,5 +1436,50 @@ getAnnotData <- function(data, name, series, as.numeric = TRUE)
     if (as.numeric)
         new.dat <- as.numeric(new.dat)
     return(new.dat)
+}
+
+addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat)
+{
+    if (annotation$type == "Shadow")
+        data.label.text <- paste0("<span style='text-shadow: 1px 1px ",
+            annotation$size, "px ", annotation$color, ", -1px -1px ", 
+            annotation$size, "px ", annotation$color, ";'>", data.label.text, "</span>")
+    else if (annotation$type == "Border")
+        data.label.text <- paste0("<span style='outline: ", annotation$width, "px solid ",
+            annotation$color, "; outline-offset: ", annotation$offset, "px;'>", data.label.text, "</span>")
+    else
+    {
+        new.style <- ""
+        if (!is.null(annotation$color))
+            new.style <- paste0(new.style, "color:", annotation$color, ";")
+        if (!is.null(annotation$size))
+            new.style <- paste0(new.style, "font-size:", annotation$size, ";")
+        if (!is.null(annotation$font.family))
+            new.style <- paste0(new.style, "font-family:", annotation$font.family, ";")
+        if (!is.null(annotation$font.weight))
+            new.style <- paste0(new.style, "font-weight:", annotation$font.weight, ";")
+        if (!is.null(annotation$font.style))
+            new.style <- paste0(new.style, "font-style:", annotation$font.style, ";")
+        
+        new.text <- ""
+        if (annotation$type == "Arrow - up")
+            new.text <- "&#129049;"
+        else if (annotation$type == "Arrow - down")
+            new.text <- "&#129051;"
+        else if (grepl("Text", annotation$type))
+            new.text <- formatByD3(tmp.dat, annotation$format, annotation$prefix, annotation$suffix)
+        else if (annotation$type == "Hide")
+            new.text <- ""
+        if (nchar(new.style) > 0)
+            new.text <- paste0("<span style='", new.style, "'>", new.text, "</span>")
+
+        if (annotation$type == "Hide")
+            data.label.text <- ""
+        else if (annotation$type == "Text - before data labels")
+            data.label.text <- paste0(new.text, data.label.text)
+        else
+            data.label.text <- paste0(data.label.text, new.text)
+    }
+    return(data.label.text)
 }
 

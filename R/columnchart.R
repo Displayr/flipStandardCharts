@@ -684,6 +684,9 @@ Column <- function(x,
 
     }
 
+    if (!data.label.show && length(annotation.list) > 0)
+        warning("Annotations are ignored when data labels are not shown.")
+
     # Plot trace for second y-axis last so that they are shown last in legend
     if (!is.null(x2) && !is.stacked)
     {
@@ -708,25 +711,6 @@ Column <- function(x,
     annotations[[n+2]] <- setFooter(footer, footer.font, margins)
     annotations[[n+3]] <- setSubtitle(subtitle, subtitle.font, margins)
     annotations <- Filter(Negate(is.null), annotations)
-
-    # Add annotations on top of chart
-    if (!data.label.show && length(annotation.list) > 0)
-    {
-        warning("Annotations are ignored when data labels are not shown.")
-
-    } else if (FALSE)
-    {    
-        n <- length(annotations)
-        annot.y <- data.annotations$y
-        annot.x <- if (NCOL(chart.matrix) > 1) data.annotations$x else x.labels
-        annot.xaxis <- if (NCOL(chart.matrix) > 1) "x2" else "x"
-        for (i in seq_along(annotation.list))
-        {
-            annotations[[n+i]] <- list(x = annot.x[1], y = annot.y[1], text = "ABC",
-                yref = "y", xref = annot.xaxis, showarrow = FALSE, symbol = "circle")
-
-        }
-    }
 
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
