@@ -109,6 +109,8 @@ Line(
   x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
   x.tick.show = TRUE,
   x.tick.format = "",
+  x.tick.prefix = "",
+  x.tick.suffix = "",
   x.hovertext.format = x.tick.format,
   x.tick.angle = NULL,
   x.tick.font.color = global.font.color,
@@ -393,6 +395,10 @@ format (e.g. "black") or a hex code.}
 
 \item{x.tick.format}{A string representing a d3 formatting code.
 See https://github.com/mbostock/d3/wiki/Formatting#numbers}
+
+\item{x.tick.prefix}{x-axis tick label prefix}
+
+\item{x.tick.suffix}{x-axis tick label suffix}
 
 \item{x.hovertext.format}{A string representing a d3 formatting code.
 See https://github.com/mbostock/d3/wiki/Formatting#numbers}

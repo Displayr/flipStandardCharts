@@ -120,6 +120,8 @@ Line <-   function(x,
                     x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                     x.tick.show = TRUE,
                     x.tick.format = "",
+                    x.tick.prefix = "",
+                    x.tick.suffix = "",
                     x.hovertext.format = x.tick.format,
                     x.tick.angle = NULL,
                     x.tick.font.color = global.font.color,
@@ -218,7 +220,7 @@ Line <-   function(x,
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, x.tick.format,
-                  "", "", x.tick.show, x.zero, x.zero.line.width, x.zero.line.color,
+                  x.tick.prefix, x.tick.suffix, x.tick.show, x.zero, x.zero.line.width, x.zero.line.color,
                   x.hovertext.format, axisFormat$labels)
 
     # Data label formatting
