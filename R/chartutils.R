@@ -1062,6 +1062,14 @@ lengthLastLine <- function(x)
     return(nchar(tmp[length(tmp)]))
 }
 
+#' Format long labels for html by truncating and wrapping
+#'
+#' @param x Character; the text to format.
+#' @param wordwrap Logical; whether line breaks ('<br>') should be inserted.
+#' @param n Integer; the maximum number of characters before a line breaks is added. The break is added at the nearest word boundary.
+#' @param truncate Logical; whether long labels should be truncated and appended with '...' instead.
+#' @param remove.empty Logical; whether to remove zero-length strings 
+#' @export
 autoFormatLongLabels <- function(x, wordwrap = FALSE, n = 21, truncate = FALSE, remove.empty = TRUE)
 {
     if (truncate)
