@@ -169,7 +169,7 @@ test_that("Scatter plot annotations",
         list(type = "Marker border", data = "Date", threstype = "above threshold",
         threshold = "2017-01-9", width = 1, color = "red"))), NA)
 
-    expect_warning(Scatter(dat, annotation.list = list(list(type = "Arrow - up",
+    expect_error(Scatter(dat, annotation.list = list(list(type = "Arrow - up",
         data = "Sporadic typo", threstype = "above threshold", threshold = "1.0",
         color = "red", size = 15, width = 1, font.family = "Arial",
         font.weight = "normal", font.style = "normal", format = ".2f", prefix = "$"),

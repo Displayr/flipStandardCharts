@@ -639,7 +639,7 @@ Scatter <- function(x = NULL,
         for (j in seq_along(annotation.list))
         {
             a.tmp <- annotation.list[[j]]
-            tmp.dat <- getAnnotScatterData(annot.data, a.tmp$data, ind, warn = ggi == 1)
+            tmp.dat <- getAnnotScatterData(annot.data, a.tmp$data, ind)
             a.tmp$threshold <- ParseText(a.tmp$threshold, tmp.dat)
             ind.sel <- if (is.null(a.tmp$threstype) || is.null(a.tmp$threshold))    1:length(tmp.dat)
                        else if (a.tmp$threstype == "above threshold")               which(tmp.dat > a.tmp$threshold)
@@ -759,14 +759,10 @@ Scatter <- function(x = NULL,
     result
 }
 
-getAnnotScatterData <- function(data, name, ind, warn = TRUE)
+getAnnotScatterData <- function(data, name, ind)
 {
     if (!name %in% colnames(data))
-    {
-        if (warn)
-            warning("Annotation data does not contain '", name, "'. ",
-                "Allowable names are: '", paste(colnames(data), collapse = "', '"), "'. ")
-        return(NULL)
-    }
+        stop("Annotation data does not contain '", name, "'. ",
+            "Allowable names are: '", paste(colnames(data), collapse = "', '"), "'. ")
     return(data[ind, name])
 }
