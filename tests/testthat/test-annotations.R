@@ -65,6 +65,8 @@ a4 <- list(list(type = "Text - after data labels", data = "p", threstype = "abov
 test_that("Annotations",
 {
     expect_error(Column(data.with.stats, data.label.show = TRUE, annotation.list=list(list(data="p", type = "Arrow - up", threstype = "above threshold", threshold = 0.05, color = "#FF0000", size = 15))), NA)
+    expect_error(Column(data.with.stats, data.label.show = TRUE, annotation.list=list(list(data="p values", type = "Arrow - up", threstype = "above threshold", threshold = 0.05, color = "#FF0000", size = 15))),
+                 "Annotation data does not contain a statistic named 'p values'")
 
     expect_error(Column(vec.with.stats, data.label.show = TRUE, annotation.list=list(list(data="p", type = "Arrow - up", threstype = "above threshold", threshold = 0.05, color = "#0000FF"))), NA)
 
@@ -134,6 +136,8 @@ test_that("No errors for all chart types",
         cmd <- paste0("pp <- ", func, "(dat.with.text)")
         expect_error(suppressWarnings(eval(parse(text=cmd))), NA)
     }
+    expect_error(SmallMultiples(dat.with.text, "Bar",
+        data.label.show = T, average.show = T, fit.type = "supsmu"), NA)
 })
 
 

@@ -1472,12 +1472,8 @@ getAnnotData <- function(data, name, series, as.numeric = TRUE)
         d.names <- as.character(1:d.len)
     ind <- match(paste0("", name), d.names)
     if (is.na(ind))
-    {
-        warning("Annotation data does not contain a statistic named '", name, "'. ",
-                "Allowable names are: '", paste(d.names, collapse = "', '"), "'. ",
-                "Using the chart data instead.")
-        ind <- 1
-    }
+        stop("Annotation data does not contain a statistic named '", name, "'. ",
+                "Allowable names are: '", paste(d.names, collapse = "', '"), "'. ")
     if (length(d.dim) == 3)
         new.dat <- data[,series, ind]
     else

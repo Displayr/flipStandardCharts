@@ -162,6 +162,7 @@ SmallMultiples <- function(x,
         data.label.font.color <- vectorize(data.label.font.color, npanels)
 
     all.values <- if (chart.type == "Scatter") x[,scatter.y.column]
+                  else if (length(dim(x)) == 3) checkMatrixNames(x)
                   else unlist(x)
     values.max = max(0, all.values, na.rm = TRUE)
     values.min = min(0, all.values, na.rm = TRUE)
@@ -209,7 +210,10 @@ SmallMultiples <- function(x,
 
     average.series <- NULL
     if (chart.type != "GeographicMap" && average.show)
-        average.series <- apply(x, 1, mean)
+    {
+        x.num <- checkMatrixNames(x)
+        average.series <- apply(x.num, 1, mean)
+    }
     else
         average.color <- NULL
 
