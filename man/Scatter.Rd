@@ -21,6 +21,7 @@ Scatter(
   scatter.colors.as.categorical = TRUE,
   scatter.labels.as.hovertext = TRUE,
   scatter.max.labels = 50,
+  annotation.list = NULL,
   colors = ChartColors(12),
   trend.lines = FALSE,
   logos = NULL,
@@ -190,6 +191,8 @@ Scatter(
 \item{scatter.labels.as.hovertext}{Logical; if TRUE, labels are shown has hovers; otherwise, as a labeled scatterplot.}
 
 \item{scatter.max.labels}{Integer; the maximum number of labels to show on a Labeled Scatterplot.}
+
+\item{annotation.list}{Optional list of annotations to modify the data labels.}
 
 \item{colors}{A vector of colors to use in the chart. When \code{scatter.colors.as.categorical}, the vector of colors should have the length as the number of categories in \code{scatter.colors}. If \code{scatter.colors} is used as numeric vector, then a color ramp is constructed from the colors listed.}
 

@@ -60,7 +60,7 @@ a3 <- list(list(type = "Circle - filled", data = "p", threstype = "above thresho
     size = 20, width = 1, offset = 0, font.family = "Arial",
     font.weight = "normal", font.style = "normal"))
 
-a4 <- list(list(type = "Text - after data labels", data = "p", threstype = "above threshold", threshold = "-Inf", color = "red", size = 8, width = 1, font.family = "Arial", font.weight = "normal", font.style = "normal", format = ".3f", prefix = " +/-"))
+a4 <- list(list(type = "Text - after data label", data = "p", threstype = "above threshold", threshold = "-Inf", color = "red", size = 8, width = 1, font.family = "Arial", font.weight = "normal", font.style = "normal", format = ".3f", prefix = " +/-"))
 
 test_that("Annotations",
 {
@@ -118,7 +118,7 @@ test_that("Input matrix converted to character",
 {
     expect_error(Column(dat.with.text, data.label.show = TRUE,
         annotation.list = list(
-        list(type = "Text = after data labels", data = "Column Comparisons",
+        list(type = "Text - after data label", data = "Column Comparisons",
              font.style = "normal", font.weight = "normal",
              format = ".3f", prefix = "", suffix = "",
              threshold = "-", threstype = "above threshold",
@@ -140,7 +140,42 @@ test_that("No errors for all chart types",
         data.label.show = T, average.show = T, fit.type = "supsmu"), NA)
 })
 
+# Set up dataframe containing different types of data types
+set.seed(1234)
+dat <- data.frame('Score' = rnorm(20),
+                  'Cost' = abs(rnorm(20)), # check plotly is handling '$' properly
+                  'Age' = rpois(20, 40),
+                  'Class' = factor(sample(LETTERS[4:1], 20, replace = TRUE), levels = LETTERS[4:1], ordered = TRUE), # reverse order to check DS-1645
+                  'Sporadic' = c(1:5, NA, 6:10, NA, NA, 11:12, NA, NA, 13:15), # missing values
+                  'Date' = as.Date(sprintf("2017-01-%02d", 20:1)),
+                  check.names = FALSE, stringsAsFactors = FALSE)
+rownames(dat) <- letters[1:20]
 
+test_that("Scatter plot annotations",
+{
+    expect_error(Scatter(dat, annotation.list = list(list(type = "Text - after data label",
+        data = "Cost", threstype = "above threshold", threshold = "1.0",
+        color = "red", size = 8, width = 1, font.family = "Arial",
+        font.weight = "normal", font.style = "normal", format = ".2f", prefix = "$"),
+        list(type = "Border", data = "Cost", threstype = "above threshold", threshold = "2.0",
+        color = "grey", width = 2))), NA)
 
+    expect_error(Scatter(dat, annotation.list = list(list(type = "Arrow - up",
+        data = "Sporadic", threstype = "above threshold", threshold = "1.0",
+        color = "red", size = 15, width = 1, font.family = "Arial",
+        font.weight = "normal", font.style = "normal", format = ".2f", prefix = "$"),
+        list(type = "Marker border", data = "Class", threstype = "above threshold",
+        threshold = "C", width = 3, color = "blue"),
+        list(type = "Marker border", data = "Date", threstype = "above threshold",
+        threshold = "2017-01-9", width = 1, color = "red"))), NA)
 
-
+    expect_error(Scatter(dat, annotation.list = list(list(type = "Arrow - up",
+        data = "Sporadic typo", threstype = "above threshold", threshold = "1.0",
+        color = "red", size = 15, width = 1, font.family = "Arial",
+        font.weight = "normal", font.style = "normal", format = ".2f", prefix = "$"),
+        list(type = "Marker border", data = "Class", threstype = "above threshold",
+        threshold = "C", width = 3, color = "blue"),
+        list(type = "Marker border", data = "Date", threstype = "above threshold",
+        threshold = "2017-01-9", width = 1, color = "red"))),
+        "Annotation data does not contain")
+})
