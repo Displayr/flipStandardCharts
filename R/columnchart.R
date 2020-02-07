@@ -516,7 +516,35 @@ Column <- function(x,
     y.labels <- colnames(chart.matrix)
 
     # Set up numeric x-axis - this is used for data labels and hovertext
-    x.range <- getRange(x.labels, xaxis, axisFormat)
+    x.all.labels <- x.labels
+    if (!is.null(x2))
+    {
+        # Set up x-axis values for x2
+        x2 <- checkMatrixNames(x2)
+        x2.axis.type <- getAxisType(rownames(x2), format = x.tick.format)
+        if (x2.axis.type != xaxis$type)
+        {
+            if (x2.axis.type == "numeric" && NROW(x2) == NROW(chart.matrix))
+            {
+                rownames(x2) <- rownames(chart.matrix)
+                x2.axis.type <- xaxis$type
+            }
+            else
+                stop("Rownames in data for second axis (", x2.axis.type,
+                     ") do not have the same type as the input data (",
+                     xaxis$type, ").")
+        }
+        x2.labels <- formatLabels(x2, "Column", x.tick.label.wrap, x.tick.label.wrap.nchar,
+            x.tick.format, y2.tick.format)$labels
+        x.all.labels <- c(x.all.labels, x2.labels)
+        #xaxis$autorange <- FALSE
+        xaxis$range <- c(NA, NA)
+        #x.range <- getRange(x.all.labels, xaxis, NULL)
+        x.range <- getRange(x.labels, xaxis, axisFormat)
+        xaxis$range <- x.range
+    }
+    else
+        x.range <- getRange(x.all.labels, xaxis, axisFormat)
     xaxis2 <- list(overlaying = "x", visible = FALSE, range = x.range)
     data.annotations <- dataLabelPositions(chart.matrix = chart.matrix,
                         annotations = NULL,
@@ -546,23 +574,6 @@ Column <- function(x,
                           y2.hovertext.format)
         yaxis2$overlaying <- "y"
 
-        # Set up x-axis values for x2
-        x2 <- checkMatrixNames(x2)
-        x2.axis.type <- getAxisType(rownames(x2), format = x.tick.format)
-        if (x2.axis.type != xaxis$type)
-        {
-            if (x2.axis.type == "numeric" && NROW(x2) == NROW(chart.matrix))
-            {
-                rownames(x2) <- rownames(chart.matrix)
-                x2.axis.type <- xaxis$type
-            }
-            else
-                stop("Rownames in data for second axis (", x2.axis.type,
-                     ") do not have the same type as the input data (",
-                     xaxis$type, ").")
-        }
-        x2.labels <- formatLabels(x2, "Column", x.tick.label.wrap, x.tick.label.wrap.nchar,
-            x.tick.format, y2.tick.format)$labels
 
         if (x2.axis.type == "numeric")
         {
@@ -577,6 +588,25 @@ Column <- function(x,
                 xaxis2$range[2] <- min(xaxis2$range[2], x2vals)
             }
         }
+
+       # need to make names to input parameters!!!!
+       # line thickness, line type, shape, smoothing, opacity, marker.size
+       x2.lines <- list()
+       x2.markers <- list()
+
+       #for (i in 1:ncol(x2))
+       #{ 
+       #     x2.lines[[i]] <- list(width = line.thickness[i], dash = line.type[i],
+       #           shape = shape, smoothing = smoothing,
+       #           color = toRGB(colors[i], alpha = opacity[i]))
+#
+#            x2.markers[[i]] <- list(size = marker.size,
+#                  color = toRGB(marker.colors[i], alpha = marker.opacity),
+#                  symbol = marker.symbols[i],
+#                  line = list(
+#                  color = toRGB(marker.border.colors[i], alpha = marker.border.opacity),
+##                  width = marker.border.width))
+#        }
     }
 
 
@@ -588,8 +618,8 @@ Column <- function(x,
         for (i in 1:ncol(x2))
         {
             p <- add_trace(p, x = x2.labels, y = x2[,i], name = colnames(x2)[i],
-                    type = "scatter", mode = "lines", yaxis = "y2",
-                    line = list(color = x2.colors[i]),
+                    type = "scatter", mode = "lines", yaxis = "y2", xaxis = "x2",
+                    #line = x2.lines[[i]], marker = x2.markers[[i]], connectgaps = FALSE,
                     hoverlabel = list(font = list(color = autoFontColor(x2.colors[i]),
                     size = hovertext.font.size, family = hovertext.font.family)),
                     hovertemplate = setHoverTemplate(i, xaxis, x2), cliponaxis = TRUE,
@@ -696,11 +726,24 @@ Column <- function(x,
         {
             p <- add_trace(p, x = x2.labels, y = x2[,i], name = colnames(x2)[i],
                     type = "scatter", mode = "lines", yaxis = "y2",
-                    line = list(color = x2.colors[i]),
+                    #line = x2.lines[[i]], marker = x2.markers[[i]], connectgaps = FALSE,
                     hoverlabel = list(font = list(color = autoFontColor(x2.colors[i]),
                     size = hovertext.font.size, family = hovertext.font.family)),
                     hovertemplate = setHoverTemplate(i, xaxis, x2), cliponaxis = TRUE,
                     legendgroup = NCOL(chart.matrix) + i)
+        }
+    }
+
+    # Add data labels for x2 as a trace
+    if (!is.null(x2) && data.label.show)
+    {
+        for (i in 1:ncol(x2))
+        {
+            p <- add_trace(p, x = x2.labels, y = x2[,i], yaxis = "y2", xaxis = "x",
+                type = "scatter", mode = "text", cliponaxis = TRUE,
+                hoverinfo = "skip",
+                showlegend = FALSE, legendgroup = NCOL(chart.matrix) + i,
+                text = "AAA")
         }
     }
 

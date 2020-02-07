@@ -132,6 +132,7 @@ Line(
   data.label.position = "Top",
   data.label.font.family = global.font.family,
   data.label.font.color = global.font.color,
+  data.label.font.autocolor = FALSE,
   data.label.font.size = 10,
   data.label.format = "",
   data.label.prefix = "",
@@ -449,6 +450,9 @@ markers as an alpha value (0 to 1).}
 in character format (e.g. "black") or an a hex code. This can be a single
 color, a vector of colors (1 for each series/column), or a comma separated list
 of colors}
+
+\item{data.label.font.autocolor}{Logical; Whether font color should be automatically determined
+(black or white) based on the color of the background column if stacked.}
 
 \item{data.label.font.size}{Integer; Font size for data label.px.}
 

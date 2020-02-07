@@ -162,7 +162,7 @@ getRange <- function(x, axis, axisFormat)
 {
     tozero <- FALSE
     range <- NULL
-    if (!is.null(axis))
+    if (!is.null(axis) && !any(is.na(axis$range)))
     {
         # in setAxis, date ranges must be a character, but when we copy an
         # axis to add data labels, we need it as a numeric
@@ -174,33 +174,38 @@ getRange <- function(x, axis, axisFormat)
         if (is.null(axis$range) && axis$rangemode == "tozero")
             tozero <- TRUE
     }
-    if (is.null(range))
+    else
     {
         if (!is.null(axisFormat) && length(axisFormat$ymd) >= 2)
         {
-            tmp.dates <- as.numeric(axisFormat$ymd) * 1000
+            tmp.dates <- sort(unique(as.numeric(axisFormat$ymd))) * 1000
             diff <- min(diff(tmp.dates), na.rm = TRUE)
             range <- range(tmp.dates) + c(-1, 1) * diff
         }
         else if (is.numeric(x)) # this can contain NAs
         {
             diff <- if (length(x) == 1) 1
-                    else abs(min(diff(sort(x)), na.rm = TRUE))
+                    else abs(min(diff(sort(unique(x))), na.rm = TRUE))
             range <- range(x) + c(-0.5, 0.5) * diff
             if (tozero)
                 range <- c(min(0, range[1]), max(0, range[2]))
         }
+        else if (all(!is.na(suppressWarnings(AsDateTime(x, on.parse.failure = "silent")))))
+        {
+            tmp.dates <- sort(unique(as.numeric(AsDateTime(x)))) * 1000
+            diff <- min(diff(tmp.dates), na.rm = TRUE)
+            range <- range(tmp.dates) + c(-1, 1) * diff
+
+        }
         else if (all(!is.na(suppressWarnings(as.numeric(x)))))
         {
-            tmp <- as.numeric(x)
+            tmp <- as.numeric(unique(x))
             diff <- if (length(x) == 1) 1
                     else abs(min(diff(sort(tmp)), na.rm = TRUE))
             range <- range(tmp) + c(-0.5, 0.5) * diff
             if (tozero)
                 range <- c(min(0, range[1]), max(0, range[2]))
         }
-       # else if (all(!is.na(suppressWarnings(AsDateTime(x, on.parse.failure = "silent")))))
-       #     range <- range(AsDateTime(x))
         else
             range <- c(-0.5, length(x)-0.5)
 

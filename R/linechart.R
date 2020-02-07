@@ -143,6 +143,7 @@ Line <-   function(x,
                     data.label.position = "Top",
                     data.label.font.family = global.font.family,
                     data.label.font.color = global.font.color,
+                    data.label.font.autocolor = FALSE,
                     data.label.font.size = 10,
                     data.label.format = "",
                     data.label.prefix = "",
@@ -182,7 +183,8 @@ Line <-   function(x,
 
     line.type <- vectorize(tolower(line.type), ncol(chart.matrix))
     data.label.show <- vectorize(data.label.show, ncol(chart.matrix))
-    dlab.color <- vectorize(data.label.font.color, ncol(chart.matrix))
+    dlab.color <- if (data.label.font.autocolor) colors
+                  else vectorize(data.label.font.color, ncol(chart.matrix))
     dlab.pos <- vectorize(tolower(data.label.position), ncol(chart.matrix))
     dlab.prefix <- vectorize(data.label.prefix, ncol(chart.matrix), split = NULL)
     dlab.suffix <- vectorize(data.label.suffix, ncol(chart.matrix), split = NULL)
