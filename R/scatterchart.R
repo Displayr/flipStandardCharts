@@ -642,6 +642,7 @@ Scatter <- function(x = NULL,
             tmp.dat <- getAnnotScatterData(annot.data, a.tmp$data, ind)
             a.tmp$threshold <- ParseText(a.tmp$threshold, tmp.dat)
             ind.sel <- if (is.null(a.tmp$threstype) || is.null(a.tmp$threshold))    1:length(tmp.dat)
+                       else if (is.factor(tmp.dat) && !is.ordered(tmp.dat))         selectFactor(a.tmp$threshold, 1:length(tmp.dat), a.tmp$data, ggi)
                        else if (a.tmp$threstype == "above threshold")               which(tmp.dat > a.tmp$threshold)
                        else                                                         which(tmp.dat < a.tmp$threshold)
             if (length(ind.sel) > 0)
@@ -765,4 +766,12 @@ getAnnotScatterData <- function(data, name, ind)
         stop("Annotation data does not contain '", name, "'. ",
             "Allowable names are: '", paste(colnames(data), collapse = "', '"), "'. ")
     return(data[ind, name])
+}
+
+selectFactor <- function(threshold, index, var.name, i)
+{
+    if (nchar(trimws(threshold)) > 0 && i == 1)
+        warning("Inequalities are not applicable to '", var.name, 
+        "' because it is an unordered categorical variable. Ignoring threshold '", threshold, "'.")
+    return(index)
 }
