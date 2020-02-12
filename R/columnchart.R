@@ -537,10 +537,8 @@ Column <- function(x,
         x2.labels <- formatLabels(x2, "Column", x.tick.label.wrap, x.tick.label.wrap.nchar,
             x.tick.format, y2.tick.format)$labels
         x.all.labels <- c(x.all.labels, x2.labels)
-        #xaxis$autorange <- FALSE
         xaxis$range <- c(NA, NA)
-        #x.range <- getRange(x.all.labels, xaxis, NULL)
-        x.range <- getRange(x.labels, xaxis, axisFormat)
+        x.range <- getRange(x.all.labels, xaxis, NULL)
         xaxis$range <- x.range
     }
     else
@@ -618,7 +616,7 @@ Column <- function(x,
         for (i in 1:ncol(x2))
         {
             p <- add_trace(p, x = x2.labels, y = x2[,i], name = colnames(x2)[i],
-                    type = "scatter", mode = "lines", yaxis = "y2", xaxis = "x2",
+                    type = "scatter", mode = "lines", yaxis = "y2", xaxis = "x",
                     #line = x2.lines[[i]], marker = x2.markers[[i]], connectgaps = FALSE,
                     hoverlabel = list(font = list(color = autoFontColor(x2.colors[i]),
                     size = hovertext.font.size, family = hovertext.font.family)),
