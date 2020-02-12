@@ -81,7 +81,7 @@ checkMatrixNames <- function(x, assign.col.names = TRUE, use.annot = FALSE)
         rownames(x) <- t.seq
         return(x)
     }
-    new.x <- if (length(dim(x)) == 3) as.matrix(x[,,1])
+    new.x <- if (length(dim(x)) == 3) as.matrix(x[,,1, drop = FALSE])
              else as.matrix(suppressWarnings(AsTidyTabularData(x))) # handles 1d data + statistic properly
     old.dim <- dim(new.x)
     old.names <- dimnames(new.x)
@@ -1494,3 +1494,19 @@ addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat)
     return(data.label.text)
 }
 
+readLineThickness <- function(line.thickness, n)
+{
+    if (is.character(line.thickness))
+    {
+        tmp.txt <- TextAsVector(line.thickness)
+        line.thickness <- suppressWarnings(as.numeric(tmp.txt))
+        na.ind <- which(is.na(line.thickness))
+        if (length(na.ind) == 1)
+            warning("Non-numeric line thickness value '", tmp.txt[na.ind], "' was ignored.")
+        if (length(na.ind) > 1)
+            warning("Non-numeric line thickness values '",
+            paste(tmp.txt[na.ind], collapse = "', '"), "' were ignored.")
+    }
+    line.thickness <- suppressWarnings(line.thickness * rep(1, n)) # suppress warnings about recyling
+    return(line.thickness)
+}

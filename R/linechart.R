@@ -5,6 +5,8 @@
 #' @param shape Either "linear" for straight lines between data points or "spline" for curved lines.
 #' @param smoothing Numeric; smoothing if \code{shape} is "spline".
 #' @param line.type Character; one of 'solid', 'dot', 'dashed'.
+#' @param marker.symbols Character; marker symbols, which are only shown if marker.show = TRUE.
+#'     if a vector is passed, then each element will be applied to a data series. 
 #' @param data.label.position Character; one of 'top' or 'bottom'.
 #' @importFrom grDevices rgb
 #' @importFrom flipChartBasics ChartColors
@@ -131,6 +133,7 @@ Line <-   function(x,
                     x.tick.label.wrap.nchar = 21,
                     line.thickness = 3,
                     marker.show = NULL,
+                    marker.symbols = "circle",
                     marker.colors = colors,
                     marker.opacity = NULL,
                     marker.size = 6,
@@ -168,8 +171,6 @@ Line <-   function(x,
         shape <- "spline"
     if (grepl("^straight", tolower(shape)))
         shape <- "linear"
-    marker.symbols <- if (is.null(marker.show)) rep(100, ncol(chart.matrix))
-                             else marker.show
     series.mode <- "lines+markers"
     if (is.null(marker.show) || marker.show == "none")
         series.mode <- "lines"
@@ -182,6 +183,7 @@ Line <-   function(x,
     eval(colors) # not sure why, but this is necessary for bars to appear properly
 
     line.type <- vectorize(tolower(line.type), ncol(chart.matrix))
+    marker.symbols <- vectorize(marker.symbols, ncol(chart.matrix))
     data.label.show <- vectorize(data.label.show, ncol(chart.matrix))
     dlab.color <- if (data.label.font.autocolor) colors
                   else vectorize(data.label.font.color, ncol(chart.matrix))
@@ -260,7 +262,7 @@ Line <-   function(x,
             warning("Non-numeric line thickness values '",
             paste(tmp.txt[na.ind], collapse = "', '"), "' were ignored.")
     }
-    line.thickness <- suppressWarnings(line.thickness * rep(1, ncol(chart.matrix)))
+    line.thickness <- readLineThickness(line.thickness, ncol(chart.matrix))
     opacity <- opacity * rep(1, ncol(chart.matrix))
     for (i in 1:ncol(chart.matrix))
     {

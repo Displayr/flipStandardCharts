@@ -120,6 +120,7 @@ Line(
   x.tick.label.wrap.nchar = 21,
   line.thickness = 3,
   marker.show = NULL,
+  marker.symbols = "circle",
   marker.colors = colors,
   marker.opacity = NULL,
   marker.size = 6,
@@ -422,6 +423,9 @@ character format (e.g. "black") or an a hex code.}
 
 \item{marker.show}{Can be "none", "automatic" or a vector referencing
 the plotly symbol dictionary using either numerics or strings.}
+
+\item{marker.symbols}{Character; marker symbols, which are only shown if marker.show = TRUE.
+if a vector is passed, then each element will be applied to a data series.}
 
 \item{marker.colors}{Character; a vector containing on/mae or more colors specified as hex codes.}
 

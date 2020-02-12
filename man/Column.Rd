@@ -8,7 +8,6 @@ Column(
   x,
   x2 = NULL,
   colors = ChartColors(max(1, NCOL(x), na.rm = TRUE)),
-  x2.colors = ChartColors(max(1, NCOL(x2), na.rm = TRUE)),
   opacity = NULL,
   type = "Column",
   annotation.list = NULL,
@@ -65,6 +64,22 @@ Column(
   margin.right = NULL,
   margin.inner.pad = NULL,
   grid.show = TRUE,
+  x2.colors = ChartColors(max(1, NCOL(x2), na.rm = TRUE)),
+  x2.data.label.show = FALSE,
+  x2.line.type = "Solid",
+  x2.line.thickness = 3,
+  x2.shape = c("linear", "spline")[1],
+  x2.smoothing = 1,
+  x2.opacity = 1,
+  x2.marker.show = FALSE,
+  x2.marker.size = 6,
+  x2.marker.symbols = "circle",
+  x2.marker.colors = x2.colors,
+  x2.marker.border.colors = x2.colors,
+  x2.marker.opacity = x2.opacity,
+  x2.marker.border.opacity = x2.opacity,
+  x2.marker.border.width = 1,
+  x2.data.label.position = "Top",
   y.title = "",
   y.title.font.color = global.font.color,
   y.title.font.family = global.font.family,
@@ -172,9 +187,6 @@ will be parsed automatically.}
 a separate axis for these lines will be shown on the right.}
 
 \item{colors}{Character; a vector containing one or more colors specified as hex codes.}
-
-\item{x2.colors}{Character; a vector containing one or more colors for \code{x2}
-specified as hex codes.}
 
 \item{opacity}{Opacity of bars as an alpha value (0 to 1).}
 
@@ -311,6 +323,9 @@ By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.}
 and axis lines}
 
 \item{grid.show}{Logical; whether to show grid lines.}
+
+\item{x2.colors}{Character; a vector containing one or more colors for \code{x2}
+specified as hex codes.}
 
 \item{y.title}{Character, y-axis title; defaults to chart input values;
 to turn off set to "FALSE".}
