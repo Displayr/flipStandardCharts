@@ -364,7 +364,6 @@ Line <-   function(x,
                  data.label.function(chart.matrix[, i], decimals = data.label.decimals),
                  dlab.suffix[i], sep = "")
 
-            data.label.pos <- "top"
             data.label.offset <- line.thickness[i]/2
             if (!is.null(marker.show))
                 data.label.offset <- max(data.label.offset, marker.size)

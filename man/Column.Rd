@@ -80,6 +80,13 @@ Column(
   x2.marker.border.opacity = x2.opacity,
   x2.marker.border.width = 1,
   x2.data.label.position = "Top",
+  x2.data.label.font.autocolor = FALSE,
+  x2.data.label.font.family = global.font.family,
+  x2.data.label.font.size = 10,
+  x2.data.label.font.color = global.font.color,
+  x2.data.label.format = "",
+  x2.data.label.prefix = "",
+  x2.data.label.suffix = "",
   y.title = "",
   y.title.font.color = global.font.color,
   y.title.font.family = global.font.family,
@@ -326,6 +333,57 @@ and axis lines}
 
 \item{x2.colors}{Character; a vector containing one or more colors for \code{x2}
 specified as hex codes.}
+
+\item{x2.data.label.show}{Logical; whether to show data labels for the secondary axis.}
+
+\item{x2.line.type}{Character; one of 'solid', 'dot', 'dashed'.}
+
+\item{x2.line.thickness}{Thickness, in pixels, of the series line for secondary data.}
+
+\item{x2.shape}{Either "linear" for straight lines between data points or "spline" for curved lines.}
+
+\item{x2.smoothing}{Numeric; smoothing if \code{shape} is "spline".}
+
+\item{x2.opacity}{Opacity of the series line for secondary data.}
+
+\item{x2.marker.show}{Logical; whether to show markers at the data points on the lines for the secondary data.}
+
+\item{x2.marker.size}{Size in pixels of marker}
+
+\item{x2.marker.symbols}{Character; marker symbols, which are only shown if marker.show = TRUE.
+if a vector is passed, then each element will be applied to a data series in the secondary data set.}
+
+\item{x2.marker.colors}{Character; a vector containing on/mae or more colors specified as hex codes.}
+
+\item{x2.marker.border.colors}{Character; a vector containing one or more colors specified as hex codes.}
+
+\item{x2.marker.opacity}{Opacity for markers as an alpha value (0 to 1).}
+
+\item{x2.marker.border.opacity}{Opacity of border/line around
+markers as an alpha value (0 to 1).}
+
+\item{x2.marker.border.width}{Width in pixels of border/line around markers; 0 is no line}
+
+\item{x2.data.label.position}{Character; one of 'top' or 'bottom'.}
+
+\item{x2.data.label.font.autocolor}{Logical; Whether font color should
+automatically set to the series color.}
+
+\item{x2.data.label.font.family}{Character; font family for data label for the secondary axis.}
+
+\item{x2.data.label.font.size}{Integer; Font size for data label.px for the secondary axis.}
+
+\item{x2.data.label.font.color}{Font color as a named color for the secondary axis
+in character format (e.g. "black") or an a hex code. This can be a single
+color, a vector of colors (1 for each series/column), or a comma separated list
+of colors}
+
+\item{x2.data.label.format}{A string representing a d3 formatting code.
+See https://github.com/mbostock/d3/wiki/Formatting#numbers}
+
+\item{x2.data.label.prefix}{Character; prefix for data values.}
+
+\item{x2.data.label.suffix}{Character; suffix for data values.}
 
 \item{y.title}{Character, y-axis title; defaults to chart input values;
 to turn off set to "FALSE".}
