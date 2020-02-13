@@ -174,7 +174,8 @@ getRange <- function(x, axis, axisFormat)
         if (is.null(axis$range) && axis$rangemode == "tozero")
             tozero <- TRUE
     }
-    else
+
+    if (is.null(range))
     {
         if (!is.null(axisFormat) && length(axisFormat$ymd) >= 2)
         {

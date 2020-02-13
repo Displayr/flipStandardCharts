@@ -589,31 +589,25 @@ Column <- function(x,
         x2.labels <- formatLabels(x2, "Column", x.tick.label.wrap, x.tick.label.wrap.nchar,
             x.tick.format, y2.tick.format)$labels
         x.all.labels <- unique(c(x.all.labels, x2.labels))
-        if (TRUE)
+        
+        # Force chart to used combined dataset to set x-axis range
+        xaxis$range <- c(NA, NA)
+        old.range <- x.range 
+        x.range <- getRange(x.all.labels, xaxis, NULL)
+        if (!is.null(old.range)) # user-specified bounds
         {
-            xaxis$range <- c(NA, NA)
-            old.range <- x.range 
-            x.range <- getRange(x.all.labels, xaxis, NULL)
-            #$x.range <- unlist(setValRange(x.bounds.minimum, x.bounds.maximum, x.all.labels, x.zero, use.defaults = FALSE, is.bar = TRUE))
-            if (!is.null(old.range))
-            {
-                if (!isBlank(x.bounds.minimum))
-                    x.range[1] <- old.range[1]
-                if (!isBlank(x.bounds.maximum))
-                    x.range[2] <- old.range[2]
-            }
+            if (!isBlank(x.bounds.minimum))
+                x.range[1] <- old.range[1]
+            if (!isBlank(x.bounds.maximum))
+                x.range[2] <- old.range[2]
         }
         xaxis$range <- x.range
         xaxis$autorange <- FALSE
-
     }
     else
         x.range <- getRange(x.labels, xaxis, axisFormat)
-        xaxis$range <- x.range
-        xaxis$autorange <- FALSE
-    cat("line 609: x.range\n")
-    print(x.range)
 
+    # Set up second x-axis for data labels`
     xaxis2 <- list(overlaying = "x", visible = FALSE, range = x.range)
     data.annotations <- dataLabelPositions(chart.matrix = chart.matrix,
                         annotations = NULL,
@@ -630,7 +624,7 @@ Column <- function(x,
                         font = data.label.font,
                         center.data.labels = data.label.centered)
 
-    # Set up second y-axis
+    # Set up second y-axis (for secondary data)
     if (!is.null(x2))
     {
         y2.range <- setValRange(y2.bounds.minimum, y2.bounds.maximum, x2, y2.zero, is.null(y2.tick.distance))
