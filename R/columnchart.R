@@ -592,14 +592,28 @@ Column <- function(x,
         if (TRUE)
         {
             xaxis$range <- c(NA, NA)
-            old.range <- 
+            old.range <- x.range 
             x.range <- getRange(x.all.labels, xaxis, NULL)
-            xaxis$range <- x.range
-            xaxis$autorange <- FALSE
+            #$x.range <- unlist(setValRange(x.bounds.minimum, x.bounds.maximum, x.all.labels, x.zero, use.defaults = FALSE, is.bar = TRUE))
+            if (!is.null(old.range))
+            {
+                if (!isBlank(x.bounds.minimum))
+                    x.range[1] <- old.range[1]
+                if (!isBlank(x.bounds.maximum))
+                    x.range[2] <- old.range[2]
+            }
         }
+        xaxis$range <- x.range
+        xaxis$autorange <- FALSE
+
     }
     else
-        x.range <- getRange(x.all.labels, xaxis, axisFormat)
+        x.range <- getRange(x.labels, xaxis, axisFormat)
+        xaxis$range <- x.range
+        xaxis$autorange <- FALSE
+    cat("line 609: x.range\n")
+    print(x.range)
+
     xaxis2 <- list(overlaying = "x", visible = FALSE, range = x.range)
     data.annotations <- dataLabelPositions(chart.matrix = chart.matrix,
                         annotations = NULL,

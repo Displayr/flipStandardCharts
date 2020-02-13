@@ -873,6 +873,18 @@ charToDateTime <- function(x)
 		warning("Value '", x, "' could not be parsed as a date.")
 	return(res)
 }
+
+isBlank <- function(x)
+{
+    if (is.null(x))
+        return(TRUE)
+    if (is.na(x))
+        return(TRUE)
+    if (x == "")
+        return(TRUE)
+    return(FALSE)
+}
+
 # This is only applied to the values axis.
 # It can handle categorical and date axes types but only for the values axis
 # (date categorical axis range is set using getDateAxisRange in setAxis)
