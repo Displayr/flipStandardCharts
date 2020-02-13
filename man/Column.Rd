@@ -67,7 +67,7 @@ Column(
   x2.colors = ChartColors(max(1, NCOL(x2), na.rm = TRUE)),
   x2.data.label.show = FALSE,
   x2.line.type = "Solid",
-  x2.line.thickness = 3,
+  x2.line.thickness = 2,
   x2.shape = c("linear", "spline")[1],
   x2.smoothing = 1,
   x2.opacity = 1,
