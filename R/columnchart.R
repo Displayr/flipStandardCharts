@@ -592,22 +592,23 @@ Column <- function(x,
         
         # Force chart to used combined dataset to set x-axis range
         xaxis$range <- c(NA, NA)
-        old.range <- x.range 
+        old.range <- x.range
         x.range <- getRange(x.all.labels, xaxis, NULL)
-        if (!is.null(old.range)) # user-specified bounds
+        if (!is.null(old.range) && xaxis$type != "date") # user-specified bounds
         {
             if (!isBlank(x.bounds.minimum))
                 x.range[1] <- old.range[1]
             if (!isBlank(x.bounds.maximum))
                 x.range[2] <- old.range[2]
         }
-        xaxis$range <- x.range
         xaxis$autorange <- FALSE
+        xaxis$range <- if (xaxis$type == "date") getDateAxisRange(x.all.labels)
+                       else                      x.range
     }
     else
         x.range <- getRange(x.labels, xaxis, axisFormat)
 
-    # Set up second x-axis for data labels`
+    # Set up second x-axis for data labels
     xaxis2 <- list(overlaying = "x", visible = FALSE, range = x.range)
     data.annotations <- dataLabelPositions(chart.matrix = chart.matrix,
                         annotations = NULL,
@@ -637,23 +638,6 @@ Column <- function(x,
                           y2.hovertext.format)
         yaxis2$overlaying <- "y"
 
-
-        if (x2.axis.type == "numeric")
-        {
-            x2vals <- as.numeric(x2.labels)
-            if (x.range[1] < x.range[2])
-            {
-                xaxis2$range[1] <- min(xaxis2$range[1], x2vals)
-                xaxis2$range[2] <- max(xaxis2$range[2], x2vals)
-            } else
-            {
-                xaxis2$range[1] <- max(xaxis2$range[1], x2vals)
-                xaxis2$range[2] <- min(xaxis2$range[2], x2vals)
-            }
-        }
-
-        # need to make names to input parameters!!!!
-        # line thickness, line type, shape, smoothing, opacity, marker.size
         n2 <- ncol(x2) 
         x2.line.type <- vectorize(tolower(x2.line.type), n2)
         x2.line.thickness <- readLineThickness(x2.line.thickness, n2)
