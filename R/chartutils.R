@@ -162,7 +162,7 @@ getRange <- function(x, axis, axisFormat)
 {
     tozero <- FALSE
     range <- NULL
-    if (!is.null(axis))
+    if (!is.null(axis) && !any(is.na(axis$range)))
     {
         # in setAxis, date ranges must be a character, but when we copy an
         # axis to add data labels, we need it as a numeric
@@ -174,33 +174,40 @@ getRange <- function(x, axis, axisFormat)
         if (is.null(axis$range) && axis$rangemode == "tozero")
             tozero <- TRUE
     }
+
     if (is.null(range))
     {
         if (!is.null(axisFormat) && length(axisFormat$ymd) >= 2)
         {
-            tmp.dates <- as.numeric(axisFormat$ymd) * 1000
+            tmp.dates <- sort(unique(as.numeric(axisFormat$ymd))) * 1000
             diff <- min(diff(tmp.dates), na.rm = TRUE)
             range <- range(tmp.dates) + c(-1, 1) * diff
         }
         else if (is.numeric(x)) # this can contain NAs
         {
             diff <- if (length(x) == 1) 1
-                    else abs(min(diff(sort(x)), na.rm = TRUE))
+                    else abs(min(diff(sort(unique(x))), na.rm = TRUE))
             range <- range(x) + c(-0.5, 0.5) * diff
             if (tozero)
                 range <- c(min(0, range[1]), max(0, range[2]))
         }
+        else if (all(!is.na(suppressWarnings(AsDateTime(x, on.parse.failure = "silent")))) &&
+                 !(!is.null(axis) && axis$type == "numeric"))
+        {
+            tmp.dates <- sort(unique(as.numeric(AsDateTime(x)))) * 1000
+            diff <- min(diff(tmp.dates), na.rm = TRUE)
+            range <- range(tmp.dates) + c(-1, 1) * diff
+
+        }
         else if (all(!is.na(suppressWarnings(as.numeric(x)))))
         {
-            tmp <- as.numeric(x)
+            tmp <- as.numeric(unique(x))
             diff <- if (length(x) == 1) 1
                     else abs(min(diff(sort(tmp)), na.rm = TRUE))
             range <- range(tmp) + c(-0.5, 0.5) * diff
             if (tozero)
                 range <- c(min(0, range[1]), max(0, range[2]))
         }
-       # else if (all(!is.na(suppressWarnings(AsDateTime(x, on.parse.failure = "silent")))))
-       #     range <- range(AsDateTime(x))
         else
             range <- c(-0.5, length(x)-0.5)
 
@@ -868,6 +875,18 @@ charToDateTime <- function(x)
 		warning("Value '", x, "' could not be parsed as a date.")
 	return(res)
 }
+
+isBlank <- function(x)
+{
+    if (is.null(x))
+        return(TRUE)
+    if (is.na(x))
+        return(TRUE)
+    if (x == "")
+        return(TRUE)
+    return(FALSE)
+}
+
 # This is only applied to the values axis.
 # It can handle categorical and date axes types but only for the values axis
 # (date categorical axis range is set using getDateAxisRange in setAxis)
@@ -1489,3 +1508,19 @@ addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat)
     return(data.label.text)
 }
 
+readLineThickness <- function(line.thickness, n)
+{
+    if (is.character(line.thickness))
+    {
+        tmp.txt <- TextAsVector(line.thickness)
+        line.thickness <- suppressWarnings(as.numeric(tmp.txt))
+        na.ind <- which(is.na(line.thickness))
+        if (length(na.ind) == 1)
+            warning("Non-numeric line thickness value '", tmp.txt[na.ind], "' was ignored.")
+        if (length(na.ind) > 1)
+            warning("Non-numeric line thickness values '",
+            paste(tmp.txt[na.ind], collapse = "', '"), "' were ignored.")
+    }
+    line.thickness <- suppressWarnings(line.thickness * rep(1, n)) # suppress warnings about recyling
+    return(line.thickness)
+}

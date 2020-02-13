@@ -233,6 +233,36 @@
 #' @param data.label.threshold The proportion of the total range below which
 #' data labels should not be displayed. Only applicable for pie, bar and column
 #' charts.
+#' @param x2.data.label.show Logical; whether to show data labels for the secondary axis.
+#' @param x2.data.label.position Character; one of 'top' or 'bottom'.
+#' @param x2.data.label.font.family Character; font family for data label for the secondary axis.
+#' @param x2.data.label.font.size Integer; Font size for data label.px for the secondary axis.
+#' @param x2.data.label.font.color Font color as a named color for the secondary axis
+#' in character format (e.g. "black") or an a hex code. This can be a single
+#' color, a vector of colors (1 for each series/column), or a comma separated list
+#' of colors
+#' @param x2.data.label.prefix Character; prefix for data values.
+#' @param x2.data.label.suffix Character; suffix for data values.
+#' @param x2.data.label.font.autocolor Logical; Whether font color should
+#' automatically set to the series color.
+#' @param x2.data.label.format A string representing a d3 formatting code.
+#' See https://github.com/mbostock/d3/wiki/Formatting#numbers
+#' @param x2.data.label.prefix Character; prefix for data values.
+#' @param x2.shape Either "linear" for straight lines between data points or "spline" for curved lines.
+#' @param x2.smoothing Numeric; smoothing if \code{shape} is "spline".
+#' @param x2.line.type Character; one of 'solid', 'dot', 'dashed'.
+#' @param x2.line.thickness Thickness, in pixels, of the series line for secondary data.
+#' @param x2.opacity Opacity of the series line for secondary data.
+#' @param x2.marker.show Logical; whether to show markers at the data points on the lines for the secondary data.
+#' @param x2.marker.symbols Character; marker symbols, which are only shown if marker.show = TRUE.
+#'     if a vector is passed, then each element will be applied to a data series in the secondary data set.
+#' @param x2.marker.colors Character; a vector containing on/mae or more colors specified as hex codes.
+#' @param x2.marker.opacity Opacity for markers as an alpha value (0 to 1).
+#' @param x2.marker.size Size in pixels of marker
+#' @param x2.marker.border.width Width in pixels of border/line around markers; 0 is no line
+#' @param x2.marker.border.colors Character; a vector containing one or more colors specified as hex codes.
+#' @param x2.marker.border.opacity Opacity of border/line around
+#' markers as an alpha value (0 to 1).
 #' @importFrom grDevices rgb
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom flipTables AsTidyTabularData
@@ -246,7 +276,6 @@
 Column <- function(x,
                     x2 = NULL,
                     colors = ChartColors(max(1, NCOL(x), na.rm = TRUE)),
-                    x2.colors = ChartColors(max(1, NCOL(x2), na.rm = TRUE)),
                     opacity = NULL,
                     type = "Column",
                     annotation.list = NULL, #list(list(name="p", type = "arrow")),
@@ -303,6 +332,29 @@ Column <- function(x,
                     margin.right = NULL,
                     margin.inner.pad = NULL,
                     grid.show = TRUE,
+                    x2.colors = ChartColors(max(1, NCOL(x2), na.rm = TRUE)),
+                    x2.data.label.show = FALSE,
+                    x2.line.type = "Solid",
+                    x2.line.thickness = 2,
+                    x2.shape = c("linear", "spline")[1],
+                    x2.smoothing = 1,
+                    x2.opacity = 1,
+                    x2.marker.show = FALSE,
+                    x2.marker.size = 6,
+                    x2.marker.symbols = "circle",
+                    x2.marker.colors = x2.colors,
+                    x2.marker.border.colors = x2.colors,
+                    x2.marker.opacity = x2.opacity,
+                    x2.marker.border.opacity = x2.opacity,
+                    x2.marker.border.width = 1,
+                    x2.data.label.position = "Top",
+                    x2.data.label.font.autocolor = FALSE,
+                    x2.data.label.font.family = global.font.family,
+                    x2.data.label.font.size = 10,
+                    x2.data.label.font.color = global.font.color,
+                    x2.data.label.format = "",
+                    x2.data.label.prefix = "",
+                    x2.data.label.suffix = "",
                     y.title = "",
                     y.title.font.color = global.font.color,
                     y.title.font.family = global.font.family,
@@ -516,36 +568,9 @@ Column <- function(x,
     y.labels <- colnames(chart.matrix)
 
     # Set up numeric x-axis - this is used for data labels and hovertext
-    x.range <- getRange(x.labels, xaxis, axisFormat)
-    xaxis2 <- list(overlaying = "x", visible = FALSE, range = x.range)
-    data.annotations <- dataLabelPositions(chart.matrix = chart.matrix,
-                        annotations = NULL,
-                        data.label.mult = data.label.mult,
-                        bar.decimals = data.label.decimals,
-                        bar.prefix = data.label.prefix,
-                        bar.suffix = data.label.suffix,
-                        barmode = barmode,
-                        swap.axes.and.data = FALSE,
-                        bar.gap = bar.gap,
-                        display.threshold = data.label.threshold,
-                        dates = axisFormat$ymd,
-                        reversed = isReversed(yaxis),
-                        font = data.label.font,
-                        center.data.labels = data.label.centered)
-
-    # Set up second y-axis
+    x.all.labels <- x.labels
     if (!is.null(x2))
     {
-        y2.range <- setValRange(y2.bounds.minimum, y2.bounds.maximum, x2, y2.zero, is.null(y2.tick.distance))
-        y2.tick  <- setTicks(y2.range$min, y2.range$max, y2.tick.distance, y2.data.reversed)
-        yaxis2   <- setAxis(y2.title, "right", axisFormat, y2.title.font,
-                          y2.line.color, y2.line.width, y2.grid.width * grid.show, y2.grid.color,
-                          y2.tick, y2.tick.font, y2.tick.angle, y2.tick.mark.length, y2.tick.distance,
-                          y2.tick.format, y2.tick.prefix, y2.tick.suffix,
-                          y2.tick.show, y2.zero, y2.zero.line.width, y2.zero.line.color,
-                          y2.hovertext.format)
-        yaxis2$overlaying <- "y"
-
         # Set up x-axis values for x2
         x2 <- checkMatrixNames(x2)
         x2.axis.type <- getAxisType(rownames(x2), format = x.tick.format)
@@ -563,21 +588,97 @@ Column <- function(x,
         }
         x2.labels <- formatLabels(x2, "Column", x.tick.label.wrap, x.tick.label.wrap.nchar,
             x.tick.format, y2.tick.format)$labels
-
-        if (x2.axis.type == "numeric")
+        x.all.labels <- unique(c(x.all.labels, x2.labels))
+        
+        # Force chart to used combined dataset to set x-axis range
+        xaxis$range <- c(NA, NA)
+        old.range <- x.range
+        x.range <- getRange(x.all.labels, xaxis, NULL)
+        if (!is.null(old.range) && xaxis$type != "date") # user-specified bounds
         {
-            x2vals <- as.numeric(x2.labels)
-            if (x.range[1] < x.range[2])
-            {
-                xaxis2$range[1] <- min(xaxis2$range[1], x2vals)
-                xaxis2$range[2] <- max(xaxis2$range[2], x2vals)
-            } else
-            {
-                xaxis2$range[1] <- max(xaxis2$range[1], x2vals)
-                xaxis2$range[2] <- min(xaxis2$range[2], x2vals)
-            }
+            if (!isBlank(x.bounds.minimum))
+                x.range[1] <- old.range[1]
+            if (!isBlank(x.bounds.maximum))
+                x.range[2] <- old.range[2]
+        }
+        xaxis$autorange <- FALSE
+        xaxis$range <- if (xaxis$type == "date") getDateAxisRange(x.all.labels)
+                       else                      x.range
+    }
+    else
+        x.range <- getRange(x.labels, xaxis, axisFormat)
+
+    # Set up second x-axis for data labels
+    xaxis2 <- list(overlaying = "x", visible = FALSE, range = x.range)
+    data.annotations <- dataLabelPositions(chart.matrix = chart.matrix,
+                        annotations = NULL,
+                        data.label.mult = data.label.mult,
+                        bar.decimals = data.label.decimals,
+                        bar.prefix = data.label.prefix,
+                        bar.suffix = data.label.suffix,
+                        barmode = barmode,
+                        swap.axes.and.data = FALSE,
+                        bar.gap = bar.gap,
+                        display.threshold = data.label.threshold,
+                        dates = axisFormat$ymd,
+                        reversed = isReversed(yaxis),
+                        font = data.label.font,
+                        center.data.labels = data.label.centered)
+
+    # Set up second y-axis (for secondary data)
+    if (!is.null(x2))
+    {
+        y2.range <- setValRange(y2.bounds.minimum, y2.bounds.maximum, x2, y2.zero, is.null(y2.tick.distance))
+        y2.tick  <- setTicks(y2.range$min, y2.range$max, y2.tick.distance, y2.data.reversed)
+        yaxis2   <- setAxis(y2.title, "right", axisFormat, y2.title.font,
+                          y2.line.color, y2.line.width, y2.grid.width * grid.show, y2.grid.color,
+                          y2.tick, y2.tick.font, y2.tick.angle, y2.tick.mark.length, y2.tick.distance,
+                          y2.tick.format, y2.tick.prefix, y2.tick.suffix,
+                          y2.tick.show, y2.zero, y2.zero.line.width, y2.zero.line.color,
+                          y2.hovertext.format)
+        yaxis2$overlaying <- "y"
+
+        n2 <- ncol(x2) 
+        x2.line.type <- vectorize(tolower(x2.line.type), n2)
+        x2.line.thickness <- readLineThickness(x2.line.thickness, n2)
+        x2.opacity <- x2.opacity * rep(1, n2)
+        x2.marker.symbols <- vectorize(x2.marker.symbols, n2)
+        x2.dlab.color <- if (x2.data.label.font.autocolor) x2.colors
+                         else vectorize(x2.data.label.font.color, n2)
+        x2.dlab.pos <- vectorize(tolower(x2.data.label.position), n2)
+        x2.dlab.prefix <- vectorize(x2.data.label.prefix, n2, split = NULL)
+        x2.dlab.suffix <- vectorize(x2.data.label.suffix, n2, split = NULL)
+        x2.data.label.font = lapply(x2.dlab.color,
+        function(cc) list(family = x2.data.label.font.family, size = x2.data.label.font.size, color = cc))
+
+        x2.series.mode <- if (x2.marker.show) "lines+markers" else "lines"
+        x2.lines <- list()
+        x2.markers <- list()
+
+        for (i in 1:n2)
+        { 
+            x2.lines[[i]] <- list(width = x2.line.thickness[i], dash = x2.line.type[i],
+                  shape = x2.shape, smoothing = x2.smoothing,
+                  color = toRGB(x2.colors[i], alpha = x2.opacity[i]))
+    
+            x2.markers[[i]] <- list(NULL)
+            if (x2.marker.show)
+                x2.markers[[i]] <- list(size = x2.marker.size,
+                  color = toRGB(x2.marker.colors[i], alpha = x2.marker.opacity),
+                  symbol = x2.marker.symbols[i],
+                  line = list(
+                  color = toRGB(x2.marker.border.colors[i], alpha = x2.marker.border.opacity),
+                  width = x2.marker.border.width))
         }
     }
+        # Add invisible line to force all categorical labels to be shown
+        # Type "scatter" ensures y-axis tick bounds are treated properly
+        # but it also adds extra space next to the y-axis
+            p <- add_trace(p, x = x.all.labels, 
+                        y = rep(min(as.numeric(chart.matrix),na.rm = T), length(x.all.labels)),
+                           mode = if (notAutoRange(yaxis)) "markers" else "lines",
+                           type = "scatter", cliponaxis = TRUE,
+                           hoverinfo = "skip", showlegend = FALSE, opacity = 0)
 
 
     # Plot trace for second y-axis first so that they are shown last in legend
@@ -588,15 +689,14 @@ Column <- function(x,
         for (i in 1:ncol(x2))
         {
             p <- add_trace(p, x = x2.labels, y = x2[,i], name = colnames(x2)[i],
-                    type = "scatter", mode = "lines", yaxis = "y2",
-                    line = list(color = x2.colors[i]),
+                    type = "scatter", mode = x2.series.mode, yaxis = "y2", xaxis = "x",
+                    line = x2.lines[[i]], marker = x2.markers[[i]], connectgaps = FALSE,
                     hoverlabel = list(font = list(color = autoFontColor(x2.colors[i]),
                     size = hovertext.font.size, family = hovertext.font.family)),
                     hovertemplate = setHoverTemplate(i, xaxis, x2), cliponaxis = TRUE,
                     legendgroup = NCOL(chart.matrix) + i)
         }
     }
-
 
     ## Add a trace for each col of data in the matrix
     for (i in 1:ncol(chart.matrix))
@@ -609,16 +709,7 @@ Column <- function(x,
                       alpha = marker.border.opacity),
                       width = marker.border.width))
 
-        # Add invisible line to force all categorical labels to be shown
-        # Type "scatter" ensures y-axis tick bounds are treated properly
-        # but it also adds extra space next to the y-axis
-        if (i == 1)
-            p <- add_trace(p, x = x, y = rep(min(y,na.rm = T), length(x)),
-                           mode = if (notAutoRange(yaxis)) "markers" else "lines",
-                           type = "scatter", cliponaxis = TRUE,
-                           hoverinfo = "skip", showlegend = FALSE, opacity = 0)
-
-        # this is the main trace for each data series
+        # This is the main trace for each data series
         p <- add_trace(p, x = x, y = y.filled, type = "bar",
                        orientation = "v", marker = marker, name = legend.text[i],
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),
@@ -695,12 +786,30 @@ Column <- function(x,
         for (i in 1:ncol(x2))
         {
             p <- add_trace(p, x = x2.labels, y = x2[,i], name = colnames(x2)[i],
-                    type = "scatter", mode = "lines", yaxis = "y2",
-                    line = list(color = x2.colors[i]),
+                    type = "scatter", mode = x2.series.mode, yaxis = "y2",
+                    line = x2.lines[[i]], marker = x2.markers[[i]], connectgaps = FALSE,
                     hoverlabel = list(font = list(color = autoFontColor(x2.colors[i]),
                     size = hovertext.font.size, family = hovertext.font.family)),
                     hovertemplate = setHoverTemplate(i, xaxis, x2), cliponaxis = TRUE,
                     legendgroup = NCOL(chart.matrix) + i)
+        }
+    }
+
+    # Add data labels for x2 as a trace
+    if (!is.null(x2) && x2.data.label.show)
+    {
+        for (i in 1:ncol(x2))
+        {
+            tmp.offset <- x2.line.thickness[i]/2
+            if (!is.null(x2.marker.show))
+                tmp.offset <- max(tmp.offset, x2.marker.size)
+            p <- add_trace(p, x = x2.labels, y = x2[,i], yaxis = "y2", xaxis = "x",
+                type = "scatter", mode = "markers+text", cliponaxis = TRUE,
+                hoverinfo = "skip", textposition = x2.dlab.pos[i], 
+                textfont = x2.data.label.font[[i]],
+                showlegend = FALSE, legendgroup = NCOL(chart.matrix) + i,
+                marker = list(size = tmp.offset, opacity = 0),
+                text = formatByD3(x2[,i], x2.data.label.format, x2.dlab.prefix[i], x2.dlab.suffix[i])) 
         }
     }
 
