@@ -191,7 +191,8 @@ getRange <- function(x, axis, axisFormat)
             if (tozero)
                 range <- c(min(0, range[1]), max(0, range[2]))
         }
-        else if (all(!is.na(suppressWarnings(AsDateTime(x, on.parse.failure = "silent")))))
+        else if (all(!is.na(suppressWarnings(AsDateTime(x, on.parse.failure = "silent")))) &&
+                 !(!is.null(axis) && axis$type == "numeric"))
         {
             tmp.dates <- sort(unique(as.numeric(AsDateTime(x)))) * 1000
             diff <- min(diff(tmp.dates), na.rm = TRUE)
