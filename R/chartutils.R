@@ -555,7 +555,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
         autorange <- FALSE
         if (axis.type == "date")
         {
-                range <- rev(getDateAxisRange(axisLabels$ymd, range))
+            range <- rev(getDateAxisRange(axisLabels$ymd, range))
 
             # Override default tick positions if there are only a few bars
             if (with.bars && length(axisLabels$labels) <= 10 && length(axisLabels$labels) >= 2)
@@ -581,8 +581,9 @@ setAxis <- function(title, side, axisLabels, titlefont,
         }
         else if (axis.type == "numeric")
         {
+            # Create a fake axis to specify axis type
             if (is.null(range))
-                range <- getRange(axisLabels$labels, NULL, NULL)
+                range <- getRange(axisLabels$labels, list(type = "numeric", autorange = FALSE, range = c(NA, NA)), NULL)
             range <- rev(range)
             if (show.zero)
             {
