@@ -650,7 +650,11 @@ Column <- function(x,
         x2.dlab.suffix <- vectorize(x2.data.label.suffix, n2, split = NULL)
         x2.data.label.font = lapply(x2.dlab.color,
         function(cc) list(family = x2.data.label.font.family, size = x2.data.label.font.size, color = cc))
-
+    
+        if (grepl("^curved", tolower(x2.shape)))
+            x2.shape <- "spline"
+        if (grepl("^straight", tolower(x2.shape)))
+            x2.shape <- "linear"
         x2.series.mode <- if (x2.marker.show) "lines+markers" else "lines"
         x2.lines <- list()
         x2.markers <- list()
