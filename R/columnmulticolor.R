@@ -107,18 +107,13 @@ ColumnMultiColor <- function(x,
                     bar.gap = 0.15)
 {
     ErrorIfNotEnoughData(x)
-    annot.data <- x
-    if (length(dim(x)) > 1)
-    {
-        if (NROW(x) == 1 && NCOL(x) > 1)
-            x <- t(x)
-        if (NCOL(x) > 1)
-        {
-            warning("Column chart with multi color series can only show a single series. To show multiple series use Small Multiples")
-            x <- x[,1]
-        }
-    }
     chart.matrix <- checkMatrixNames(x, use.annot = TRUE)
+    annot.data <- x
+    if (NCOL(chart.matrix) > 1)
+    {
+        warning("Column chart with multi color series can only show a single series. To show multiple series use Small Multiples")
+        chart.matrix <- chart.matrix[,1, drop = FALSE]
+    }
     if (bar.gap < 0.0 || bar.gap >= 1.0)
     {
         warning("Parameter 'bar gap' must be between 0 and 1. ",
@@ -139,12 +134,12 @@ ColumnMultiColor <- function(x,
         marker.border.opacity <- opacity
     else if (is.null(marker.border.opacity)) # trying to hide gap in the middle
         marker.border.opacity <- opacity/(4 + 3*(opacity < 0.7))
-    colors <- paste0(rep("", nrow(chart.matrix)), colors)
+    colors <- paste0(rep("", NROW(chart.matrix)), colors)
 
     if (data.label.font.autocolor)
         dlab.color <- autoFontColor(colors)
     else
-        dlab.color <- vectorize(data.label.font.color, nrow(chart.matrix))
+        dlab.color <- vectorize(data.label.font.color, NROW(chart.matrix))
 
     data.label.font = list(family = data.label.font.family, size = data.label.font.size, color = dlab.color)
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)

@@ -81,7 +81,7 @@ checkMatrixNames <- function(x, assign.col.names = TRUE, use.annot = FALSE)
         rownames(x) <- t.seq
         return(x)
     }
-    new.x <- if (length(dim(x)) == 3) as.matrix(x[,,1])
+    new.x <- if (length(dim(x)) == 3) matrix(x, nrow(x), ncol(x), dimnames = dimnames(x)[1:2])
              else as.matrix(suppressWarnings(AsTidyTabularData(x))) # handles 1d data + statistic properly
     old.dim <- dim(new.x)
     old.names <- dimnames(new.x)

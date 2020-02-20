@@ -187,3 +187,33 @@ test_that("Scatter plot annotations",
         threshold = "2017-01-9", width = 1, color = "red"))),
         "Annotation data does not contain")
 })
+
+tb <- structure(c(NA, NA, NA, NA, 9.07042253521127, 8.55072463768116,
+            8.89795918367347, 8.92413793103448, 8.17142857142857, 0, 0, 0,
+            0, 71, 69, 49, 145, 35, NA, NA, NA, NA, 1.81278883943602, -2.27748923545864,
+            0.113642487963684, 1.17602961985239, -1.50006621469747), .Dim = c(1L,
+                                                                              9L, 3L), .Dimnames = list("Satisfaction with firm - Numeric",
+                                                                                                        c("A", "B", "C", "D", "Absolute Performance", "Ongoing Advice",
+                                                                                                          "Performance Only", "Relative Performance", "Wealth Partner"
+                                                                                                        ), c("Average", "Column Sample Size", "z-Statistic")), name = "table.Q2.1.Satisfaction.with.firm.Numeric.by.Fee.Structure", questions = c("Q2.1 Satisfaction with firm - Numeric",
+                                                                                                                                                                                                                                                  "Fee Structure"), assigned.rownames = TRUE)
+a.list <- list(list(type = "Arrow - up", data = "z-Statistic", threstype = "above threshold",
+          threshold = "1.96", color = "#0066A5", size = 15, width = NULL,
+          offset = NULL, shiftleft = NULL, shiftright = NULL, format = NULL,
+          prefix = NULL, suffix = NULL, font.family = NULL, font.weight = NULL,
+          font.style = NULL), list(type = "Arrow - down", data = "z-Statistic",
+                                   threstype = "below threshold", threshold = "-0.001", color = "#0066A5",
+                                   size = 15, width = NULL, offset = NULL, shiftleft = NULL,
+                                   shiftright = NULL, format = NULL, prefix = NULL, suffix = NULL,
+                                   font.family = NULL, font.weight = NULL, font.style = NULL))
+
+test_that("One-row matrix is transposed",
+{
+    expect_warning(Column(aperm(tb, c(2,1,3)), annotation.list = a.list, data.label.show = T))
+    expect_warning(Column(tb, annotation.list = a.list, data.label.show = T, type = "Stacked"))
+    expect_warning(Bar(aperm(tb, c(2,1,3)), annotation.list = a.list, data.label.show = T))
+    expect_warning(Bar(tb, annotation.list = a.list, data.label.show = T))
+    expect_warning(ColumnMultiColor(tb[,5:7,,drop = FALSE], annotation.list = a.list, data.label.show = T))
+    expect_warning(BarMultiColor(tb[,5:7,,drop = FALSE], annotation.list = a.list, data.label.show = T))
+    expect_warning(SmallMultiples(tb, "ColumnMultiColor", data.label.show = TRUE, annotation.list = a.list))
+})
