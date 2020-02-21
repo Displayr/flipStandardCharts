@@ -1502,7 +1502,7 @@ addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat)
 
         if (annotation$type == "Hide")
             data.label.text <- ""
-        else if (annotation$type == "Text - before data labels")
+        else if (annotation$type == "Text - before data label")
             data.label.text <- paste0(new.text, data.label.text)
         else
             data.label.text <- paste0(data.label.text, new.text)
