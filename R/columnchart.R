@@ -456,7 +456,7 @@ Column <- function(x,
     if (bar.gap < 0.0 || bar.gap >= 1.0)
     {
         warning("Parameter 'bar gap' must be between 0 and 1. ",
-                "Invalid 'bar gap' set to default value of 0.15.")
+                "Invalid 'bar gap'https://numbers.atlassian.net/browse/DS-2822 set to default value of 0.15.")
         bar.gap <- 0.15
     }
 
@@ -464,7 +464,7 @@ Column <- function(x,
     annot.data <- x
 
     # Prepare data for plotting chart
-    chart.matrix <- checkMatrixNames(x, use.annot = TRUE)
+    chart.matrix <- checkMatrixNames(x)
     if (!is.numeric(chart.matrix))
         stop("Input data should be numeric.")
     x.labels.full <- rownames(chart.matrix)
@@ -589,7 +589,7 @@ Column <- function(x,
         x2.labels <- formatLabels(x2, "Column", x.tick.label.wrap, x.tick.label.wrap.nchar,
             x.tick.format, y2.tick.format)$labels
         x.all.labels <- unique(c(x.all.labels, x2.labels))
-        
+
         # Force chart to used combined dataset to set x-axis range
         xaxis$range <- c(NA, NA)
         old.range <- x.range
@@ -638,7 +638,7 @@ Column <- function(x,
                           y2.hovertext.format)
         yaxis2$overlaying <- "y"
 
-        n2 <- ncol(x2) 
+        n2 <- ncol(x2)
         x2.line.type <- vectorize(tolower(x2.line.type), n2)
         x2.line.thickness <- readLineThickness(x2.line.thickness, n2)
         x2.opacity <- x2.opacity * rep(1, n2)
@@ -650,7 +650,7 @@ Column <- function(x,
         x2.dlab.suffix <- vectorize(x2.data.label.suffix, n2, split = NULL)
         x2.data.label.font = lapply(x2.dlab.color,
         function(cc) list(family = x2.data.label.font.family, size = x2.data.label.font.size, color = cc))
-    
+
         if (grepl("^curved", tolower(x2.shape)))
             x2.shape <- "spline"
         if (grepl("^straight", tolower(x2.shape)))
@@ -660,11 +660,11 @@ Column <- function(x,
         x2.markers <- list()
 
         for (i in 1:n2)
-        { 
+        {
             x2.lines[[i]] <- list(width = x2.line.thickness[i], dash = x2.line.type[i],
                   shape = x2.shape, smoothing = x2.smoothing,
                   color = toRGB(x2.colors[i], alpha = x2.opacity[i]))
-    
+
             x2.markers[[i]] <- list(NULL)
             if (x2.marker.show)
                 x2.markers[[i]] <- list(size = x2.marker.size,
@@ -678,7 +678,7 @@ Column <- function(x,
         # Add invisible line to force all categorical labels to be shown
         # Type "scatter" ensures y-axis tick bounds are treated properly
         # but it also adds extra space next to the y-axis
-            p <- add_trace(p, x = x.all.labels, 
+            p <- add_trace(p, x = x.all.labels,
                         y = rep(min(as.numeric(chart.matrix),na.rm = T), length(x.all.labels)),
                            mode = if (notAutoRange(yaxis)) "markers" else "lines",
                            type = "scatter", cliponaxis = TRUE,
@@ -809,15 +809,15 @@ Column <- function(x,
                 tmp.offset <- max(tmp.offset, x2.marker.size)
             p <- add_trace(p, x = x2.labels, y = x2[,i], yaxis = "y2", xaxis = "x",
                 type = "scatter", mode = "markers+text", cliponaxis = TRUE,
-                hoverinfo = "skip", textposition = x2.dlab.pos[i], 
+                hoverinfo = "skip", textposition = x2.dlab.pos[i],
                 textfont = x2.data.label.font[[i]],
                 showlegend = FALSE, legendgroup = NCOL(chart.matrix) + i,
                 marker = list(size = tmp.offset, opacity = 0),
-                text = formatByD3(x2[,i], x2.data.label.format, x2.dlab.prefix[i], x2.dlab.suffix[i])) 
+                text = formatByD3(x2[,i], x2.data.label.format, x2.dlab.prefix[i], x2.dlab.suffix[i]))
         }
     }
 
-    # Add text elements surrounding chart 
+    # Add text elements surrounding chart
     annotations <- NULL
     n <- length(annotations)
     annotations[[n+1]] <- setTitle(title, title.font, margins)

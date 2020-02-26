@@ -107,7 +107,7 @@ ColumnMultiColor <- function(x,
                     bar.gap = 0.15)
 {
     ErrorIfNotEnoughData(x)
-    chart.matrix <- checkMatrixNames(x, use.annot = TRUE)
+    chart.matrix <- checkMatrixNames(x)
     annot.data <- x
     if (NCOL(chart.matrix) > 1)
     {

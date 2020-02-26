@@ -154,7 +154,7 @@ Bar <- function(x,
     }
     annot.data <- x
 
-    chart.matrix <- checkMatrixNames(x, use.annot = TRUE)
+    chart.matrix <- checkMatrixNames(x)
     is.stacked <- grepl("Stacked", type, fixed=T)
     if (is.stacked && ncol(chart.matrix) < 2)
     {
@@ -289,8 +289,8 @@ Bar <- function(x,
         x <- x.labels
         y <- as.numeric(chart.matrix[, i])
         y.filled <- ifelse(is.finite(y), y, 0)
-        y.hover.text <- formatByD3(y, x.hovertext.format, x.tick.prefix, x.tick.suffix) 
-        x.hover.text <- formatByD3(x, y.hovertext.format, y.tick.prefix, y.tick.suffix) 
+        y.hover.text <- formatByD3(y, x.hovertext.format, x.tick.prefix, x.tick.suffix)
+        x.hover.text <- formatByD3(x, y.hovertext.format, y.tick.prefix, y.tick.suffix)
 
 
         marker <- list(color = toRGB(colors[i], alpha = opacity),
@@ -312,7 +312,7 @@ Bar <- function(x,
                        marker = marker, name  =  legend.text[i],
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family)),
-                       hovertemplate = setHoverTemplate(i, yaxis, chart.matrix, is.bar = TRUE), 
+                       hovertemplate = setHoverTemplate(i, yaxis, chart.matrix, is.bar = TRUE),
                        legendgroup = if (is.stacked && data.label.show) "all" else i)
 
         if (fit.type != "None" && is.stacked && i == 1)
@@ -361,7 +361,7 @@ Bar <- function(x,
         if (data.label.show)
         {
             p <- addDataLabelAnnotations(p, type = "Bar", legend.text[i],
-                    data.label.xpos = data.annotations$x[,i], 
+                    data.label.xpos = data.annotations$x[,i],
                     data.label.ypos = if (NCOL(chart.matrix) > 1) data.annotations$y[,i] else x,
                     data.label.text = data.annotations$text[,i],
                     data.label.sign = getSign(data.annotations$x[,i], xaxis),
