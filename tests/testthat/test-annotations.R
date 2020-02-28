@@ -187,3 +187,84 @@ test_that("Scatter plot annotations",
         threshold = "2017-01-9", width = 1, color = "red"))),
         "Annotation data does not contain")
 })
+
+tb <- structure(c(NA, NA, NA, NA, 9.07042253521127, 8.55072463768116,
+            8.89795918367347, 8.92413793103448, 8.17142857142857, 0, 0, 0,
+            0, 71, 69, 49, 145, 35, NA, NA, NA, NA, 1.81278883943602, -2.27748923545864,
+            0.113642487963684, 1.17602961985239, -1.50006621469747), .Dim = c(1L,
+                                                                              9L, 3L), .Dimnames = list("Satisfaction with firm - Numeric",
+                                                                                                        c("A", "B", "C", "D", "Absolute Performance", "Ongoing Advice",
+                                                                                                          "Performance Only", "Relative Performance", "Wealth Partner"
+                                                                                                        ), c("Average", "Column Sample Size", "z-Statistic")), name = "table.Q2.1.Satisfaction.with.firm.Numeric.by.Fee.Structure", questions = c("Q2.1 Satisfaction with firm - Numeric",
+                                                                                                                                                                                                                                                  "Fee Structure"), assigned.rownames = TRUE)
+a.list <- list(list(type = "Arrow - up", data = "z-Statistic", threstype = "above threshold",
+          threshold = "1.96", color = "#0066A5", size = 15, width = NULL,
+          offset = NULL, shiftleft = NULL, shiftright = NULL, format = NULL,
+          prefix = NULL, suffix = NULL, font.family = NULL, font.weight = NULL,
+          font.style = NULL), list(type = "Arrow - down", data = "z-Statistic",
+                                   threstype = "below threshold", threshold = "-0.001", color = "#0066A5",
+                                   size = 15, width = NULL, offset = NULL, shiftleft = NULL,
+                                   shiftright = NULL, format = NULL, prefix = NULL, suffix = NULL,
+                                   font.family = NULL, font.weight = NULL, font.style = NULL))
+
+test_that("One-row matrix is transposed",
+{
+    expect_warning(Column(aperm(tb, c(2,1,3)), annotation.list = a.list, data.label.show = T))
+    expect_warning(Column(tb, annotation.list = a.list, data.label.show = T, type = "Stacked"))
+    expect_warning(Bar(aperm(tb, c(2,1,3)), annotation.list = a.list, data.label.show = T))
+    expect_warning(Bar(tb, annotation.list = a.list, data.label.show = T))
+    expect_warning(ColumnMultiColor(tb[,5:7,,drop = FALSE], annotation.list = a.list, data.label.show = T))
+    expect_warning(BarMultiColor(tb[,5:7,,drop = FALSE], annotation.list = a.list, data.label.show = T))
+    expect_warning(SmallMultiples(tb, "ColumnMultiColor", data.label.show = TRUE, annotation.list = a.list))
+})
+
+dat2 <- structure(c(0.388888888888889, 0, 0, 0.111111111111111, 0, 0,
+                    0, 0.444444444444444, 0.0555555555555556, 0.181818181818182,
+                    0.0909090909090909, 0, 0.0727272727272727, 0.181818181818182,
+                    0.0545454545454545, 0.0545454545454545, 0.2, 0.163636363636364,
+                    0.175438596491228, 0.0526315789473684, 0.087719298245614, 0.105263157894737,
+                    0.0350877192982456, 0.0701754385964912, 0.12280701754386, 0.263157894736842,
+                    0.087719298245614, 0.135416666666667, 0.0729166666666667, 0.135416666666667,
+                    0.104166666666667, 0.0833333333333333, 0.135416666666667, 0.104166666666667,
+                    0.0625, 0.166666666666667, 0.0833333333333333, 0.116666666666667,
+                    0.0833333333333333, 0.0833333333333333, 0.191666666666667, 0.0833333333333333,
+                    0.175, 0.166666666666667, 0.0166666666666667, 0.0657894736842105,
+                    0.276315789473684, 0.118421052631579, 0.197368421052632, 0.0657894736842105,
+                    0.0263157894736842, 0.157894736842105, 0.0921052631578947, 0,
+                    0.0666666666666667, 0.133333333333333, 0.155555555555556, 0.0666666666666667,
+                    0.111111111111111, 0.133333333333333, 0.0888888888888889, 0.244444444444444,
+                    0, 0.0294117647058823, 0.117647058823529, 0.117647058823529,
+                    0.323529411764706, 0.0588235294117647, 0.0882352941176471, 0.0588235294117647,
+                    0.205882352941176, 0, 0.2, 0.2, 0.133333333333333, 0.0666666666666667,
+                    0.133333333333333, 0, 0.133333333333333, 0.133333333333333, 0),
+                    name = "table.D1.Age.by.D2.Income", questions = c("D1 - Age",
+                    "D2 - Income [Cola Tracking - January to September 2017.sav]"),
+                    assigned.rownames = TRUE, statistic = "Column %", scatter.variable.indices = c(x = 1,
+                    y = 2, sizes = 3, colors = 4, groups = 10), .Dim = c(9L, 9L), .Dimnames = list(
+                    c("18 to 24", "25 to 29", "30 to 34", "35 to 39", "40 to 44",
+                    "45 to 49", "50 to 54", "55 to 64", "65+"), c("Less than $15,000",
+                    "$15,001 to $30,000", "$30,001 to $45,000", "$45,001 to $60,000",
+                    "$60,001 to $90,000", "$90,001 to $120,000", "$120,001 to $150,000",
+                    "$150,001 to $200,000", "$200,001 or more")))
+
+a2 <- list(list(type = "Text - after data label", data = "Less than $15,000",
+                threstype = "above threshold", threshold = " 0.05", color = "#CD343C",
+                size = 8, width = NULL, offset = NULL, shiftleft = NULL,
+                shiftright = NULL, format = "", prefix = "", suffix = "",
+                font.family = "Impact", font.weight = "normal", font.style = "normal"),
+           list(type = "Marker border", data = "$15,001 to $30,000",
+                threstype = "above threshold", threshold = "0.05", color = "red",
+                size = 15, width = 1, offset = NULL, shiftleft = NULL,
+                shiftright = NULL, format = NULL, prefix = NULL, suffix = NULL,
+                font.family = NULL, font.weight = NULL, font.style = NULL),
+           list(type = "Text - before data label", data = "Less than $15,000",
+                threstype = "above threshold", threshold = " -Inf", color = "#3E7DCC",
+                size = 15, width = NULL, offset = NULL, shiftleft = NULL,
+                shiftright = NULL, format = "", prefix = "", suffix = "",
+                font.family = "Arial", font.weight = "normal", font.style = "normal"))
+
+test_that("More scatter annotations",
+{
+    expect_warning(Scatter(dat2, annotation.list = a2))
+})
+

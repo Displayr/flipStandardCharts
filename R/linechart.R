@@ -171,9 +171,15 @@ Line <-   function(x,
         shape <- "spline"
     if (grepl("^straight", tolower(shape)))
         shape <- "linear"
-    series.mode <- "lines+markers"
-    if (is.null(marker.show) || marker.show == "none")
+    if (is.null(marker.show) || marker.show == "none" || marker.show == FALSE)
+    {
+        marker.show <- FALSE
         series.mode <- "lines"
+    } else
+    {
+        marker.show <- TRUE
+        series.mode <- "lines+markers"
+    }
     if (is.null(opacity))
         opacity <- if (fit.type == "None") 1 else 0.6
     if (is.null(marker.opacity))
@@ -365,7 +371,7 @@ Line <-   function(x,
                  dlab.suffix[i], sep = "")
 
             data.label.offset <- line.thickness[i]/2
-            if (!is.null(marker.show))
+            if (marker.show)
                 data.label.offset <- max(data.label.offset, marker.size)
             p <- add_trace(p, x = x, y = y, type = "scatter", name = y.label,
                    cliponaxis = FALSE, text = source.text, mode = "markers+text",

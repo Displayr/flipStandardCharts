@@ -597,7 +597,7 @@ Scatter <- function(x = NULL,
     {
         ind <- which(groups == g.list[ggi])
         tmp.size <- if (!is.null(scatter.sizes)) scatter.sizes.scaled[ind]
-                 else marker.size
+                    else marker.size
 
         # initialise marker/line settings
         line.obj <- if (is.null(line.thickness) || line.thickness == 0) NULL
@@ -650,7 +650,7 @@ Scatter <- function(x = NULL,
                 if (a.tmp$type == "Marker border")
                     p <- add_trace(p, x = x[ind[ind.sel]], y = y[ind[ind.sel]], showlegend = FALSE, cliponaxis = FALSE,
                        type = "scatter", mode = "markers", hoverinfo = "skip",
-                       marker = list(size = tmp.size, sizemode = "diameter", color = "transparent",
+                       marker = list(size = tmp.size[ind.sel], sizemode = "diameter", color = "transparent",
                        line = list(width = a.tmp$width, color = a.tmp$color)), 
                        legendgroup = if (num.series > 1) ggi else 1, symbols = marker.symbols)
                 else 

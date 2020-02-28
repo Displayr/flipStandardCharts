@@ -70,19 +70,37 @@ minPosition <- function(x, n = 1)
         return(rep(min(x, na.rm=T), n))
 }
 
+#' Checks input data and converts it into a matrix for charting
+#'
+#' Converts input data into a matrix with 2 dimensions
+#'   and row and columns names which can be used for charting.
+#' @param x Input in the form of vector, matrix, array, time-series object
+#'   or a Q table. If input is a Q table, then only the first statistic is returned
+#' @param assign.col.names Whether to assign column names. This defaults to true,
+#'   It is set to false (for example in \code{Heat}) because the columns do not
+#'   make up separate series.
+#' @return Numeric matrix with the first statistic in \code{x}.
 #' @importFrom flipU CopyAttributes
-checkMatrixNames <- function(x, assign.col.names = TRUE, use.annot = FALSE)
+#' @noRd
+checkMatrixNames <- function(x, assign.col.names = TRUE)
 {
+    # Check for special case where x is a time-series object
     tInfo <- attr(x, "tsp")
-    if (length(tInfo) == 3)    # time-series object
+    if (length(tInfo) == 3)
     {
         t.seq <- seq(from = tInfo[1], to = tInfo[2], by = 1/tInfo[3])
         x <- as.matrix(x)
         rownames(x) <- t.seq
         return(x)
     }
-    new.x <- if (length(dim(x)) == 3) as.matrix(x[,,1])
+
+    # Convert into a matrix format
+    old.names <- c(dimnames(x), NA, NA) # ensure there are at least 2 elements
+    new.x <- if (length(dim(x)) == 3) matrix(x, nrow(x), ncol(x), dimnames = old.names[1:2]) # explicitly specify dimensions
              else as.matrix(suppressWarnings(AsTidyTabularData(x))) # handles 1d data + statistic properly
+
+    # Try to convert character matrix to numeric
+    # This may occur in Q-tables with a character statistic (e.g. 'Column Comparisons')
     old.dim <- dim(new.x)
     old.names <- dimnames(new.x)
     if (is.character(new.x))
@@ -91,7 +109,11 @@ checkMatrixNames <- function(x, assign.col.names = TRUE, use.annot = FALSE)
         dim(new.x) <- old.dim
         dimnames(new.x) <- old.names
     }
+    
+    # Many of the charts use the statistic attribute
     x <- CopyAttributes(new.x, x)
+
+    # Assign row/column names if missing 
     if (is.null(rownames(x)))
         rownames(x) <- 1:nrow(x)
     if (is.null(colnames(x)) && assign.col.names)
@@ -1501,7 +1523,7 @@ addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat)
 
         if (annotation$type == "Hide")
             data.label.text <- ""
-        else if (annotation$type == "Text - before data labels")
+        else if (annotation$type == "Text - before data label")
             data.label.text <- paste0(new.text, data.label.text)
         else
             data.label.text <- paste0(data.label.text, new.text)
