@@ -597,7 +597,7 @@ Scatter <- function(x = NULL,
     {
         ind <- which(groups == g.list[ggi])
         tmp.size <- if (!is.null(scatter.sizes)) scatter.sizes.scaled[ind]
-                    else marker.size
+                    else rep(marker.size, length(ind))
 
         # initialise marker/line settings
         line.obj <- if (is.null(line.thickness) || line.thickness == 0) NULL
