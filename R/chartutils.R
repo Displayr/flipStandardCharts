@@ -197,19 +197,32 @@ getRange <- function(x, axis, axisFormat)
             tozero <- TRUE
     }
 
+    # Use axis type if numeric or categorical specified
+    # For date axis, we do some more checking
+    if (is.null(range) && !is.null(axis) && !is.null(axis$type))
+    {
+        if (axis$type == "numeric")
+            range <- calcRangeNumeric(x) 
+        else if (axis$type == "category") 
+            range <- calcRangeCategorical(x)
+
+        if (isTRUE(axis$autorange == "reversed"))
+            range <- rev(range)
+    }
+
+    # Unspecified axis type or with a date range
     if (is.null(range))
     {
+        # In most cases axisFormat$ymd is specified if axis is a date
         if (!is.null(axisFormat) && length(axisFormat$ymd) >= 2)
         {
             tmp.dates <- sort(unique(as.numeric(axisFormat$ymd))) * 1000
             diff <- min(diff(tmp.dates), na.rm = TRUE)
             range <- range(tmp.dates) + c(-1, 1) * diff
         }
-        else if (is.numeric(x)) # this can contain NAs
+        else if (is.numeric(x))
         {
-            diff <- if (length(x) == 1) 1
-                    else abs(min(diff(sort(unique(x))), na.rm = TRUE))
-            range <- range(x) + c(-0.5, 0.5) * diff
+            range <- calcRangeNumeric(x)
             if (tozero)
                 range <- c(min(0, range[1]), max(0, range[2]))
         }
@@ -223,21 +236,39 @@ getRange <- function(x, axis, axisFormat)
         }
         else if (all(!is.na(suppressWarnings(as.numeric(x)))))
         {
-            tmp <- as.numeric(unique(x))
-            diff <- if (length(x) == 1) 1
-                    else abs(min(diff(sort(tmp)), na.rm = TRUE))
-            range <- range(tmp) + c(-0.5, 0.5) * diff
+            range <- calcRangeNumeric(x)
             if (tozero)
                 range <- c(min(0, range[1]), max(0, range[2]))
         }
         else
-            range <- c(-0.5, length(x)-0.5)
+            range <- calcRangeCategorical(x)
 
         if (!is.null(axis) && axis$autorange == "reversed")
             range <- rev(range)
     }
     range
 }
+
+calcRangeNumeric <- function(x, offset = 0.5)
+{
+    tmp <- as.numeric(unique(x))
+    diff <- if (length(x) == 1) 1
+            else abs(min(diff(sort(tmp)), na.rm = TRUE))
+    return(range(tmp) + c(-offset, offset) * diff)
+}
+
+calcRangeDate <- function(x)
+{
+
+
+}
+
+calcRangeCategorical <- function(x)
+{
+    tmp <- unique(x)
+    return(c(-0.5, length(tmp)-0.5))
+}
+
 
 isReversed <- function(axis)
 {
@@ -605,7 +636,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
         {
             # Create a fake axis to specify axis type
             if (is.null(range))
-                range <- getRange(axisLabels$labels, list(type = "numeric", autorange = FALSE, range = c(NA, NA)), NULL)
+                range <- calcRangeNumeric(axisLabels$labels)
             range <- rev(range)
             if (show.zero)
             {
@@ -655,7 +686,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
         if (!is.null(range))
         {
             rev <- range[1] > range[2]
-            range <- getRange(as.character(axisLabels$ymd))
+            range <- calcRangeCategorical(as.character(axisLabels$ymd))
             if (rev)
                 range <- rev(range)
         }
