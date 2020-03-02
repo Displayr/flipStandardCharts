@@ -602,8 +602,16 @@ Column <- function(x,
                 x.range[2] <- old.range[2]
         }
         xaxis$autorange <- FALSE
-        xaxis$range <- if (xaxis$type == "date") getDateAxisRange(x.all.labels)
-                       else                      x.range
+        xaxis$range <- x.range
+        if (xaxis$type == "date")
+        {
+            xaxis$range <- getDateAxisRange(x.all.labels)
+            if (x.data.reversed)
+            {
+                x.range <- rev(x.range)
+                xaxis$range <- rev(xaxis$range)
+            }
+        }
     }
     else
         x.range <- getRange(x.labels, xaxis, axisFormat)

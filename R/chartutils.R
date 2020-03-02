@@ -218,7 +218,7 @@ getRange <- function(x, axis, axisFormat)
         {
             tmp.dates <- sort(unique(as.numeric(axisFormat$ymd))) * 1000
             diff <- min(diff(tmp.dates), na.rm = TRUE)
-            range <- range(tmp.dates) + c(-1, 1) * diff
+            range <- range(tmp.dates) + c(-0.5, 0.5) * diff
         }
         else if (is.numeric(x))
         {
@@ -231,7 +231,7 @@ getRange <- function(x, axis, axisFormat)
         {
             tmp.dates <- sort(unique(as.numeric(AsDateTime(x)))) * 1000
             diff <- min(diff(tmp.dates), na.rm = TRUE)
-            range <- range(tmp.dates) + c(-1, 1) * diff
+            range <- range(tmp.dates) + c(-0.5, 0.5) * diff
 
         }
         else if (all(!is.na(suppressWarnings(as.numeric(x)))))
@@ -255,12 +255,6 @@ calcRangeNumeric <- function(x, offset = 0.5)
     diff <- if (length(x) == 1) 1
             else abs(min(diff(sort(tmp)), na.rm = TRUE))
     return(range(tmp) + c(-offset, offset) * diff)
-}
-
-calcRangeDate <- function(x)
-{
-
-
 }
 
 calcRangeCategorical <- function(x)
