@@ -206,6 +206,8 @@ getRange <- function(x, axis, axisFormat)
         else if (axis$type == "category") 
             range <- calcRangeCategorical(x)
 
+        if (isTRUE(axis$rangemode == "tozero"))
+            range <- c(min(0, range[1]), max(0, range[2]))
         if (isTRUE(axis$autorange == "reversed"))
             range <- rev(range)
     }
