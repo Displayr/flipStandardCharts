@@ -1544,9 +1544,12 @@ addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat)
             new.text <- formatByD3(tmp.dat, annotation$format, annotation$prefix, annotation$suffix)
         else if (annotation$type == "Hide")
             new.text <- ""
-
+        
+        left.pad <- ""
+        if (sum(annotation$shiftright, na.rm = TRUE) > 0)
+            left.pad <- paste(rep(" ", sum(annotation$shiftright, na.rm = TRUE)), collapse = "")
         if (nchar(new.style) > 0)
-            new.text <- paste0("<span style='", new.style, "'>", new.text, "</span>")
+            new.text <- paste0("<span style='", new.style, "'>", left.pad, new.text, "</span>")
 
         if (annotation$type == "Hide")
             data.label.text <- ""
