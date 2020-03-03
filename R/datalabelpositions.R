@@ -1,5 +1,6 @@
 #' @importFrom flipFormat FormatAsReal
 dataLabelPositions <- function(chart.matrix,
+                                axis.type,
                                 annotations = NULL,
                                 data.label.mult = 1,
                                 bar.decimals = 0,
@@ -46,7 +47,7 @@ dataLabelPositions <- function(chart.matrix,
     }
 
     x.pos <- NULL
-    if (!is.null(dates))
+    if (axis.type == "date")
     {
         date.vals <- as.numeric(dates) * 1000           # convert to milliseconds
         date.diff <- if (length(dates) == 1) 1 else date.vals[2] - date.vals[1]
@@ -55,7 +56,7 @@ dataLabelPositions <- function(chart.matrix,
         else
             x.pos <- rep(date.vals, ncol(chart.matrix))
     }
-    else if (all(!is.na(suppressWarnings(as.numeric(rownames(chart.matrix))))))
+    else if (axis.type == "numeric")
         x.pos <- as.numeric(rownames(chart.matrix)) + rep(series.pos, each = nrow(chart.matrix))
     else
         x.pos <- 0:(nrow(chart.matrix) - 1) + rep(series.pos, each = nrow(chart.matrix))

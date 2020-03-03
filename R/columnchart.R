@@ -619,6 +619,7 @@ Column <- function(x,
     # Set up second x-axis for data labels
     xaxis2 <- list(overlaying = "x", visible = FALSE, range = x.range)
     data.annotations <- dataLabelPositions(chart.matrix = chart.matrix,
+                        axis.type = xaxis$type,
                         annotations = NULL,
                         data.label.mult = data.label.mult,
                         bar.decimals = data.label.decimals,
@@ -692,7 +693,7 @@ Column <- function(x,
                            type = "scatter", cliponaxis = TRUE,
                            hoverinfo = "skip", showlegend = FALSE, opacity = 0)
 
-
+    
     # Plot trace for second y-axis first so that they are shown last in legend
     if (!is.null(x2) && is.stacked)
     {

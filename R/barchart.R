@@ -264,6 +264,7 @@ Bar <- function(x,
     y.range <- getRange(x, yaxis, axisFormat)
     yaxis2 <- list(overlaying = "y", visible = FALSE, range = y.range)
     data.annotations <- dataLabelPositions(chart.matrix = chart.matrix,
+                        axis.type = yaxis$type,
                         annotations = NULL,
                         data.label.mult = data.label.mult,
                         bar.decimals = data.label.decimals,
