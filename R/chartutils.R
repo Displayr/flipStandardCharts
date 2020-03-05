@@ -1514,12 +1514,19 @@ getAnnotData <- function(data, name, series, as.numeric = TRUE)
 
 addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat)
 {
+    # Fix font size so that the units do not change in size when the font size increases
+    left.pad <- ""
+    if (sum(annotation$shiftright, na.rm = TRUE) > 0)
+        left.pad <- paste0("<span style='font-size: 2px'>",
+                    paste(rep(" ", sum(annotation$shiftright, na.rm = TRUE)), collapse = ""),
+                    "</span>")
+
     if (annotation$type == "Shadow")
-        data.label.text <- paste0("<span style='text-shadow: 1px 1px ",
+        data.label.text <- paste0(left.pad, "<span style='text-shadow: 1px 1px ",
             annotation$size, "px ", annotation$color, ", -1px -1px ", 
             annotation$size, "px ", annotation$color, ";'>", data.label.text, "</span>")
     else if (annotation$type == "Border")
-        data.label.text <- paste0("<span style='outline: ", annotation$width, "px solid ",
+        data.label.text <- paste0(left.pad, "<span style='outline: ", annotation$width, "px solid ",
             annotation$color, "; outline-offset: ", annotation$offset, "px;'>", data.label.text, "</span>")
     else
     {
@@ -1544,19 +1551,15 @@ addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat)
             new.text <- formatByD3(tmp.dat, annotation$format, annotation$prefix, annotation$suffix)
         else if (annotation$type == "Hide")
             new.text <- ""
-        
-        left.pad <- ""
-        if (sum(annotation$shiftright, na.rm = TRUE) > 0)
-            left.pad <- paste(rep(" ", sum(annotation$shiftright, na.rm = TRUE)), collapse = "")
         if (nchar(new.style) > 0)
-            new.text <- paste0("<span style='", new.style, "'>", left.pad, new.text, "</span>")
+            new.text <- paste0("<span style='", new.style, "'>", new.text, "</span>")
 
         if (annotation$type == "Hide")
             data.label.text <- ""
         else if (annotation$type == "Text - before data label")
-            data.label.text <- paste0(new.text, data.label.text)
+            data.label.text <- paste0(left.pad, new.text, data.label.text)
         else
-            data.label.text <- paste0(data.label.text, new.text)
+            data.label.text <- paste0(data.label.text, left.pad, new.text)
     }
     return(data.label.text)
 }
