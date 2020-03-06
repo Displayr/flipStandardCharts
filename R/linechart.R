@@ -171,15 +171,9 @@ Line <-   function(x,
         shape <- "spline"
     if (grepl("^straight", tolower(shape)))
         shape <- "linear"
-    if (is.null(marker.show) || marker.show == "none" || marker.show == FALSE)
-    {
+    if (is.null(marker.show) || marker.show == "none") # included for backwards compatibility
         marker.show <- FALSE
-        series.mode <- "lines"
-    } else
-    {
-        marker.show <- TRUE
-        series.mode <- "lines+markers"
-    }
+    marker.show <- vectorize(marker.show, ncol(chart.matrix), nrow(chart.matrix))
     if (is.null(opacity))
         opacity <- if (fit.type == "None") 1 else 0.6
     if (is.null(marker.opacity))
@@ -189,13 +183,13 @@ Line <-   function(x,
     eval(colors) # not sure why, but this is necessary for bars to appear properly
 
     line.type <- vectorize(tolower(line.type), ncol(chart.matrix))
-    marker.symbols <- vectorize(marker.symbols, ncol(chart.matrix))
-    data.label.show <- vectorize(data.label.show, ncol(chart.matrix))
+    marker.symbols <- vectorize(marker.symbols, ncol(chart.matrix), nrow(chart.matrix))
+    data.label.show <- vectorize(data.label.show, ncol(chart.matrix), nrow(chart.matrix))
     dlab.color <- if (data.label.font.autocolor) colors
                   else vectorize(data.label.font.color, ncol(chart.matrix))
     dlab.pos <- vectorize(tolower(data.label.position), ncol(chart.matrix))
-    dlab.prefix <- vectorize(data.label.prefix, ncol(chart.matrix), split = NULL)
-    dlab.suffix <- vectorize(data.label.suffix, ncol(chart.matrix), split = NULL)
+    dlab.prefix <- vectorize(data.label.prefix, ncol(chart.matrix), nrow(chart.matrix), split = NULL)
+    dlab.suffix <- vectorize(data.label.suffix, ncol(chart.matrix), nrow(chart.matrix), split = NULL)
     data.label.font = lapply(dlab.color,
         function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
@@ -286,13 +280,19 @@ Line <-   function(x,
                            hoverinfo = "none", showlegend = F, opacity = 0)
 
         marker <- NULL
-        if (!is.null(series.mode) && regexpr('marker', series.mode) >= 1)
-            marker <- list(size = marker.size,
+        series.mode <- "lines"
+        if (any(marker.show[,i]))
+        {
+            series.mode <- "lines+markers"
+            size.i <- rep(0, nrow(chart.matrix))
+            size.i[which(marker.show[,i])] <- marker.size            
+            marker <- list(size = size.i,
                        color = toRGB(marker.colors[i], alpha = marker.opacity),
                        symbol = marker.symbols[i],
                        line = list(
                        color = toRGB(marker.border.colors[i], alpha = marker.border.opacity),
                        width = marker.border.width))
+        }
         y.label <- y.labels[i]
 
 
@@ -362,18 +362,19 @@ Line <-   function(x,
     # We use a text trace instead of annotations because it will toggle with the legend
     for (i in 1:ncol(chart.matrix))
     {
-        if (data.label.show[i])
+        if (any(data.label.show[,i]))
         {
-            y <- as.numeric(chart.matrix[, i])
-            x <- x.labels
-            source.text <- paste(dlab.prefix[i],
-                 data.label.function(chart.matrix[, i], decimals = data.label.decimals),
-                 dlab.suffix[i], sep = "")
+            ind.show <- which(data.label.show[,i])
+            y <- as.numeric(chart.matrix[ind.show, i])
+            x <- x.labels[ind.show]
+            source.text <- paste(dlab.prefix[ind.show,i],
+                 data.label.function(chart.matrix[ind.show, i], decimals = data.label.decimals),
+                 dlab.suffix[ind.show,i], sep = "")
 
-            data.label.offset <- line.thickness[i]/2
-            if (marker.show)
-                data.label.offset <- max(data.label.offset, marker.size)
-            p <- add_trace(p, x = x, y = y, type = "scatter", name = y.label,
+            data.label.offset <- rep(line.thickness[i]/2, length(ind.show)) 
+            if (any(marker.show[,i]))
+                data.label.offset[which(marker.show[ind.show,i])] <- max(data.label.offset, marker.size)
+            p <- add_trace(p, x = x[ind.show], y = y[ind.show], type = "scatter", name = y.label,
                    cliponaxis = FALSE, text = source.text, mode = "markers+text",
                    marker = list(size = data.label.offset, color=colors[i], opacity = 0),
                    textfont = data.label.font[[i]], textposition = dlab.pos[i],
