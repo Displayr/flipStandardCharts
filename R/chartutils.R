@@ -1344,17 +1344,27 @@ autoFontColor <- function (colors)
     return(ifelse(tmp.lum > 126, "#2C2C2C", "#FFFFFF"))
 }
 
-vectorize <- function(x, n, split = ",")
+# By default vectorize will convert x into a vector of length n
+# However, if nrow is specified, it will convert to a matrix of nrow x n columns
+vectorize <- function(x, n, nrow = NULL, split = ",")
 {
+    input.is.matrix <- length(dim(x)) >= 2
+    if (!is.null(nrow) && is.finite(nrow))
+        n <- n * nrow
+
     if (is.logical(x))
-        return(suppressWarnings(rep(TRUE, n) & x))
-
-    if (is.numeric(x))
-        return(suppressWarnings(rep(0, n) + x))
-
-    if (!is.null(split))
-        x <- TextAsVector(x, split = split)
-    return(suppressWarnings(paste0(x, rep("", n))))
+        res <- suppressWarnings(rep(TRUE, n) & x)
+    else if (is.numeric(x))
+        res <- suppressWarnings(rep(0, n) + x)
+    else
+    {
+        if (!is.null(split))
+            x <- TextAsVector(x, split = split)
+        res <- suppressWarnings(paste0(x, rep("", n)))
+    }
+    if (!is.null(nrow))
+        res <- matrix(res, nrow = nrow, byrow = !input.is.matrix) 
+    return(res)
 }
 
 addDataLabelAnnotations <- function(p, type, name, data.label.xpos, data.label.ypos, 
