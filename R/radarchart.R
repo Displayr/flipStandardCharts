@@ -106,19 +106,19 @@ Radar <- function(x,
         stop("Radar charts cannot contain missing or non-finite values.\n")
     if (any(chart.matrix < 0))
         stop("Radar charts cannot have negative values.\n")
-    n <- nrow(chart.matrix)
-    m <- ncol(chart.matrix)
+    m <- nrow(chart.matrix)
+    n <- ncol(chart.matrix)
 
     legend.show <- setShowLegend(legend.show, NCOL(chart.matrix))
     if (is.null(n) || n == 1 || m == 1)
     {
         # only 1 series
         chart.matrix <- data.frame(x = chart.matrix, check.names = FALSE)
-        n <- nrow(chart.matrix)
-        m <- ncol(chart.matrix)
+        m <- nrow(chart.matrix)
+        n <- ncol(chart.matrix)
     }
 
-    if (n <= 2)
+    if (m <= 2)
     {
         warning("Radar chart only has two or less spokes. ",
                 "It may be more appropriate to use another chart type.")
@@ -183,9 +183,9 @@ Radar <- function(x,
     # Convert data (polar) into x, y coordinates
     pos <- do.call(rbind, lapply(as.data.frame(chart.matrix), getPolarCoord))
     pos <- data.frame(pos,
-                      Name = rep(rownames(chart.matrix)[c(1:n,1)], m),
+                      Name = rep(rownames(chart.matrix)[c(1:m,1)], m),
                       Group = if (NCOL(chart.matrix) == 1 && colnames(chart.matrix)[1] == "Series.1") ""
-                              else rep(colnames(chart.matrix),each = n+1),
+                              else rep(colnames(chart.matrix),each = m+1),
                       stringsAsFactors  =  T, check.names = F)
     chart.matrix <- rbind(chart.matrix, chart.matrix[1,])
 
@@ -218,7 +218,7 @@ Radar <- function(x,
 
     # Initialise plot (ensure chart area reaches y.bounds.maximum)
     p <- plot_ly(pos)
-    outer <- getPolarCoord(rep(r.max, n))
+    outer <- getPolarCoord(rep(r.max, m))
     x.offset <- rep(0, nrow(outer))
     x.offset[which.min(outer[,1])] <- -pad.left
     x.offset[which.max(outer[,1])] <- pad.right
@@ -237,7 +237,7 @@ Radar <- function(x,
         # Hexagonal grid
         for (tt in tick.vals)
         {
-            gpos <- getPolarCoord(rep(tt, n))
+            gpos <- getPolarCoord(rep(tt, m))
             for (i in 1:n)
                 grid[[length(grid)+1]] <- list(type = "line", layer = "below",
                      x0 = gpos[i,1], x1 = gpos[i+1,1], y0 = gpos[i,2], y1 = gpos[i+1,2],
@@ -250,14 +250,14 @@ Radar <- function(x,
     annotations <- NULL
     if (x.tick.show)
     {
-        xanch <- rep("center", n)
+        xanch <- rep("center", m)
         xanch[which(abs(outer[,2]) < r.max/100 & sign(outer[,1]) < 0)] <- "right"
         xanch[which(abs(outer[,2]) < r.max/100 & sign(outer[,1]) > 0)] <- "left"
 
-        xlab <- autoFormatLongLabels(rownames(chart.matrix)[1:n],
+        xlab <- autoFormatLongLabels(rownames(chart.matrix)[1:m],
                     x.tick.label.wrap, x.tick.label.wrap.nchar)
         font.asp <- fontAspectRatio(x.tick.font.family)
-        annotations <- lapply(1:n, function(ii) list(text = xlab[ii], font = x.tick.font,
+        annotations <- lapply(1:m, function(ii) list(text = xlab[ii], font = x.tick.font,
                         x = outer[ii,1], y = outer[ii,2], xref = "x", yref = "y",
                         showarrow = FALSE, yshift = outer[ii,2]/r.max * 15,
                         xanchor = xanch[ii], xshift = outer[ii,1]/r.max))
