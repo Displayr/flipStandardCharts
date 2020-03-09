@@ -183,9 +183,9 @@ Radar <- function(x,
     # Convert data (polar) into x, y coordinates
     pos <- do.call(rbind, lapply(as.data.frame(chart.matrix), getPolarCoord))
     pos <- data.frame(pos,
-                      Name = rep(rownames(chart.matrix)[c(1:m,1)], n),
+                      Name = rep(rownames(chart.matrix)[c(1:m,1)], m),
                       Group = if (NCOL(chart.matrix) == 1 && colnames(chart.matrix)[1] == "Series.1") ""
-                              else rep(colnames(chart.matrix), each = m+1),
+                              else rep(colnames(chart.matrix),each = m+1),
                       stringsAsFactors  =  T, check.names = F)
     chart.matrix <- rbind(chart.matrix, chart.matrix[1,])
 
