@@ -141,7 +141,10 @@ SmallMultiples <- function(x,
         npanels <- length(indexes)
 
     } else
+    {
         npanels <- NCOL(x)
+        data.label.show <- vectorize(data.label.show, NCOL(x), NROW(x))
+    }
 
     # Data manipulation
     if (!is.null(x.order))
@@ -343,7 +346,7 @@ SmallMultiples <- function(x,
                                                      line.thickness = line.thickness[i],
                                                      colors = c(colors[i], average.color),
                                                      grid.show = FALSE, x.tick.show = FALSE,
-                                                     data.label.show = c(data.label.show, FALSE),
+                                                     data.label.show = cbind(data.label.show[,i], FALSE),
                                                      data.label.font.color = data.label.font.color[i],
                                                      y.bounds.maximum = y.bounds.maximum,
                                                      aspect.fixed = FALSE, # not supported with subplot
@@ -379,7 +382,7 @@ SmallMultiples <- function(x,
                                                      fit.CI.colors = fit.CI.colors[i],
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
-                                                     grid.show = grid.show, data.label.show = data.label.show,
+                                                     grid.show = grid.show, data.label.show = data.label.show[,i],
                                                      data.label.font.color = data.label.font.color[i],
                                                      x.tick.show = x.tick.show, x.tick.angle = x.tick.angle,
                                                      y.bounds.maximum = y.bounds.maximum,
@@ -406,7 +409,7 @@ SmallMultiples <- function(x,
                                                      colors = if (color.as.matrix) colors[,i] else colors,
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
-                                                     grid.show = grid.show, data.label.show = data.label.show,
+                                                     grid.show = grid.show, data.label.show = data.label.show[,i],
                                                      data.label.font.color = data.label.font.color,
                                                      x.tick.show = x.tick.show, x.tick.angle = x.tick.angle,
                                                      y.bounds.maximum = y.bounds.maximum,
@@ -427,7 +430,7 @@ SmallMultiples <- function(x,
                                                      colors = if (color.as.matrix) colors[,i] else colors,
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
-                                                     data.label.show = data.label.show,
+                                                     data.label.show = data.label.show[,i],
                                                      data.label.font.color = data.label.font.color,
                                                      x.tick.show = FALSE, x.tick.angle = x.tick.angle,
                                                      x.bounds.maximum = x.bounds.maximum,
@@ -451,7 +454,7 @@ SmallMultiples <- function(x,
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
                                                      grid.show = grid.show,
-                                                     data.label.show = c(data.label.show, FALSE),
+                                                     data.label.show = cbind(data.label.show[,i], FALSE),
                                                      data.label.font.color = data.label.font.color[i],
                                                      x.tick.show = x.tick.show, x.tick.angle = x.tick.angle,
                                                      y.bounds.maximum = y.bounds.maximum,
