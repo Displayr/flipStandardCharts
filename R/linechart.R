@@ -374,7 +374,7 @@ Line <-   function(x,
             data.label.offset <- rep(line.thickness[i]/2, length(ind.show)) 
             if (any(marker.show[,i]))
                 data.label.offset[which(marker.show[ind.show,i])] <- max(data.label.offset, marker.size)
-            p <- add_trace(p, x = x[ind.show], y = y[ind.show], type = "scatter", name = y.label,
+            p <- add_trace(p, x = x, y = y, type = "scatter", name = y.label,
                    cliponaxis = FALSE, text = source.text, mode = "markers+text",
                    marker = list(size = data.label.offset, color=colors[i], opacity = 0),
                    textfont = data.label.font[[i]], textposition = dlab.pos[i],
