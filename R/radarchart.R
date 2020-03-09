@@ -113,7 +113,7 @@ Radar <- function(x,
     if (is.null(n) || n == 1 || m == 1)
     {
         # only 1 series
-        chart.matrix <- data.frame(x=chart.matrix)
+        chart.matrix <- data.frame(x = chart.matrix, check.names = FALSE)
         n <- nrow(chart.matrix)
         m <- ncol(chart.matrix)
     }
