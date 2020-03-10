@@ -209,13 +209,22 @@ a.list <- list(list(type = "Arrow - up", data = "z-Statistic", threstype = "abov
 
 test_that("One-row matrix is transposed",
 {
-    expect_warning(Column(aperm(tb, c(2,1,3)), annotation.list = a.list, data.label.show = T))
-    expect_warning(Column(tb, annotation.list = a.list, data.label.show = T, type = "Stacked"))
-    expect_warning(Bar(aperm(tb, c(2,1,3)), annotation.list = a.list, data.label.show = T))
-    expect_warning(Bar(tb, annotation.list = a.list, data.label.show = T))
-    expect_warning(ColumnMultiColor(tb[,5:7,,drop = FALSE], annotation.list = a.list, data.label.show = T))
-    expect_warning(BarMultiColor(tb[,5:7,,drop = FALSE], annotation.list = a.list, data.label.show = T))
-    expect_warning(SmallMultiples(tb, "ColumnMultiColor", data.label.show = TRUE, annotation.list = a.list))
+    expect_warning(Column(aperm(tb, c(2,1,3)), annotation.list = a.list, data.label.show = T),
+                   "Missing values have been set to zero")
+    expect_warning(Column(tb, annotation.list = a.list, data.label.show = T, type = "Stacked"),
+                   "Missing values have been set to zero")
+    expect_warning(Bar(aperm(tb, c(2,1,3)), annotation.list = a.list, data.label.show = T),
+                   "Missing values have been set to zero")
+    expect_warning(Bar(tb, annotation.list = a.list, data.label.show = T),
+                   "Missing values have been set to zero")
+    expect_warning(ColumnMultiColor(tb[,5:7,,drop = FALSE], annotation.list = a.list, data.label.show = T),
+                   paste0("Column chart with multi color series can only show a single series. ",
+                          "To show multiple series use Small Multiples"))
+    expect_warning(BarMultiColor(tb[,5:7,,drop = FALSE], annotation.list = a.list, data.label.show = T),
+                   paste0("Column chart with multi color series can only show a single series. ",
+                          "To show multiple series use Small Multiples"))
+    expect_warning(SmallMultiples(tb, "ColumnMultiColor", data.label.show = TRUE, annotation.list = a.list),
+                   "Ignoring 1 observations")
 })
 
 dat2 <- structure(c(0.388888888888889, 0, 0, 0.111111111111111, 0, 0,
@@ -265,6 +274,7 @@ a2 <- list(list(type = "Text - after data label", data = "Less than $15,000",
 
 test_that("More scatter annotations",
 {
-    expect_warning(Scatter(dat2, annotation.list = a2))
+    expect_warning(Scatter(dat2, annotation.list = a2),
+                   "Chart contains overlapping points in the same position.")
 })
 
