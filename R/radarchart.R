@@ -183,9 +183,9 @@ Radar <- function(x,
     # Convert data (polar) into x, y coordinates
     pos <- do.call(rbind, lapply(as.data.frame(chart.matrix), getPolarCoord))
     pos <- data.frame(pos,
-                      Name = rep(rownames(chart.matrix)[c(1:m,1)], m),
+                      Name = rep(rownames(chart.matrix)[c(1:m,1)], n),
                       Group = if (NCOL(chart.matrix) == 1 && colnames(chart.matrix)[1] == "Series.1") ""
-                              else rep(colnames(chart.matrix),each = m+1),
+                              else rep(colnames(chart.matrix), each = m+1),
                       stringsAsFactors  =  T, check.names = F)
     chart.matrix <- rbind(chart.matrix, chart.matrix[1,])
 
@@ -196,7 +196,6 @@ Radar <- function(x,
             DataLabels=sprintf("%s: %s%s%s", rownames(chart.matrix), data.label.prefix,
                 data.label.format.function(unlist(chart.matrix), decimals = data.label.decimals),
                 data.label.suffix))
-
 
     # Set margins
     g.list <- unique(pos$Group)
@@ -266,18 +265,24 @@ Radar <- function(x,
     n <- length(g.list)
     if (is.null(line.thickness))
         line.thickness <- 3
-    if (length(data.label.show) > 1 && n == 2) # small multiples
-    {
-        line.thickness <- c(line.thickness, 0)
-        opacity <- c(opacity, if (opacity == 0.0) 0.2 else opacity)
-    }
-    else
-    {
-        line.thickness <- vectorize(line.thickness, n)
-        opacity <- vectorize(opacity, n)
-    }
+    
+    # Small Multiples should pass in the proper line.thickness and opacity 
+    # parameters instead of using this hack 
+    #if (length(data.label.show) > 1 && n == 2) # small multiples
+    #{
+    #    line.thickness <- c(line.thickness, 0)
+    #    opacity <- c(opacity, if (opacity == 0.0) 0.2 else opacity)
+    #}
+    #else
+    #{
+    #    line.thickness <- vectorize(line.thickness, n)
+    #    opacity <- vectorize(opacity, n)
+    #}
+
+    line.thickness <- vectorize(line.thickness, n)
+    opacity <- vectorize(opacity, n)
     hovertext.show <- vectorize(hovertext.show, n)
-    data.label.show <- vectorize(data.label.show, n)
+    data.label.show <- rbind(vectorize(data.label.show, n, m), FALSE)
     data.label.font.color <- vectorize(data.label.font.color, n)
     data.label.font = lapply(data.label.font.color,
         function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
@@ -307,16 +312,18 @@ Radar <- function(x,
                     size = hovertext.font.size, family = hovertext.font.family)),
                     marker = list(size = 5, color = toRGB(colors[ggi])))
 
-        if (data.label.show[ggi])
+        if (any(data.label.show[,ggi]))
         {
-            x.offset <- sign(pos$x[ind]) * 0.1 * (r.max + abs(max(pos$x[ind])))/2
-            y.offset <- sign(pos$y[ind]) * 0.1 * (r.max + abs(max(pos$y[ind])))/2
-            p <- add_trace(p, x = pos$x[ind] + x.offset, y = pos$y[ind] + y.offset,
+            ind2 <- intersect(ind, which(data.label.show))
+            x.offset <- sign(pos$x[ind2]) * 0.1 * (r.max + abs(max(pos$x[ind2])))/2
+            y.offset <- sign(pos$y[ind2]) * 0.1 * (r.max + abs(max(pos$y[ind2])))/2
+            p <- add_trace(p, x = pos$x[ind2] + x.offset, y = pos$y[ind2] + y.offset,
                     type = "scatter", mode = "text", legendgroup = g.list[ggi],
-                    showlegend = FALSE, hoverinfo = "skip", text = pos$DataLabels[ind],
+                    showlegend = FALSE, hoverinfo = "skip", text = pos$DataLabels[ind2],
                     textfont = data.label.font[[ggi]])
         }
     }
+    
     annot.len <- length(annotations)
     annotations[[annot.len+1]] <- setFooter(footer, footer.font, margins)
     annotations[[annot.len+2]] <- setTitle(title, title.font, margins)
