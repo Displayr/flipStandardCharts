@@ -1368,7 +1368,7 @@ vectorize <- function(x, n, nrow = NULL, split = ",")
 }
 
 addDataLabelAnnotations <- function(p, type, name, data.label.xpos, data.label.ypos, 
-        data.label.text, data.label.sign, annotation.list, annot.data, i,
+        data.label.show, data.label.text, data.label.sign, annotation.list, annot.data, i,
         xaxis, yaxis, data.label.font, is.stacked, data.label.centered)
 {
     if (type == "Column")
@@ -1387,6 +1387,8 @@ addDataLabelAnnotations <- function(p, type, name, data.label.xpos, data.label.y
         data.label.pos <- if (is.stacked) 0
                           else            ifelse(data.label.xpos < 0, 7, 3) 
     }
+    if (length(textalign) > 1)
+        textalign <- textalign[data.label.show]
 
     n <- length(data.label.xpos)
     data.label.nchar <- nchar(data.label.text) # get length before adding html tags
@@ -1478,14 +1480,19 @@ addDataLabelAnnotations <- function(p, type, name, data.label.xpos, data.label.y
     tmp.offset <- if (!is.stacked) max(0, (max.diam - data.label.font$size))
                   else             0.01
     data.label.pos <- data.label.pos + tmp.offset
+    #cat("data.label.xpos:")
+    #print(str(data.label.xpos))
+    #cat("data.label.show:")
+    #print(str(data.label.show))
     p <- add_trace(p, name = name,
-              x = data.label.xpos, y = data.label.ypos, cliponaxis = FALSE,
-              type = "scatter", mode = "markers+text", 
+              x = data.label.xpos[data.label.show], y = data.label.ypos[data.label.show], 
+              cliponaxis = FALSE, type = "scatter", mode = "markers+text", 
               marker = list(opacity = 0.0, size = data.label.pos),
               xaxis = xaxis, yaxis = yaxis,
-              text = data.label.text, textfont = data.label.font,
+              text = data.label.text[data.label.show], textfont = data.label.font,
               textposition = textalign, showlegend = FALSE, hoverinfo = "skip",
               legendgroup = if (is.stacked) "all" else i)
+    return(p)
 
 }
 
