@@ -507,6 +507,7 @@ Column <- function(x,
         dlab.color <- autoFontColor(colors)
     else
         dlab.color <- vectorize(data.label.font.color, ncol(chart.matrix))
+    data.label.show <- vectorize(data.label.show, NCOL(chart.matrix), NROW(chart.matrix))
 
     data.label.font = lapply(dlab.color,
         function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
@@ -728,7 +729,7 @@ Column <- function(x,
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family)),
                        hovertemplate = setHoverTemplate(i, xaxis, chart.matrix),
-                       legendgroup = if (is.stacked && data.label.show) "all" else i)
+                       legendgroup = if (is.stacked && any(data.label.show)) "all" else i)
 
 
         if (fit.type != "None" && is.stacked && i == 1)
@@ -780,6 +781,7 @@ Column <- function(x,
             p <- addDataLabelAnnotations(p, type = "Column", legend.text[i],
                     data.label.xpos = if (NCOL(chart.matrix) > 1) data.annotations$x[,i] else x,
                     data.label.ypos = data.annotations$y[,i],
+                    data.label.show = data.label.show[,i],
                     data.label.text = data.annotations$text[,i],
                     data.label.sign = getSign(data.annotations$y[,i], yaxis),
                     annotation.list, annot.data, i,
@@ -788,7 +790,7 @@ Column <- function(x,
 
     }
 
-    if (!data.label.show && length(annotation.list) > 0)
+    if (!any(data.label.show) && length(annotation.list) > 0)
         warning("Annotations are ignored when data labels are not shown.")
 
     # Plot trace for second y-axis last so that they are shown last in legend

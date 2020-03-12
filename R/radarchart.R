@@ -236,7 +236,7 @@ Radar <- function(x,
         # Hexagonal grid
         for (tt in tick.vals)
         {
-            gpos <- getPolarCoord(rep(tt, m))
+            gpos <- getPolarCoord(rep(tt, n))
             for (i in 1:n)
                 grid[[length(grid)+1]] <- list(type = "line", layer = "below",
                      x0 = gpos[i,1], x1 = gpos[i+1,1], y0 = gpos[i,2], y1 = gpos[i+1,2],

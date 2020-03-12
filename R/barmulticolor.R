@@ -141,6 +141,7 @@ BarMultiColor <- function(x,
     else
         dlab.color <- vectorize(data.label.font.color, NROW(chart.matrix))
 
+    data.label.show = vectorize(data.label.show, NROW(chart.matrix))
     data.label.font = list(family = data.label.font.family, size = data.label.font.size, color = dlab.color)
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
     subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
@@ -203,13 +204,13 @@ BarMultiColor <- function(x,
                    marker = marker, hoverlabel = list(font = hoverfont), cliponaxis = FALSE,
                    hovertemplate = "%{x}<extra>%{y}</extra>")
 
-    if (data.label.show)
+    if (any(data.label.show))
     {
         source.text <- formatByD3(y, data.label.format,
                data.label.prefix, data.label.suffix, decimals = 0)
         p <- addDataLabelAnnotations(p, type = "Bar", NULL,
                 data.label.xpos = y, data.label.ypos = x, data.label.text = source.text,
-                data.label.sign = getSign(y, xaxis),
+                data.label.show = data.label.show, data.label.sign = getSign(y, yaxis),
                 annotation.list, annot.data, i = 1,
                 xaxis = "x", yaxis = "y", data.label.font, is.stacked = FALSE, data.label.centered = FALSE)
     }

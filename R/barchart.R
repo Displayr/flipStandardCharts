@@ -201,6 +201,7 @@ Bar <- function(x,
     else
         dlab.color <- vectorize(data.label.font.color, ncol(chart.matrix))
 
+    data.label.show <- vectorize(data.label.show, ncol(chart.matrix), nrow(chart.matrix))
     data.label.font = lapply(dlab.color,
         function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
@@ -229,7 +230,7 @@ Bar <- function(x,
     tmp.label <- sprintf(paste0("%s%.", data.label.decimals, "f%s"),
                 data.label.prefix, max(chart.matrix), data.label.suffix)
     xtick <- setTicks(x.range$min, x.range$max, x.tick.distance, x.data.reversed,
-                  data = if (data.label.show && !is.stacked) chart.matrix else NULL, type = type,
+                  data = if (any(data.label.show) && !is.stacked) chart.matrix else NULL, type = type,
                   labels = tmp.label, label.font.size = data.label.font.size)
     ytick <- setTicks(y.range$min, y.range$max, y.tick.distance, !y.data.reversed, is.bar = TRUE)
 
@@ -314,7 +315,7 @@ Bar <- function(x,
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family)),
                        hovertemplate = setHoverTemplate(i, yaxis, chart.matrix, is.bar = TRUE),
-                       legendgroup = if (is.stacked && data.label.show) "all" else i)
+                       legendgroup = if (is.stacked && any(data.label.show)) "all" else i)
 
         if (fit.type != "None" && is.stacked && i == 1)
             warning("Line of best fit not shown for stacked charts.")
@@ -359,11 +360,12 @@ Bar <- function(x,
         # Plotly text marker positions are not spaced properly when placed to
         # the left of the bar (i.e. negative values or reversed axis).
         # Adjusted by controlling the size of the marker
-        if (data.label.show)
+        if (any(data.label.show))
         {
             p <- addDataLabelAnnotations(p, type = "Bar", legend.text[i],
                     data.label.xpos = data.annotations$x[,i],
                     data.label.ypos = if (NCOL(chart.matrix) > 1) data.annotations$y[,i] else x,
+                    data.label.show = data.label.show[,i],
                     data.label.text = data.annotations$text[,i],
                     data.label.sign = getSign(data.annotations$x[,i], xaxis),
                     annotation.list, annot.data, i,
