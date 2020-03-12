@@ -210,7 +210,7 @@ BarMultiColor <- function(x,
                data.label.prefix, data.label.suffix, decimals = 0)
         p <- addDataLabelAnnotations(p, type = "Bar", NULL,
                 data.label.xpos = y, data.label.ypos = x, data.label.text = source.text,
-                data.label.show = data.label.show, data.label.sign = getSign(y, yaxis),
+                data.label.show = data.label.show, data.label.sign = getSign(y, xaxis),
                 annotation.list, annot.data, i = 1,
                 xaxis = "x", yaxis = "y", data.label.font, is.stacked = FALSE, data.label.centered = FALSE)
     }
