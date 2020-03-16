@@ -179,6 +179,8 @@ Radar <- function(x,
         y.tick.decimals <- decimalsFromD3(y.tick.format)
     y.hovertext.decimals <- decimalsFromD3(y.hovertext.format, y.tick.decimals)
     data.label.decimals <- decimalsFromD3(data.label.format)
+    data.label.prefix <- rbind(vectorize(data.label.prefix, n, m, split = NULL), "")
+    data.label.suffix <- rbind(vectorize(data.label.suffix, n, m, split = NULL), "")
 
     # Convert data (polar) into x, y coordinates
     pos <- do.call(rbind, lapply(as.data.frame(chart.matrix), getPolarCoord))
@@ -188,6 +190,9 @@ Radar <- function(x,
                               else rep(colnames(chart.matrix), each = m+1),
                       stringsAsFactors  =  T, check.names = F)
     chart.matrix <- rbind(chart.matrix, chart.matrix[1,])
+        DataLabels=sprintf("%s: %s%s%s", rownames(chart.matrix), data.label.prefix[1],
+                data.label.format.function(unlist(chart.matrix), decimals = data.label.decimals),
+                data.label.suffix[1])
 
     pos <- cbind(pos,
             HoverText=sprintf("%s: %s%s%s", pos$Name, y.tick.prefix,
@@ -268,21 +273,23 @@ Radar <- function(x,
     
     # Small Multiples should pass in the proper line.thickness and opacity 
     # parameters instead of using this hack 
-    #if (length(data.label.show) > 1 && n == 2) # small multiples
-    #{
-    #    line.thickness <- c(line.thickness, 0)
-    #    opacity <- c(opacity, if (opacity == 0.0) 0.2 else opacity)
-    #}
-    #else
-    #{
-    #    line.thickness <- vectorize(line.thickness, n)
-    #    opacity <- vectorize(opacity, n)
-    #}
+    if (length(data.label.show) > 1 && n == 2) # small multiples
+    {
+        line.thickness <- c(line.thickness, 0)
+        opacity <- c(opacity, if (opacity == 0.0) 0.2 else opacity)
+    }
+    else
+    {
+        line.thickness <- vectorize(line.thickness, n)
+        opacity <- vectorize(opacity, n)
+    }
 
     line.thickness <- vectorize(line.thickness, n)
     opacity <- vectorize(opacity, n)
     hovertext.show <- vectorize(hovertext.show, n)
     data.label.show <- rbind(vectorize(data.label.show, n, m), FALSE)
+    #data.label.prefix <- rbind(vectorize(data.label.prefix, n, m), "")
+    #data.label.suffix <- rbind(vectorize(data.label.suffix, n, m), "")
     data.label.font.color <- vectorize(data.label.font.color, n)
     data.label.font = lapply(data.label.font.color,
         function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
