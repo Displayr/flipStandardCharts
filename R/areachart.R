@@ -254,7 +254,9 @@ Area <- function(x,
     xtick.font = list(family = x.tick.font.family, size = x.tick.font.size, color = x.tick.font.color)
     footer.font = list(family = footer.font.family, size = footer.font.size, color = footer.font.color)
     legend.font = list(family = legend.font.family, size = legend.font.size, color = legend.font.color)
-    data.label.show = vectorize(data.label.show, ncol(chart.matrix))
+    data.label.show = vectorize(data.label.show, ncol(chart.matrix), nrow(chart.matrix))
+    data.label.prefix <- vectorize(data.label.prefix, ncol(chart.matrix), nrow(chart.matrix), split = NULL)
+    data.label.suffix <- vectorize(data.label.suffix, ncol(chart.matrix), nrow(chart.matrix), split = NULL)
 
     legend.show <- setShowLegend(legend.show, NCOL(chart.matrix))
     legend <- setLegend(type, legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
@@ -401,15 +403,16 @@ Area <- function(x,
                             line = list(color=fit.CI.colors[i], width=0, shape='spline'))
                 }
             }
-            if (data.label.show[i])
+            if (any(data.label.show[,i]))
             {
-                y <- as.numeric(chart.matrix[, i])
-                x <- x.labels
+                ind.show <- which(data.label.show[,i])
+                y <- as.numeric(chart.matrix[ind.show, i])
+                x <- x.labels[ind.show]
                 y.label <- y.labels[i]
 
-                label.text <- paste(data.label.prefix,
-                     FormatAsReal(chart.matrix[,i] * data.label.mult, decimals = data.label.decimals),
-                     data.label.suffix, sep = "")
+                label.text <- paste(data.label.prefix[ind.show,i],
+                     FormatAsReal(chart.matrix[ind.show,i] * data.label.mult, decimals = data.label.decimals),
+                     data.label.suffix[ind.show,i], sep = "")
 
                 m <- nrow(chart.matrix)
                 data.label.pos <- rep("top middle", m)
@@ -417,6 +420,7 @@ Area <- function(x,
                                                     else "left", data.label.pos[1])
                 data.label.pos[m] <- gsub("middle", if (x.sign > 0) "left"
                                                     else "right",  data.label.pos[m])
+                data.label.pos <- data.label.pos[ind.show]
 
                 p <- add_trace(p, type = "scatter", mode = "text", x = x, y = y,
                         legendgroup = i, showlegend = FALSE, name = y.label,
@@ -438,10 +442,16 @@ Area <- function(x,
             fill.bound <- if (is.stacked && i > 1) "tonexty" else "tozeroy"
 
             label.text <- NULL
-            if (data.label.show[i])
-                label.text <- paste(data.label.prefix,
+            if (any(data.label.show))
+            {
+                # For stacked charts, all data labels must be added
+                # but we can hide labels which are not needed
+                ind.hide <- which(!data.label.show[,i])
+                label.text <- paste(data.label.prefix[,i],
                      FormatAsReal(chart.matrix[,i] * data.label.mult, decimals = data.label.decimals),
-                     data.label.suffix, sep = "")
+                     data.label.suffix[,i], sep = "")
+                label.text[ind.hide] <- ""
+            }
 
             y.label <- y.labels[i]
             p <- add_trace(p, type = "scatter", x = x, y = y, name = legend.text[i],
@@ -453,7 +463,7 @@ Area <- function(x,
                     font = list(color = autoFontColor(colors[i]),
                     size = hovertext.font.size, family = hovertext.font.family)))
 
-            if (data.label.show[i])
+            if (any(data.label.show))
                 p <- add_trace(p, type = "scatter", mode = "text", x = x, y = y,
                         legendgroup = i, stackgroup = "text", fill = "none",
                         showlegend = FALSE, name = y.label,
