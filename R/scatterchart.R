@@ -23,7 +23,7 @@
 #' @param x.tick.on.label Logical; Set to FALSE to move grid lines between categories.
 #' @param sz.min Parameter to control scaling of scatter.sizes, used by SmallMultiples
 #' @param sz.max Parameter to control scaling of scatter.sizes, used by SmallMultiples
-#' @param sz.scale Parameter to control scaling of scatter.sizes. Marker size (in pixels) of 
+#' @param sz.scale Parameter to control scaling of scatter.sizes. Marker size (in pixels) of
 #'   the points with the largest value of \code{scatter.size}. This defaults to 100/6 of \code{marker.size}.
 #' @param col.min Parameter to control scaling of scatter.colors, used by SmallMultiples
 #' @param col.max Parameter to control scaling of scatter.colors, used by SmallMultiples
@@ -282,7 +282,7 @@ Scatter <- function(x = NULL,
         # This is fixed to match behaviour of LabeledScatter
         # (It also useful to keep it small because space in the legend is limited)
         marker.size <- 12
-    }    
+    }
 
     # Warning if non-default selected but corresponding data is missing
     if (is.null(small.mult.index) && is.null(scatter.sizes) && scatter.sizes.as.diameter)
@@ -456,11 +456,11 @@ Scatter <- function(x = NULL,
 
     if (!is.null(scatter.colors) && scatter.colors.as.categorical)
         groups <- scatter.colors
-    
+
     if (is.factor(groups))
         g.list <- levels(groups) # fix legend order
     else if (any(class(groups) %in% c("Date", "POSIXct", "POSIXt", "integer", "numeric")))
-        g.list <- sort(unique(groups)) 
+        g.list <- sort(unique(groups))
     else
         g.list <- unique(groups)
     if (length(colors) < length(g.list))
@@ -491,7 +491,7 @@ Scatter <- function(x = NULL,
 
     # other constants
     colorbar.show <- setShowLegend(legend.show) # colorbar is always shown even for 1 data series
-    legend.show <- setShowLegend(legend.show, num.series + scatter.colors.as.numeric) 
+    legend.show <- setShowLegend(legend.show, num.series + scatter.colors.as.numeric)
     series.mode <- if (is.null(line.thickness) || line.thickness == 0) "markers"
                    else "markers+lines"
     if (data.label.show)
@@ -651,11 +651,11 @@ Scatter <- function(x = NULL,
                     p <- add_trace(p, x = x[ind[ind.sel]], y = y[ind[ind.sel]], showlegend = FALSE, cliponaxis = FALSE,
                        type = "scatter", mode = "markers", hoverinfo = "skip",
                        marker = list(size = tmp.size[ind.sel], sizemode = "diameter", color = "transparent",
-                       line = list(width = a.tmp$width, color = a.tmp$color)), 
+                       line = list(width = a.tmp$width, color = a.tmp$color)),
                        legendgroup = if (num.series > 1) ggi else 1, symbols = marker.symbols)
-                else 
+                else
                     annot.text[ind.sel] <- addAnnotToDataLabel(annot.text[ind.sel], a.tmp, tmp.dat[ind.sel])
-            } 
+            }
         }
         if (any(nchar(annot.text) > 0))
             p <- add_trace(p, x = x[ind], y = y[ind], showlegend = FALSE, cliponaxis = FALSE,
@@ -681,7 +681,7 @@ Scatter <- function(x = NULL,
 
         if (fit.type != "None" && num.series > 1)
         {
-            tmp.fit <- fitSeries(x[ind], y[ind], fit.type, fit.ignore.last, xaxis$type, 
+            tmp.fit <- fitSeries(x[ind], y[ind], fit.type, fit.ignore.last, xaxis$type,
                             fit.CI.show, fit.window.size, warning.prefix)
             tmp.fname <- sprintf("%s: %s", fit.line.name, g.list[ggi])
             p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$y, type = 'scatter', mode = "lines",
@@ -710,13 +710,13 @@ Scatter <- function(x = NULL,
     }
     if (fit.type != "None" && num.series == 1)
     {
-        tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type, fit.CI.show, 
+        tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type, fit.CI.show,
                              fit.window.size, warning.prefix)
         p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$y, type = 'scatter', mode = 'lines',
-                    name = fit.line.name, showlegend = FALSE, 
+                    name = fit.line.name, showlegend = FALSE,
                     hoverlabel = list(font = list(color = autoFontColor(fit.line.colors[1]),
                     size = hovertext.font.size, family = hovertext.font.family)),
-                    line = list(dash = fit.line.type, width = fit.line.width, 
+                    line = list(dash = fit.line.type, width = fit.line.width,
                     shape = 'spline', color = fit.line.colors[1]), opacity = fit.line.opacity)
         if (fit.CI.show && !is.null(tmp.fit$lb))
         {
@@ -733,7 +733,7 @@ Scatter <- function(x = NULL,
                     line = list(color=fit.CI.colors[1], width=0, shape='spline'))
         }
     }
-                    
+
     annot <- list(setSubtitle(subtitle, subtitle.font, margins),
                   setTitle(title, title.font, margins),
                   if (is.null(small.mult.index)) setFooter(footer, footer.font, margins) else NULL)
@@ -771,7 +771,7 @@ getAnnotScatterData <- function(data, name, ind)
 selectFactor <- function(threshold, index, var.name, i)
 {
     if (nchar(trimws(threshold)) > 0 && i == 1)
-        warning("Inequalities are not applicable to '", var.name, 
+        warning("Inequalities are not applicable to '", var.name,
         "' because it is an unordered categorical variable. Ignoring threshold '", threshold, "'.")
     return(index)
 }

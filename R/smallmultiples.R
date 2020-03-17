@@ -132,6 +132,12 @@ SmallMultiples <- function(x,
         if (isTRUE(unname(scatter.sizes.column == scatter.groups.column)))
             scatter.sizes.column <- 0
         indexes <- tapply(1:nrow(x), x[,scatter.groups.column], function(ii) ii)
+        is.empty <- sapply(indexes, is.null)
+        if (any(is.empty))
+        {
+            warning("No data observed for '", paste(names(is.empty)[is.empty], collapse = "', '"), "'")
+            indexes <- indexes[!is.empty]
+        }
         npanels <- length(indexes)
 
     } else
