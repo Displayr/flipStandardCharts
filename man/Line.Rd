@@ -120,6 +120,7 @@ Line(
   x.tick.label.wrap.nchar = 21,
   line.thickness = 3,
   marker.show = NULL,
+  marker.show.at.ends = FALSE,
   marker.symbols = "circle",
   marker.colors = colors,
   marker.opacity = NULL,
@@ -130,6 +131,7 @@ Line(
   tooltip.show = TRUE,
   modebar.show = FALSE,
   data.label.show = FALSE,
+  data.label.show.at.ends = FALSE,
   data.label.position = "Top",
   data.label.font.family = global.font.family,
   data.label.font.color = global.font.color,
@@ -424,6 +426,9 @@ character format (e.g. "black") or an a hex code.}
 \item{marker.show}{Can be "none", "automatic" or a vector referencing
 the plotly symbol dictionary using either numerics or strings.}
 
+\item{marker.show.at.ends}{Logical; show markers at the begining and end of each
+data series. The value will override \code{marker.show}.}
+
 \item{marker.symbols}{Character; marker symbols, which are only shown if marker.show = TRUE.
 if a vector is passed, then each element will be applied to a data series.}
 
@@ -445,6 +450,9 @@ markers as an alpha value (0 to 1).}
 \item{modebar.show}{Logical; whether to show the zoom menu buttons or not.}
 
 \item{data.label.show}{Logical; whether to show data labels.}
+
+\item{data.label.show.at.ends}{Logical; show data labels at the beginning and end of each
+data series. This value will override \code{data.label.show}.}
 
 \item{data.label.position}{Character; one of 'top' or 'bottom'.}
 
