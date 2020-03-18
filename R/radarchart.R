@@ -271,8 +271,6 @@ Radar <- function(x,
     if (is.null(line.thickness))
         line.thickness <- 3
     
-    # Small Multiples should pass in the proper line.thickness and opacity 
-    # parameters instead of using this hack 
     if (length(data.label.show) > 1 && n == 2) # small multiples
     {
         line.thickness <- c(line.thickness, 0)

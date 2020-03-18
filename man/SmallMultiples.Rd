@@ -52,6 +52,8 @@ SmallMultiples(
   y.title = "",
   y.title.font.size = 12,
   data.label.show = FALSE,
+  data.label.prefix = "",
+  data.label.suffix = "",
   data.label.font.color = global.font.color,
   line.thickness = NULL,
   grid.show = TRUE,
@@ -186,6 +188,10 @@ to turn off set to "FALSE".}
 \item{y.title.font.size}{Integer; y-axis title font size}
 
 \item{data.label.show}{Logical; whether to show data labels.}
+
+\item{data.label.prefix}{Character; prefix for data values.}
+
+\item{data.label.suffix}{Character; suffix for data values.}
 
 \item{data.label.font.color}{Font color as a named color
 in character format (e.g. "black") or an a hex code. This can be a single
