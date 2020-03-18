@@ -1480,10 +1480,6 @@ addDataLabelAnnotations <- function(p, type, name, data.label.xpos, data.label.y
     tmp.offset <- if (!is.stacked) max(0, (max.diam - data.label.font$size))
                   else             0.01
     data.label.pos <- data.label.pos + tmp.offset
-    #cat("data.label.xpos:")
-    #print(str(data.label.xpos))
-    #cat("data.label.show:")
-    #print(str(data.label.show))
     p <- add_trace(p, name = name,
               x = data.label.xpos[data.label.show], y = data.label.ypos[data.label.show], 
               cliponaxis = FALSE, type = "scatter", mode = "markers+text", 

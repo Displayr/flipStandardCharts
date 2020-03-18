@@ -241,8 +241,8 @@ Radar <- function(x,
         # Hexagonal grid
         for (tt in tick.vals)
         {
-            gpos <- getPolarCoord(rep(tt, n))
-            for (i in 1:n)
+            gpos <- getPolarCoord(rep(tt, m))
+            for (i in 1:m)
                 grid[[length(grid)+1]] <- list(type = "line", layer = "below",
                      x0 = gpos[i,1], x1 = gpos[i+1,1], y0 = gpos[i,2], y1 = gpos[i+1,2],
                      line = list(width = y.grid.width * grid.show, dash = "dot",
@@ -286,8 +286,6 @@ Radar <- function(x,
     opacity <- vectorize(opacity, n)
     hovertext.show <- vectorize(hovertext.show, n)
     data.label.show <- rbind(vectorize(data.label.show, n, m), FALSE)
-    #data.label.prefix <- rbind(vectorize(data.label.prefix, n, m), "")
-    #data.label.suffix <- rbind(vectorize(data.label.suffix, n, m), "")
     data.label.font.color <- vectorize(data.label.font.color, n)
     data.label.font = lapply(data.label.font.color,
         function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
