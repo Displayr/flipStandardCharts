@@ -523,8 +523,6 @@ the points with the largest value of \code{scatter.size}. This defaults to 100/6
 \item{col.min}{Parameter to control scaling of scatter.colors, used by SmallMultiples}
 
 \item{col.max}{Parameter to control scaling of scatter.colors, used by SmallMultiples}
-
-\item{...}{Extra arguments that are ignored.}
 }
 \description{
 Scatter plot

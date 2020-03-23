@@ -28,9 +28,12 @@ expect_error(Pyramid(1:5, data.label.show = c(T,F,T,F,F), data.label.prefix = LE
 expect_error(BarMultiColor(1:5, data.label.show = c(T,F,T,F,F), data.label.prefix = LETTERS[1:5]), NA)
 
 # Small Multples + Averages
-expect_error(SmallMultiples(dat2d, "Column", data.label.show = dshow, data.label.prefix = dpfix, average.show = T), NA)
-expect_error(SmallMultiples(dat2d, "BarMultiColor", data.label.show = dshow, data.label.prefix = dpfix, average.show = T), NA)
-expect_error(SmallMultiples(dat2dpos, "Pyramid", data.label.show = dshow, data.label.prefix = dpfix, average.show = T), NA)
+expect_error(SmallMultiples(dat2d, "Column", data.label.show = dshow, data.label.prefix = dpfix,
+    average.show = T, data.label.format = ".2f"), NA)
+expect_error(SmallMultiples(dat2d, "BarMultiColor", data.label.show = dshow, data.label.prefix = dpfix,
+    average.show = T, data.label.format = ".2f"), NA)
+expect_error(SmallMultiples(dat2dpos, "Pyramid", data.label.show = dshow, data.label.prefix = dpfix,
+    average.show = T, data.label.format = ".2f"), NA)
 
 # Problems with line, area and radar
 expect_error(SmallMultiples(dat2d, "Line", data.label.show = dshow, data.label.prefix = dpfix, average.show = T), NA)
@@ -62,12 +65,18 @@ missing124 <- structure(c(NA, NA, 7L, NA, 5L, 8L, 5L, 3L, 3L, 3L, 8L, 6L, 3L,
    "43", "44"), c("A", "B", "C")))
 
 
-expect_warning(Line(missing1, data.label.show.at.ends = T, marker.show.at.ends = T, data.label.font.autocolor = TRUE, marker.size = 20), "Missing values have been omitted")
-expect_warning(Line(missing124, data.label.show.at.ends = T, marker.show.at.ends = T, data.label.font.autocolor = TRUE, marker.size = 20), "Missing values have been omitted")
+expect_warning(Line(missing1, data.label.show.at.ends = T, marker.show.at.ends = T,
+    data.label.font.autocolor = TRUE, marker.size = 20), "Missing values have been omitted")
+expect_warning(Line(missing124, data.label.show.at.ends = T, marker.show.at.ends = T,
+    data.label.font.autocolor = TRUE, marker.size = 20), "Missing values have been omitted")
+expect_warning(Line(missing1, data.label.show.at.ends = T, marker.show.at.ends = T,
+    data.label.font.autocolor = TRUE, marker.size = 20, data.label.format = ".2f",
+    data.label.prefix = "$", data.label.suffix = letters[1:6]))
 
 showmat <- matrix(FALSE, 20, 3)
 showmat[c(3,5, 19),] <- TRUE
-expect_warning(Line(missing1, data.label.show = showmat, marker.show = showmat, marker.size = 20, opacity = 0.5), "Missing values have been omitted")
+expect_warning(Line(missing1, data.label.show = showmat, marker.show = showmat, marker.size = 20,
+    opacity = 0.5), "Missing values have been omitted")
 expect_warning(Line(missing124, data.label.show = showmat, marker.show = showmat, marker.size = 20), "Missing values have been omitted")
 
 
