@@ -517,14 +517,12 @@ to reduce overlap.}
 
 \item{sz.max}{Parameter to control scaling of scatter.sizes, used by SmallMultiples}
 
-\item{sz.scale}{Parameter to control scaling of scatter.sizes. Marker size (in pixels) of 
+\item{sz.scale}{Parameter to control scaling of scatter.sizes. Marker size (in pixels) of
 the points with the largest value of \code{scatter.size}. This defaults to 100/6 of \code{marker.size}.}
 
 \item{col.min}{Parameter to control scaling of scatter.colors, used by SmallMultiples}
 
 \item{col.max}{Parameter to control scaling of scatter.colors, used by SmallMultiples}
-
-\item{...}{Extra arguments that are ignored.}
 }
 \description{
 Scatter plot

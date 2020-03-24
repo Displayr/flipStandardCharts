@@ -106,19 +106,19 @@ Radar <- function(x,
         stop("Radar charts cannot contain missing or non-finite values.\n")
     if (any(chart.matrix < 0))
         stop("Radar charts cannot have negative values.\n")
-    n <- nrow(chart.matrix)
-    m <- ncol(chart.matrix)
+    m <- nrow(chart.matrix)
+    n <- ncol(chart.matrix)
 
     legend.show <- setShowLegend(legend.show, NCOL(chart.matrix))
     if (is.null(n) || n == 1 || m == 1)
     {
         # only 1 series
         chart.matrix <- data.frame(x = chart.matrix, check.names = FALSE)
-        n <- nrow(chart.matrix)
-        m <- ncol(chart.matrix)
+        m <- nrow(chart.matrix)
+        n <- ncol(chart.matrix)
     }
 
-    if (n <= 2)
+    if (m <= 2)
     {
         warning("Radar chart only has two or less spokes. ",
                 "It may be more appropriate to use another chart type.")
@@ -179,15 +179,20 @@ Radar <- function(x,
         y.tick.decimals <- decimalsFromD3(y.tick.format)
     y.hovertext.decimals <- decimalsFromD3(y.hovertext.format, y.tick.decimals)
     data.label.decimals <- decimalsFromD3(data.label.format)
+    data.label.prefix <- rbind(vectorize(data.label.prefix, n, m, split = NULL), "")
+    data.label.suffix <- rbind(vectorize(data.label.suffix, n, m, split = NULL), "")
 
     # Convert data (polar) into x, y coordinates
     pos <- do.call(rbind, lapply(as.data.frame(chart.matrix), getPolarCoord))
     pos <- data.frame(pos,
-                      Name = rep(rownames(chart.matrix)[c(1:n,1)], m),
+                      Name = rep(rownames(chart.matrix)[c(1:m,1)], n),
                       Group = if (NCOL(chart.matrix) == 1 && colnames(chart.matrix)[1] == "Series.1") ""
-                              else rep(colnames(chart.matrix),each = n+1),
+                              else rep(colnames(chart.matrix), each = m+1),
                       stringsAsFactors  =  T, check.names = F)
     chart.matrix <- rbind(chart.matrix, chart.matrix[1,])
+        DataLabels=sprintf("%s: %s%s%s", rownames(chart.matrix), data.label.prefix[1],
+                data.label.format.function(unlist(chart.matrix), decimals = data.label.decimals),
+                data.label.suffix[1])
 
     pos <- cbind(pos,
             HoverText=sprintf("%s: %s%s%s", pos$Name, y.tick.prefix,
@@ -196,7 +201,6 @@ Radar <- function(x,
             DataLabels=sprintf("%s: %s%s%s", rownames(chart.matrix), data.label.prefix,
                 data.label.format.function(unlist(chart.matrix), decimals = data.label.decimals),
                 data.label.suffix))
-
 
     # Set margins
     g.list <- unique(pos$Group)
@@ -218,7 +222,7 @@ Radar <- function(x,
 
     # Initialise plot (ensure chart area reaches y.bounds.maximum)
     p <- plot_ly(pos)
-    outer <- getPolarCoord(rep(r.max, n))
+    outer <- getPolarCoord(rep(r.max, m))
     x.offset <- rep(0, nrow(outer))
     x.offset[which.min(outer[,1])] <- -pad.left
     x.offset[which.max(outer[,1])] <- pad.right
@@ -237,8 +241,8 @@ Radar <- function(x,
         # Hexagonal grid
         for (tt in tick.vals)
         {
-            gpos <- getPolarCoord(rep(tt, n))
-            for (i in 1:n)
+            gpos <- getPolarCoord(rep(tt, m))
+            for (i in 1:m)
                 grid[[length(grid)+1]] <- list(type = "line", layer = "below",
                      x0 = gpos[i,1], x1 = gpos[i+1,1], y0 = gpos[i,2], y1 = gpos[i+1,2],
                      line = list(width = y.grid.width * grid.show, dash = "dot",
@@ -250,14 +254,14 @@ Radar <- function(x,
     annotations <- NULL
     if (x.tick.show)
     {
-        xanch <- rep("center", n)
+        xanch <- rep("center", m)
         xanch[which(abs(outer[,2]) < r.max/100 & sign(outer[,1]) < 0)] <- "right"
         xanch[which(abs(outer[,2]) < r.max/100 & sign(outer[,1]) > 0)] <- "left"
 
-        xlab <- autoFormatLongLabels(rownames(chart.matrix)[1:n],
+        xlab <- autoFormatLongLabels(rownames(chart.matrix)[1:m],
                     x.tick.label.wrap, x.tick.label.wrap.nchar)
         font.asp <- fontAspectRatio(x.tick.font.family)
-        annotations <- lapply(1:n, function(ii) list(text = xlab[ii], font = x.tick.font,
+        annotations <- lapply(1:m, function(ii) list(text = xlab[ii], font = x.tick.font,
                         x = outer[ii,1], y = outer[ii,2], xref = "x", yref = "y",
                         showarrow = FALSE, yshift = outer[ii,2]/r.max * 15,
                         xanchor = xanch[ii], xshift = outer[ii,1]/r.max))
@@ -266,6 +270,7 @@ Radar <- function(x,
     n <- length(g.list)
     if (is.null(line.thickness))
         line.thickness <- 3
+    
     if (length(data.label.show) > 1 && n == 2) # small multiples
     {
         line.thickness <- c(line.thickness, 0)
@@ -276,8 +281,11 @@ Radar <- function(x,
         line.thickness <- vectorize(line.thickness, n)
         opacity <- vectorize(opacity, n)
     }
+
+    line.thickness <- vectorize(line.thickness, n)
+    opacity <- vectorize(opacity, n)
     hovertext.show <- vectorize(hovertext.show, n)
-    data.label.show <- vectorize(data.label.show, n)
+    data.label.show <- rbind(vectorize(data.label.show, n, m), FALSE)
     data.label.font.color <- vectorize(data.label.font.color, n)
     data.label.font = lapply(data.label.font.color,
         function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
@@ -307,16 +315,18 @@ Radar <- function(x,
                     size = hovertext.font.size, family = hovertext.font.family)),
                     marker = list(size = 5, color = toRGB(colors[ggi])))
 
-        if (data.label.show[ggi])
+        if (any(data.label.show[,ggi]))
         {
-            x.offset <- sign(pos$x[ind]) * 0.1 * (r.max + abs(max(pos$x[ind])))/2
-            y.offset <- sign(pos$y[ind]) * 0.1 * (r.max + abs(max(pos$y[ind])))/2
-            p <- add_trace(p, x = pos$x[ind] + x.offset, y = pos$y[ind] + y.offset,
+            ind2 <- intersect(ind, which(data.label.show))
+            x.offset <- sign(pos$x[ind2]) * 0.1 * (r.max + abs(max(pos$x[ind2])))/2
+            y.offset <- sign(pos$y[ind2]) * 0.1 * (r.max + abs(max(pos$y[ind2])))/2
+            p <- add_trace(p, x = pos$x[ind2] + x.offset, y = pos$y[ind2] + y.offset,
                     type = "scatter", mode = "text", legendgroup = g.list[ggi],
-                    showlegend = FALSE, hoverinfo = "skip", text = pos$DataLabels[ind],
+                    showlegend = FALSE, hoverinfo = "skip", text = pos$DataLabels[ind2],
                     textfont = data.label.font[[ggi]])
         }
     }
+    
     annot.len <- length(annotations)
     annotations[[annot.len+1]] <- setFooter(footer, footer.font, margins)
     annotations[[annot.len+2]] <- setTitle(title, title.font, margins)

@@ -27,7 +27,6 @@
 #'   the points with the largest value of \code{scatter.size}. This defaults to 100/6 of \code{marker.size}.
 #' @param col.min Parameter to control scaling of scatter.colors, used by SmallMultiples
 #' @param col.max Parameter to control scaling of scatter.colors, used by SmallMultiples
-#' @param ... Extra arguments that are ignored.
 #' @importFrom grDevices rgb col2rgb
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom flipTime AsDateTime
