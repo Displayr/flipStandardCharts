@@ -77,6 +77,15 @@ showmat <- matrix(FALSE, 20, 3)
 showmat[c(3,5, 19),] <- TRUE
 expect_warning(Line(missing1, data.label.show = showmat, marker.show = showmat, marker.size = 20,
     opacity = 0.5), "Missing values have been omitted")
-expect_warning(Line(missing124, data.label.show = showmat, marker.show = showmat, marker.size = 20), "Missing values have been omitted")
+expect_warning(Line(missing124, data.label.show = showmat, marker.show = showmat, marker.size = 20),
+    "Missing values have been omitted")
 
-
+sizemat <- matrix(3, 20, 3)
+sizemat[c(3, 5, 19),] <- 8
+expect_warning(Line(missing124, marker.show = TRUE, marker.size = sizemat*3, opacity = 0.2,
+    data.label.show = TRUE, data.label.position = c("top", "bottom", "bottom"),
+    data.label.font.autocolor = TRUE), "Missing values have been omitted")
+expect_error(Column(dat2dpos, x2 = dat2d, opacity = 0.2, x2.data.label.show.at.ends = TRUE,
+    x2.marker.show.at.ends = TRUE), NA)
+expect_error(Column(dat2dpos, x2 = dat2d, opacity = 0.2, x2.data.label.show.at.ends = TRUE,
+    x2.marker.show.at.ends = TRUE, type = "Stacked"), NA)

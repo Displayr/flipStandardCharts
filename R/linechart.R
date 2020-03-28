@@ -7,7 +7,8 @@
 #' @param line.type Character; one of 'solid', 'dot', 'dashed'.
 #' @param marker.symbols Character; marker symbols, which are only shown if marker.show = TRUE.
 #'     if a vector is passed, then each element will be applied to a data series. 
-#' @param data.label.position Character; one of 'top' or 'bottom'.
+#' @param data.label.position Character; one of 'top' or 'bottom'. This can
+#'    be a single value or a vector with one value for each series.
 #' @param data.label.show.at.ends Logical; show data labels at the beginning and end of each
 #'      data series. This value will override \code{data.label.show}.
 #' @param marker.show.at.ends Logical; show markers at the begining and end of each
@@ -204,6 +205,7 @@ Line <-   function(x,
 
     line.type <- vectorize(tolower(line.type), ncol(chart.matrix))
     marker.symbols <- vectorize(marker.symbols, ncol(chart.matrix), nrow(chart.matrix))
+    marker.size <- vectorize(marker.size, ncol(chart.matrix), nrow(chart.matrix))
     dlab.color <- if (data.label.font.autocolor) colors
                   else vectorize(data.label.font.color, ncol(chart.matrix))
     dlab.pos <- vectorize(tolower(data.label.position), ncol(chart.matrix))
@@ -306,7 +308,8 @@ Line <-   function(x,
             sz.ind0 <- which(is.finite(chart.matrix[,i]))
             sz.ind <- min(sz.ind0):max(sz.ind0) # plotly ignores NAs at ends but not in the middle
             size.i <- rep(0, length(sz.ind))
-            size.i[which(marker.show[sz.ind,i])] <- marker.size
+            size.i[which(marker.show[sz.ind,i])] <- 
+                marker.size[intersect(which(marker.show[,i]), sz.ind),i]
 
             marker <- list(size = size.i,
                        color = toRGB(marker.colors[i], alpha = marker.opacity),
@@ -384,7 +387,7 @@ Line <-   function(x,
     {
         if (any(data.label.show[,i]))
         {
-            ind.show <- which(data.label.show[,i])
+            ind.show <- which(data.label.show[,i] & is.finite(chart.matrix[,i]))
             y <- as.numeric(chart.matrix[ind.show, i])
             x <- x.labels[ind.show]
             source.text <- paste(dlab.prefix[ind.show,i],
@@ -393,7 +396,7 @@ Line <-   function(x,
 
             data.label.offset <- rep(line.thickness[i]/2, length(ind.show)) 
             if (any(marker.show[,i]))
-                data.label.offset[which(marker.show[ind.show,i])] <- max(data.label.offset, marker.size)
+                data.label.offset[which(marker.show[ind.show,i])] <- pmax(marker.size[ind.show,i], data.label.offset)
             p <- add_trace(p, x = x, y = y, type = "scatter", name = y.label,
                    cliponaxis = FALSE, text = source.text, mode = "markers+text",
                    marker = list(size = data.label.offset, color=colors[i], opacity = 0),

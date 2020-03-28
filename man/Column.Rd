@@ -66,12 +66,14 @@ Column(
   grid.show = TRUE,
   x2.colors = ChartColors(max(1, NCOL(x2), na.rm = TRUE)),
   x2.data.label.show = FALSE,
+  x2.data.label.show.at.ends = FALSE,
   x2.line.type = "Solid",
   x2.line.thickness = 2,
   x2.shape = c("linear", "spline")[1],
   x2.smoothing = 1,
   x2.opacity = 1,
   x2.marker.show = FALSE,
+  x2.marker.show.at.ends = FALSE,
   x2.marker.size = 6,
   x2.marker.symbols = "circle",
   x2.marker.colors = x2.colors,
@@ -336,6 +338,9 @@ specified as hex codes.}
 
 \item{x2.data.label.show}{Logical; whether to show data labels for the secondary axis.}
 
+\item{x2.data.label.show.at.ends}{Logical; show data labels at the beginning and end of each
+line data series. This value will override \code{x2.data.label.show}.}
+
 \item{x2.line.type}{Character; one of 'solid', 'dot', 'dashed'.}
 
 \item{x2.line.thickness}{Thickness, in pixels, of the series line for secondary data.}
@@ -347,6 +352,9 @@ specified as hex codes.}
 \item{x2.opacity}{Opacity of the series line for secondary data.}
 
 \item{x2.marker.show}{Logical; whether to show markers at the data points on the lines for the secondary data.}
+
+\item{x2.marker.show.at.ends}{Logical; show markers at the begining and end of each
+data series. The value will override \code{x2.marker.show}.}
 
 \item{x2.marker.size}{Size in pixels of marker}
 

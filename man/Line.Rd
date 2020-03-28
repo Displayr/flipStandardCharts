@@ -454,7 +454,8 @@ markers as an alpha value (0 to 1).}
 \item{data.label.show.at.ends}{Logical; show data labels at the beginning and end of each
 data series. This value will override \code{data.label.show}.}
 
-\item{data.label.position}{Character; one of 'top' or 'bottom'.}
+\item{data.label.position}{Character; one of 'top' or 'bottom'. This can
+be a single value or a vector with one value for each series.}
 
 \item{data.label.font.family}{Character; font family for data label.}
 

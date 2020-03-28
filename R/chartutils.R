@@ -1248,6 +1248,16 @@ percentFromD3 <- function(format)
 #' @param decimals Default number of decimals shown; used if not specified in \code{format}
 formatByD3 <- function(x, format, prefix = "", suffix = "", percent = FALSE, decimals = 2)
 {
+    n <- length(x)
+    if (n > 1 && length(format) > 1)
+    {
+        format <- vectorize(format, n)
+        prefix <- vectorize(prefix, n)
+        suffix <- vectorize(suffix, n)
+        return(sapply(1:n, function(i)
+            formatByD3(x[i], format[i], prefix[i], suffix[i], percent = percent, decimals = decimals)))
+    }
+
     x.str <- as.character(x)
     if (format == "Category")
         return(x.str)

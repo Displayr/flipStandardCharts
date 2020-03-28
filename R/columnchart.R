@@ -234,6 +234,10 @@
 #' data labels should not be displayed. Only applicable for pie, bar and column
 #' charts.
 #' @param x2.data.label.show Logical; whether to show data labels for the secondary axis.
+#' @param x2.data.label.show.at.ends Logical; show data labels at the beginning and end of each
+#'      line data series. This value will override \code{x2.data.label.show}.
+#' @param x2.marker.show.at.ends Logical; show markers at the begining and end of each
+#'      data series. The value will override \code{x2.marker.show}.
 #' @param x2.data.label.position Character; one of 'top' or 'bottom'.
 #' @param x2.data.label.font.family Character; font family for data label for the secondary axis.
 #' @param x2.data.label.font.size Integer; Font size for data label.px for the secondary axis.
@@ -334,12 +338,14 @@ Column <- function(x,
                     grid.show = TRUE,
                     x2.colors = ChartColors(max(1, NCOL(x2), na.rm = TRUE)),
                     x2.data.label.show = FALSE,
+                    x2.data.label.show.at.ends = FALSE,
                     x2.line.type = "Solid",
                     x2.line.thickness = 2,
                     x2.shape = c("linear", "spline")[1],
                     x2.smoothing = 1,
                     x2.opacity = 1,
                     x2.marker.show = FALSE,
+                    x2.marker.show.at.ends = FALSE,
                     x2.marker.size = 6,
                     x2.marker.symbols = "circle",
                     x2.marker.colors = x2.colors,
@@ -587,6 +593,10 @@ Column <- function(x,
                      ") do not have the same type as the input data (",
                      xaxis$type, ").")
         }
+
+
+
+
         x2.labels <- formatLabels(x2, "Column", x.tick.label.wrap, x.tick.label.wrap.nchar,
             x.tick.format, y2.tick.format)$labels
         x.all.labels <- unique(c(x.all.labels, x2.labels))
@@ -649,15 +659,32 @@ Column <- function(x,
         yaxis2$overlaying <- "y"
 
         n2 <- ncol(x2)
+        m2 <- nrow(x2)
+        if (x2.data.label.show.at.ends || x2.marker.show.at.ends)
+        {
+            ends.show <- matrix(FALSE, m2, n2)
+            for (i in 1:n2)
+            {
+                ind <- which(is.finite(x2[,i])) # ignore NAs
+                ends.show[min(ind),i] <- TRUE 
+                ends.show[max(ind),i] <- TRUE 
+            }
+        }
+        x2.data.label.show <- if (x2.data.label.show.at.ends) ends.show
+                           else vectorize(x2.data.label.show, n2, m2)
+        x2.marker.show <- if (x2.marker.show.at.ends) ends.show
+                       else  vectorize(x2.marker.show, n2, m2)
+
         x2.line.type <- vectorize(tolower(x2.line.type), n2)
         x2.line.thickness <- readLineThickness(x2.line.thickness, n2)
         x2.opacity <- x2.opacity * rep(1, n2)
-        x2.marker.symbols <- vectorize(x2.marker.symbols, n2)
+        x2.marker.symbols <- vectorize(x2.marker.symbols, n2, m2)
+        x2.marker.size <- vectorize(x2.marker.size, n2, m2)
         x2.dlab.color <- if (x2.data.label.font.autocolor) x2.colors
                          else vectorize(x2.data.label.font.color, n2)
         x2.dlab.pos <- vectorize(tolower(x2.data.label.position), n2)
-        x2.dlab.prefix <- vectorize(x2.data.label.prefix, n2, split = NULL)
-        x2.dlab.suffix <- vectorize(x2.data.label.suffix, n2, split = NULL)
+        x2.dlab.prefix <- vectorize(x2.data.label.prefix, n2, m2, split = NULL)
+        x2.dlab.suffix <- vectorize(x2.data.label.suffix, n2, m2, split = NULL)
         x2.data.label.font = lapply(x2.dlab.color,
         function(cc) list(family = x2.data.label.font.family, size = x2.data.label.font.size, color = cc))
 
@@ -665,7 +692,7 @@ Column <- function(x,
             x2.shape <- "spline"
         if (grepl("^straight", tolower(x2.shape)))
             x2.shape <- "linear"
-        x2.series.mode <- if (x2.marker.show) "lines+markers" else "lines"
+        x2.series.mode <- ifelse (apply(x2.marker.show, 2, any), "lines+markers", "lines")
         x2.lines <- list()
         x2.markers <- list()
 
@@ -676,40 +703,44 @@ Column <- function(x,
                   color = toRGB(x2.colors[i], alpha = x2.opacity[i]))
 
             x2.markers[[i]] <- list(NULL)
-            if (x2.marker.show)
-                x2.markers[[i]] <- list(size = x2.marker.size,
-                  color = toRGB(x2.marker.colors[i], alpha = x2.marker.opacity),
-                  symbol = x2.marker.symbols[i],
-                  line = list(
-                  color = toRGB(x2.marker.border.colors[i], alpha = x2.marker.border.opacity),
-                  width = x2.marker.border.width))
+            if (any(x2.marker.show[,i]) && any(is.finite(x2[,i])))
+            {
+                sz.ind0 <- which(is.finite(x2[,i]))
+                sz.ind <- min(sz.ind0):max(sz.ind0) # plotly ignores NAs at ends but not in the middle
+                size.i <- rep(0, length(sz.ind))
+                size.i[which(x2.marker.show[sz.ind,i])] <- 
+                    x2.marker.size[intersect(which(x2.marker.show[,i]), sz.ind),i]
+
+                x2.markers[[i]] <- list(size = size.i,
+                           color = toRGB(x2.marker.colors[i], alpha = x2.marker.opacity),
+                           symbol = x2.marker.symbols[i], opacity = 1.0,
+                           line = list(
+                           color = toRGB(x2.marker.border.colors[i], alpha = x2.marker.border.opacity),
+                           width = x2.marker.border.width))
+            }
         }
     }
-        # Add invisible line to force all categorical labels to be shown
-        # Type "scatter" ensures y-axis tick bounds are treated properly
-        # but it also adds extra space next to the y-axis
-            p <- add_trace(p, x = x.all.labels,
-                        y = rep(min(as.numeric(chart.matrix),na.rm = T), length(x.all.labels)),
-                           mode = if (notAutoRange(yaxis)) "markers" else "lines",
-                           type = "scatter", cliponaxis = TRUE,
-                           hoverinfo = "skip", showlegend = FALSE, opacity = 0)
+    # Add invisible line to force all categorical labels to be shown
+    # Type "scatter" ensures y-axis tick bounds are treated properly
+    # but it also adds extra space next to the y-axis
+    p <- add_trace(p, x = x.all.labels,
+                   y = rep(min(as.numeric(chart.matrix),na.rm = T), length(x.all.labels)),
+                   mode = if (notAutoRange(yaxis)) "markers" else "lines",
+                   type = "scatter", cliponaxis = TRUE,
+                   hoverinfo = "skip", showlegend = FALSE, opacity = 0)
 
-    
+
     # Plot trace for second y-axis first so that they are shown last in legend
     if (!is.null(x2) && is.stacked)
     {
-        # convert x2 to matrix and match it against chart.matrix
-        # if x axis is numeric or date, it doesn't need to match?
         for (i in 1:ncol(x2))
-        {
             p <- add_trace(p, x = x2.labels, y = x2[,i], name = colnames(x2)[i],
-                    type = "scatter", mode = x2.series.mode, yaxis = "y2", xaxis = "x",
+                    type = "scatter", mode = x2.series.mode[i], yaxis = "y2", xaxis = "x",
                     line = x2.lines[[i]], marker = x2.markers[[i]], connectgaps = FALSE,
                     hoverlabel = list(font = list(color = autoFontColor(x2.colors[i]),
                     size = hovertext.font.size, family = hovertext.font.family)),
                     hovertemplate = setHoverTemplate(i, xaxis, x2), cliponaxis = TRUE,
                     legendgroup = NCOL(chart.matrix) + i)
-        }
     }
 
     ## Add a trace for each col of data in the matrix
@@ -796,35 +827,42 @@ Column <- function(x,
     # Plot trace for second y-axis last so that they are shown last in legend
     if (!is.null(x2) && !is.stacked)
     {
-        # convert x2 to matrix and match it against chart.matrix
-        # if x axis is numeric or date, it doesn't need to match?
         for (i in 1:ncol(x2))
         {
             p <- add_trace(p, x = x2.labels, y = x2[,i], name = colnames(x2)[i],
-                    type = "scatter", mode = x2.series.mode, yaxis = "y2",
+                    type = "scatter", mode = x2.series.mode[i], yaxis = "y2",
                     line = x2.lines[[i]], marker = x2.markers[[i]], connectgaps = FALSE,
                     hoverlabel = list(font = list(color = autoFontColor(x2.colors[i]),
                     size = hovertext.font.size, family = hovertext.font.family)),
-                    hovertemplate = setHoverTemplate(i, xaxis, x2), cliponaxis = TRUE,
+                    hovertemplate = setHoverTemplate(i, xaxis, x2), cliponaxis = FALSE,
                     legendgroup = NCOL(chart.matrix) + i)
         }
     }
 
     # Add data labels for x2 as a trace
-    if (!is.null(x2) && x2.data.label.show)
+    if (!is.null(x2) && any(x2.data.label.show))
     {
         for (i in 1:ncol(x2))
         {
-            tmp.offset <- x2.line.thickness[i]/2
-            if (!is.null(x2.marker.show))
-                tmp.offset <- max(tmp.offset, x2.marker.size)
-            p <- add_trace(p, x = x2.labels, y = x2[,i], yaxis = "y2", xaxis = "x",
-                type = "scatter", mode = "markers+text", cliponaxis = TRUE,
-                hoverinfo = "skip", textposition = x2.dlab.pos[i],
-                textfont = x2.data.label.font[[i]],
-                showlegend = FALSE, legendgroup = NCOL(chart.matrix) + i,
-                marker = list(size = tmp.offset, opacity = 0),
-                text = formatByD3(x2[,i], x2.data.label.format, x2.dlab.prefix[i], x2.dlab.suffix[i]))
+            if (any(x2.data.label.show[,i]))
+            {
+                ind.show <- which(x2.data.label.show[,i] & is.finite(x2[,i]))
+                tmp.y <- as.numeric(x2[ind.show, i])
+                tmp.x <- x2.labels[ind.show]
+                tmp.text <- formatByD3(x2[ind.show,i], x2.data.label.format, 
+                    x2.dlab.prefix[ind.show,i], x2.dlab.suffix[ind.show,i])
+                tmp.offset <- rep(x2.line.thickness[i]/2, length(ind.show)) 
+                if (any(x2.marker.show[,i]))
+                    tmp.offset[which(x2.marker.show[ind.show,i])] <- pmax(x2.marker.size[ind.show,i], tmp.offset)
+
+                p <- add_trace(p, x = tmp.x, y = tmp.y, yaxis = "y2", xaxis = "x",
+                       type = "scatter", cliponaxis = FALSE, 
+                       text = tmp.text, mode = "markers+text",
+                       marker = list(size = tmp.offset, color = x2.colors[i], opacity = 0),
+                       textfont = x2.data.label.font[[i]], textposition = x2.dlab.pos[i],
+                       showlegend = FALSE, legendgroup = ncol(chart.matrix) + i,
+                       hoverinfo = "skip")
+            }
         }
     }
 
