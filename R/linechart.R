@@ -6,7 +6,7 @@
 #' @param smoothing Numeric; smoothing if \code{shape} is "spline".
 #' @param line.type Character; one of 'solid', 'dot', 'dashed'.
 #' @param marker.symbols Character; marker symbols, which are only shown if marker.show = TRUE.
-#'     if a vector is passed, then each element will be applied to a data series. 
+#'     if a vector is passed, then each element will be applied to a data series.
 #' @param data.label.position Character; one of 'top' or 'bottom'. This can
 #'    be a single value or a vector with one value for each series.
 #' @param data.label.show.at.ends Logical; show data labels at the beginning and end of each
@@ -194,8 +194,8 @@ Line <-   function(x,
         for (i in 1:ncol(chart.matrix))
         {
             ind <- which(is.finite(chart.matrix[,i])) # ignore NAs
-            ends.show[min(ind),i] <- TRUE 
-            ends.show[max(ind),i] <- TRUE 
+            ends.show[min(ind),i] <- TRUE
+            ends.show[max(ind),i] <- TRUE
         }
     }
     data.label.show <- if (data.label.show.at.ends) ends.show
@@ -308,7 +308,7 @@ Line <-   function(x,
             sz.ind0 <- which(is.finite(chart.matrix[,i]))
             sz.ind <- min(sz.ind0):max(sz.ind0) # plotly ignores NAs at ends but not in the middle
             size.i <- rep(0, length(sz.ind))
-            size.i[which(marker.show[sz.ind,i])] <- 
+            size.i[which(marker.show[sz.ind,i])] <-
                 marker.size[intersect(which(marker.show[,i]), sz.ind),i]
 
             marker <- list(size = size.i,
@@ -319,13 +319,13 @@ Line <-   function(x,
                        width = marker.border.width))
         }
         y.label <- y.labels[i]
-       
- 
+
+
         # Draw line - main trace
         if (any(!is.na(y)))
             p <- add_trace(p, x = x, y = y, type = "scatter", mode = series.mode,
                    connectgaps = FALSE, line = lines, marker = marker, name = legend.text[i],
-                   showlegend = (type == "Line"), legendgroup = i,
+                   showlegend = (type == "Line"), legendgroup = i, cliponaxis = FALSE,
                    text = autoFormatLongLabels(x.labels.full, wordwrap=T, truncate=F),
                    hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                    size = hovertext.font.size, family = hovertext.font.family)),
@@ -394,7 +394,7 @@ Line <-   function(x,
                  data.label.function(chart.matrix[ind.show, i], decimals = data.label.decimals),
                  dlab.suffix[ind.show,i], sep = "")
 
-            data.label.offset <- rep(line.thickness[i]/2, length(ind.show)) 
+            data.label.offset <- rep(line.thickness[i]/2, length(ind.show))
             if (any(marker.show[,i]))
                 data.label.offset[which(marker.show[ind.show,i])] <- pmax(marker.size[ind.show,i], data.label.offset)
             p <- add_trace(p, x = x, y = y, type = "scatter", name = y.label,
