@@ -10,7 +10,7 @@ dat <- structure(c(-0.378331991098098, -0.81165552109611, 0.217951487400431,
 "7hVoOM", "iBnrwa", "o3Dw2c", "uMZoXB", "C1IrLI", "G3ueGs", "TveROQ",
 "QCBe1q", "z0bGc5", "zsakBj", "z60tz8"), c("X", "Y")))
 zgroup <- rep(LETTERS[1:3], 4)
-logos <- sprintf("https://displayrcors.azureedge.net/images/%s_grey.svg",
+logos <- sprintf("https://displayrcors.displayr.com/images/%s_grey.svg",
                  c("apple", "soup", "bread", "car", "chicken", "rocket",
                    "sickperson", "thumbsup", "elephant", "tree", "weight", "tools"))
 
@@ -44,7 +44,7 @@ test_that("Trend lines", {
 #test_that("LabeledScatter called from Scatter", {
 #    expect_error(Scatter(z, scatter.labels.as.hovertext = TRUE), NA)
 #    expect_warning(Scatter(list(z, z+1, z+2)))
-#    expect_error(Scatter(z, scatter.labels.as.hovertext = TRUE, logos=sprintf("https://displayrcors.azureedge.net/images/%s_grey.svg", c("apple", #"elephant", "cow", "chicken", "stickman"))), NA)
+#    expect_error(Scatter(z, scatter.labels.as.hovertext = TRUE, logos=sprintf("https://displayrcors.displayr.com/images/%s_grey.svg", c("apple", #"elephant", "cow", "chicken", "stickman"))), NA)
 #})
 
 test_that("Labeled Scatter accepts unused arguments",

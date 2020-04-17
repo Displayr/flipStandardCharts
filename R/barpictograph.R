@@ -274,7 +274,7 @@ BarPictograph <- function(x,
     # Icons and color
     image.type <- if (image %in% c("circle", "square")) image else "url"
     image.url <- if (!is.null(custom.image)) custom.image
-                 else sprintf("https://displayrcors.azureedge.net/images/%s_grey.svg",
+                 else sprintf("https://displayrcors.displayr.com/images/%s_grey.svg",
                               gsub(" ", "", tolower(image)))
     if (!hide.base.image && is.null(custom.image))
         base.image <- image.url
@@ -340,7 +340,7 @@ BarPictograph <- function(x,
         num.icons <- length(prop) * total.icons
     if (num.icons > maximum.number.icons)
         stop("Cannot create a chart with ", num.icons,
-        " icons (maximum allowed is ", maximum.number.icons, 
+        " icons (maximum allowed is ", maximum.number.icons,
         "). Try increasing the 'scale' parameter.")
 
     result <- list(htmlwidget = graphic(json.str))
