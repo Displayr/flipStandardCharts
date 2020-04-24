@@ -67,6 +67,7 @@ Radar <- function(x,
                     x.grid.width = 1 * grid.show,
                     x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
                     y.bounds.maximum = NULL,
+                    y.bounds.minimum = NULL,
                     y.tick.distance = NULL,
                     y.grid.width = 1 * grid.show,
                     y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
@@ -104,8 +105,6 @@ Radar <- function(x,
     chart.matrix <- checkMatrixNames(x)
     if (any(!is.finite(chart.matrix)))
         stop("Radar charts cannot contain missing or non-finite values.\n")
-    if (any(chart.matrix < 0))
-        stop("Radar charts cannot have negative values.\n")
     m <- nrow(chart.matrix)
     n <- ncol(chart.matrix)
 
@@ -150,16 +149,17 @@ Radar <- function(x,
             offset <- 1.1 + data.label.font.size/100
         y.bounds.maximum <- offset * max(chart.matrix)
     }
-    if (y.bounds.maximum <= 0)
-        stop("Maximum of the values axis must be greater than 0.")
+    if (length(y.bounds.minimum) == 0)
+        y.bounds.minimum <- min(0, min(chart.matrix))
     if (is.null(y.tick.distance))
     {
-        base <- 10^round(log10(y.bounds.maximum) - 1)
-        mult <- max(1, floor((y.bounds.maximum/base)/5))
-        y.tick.distance <- base * mult
+        y.diff <- y.bounds.maximum - y.bounds.minimum
+        base <- 10^round(log10(abs(y.diff)) - 1)
+        mult <- max(1, floor((abs(y.diff)/base)/5))
+        y.tick.distance <- sign(y.diff) * base * mult
     }
-    tick.vals <- seq(from = 0, to = y.bounds.maximum, by = y.tick.distance)
-    r.max <- y.bounds.maximum
+    tick.vals <- seq(from = y.bounds.minimum, to = y.bounds.maximum, by = y.tick.distance)
+    r.max <- abs(y.bounds.maximum - y.bounds.minimum)
 
     # Extract formatting from d3
     stat <- attr(x, "statistic")
@@ -174,7 +174,7 @@ Radar <- function(x,
     data.label.format.function <- ifelse(percentFromD3(data.label.format), FormatAsPercent, FormatAsReal)
 
     if (y.tick.format == "")
-        y.tick.decimals <- max(0, -floor(log10(min(diff(tick.vals)))))
+        y.tick.decimals <- max(0, -floor(log10(min(abs(diff(tick.vals))))))
     else
         y.tick.decimals <- decimalsFromD3(y.tick.format)
     y.hovertext.decimals <- decimalsFromD3(y.hovertext.format, y.tick.decimals)
@@ -183,7 +183,8 @@ Radar <- function(x,
     data.label.suffix <- rbind(vectorize(data.label.suffix, n, m, split = NULL), "")
 
     # Convert data (polar) into x, y coordinates
-    pos <- do.call(rbind, lapply(as.data.frame(chart.matrix), getPolarCoord))
+    pos <- do.call(rbind, lapply(as.data.frame(chart.matrix), calcPolarCoord, 
+                    r0 = y.bounds.minimum))
     pos <- data.frame(pos,
                       Name = rep(rownames(chart.matrix)[c(1:m,1)], n),
                       Group = if (NCOL(chart.matrix) == 1 && colnames(chart.matrix)[1] == "Series.1") ""
@@ -193,7 +194,6 @@ Radar <- function(x,
         DataLabels=sprintf("%s: %s%s%s", rownames(chart.matrix), data.label.prefix[1],
                 data.label.format.function(unlist(chart.matrix), decimals = data.label.decimals),
                 data.label.suffix[1])
-
     pos <- cbind(pos,
             HoverText=sprintf("%s: %s%s%s", pos$Name, y.tick.prefix,
                 hover.format.function(unlist(chart.matrix), decimals = y.hovertext.decimals,
@@ -222,7 +222,7 @@ Radar <- function(x,
 
     # Initialise plot (ensure chart area reaches y.bounds.maximum)
     p <- plot_ly(pos)
-    outer <- getPolarCoord(rep(r.max, m))
+    outer <- calcPolarCoord(rep(y.bounds.maximum, m), r0 = y.bounds.minimum)
     x.offset <- rep(0, nrow(outer))
     x.offset[which.min(outer[,1])] <- -pad.left
     x.offset[which.max(outer[,1])] <- pad.right
@@ -241,7 +241,7 @@ Radar <- function(x,
         # Hexagonal grid
         for (tt in tick.vals)
         {
-            gpos <- getPolarCoord(rep(tt, m))
+            gpos <- calcPolarCoord(rep(tt, m), r0 = y.bounds.minimum)
             for (i in 1:m)
                 grid[[length(grid)+1]] <- list(type = "line", layer = "below",
                      x0 = gpos[i,1], x1 = gpos[i+1,1], y0 = gpos[i,2], y1 = gpos[i+1,2],
@@ -261,10 +261,14 @@ Radar <- function(x,
         xlab <- autoFormatLongLabels(rownames(chart.matrix)[1:m],
                     x.tick.label.wrap, x.tick.label.wrap.nchar)
         font.asp <- fontAspectRatio(x.tick.font.family)
+        theta <- (0.5 - 2 * (0:(m-1))/m) * pi
+        yshift <- sin(theta) * 15
+        xshift <- cos(theta)
+
         annotations <- lapply(1:m, function(ii) list(text = xlab[ii], font = x.tick.font,
                         x = outer[ii,1], y = outer[ii,2], xref = "x", yref = "y",
-                        showarrow = FALSE, yshift = outer[ii,2]/r.max * 15,
-                        xanchor = xanch[ii], xshift = outer[ii,1]/r.max))
+                        showarrow = FALSE, yshift = yshift[ii], 
+                        xanchor = xanch[ii], xshift = xshift[ii]))
     }
 
     n <- length(g.list)
@@ -335,7 +339,8 @@ Radar <- function(x,
     if (grid.show && y.grid.width > 0 && y.tick.show && !is.null(tick.vals))
     {
         for (i in 1:length(tick.vals))
-            annotations[[annot.len+3+i]] <- list(x = 0, y = tick.vals[i],
+            annotations[[annot.len+3+i]] <- list(x = 0, 
+                y = tick.vals[i] - y.bounds.minimum,
                 font = y.tick.font, showarrow = FALSE, xanchor = "right",
                 xshift = -5, xref = "x", yref = "y",
                 text = paste0(y.tick.prefix, tick.format.function(tick.vals[i],
@@ -357,5 +362,30 @@ Radar <- function(x,
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     result
+}
+
+calcPolarCoord <- function(r, r0 = 0)
+{
+    # Get starting angle and angle increments
+    theta <- 0.5 * pi
+    dtheta <- -2 * pi / length(r) 
+
+    # Get polar coordinates
+    x <- c()
+    y <- c()
+
+    for(i in 1:length(r)){
+
+        x <- c(x, (r[i] - r0) * cos(theta))
+        y <- c(y, (r[i] - r0) * sin(theta))
+
+        theta <- theta + dtheta
+    }
+
+    # Return to initial point to complete circle
+    x[length(x) + 1] <- x[1]
+    y[length(y) + 1] <- y[1]
+
+    return(cbind(x, y))
 }
 

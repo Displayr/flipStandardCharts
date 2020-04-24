@@ -31,31 +31,21 @@ for (func in charting.funcs)
 
             # Run command and check outputs
             # We need to separate cases which behave differently
-            # For this example pie chart and radar charts handle
+            # For this example pie charts handle
             # negative values differently from the other chart types
-            # but only radar charts give an error
-            if (filestem == "basicexample-radar-random")
-            {
-                expect_error(eval(parse(text=cmd)))
-            }
+            if (filestem == "basicexample-pie-random" || filestem == "basicexample-donut-random")
+                expect_warning(eval(parse(text=cmd)))
             else
-            {
-                # These can be grouped together using suppressWarning
-                # But this is more informative
-                if (filestem == "basicexample-pie-random" || filestem == "basicexample-donut-random")
-                    expect_warning(eval(parse(text=cmd)))
-                else
-                    expect_error(eval(parse(text=cmd)), NA)
+                expect_error(eval(parse(text=cmd)), NA)
 
-                # The following lines are useful for interactive viewing
-                # But should be commented out after everything is set up
-                #print(pp)
-                #readline(prompt=paste0(filestem, ": press [enter] to continue: "))
+            # The following lines are useful for interactive viewing
+            # But should be commented out after everything is set up
+            #print(pp)
+            #readline(prompt=paste0(filestem, ": press [enter] to continue: "))
 
-                # Create snapshot and compare against reference (in flipChartTests)
-                # If none exists, the snapshot will be accepted as the reference
-                #expect_true(TestWidget(pp, filestem))
-            }
+            # Create snapshot and compare against reference (in flipChartTests)
+            # If none exists, the snapshot will be accepted as the reference
+            #expect_true(TestWidget(pp, filestem))
         })
     }
 }

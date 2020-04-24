@@ -53,6 +53,7 @@ Radar(
   x.grid.width = 1 * grid.show,
   x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
   y.bounds.maximum = NULL,
+  y.bounds.minimum = NULL,
   y.tick.distance = NULL,
   y.grid.width = 1 * grid.show,
   y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
@@ -205,6 +206,9 @@ character format (e.g. "black") or an a hex code.}
 format (e.g. "black") or a hex code.}
 
 \item{y.bounds.maximum}{Maximum of range for plotting; NULL = no manual range set.}
+
+\item{y.bounds.minimum}{Minimum of range for plotting; For a date axis this should be supplied as a date string.
+For a categorical axis, the index of the category (0-based) should be used.}
 
 \item{y.tick.distance}{Distance between tick marks. Requires that \code{y.bounds.minimum} and \code{y.bounds.maximum} have been set.}
 
