@@ -355,7 +355,7 @@ SmallMultiples <- function(x,
                                                      data.label.suffix = data.label.suffix[,i],
                                                      data.label.font.color = data.label.font.color[i],
                                                      y.bounds.maximum = y.bounds.maximum,
-                                                     aspect.fixed = FALSE, # not supported with subplot
+                                                     y.bounds.minimum = y.bounds.minimum,
                                                      global.font.family = global.font.family,
                                                      global.font.color = global.font.color,
                                                      pad.left = pad.left, pad.right = pad.right,

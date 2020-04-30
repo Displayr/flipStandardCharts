@@ -60,9 +60,15 @@ for (dat in dat.list)
 test_that("Adjustable y.bounds.minimum",
 {
     expect_error(Radar(negatives), NA)
+    expect_error(Radar(negatives, y.bounds.maximum = "", y.bounds.minimum = ""), NA)
     expect_error(Radar(negatives, data.label.show = TRUE, x.tick.show = FALSE), NA)
     expect_error(Radar(negatives[1:5], y.bounds.maximum = -2, y.bounds.minimum = 2,
         data.label.show = TRUE, x.tick.show = FALSE, data.label.format = ".2f"), NA)
     expect_error(Radar(named, y.bounds.minimum = 10), NA)
+
+    expect_error(SmallMultiples(matrix2d, "Radar", data.label.show = TRUE,
+        y.bounds.minimum = "", y.bounds.maximum = ""), NA)
+    expect_error(SmallMultiples(matrix2d, "Radar", data.label.show = TRUE,
+        y.bounds.minimum = "23", y.bounds.maximum = "12"), NA)
 })
 

@@ -108,7 +108,7 @@ format (e.g. "black") or a hex code.}
 \item{opacity}{Opacity of area fill colors as an alpha value (0 to 1).}
 
 \item{aspect.fixed}{Logical; whether to fix aspect ratio. This should usually be set to true to avoid
-making a particular category look larger than the others. However, it is not supported with small-multiples.}
+making a particular category look larger than the others. In some older versions of plotly this was not supported with small-multiples}
 
 \item{background.fill.color}{Background color in character format (e.g. "black") or a hex code.}
 

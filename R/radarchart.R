@@ -13,7 +13,7 @@
 #' @param line.thickness Thickness of outline of radar polygons.
 #' @param hovertext.show Logical; whether to show hovertext.
 #' @param aspect.fixed Logical; whether to fix aspect ratio. This should usually be set to true to avoid
-#'      making a particular category look larger than the others. However, it is not supported with small-multiples.
+#'      making a particular category look larger than the others. In some older versions of plotly this was not supported with small-multiples
 #' @importFrom grDevices rgb
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom plotly plot_ly layout config
@@ -138,10 +138,10 @@ Radar <- function(x,
     # Figure out positions of y-ticks (i.e. radial axis)
     tick.vals <- NULL
     if (is.character(y.bounds.maximum))
-    {
-        y.bounds.maximum <- suppressWarnings(as.numeric(gsub("[ ,]", "", y.bounds.maximum)))
-        y.bounds.maximum <- y.bounds.maximum[!is.na(y.bounds.maximum)]
-    }
+        y.bounds.maximum <- charToNumeric(y.bounds.maximum)
+    if (is.character(y.bounds.minimum))
+        y.bounds.minimum <- charToNumeric(y.bounds.minimum)
+    
     if (length(y.bounds.maximum) == 0)
     {
         offset <- 1.0
@@ -183,7 +183,7 @@ Radar <- function(x,
     data.label.suffix <- rbind(vectorize(data.label.suffix, n, m, split = NULL), "")
 
     # Convert data (polar) into x, y coordinates
-    pos <- do.call(rbind, lapply(as.data.frame(chart.matrix), calcPolarCoord, 
+    pos <- do.call(rbind, lapply(as.data.frame(chart.matrix), calcPolarCoord,
                     r0 = y.bounds.minimum))
     pos <- data.frame(pos,
                       Name = rep(rownames(chart.matrix)[c(1:m,1)], n),
@@ -267,14 +267,14 @@ Radar <- function(x,
 
         annotations <- lapply(1:m, function(ii) list(text = xlab[ii], font = x.tick.font,
                         x = outer[ii,1], y = outer[ii,2], xref = "x", yref = "y",
-                        showarrow = FALSE, yshift = yshift[ii], 
+                        showarrow = FALSE, yshift = yshift[ii],
                         xanchor = xanch[ii], xshift = xshift[ii]))
     }
 
     n <- length(g.list)
     if (is.null(line.thickness))
         line.thickness <- 3
-    
+
     if (length(data.label.show) > 1 && n == 2) # small multiples
     {
         line.thickness <- c(line.thickness, 0)
@@ -330,7 +330,7 @@ Radar <- function(x,
                     textfont = data.label.font[[ggi]])
         }
     }
-    
+
     annot.len <- length(annotations)
     annotations[[annot.len+1]] <- setFooter(footer, footer.font, margins)
     annotations[[annot.len+2]] <- setTitle(title, title.font, margins)
@@ -339,7 +339,7 @@ Radar <- function(x,
     if (grid.show && y.grid.width > 0 && y.tick.show && !is.null(tick.vals))
     {
         for (i in 1:length(tick.vals))
-            annotations[[annot.len+3+i]] <- list(x = 0, 
+            annotations[[annot.len+3+i]] <- list(x = 0,
                 y = tick.vals[i] - y.bounds.minimum,
                 font = y.tick.font, showarrow = FALSE, xanchor = "right",
                 xshift = -5, xref = "x", yref = "y",
@@ -368,7 +368,7 @@ calcPolarCoord <- function(r, r0 = 0)
 {
     # Get starting angle and angle increments
     theta <- 0.5 * pi
-    dtheta <- -2 * pi / length(r) 
+    dtheta <- -2 * pi / length(r)
 
     # Get polar coordinates
     x <- c()
