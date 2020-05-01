@@ -174,6 +174,7 @@ TrialOpens = structure(c("UK/Europe", "Asia", "US/Canada", "UK/Europe", "UK/Euro
 "0", "1", "3"), .Dim = c(624L, 2L), .Dimnames = list(NULL, c("Region",
 "numOpens")))
 TrialOpens = as.data.frame(TrialOpens)
+TrialOpens$numOpens <- as.numeric(TrialOpens$numOpens)
 z = TrialOpens$Region
 TrialOpens = tapply(TrialOpens[[2]], TrialOpens[[1]], c)
 TrialOpens <- TrialOpens[-4] # Removing missing data
