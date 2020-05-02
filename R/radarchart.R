@@ -13,7 +13,7 @@
 #' @param line.thickness Thickness of outline of radar polygons.
 #' @param hovertext.show Logical; whether to show hovertext.
 #' @param aspect.fixed Logical; whether to fix aspect ratio. This should usually be set to true to avoid
-#'      making a particular category look larger than the others. In some older versions of plotly this was not supported with small-multiples
+#'      making a particular category look larger than the others. However, it is not supported with small-multiples
 #' @importFrom grDevices rgb
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom plotly plot_ly layout config
