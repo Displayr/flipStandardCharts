@@ -135,6 +135,9 @@ ColumnMultiColor <- function(x,
     else if (is.null(marker.border.opacity)) # trying to hide gap in the middle
         marker.border.opacity <- opacity/(4 + 3*(opacity < 0.7))
     colors <- paste0(rep("", NROW(chart.matrix)), colors)
+    ind.na <- which(is.na(chart.matrix))
+    if (length(ind.na) > 0)
+        colors <- colors[-ind.na]
 
     if (data.label.font.autocolor)
         dlab.color <- autoFontColor(colors)
