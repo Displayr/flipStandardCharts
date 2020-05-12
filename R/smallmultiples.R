@@ -196,10 +196,17 @@ SmallMultiples <- function(x,
             if (is.null(x.bounds.maximum))
                 x.bounds.maximum <- max(xvals, na.rm = TRUE)
         }
+
         if (chart.type == "GeographicMap")
         {
             values.bounds.maximum <- max(values.bounds.maximum, values.max)
             values.bounds.minimum <- min(values.bounds.minimum, values.min)
+        }
+        else if (chart.type == "Radar")
+        {
+            bounds <- setRadarAxisBounds(y.bounds.minimum, y.bounds.maximum, all.values)
+            y.bounds.minimum <- bounds$min
+            y.bounds.maximum <- bounds$max
         }
         else if (chart.type %in% c("Bar", "Pyramid", "BarMultiColor"))
         {

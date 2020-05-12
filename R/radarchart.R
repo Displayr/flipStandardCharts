@@ -135,22 +135,13 @@ Radar <- function(x,
                         legend.border.color, legend.border.line.width, legend.position.x, legend.position.y,
                         FALSE, legend.orientation)
 
-    # Figure out positions of y-ticks (i.e. radial axis)
-    tick.vals <- NULL
-    if (is.character(y.bounds.maximum))
-        y.bounds.maximum <- charToNumeric(y.bounds.maximum)
-    if (is.character(y.bounds.minimum))
-        y.bounds.minimum <- charToNumeric(y.bounds.minimum)
-    
-    if (length(y.bounds.maximum) == 0)
-    {
-        offset <- 1.0
-        if (any(data.label.show))
-            offset <- 1.1 + data.label.font.size/100
-        y.bounds.maximum <- offset * max(chart.matrix)
-    }
-    if (length(y.bounds.minimum) == 0)
-        y.bounds.minimum <- min(0, min(chart.matrix))
+    y.axis.offset <- if (any(data.label.show)) 1.1 + data.label.font.size/100
+                     else                      1.0
+    y.bounds <- setRadarAxisBounds(y.bounds.minimum, y.bounds.maximum,
+                                   chart.matrix, y.axis.offset)
+    y.bounds.minimum <- y.bounds$min
+    y.bounds.maximum <- y.bounds$max
+
     if (is.null(y.tick.distance))
     {
         y.diff <- y.bounds.maximum - y.bounds.minimum
@@ -158,7 +149,7 @@ Radar <- function(x,
         mult <- max(1, floor((abs(y.diff)/base)/5))
         y.tick.distance <- sign(y.diff) * base * mult
     }
-    tick.vals <- seq(from = y.bounds.minimum, to = y.bounds.maximum, by = y.tick.distance)
+    tick.vals <- seq(from = y.bounds.minimum, to = y.bounds.maximum, by = sum(y.tick.distance, na.rm = TRUE))
     r.max <- abs(y.bounds.maximum - y.bounds.minimum)
 
     # Extract formatting from d3
@@ -388,4 +379,50 @@ calcPolarCoord <- function(r, r0 = 0)
 
     return(cbind(x, y))
 }
+
+# Y axis bounds that are within the data range are ignored with a warning
+# Radar charts cannot handle the chart/axis falling outside the plot area
+# If only the min/max is specified, we automatically determine whether
+# the axis should be reversed (i.e. the largest values shown in the center
+# of the radar chart
+
+setRadarAxisBounds <- function(y.bounds.minimum,
+                               y.bounds.maximum,
+                               chart.matrix,
+                               offset = 1.0)
+{
+    if (is.character(y.bounds.maximum))
+        y.bounds.maximum <- charToNumeric(y.bounds.maximum)
+    if (is.character(y.bounds.minimum))
+        y.bounds.minimum <- charToNumeric(y.bounds.minimum)
+    range0 <- range(chart.matrix, na.rm = TRUE)
+    if (length(y.bounds.maximum) == 0)
+        y.bounds.maximum <- if (isTRUE(y.bounds.minimum >= range0[2])) range0[1]
+                            else                                       offset * range0[2]
+    if (length(y.bounds.minimum) == 0)
+        y.bounds.minimum <- if (length(chart.matrix) == 1)                  min(0, min(chart.matrix))
+                            else if (isTRUE(y.bounds.maximum <= range0[1])) range0[2]
+                            else                                            min(0, min(chart.matrix))
+
+    y.inside.bounds <- NULL
+    if ((y.bounds.minimum > range0[1] && y.bounds.minimum < range0[2]) ||
+        (y.bounds.minimum > range0[2] && y.bounds.minimum < range0[1]))
+    {
+        y.inside.bounds <- c(y.inside.bounds, "minimum")
+        y.bounds.minimum <- if (y.bounds.maximum <= range0[1]) range0[2] else range0[1]
+    }
+    if ((y.bounds.maximum > range0[1] && y.bounds.maximum < range0[2]) ||
+        (y.bounds.maximum > range0[2] && y.bounds.maximum < range0[1]))
+    {
+        y.inside.bounds <- c(y.inside.bounds, "maximum")
+        y.bounds.maximum <- if (y.bounds.minimum >= range0[2]) range0[1] else range0[2]
+    }
+    if (length(y.inside.bounds) > 0)
+        warning("The ", paste(y.inside.bounds, collapse = " and "),
+                " of the radial axis was ignored because axis bounds must be outside the range of the input data. ",
+                "Please specify a value outside [", range0[1], ", ", range0[2], "].")
+
+    return(list(min = y.bounds.minimum, max = y.bounds.maximum))
+}
+
 

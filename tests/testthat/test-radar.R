@@ -68,7 +68,8 @@ test_that("Adjustable y.bounds.minimum",
 
     expect_error(SmallMultiples(matrix2d, "Radar", data.label.show = TRUE,
         y.bounds.minimum = "", y.bounds.maximum = ""), NA)
-    expect_error(SmallMultiples(matrix2d, "Radar", data.label.show = TRUE,
-        y.bounds.minimum = "23", y.bounds.maximum = "12"), NA)
+    expect_warning(SmallMultiples(matrix2d, "Radar", data.label.show = TRUE,
+        y.bounds.minimum = "23", y.bounds.maximum = "12"),
+        "Please specify a value outside [12, 26].", fixed = TRUE)
 })
 
