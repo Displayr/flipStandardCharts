@@ -11,6 +11,10 @@
 #' @param y.tick.show Whether to display the y-axis tick labels (i.e. radial distance from center)
 #' @param x.tick.show  Whether to display the x-axis tick labels (i.e. labels around the sides of the radar chart)
 #' @param line.thickness Thickness of outline of radar polygons.
+#' @param data.label.values.only Logical; whether to show only the values in the 
+#'  datal labels instead of the default category label and values.
+#' @param data.label.offset Numeric; controls the distance between the data points to
+#'  the data label.
 #' @param hovertext.show Logical; whether to show hovertext.
 #' @param aspect.fixed Logical; whether to fix aspect ratio. This should usually be set to true to avoid
 #'      making a particular category look larger than the others. However, it is not supported with small-multiples
@@ -83,12 +87,14 @@ Radar <- function(x,
                     x.tick.label.wrap = TRUE,
                     x.tick.label.wrap.nchar = 21,
                     data.label.show = FALSE,
+                    data.label.offset = 0.1,
                     data.label.font.family = global.font.family,
                     data.label.font.size = 10,
                     data.label.font.color = global.font.color,
                     data.label.format = "",
                     data.label.prefix = "",
                     data.label.suffix = "",
+                    data.label.values.only = FALSE,
                     subtitle = "",
                     subtitle.font.family = global.font.family,
                     subtitle.font.color = global.font.color,
@@ -181,17 +187,21 @@ Radar <- function(x,
                       Group = if (NCOL(chart.matrix) == 1 && colnames(chart.matrix)[1] == "Series.1") ""
                               else rep(colnames(chart.matrix), each = m+1),
                       stringsAsFactors  =  T, check.names = F)
+
     chart.matrix <- rbind(chart.matrix, chart.matrix[1,])
-        DataLabels=sprintf("%s: %s%s%s", rownames(chart.matrix), data.label.prefix[1],
+    if (data.label.values.only)
+        tmp.labels <- sprintf("%s%s%s", data.label.prefix,
                 data.label.format.function(unlist(chart.matrix), decimals = data.label.decimals),
-                data.label.suffix[1])
+                data.label.suffix)
+    else
+        tmp.labels <- sprintf("%s: %s%s%s", rownames(chart.matrix), data.label.prefix,
+                data.label.format.function(unlist(chart.matrix), decimals = data.label.decimals),
+                data.label.suffix)
     pos <- cbind(pos,
-            HoverText=sprintf("%s: %s%s%s", pos$Name, y.tick.prefix,
+            HoverText = sprintf("%s: %s%s%s", pos$Name, y.tick.prefix,
                 hover.format.function(unlist(chart.matrix), decimals = y.hovertext.decimals,
                                       comma.for.thousands = commaFromD3(y.hovertext.format)), y.tick.suffix),
-            DataLabels=sprintf("%s: %s%s%s", rownames(chart.matrix), data.label.prefix,
-                data.label.format.function(unlist(chart.matrix), decimals = data.label.decimals),
-                data.label.suffix))
+            DataLabels = tmp.labels)
 
     # Set margins
     g.list <- unique(pos$Group)
@@ -281,6 +291,7 @@ Radar <- function(x,
     opacity <- vectorize(opacity, n)
     hovertext.show <- vectorize(hovertext.show, n)
     data.label.show <- rbind(vectorize(data.label.show, n, m), FALSE)
+    data.label.offset <- sapply(vectorize(data.label.offset, n), charToNumeric)
     data.label.font.color <- vectorize(data.label.font.color, n)
     data.label.font = lapply(data.label.font.color,
         function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
@@ -313,8 +324,10 @@ Radar <- function(x,
         if (any(data.label.show[,ggi]))
         {
             ind2 <- intersect(ind, which(data.label.show))
-            x.offset <- sign(pos$x[ind2]) * 0.1 * (r.max + abs(max(pos$x[ind2])))/2
-            y.offset <- sign(pos$y[ind2]) * 0.1 * (r.max + abs(max(pos$y[ind2])))/2
+            x.offset <- sign(pos$x[ind2]) * data.label.offset[ggi] * 
+                        (r.max + abs(max(pos$x[ind2])))/2
+            y.offset <- sign(pos$y[ind2]) * data.label.offset[ggi] * 
+                        (r.max + abs(max(pos$y[ind2])))/2
             p <- add_trace(p, x = pos$x[ind2] + x.offset, y = pos$y[ind2] + y.offset,
                     type = "scatter", mode = "text", legendgroup = g.list[ggi],
                     showlegend = FALSE, hoverinfo = "skip", text = pos$DataLabels[ind2],

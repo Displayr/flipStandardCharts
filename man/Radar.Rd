@@ -69,12 +69,14 @@ Radar(
   x.tick.label.wrap = TRUE,
   x.tick.label.wrap.nchar = 21,
   data.label.show = FALSE,
+  data.label.offset = 0.1,
   data.label.font.family = global.font.family,
   data.label.font.size = 10,
   data.label.font.color = global.font.color,
   data.label.format = "",
   data.label.prefix = "",
   data.label.suffix = "",
+  data.label.values.only = FALSE,
   subtitle = "",
   subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color,
@@ -244,6 +246,9 @@ in character format (e.g. "black") or an a hex code.}
 
 \item{data.label.show}{Logical; whether to show data labels.}
 
+\item{data.label.offset}{Numeric; controls the distance between the data points to
+the data label.}
+
 \item{data.label.font.family}{Character; font family for data label.}
 
 \item{data.label.font.size}{Integer; Font size for data label.px.}
@@ -259,6 +264,9 @@ See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 \item{data.label.prefix}{Character; prefix for data values.}
 
 \item{data.label.suffix}{Character; suffix for data values.}
+
+\item{data.label.values.only}{Logical; whether to show only the values in the 
+datal labels instead of the default category label and values.}
 
 \item{subtitle}{Character}
 
