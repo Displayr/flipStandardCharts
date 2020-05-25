@@ -616,25 +616,14 @@ Scatter <- function(x = NULL,
         # add invisible trace to force correct order
         if (ggi == 1)
         {
-            if (is.factor(y))
-            {
-                tmp.x <- minPosition(x, nlevels(y))
-                tmp.y <- levels(y)
-
-            } else if (is.factor(x))
-            {
-                tmp.x <- levels(x)
-                tmp.y <- minPosition(y, nlevels(x))
-
-            } else
-            {
-                tmp.x <- unique(x)
-                tmp.y <- unique(y)
-                if (length(tmp.x) >= length(tmp.y))
-                    tmp.y <- rep(tmp.y, length = length(tmp.x))
-                else
-                    tmp.x <- rep(tmp.x, length = length(tmp.y))
-            }
+            tmp.x <- if (is.factor(x)) levels(x)
+                     else              unique(x)
+            tmp.y <- if (is.factor(y)) levels(y)
+                     else              unique(y)
+            if (length(tmp.x) >= length(tmp.y))
+                tmp.y <- rep(tmp.y, length = length(tmp.x))
+            else
+                tmp.x <- rep(tmp.x, length = length(tmp.y))
             p <- add_trace(p, x = tmp.x, y = tmp.y, type = "scatter",
                    mode = "lines", hoverinfo = "none", showlegend = F, opacity = 0)
         }
