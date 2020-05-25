@@ -245,7 +245,7 @@ BarPictograph <- function(x,
         if (categories.tick.align.horizontal == "Default")
             categories.tick.align.horizontal <- label.opp.pos
 
-        label.str <- paste0("\"text\": \"", names(x),
+        label.str <- paste0("\"text\": \"", cleanPictographLabels(names(x)),
             "\" ,\"horizontal-align\": \"", tolower(categories.tick.align.horizontal),
             "\" ,\"font-weight\":\"normal",
             "\" ,\"font-family\": \"", categories.tick.font.family,
@@ -347,4 +347,17 @@ BarPictograph <- function(x,
     class(result) <- "StandardChart"
     result
 
+}
+
+cleanPictographLabels <- function(x)
+{
+    # New line characters were causing errors in the JSON
+    # However, they are currently ignored by rhtmlPictograph
+    x <- gsub("\n", "\\\\n", x)
+
+    # These characters used to be shown as text but that is
+    # probably not what the user wants to see
+    x <- gsub("<br>", "\\\\n", x)
+    x <- gsub("&nbsp;", " ", x)
+    return(x)
 }
