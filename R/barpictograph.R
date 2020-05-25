@@ -352,7 +352,7 @@ BarPictograph <- function(x,
 cleanPictographLabels <- function(x)
 {
     # New line characters were causing errors in the JSON
-    # However, they are currently ignored by rhtmlPictograph
+    # Errors are now fixed but new lines are shown as spaces by rhtmlPictograph
     x <- gsub("\n", "\\\\n", x)
 
     # These characters used to be shown as text but that is
