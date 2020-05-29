@@ -148,6 +148,7 @@ Scatter(
   marker.border.colors = colors,
   marker.border.opacity = NULL,
   marker.size = 6,
+  marker.symbols = "circle",
   swap.x.and.y = FALSE,
   small.mult.index = NULL,
   legend.bubbles.show = TRUE,
@@ -503,6 +504,10 @@ character format (e.g. "black") or an a hex code.}
 \item{marker.size}{Size in pixels of marker. This is overriden
 if \code{scatter.sizes} is provided, but used for the legend
 if \code{scatter.colors.as.categorical}.}
+
+\item{marker.symbols}{Character; a vector describing the symbol used for each data series. 
+See \url{https://plotly-r.com/working-with-symbols.html} for a list of symbol names.
+Note there is no corresponding parameter for LabeledScatter.}
 
 \item{swap.x.and.y}{Swap the x and y axis around on the chart.}
 

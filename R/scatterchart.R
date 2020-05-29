@@ -8,6 +8,9 @@
 #' @param scatter.sizes.as.diameter Whether to show the points with diameter (instead of area, which is the default) proportional to the sizes variable.
 #' @param line.thickness Thickness, in pixels, of the series line
 #' @param line.colors  Character; a vector containing one or more named
+#' @param marker.symbols Character; a vector describing the symbol used for each data series. 
+#'  See \url{https://plotly-r.com/working-with-symbols.html} for a list of symbol names.
+#'  Note there is no corresponding parameter for LabeledScatter.
 #' @param marker.size Size in pixels of marker. This is overriden
 #' if \code{scatter.sizes} is provided, but used for the legend
 #' if \code{scatter.colors.as.categorical}.
@@ -177,6 +180,7 @@ Scatter <- function(x = NULL,
                          marker.border.colors = colors,
                          marker.border.opacity = NULL,
                          marker.size = 6,
+                         marker.symbols = "circle",
                          swap.x.and.y = FALSE,
                          small.mult.index = NULL,
                          legend.bubbles.show = TRUE,
@@ -467,6 +471,7 @@ Scatter <- function(x = NULL,
 
     num.groups <- length(g.list)
     num.series <- if (scatter.colors.as.numeric) 1 else num.groups
+    marker.symbols <- vectorize(marker.symbols, length(g.list))
     data.label.font.color <- vectorize(data.label.font.color, length(g.list))
     data.label.font = lapply(data.label.font.color,
         function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
@@ -496,7 +501,6 @@ Scatter <- function(x = NULL,
                    else "markers+lines"
     if (data.label.show)
         series.mode <- paste0(series.mode, "+text")
-    marker.symbols <-  rep(100, 100) # disc
 
     type <- "Scatterplot"
     legend <- setLegend("Scatterplot", legend.font, legend.ascending,
@@ -604,12 +608,14 @@ Scatter <- function(x = NULL,
                     else list(width = line.thickness, color = line.colors[ggi])
         if (ggi == 1 && scatter.colors.as.numeric)
             marker.obj <- list(size = tmp.size, sizemode = "diameter", opacity = opacity,
+                            symbol = marker.symbols,
                             color = colors, line = list(width = marker.border.width,
                             color = toRGB(marker.border.colors, alpha = marker.border.opacity)),
                             colorscale = col.scale, cmin = col.min, cmax = col.max,
                             showscale = colorbar.show, colorbar = colorbar)
         else
             marker.obj <- list(size = tmp.size, sizemode = "diameter", opacity = opacity,
+                            symbol = marker.symbols[ggi],
                             color = colors[ggi],
                             line = list(width = marker.border.width,
                             color = toRGB(marker.border.colors[ggi], alpha = marker.border.opacity)))
