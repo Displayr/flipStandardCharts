@@ -112,6 +112,7 @@ Scatter <- function(x = NULL,
                          legend.position.y = 1,
                          legend.position.x = 1.02,
                          legend.ascending = NA,
+                         margin.autoexpand = TRUE,
                          margin.top = NULL,
                          margin.bottom = NULL,
                          margin.left = NULL,
@@ -594,6 +595,7 @@ Scatter <- function(x = NULL,
     margins <- setMarginsForLegend(margins, legend.show, legend, legend.text)
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
+    margins$autoexpand <- margin.autoexpand
 
     ## START PLOTTING
     p <- plot_ly(data.frame(x = x,y = y))

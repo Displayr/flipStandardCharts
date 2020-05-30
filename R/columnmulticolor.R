@@ -34,6 +34,7 @@ ColumnMultiColor <- function(x,
                     margin.left = NULL,
                     margin.right = NULL,
                     margin.inner.pad = NULL,
+                    margin.autoexpand = TRUE,
                     grid.show = TRUE,
                     y.title = "",
                     y.title.font.color = global.font.color,
@@ -186,6 +187,7 @@ ColumnMultiColor <- function(x,
     margins <- setMarginsForLegend(margins, FALSE, NULL, NULL)
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
+    margins$autoexpand <- margin.autoexpand
 
     x <- axisFormat$labels
     y <- as.numeric(chart.matrix[,1])

@@ -76,6 +76,7 @@ Line <-   function(x,
                     legend.position.x = NULL,
                     legend.position.y = NULL,
                     legend.ascending = NA,
+                    margin.autoexpand = TRUE,
                     margin.top = NULL,
                     margin.bottom = NULL,
                     margin.left = NULL,
@@ -262,6 +263,7 @@ Line <-   function(x,
     margins <- setMarginsForLegend(margins, legend.show, legend, legend.text)
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
+    margins$autoexpand <- margin.autoexpand
 
     ## Initiate plotly object
     p <- plot_ly(as.data.frame(chart.matrix))

@@ -33,6 +33,7 @@ Pyramid(
   margin.left = NULL,
   margin.right = NULL,
   margin.inner.pad = NULL,
+  margin.autoexpand = TRUE,
   y.title = "",
   y.title.font.color = global.font.color,
   y.title.font.family = global.font.family,
@@ -173,6 +174,9 @@ a named color in character format (e.g. "black") or a hex code.}
 
 \item{margin.inner.pad}{Padding in pixels between plot proper
 and axis lines}
+
+\item{margin.autoexpand}{Logical; Whether extra space can be added to the margins
+to allow space for axis/legend/data labels or other chart elements.}
 
 \item{y.title}{Character, y-axis title; defaults to chart input values;
 to turn off set to "FALSE".}

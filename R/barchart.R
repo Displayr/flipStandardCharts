@@ -65,6 +65,7 @@ Bar <- function(x,
                     legend.font.color = global.font.color,
                     legend.font.family = global.font.family,
                     legend.font.size = 10,
+                    margin.autoexpand = TRUE,
                     margin.top = NULL,
                     margin.bottom = NULL,
                     margin.left = NULL,
@@ -260,6 +261,7 @@ Bar <- function(x,
     margins <- setMarginsForLegend(margins, legend.show, legend, legend.text)
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
+    margins$autoexpand <- margin.autoexpand
 
     # Set up numeric x-axis - this is used for data labels and hovertext
     y.range <- getRange(x, yaxis, axisFormat)

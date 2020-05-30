@@ -90,6 +90,7 @@ SmallMultiples <- function(x,
                            x.tick.show = TRUE,
                            x.tick.angle = NULL,
                            legend.show = TRUE,
+                           margin.autoexpand = TRUE,
                            margin.left = NULL,
                            margin.right = NULL,
                            margin.top = NULL,
@@ -522,6 +523,11 @@ SmallMultiples <- function(x,
             annotations[[i+3]] <- list(text = title.list[i], showarrow = FALSE,
                             x = titles.xpos[i], y = titles.ypos[i], font = panel.title.font,
                             xanchor = "center", yanchor = "top", xref = 'paper', yref = 'paper')
+    }
+    if (!margin.autoexpand)
+    {
+        res$sizingPolicy$browser$padding <- 0
+        margins$autoexpand <- margin.autoexpand
     }
     res <- layout(res, showlegend = is.geo, margin = margins,
                   annotations = annotations)

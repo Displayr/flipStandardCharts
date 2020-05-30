@@ -80,6 +80,9 @@
 #' @param legend.font.family Character; legend font family.
 #' @param legend.font.size Integer; Legend font size.
 #' @param legend.orientation Character; One of 'Vertical' or 'Horizontal'
+#' @param margin.autoexpand Logical; Whether extra space can be added to the margins
+#'      to allow space for axis/legend/data labels or other chart elements.
+
 #' @param margin.top Margin between plot area and the top of the graphic in pixels
 #' @param margin.bottom Margin between plot area and the bottom of the graphic in pixels
 #' @param margin.left Margin between plot area and the left of the graphic in pixels
@@ -335,6 +338,7 @@ Column <- function(x,
                     margin.left = NULL,
                     margin.right = NULL,
                     margin.inner.pad = NULL,
+                    margin.autoexpand = TRUE,
                     grid.show = TRUE,
                     x2.colors = ChartColors(max(1, NCOL(x2), na.rm = TRUE)),
                     x2.data.label.show = FALSE,
@@ -539,7 +543,7 @@ Column <- function(x,
     axisFormat <- formatLabels(chart.matrix, type, x.tick.label.wrap, x.tick.label.wrap.nchar,
                                x.tick.format, y.tick.format)
 
-    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, axisFormat, x.zero, is.null(x.tick.distance), is.bar = TRUE)
+    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, axisFormat, x.zero, is.null(x.tick.distance), is.bar = TRUE) 
     y.range <- setValRange(y.bounds.minimum, y.bounds.maximum, chart.matrix, y.zero, is.null(y.tick.distance))
     xtick <- setTicks(x.range$min, x.range$max, x.tick.distance, x.data.reversed, is.bar = TRUE)
     ytick <- setTicks(y.range$min, y.range$max, y.tick.distance, y.data.reversed)
@@ -568,6 +572,7 @@ Column <- function(x,
     margins <- setMarginsForLegend(margins, legend.show, legend, legend.text, right.axis = !is.null(x2))
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
+    margins$autoexpand <- margin.autoexpand
 
     ## Initiate plotly object
     p <- plot_ly(as.data.frame(chart.matrix))
