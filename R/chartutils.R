@@ -929,7 +929,7 @@ isBlank <- function(x)
 # This is only applied to the values axis.
 # It can handle categorical and date axes types but only for the values axis
 # (date categorical axis range is set using getDateAxisRange in setAxis)
-setValRange <- function(min, max, values, show.zero = FALSE, use.defaults = TRUE, is.bar = FALSE)
+setValRange <- function(min, max, values, show.zero = FALSE, use.defaults = TRUE, is.bar = FALSE, margin.autoexpand = TRUE)
 {
     if (is.null(min) || is.na(min) || min == "")
         min <- NULL
@@ -937,7 +937,7 @@ setValRange <- function(min, max, values, show.zero = FALSE, use.defaults = TRUE
         max <- NULL
 
     # If no range is specified, then use defaults
-    if (use.defaults && is.null(min) && is.null(max))
+    if (use.defaults && is.null(min) && is.null(max) && margin.autoexpand)
         return(list(min = NULL, max = NULL))
 
     if (is.list(values) && !is.null(values$labels.on.x))
