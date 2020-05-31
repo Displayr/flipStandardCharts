@@ -135,10 +135,7 @@ BarMultiColor <- function(x,
         marker.border.opacity <- opacity
     else if (is.null(marker.border.opacity)) # trying to hide gap in the middle
         marker.border.opacity <- opacity/(4 + 3*(opacity < 0.7))
-    colors <- paste0(rep("", NROW(chart.matrix)), colors)
-    ind.na <- which(is.na(chart.matrix))
-    if (length(ind.na) > 0)
-        colors <- colors[-ind.na]
+    eval(colors)
 
     if (data.label.font.autocolor)
         dlab.color <- autoFontColor(colors)
@@ -197,6 +194,7 @@ BarMultiColor <- function(x,
 
     x <- axisFormat$labels
     y <- as.numeric(chart.matrix[,1])
+    y.filled <- ifelse(is.finite(y), y, 0)
     x.text <- formatByD3(y, x.hovertext.format)
     marker = list(color = toRGB(colors, alpha = opacity),
                 line = list(color = toRGB(marker.border.colors,
@@ -204,9 +202,20 @@ BarMultiColor <- function(x,
     hoverfont <- list(color = autoFontColor(colors), size = hovertext.font.size,
                 family = hovertext.font.family)
 
+    # Add invisible trace to force all labels to be shown 
+    # (including missing) 
+    tmp.min <- if (any(is.finite(chart.matrix))) min(chart.matrix, na.rm = TRUE)
+               else x.bounds.minimum 
     p <- plot_ly(as.data.frame(chart.matrix))
-    p <- add_trace(p, x = y, y = x, type = "bar", orientation = "h",
-                   marker = marker, hoverlabel = list(font = hoverfont), cliponaxis = FALSE,
+    p <- add_trace(p, y = x, 
+            x = rep(tmp.min, length(x)),
+            mode = if (notAutoRange(yaxis)) "markers" else "lines",
+            type = "scatter", cliponaxis = TRUE,
+            hoverinfo = "skip", showlegend = FALSE, opacity = 0)
+
+    p <- add_trace(p, y = x, x = y.filled, type = "bar", orientation = "h",
+                   marker = marker, hoverlabel = list(font = hoverfont), 
+                   cliponaxis = FALSE,
                    hovertemplate = "%{x}<extra>%{y}</extra>")
 
     if (any(data.label.show))
@@ -214,7 +223,7 @@ BarMultiColor <- function(x,
         source.text <- formatByD3(y, data.label.format,
                data.label.prefix, data.label.suffix, decimals = 0)
         p <- addDataLabelAnnotations(p, type = "Bar", NULL,
-                data.label.xpos = y, data.label.ypos = x, data.label.text = source.text,
+                data.label.xpos = y.filled, data.label.ypos = x, data.label.text = source.text,
                 data.label.show = data.label.show, data.label.sign = getSign(y, xaxis),
                 annotation.list, annot.data, i = 1,
                 xaxis = "x", yaxis = "y", data.label.font, is.stacked = FALSE, data.label.centered = FALSE)

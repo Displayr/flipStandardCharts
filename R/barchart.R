@@ -163,7 +163,7 @@ Bar <- function(x,
         is.stacked <- FALSE
     }
     is.hundred.percent.stacked <- grepl("100% Stacked", type, fixed=T)
-    if (any(is.na(as.matrix(chart.matrix))))
+    if (any(!is.finite(as.matrix(chart.matrix))))
         warning("Missing values have been set to zero.")
     if (type == "Stacked")
         type <- "Stacked Bar"
@@ -303,9 +303,11 @@ Bar <- function(x,
                       width = marker.border.width))
 
         # add invisible line to force all categorical labels to be shown
+        tmp.min <- if (any(is.finite(chart.matrix))) min(chart.matrix, na.rm = TRUE)
+                   else x.bounds.minimum 
         if (!is.stacked && i == 1)
         {
-            p <- add_trace(p, x = rep(min(y,na.rm = TRUE), length(y)), y = x,
+            p <- add_trace(p, x = rep(tmp.min, length(y)), y = x,
                            type = "scatter", mode = "lines",
                            hoverinfo = "skip", showlegend = FALSE, opacity = 0)
         }

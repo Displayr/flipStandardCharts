@@ -3,21 +3,24 @@
 #' Returns an error if there is not enough data for charting.
 #' @param x The data to be plotted.
 #' @param require.tidy The data is assumed to be a numeric vector, matrix, array, or data frame.
+#' @param require.notAllMissing The data is required to contain at least one non-NA value.
 #' @export
-ErrorIfNotEnoughData <- function(x, require.tidy = TRUE)
+ErrorIfNotEnoughData <- function(x, require.tidy = TRUE, require.notAllMissing = FALSE)
 {
     .stop <- function()
         { stop("There is not enough data to create a plot.") }
     .possiblyTidy <- function(x)
         {is.numeric(x) || is.matrix(x) || is.data.frame(x) || is.array(x)}
     .noData <- function(x)
-        {NROW(x) == 0 || NCOL(x) == 0 || all(is.na(x))}
+        {NROW(x) == 0 || NCOL(x) == 0}
 
     if (!require.tidy && is.list(x))
         x <- x[[1]]
     if (require.tidy && !.possiblyTidy(x))
         stop("The data is not in an appropriate format.")
     if (.noData(x))
+        .stop()
+    if (require.notAllMissing && all(is.na(x)))
         .stop()
 }
 

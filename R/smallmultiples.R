@@ -343,6 +343,7 @@ SmallMultiples <- function(x,
                                                      small.mult.index = i,
                                                      sz.min = sz.min, sz.max = sz.max,
                                                      col.min = col.min, col.max = col.max,
+                                                     margin.autoexpand = margin.autoexpand,
                                                     ...)$htmlwidget}))
     }
     else if (chart.type == "Radar")
@@ -408,6 +409,7 @@ SmallMultiples <- function(x,
                                                      x.bounds.minimum = x.bounds.minimum,
                                                      global.font.family = global.font.family,
                                                      global.font.color = global.font.color,
+                                                     margin.autoexpand = margin.autoexpand,
                                                      ...)$htmlwidget}))
 
         # Remove second axis which is used for positioning data labels/hovertext
@@ -437,6 +439,7 @@ SmallMultiples <- function(x,
                                                      x.bounds.minimum = x.bounds.minimum,
                                                      global.font.family = global.font.family,
                                                      global.font.color = global.font.color,
+                                                     margin.autoexpand = margin.autoexpand,
                                                      ...)$htmlwidget}))
     } else if (chart.type == "Pyramid")
     {
@@ -457,6 +460,7 @@ SmallMultiples <- function(x,
                                                      x.bounds.maximum = x.bounds.maximum,
                                                      global.font.family = global.font.family,
                                                      global.font.color = global.font.color,
+                                                     margin.autoexpand = margin.autoexpand,
                                                      ...)$htmlwidget}))
     } else
     {
@@ -486,6 +490,7 @@ SmallMultiples <- function(x,
                                                      x.bounds.minimum = x.bounds.minimum,
                                                      global.font.family = global.font.family,
                                                      global.font.color = global.font.color,
+                                                     margin.autoexpand = margin.autoexpand,
                                                      ...)$htmlwidget}))
     }
 

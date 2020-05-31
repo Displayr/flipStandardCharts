@@ -4,12 +4,14 @@
 \alias{ErrorIfNotEnoughData}
 \title{ErrorIfNotEnoughData}
 \usage{
-ErrorIfNotEnoughData(x, require.tidy = TRUE)
+ErrorIfNotEnoughData(x, require.tidy = TRUE, require.notAllMissing = FALSE)
 }
 \arguments{
 \item{x}{The data to be plotted.}
 
 \item{require.tidy}{The data is assumed to be a numeric vector, matrix, array, or data frame.}
+
+\item{require.notAllMissing}{The data is required to contain at least one non-NA value.}
 }
 \description{
 Returns an error if there is not enough data for charting.

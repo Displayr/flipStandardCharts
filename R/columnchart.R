@@ -486,7 +486,7 @@ Column <- function(x,
         is.stacked <- FALSE
     }
     is.hundred.percent.stacked <- grepl("100% Stacked", type, fixed = TRUE)
-    if (any(!is.finite(chart.matrix)))
+    if (any(!is.finite(as.matrix(chart.matrix))))
         warning("Missing values have been set to zero.")
 
     # Some minimal data cleaning
@@ -728,8 +728,10 @@ Column <- function(x,
     # Add invisible line to force all categorical labels to be shown
     # Type "scatter" ensures y-axis tick bounds are treated properly
     # but it also adds extra space next to the y-axis
+    tmp.min <- if (any(is.finite(chart.matrix))) min(chart.matrix, na.rm = TRUE)
+               else y.bounds.minimum 
     p <- add_trace(p, x = x.all.labels,
-                   y = rep(min(as.numeric(chart.matrix),na.rm = T), length(x.all.labels)),
+                   y = rep(tmp.min, length(x.all.labels)),
                    mode = if (notAutoRange(yaxis)) "markers" else "lines",
                    type = "scatter", cliponaxis = TRUE,
                    hoverinfo = "skip", showlegend = FALSE, opacity = 0)
@@ -879,7 +881,6 @@ Column <- function(x,
     annotations[[n+3]] <- setSubtitle(subtitle, subtitle.font, margins)
     annotations <- Filter(Negate(is.null), annotations)
 
-    print(xaxis$range)
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,

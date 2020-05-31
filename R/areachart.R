@@ -169,9 +169,9 @@ Area <- function(x,
     if (any(is.na(as.matrix(chart.matrix))))
         warning("Missing values have been interpolated or omitted.")
 
-    num.notNA <- colSums(!is.na(chart.matrix))
-    if (all(num.notNA < 2))
-        stop("Area is not defined for a series with only one data point.")
+    #num.notNA <- colSums(!is.na(chart.matrix))
+    #if (all(num.notNA < 2))
+    #    stop("Area is not defined for a series with only one data point.")
 
     # Some minimal data cleaning
     # Assume formatting and Qtable/attribute handling already done
@@ -268,7 +268,7 @@ Area <- function(x,
     # Format axis labels
     axisFormat <- formatLabels(chart.matrix, type, x.tick.label.wrap, x.tick.label.wrap.nchar,
                                x.tick.format, y.tick.format)
-    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, axisFormat, x.zero, is.null(x.tick.distance))
+    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, axisFormat, x.zero, is.null(x.tick.distance), margin.autoexpand = margin.autoexpand)
     y.range <- setValRange(y.bounds.minimum, y.bounds.maximum, chart.matrix, y.zero, is.null(y.tick.distance))
     xtick <- setTicks(x.range$min, x.range$max, x.tick.distance, x.data.reversed)
     ytick <- setTicks(y.range$min, y.range$max, y.tick.distance, y.data.reversed)

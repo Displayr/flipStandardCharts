@@ -135,10 +135,7 @@ ColumnMultiColor <- function(x,
         marker.border.opacity <- opacity
     else if (is.null(marker.border.opacity)) # trying to hide gap in the middle
         marker.border.opacity <- opacity/(4 + 3*(opacity < 0.7))
-    colors <- paste0(rep("", NROW(chart.matrix)), colors)
-    ind.na <- which(is.na(chart.matrix))
-    if (length(ind.na) > 0)
-        colors <- colors[-ind.na]
+    eval(colors)
 
     if (data.label.font.autocolor)
         dlab.color <- autoFontColor(colors)
@@ -161,7 +158,7 @@ ColumnMultiColor <- function(x,
     axisFormat <- formatLabels(chart.matrix, type, x.tick.label.wrap, x.tick.label.wrap.nchar,
                                x.tick.format, y.tick.format)
 
-    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, axisFormat, x.zero, is.null(x.tick.distance), is.bar = TRUE)
+    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, axisFormat, x.zero, is.null(x.tick.distance), is.bar = TRUE, margin.autoexpand = margin.autoexpand)
     y.range <- setValRange(y.bounds.minimum, y.bounds.maximum, chart.matrix, y.zero, is.null(y.tick.distance))
     xtick <- setTicks(x.range$min, x.range$max, x.tick.distance, x.data.reversed, is.bar = TRUE)
     ytick <- setTicks(y.range$min, y.range$max, y.tick.distance, y.data.reversed)
@@ -191,6 +188,7 @@ ColumnMultiColor <- function(x,
 
     x <- axisFormat$labels
     y <- as.numeric(chart.matrix[,1])
+    y.filled <- ifelse(is.finite(y), y, 0)
     x.text <- formatByD3(y, x.hovertext.format)
     marker = list(color = toRGB(colors, alpha = opacity),
                 line = list(color = toRGB(marker.border.colors,
@@ -198,7 +196,17 @@ ColumnMultiColor <- function(x,
     hoverfont <- list(color = autoFontColor(colors), size = hovertext.font.size,
                 family = hovertext.font.family)
 
+    # Add invisible trace to force all labels to be shown 
+    # (including missing) 
+    tmp.min <- if (any(is.finite(chart.matrix))) min(chart.matrix, na.rm = TRUE)
+               else y.bounds.minimum 
     p <- plot_ly(as.data.frame(chart.matrix))
+    p <- add_trace(p, x = x, 
+            y = rep(tmp.min, length(x)),
+            mode = if (notAutoRange(yaxis)) "markers" else "lines",
+            type = "scatter", cliponaxis = TRUE,
+            hoverinfo = "skip", showlegend = FALSE, opacity = 0)
+
     p <- add_trace(p, x = x, y = y, type = "bar", orientation = "v",
                    marker = marker, hoverlabel = list(font = hoverfont), cliponaxis = FALSE,
                    hovertemplate = "%{y}<extra>%{x}</extra>")
@@ -208,7 +216,7 @@ ColumnMultiColor <- function(x,
         source.text <- formatByD3(y, data.label.format,
                data.label.prefix, data.label.suffix, decimals = 0)
         p <- addDataLabelAnnotations(p, type = "Column", NULL,
-                data.label.xpos = x, data.label.ypos = y, data.label.text = source.text,
+                data.label.xpos = x, data.label.ypos = y.filled, data.label.text = source.text,
                 data.label.show = data.label.show, data.label.sign = getSign(y, yaxis),
                 annotation.list, annot.data, i = 1,
                 xaxis = "x", yaxis = "y", data.label.font, is.stacked = FALSE, data.label.centered = FALSE)
