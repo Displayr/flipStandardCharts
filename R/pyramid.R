@@ -215,7 +215,7 @@ Pyramid <- function(x,
     p <- plot_ly(as.data.frame(chart.matrix))
     p <- add_trace(p, y = x, 
             x = rep(tmp.min, length(x)),
-            mode = if (notAutoRange(yaxis)) "markers" else "lines",
+            mode = if (notAutoRange(xaxis)) "markers" else "lines",
             type = "scatter", cliponaxis = TRUE,
             hoverinfo = "skip", showlegend = FALSE, opacity = 0)
 
