@@ -511,7 +511,7 @@ Column <- function(x,
         opacity <- if (fit.type == "None") 1 else 0.6
     if (is.null(marker.border.opacity))
         marker.border.opacity <- opacity
-    eval(colors) # not sure why, but this is necessary for bars to appear properly
+    colors <- paste0(rep("", NROW(chart.matrix)), colors)
 
     if (is.stacked && data.label.font.autocolor)
         dlab.color <- autoFontColor(colors)
