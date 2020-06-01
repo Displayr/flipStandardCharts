@@ -43,6 +43,7 @@ Imports:
     XML,
     xts,
 Remotes:
+    Displayr/plotly,
     Displayr/flipU,
     Displayr/flipChartBasics,
     Displayr/flipData,
