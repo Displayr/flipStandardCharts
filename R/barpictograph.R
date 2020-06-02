@@ -298,9 +298,9 @@ BarPictograph <- function(x,
 
     # Setting up graphic cells (bars of icons)
     json.cells <- sprintf(paste0("{\"type\":\"graphic\", \"value\":{\"proportion\":%f,\"numImages\":%d, ",
-                          "\"variableImage\":\"%s:%s%s:%s\", %s %s, %s %s",
+                          "\"variableImage\":\"%s:%s:%s%s\", %s %s, %s %s",
                           "\"columnGutter\":%f, \"rowGutter\":%f, \"padding\":\"%f %f %f %f\"}}"),
-                          prop, total.icons, image.type, fill.icon.color.str, fill.direction,
+                          prop, total.icons, image.type, fill.direction, fill.icon.color.str,
                           image.url, base.image.str, layout.str, data.label.str,
                           floating.label.str, pad.icon.col, pad.icon.row, 0, 0, 0, 0)
     json.cells <- matrix(json.cells, ncol = 1)
