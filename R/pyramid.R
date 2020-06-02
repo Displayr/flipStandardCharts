@@ -210,7 +210,7 @@ Pyramid <- function(x,
 
     # Add invisible trace to force all labels to be shown 
     # (including missing) 
-    tmp.min <- if (any(is.finite(chart.matrix))) min(chart.matrix, na.rm = TRUE)
+    tmp.min <- if (any(is.finite(chart.matrix))) min(chart.matrix[is.finite(chart.matrix)])
                else 0 
     p <- plot_ly(as.data.frame(chart.matrix))
     p <- add_trace(p, y = x, 

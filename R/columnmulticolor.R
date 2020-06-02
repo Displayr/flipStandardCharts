@@ -135,7 +135,7 @@ ColumnMultiColor <- function(x,
         marker.border.opacity <- opacity
     else if (is.null(marker.border.opacity)) # trying to hide gap in the middle
         marker.border.opacity <- opacity/(4 + 3*(opacity < 0.7))
-    eval(colors)
+    colors <- paste0(rep("", NROW(chart.matrix)), colors)
 
     if (data.label.font.autocolor)
         dlab.color <- autoFontColor(colors)
@@ -198,7 +198,7 @@ ColumnMultiColor <- function(x,
 
     # Add invisible trace to force all labels to be shown 
     # (including missing) 
-    tmp.min <- if (any(is.finite(chart.matrix))) min(chart.matrix, na.rm = TRUE)
+    tmp.min <- if (any(is.finite(chart.matrix))) min(chart.matrix[is.finite(chart.matrix)])
                else y.bounds.minimum 
     p <- plot_ly(as.data.frame(chart.matrix))
     p <- add_trace(p, x = x, 

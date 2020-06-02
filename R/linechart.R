@@ -285,6 +285,14 @@ Line <-   function(x,
             warning("Non-numeric line thickness values '",
             paste(tmp.txt[na.ind], collapse = "', '"), "' were ignored.")
     }
+
+    # Add invisible line to force all categorical labels to be shown
+    tmp.min <- if (any(is.finite(chart.matrix))) min(chart.matrix[is.finite(chart.matrix)])
+               else y.bounds.minimum 
+    p <- add_trace(p, x = x.labels, y = rep(tmp.min, length(x.labels)),
+                   type = "scatter", mode = "lines",
+                   hoverinfo = "none", showlegend = FALSE, opacity = 0)
+
     line.thickness <- readLineThickness(line.thickness, ncol(chart.matrix))
     opacity <- opacity * rep(1, ncol(chart.matrix))
     for (i in 1:ncol(chart.matrix))
@@ -296,11 +304,6 @@ Line <-   function(x,
                       shape = shape, smoothing = smoothing,
                       color = toRGB(colors[i], alpha = opacity[i]))
 
-        # add invisible line to force all categorical labels to be shown
-        if (i == 1)
-            p <- add_trace(p, x = x, y = rep(min(y,na.rm = T), length(x)),
-                           type = "scatter", mode = "lines",
-                           hoverinfo = "none", showlegend = F, opacity = 0)
 
         marker <- NULL
         series.mode <- "lines"

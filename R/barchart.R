@@ -303,7 +303,7 @@ Bar <- function(x,
                       width = marker.border.width))
 
         # add invisible line to force all categorical labels to be shown
-        tmp.min <- if (any(is.finite(chart.matrix))) min(chart.matrix, na.rm = TRUE)
+        tmp.min <- if (any(is.finite(chart.matrix))) min(chart.matrix[is.finite(chart.matrix)])
                    else x.bounds.minimum 
         if (!is.stacked && i == 1)
         {

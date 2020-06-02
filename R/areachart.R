@@ -169,10 +169,7 @@ Area <- function(x,
     if (any(is.na(as.matrix(chart.matrix))))
         warning("Missing values have been interpolated or omitted.")
 
-    #num.notNA <- colSums(!is.na(chart.matrix))
-    #if (all(num.notNA < 2))
-    #    stop("Area is not defined for a series with only one data point.")
-
+    
     # Some minimal data cleaning
     # Assume formatting and Qtable/attribute handling already done
     # Find gaps which are NOT at the ends of the series
@@ -311,14 +308,20 @@ Area <- function(x,
     data.label.pos[1] <- gsub("middle", if (x.sign > 0) "right" else "left", data.label.pos[1])
     data.label.pos[m] <- gsub("middle", if (x.sign > 0) "left" else "right",  data.label.pos[m])
 
-    # Invisible trace to ensure enough space for data labels
+    # Add invisible line to force all categorical labels to be shown
+    # Also ensures there is enough space for data labels
     # and that tick bounds are shown properly
     # This must happen before ANY of the area traces are put in
+    tmp.min <- if (any(is.finite(chart.matrix))) min(chart.matrix[is.finite(chart.matrix)])
+               else y.bounds.minimum 
     if (any(data.label.show) || notAutoRange(yaxis))
-        p <- add_trace(p, type = "scatter", mode = "markers",
-           x = x.labels, y = apply(chart.matrix, 1, max, na.rm = TRUE) * 1.01,
-           marker = list(color = "red", opacity = 0.0),
-           hoverinfo = "skip", showlegend = FALSE, cliponaxis = FALSE)
+        invis.pts <- apply(chart.matrix, 1, max, na.rm = TRUE) * 1.01
+    else
+        invis.pts <- rep(tmp.min, length(x.labels))
+    p <- add_trace(p, type = "scatter", mode = "markers",
+       x = x.labels, y = invis.pts,
+       marker = list(color = "red", opacity = 0.0),
+       hoverinfo = "skip", showlegend = FALSE, cliponaxis = FALSE)
 
     if (!is.stacked)
     {
@@ -339,12 +342,6 @@ Area <- function(x,
                            line = list(color = toRGB(marker.border.colors[i],
                            alpha = marker.border.opacity),
                            width = marker.border.width))
-
-            # Add invisible line to force all categorical labels to be shown
-            if (i == 1)
-                p <- add_trace(p, x = x, y = rep(min(y,na.rm=T), length(x)),
-                               type = "scatter", mode = "lines",
-                               hoverinfo = "skip", showlegend = FALSE, opacity = 0)
 
             # Draw line
             if (any(!is.na(y)) && (has.gap || line.thickness[i] > 0))

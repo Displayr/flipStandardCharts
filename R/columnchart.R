@@ -728,7 +728,7 @@ Column <- function(x,
     # Add invisible line to force all categorical labels to be shown
     # Type "scatter" ensures y-axis tick bounds are treated properly
     # but it also adds extra space next to the y-axis
-    tmp.min <- if (any(is.finite(chart.matrix))) min(chart.matrix, na.rm = TRUE)
+    tmp.min <- if (any(is.finite(chart.matrix))) min(chart.matrix[is.finite(chart.matrix)])
                else y.bounds.minimum 
     p <- add_trace(p, x = x.all.labels,
                    y = rep(tmp.min, length(x.all.labels)),
