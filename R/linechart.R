@@ -76,6 +76,7 @@ Line <-   function(x,
                     legend.position.x = NULL,
                     legend.position.y = NULL,
                     legend.ascending = NA,
+                    margin.autoexpand = TRUE,
                     margin.top = NULL,
                     margin.bottom = NULL,
                     margin.left = NULL,
@@ -231,7 +232,7 @@ Line <-   function(x,
     # Format axis labels
     axisFormat <- formatLabels(chart.matrix, "Line", x.tick.label.wrap, x.tick.label.wrap.nchar,
                                x.tick.format, y.tick.format)
-    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, axisFormat, x.zero, is.null(x.tick.distance))
+    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, axisFormat, x.zero, is.null(x.tick.distance), margin.autoexpand = margin.autoexpand)
     y.range <- setValRange(y.bounds.minimum, y.bounds.maximum, chart.matrix, y.zero, is.null(y.tick.distance))
     xtick <- setTicks(x.range$min, x.range$max, x.tick.distance, x.data.reversed)
     ytick <- setTicks(y.range$min, y.range$max, y.tick.distance, y.data.reversed)
@@ -262,6 +263,7 @@ Line <-   function(x,
     margins <- setMarginsForLegend(margins, legend.show, legend, legend.text)
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
+    margins$autoexpand <- margin.autoexpand
 
     ## Initiate plotly object
     p <- plot_ly(as.data.frame(chart.matrix))
@@ -283,6 +285,14 @@ Line <-   function(x,
             warning("Non-numeric line thickness values '",
             paste(tmp.txt[na.ind], collapse = "', '"), "' were ignored.")
     }
+
+    # Add invisible line to force all categorical labels to be shown
+    tmp.min <- if (any(is.finite(chart.matrix))) min(chart.matrix[is.finite(chart.matrix)])
+               else y.bounds.minimum 
+    p <- add_trace(p, x = x.labels, y = rep(tmp.min, length(x.labels)),
+                   type = "scatter", mode = "lines",
+                   hoverinfo = "none", showlegend = FALSE, opacity = 0)
+
     line.thickness <- readLineThickness(line.thickness, ncol(chart.matrix))
     opacity <- opacity * rep(1, ncol(chart.matrix))
     for (i in 1:ncol(chart.matrix))
@@ -294,11 +304,6 @@ Line <-   function(x,
                       shape = shape, smoothing = smoothing,
                       color = toRGB(colors[i], alpha = opacity[i]))
 
-        # add invisible line to force all categorical labels to be shown
-        if (i == 1)
-            p <- add_trace(p, x = x, y = rep(min(y,na.rm = T), length(x)),
-                           type = "scatter", mode = "lines",
-                           hoverinfo = "none", showlegend = F, opacity = 0)
 
         marker <- NULL
         series.mode <- "lines"

@@ -51,6 +51,7 @@ Radar <- function(x,
                     legend.position.x = NULL,
                     hovertext.font.family = global.font.family,
                     hovertext.font.size = 11,
+                    margin.autoexpand = TRUE,
                     margin.top = NULL,
                     margin.bottom = NULL,
                     margin.left = NULL,
@@ -220,6 +221,7 @@ Radar <- function(x,
     margins <- setMarginsForLegend(margins, legend.show, legend, legend.text, type = "radar")
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
+    margins$autoexpand <- margin.autoexpand
 
     # Initialise plot (ensure chart area reaches y.bounds.maximum)
     p <- plot_ly(pos)

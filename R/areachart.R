@@ -72,6 +72,7 @@ Area <- function(x,
                     legend.position.x = NULL,
                     legend.position.y = NULL,
                     legend.ascending = NA,
+                    margin.autoexpand = TRUE,
                     margin.top = NULL,
                     margin.bottom = NULL,
                     margin.left = NULL,
@@ -168,10 +169,7 @@ Area <- function(x,
     if (any(is.na(as.matrix(chart.matrix))))
         warning("Missing values have been interpolated or omitted.")
 
-    num.notNA <- colSums(!is.na(chart.matrix))
-    if (all(num.notNA < 2))
-        stop("Area is not defined for a series with only one data point.")
-
+    
     # Some minimal data cleaning
     # Assume formatting and Qtable/attribute handling already done
     # Find gaps which are NOT at the ends of the series
@@ -267,7 +265,7 @@ Area <- function(x,
     # Format axis labels
     axisFormat <- formatLabels(chart.matrix, type, x.tick.label.wrap, x.tick.label.wrap.nchar,
                                x.tick.format, y.tick.format)
-    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, axisFormat, x.zero, is.null(x.tick.distance))
+    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, axisFormat, x.zero, is.null(x.tick.distance), margin.autoexpand = margin.autoexpand)
     y.range <- setValRange(y.bounds.minimum, y.bounds.maximum, chart.matrix, y.zero, is.null(y.tick.distance))
     xtick <- setTicks(x.range$min, x.range$max, x.tick.distance, x.data.reversed)
     ytick <- setTicks(y.range$min, y.range$max, y.tick.distance, y.data.reversed)
@@ -294,6 +292,7 @@ Area <- function(x,
     margins <- setMarginsForLegend(margins, legend.show, legend, legend.text)
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
+    margins$autoexpand <- margin.autoexpand
 
     ## Initiate plotly object
     p <- plot_ly(as.data.frame(chart.matrix))
@@ -340,9 +339,14 @@ Area <- function(x,
 
             # Add invisible line to force all categorical labels to be shown
             if (i == 1)
-                p <- add_trace(p, x = x, y = rep(min(y,na.rm=T), length(x)),
+            {
+                tmp.min <- if (any(is.finite(chart.matrix))) min(chart.matrix[is.finite(chart.matrix)])
+                           else y.bounds.minimum 
+
+                p <- add_trace(p, x = x, y = rep(tmp.min, length(x)),
                                type = "scatter", mode = "lines",
                                hoverinfo = "skip", showlegend = FALSE, opacity = 0)
+            }
 
             # Draw line
             if (any(!is.na(y)) && (has.gap || line.thickness[i] > 0))

@@ -3,21 +3,24 @@
 #' Returns an error if there is not enough data for charting.
 #' @param x The data to be plotted.
 #' @param require.tidy The data is assumed to be a numeric vector, matrix, array, or data frame.
+#' @param require.notAllMissing The data is required to contain at least one non-NA value.
 #' @export
-ErrorIfNotEnoughData <- function(x, require.tidy = TRUE)
+ErrorIfNotEnoughData <- function(x, require.tidy = TRUE, require.notAllMissing = FALSE)
 {
     .stop <- function()
         { stop("There is not enough data to create a plot.") }
     .possiblyTidy <- function(x)
         {is.numeric(x) || is.matrix(x) || is.data.frame(x) || is.array(x)}
     .noData <- function(x)
-        {NROW(x) == 0 || NCOL(x) == 0 || all(is.na(x))}
+        {NROW(x) == 0 || NCOL(x) == 0}
 
     if (!require.tidy && is.list(x))
         x <- x[[1]]
     if (require.tidy && !.possiblyTidy(x))
         stop("The data is not in an appropriate format.")
     if (.noData(x))
+        .stop()
+    if (require.notAllMissing && all(is.na(x)))
         .stop()
 }
 
@@ -929,7 +932,7 @@ isBlank <- function(x)
 # This is only applied to the values axis.
 # It can handle categorical and date axes types but only for the values axis
 # (date categorical axis range is set using getDateAxisRange in setAxis)
-setValRange <- function(min, max, values, show.zero = FALSE, use.defaults = TRUE, is.bar = FALSE)
+setValRange <- function(min, max, values, show.zero = FALSE, use.defaults = TRUE, is.bar = FALSE, margin.autoexpand = TRUE)
 {
     if (is.null(min) || is.na(min) || min == "")
         min <- NULL
@@ -937,7 +940,7 @@ setValRange <- function(min, max, values, show.zero = FALSE, use.defaults = TRUE
         max <- NULL
 
     # If no range is specified, then use defaults
-    if (use.defaults && is.null(min) && is.null(max))
+    if (use.defaults && is.null(min) && is.null(max) && margin.autoexpand)
         return(list(min = NULL, max = NULL))
 
     if (is.list(values) && !is.null(values$labels.on.x))

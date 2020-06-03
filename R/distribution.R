@@ -235,7 +235,7 @@ Distribution <-   function(x,
     modebar.show = FALSE)
 {
     # Extracting and wrapping labels
-    ErrorIfNotEnoughData(x, require.tidy = FALSE)
+    ErrorIfNotEnoughData(x, require.tidy = FALSE, require.notAllMissing = TRUE)
     if (length(x) == 1 && is.list(x) && NCOL(x[[1]]) > 1)
         x <- x[[1]]
     if (is.matrix(x))

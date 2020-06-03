@@ -80,6 +80,9 @@
 #' @param legend.font.family Character; legend font family.
 #' @param legend.font.size Integer; Legend font size.
 #' @param legend.orientation Character; One of 'Vertical' or 'Horizontal'
+#' @param margin.autoexpand Logical; Whether extra space can be added to the margins
+#'      to allow space for axis/legend/data labels or other chart elements.
+
 #' @param margin.top Margin between plot area and the top of the graphic in pixels
 #' @param margin.bottom Margin between plot area and the bottom of the graphic in pixels
 #' @param margin.left Margin between plot area and the left of the graphic in pixels
@@ -335,6 +338,7 @@ Column <- function(x,
                     margin.left = NULL,
                     margin.right = NULL,
                     margin.inner.pad = NULL,
+                    margin.autoexpand = TRUE,
                     grid.show = TRUE,
                     x2.colors = ChartColors(max(1, NCOL(x2), na.rm = TRUE)),
                     x2.data.label.show = FALSE,
@@ -482,7 +486,7 @@ Column <- function(x,
         is.stacked <- FALSE
     }
     is.hundred.percent.stacked <- grepl("100% Stacked", type, fixed = TRUE)
-    if (any(!is.finite(chart.matrix)))
+    if (any(!is.finite(as.matrix(chart.matrix))))
         warning("Missing values have been set to zero.")
 
     # Some minimal data cleaning
@@ -507,7 +511,7 @@ Column <- function(x,
         opacity <- if (fit.type == "None") 1 else 0.6
     if (is.null(marker.border.opacity))
         marker.border.opacity <- opacity
-    eval(colors) # not sure why, but this is necessary for bars to appear properly
+    colors <- paste0(rep("", NROW(chart.matrix)), colors)
 
     if (is.stacked && data.label.font.autocolor)
         dlab.color <- autoFontColor(colors)
@@ -537,9 +541,9 @@ Column <- function(x,
 
     # Format axis labels
     axisFormat <- formatLabels(chart.matrix, type, x.tick.label.wrap, x.tick.label.wrap.nchar,
-                               x.tick.format, y.tick.format)
+                               x.tick.format, y.tick.format) 
 
-    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, axisFormat, x.zero, is.null(x.tick.distance), is.bar = TRUE)
+    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, axisFormat, x.zero, is.null(x.tick.distance), is.bar = TRUE, margin.autoexpand = margin.autoexpand) 
     y.range <- setValRange(y.bounds.minimum, y.bounds.maximum, chart.matrix, y.zero, is.null(y.tick.distance))
     xtick <- setTicks(x.range$min, x.range$max, x.tick.distance, x.data.reversed, is.bar = TRUE)
     ytick <- setTicks(y.range$min, y.range$max, y.tick.distance, y.data.reversed)
@@ -568,6 +572,7 @@ Column <- function(x,
     margins <- setMarginsForLegend(margins, legend.show, legend, legend.text, right.axis = !is.null(x2))
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
+    margins$autoexpand <- margin.autoexpand
 
     ## Initiate plotly object
     p <- plot_ly(as.data.frame(chart.matrix))
@@ -723,8 +728,10 @@ Column <- function(x,
     # Add invisible line to force all categorical labels to be shown
     # Type "scatter" ensures y-axis tick bounds are treated properly
     # but it also adds extra space next to the y-axis
+    tmp.min <- if (any(is.finite(chart.matrix))) min(chart.matrix[is.finite(chart.matrix)])
+               else y.bounds.minimum 
     p <- add_trace(p, x = x.all.labels,
-                   y = rep(min(as.numeric(chart.matrix),na.rm = T), length(x.all.labels)),
+                   y = rep(tmp.min, length(x.all.labels)),
                    mode = if (notAutoRange(yaxis)) "markers" else "lines",
                    type = "scatter", cliponaxis = TRUE,
                    hoverinfo = "skip", showlegend = FALSE, opacity = 0)

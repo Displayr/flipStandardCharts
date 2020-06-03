@@ -63,6 +63,7 @@ Column(
   margin.left = NULL,
   margin.right = NULL,
   margin.inner.pad = NULL,
+  margin.autoexpand = TRUE,
   grid.show = TRUE,
   x2.colors = ChartColors(max(1, NCOL(x2), na.rm = TRUE)),
   x2.data.label.show = FALSE,
@@ -330,6 +331,9 @@ By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.}
 
 \item{margin.inner.pad}{Padding in pixels between plot proper
 and axis lines}
+
+\item{margin.autoexpand}{Logical; Whether extra space can be added to the margins
+to allow space for axis/legend/data labels or other chart elements.}
 
 \item{grid.show}{Logical; whether to show grid lines.}
 

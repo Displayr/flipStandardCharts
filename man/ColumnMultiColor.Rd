@@ -34,6 +34,7 @@ ColumnMultiColor(
   margin.left = NULL,
   margin.right = NULL,
   margin.inner.pad = NULL,
+  margin.autoexpand = TRUE,
   grid.show = TRUE,
   y.title = "",
   y.title.font.color = global.font.color,
@@ -178,6 +179,9 @@ a named color in character format (e.g. "black") or a hex code.}
 
 \item{margin.inner.pad}{Padding in pixels between plot proper
 and axis lines}
+
+\item{margin.autoexpand}{Logical; Whether extra space can be added to the margins
+to allow space for axis/legend/data labels or other chart elements.}
 
 \item{grid.show}{Logical; whether to show grid lines.}
 

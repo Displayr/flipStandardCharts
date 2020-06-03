@@ -33,6 +33,7 @@ Pyramid <- function(x,
                     margin.left = NULL,
                     margin.right = NULL,
                     margin.inner.pad = NULL,
+                    margin.autoexpand = TRUE,
                     y.title = "",
                     y.title.font.color = global.font.color,
                     y.title.font.family = global.font.family,
@@ -138,11 +139,7 @@ Pyramid <- function(x,
         marker.border.opacity <- opacity
     else if (is.null(marker.border.opacity)) # trying to hide gap in the middle
         marker.border.opacity <- opacity/(4 + 3*(opacity < 0.7))
-    colors <- paste0(rep("", nrow(chart.matrix)), colors)
-    ind.na <- which(is.na(chart.matrix))
-    if (length(ind.na) > 0)
-        colors <- colors[-ind.na]
-
+    colors <- paste0(rep("", NROW(chart.matrix)), colors)
 
     if (data.label.font.autocolor)
         dlab.color <- autoFontColor(colors)
@@ -199,9 +196,11 @@ Pyramid <- function(x,
     margins <- setMarginsForLegend(margins, FALSE, NULL, NULL)
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
+    margins$autoexpand <- margin.autoexpand
 
     x <- axisFormat$labels
     y <- as.numeric(chart.matrix[,1])
+    y.filled <- ifelse(is.finite(y), y, 0)
     x.text <- formatByD3(y, x.hovertext.format)
     marker = list(color = toRGB(colors, alpha = opacity), 
                 line = list(color = toRGB(marker.border.colors, 
@@ -209,10 +208,21 @@ Pyramid <- function(x,
     hoverfont <- list(color = autoFontColor(colors), size = hovertext.font.size, 
                 family = hovertext.font.family)
 
+    # Add invisible trace to force all labels to be shown 
+    # (including missing) 
+    tmp.min <- if (any(is.finite(chart.matrix))) min(chart.matrix[is.finite(chart.matrix)])
+               else 0 
+    p <- plot_ly(as.data.frame(chart.matrix))
+    p <- add_trace(p, y = x, 
+            x = rep(tmp.min, length(x)),
+            mode = if (notAutoRange(xaxis)) "markers" else "lines",
+            type = "scatter", cliponaxis = TRUE,
+            hoverinfo = "skip", showlegend = FALSE, opacity = 0)
+
+    # Main trace
     # Using 'base' is preferrable to plotting two bars because semi-transparency 
     # and borders is now handled properly
-    p <- plot_ly(as.data.frame(chart.matrix))
-    p <- add_trace(p, x = 2 * y, y = x, base = -y, type = "bar", orientation = "h",
+    p <- add_trace(p, x = 2 * y.filled, y = x, base = -y, type = "bar", orientation = "h",
                    marker = marker, hoverlabel = list(font = hoverfont), cliponaxis = FALSE,
                    hovertemplate = "%{x}<extra>%{y}</extra>") 
 

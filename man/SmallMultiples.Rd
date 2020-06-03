@@ -60,6 +60,7 @@ SmallMultiples(
   x.tick.show = TRUE,
   x.tick.angle = NULL,
   legend.show = TRUE,
+  margin.autoexpand = TRUE,
   margin.left = NULL,
   margin.right = NULL,
   margin.top = NULL,
@@ -208,6 +209,9 @@ of colors}
 90 = vertical; 0 = horizontal}
 
 \item{legend.show}{Ignored except for with \code{GeographicMap}.}
+
+\item{margin.autoexpand}{Logical; Whether extra space can be added to the margins
+to allow space for axis/legend/data labels or other chart elements.}
 
 \item{margin.left}{Margin between plot area and the left of the graphic in pixels}
 

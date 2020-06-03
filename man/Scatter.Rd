@@ -80,6 +80,7 @@ Scatter(
   legend.position.y = 1,
   legend.position.x = 1.02,
   legend.ascending = NA,
+  margin.autoexpand = TRUE,
   margin.top = NULL,
   margin.bottom = NULL,
   margin.left = NULL,
@@ -340,6 +341,9 @@ Values range from -0.5 (left) to 1.5 (right).}
 
 \item{legend.ascending}{Logical; TRUE for ascending, FALSE for descending.
 By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.}
+
+\item{margin.autoexpand}{Logical; Whether extra space can be added to the margins
+to allow space for axis/legend/data labels or other chart elements.}
 
 \item{margin.top}{Margin between plot area and the top of the graphic in pixels}
 

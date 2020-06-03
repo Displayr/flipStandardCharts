@@ -55,6 +55,7 @@ Bar(
   legend.font.color = global.font.color,
   legend.font.family = global.font.family,
   legend.font.size = 10,
+  margin.autoexpand = TRUE,
   margin.top = NULL,
   margin.bottom = NULL,
   margin.left = NULL,
@@ -260,6 +261,9 @@ format (e.g. "black") or a hex code.}
 \item{legend.font.family}{Character; legend font family.}
 
 \item{legend.font.size}{Integer; Legend font size.}
+
+\item{margin.autoexpand}{Logical; Whether extra space can be added to the margins
+to allow space for axis/legend/data labels or other chart elements.}
 
 \item{margin.top}{Margin between plot area and the top of the graphic in pixels}
 

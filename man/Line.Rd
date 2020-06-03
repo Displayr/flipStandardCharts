@@ -58,6 +58,7 @@ Line(
   legend.position.x = NULL,
   legend.position.y = NULL,
   legend.ascending = NA,
+  margin.autoexpand = TRUE,
   margin.top = NULL,
   margin.bottom = NULL,
   margin.left = NULL,
@@ -273,6 +274,9 @@ Values range from 0 (bottom) to 1 (top).}
 
 \item{legend.ascending}{Logical; TRUE for ascending, FALSE for descending.
 By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.}
+
+\item{margin.autoexpand}{Logical; Whether extra space can be added to the margins
+to allow space for axis/legend/data labels or other chart elements.}
 
 \item{margin.top}{Margin between plot area and the top of the graphic in pixels}
 
