@@ -954,6 +954,8 @@ setValRange <- function(min, max, values, show.zero = FALSE, use.defaults = TRUE
             values <- 0:(length(values$labels)-1)
     }
 
+    if (length(values) == 1)
+        return(list(min = NULL, max = NULL))
     if (is.factor(values) || is.character(values))
         values <- as.numeric(as.factor(values)) - 1
     if (inherits(values, "POSIXct"))
