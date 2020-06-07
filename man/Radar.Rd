@@ -69,6 +69,11 @@ Radar(
   y.tick.font.size = 10,
   x.tick.label.wrap = TRUE,
   x.tick.label.wrap.nchar = 21,
+  marker.show = FALSE,
+  marker.symbols = "circle",
+  marker.size = 6,
+  marker.colors = colors,
+  marker.opacity = 1,
   data.label.show = FALSE,
   data.label.offset = 0.1,
   data.label.font.family = global.font.family,
@@ -247,6 +252,18 @@ in character format (e.g. "black") or an a hex code.}
 \item{x.tick.label.wrap}{Logical; whether to wrap long labels on the x-axis.}
 
 \item{x.tick.label.wrap.nchar}{Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.}
+
+\item{marker.show}{Can be "none", "automatic" or a vector referencing
+the plotly symbol dictionary using either numerics or strings.}
+
+\item{marker.symbols}{Character; marker symbols, which are only shown if marker.show = TRUE.
+if a vector is passed, then each element will be applied to a data series.}
+
+\item{marker.size}{Size in pixels of marker}
+
+\item{marker.colors}{Character; a vector containing on/mae or more colors specified as hex codes.}
+
+\item{marker.opacity}{Opacity for markers as an alpha value (0 to 1).}
 
 \item{data.label.show}{Logical; whether to show data labels.}
 

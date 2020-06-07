@@ -3,6 +3,7 @@
 #' Radar chart, also known as web chart, spider chart, star chart, star plot, cobweb chart, irregular polygon, polar chart, or Kiviat diagram
 #'
 #' @inherit Column
+#' @inherit Line
 #' @param x Input data in the form of a vector or matrix. The categories used
 #' to create the radar (i.e. the x-axis) is taken from the names/rownames of x.
 #' @param opacity Opacity of area fill colors as an alpha value (0 to 1).
@@ -87,6 +88,11 @@ Radar <- function(x,
                     y.tick.font.size = 10,
                     x.tick.label.wrap = TRUE,
                     x.tick.label.wrap.nchar = 21,
+                    marker.show = FALSE,
+                    marker.symbols = "circle",
+                    marker.size = 6,
+                    marker.colors = colors,
+                    marker.opacity = 1.0,
                     data.label.show = FALSE,
                     data.label.offset = 0.1,
                     data.label.font.family = global.font.family,
@@ -131,6 +137,10 @@ Radar <- function(x,
     }
     if (is.null(opacity))
         opacity <- 0.4
+    if (is.null(marker.show))
+        marker.show <- FALSE
+    if (is.null(marker.opacity))
+        marker.opacity <- opacity
 
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
     subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
@@ -179,6 +189,9 @@ Radar <- function(x,
     data.label.decimals <- decimalsFromD3(data.label.format)
     data.label.prefix <- rbind(vectorize(data.label.prefix, n, m, split = NULL), "")
     data.label.suffix <- rbind(vectorize(data.label.suffix, n, m, split = NULL), "")
+    marker.show <- vectorize(marker.show, n, m)
+    marker.symbols <- vectorize(marker.symbols, n, m)
+    marker.size <- vectorize(marker.size, n, m)
 
     # Convert data (polar) into x, y coordinates
     pos <- do.call(rbind, lapply(as.data.frame(chart.matrix), calcPolarCoord,
@@ -301,9 +314,23 @@ Radar <- function(x,
     # Main trace
     for (ggi in 1:n)
     {
+        series.mode <- "lines"
+        series.marker <- NULL
+        if (any(marker.show[,ggi]))
+        {
+            series.mode <- "lines+markers"
+            marker.size[which(!marker.show[,ggi]),ggi] <- 0
+            series.marker <- list(size = marker.size[,ggi],
+                color = toRGB(marker.colors[ggi], alpha = marker.opacity),
+                line = list(color = marker.colors[ggi], alpha = marker.opacity,
+                    width = 0),
+                symbol = marker.symbols[,ggi], opacity = 1.0)
+        }
+
         ind <- which(pos$Group == g.list[ggi])
         p <- add_trace(p, x = pos$x[ind], y = pos$y[ind], name = legend.text[ggi],
-                    type = "scatter", mode = "lines", fill = "toself",
+                    type = "scatter", mode = series.mode, fill = "toself",
+                    marker = series.marker,
                     fillcolor = toRGB(colors[ggi], alpha = opacity[ggi]),
                     legendgroup = g.list[ggi], showlegend = TRUE,
                     hoverinfo = "skip", hoveron = "points",
