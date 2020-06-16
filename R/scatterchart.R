@@ -344,8 +344,12 @@ Scatter <- function(x = NULL,
             warning(warning.prefix, "Some points omitted due to missing values in 'scatter.colors'")
             not.na <- not.na & !is.na(scatter.colors)
         }
+        groups <- scatter.colors # keep group names with NA
     } else
+    {
         scatter.colors.as.categorical <- FALSE
+        groups <- rep("Series 1", n)
+    }
 
     if (sum(not.na) == 0)
         stop("No non-NA points to plot.")
@@ -395,7 +399,6 @@ Scatter <- function(x = NULL,
 
     scatter.colors.as.numeric <- 0
     colorbar <- NULL
-    groups <- rep("Series 1", n)
 
     if (scatter.colors.as.categorical && length(unique(scatter.colors)) > 50)
     {
@@ -458,19 +461,18 @@ Scatter <- function(x = NULL,
             colorbar <- list(outlinewidth = 0, tickfont=legend.font)
     }
 
-    if (!is.null(scatter.colors) && scatter.colors.as.categorical)
-        groups <- scatter.colors
-
     if (is.factor(groups))
         g.list <- levels(groups) # fix legend order
     else if (any(class(groups) %in% c("Date", "POSIXct", "POSIXt", "integer", "numeric")))
-        g.list <- sort(unique(groups))
+        g.list <- sort(unique(groups[!is.na(groups)]))
     else
-        g.list <- unique(groups)
+        g.list <- unique(groups[!is.na(groups)])
+
     if (length(colors) < length(g.list))
         colors <- paste0(colors, rep("", length(g.list)))
 
     num.groups <- length(g.list)
+    groups <- groups[not.na]
     num.series <- if (scatter.colors.as.numeric) 1 else num.groups
     marker.symbols <- vectorize(marker.symbols, length(g.list))
     data.label.font.color <- vectorize(data.label.font.color, length(g.list))
@@ -599,9 +601,24 @@ Scatter <- function(x = NULL,
 
     ## START PLOTTING
     p <- plot_ly(data.frame(x = x,y = y))
+    
+    # add invisible trace to force correct order
+    tmp.x <- if (is.factor(x)) levels(x)
+             else              unique(x)
+    tmp.y <- if (is.factor(y)) levels(y)
+             else              unique(y)
+    if (length(tmp.x) >= length(tmp.y))
+        tmp.y <- rep(tmp.y, length = length(tmp.x))
+    else
+        tmp.x <- rep(tmp.x, length = length(tmp.y))
+    p <- add_trace(p, x = tmp.x, y = tmp.y, type = "scatter",
+           mode = "lines", hoverinfo = "none", showlegend = F, opacity = 0)
+
     for (ggi in 1:num.groups)
     {
         ind <- which(groups == g.list[ggi])
+        if (length(ind) == 0)
+            next
         tmp.size <- if (!is.null(scatter.sizes)) scatter.sizes.scaled[ind]
                     else rep(marker.size, length(ind))
 
@@ -621,21 +638,6 @@ Scatter <- function(x = NULL,
                             color = colors[ggi],
                             line = list(width = marker.border.width,
                             color = toRGB(marker.border.colors[ggi], alpha = marker.border.opacity)))
-
-        # add invisible trace to force correct order
-        if (ggi == 1)
-        {
-            tmp.x <- if (is.factor(x)) levels(x)
-                     else              unique(x)
-            tmp.y <- if (is.factor(y)) levels(y)
-                     else              unique(y)
-            if (length(tmp.x) >= length(tmp.y))
-                tmp.y <- rep(tmp.y, length = length(tmp.x))
-            else
-                tmp.x <- rep(tmp.x, length = length(tmp.y))
-            p <- add_trace(p, x = tmp.x, y = tmp.y, type = "scatter",
-                   mode = "lines", hoverinfo = "none", showlegend = F, opacity = 0)
-        }
 
         # Traces for annotation need to occur before main trace to avoid hiding hover info
         annot.text <- rep("", length(ind))
