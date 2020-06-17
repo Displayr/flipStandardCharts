@@ -308,13 +308,18 @@ LabeledScatter <- function(x = NULL,
         if (length(groups) != n)
             groups <- rep(" ", n)
 
+        # Get list of all series names - including if those with all NAs
+        groups.ord <- order(suppressWarnings(AsNumeric(groups, binary = FALSE)))
+        g.list.all <- unique(groups[groups.ord])
+        colors <- paste0(rep("", length(g.list.all)), colors)
+        names(colors) <- g.list.all
+
+        # Extract only non-NA points and order based on series name
         groups.ord <- order(suppressWarnings(AsNumeric(groups[not.na], binary = FALSE)))
         not.na <- not.na[groups.ord]
-
         groups <- as.character(groups)
         g.list <- unique(groups[not.na])
-        colors <- paste0(rep("", length(g.list)), colors)
-        names(colors) <- g.list
+        colors <- colors[g.list]
     }
     colors <- StripAlphaChannel(colors)
     if (is.na(data.label.font.autocolor))
