@@ -310,9 +310,12 @@ LabeledScatter <- function(x = NULL,
 
         # Get list of all series names - including if those with all NAs
         groups.ord <- order(suppressWarnings(AsNumeric(groups, binary = FALSE)))
-        g.list.all <- unique(groups[groups.ord])
+        g.list.all <- if (is.factor(groups)) levels(groups)
+                      else unique(groups[groups.ord])
         colors <- paste0(rep("", length(g.list.all)), colors)
         names(colors) <- g.list.all
+        legend.show <- setShowLegend(legend.show, length(g.list.all))
+
 
         # Extract only non-NA points and order based on series name
         groups.ord <- order(suppressWarnings(AsNumeric(groups[not.na], binary = FALSE)))
@@ -406,7 +409,7 @@ LabeledScatter <- function(x = NULL,
                        origin.align = FALSE,
                        labels.show = TRUE,
                        label.placement.numSweeps = if (label.auto.placement) 500 else 0,
-                       legend.show = legend.show && length(g.list) > 1,
+                       legend.show = legend.show,
                        legend.bubbles.show = !is.null(scatter.sizes) && legend.bubbles.show,
                        legend.font.color = legend.font.color,
                        legend.font.family = legend.font.family,
