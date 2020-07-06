@@ -195,7 +195,7 @@ Heat <- function(x,
     n.col <- ncol(mat)
 
     stat <- ifelse(is.null(attr(x, "statistic")), "", attr(x, "statistic"))
-    pct <- percentFromD3(y.hovertext.format) || grepl("%", stat, fixed = TRUE)
+    pct <- percentFromD3(y.hovertext.format) || grepl("%)?$", stat)
     data.label.text <- formatByD3(mat, data.label.format, data.label.prefix, data.label.suffix, percent = pct)
     dim(data.label.text) <- dim(mat)
     data.label.text[!is.finite(mat)] <- "NA"
@@ -221,7 +221,7 @@ Heat <- function(x,
         "column"
     } else
         "none"
-    
+
     cell.decimals <- decimalsFromD3(data.label.format, if (pct) 0 else 2)
     row.order <- if(is.null(rownames(mat))) seq(nrow(mat)) else str_trim(rownames(mat))
     left.appended <- appendColumns(left.columns, mat, cell.decimals, left.column.headings, row.order)

@@ -179,7 +179,7 @@ BarPictograph <- function(x,
     if (data.label.position != "No")
     {
         data.label.mult100 <- FALSE
-        if (data.label.format == "" && !is.null(stat) && grepl("%", stat, fixed = TRUE))
+        if (data.label.format == "" && !is.null(stat) && grepl("%)?$", stat))
             data.label.format <- ".0%"
         if (percentFromD3(data.label.format))
         {

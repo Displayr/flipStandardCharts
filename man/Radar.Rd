@@ -286,7 +286,7 @@ See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 
 \item{data.label.suffix}{Character; suffix for data values.}
 
-\item{data.label.values.only}{Logical; whether to show only the values in the 
+\item{data.label.values.only}{Logical; whether to show only the values in the
 datal labels instead of the default category label and values.}
 
 \item{subtitle}{Character}

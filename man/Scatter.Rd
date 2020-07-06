@@ -509,7 +509,7 @@ character format (e.g. "black") or an a hex code.}
 if \code{scatter.sizes} is provided, but used for the legend
 if \code{scatter.colors.as.categorical}.}
 
-\item{marker.symbols}{Character; a vector describing the symbol used for each data series. 
+\item{marker.symbols}{Character; a vector describing the symbol used for each data series.
 See \url{https://plotly-r.com/working-with-symbols.html} for a list of symbol names.
 Note there is no corresponding parameter for LabeledScatter.}
 

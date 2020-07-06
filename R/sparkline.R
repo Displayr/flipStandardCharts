@@ -130,7 +130,7 @@ Sparkline <- function(x,
         margin.bottom = 0)
 {
     ErrorIfNotEnoughData(x, require.tidy = type != "Box")
-    data.is.percent <- isTRUE(grepl("%$", attr(x, "statistic")))
+    data.is.percent <- isTRUE(grepl("%)?$", attr(x, "statistic")))
     if (type == "Box")
     {
         if (length(x) == 1 && is.list(x) && NCOL(x[[1]]) > 1)

@@ -12,7 +12,7 @@
 #' @param y.tick.show Whether to display the y-axis tick labels (i.e. radial distance from center)
 #' @param x.tick.show  Whether to display the x-axis tick labels (i.e. labels around the sides of the radar chart)
 #' @param line.thickness Thickness of outline of radar polygons.
-#' @param data.label.values.only Logical; whether to show only the values in the 
+#' @param data.label.values.only Logical; whether to show only the values in the
 #'  datal labels instead of the default category label and values.
 #' @param data.label.offset Numeric; controls the distance between the data points to
 #'  the data label.
@@ -171,7 +171,7 @@ Radar <- function(x,
 
     # Extract formatting from d3
     stat <- attr(x, "statistic")
-    #if (!is.null(stat) && grepl("%", stat, fixed = TRUE))
+    #if (!is.null(stat) && grepl("%)?$", stat))
     #{
     #    if (hover.format.function == "") hover.format.function <- ".0%"
     #    if (tick.format.function == "") tick.format.function <- ".0%"
@@ -353,9 +353,9 @@ Radar <- function(x,
         if (any(data.label.show[,ggi]))
         {
             ind2 <- intersect(ind, which(data.label.show))
-            x.offset <- sign(pos$x[ind2]) * data.label.offset[ggi] * 
+            x.offset <- sign(pos$x[ind2]) * data.label.offset[ggi] *
                         (r.max + abs(max(pos$x[ind2])))/2
-            y.offset <- sign(pos$y[ind2]) * data.label.offset[ggi] * 
+            y.offset <- sign(pos$y[ind2]) * data.label.offset[ggi] *
                         (r.max + abs(max(pos$y[ind2])))/2
             p <- add_trace(p, x = pos$x[ind2] + x.offset, y = pos$y[ind2] + y.offset,
                     type = "scatter", mode = "text", legendgroup = g.list[ggi],

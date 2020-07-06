@@ -62,7 +62,7 @@ Palm <- function(table,
     ErrorIfNotEnoughData(table)
     stat <- attr(table, "statistic")
     #  Automatic formatting with statistic of '%'
-    if (y.tick.format == "" && !is.null(stat) && grepl("%", stat, fixed = TRUE))
+    if (y.tick.format == "" && !is.null(stat) && grepl("%)?$", stat))
         y.tick.format <- ".0%"
 
     if (is.null(dim(table)) || length(dim(table)) == 1L)

@@ -302,7 +302,7 @@ GeographicMap <- function(x,
         coords <- coords[!is.na(country.lookup), ]
 
     # Decide formatting for hovertext
-    if (values.hovertext.format == "" && grepl("%", statistic, fixed = TRUE))
+    if (values.hovertext.format == "" && grepl("%)?$", statistic))
         values.hovertext.format <- ".0%"
     if (percentFromD3(values.hovertext.format))
     {
@@ -457,13 +457,13 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
     panel.bg <- if (background) 'rgba(220,220,220,0.4)' else 'transparent'
 
     # old versions of Geo. Map Standard R could pass NULL for this
-    if (is.null(ocean.color))  
+    if (is.null(ocean.color))
         ocean.color <- formals(GeographicMap)$ocean.color
-    if (is.null(legend.font.color))  
+    if (is.null(legend.font.color))
         legend.font.color <- formals(GeographicMap)$global.font.color
-    if (is.null(legend.font.family))  
+    if (is.null(legend.font.family))
         legend.font.family <- formals(GeographicMap)$global.font.family
-    if (is.null(legend.font.size))  
+    if (is.null(legend.font.size))
         legend.font.size <- formals(GeographicMap)$legend.font.size
 
     ## Read in custom css, modify user-specified values,

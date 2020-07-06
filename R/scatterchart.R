@@ -8,7 +8,7 @@
 #' @param scatter.sizes.as.diameter Whether to show the points with diameter (instead of area, which is the default) proportional to the sizes variable.
 #' @param line.thickness Thickness, in pixels, of the series line
 #' @param line.colors  Character; a vector containing one or more named
-#' @param marker.symbols Character; a vector describing the symbol used for each data series. 
+#' @param marker.symbols Character; a vector describing the symbol used for each data series.
 #'  See \url{https://plotly-r.com/working-with-symbols.html} for a list of symbol names.
 #'  Note there is no corresponding parameter for LabeledScatter.
 #' @param marker.size Size in pixels of marker. This is overriden
@@ -209,7 +209,7 @@ Scatter <- function(x = NULL,
 
     # Adjust some of the the default default tick formats
     tmp.stat <- attr(x, "statistic")
-    if (!is.null(tmp.stat) && grepl("%$", tmp.stat))
+    if (!is.null(tmp.stat) && grepl("%)?$", tmp.stat))
     {
         if (nchar(x.tick.format) == 0 || grepl("[0-9]$", x.tick.format))
             x.tick.format = paste0(x.tick.format, "%")
@@ -601,7 +601,7 @@ Scatter <- function(x = NULL,
 
     ## START PLOTTING
     p <- plot_ly(data.frame(x = x,y = y))
-    
+
     # add invisible trace to force correct order
     tmp.x <- if (is.factor(x)) levels(x)
              else              unique(x)
