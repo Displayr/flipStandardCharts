@@ -162,8 +162,8 @@ Pyramid <- function(x,
                  data.label.prefix, data.label.suffix, decimals = 0)
     if (is.null(x.bounds.maximum) || is.na(x.bounds.maximum) || x.bounds.maximum == "")
         x.bounds.maximum <- NULL
-    x.bounds.minimum <- if (!is.null(x.bounds.maximum)) -x.bounds.maximum
-                        else                             NULL
+    x.bounds.minimum <- if (!is.null(x.bounds.maximum)) -1 * charToNumeric(x.bounds.maximum)
+                        else                            NULL
     x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, chart.matrix, FALSE, is.null(x.tick.distance))
     y.range <- setValRange(y.bounds.minimum, y.bounds.maximum, axisFormat, y.zero, is.null(y.tick.distance), is.bar = TRUE)
     xtick <- setTicks(x.range$min, x.range$max, x.tick.distance, x.data.reversed,
