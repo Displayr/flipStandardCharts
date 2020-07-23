@@ -427,7 +427,8 @@ Scatter <- function(x = NULL,
             scatter.colors <- as.factor(scatter.colors)
 
         scatter.colors.as.numeric <- 1
-        groups <- rep(1, n)
+        groups <- rep(NA, n)
+        groups[not.na] <- 1
         col.tmp <- AsNumeric(scatter.colors, binary = FALSE)
         if (is.null(col.min))
             col.min <- min(col.tmp, na.rm = TRUE)
