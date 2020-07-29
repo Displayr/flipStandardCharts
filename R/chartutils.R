@@ -954,7 +954,7 @@ setValRange <- function(min, max, values, show.zero = FALSE, use.defaults = TRUE
             values <- 0:(length(values$labels)-1)
     }
 
-    if (length(values) == 1)
+    if (length(values) == 1 && is.bar && is.null(min) && is.null(max))
         return(list(min = NULL, max = NULL))
     if (is.factor(values) || is.character(values))
         values <- as.numeric(as.factor(values)) - 1
@@ -985,7 +985,8 @@ setValRange <- function(min, max, values, show.zero = FALSE, use.defaults = TRUE
 
     if (is.bar && length(values) > 1)
     {
-        diff <- min(diff(values))/2
+        diff <- if (length(values) > 1) min(diff(values))/2
+                else                    0.5
         min <- min - diff
         max <- max + diff
     }
