@@ -72,7 +72,7 @@ ColumnMultiColor(
   x.bounds.minimum = NULL,
   x.bounds.maximum = NULL,
   x.tick.distance = NULL,
-  x.zero = TRUE,
+  x.zero = FALSE,
   x.zero.line.width = 0,
   x.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
   x.data.reversed = FALSE,
