@@ -529,11 +529,9 @@ SmallMultiples <- function(x,
                             x = titles.xpos[i], y = titles.ypos[i], font = panel.title.font,
                             xanchor = "center", yanchor = "top", xref = 'paper', yref = 'paper')
     }
-    if (!margin.autoexpand)
-    {
-        res$sizingPolicy$browser$padding <- 0
-        margins$autoexpand <- margin.autoexpand
-    }
+    res$sizingPolicy$browser$padding <- if (margin.autoexpand) 40 # so existing charts don't move
+                                        else                   0
+    margins$autoexpand <- margin.autoexpand
     res <- layout(res, showlegend = is.geo, margin = margins,
                   annotations = annotations)
     result <- list(htmlwidget = res)
