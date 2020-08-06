@@ -54,6 +54,9 @@ test_that("Labeled Scatter arguments",
 {
     expect_error(LabeledScatter(dat, scatter.y.column = 4, scatter.x.column = 6, y.tick.prefix = "$",
         label.auto.placement = TRUE, legend.bubbles.show = FALSE), NA)
+
+    # Sometime, this is what gets passed in from Standard R form
+    expect_error(LabeledScatter(dat, legend.bubbles.show = NULL), NA)
 })
 
 test_that("Labeled Scatter axis type",
