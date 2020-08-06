@@ -147,8 +147,8 @@ Stream <- function(x,
         sg <- sg_axis_y(sg, 0)
     else
         sg <- sg_axis_y(sg, tick_count = y.number.ticks, tick_format = y.tick.format)
-    
-    sg <- sg_axis_x(sg, tick_interval = x.tick.interval, tick_units = tolower(x.tick.units), 
+
+    sg <- sg_axis_x(sg, tick_interval = x.tick.interval, tick_units = tolower(x.tick.units),
             tick_format = x.tick.format)
     sg <- sg_colors(sg, axis_color = global.font.color, tooltip_color = hovertext.font.color)
 
@@ -169,5 +169,6 @@ Stream <- function(x,
 
     result <- list(htmlwidget = sg)
     class(result) <- "StandardChart"
+    attr(result, "ChartType") <- "Stacked Area"
     result
 }

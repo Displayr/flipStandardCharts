@@ -394,6 +394,7 @@ Radar <- function(x,
     p$sizingPolicy$browser$padding <- 0
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
+    attr(result, "ChartType") <- "Radar"
     result
 }
 

@@ -196,12 +196,12 @@ ColumnMultiColor <- function(x,
     hoverfont <- list(color = autoFontColor(colors), size = hovertext.font.size,
                 family = hovertext.font.family)
 
-    # Add invisible trace to force all labels to be shown 
-    # (including missing) 
+    # Add invisible trace to force all labels to be shown
+    # (including missing)
     tmp.min <- if (any(is.finite(chart.matrix))) min(chart.matrix[is.finite(chart.matrix)])
-               else y.bounds.minimum 
+               else y.bounds.minimum
     p <- plot_ly(as.data.frame(chart.matrix))
-    p <- add_trace(p, x = x, 
+    p <- add_trace(p, x = x,
             y = rep(tmp.min, length(x)),
             mode = if (notAutoRange(yaxis)) "markers" else "lines",
             type = "scatter", cliponaxis = TRUE,
@@ -245,6 +245,7 @@ ColumnMultiColor <- function(x,
     )
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
+    attr(result, "ChartType") <- "Clustered Column"
     result
 }
 

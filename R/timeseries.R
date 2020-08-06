@@ -202,6 +202,7 @@ TimeSeries <- function(x = NULL,
 
     result <- list(htmlwidget = dg)
     class(result) <- "StandardChart"
+    attr(result, "ChartType") <- "Line"
     result
 }
 

@@ -242,7 +242,7 @@ LabeledScatter <- function(x = NULL,
         warning("Chart contains overlapping points in the same position.")
     if (is.null(marker.size) || is.na(marker.size))
         marker.size <- 6
-    
+
     x.not.na <- if (is.numeric(x)) is.finite(x) else !is.na(x)
     y.not.na <- if (is.numeric(y)) is.finite(y) else !is.na(y)
     not.na <- x.not.na & y.not.na
@@ -384,16 +384,16 @@ LabeledScatter <- function(x = NULL,
     y <- convertAxis(y, y.axis.type)
 
     tooltips.text <- sprintf("%s (%s, %s)", scatter.labels[not.na],
-        formatByD3(x[not.na], x.tick.format, x.tick.prefix, x.tick.suffix), 
+        formatByD3(x[not.na], x.tick.format, x.tick.prefix, x.tick.suffix),
         formatByD3(y[not.na], y.tick.format, y.tick.prefix, y.tick.suffix))
     if (!.isEmptyName(scatter.sizes.name))
-        tooltips.text <- sprintf("%s\n%s: %s", tooltips.text, scatter.sizes.name, 
+        tooltips.text <- sprintf("%s\n%s: %s", tooltips.text, scatter.sizes.name,
         formatByD3(scatter.sizes[not.na], ""))
     if (!.isEmptyName(scatter.colors.name))
         tooltips.text <- sprintf("%s\n%s: %s", tooltips.text, scatter.colors.name,
         formatByD3(scatter.colors[not.na], ""))
-    
-    p <- rhtmlLabeledScatter::LabeledScatter(X = x[not.na], 
+
+    p <- rhtmlLabeledScatter::LabeledScatter(X = x[not.na],
                        Y = y[not.na],
                        Z = if (is.null(scatter.sizes)) NULL else abs(scatter.sizes[not.na]),
                        x.levels = levels(x),
@@ -472,6 +472,7 @@ LabeledScatter <- function(x = NULL,
 
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
+    attr(result, "ChartType") <- "Marked Scatter"
     result
 }
 

@@ -169,7 +169,7 @@ Area <- function(x,
     if (any(is.na(as.matrix(chart.matrix))))
         warning("Missing values have been interpolated or omitted.")
 
-    
+
     # Some minimal data cleaning
     # Assume formatting and Qtable/attribute handling already done
     # Find gaps which are NOT at the ends of the series
@@ -341,7 +341,7 @@ Area <- function(x,
             if (i == 1)
             {
                 tmp.min <- if (any(is.finite(chart.matrix))) min(chart.matrix[is.finite(chart.matrix)])
-                           else y.bounds.minimum 
+                           else y.bounds.minimum
 
                 p <- add_trace(p, x = x, y = rep(tmp.min, length(x)),
                                type = "scatter", mode = "lines",
@@ -499,6 +499,7 @@ Area <- function(x,
     )
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
+    attr(result, "ChartType") <- if (is.stacked) "Stacked Area" else "Area"
     result
 }
 
