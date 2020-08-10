@@ -541,9 +541,9 @@ Column <- function(x,
 
     # Format axis labels
     axisFormat <- formatLabels(chart.matrix, type, x.tick.label.wrap, x.tick.label.wrap.nchar,
-                               x.tick.format, y.tick.format) 
+                               x.tick.format, y.tick.format)
 
-    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, axisFormat, x.zero, is.null(x.tick.distance), is.bar = TRUE, margin.autoexpand = margin.autoexpand) 
+    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, axisFormat, x.zero, is.null(x.tick.distance), is.bar = TRUE, margin.autoexpand = margin.autoexpand)
     y.range <- setValRange(y.bounds.minimum, y.bounds.maximum, chart.matrix, y.zero, is.null(y.tick.distance))
     xtick <- setTicks(x.range$min, x.range$max, x.tick.distance, x.data.reversed, is.bar = TRUE)
     ytick <- setTicks(y.range$min, y.range$max, y.tick.distance, y.data.reversed)
@@ -671,8 +671,8 @@ Column <- function(x,
             for (i in 1:n2)
             {
                 ind <- which(is.finite(x2[,i])) # ignore NAs
-                ends.show[min(ind),i] <- TRUE 
-                ends.show[max(ind),i] <- TRUE 
+                ends.show[min(ind),i] <- TRUE
+                ends.show[max(ind),i] <- TRUE
             }
         }
         x2.data.label.show <- if (x2.data.label.show.at.ends) ends.show
@@ -713,7 +713,7 @@ Column <- function(x,
                 sz.ind0 <- which(is.finite(x2[,i]))
                 sz.ind <- min(sz.ind0):max(sz.ind0) # plotly ignores NAs at ends but not in the middle
                 size.i <- rep(0, length(sz.ind))
-                size.i[which(x2.marker.show[sz.ind,i])] <- 
+                size.i[which(x2.marker.show[sz.ind,i])] <-
                     x2.marker.size[intersect(which(x2.marker.show[,i]), sz.ind),i]
 
                 x2.markers[[i]] <- list(size = size.i,
@@ -729,7 +729,7 @@ Column <- function(x,
     # Type "scatter" ensures y-axis tick bounds are treated properly
     # but it also adds extra space next to the y-axis
     tmp.min <- if (any(is.finite(chart.matrix))) min(chart.matrix[is.finite(chart.matrix)])
-               else y.bounds.minimum 
+               else y.bounds.minimum
     p <- add_trace(p, x = x.all.labels,
                    y = rep(tmp.min, length(x.all.labels)),
                    mode = if (notAutoRange(yaxis)) "markers" else "lines",
@@ -856,14 +856,14 @@ Column <- function(x,
                 ind.show <- which(x2.data.label.show[,i] & is.finite(x2[,i]))
                 tmp.y <- as.numeric(x2[ind.show, i])
                 tmp.x <- x2.labels[ind.show]
-                tmp.text <- formatByD3(x2[ind.show,i], x2.data.label.format, 
+                tmp.text <- formatByD3(x2[ind.show,i], x2.data.label.format,
                     x2.dlab.prefix[ind.show,i], x2.dlab.suffix[ind.show,i])
-                tmp.offset <- rep(x2.line.thickness[i]/2, length(ind.show)) 
+                tmp.offset <- rep(x2.line.thickness[i]/2, length(ind.show))
                 if (any(x2.marker.show[,i]))
                     tmp.offset[which(x2.marker.show[ind.show,i])] <- pmax(x2.marker.size[ind.show,i], tmp.offset)
 
                 p <- add_trace(p, x = tmp.x, y = tmp.y, yaxis = "y2", xaxis = "x",
-                       type = "scatter", cliponaxis = FALSE, 
+                       type = "scatter", cliponaxis = FALSE,
                        text = tmp.text, mode = "markers+text",
                        marker = list(size = tmp.offset, color = x2.colors[i], opacity = 0),
                        textfont = x2.data.label.font[[i]], textposition = x2.dlab.pos[i],
@@ -902,6 +902,7 @@ Column <- function(x,
     )
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
+    attr(result, "ChartType") <- if (is.stacked) "Stacked Column" else "Clustered Column"
     result
 }
 

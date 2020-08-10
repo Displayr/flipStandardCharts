@@ -304,7 +304,7 @@ Bar <- function(x,
 
         # add invisible line to force all categorical labels to be shown
         tmp.min <- if (any(is.finite(chart.matrix))) min(chart.matrix[is.finite(chart.matrix)])
-                   else x.bounds.minimum 
+                   else x.bounds.minimum
         if (!is.stacked && i == 1)
         {
             p <- add_trace(p, x = rep(tmp.min, length(y)), y = x,
@@ -425,6 +425,7 @@ Bar <- function(x,
     )
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
+    attr(result, "ChartType") <- if (is.stacked) "Stacked Bar" else "Clustered Bar"
     result
 }
 
