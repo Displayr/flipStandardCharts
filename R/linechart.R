@@ -1,6 +1,7 @@
 #' Line
 #'
 #' Line chart
+#' @inherit Column
 #' @inherit Area
 #' @param shape Either "linear" for straight lines between data points or "spline" for curved lines.
 #' @param smoothing Numeric; smoothing if \code{shape} is "spline".
@@ -404,26 +405,13 @@ Line <-   function(x,
             # Sequentially apply annotations
             for (j in seq_along(annotation.list))
             {
+                if (!checkAnnotType(annotation.list[[j]]$type, "Line"))
+                    next
+                annotation.list[[j]]$threshold <- parseThreshold(annotation.list[[j]]$threshold)
                 a.tmp <- annotation.list[[j]]
-                if (!is.null(a.tmp$threshold))
-                {
-                    # Convert string to numeric where possible - otherwise string comparison will be used
-                    tmp.thres <- suppressWarnings(as.numeric(a.tmp$threshold))
-                    if (!is.na(tmp.thres))
-                    {
-                        a.tmp$threshold <- tmp.thres
-                        annotation.list[[j]]$threshold <- tmp.thres
-                    }
-                }
-
-                tmp.dat <- getAnnotData(annot.data, a.tmp$data, i, as.numeric = !grep("Text", a.tmp$type))
-                ind.sel <- if (is.null(a.tmp$threstype) || is.null(a.tmp$threshold))    1:n
-                           else if (a.tmp$threstype == "above threshold")               which(tmp.dat > a.tmp$threshold)
-                           else                                                         which(tmp.dat < a.tmp$threshold)
-
-                # give warnings if annot.type is invalid
+                tmp.dat <- getAnnotData(annot.data, a.tmp$data, i, as.numeric = !grepl("Text", a.tmp$type))
+                ind.sel <- extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype)
                 source.text[ind.sel] <- addAnnotToDataLabel(source.text[ind.sel], a.tmp, tmp.dat[ind.sel])
-
             }
             data.label.offset <- rep(line.thickness[i]/2, length(ind.show))
             if (any(marker.show[,i]))

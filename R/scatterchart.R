@@ -644,6 +644,8 @@ Scatter <- function(x = NULL,
         annot.text <- rep("", length(ind))
         for (j in seq_along(annotation.list))
         {
+            if (!checkAnnotType(annotation.list[[j]]$type, "Scatter"))
+                next
             a.tmp <- annotation.list[[j]]
             tmp.dat <- getAnnotScatterData(annot.data, a.tmp$data, ind)
             a.tmp$threshold <- ParseText(a.tmp$threshold, tmp.dat)
