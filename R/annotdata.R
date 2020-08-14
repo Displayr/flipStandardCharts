@@ -124,7 +124,7 @@ getAnnotData <- function(data, name, series, as.numeric = TRUE)
     else
         new.dat <- data[,ind]
     if (as.numeric)
-        new.dat <- as.numeric(new.dat)
+        new.dat <- suppressWarnings(as.numeric(new.dat))
     return(new.dat)
 }
 
@@ -191,6 +191,11 @@ addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat)
     return(data.label.text)
 }
 
+# This function in used in Bar/Column/Line and only converts
+# text input into numeric values because the y-axis is always numeric
+# Scatterplot uses a slightly more complicated function because
+# the y-axis can also be a date or categorical so the 
+# threshold needs to be converted accordingly.
 
 parseThreshold <- function(x)
 {
