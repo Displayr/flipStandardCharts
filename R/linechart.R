@@ -1,6 +1,7 @@
 #' Line
 #'
 #' Line chart
+#' @inherit Column
 #' @inherit Area
 #' @param shape Either "linear" for straight lines between data points or "spline" for curved lines.
 #' @param smoothing Numeric; smoothing if \code{shape} is "spline".
@@ -29,6 +30,7 @@ Line <-   function(x,
                     shape = c("linear", "spline")[1],
                     smoothing = 1,
                     colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
+                    annotation.list = NULL,
                     opacity = NULL,
                     fit.type = "None", # can be "Smooth" or anything else
                     fit.window.size = 2,
@@ -161,10 +163,11 @@ Line <-   function(x,
                     data.label.suffix = "")
 {
     ErrorIfNotEnoughData(x)
-    # Some minimal data cleaning
-    # Assume formatting and Qtable/attribute handling already done
-    # Find gaps which are NOT at the ends of the series
+    
+    # Store data for chart annotations
+    annot.data <- x
     chart.matrix <- checkMatrixNames(x)
+    
     if (is.null(line.thickness))
         line.thickness <- 3
     matrix.labels <- names(dimnames(chart.matrix))
@@ -395,16 +398,28 @@ Line <-   function(x,
             ind.show <- which(data.label.show[,i] & is.finite(chart.matrix[,i]))
             y <- as.numeric(chart.matrix[ind.show, i])
             x <- x.labels[ind.show]
-            source.text <- paste(dlab.prefix[ind.show,i],
-                 data.label.function(chart.matrix[ind.show, i], decimals = data.label.decimals),
-                 dlab.suffix[ind.show,i], sep = "")
+            source.text <- paste(dlab.prefix[,i],
+                 data.label.function(chart.matrix[, i], decimals = data.label.decimals),
+                 dlab.suffix[,i], sep = "")
 
+            # Sequentially apply annotations
+            for (j in seq_along(annotation.list))
+            {
+                if (!checkAnnotType(annotation.list[[j]]$type, "Line"))
+                    next
+                annotation.list[[j]]$threshold <- parseThreshold(annotation.list[[j]]$threshold)
+                a.tmp <- annotation.list[[j]]
+                tmp.dat <- getAnnotData(annot.data, a.tmp$data, i, as.numeric = !grepl("Text", a.tmp$type))
+                ind.sel <- extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype)
+                source.text[ind.sel] <- addAnnotToDataLabel(source.text[ind.sel], a.tmp, tmp.dat[ind.sel])
+            }
             data.label.offset <- rep(line.thickness[i]/2, length(ind.show))
             if (any(marker.show[,i]))
                 data.label.offset[which(marker.show[ind.show,i])] <- pmax(marker.size[ind.show,i], data.label.offset)
             p <- add_trace(p, x = x, y = y, type = "scatter", name = y.label,
-                   cliponaxis = FALSE, text = source.text, mode = "markers+text",
+                   cliponaxis = FALSE, mode = "markers+text",
                    marker = list(size = data.label.offset, color=colors[i], opacity = 0),
+                   text = source.text[ind.show], 
                    textfont = data.label.font[[i]], textposition = dlab.pos[i],
                    showlegend = FALSE, legendgroup = i,
                    hoverlabel = list(font = list(color = autoFontColor(colors[i]),

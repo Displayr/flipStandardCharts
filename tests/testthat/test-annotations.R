@@ -62,6 +62,14 @@ a3 <- list(list(type = "Circle - filled", data = "p", threstype = "above thresho
 
 a4 <- list(list(type = "Text - after data label", data = "p", threstype = "above threshold", threshold = "-Inf", color = "red", size = 8, width = 1, font.family = "Arial", font.weight = "normal", font.style = "normal", format = ".3f", prefix = " +/-"))
 
+a5 <- list(list(type = "Arrow - up", data = "p", threstype = "below threshold",
+    threshold = "0.05", color = "red", size = 20, width = 1,
+    offset = 0, font.family = "Arial", font.weight = "normal",
+    font.style = "normal"), list(type = "Arrow - down", data = "p",
+    threstype = "above threshold", threshold = "0.05", color = "blue",
+    size = 20, width = 1, offset = 0, font.family = "Arial",
+    font.weight = "normal", font.style = "normal"))
+
 test_that("Annotations",
 {
     expect_error(Column(data.with.stats, data.label.show = TRUE, annotation.list=list(list(data="p", type = "Arrow - up", threstype = "above threshold", threshold = 0.05, color = "#FF0000", size = 15))), NA)
@@ -89,6 +97,15 @@ test_that("Annotations",
     expect_error(SmallMultiples(data.with.stats, "BarMultiColor", data.label.show = TRUE, annotation.list = a3), NA)
 
     expect_error(SmallMultiples(data.with.stats, "ColumnMultiColor", data.label.show = TRUE, annotation.list = a4), NA)
+
+    expect_error(Line(data.with.stats[-10,,], annotation.list = a5, data.label.show = TRUE), NA)
+    expect_error(Line(data.with.stats[-10,,], annotation.list = a5, data.label.show = TRUE,
+        data.label.show.at.ends = TRUE), NA)
+    expect_error(SmallMultiples(data.with.stats[-10,,], "Line", annotation.list = a5,
+        data.label.show = TRUE), NA)
+    expect_error(SmallMultiples(data.with.stats[-10,,], "Line", annotation.list = a5,
+        data.label.show = TRUE, data.label.show.at.ends = TRUE,
+        marker.show.at.ends = TRUE, marker.size = 10), NA)
 })
 
 dat2 <- structure(c(38.8888888888889, 0, 0, 11.1111111111111, 18.1818181818182,

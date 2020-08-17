@@ -11,6 +11,7 @@ Line(
   shape = c("linear", "spline")[1],
   smoothing = 1,
   colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
+  annotation.list = NULL,
   opacity = NULL,
   fit.type = "None",
   fit.window.size = 2,
@@ -157,6 +158,8 @@ will be parsed automatically.}
 \item{smoothing}{Numeric; smoothing if \code{shape} is "spline".}
 
 \item{colors}{Character; a vector containing one or more colors specified as hex codes.}
+
+\item{annotation.list}{Optional list of annotations to modify the data labels.}
 
 \item{opacity}{Opacity of bars as an alpha value (0 to 1).}
 
@@ -442,12 +445,12 @@ if a vector is passed, then each element will be applied to a data series.}
 
 \item{marker.size}{Size in pixels of marker}
 
-\item{marker.border.width}{Width in pixels of border/line around markers; 0 is no line}
+\item{marker.border.width}{Width in pixels of border/line
+around series bars; 0 is no line}
 
 \item{marker.border.colors}{Character; a vector containing one or more colors specified as hex codes.}
 
-\item{marker.border.opacity}{Opacity of border/line around
-markers as an alpha value (0 to 1).}
+\item{marker.border.opacity}{Opacity of border around bars as an alpha value (0 to 1).}
 
 \item{tooltip.show}{Logical; whether to show a tooltip on hover.}
 

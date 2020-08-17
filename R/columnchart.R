@@ -285,7 +285,7 @@ Column <- function(x,
                     colors = ChartColors(max(1, NCOL(x), na.rm = TRUE)),
                     opacity = NULL,
                     type = "Column",
-                    annotation.list = NULL, #list(list(name="p", type = "arrow")),
+                    annotation.list = NULL,
                     fit.type = "None", # can be "Smooth" or anything else
                     fit.window.size = 2,
                     fit.line.colors = colors,
