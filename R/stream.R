@@ -169,6 +169,6 @@ Stream <- function(x,
 
     result <- list(htmlwidget = sg)
     class(result) <- "StandardChart"
-    attr(result, "ChartType") <- "Stacked Area"
+    attr(result, "ChartType") <- "Area Stacked"
     result
 }

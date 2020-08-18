@@ -49,7 +49,7 @@ Donut <- function(x,
     if (is.null(cl$pie.inner.radius))
         cl$pie.inner.radius <- 70
     result <- do.call(Pie, as.list(cl))
-    attr(result, "ChartType") <- "Donut"
+    attr(result, "ChartType") <- "Doughnut"
     return(result)
 }
 

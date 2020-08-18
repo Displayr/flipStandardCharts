@@ -245,6 +245,6 @@ Pie <- function(x,
     result <- list(htmlwidget = donut)
     class(result) <- "StandardChart"
     if (is.null(groups))
-        attr(result, "ChartType") <- type
+        attr(result, "ChartType") <- if (type == "Pie") "Pie" else "Doughnut"
     result
 }

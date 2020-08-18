@@ -345,6 +345,7 @@ BarPictograph <- function(x,
 
     result <- list(htmlwidget = graphic(json.str))
     class(result) <- "StandardChart"
+    attr(result, "ChartType") <- "Bar Clustered"
     result
 
 }

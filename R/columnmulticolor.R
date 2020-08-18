@@ -245,7 +245,7 @@ ColumnMultiColor <- function(x,
     )
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
-    attr(result, "ChartType") <- "Clustered Column"
+    attr(result, "ChartType") <- "Column Clustered"
     result
 }
 

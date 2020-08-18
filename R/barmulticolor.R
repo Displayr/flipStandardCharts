@@ -259,7 +259,7 @@ BarMultiColor <- function(x,
     )
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
-    attr(result, "ChartType") <- "Clustered Bar"
+    attr(result, "ChartType") <- "Bar Clustered"
     result
 }
 

@@ -902,7 +902,7 @@ Column <- function(x,
     )
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
-    attr(result, "ChartType") <- if (is.stacked) "Stacked Column" else "Clustered Column"
+    attr(result, "ChartType") <- if (is.stacked) "Column Stacked" else "Column Clustered"
     result
 }
 

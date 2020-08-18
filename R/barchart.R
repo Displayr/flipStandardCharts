@@ -425,7 +425,7 @@ Bar <- function(x,
     )
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
-    attr(result, "ChartType") <- if (is.stacked) "Stacked Bar" else "Clustered Bar"
+    attr(result, "ChartType") <- if (is.stacked) "Bar Stacked" else "Bar Clustered"
     result
 }
 

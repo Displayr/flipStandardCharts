@@ -765,7 +765,7 @@ Scatter <- function(x = NULL,
     )
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
-    attr(result, "ChartType") <- "Marked Scatter"
+    attr(result, "ChartType") <- "X Y Scatter"
     result
 }
 

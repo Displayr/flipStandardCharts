@@ -499,7 +499,7 @@ Area <- function(x,
     )
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
-    attr(result, "ChartType") <- if (is.stacked) "Stacked Area" else "Area"
+    attr(result, "ChartType") <- if (is.stacked) "Area Stacked" else "Area"
     result
 }
 
