@@ -4,8 +4,10 @@ context("ChartType attribute")
 set.seed(123456)
 dat.1d <- structure(abs(rnorm(10)), .Names=sprintf("2020-01-%s", 1:10))
 dat.2d <- matrix(rpois(60, 4) + 1, 20, 3, dimnames = list(sprintf("%02d/01/2020", 1:20), LETTERS[1:3]))
-charting.funcs <- c("Area", "Bar", "BarMultiColor", "Column", "ColumnMultiColor",
-    "Donut", "LabeledScatter", "Line", "Pie", "Scatter", "Stream", "TimeSeries")
+charting.funcs <- c("Area", "Bar", "BarMultiColor", "BarPictograph", "Bean", "Box",
+    "Column", "ColumnMultiColor", "Density", "Donut", "Histogram", "Heat",
+    "LabeledScatter", "Line", "Palm", "Pie", "Radar", "Scatter",
+    "Stream", "TimeSeries", "Violin")
 
 test_that("ChartType attribute",
 {
@@ -18,10 +20,22 @@ test_that("ChartType attribute",
          expect_true(!is.null(attr(pp, "ChartType")))
     }
 
-    # 2D Pie has no similar Excel charttype
-    pp <- Pie(dat.2d)
-    expect_true(is.null(attr(pp, "ChartType")))
+    # Some other chart types with different input type requirements
+    pp <- GeographicMap(c(France = 1, Germany = 2, Spain = 3))
+    expect_true(!is.null(attr(pp, "ChartType")))
+
+    r.output <- list(
+        list("sets"= list(0), "label"= "Like", "size"= 100),
+        list("sets"= list(1), "label"= "Love", "size"= 50),
+        list("sets"= list(2), "label"= "Dislike", "size"= 100),
+        list("sets"= list(3), "label"= "Hate", "size"= 50),
+        list("sets"= list(0, 1), "size"= 50),
+        list("sets"= list(0, 2), "size"= 0),
+        list("sets"= list(2, 3), "size"= 50))
+    pp <- Venn(r.output)
+    expect_true(!is.null(attr(pp, "ChartType")))
 })
+
 
 
 

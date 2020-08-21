@@ -291,6 +291,7 @@ Sparkline <- function(x,
         plot_bgcolor = "transparent",
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity))
     result <- list(htmlwidget = p)
+    class(result) <- "StandardChart"
     result
 }
 
