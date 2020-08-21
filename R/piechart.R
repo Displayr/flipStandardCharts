@@ -246,5 +246,7 @@ Pie <- function(x,
     class(result) <- "StandardChart"
     if (is.null(groups))
         attr(result, "ChartType") <- if (type == "Pie") "Pie" else "Doughnut"
+    else
+        attr(result, "ChartType") <- "Sunburst"
     result
 }

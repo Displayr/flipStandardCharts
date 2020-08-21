@@ -135,6 +135,7 @@ Palm <- function(table,
 
     result <- list(htmlwidget = palm)
     class(result) <- "StandardChart"
+    attr(result, "ChartType") <- "Radar"
     result
 }
 

@@ -536,6 +536,15 @@ SmallMultiples <- function(x,
                   annotations = annotations)
     result <- list(htmlwidget = res)
     class(result) <- "StandardChart"
+    attr(result, "ChartType") <- switch(chart.type,
+        GeographicMap = "Filled Map",
+        Scatter = "X Y Scatter",
+        Bar = "Bar Clustered",
+        Pyramid = "Bar Clustered",
+        BarMultiColor = "Bar Clustered",
+        Column = "Column Clustered",
+        ColumnMultiColor = "Column Clustered",
+        chart.type) # e.g. Area, Line, Radar
     result
 }
 

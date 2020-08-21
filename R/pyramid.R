@@ -202,29 +202,29 @@ Pyramid <- function(x,
     y <- as.numeric(chart.matrix[,1])
     y.filled <- ifelse(is.finite(y), y, 0)
     x.text <- formatByD3(y, x.hovertext.format)
-    marker = list(color = toRGB(colors, alpha = opacity), 
-                line = list(color = toRGB(marker.border.colors, 
+    marker = list(color = toRGB(colors, alpha = opacity),
+                line = list(color = toRGB(marker.border.colors,
                 alpha = marker.border.opacity), width = marker.border.width))
-    hoverfont <- list(color = autoFontColor(colors), size = hovertext.font.size, 
+    hoverfont <- list(color = autoFontColor(colors), size = hovertext.font.size,
                 family = hovertext.font.family)
 
-    # Add invisible trace to force all labels to be shown 
-    # (including missing) 
+    # Add invisible trace to force all labels to be shown
+    # (including missing)
     tmp.min <- if (any(is.finite(chart.matrix))) min(chart.matrix[is.finite(chart.matrix)])
-               else 0 
+               else 0
     p <- plot_ly(as.data.frame(chart.matrix))
-    p <- add_trace(p, y = x, 
+    p <- add_trace(p, y = x,
             x = rep(tmp.min, length(x)),
             mode = if (notAutoRange(xaxis)) "markers" else "lines",
             type = "scatter", cliponaxis = TRUE,
             hoverinfo = "skip", showlegend = FALSE, opacity = 0)
 
     # Main trace
-    # Using 'base' is preferrable to plotting two bars because semi-transparency 
+    # Using 'base' is preferrable to plotting two bars because semi-transparency
     # and borders is now handled properly
     p <- add_trace(p, x = 2 * y.filled, y = x, base = -y, type = "bar", orientation = "h",
                    marker = marker, hoverlabel = list(font = hoverfont), cliponaxis = FALSE,
-                   hovertemplate = "%{x}<extra>%{y}</extra>") 
+                   hovertemplate = "%{x}<extra>%{y}</extra>")
 
     if (any(data.label.show))
     {
@@ -241,7 +241,7 @@ Pyramid <- function(x,
                    mode = "markers", marker = list(color = colors, opacity = 0),
                    hoverlabel = list(font = list(color = autoFontColor(colors),
                    size = hovertext.font.size, family = hovertext.font.family),
-                   bgcolor = colors), hovertemplate = "%{x}<extra>%{y}</extra>") 
+                   bgcolor = colors), hovertemplate = "%{x}<extra>%{y}</extra>")
 
     annot <- list(setSubtitle(subtitle, subtitle.font, margins),
                            setTitle(title, title.font, margins),
@@ -266,6 +266,7 @@ Pyramid <- function(x,
     )
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
+    attr(result, "ChartType") <- "Bar Clustered"
     result
 }
 

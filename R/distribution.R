@@ -437,6 +437,10 @@ Distribution <-   function(x,
 
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
+    if (n.variables == 1)
+        attr(result, "ChartType") <- "Histogram"
+    else
+        attr(result, "ChartType") <- "Box & Whisker"
     result
 }
 

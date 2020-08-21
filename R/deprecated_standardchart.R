@@ -2675,7 +2675,6 @@ Chart <-   function(y = NULL,
     )
 
     result <- list(htmlwidget = p)
-    class(result) <- "StandardChart"
     result
 }
 

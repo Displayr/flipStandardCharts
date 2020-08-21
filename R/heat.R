@@ -300,6 +300,7 @@ Heat <- function(x,
                                      right_columns_subtitles_font_color = x.tick.font.color)
     result <- list(htmlwidget = heatmap)
     class(result) <- "StandardChart"
+    attr(result, "ChartType") <- "Surface Top View"
     result
 }
 

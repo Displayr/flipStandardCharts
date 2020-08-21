@@ -354,6 +354,7 @@ GeographicMap <- function(x,
 
     result <- list(htmlwidget = map)
     class(result) <- "StandardChart"
+    attr(result, "ChartType") <- "Filled Map"
     result
 }
 

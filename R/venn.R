@@ -106,6 +106,7 @@ Venn <- function(x = NULL,
     vv$sizingPolicy$browser$fill <- TRUE
     result <- list(htmlwidget = vv)
     class(result) <- "StandardChart"
+    attr(result, "ChartType") <- "Bar Clustered"
     result
 }
 
