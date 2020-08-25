@@ -901,7 +901,7 @@ Column <- function(x,
         barmode = barmode
     )
     result <- list(htmlwidget = p)
-    class(result) <- "StandardChart"
+    class(result) <- c("StandardChart", "can-run-in-root-dom")
     attr(result, "ChartType") <- if (is.stacked) "Column Stacked" else "Column Clustered"
     result
 }

@@ -436,7 +436,7 @@ Distribution <-   function(x,
     eval(parse(text = txt))
 
     result <- list(htmlwidget = p)
-    class(result) <- "StandardChart"
+    class(result) <- c("StandardChart", "can-run-in-root-dom")
     if (n.variables == 1)
         attr(result, "ChartType") <- "Histogram"
     else
