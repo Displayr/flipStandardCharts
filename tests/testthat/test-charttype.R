@@ -36,6 +36,33 @@ test_that("ChartType attribute",
     expect_true(!is.null(attr(pp, "ChartType")))
 })
 
+test_that("Use charting options",
+{
+    set.seed(1234)
+    dat <- data.frame('Score' = rnorm(20),
+                      'Cost ($)' = abs(rnorm(20)), # check plotly is handling '$' properly
+                      'Age' = rpois(20, 40),
+                      'Class' = factor(sample(LETTERS[4:1], 20, replace = TRUE), levels = LETTERS[4:1]), # reverse order to check DS-1645
+                      'Sporadic' = c(1:5, NA, 6:10, NA, NA, 11:12, NA, NA, 13:15), # missing values
+                      'Date' = as.Date(sprintf("2017-01-%02d", 20:1)),
+                       check.names = FALSE, stringsAsFactors = FALSE)
+    rownames(dat) <- letters[1:20]
+
+    pp <- Scatter(dat)
+    expect_equal(attr(pp, "ChartType"), "Bubble")
+    pp <- Scatter(dat, scatter.sizes.column = 0)
+    expect_equal(attr(pp, "ChartType"), "X Y Scatter")
+    pp <- LabeledScatter(dat)
+    expect_equal(attr(pp, "ChartType"), "Bubble")
+    pp <- LabeledScatter(dat, scatter.sizes.column = 0)
+    expect_equal(attr(pp, "ChartType"), "X Y Scatter")
+
+    pp <- Line(dat.2d, marker.show = TRUE)
+    expect_equal(attr(pp, "ChartType"), "Line Markers")
+    pp <- Line(dat.2d, marker.show = TRUE, marker.show.at.ends = TRUE)
+    expect_equal(attr(pp, "ChartType"), "Line")
+})
+
 
 
 

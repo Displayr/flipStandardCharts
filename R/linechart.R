@@ -452,7 +452,7 @@ Line <-   function(x,
     )
     result <- list(htmlwidget = p)
     class(result) <- c("StandardChart", "can-run-in-root-dom")
-    attr(result, "ChartType") <- "Line"
+    attr(result, "ChartType") <- if (all(marker.show)) "Line Markers" else "Line"
     result
 }
 

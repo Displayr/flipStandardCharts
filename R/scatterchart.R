@@ -765,7 +765,8 @@ Scatter <- function(x = NULL,
     )
     result <- list(htmlwidget = p)
     class(result) <- c("StandardChart", "can-run-in-root-dom")
-    attr(result, "ChartType") <- "X Y Scatter"
+    attr(result, "ChartType") <- if (!is.null(scatter.sizes)) "Bubble"
+                                 else                         "X Y Scatter"
     result
 }
 

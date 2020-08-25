@@ -472,7 +472,8 @@ LabeledScatter <- function(x = NULL,
 
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
-    attr(result, "ChartType") <- "X Y Scatter"
+    attr(result, "ChartType") <- if (!is.null(scatter.sizes)) "Bubble"
+                                 else                         "X Y Scatter"
     result
 }
 
