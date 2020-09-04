@@ -10,5 +10,11 @@ print.StandardChart <- function(x, ...)
 {
     if (is.null(x$htmlwidget))
         stop("StandardChart object does not contain htmlwidget")
-    return(print(x$htmlwidget))
+    widget <- x$htmlwidget
+    # Displayr authors of widgets tend to put other attributes (like ChartData) into this encapsulating
+    # object (`x`), and then rely on the implicit `print()` on our R servers to extract the
+    # widget that should be displayed.  For their convenience we copy across this attribute.
+    if (inherits(x, "can-run-in-root-dom"))
+        class(widget) <- append("can-run-in-root-dom", class(widget))
+    return(print(widget))
 }
