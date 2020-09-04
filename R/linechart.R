@@ -451,7 +451,7 @@ Line <-   function(x,
             font = list(size = hovertext.font.size, family = hovertext.font.family))
     )
     result <- list(htmlwidget = p)
-    class(result) <- c("StandardChart", "can-run-in-root-dom")
+    class(result) <- "StandardChart"
     attr(result, "ChartType") <- if (all(marker.show)) "Line Markers" else "Line"
     result
 }

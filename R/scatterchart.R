@@ -763,8 +763,9 @@ Scatter <- function(x = NULL,
         hoverlabel = list(namelength = -1, bordercolor = "transparent",
             font = list(size = hovertext.font.size, family = hovertext.font.family))
     )
+    attr(p, "can-run-in-root-dom") <- TRUE
     result <- list(htmlwidget = p)
-    class(result) <- c("StandardChart", "can-run-in-root-dom")
+    class(result) <- "StandardChart"
     attr(result, "ChartType") <- if (!is.null(scatter.sizes)) "Bubble"
                                  else                         "X Y Scatter"
     result

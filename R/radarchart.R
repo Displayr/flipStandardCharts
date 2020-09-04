@@ -392,8 +392,9 @@ Radar <- function(x,
 
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
+    attr(p, "can-run-in-root-dom") <- TRUE
     result <- list(htmlwidget = p)
-    class(result) <- c("StandardChart", "can-run-in-root-dom")
+    class(result) <- "StandardChart"
     attr(result, "ChartType") <- "Radar"
     result
 }

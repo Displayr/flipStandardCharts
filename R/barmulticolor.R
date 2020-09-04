@@ -257,9 +257,10 @@ BarMultiColor <- function(x,
         bargap = bar.gap,
         barmode = 'overlay'
     )
+    attr(p, "can-run-in-root-dom") <- TRUE
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
-    class(result) <- c("StandardChart", "can-run-in-root-dom")
+    class(result) <- "StandardChart"
     attr(result, "ChartType") <- "Bar Clustered"
     result
 }

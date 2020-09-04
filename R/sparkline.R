@@ -290,8 +290,9 @@ Sparkline <- function(x,
 			family = hover.font.family)),
         plot_bgcolor = "transparent",
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity))
+    attr(p, "can-run-in-root-dom") <- TRUE
     result <- list(htmlwidget = p)
-    class(result) <- c("StandardChart", "can-run-in-root-dom")
+    class(result) <- "StandardChart"
     result
 }
 
