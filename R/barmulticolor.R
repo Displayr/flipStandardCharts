@@ -260,7 +260,6 @@ BarMultiColor <- function(x,
     attr(p, "can-run-in-root-dom") <- TRUE
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
-    class(result) <- "StandardChart"
     attr(result, "ChartType") <- "Bar Clustered"
     result
 }

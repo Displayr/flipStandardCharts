@@ -2674,6 +2674,7 @@ Chart <-   function(y = NULL,
         barmode = barmode
     )
 
+    attr(p, "can-run-in-root-dom") <- TRUE
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     result
