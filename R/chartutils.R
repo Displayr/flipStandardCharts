@@ -366,6 +366,13 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE,
         x.fit <- c(x.fit, max(tmp.dat$x))
     y.fit <- if ("gam" %in% class(tmp.fit)) suppressWarnings(try(predict(tmp.fit, data.frame(x = x.fit), se = CI.show, type = "response")))
              else                           suppressWarnings(try(predict(tmp.fit, data.frame(x = x.fit), se = CI.show)))
+    if (inherits(y.fit, "try-error"))
+    {
+        warning("Could not fit trend line to data. Check that you expect to map a single x-value to a single y-value.") 
+        y.fit <- NULL
+        lb <- NULL
+        ub <- NULL
+    }
     if (tmp.is.factor)
         x.fit <- tmp.dat$xorig
     if (CI.show)

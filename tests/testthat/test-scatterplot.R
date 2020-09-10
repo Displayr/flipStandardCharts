@@ -77,3 +77,43 @@ test_that("Labeled Scatter axis type",
         x.tick.format = "%B %d"), NA)
 })
 
+test_that("Scatter with trend line that cannot be predicted",
+{
+    dat.no.xvariation <- structure(list(Started = structure(
+        c(3L, 3L, 3L, 3L, 3L, 3L,
+        3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L,
+        3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L,
+        3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L,
+        3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L,
+        3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L,
+        3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L),
+        .Label = c("9/7/2020", "9/8/2020", "9/9/2020"),
+        class = c("ordered", "factor")), DurationMilliseconds = c(NA,
+        NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 455.12, 663.41,
+        1.1, 1419.085, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 448.115,
+        660.445, 1.13, 1412.935, 1718.585, 46865.67, 0.38, 2743.15, NA,
+        NA, NA, NA, NA, 376.55, 624.395, 0.6, 1094.925, NA, 377.97, 631.765,
+        0.41, 1104.43, 745.95, 3633.58, 0.245, 2695.135, NA, NA, NA,
+        NA, 812.935, 640.84, 0.52, 1161.53, NA, 822.665, 687.69, 1.26,
+        1360.375, 1196.515, 3577.61, 0.245, 2740.4, NA, NA, NA, NA, 364.275,
+        640.185, 15.15, 1132.37, NA, 361.205, 633.53, 0.4, 1085.64, 696.92,
+        4001.16, 0.245, 2670.62, NA, NA, NA, NA, NA, NA, NA, NA, NA,
+        NA, NA, NA)), assigned.rownames = FALSE,
+        scatter.variable.indices = c(x = 1,
+        y = 2, sizes = NA, colors = NA, groups = NA), row.names = c(1L,
+        2L, 5L, 8L, 11L, 14L, 17L, 20L, 23L, 41L, 65L, 103L, 141L, 144L,
+        149L, 150L, 151L, 152L, 170L, 225L, 279L, 305L, 318L, 338L, 360L,
+        395L, 415L, 472L, 518L, 519L, 520L, 521L, 537L, 538L, 539L, 540L,
+        607L, 608L, 617L, 626L, 636L, 641L, 642L, 643L, 644L, 660L, 700L,
+        701L, 702L, 703L, 719L, 720L, 721L, 722L, 785L, 878L, 939L, 1007L,
+        1012L, 1013L, 1014L, 1015L, 1031L, 1105L, 1106L, 1107L, 1108L,
+        1124L, 1125L, 1126L, 1127L, 1190L, 1199L, 1208L, 1217L, 1222L,
+        1223L, 1224L, 1225L, 1241L, 1277L, 1278L, 1279L, 1280L, 1296L,
+        1297L, 1298L, 1299L, 1362L, 1363L, 1366L, 1369L, 1372L, 1375L,
+        1378L, 1381L, 1384L, 1387L, 1426L, 1465L), class = "data.frame")
+
+    expect_warning(Scatter(dat.no.xvariation, fit.type = "Loess", fit.CI.show = FALSE),
+                   "Could not fit trend line to data. Check that you expect to map a single x-value to a single y-value.")
+})
+
+
