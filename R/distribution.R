@@ -39,7 +39,7 @@
 #' @param quartile.color Defaults to "black",
 #' @param range.color Defaults to "black"
 #' @param values.color Defaults to "Green"
-#' @param density.color Defaults to "Green"
+#' @param density.color Defaults to "Green". This can be a single color or a vector of colors, with the same length as the number of variables
 #' @param title Character; chart title.
 #' @param title.font.family Character; title font family. Can be "Arial Black",
 #' "Arial", "Comic Sans MS", "Courier New", "Georgia", "Impact",
@@ -394,7 +394,7 @@ Distribution <-   function(x,
         wgt <- wgt[not.missing]
         wgt <- prop.table(wgt) # Rebasing the weight (Required by the density function)
         from <- if (automatic.lower.density) rng[1] else from
-        p <- addDensities(p, values, wgt, labels[v], vertical, show.density, show.mirror.density, density.type, histogram.cumulative, histogram.counts, bins, maximum.bins, box.points, category.axis, value.axis, density.color, values.color, bw, adjust, kernel, n, from, to, cut, hover.on)
+        p <- addDensities(p, values, wgt, labels[v], vertical, show.density, show.mirror.density, density.type, histogram.cumulative, histogram.counts, bins, maximum.bins, box.points, category.axis, value.axis, density.color[v], values.color, bw, adjust, kernel, n, from, to, cut, hover.on)
         p <- addSummaryStatistics(p, values, wgt, vertical,  show.mean, show.median, show.quartiles, show.range, show.values,
                                  mean.color, median.color, quartile.color, range.color, values.color,
                                  category.axis, axisName(vertical, v, 1, TRUE), value.axis, value.axis.2)

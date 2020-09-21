@@ -112,7 +112,7 @@ the values of \code{x}, or, a vector where the weights is assumed applicable for
 
 \item{range.color}{Defaults to "black"}
 
-\item{density.color}{Defaults to "Green"}
+\item{density.color}{Defaults to "Green". This can be a single color or a vector of colors, with the same length as the number of variables}
 
 \item{bw}{The smoothing bandwidth to be used when creating a Density,
 Bean, or Violin plot. This defaults to \code{"nrd0"}, whereas \code{"SJ"} may often be superior (see \code{\link{density}}).

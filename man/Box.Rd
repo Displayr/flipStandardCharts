@@ -85,7 +85,7 @@ the values of \code{x}, or, a vector where the weights is assumed applicable for
 
 \item{show.values}{Produces a rug plot of individual values.}
 
-\item{density.color}{Defaults to "Green"}
+\item{density.color}{Defaults to "Green". This can be a single color or a vector of colors, with the same length as the number of variables}
 
 \item{values.color}{Defaults to "Green"}
 

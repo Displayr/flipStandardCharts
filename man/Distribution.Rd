@@ -161,7 +161,7 @@ between 1.5 and 3 IQR from the 1st and 3rd quartile with un-filled circles. \cod
 
 \item{values.color}{Defaults to "Green"}
 
-\item{density.color}{Defaults to "Green"}
+\item{density.color}{Defaults to "Green". This can be a single color or a vector of colors, with the same length as the number of variables}
 
 \item{global.font.family}{Character; font family for all occurrences of any
 font attribute for the chart unless specified individually.}
