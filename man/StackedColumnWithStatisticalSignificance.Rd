@@ -18,6 +18,7 @@ StackedColumnWithStatisticalSignificance(
   annot.zstatistic.up.color = "#0000FF",
   annot.zstatistic.down.color = "#FF0000",
   annot.colcmp.colors = colors,
+  annot.legend.sep = " ",
   opacity = NULL,
   type = "Stacked",
   global.font.family = "Arial",
@@ -47,6 +48,7 @@ StackedColumnWithStatisticalSignificance(
   footer.font.size = 8,
   footer.wrap = FALSE,
   footer.wrap.nchar = 100,
+  footer.align = "center",
   background.fill.color = "transparent",
   background.fill.opacity = 1,
   charting.area.fill.color = background.fill.color,
@@ -191,6 +193,10 @@ of that column, however, if \code{tranpose} is true, then a different
 vector of colors with the same length as the number of rows should be
 used instead.}
 
+\item{annot.legend.sep}{The string used between different entries describing
+the annotation symbols in the legend. By default it is a space as it works
+with line-wrap etc. But "<br>" can also be a good option for readibility.}
+
 \item{opacity}{Opacity of bars as an alpha value (0 to 1).}
 
 \item{type}{One of "Column", "Stacked Column" or "100\% Stacked Column"}
@@ -264,6 +270,8 @@ character format (e.g. "black") or an a hex code.}
 
 \item{footer.wrap.nchar}{Number of characters (approximately) in each
 line of the footer when \code{footer.wrap} \code{TRUE}.}
+
+\item{footer.align}{One of "center", "left" or "right".}
 
 \item{background.fill.color}{Background color in character format 
 (e.g. "black") or a hex code.}

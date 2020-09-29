@@ -22,6 +22,9 @@
 #' @param annot.arrow.offset Horizontal offset (towards the right) of 
 #'  the arrows from the bars. If not specified, then it will be
 #'  determined from \code{bar.gap}.
+#' @param annot.legend.sep The string used between different entries describing
+#'  the annotation symbols in the legend. By default it is a space as it works
+#'  with line-wrap etc. But "<br>" can also be a good option for readibility.
 #' @param annot.arrow.symbols A vector of four characters (or html symbols)
 #'  used to show arrows. They are (in order):
 #'  1. Down arrow for z-Statistics and upper-case Column Comparisons
@@ -73,6 +76,7 @@
 #' @param footer.wrap Logical; whether the footer text should be wrapped.
 #' @param footer.wrap.nchar Number of characters (approximately) in each
 #'  line of the footer when \code{footer.wrap} \code{TRUE}.
+#' @param footer.align One of "center", "left" or "right".
 #' @param grid.show Logical; whether to show grid lines.
 #' @param opacity Opacity of bars as an alpha value (0 to 1).
 #' @param colors Character; a vector containing one or more colors specified
@@ -251,11 +255,12 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     annot.footer.show = TRUE,
                     annot.arrow.size = 15,
                     annot.arrow.offset = NULL,
-                    annot.arrow.symbols = c("&#129051;", "&#129049;", "&#8675;", "&#8673;"), 
+                    annot.arrow.symbols = c("&#129051;", "&#129049;", "&#8675;", "&#8673;"),
                     annot.zstatistic.confidence = 0.05,
                     annot.zstatistic.up.color = "#0000FF",
                     annot.zstatistic.down.color = "#FF0000",
                     annot.colcmp.colors = colors,
+                    annot.legend.sep = " ",
                     opacity = NULL,
                     type = "Stacked",
                     global.font.family = "Arial",
@@ -286,6 +291,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     footer.font.size = 8,
                     footer.wrap = FALSE,
                     footer.wrap.nchar = 100,
+                    footer.align = "center",
                     background.fill.color = "transparent",
                     background.fill.opacity = 1,
                     charting.area.fill.color = background.fill.color,
@@ -500,7 +506,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                 rep(c("at the 99.9% confidence level", 
                 "at the 95% confidence level"), each = 2*n.colcmp))
             footer <- paste0(footer,
-                paste(tmp.arrow.html, arrow.desc, collapse = "\t"))
+                paste(tmp.arrow.html, arrow.desc, sep = "", collapse = annot.legend.sep))
         }
 
     } else if ("z-Statistic" %in% dimnames(annot.data)[[3]])
@@ -514,17 +520,17 @@ StackedColumnWithStatisticalSignificance <- function(x,
         up.arrow.html <- paste0("<span style='color:",
             annot.zstatistic.up.color, "; font-size:", annot.arrow.size,
             "px'>", annot.arrow.symbols[2], "</span>")
+        arrow.html <- c(up.arrow.html, down.arrow.html)
 
         ind <- which(annot.data[,,ind.zstat] < -z.threshold)
         annot.text[ind] <- down.arrow.html
         ind <- which(annot.data[,,ind.zstat] > z.threshold)
         annot.text[ind] <- up.arrow.html
         if (annot.footer.show)
-            footer <- paste0(footer, down.arrow.html, 
-            "Significantly smaller at the ",
-            round((1-annot.zstatistic.confidence) * 100), "% confidence level ",
-            up.arrow.html, "Significantly larger at the ", 
-            round((1-annot.zstatistic.confidence) * 100), "% confidence level")
+            footer <- paste0(footer,
+            paste(arrow.html, sprintf("Significantly smaller at the %s%% confidence level",
+            round((1-annot.zstatistic.confidence) * 100)),
+            sep = "", collapse = annot.legend.sep))
     }
 
     legend.show <- setShowLegend(legend.show, NCOL(chart.matrix))
@@ -717,7 +723,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
     annotations <- NULL
     n <- length(annotations)
     annotations[[n+1]] <- setTitle(title, title.font, margins)
-    annotations[[n+2]] <- setFooter(footer, footer.font, margins)
+    annotations[[n+2]] <- setFooter(footer, footer.font, margins, x.align = footer.align)
     annotations[[n+3]] <- setSubtitle(subtitle, subtitle.font, margins)
     annotations <- Filter(Negate(is.null), annotations)
 
@@ -769,13 +775,13 @@ convertColumnLettersToArrows <- function(colcmp.matrix, chart.matrix, arrow.html
                 if (cc == tolower(cc))
                 {
                     ind <- which(letters == cc)
-                    tmp <- if (chart.matrix[i,j] < chart.matrix[ind,j]) arrow.html[ind,3]
+                    tmp <- if (chart.matrix[i,j] < chart.matrix[i,ind]) arrow.html[ind,3]
                            else                                         arrow.html[ind,4]
 
                 } else
                 {
                     ind <- which(LETTERS == cc)
-                    tmp <- if (chart.matrix[i,j] < chart.matrix[ind,j]) arrow.html[ind,1]
+                    tmp <- if (chart.matrix[i,j] < chart.matrix[i,ind]) arrow.html[ind,1]
                            else                                         arrow.html[ind,2]
                 }
                 res <- paste(res, tmp)

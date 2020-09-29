@@ -863,17 +863,18 @@ setSubtitle <- function(subtitle, subtitle.font, margins)
                 yref = "paper", y = 1.0, yanchor = "bottom", showarrow = FALSE))
 }
 
-setFooter <- function(footer, footer.font, margins)
+setFooter <- function(footer, footer.font, margins, x.align = "center")
 {
     if (sum(nchar(footer)) == 0)
         return(NULL)
+    xpos <- switch(x.align, center = 0.5, left = 0, right = 1)
 
     footer.nline <- sum(gregexpr("<br>", footer)[[1]] > -1) + 1
     footer.npad <- max(0, ceiling(margins$b/footer.font$size/1.25) - footer.nline - 2)
     footer <- paste0("&nbsp;", paste(rep("<br>", footer.npad), collapse = ""), footer)
-    return(list(text = footer, font = footer.font,
-                xref = "paper", x = 0.5, yref = "paper", y = 0.0,
-                yanchor = "top", xanchor = "center", showarrow = FALSE))
+    return(list(text = footer, font = footer.font, align = x.align,
+                xref = "paper", x = xpos, yref = "paper", y = 0.0,
+                yanchor = "top", xanchor = x.align, showarrow = FALSE))
 }
 
 # This differs from as.numeric in that it returns NULL
@@ -1095,43 +1096,61 @@ cum.signed.data <- function(x)
 
 ## Takes a single string and puts <br> in place of the closest space preceding the n= value character.
 ## E.g. if n= 20 then count 20 characters.  The space preceding character 20 is replaced by "<br>".
-lineBreakEveryN <- function(x, n = 21, remove.empty)
+lineBreakEveryN <- function(x, n = 21, remove.empty = TRUE)
 {
     if (n <= 0)
         stop("Wrap line length cannot be smaller than 1")
 
-    w.list <- strsplit(x, " ")[[1]]
-    if (remove.empty)
-        w.list <- w.list[which(nchar(w.list) > 0)]
-    if (length(w.list) == 0)
-        return(" ")
-    final <- w.list[1]
-    c.len <- lengthLastLine(final)
-    for (ww in w.list[-1])
+    patt <- if (remove.empty) "\\s+"
+            else              " "
+
+    final <- ""
+    next.wb <- 0
+    c.len <- 0
+    max.len <- nchar(x)
+    while (next.wb != -1)
     {
-        new.len <- c.len + nchar(ww) + 1
-        if (new.len > n)
+        next.wb <- regexpr(patt, x, perl = TRUE)
+        next.html <- regexpr("<.*?>", x, perl = TRUE)
+        if (next.wb == -1)
+            break
+
+        if (next.html != -1 && next.html < next.wb)
         {
-            final <- paste0(final, "<br>", ww)
-            c.len <- lengthLastLine(ww)
-        } else if (grepl("<br>", ww))
-        {
-            final <- paste0(final, " ", ww)
-            c.len <- lengthLastLine(ww)
+            tmp.text <- substr(x, 1, next.html + attr(next.html, "match.length") - 1) 
+            if (c.len + next.html > n)
+            {
+                final <- paste0(final, "<br>", tmp.text)
+                c.len <- next.html
+
+            } else
+            {
+                final <- paste0(final, tmp.text)
+                c.len <- c.len + next.html
+            }
+            if (grepl("<br>", tmp.text))
+                c.len <- 0
+            x <- substr(x, next.html + attr(next.html, "match.length"), max.len)
+
         } else
         {
-            final <- paste0(final, " ", ww)
-            c.len <- new.len
+            tmp.text <- substr(x, 1, next.wb - 1)
+            if (c.len + next.wb > n)
+            {
+                final <- paste0(final, "<br>", tmp.text)
+                c.len <- next.wb
+
+            } else
+            {
+                final <- paste0(final, " ", tmp.text)
+                c.len <- c.len + next.wb
+            }
+            x <- substr(x, next.wb + attr(next.wb, "match.length"), max.len)
         }
     }
-    final
+    final <- paste(final, x, sep = if (nchar(final) > 0) " " else "")
 }
 
-lengthLastLine <- function(x)
-{
-    tmp <- strsplit(x, split = "<br>")[[1]]
-    return(nchar(tmp[length(tmp)]))
-}
 
 #' Format long labels for html by truncating and wrapping
 #'
