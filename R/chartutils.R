@@ -1104,10 +1104,13 @@ lineBreakEveryN <- function(x, n = 21, remove.empty = TRUE)
     patt <- if (remove.empty) "\\s+"
             else              " "
 
-    final <- ""
-    next.wb <- 0
-    c.len <- 0
     max.len <- nchar(x)
+    next.wb <- regexpr(patt, x, perl = TRUE)
+    if (next.wb == -1 || is.na(next.wb))
+        return(x)
+    final <- substr(x, 1, next.wb - 1)
+    c.len <- next.wb - 1
+    x <- substr(x, next.wb + attr(next.wb, "match.length"), max.len)
     while (next.wb != -1)
     {
         next.wb <- regexpr(patt, x, perl = TRUE)
@@ -1121,7 +1124,7 @@ lineBreakEveryN <- function(x, n = 21, remove.empty = TRUE)
             if (c.len + next.html > n)
             {
                 final <- paste0(final, "<br>", tmp.text)
-                c.len <- next.html
+                c.len <- next.html - 1
 
             } else
             {
@@ -1135,20 +1138,21 @@ lineBreakEveryN <- function(x, n = 21, remove.empty = TRUE)
         } else
         {
             tmp.text <- substr(x, 1, next.wb - 1)
+
             if (c.len + next.wb > n)
             {
                 final <- paste0(final, "<br>", tmp.text)
-                c.len <- next.wb
+                c.len <- next.wb - 1
 
             } else
             {
-                final <- paste0(final, " ", tmp.text)
+                final <- paste(final, tmp.text, sep = " ")
                 c.len <- c.len + next.wb
             }
             x <- substr(x, next.wb + attr(next.wb, "match.length"), max.len)
         }
     }
-    final <- paste(final, x, sep = if (nchar(final) > 0) " " else "")
+    final <- paste(final, x, sep = if (c.len + nchar(x) + 1 > n) "<br>" else " ")
 }
 
 
