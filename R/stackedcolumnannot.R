@@ -16,7 +16,8 @@
 #' @param transpose Swaps the rows and columns of \code{x}. The rows 
 #'  and columns of the additional statistics used to create annotations 
 #'  are also respected. Note that PrepareData is not used before the function.
-#' @param row.names.to.remove Names of rows to hide in chart.
+#' @param row.names.to.remove Names of rows that are not shown in the chart.
+#' @param column.names.to.remove Names of columns that are not shown in the chart.
 #' @param annot.footer.show Append a description explaining annotations in chart footer.
 #' @param annot.arrow.size Size of the arrows in pixels.
 #' @param annot.arrow.offset Horizontal offset (towards the right) of 
@@ -251,6 +252,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     num.categories.below.axis = 0,
                     transpose = FALSE,
                     row.names.to.remove = "NET, SUM, Total",
+                    column.names.to.remove = "NET, SUM, Total",
                     colors = ChartColors(max(1, NCOL(x), na.rm = TRUE)),
                     annot.footer.show = TRUE,
                     annot.arrow.size = 15,
@@ -289,8 +291,8 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     footer.font.family = global.font.family,
                     footer.font.color = global.font.color,
                     footer.font.size = 8,
-                    footer.wrap = FALSE,
-                    footer.wrap.nchar = 100,
+                    footer.wrap = TRUE,
+                    footer.wrap.nchar = 150,
                     footer.align = "center",
                     background.fill.color = "transparent",
                     background.fill.opacity = 1,
@@ -393,7 +395,13 @@ StackedColumnWithStatisticalSignificance <- function(x,
     if (length(dim(x)) < 3)
         stop("Input data should be a Q Table with cell statistics ",
         "'z-Statistic' or 'Column Comparisons'.")
-    x <- RemoveRowsAndOrColumns(x, row.names.to.remove = row.names.to.remove)
+
+    # For column comparisons use NET/SUM 
+    # Also assign column letters to colnames before removing columns 
+
+    x <- RemoveRowsAndOrColumns(x, 
+            row.names.to.remove = row.names.to.remove,
+            column.names.to.remove = column.names.to.remove)
     if (transpose)
         x <- aperm(x, c(2,1,3))
 
@@ -492,17 +500,17 @@ StackedColumnWithStatisticalSignificance <- function(x,
                         else           colnames(chart.matrix)
         n.colcmp <- length(colcmp.names)
         annot.colcmp.colors <- rep(annot.colcmp.colors, length = n.colcmp)
-        tmp.arrow.html <- matrix(nrow = n.colcmp, ncol = 4,
+        tmp.arrow.html <- matrix(nrow = n.colcmp, ncol = 2,
             sprintf("<span style=\"color:%s; font-size:%.0fpx;\">%s</span>",
-                rep(annot.colcmp.colors, 4), annot.arrow.size, 
-                rep(annot.arrow.symbols, each = n.colcmp)))
+                rep(annot.colcmp.colors, 2), annot.arrow.size, 
+                rep(annot.arrow.symbols[c(2,4)], each = n.colcmp)))
         annot.text <- convertColumnLettersToArrows(annot.data[,,ind.colcmp],
-            chart.matrix, tmp.arrow.html)
+               tmp.arrow.html)
         if (annot.footer.show)
         {
             arrow.desc <- sprintf("Significantly %s %s %s",
-                rep(c("less than", "greater than", "less than", "greater than"), each = n.colcmp),
-                rep(colcmp.names, 4),
+                "greater than",
+                rep(colcmp.names, 2),
                 rep(c("at the 99.9% confidence level", 
                 "at the 95% confidence level"), each = 2*n.colcmp))
             footer <- paste0(footer,
@@ -650,7 +658,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     data.label.text = data.annotations$text[,i],
                     data.label.sign = getSign(data.annotations$y[,i], yaxis),
                     NULL, annot.data, i,
-                    xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x", yaxis = "y",
+                    xaxis = "x2", yaxis = "y",
                     data.label.font[[i]], is.stacked, data.label.centered)
     }
 
@@ -754,10 +762,10 @@ StackedColumnWithStatisticalSignificance <- function(x,
 }
 
 
-convertColumnLettersToArrows <- function(colcmp.matrix, chart.matrix, arrow.html)
+convertColumnLettersToArrows <- function(colcmp.matrix, arrow.html)
 {
-    n <- nrow(chart.matrix)
-    m <- ncol(chart.matrix)
+    n <- nrow(colcmp.matrix)
+    m <- ncol(colcmp.matrix)
     annot.txt <- matrix("", n, m)
 
     for (i in 1:n)
@@ -775,14 +783,12 @@ convertColumnLettersToArrows <- function(colcmp.matrix, chart.matrix, arrow.html
                 if (cc == tolower(cc))
                 {
                     ind <- which(letters == cc)
-                    tmp <- if (chart.matrix[i,j] < chart.matrix[i,ind]) arrow.html[ind,3]
-                           else                                         arrow.html[ind,4]
+                    tmp <- arrow.html[ind,2]
 
                 } else
                 {
                     ind <- which(LETTERS == cc)
-                    tmp <- if (chart.matrix[i,j] < chart.matrix[i,ind]) arrow.html[ind,1]
-                           else                                         arrow.html[ind,2]
+                    tmp <- arrow.html[ind,1]
                 }
                 res <- paste(res, tmp)
             }
