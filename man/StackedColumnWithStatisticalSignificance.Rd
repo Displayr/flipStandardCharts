@@ -9,15 +9,14 @@ StackedColumnWithStatisticalSignificance(
   num.categories.below.axis = 0,
   transpose = FALSE,
   row.names.to.remove = "NET, SUM, Total",
+  column.names.to.remove = "NET, SUM, Total",
   colors = ChartColors(max(1, NCOL(x), na.rm = TRUE)),
   annot.footer.show = TRUE,
   annot.arrow.size = 15,
+  annot.arrow.colors = ChartColors(9, "Strong colors"),
   annot.arrow.offset = NULL,
-  annot.arrow.symbols = c("&#129051;", "&#129049;", "&#8675;", "&#8673;"),
+  annot.arrow.symbols = c("&#129051;", "&#129049;", "&#8673;"),
   annot.zstatistic.confidence = 0.05,
-  annot.zstatistic.up.color = "#0000FF",
-  annot.zstatistic.down.color = "#FF0000",
-  annot.colcmp.colors = colors,
   annot.legend.sep = " ",
   opacity = NULL,
   type = "Stacked",
@@ -28,12 +27,10 @@ StackedColumnWithStatisticalSignificance(
   column.totals.above.font.family = global.font.family,
   column.totals.above.font.color = global.font.color,
   column.totals.above.font.size = 10,
-  column.totals.above.decimals = 0,
   column.totals.below.show = FALSE,
   column.totals.below.font.family = global.font.family,
   column.totals.below.font.color = global.font.color,
   column.totals.below.font.size = 10,
-  column.totals.below.decimals = 0,
   title = "",
   title.font.family = global.font.family,
   title.font.color = global.font.color,
@@ -46,7 +43,7 @@ StackedColumnWithStatisticalSignificance(
   footer.font.family = global.font.family,
   footer.font.color = global.font.color,
   footer.font.size = 8,
-  footer.wrap = FALSE,
+  footer.wrap = TRUE,
   footer.wrap.nchar = 100,
   footer.align = "center",
   background.fill.color = "transparent",
@@ -159,7 +156,9 @@ x-axis pointing downwards.}
 and columns of the additional statistics used to create annotations 
 are also respected. Note that PrepareData is not used before the function.}
 
-\item{row.names.to.remove}{Names of rows to hide in chart.}
+\item{row.names.to.remove}{Names of rows that are not shown in the chart.}
+
+\item{column.names.to.remove}{Names of columns that are not shown in the chart.}
 
 \item{colors}{Character; a vector containing one or more colors specified
 as hex codes.}
@@ -168,30 +167,23 @@ as hex codes.}
 
 \item{annot.arrow.size}{Size of the arrows in pixels.}
 
+\item{annot.arrow.colors}{A vector of colors for the arrows.
+For column comparisons, the number of colors should equal the number of columns.
+For z-Statistic, the colors are assigned to 'down' and 'up' arrows.}
+
 \item{annot.arrow.offset}{Horizontal offset (towards the right) of 
 the arrows from the bars. If not specified, then it will be
 determined from \code{bar.gap}.}
 
-\item{annot.arrow.symbols}{A vector of four characters (or html symbols)
+\item{annot.arrow.symbols}{A vector of three characters (or html symbols)
 used to show arrows. They are (in order):
-1. Down arrow for z-Statistics and upper-case Column Comparisons
-2. Up arrow for lower-case Column Comparisons
-3. Down arrow for z-Statistics and upper-case Column Comparisons
-4. Up arrow for lower-case Column Comparisons}
+1. Down arrow for z-Statistics
+2. Up arrow for z-Statistics and upper-case Column Comparisons
+3. Up arrow for lower-case Column Comparisons}
 
 \item{annot.zstatistic.confidence}{Threshold above which arrows are shown
 next to the columns. Note that the confidence level is related to
 the z-Statistics in the input table by \code{z = qnorm(1-p/2)}.}
-
-\item{annot.zstatistic.up.color}{Color for arrow showing significant increase.}
-
-\item{annot.zstatistic.down.color}{Color for the showing significant decrease.}
-
-\item{annot.colcmp.colors}{A vector of colors for each column comparison
-arrow. By default, if not transposed, the color corresponds to the color
-of that column, however, if \code{tranpose} is true, then a different
-vector of colors with the same length as the number of rows should be
-used instead.}
 
 \item{annot.legend.sep}{The string used between different entries describing
 the annotation symbols in the legend. By default it is a space as it works
@@ -221,9 +213,6 @@ the categories above the x-axis.}
 
 \item{column.totals.above.font.size}{Font size of \code{column.totals.above}.}
 
-\item{column.totals.above.decimals}{Number of decimals shown in 
-\code{column.totals.above}.}
-
 \item{column.totals.below.show}{Show data labels containing the total of
 the categories below the x-axis.}
 
@@ -232,9 +221,6 @@ the categories below the x-axis.}
 \item{column.totals.below.font.color}{Font color of \code{column.totals.below}.}
 
 \item{column.totals.below.font.size}{Font size of \code{column.totals.below}.}
-
-\item{column.totals.below.decimals}{Number of decimals shown in 
-\code{column.totals.below}.}
 
 \item{title}{Character; chart title.}
 

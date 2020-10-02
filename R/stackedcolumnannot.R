@@ -26,36 +26,27 @@
 #' @param annot.legend.sep The string used between different entries describing
 #'  the annotation symbols in the legend. By default it is a space as it works
 #'  with line-wrap etc. But "<br>" can also be a good option for readibility.
-#' @param annot.arrow.symbols A vector of four characters (or html symbols)
+#' @param annot.arrow.symbols A vector of three characters (or html symbols)
 #'  used to show arrows. They are (in order):
-#'  1. Down arrow for z-Statistics and upper-case Column Comparisons
-#'  2. Up arrow for lower-case Column Comparisons
-#'  3. Down arrow for z-Statistics and upper-case Column Comparisons
-#'  4. Up arrow for lower-case Column Comparisons
+#'  1. Down arrow for z-Statistics
+#'  2. Up arrow for z-Statistics and upper-case Column Comparisons
+#'  3. Up arrow for lower-case Column Comparisons
+#' @param annot.arrow.colors A vector of colors for the arrows.
+#'  For column comparisons, the number of colors should equal the number of columns.
+#'  For z-Statistic, the colors are assigned to 'down' and 'up' arrows.
 #' @param annot.zstatistic.confidence Threshold above which arrows are shown
 #'  next to the columns. Note that the confidence level is related to
 #'  the z-Statistics in the input table by \code{z = qnorm(1-p/2)}.
-#' @param annot.zstatistic.up.color Color for arrow showing significant increase.
-#' @param annot.zstatistic.down.color Color for the showing significant decrease.
-#' @param annot.colcmp.colors A vector of colors for each column comparison
-#'  arrow. By default, if not transposed, the color corresponds to the color
-#'  of that column, however, if \code{tranpose} is true, then a different
-#'  vector of colors with the same length as the number of rows should be
-#'  used instead.
 #' @param column.totals.above.show Show data labels containing the total of
 #'  the categories above the x-axis.
 #' @param column.totals.above.font.family Font family of \code{column.totals.above}.
 #' @param column.totals.above.font.color Font color of \code{column.totals.above}.
 #' @param column.totals.above.font.size Font size of \code{column.totals.above}.
-#' @param column.totals.above.decimals Number of decimals shown in 
-#'  \code{column.totals.above}.
 #' @param column.totals.below.show Show data labels containing the total of
 #'  the categories below the x-axis.
 #' @param column.totals.below.font.family Font family of \code{column.totals.below}.
 #' @param column.totals.below.font.color Font color of \code{column.totals.below}.
 #' @param column.totals.below.font.size Font size of \code{column.totals.below}.
-#' @param column.totals.below.decimals Number of decimals shown in 
-#'  \code{column.totals.below}.
 #' @param title Character; chart title.
 #' @param title.font.family Character; title font family. Can be "Arial Black",
 #' "Arial", "Comic Sans MS", "Courier New", "Georgia", "Impact",
@@ -256,12 +247,10 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     colors = ChartColors(max(1, NCOL(x), na.rm = TRUE)),
                     annot.footer.show = TRUE,
                     annot.arrow.size = 15,
+                    annot.arrow.colors = ChartColors(9, "Strong colors"),
                     annot.arrow.offset = NULL,
-                    annot.arrow.symbols = c("&#129051;", "&#129049;", "&#8675;", "&#8673;"),
+                    annot.arrow.symbols = c("&#129051;", "&#129049;", "&#8673;"),
                     annot.zstatistic.confidence = 0.05,
-                    annot.zstatistic.up.color = "#0000FF",
-                    annot.zstatistic.down.color = "#FF0000",
-                    annot.colcmp.colors = colors,
                     annot.legend.sep = " ",
                     opacity = NULL,
                     type = "Stacked",
@@ -272,13 +261,10 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     column.totals.above.font.family = global.font.family,
                     column.totals.above.font.color = global.font.color,
                     column.totals.above.font.size = 10,
-                    column.totals.above.decimals = 0,
                     column.totals.below.show = FALSE,
                     column.totals.below.font.family = global.font.family,
                     column.totals.below.font.color = global.font.color,
                     column.totals.below.font.size = 10,
-                    column.totals.below.decimals = 0,
-
                     title = "",
                     title.font.family = global.font.family,
                     title.font.color = global.font.color,
@@ -292,7 +278,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     footer.font.color = global.font.color,
                     footer.font.size = 8,
                     footer.wrap = TRUE,
-                    footer.wrap.nchar = 150,
+                    footer.wrap.nchar = 100,
                     footer.align = "center",
                     background.fill.color = "transparent",
                     background.fill.opacity = 1,
@@ -392,18 +378,31 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     data.label.threshold = NULL)
 {
     ErrorIfNotEnoughData(x)
-    if (length(dim(x)) < 3)
-        stop("Input data should be a Q Table with cell statistics ",
-        "'z-Statistic' or 'Column Comparisons'.")
-
-    # For column comparisons use NET/SUM 
-    # Also assign column letters to colnames before removing columns 
-
+    x <- convertQTableTo3DArray(x)
+    #if (length(dim(x)) < 3)
+    #    stop("Input data should be a Q Table with cell statistics ",
+    #    "'z-Statistic' or 'Column Comparisons'.")
+    colcmp.names <- colnames(x) # used for column comparisons
+  
+    # Save data for annotating column totals before 
+    # rows/columns are removed 
+    col.totals.annot.data <- NULL
+    ind <- grep("NET|SUM|Total", dimnames(x)[[2]])[1]
+    if (length(ind) > 0 && column.totals.above.show)
+        col.totals.annot.data <- if (!transpose) x[,ind,,drop = FALSE]
+                                 else            x[ind,,,drop = FALSE]
+    
     x <- RemoveRowsAndOrColumns(x, 
             row.names.to.remove = row.names.to.remove,
             column.names.to.remove = column.names.to.remove)
     if (transpose)
+    {
         x <- aperm(x, c(2,1,3))
+        if (!is.null(col.totals.annot.data))
+            col.totals.annot.data <- aperm(col.totals.annot.data, c(2,1,3))
+    }
+    if (!is.null(col.totals.annot.data))
+        col.totals.annot.data <- col.totals.annot.data[rownames(x),,,drop = FALSE]
 
     if (bar.gap < 0.0 || bar.gap >= 1.0)
     {
@@ -416,8 +415,18 @@ StackedColumnWithStatisticalSignificance <- function(x,
     if (tolower(font.unit) %in% c("pt", "point", "points"))
     {
         fsc <- 1.3333
-        label.font.size = round(fsc * label.font.size, 0)
-        tick.font.size = round(fsc * tick.font.size, 0)
+        column.totals.above.font.size = round(fsc * column.totals.above.font.size, 0)
+        column.totals.below.font.size = round(fsc * column.totals.below.font.size, 0)
+        title.font.size = round(fsc * title.font.size, 0)
+        subtitle.font.size = round(fsc * subtitle.font.size, 0)
+        footer.font.size =round(fsc * footer.font.size, 0)
+        legend.font.size = round(fsc * legend.font.size, 0)
+        hovertext.font.size = round(fsc * hovertext.font.size, 0)
+        y.title.font.size = round(fsc * y.title.font.size, 0)
+        y.tick.font.size = round(fsc * y.tick.font.size, 0)
+        x.title.font.size = round(fsc * x.title.font.size, 0)
+        x.tick.font.size = round(fsc * x.tick.font.size, 0)
+        data.label.font.size = round(fsc * data.label.font.size, 0)
     }
 
 
@@ -430,7 +439,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
         stop("Input data should be numeric.")
     if (num.categories.below.axis > 0 && 
         any(!is.na(chart.matrix) & chart.matrix < 0))
-        stop("All values in input data must be positive when some categories are show below the axis")
+        stop("All values in input data must be positive when some categories are shown below the axis")
     n <- nrow(chart.matrix)
     m <- ncol(chart.matrix)
     x.labels.full <- rownames(chart.matrix)
@@ -446,7 +455,6 @@ StackedColumnWithStatisticalSignificance <- function(x,
         m.sign[,1:num.categories.below.axis] <- -1
         chart.matrix <- chart.matrix * m.sign
     }
-    is.stacked <- grepl("Stacked", type, fixed = TRUE)
     if (any(!is.finite(as.matrix(chart.matrix))))
         warning("Missing values have been set to zero.")
 
@@ -471,7 +479,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
         marker.border.opacity <- opacity
     colors <- paste0(rep("", NROW(chart.matrix)), colors)
 
-    if (is.stacked && data.label.font.autocolor)
+    if (data.label.font.autocolor)
         dlab.color <- autoFontColor(colors)
     else
         dlab.color <- vectorize(data.label.font.color, ncol(chart.matrix))
@@ -493,52 +501,49 @@ StackedColumnWithStatisticalSignificance <- function(x,
     # as a single trace, which will render faster than multiple traces
     # These annotations will be shown on the right of the bars    
     annot.text <- NULL
+    totals.annot.text <- NULL
     if ("Column Comparisons" %in% dimnames(annot.data)[[3]])
     {
         ind.colcmp <- which(dimnames(annot.data)[[3]] == "Column Comparisons")
-        colcmp.names <- if (transpose) rownames(chart.matrix)
-                        else           colnames(chart.matrix)
         n.colcmp <- length(colcmp.names)
-        annot.colcmp.colors <- rep(annot.colcmp.colors, length = n.colcmp)
+        annot.arrow.colors <- rep(annot.arrow.colors, length = n.colcmp)
         tmp.arrow.html <- matrix(nrow = n.colcmp, ncol = 2,
             sprintf("<span style=\"color:%s; font-size:%.0fpx;\">%s</span>",
-                rep(annot.colcmp.colors, 2), annot.arrow.size, 
-                rep(annot.arrow.symbols[c(2,4)], each = n.colcmp)))
-        annot.text <- convertColumnLettersToArrows(annot.data[,,ind.colcmp],
-               tmp.arrow.html)
+                rep(annot.arrow.colors, 2), annot.arrow.size, 
+                rep(annot.arrow.symbols[2:3], each = n.colcmp)))
+        annot.text <- getColCmpAnnot(annot.data[,,ind.colcmp], tmp.arrow.html)
         if (annot.footer.show)
         {
             arrow.desc <- sprintf("Significantly %s %s %s",
                 "greater than",
                 rep(colcmp.names, 2),
                 rep(c("at the 99.9% confidence level", 
-                "at the 95% confidence level"), each = 2*n.colcmp))
+                "at the 95% confidence level"), each = n.colcmp))
             footer <- paste0(footer,
                 paste(tmp.arrow.html, arrow.desc, sep = "", collapse = annot.legend.sep))
         }
+        if (column.totals.above.show && !is.null(col.totals.annot.data))
+            totals.annot.text <- getColCmpAnnot(
+            col.totals.annot.data[,,ind.colcmp], tmp.arrow.html)
+
 
     } else if ("z-Statistic" %in% dimnames(annot.data)[[3]])
     {
         ind.zstat <- which(dimnames(annot.data)[[3]] == "z-Statistic")
         z.threshold <- qnorm(1 - (annot.zstatistic.confidence/2))
-        annot.text <-  matrix("", nrow = nrow(chart.matrix), ncol = ncol(chart.matrix))
-        down.arrow.html <- paste0("<span style='color:", 
-            annot.zstatistic.down.color, "; font-size:", annot.arrow.size, 
-            "px'>", annot.arrow.symbols[1], "</span>")
-        up.arrow.html <- paste0("<span style='color:",
-            annot.zstatistic.up.color, "; font-size:", annot.arrow.size,
-            "px'>", annot.arrow.symbols[2], "</span>")
-        arrow.html <- c(up.arrow.html, down.arrow.html)
-
-        ind <- which(annot.data[,,ind.zstat] < -z.threshold)
-        annot.text[ind] <- down.arrow.html
-        ind <- which(annot.data[,,ind.zstat] > z.threshold)
-        annot.text[ind] <- up.arrow.html
+        tmp.arrow.html <- sprintf("<span style=\"color:%s; font-size:%.0fpx;\">%s</span>",
+                annot.arrow.colors[1:2], annot.arrow.size, 
+                annot.arrow.symbols[1:2])
+        annot.text <- getZStatAnnot(annot.data[,,ind.zstat], z.threshold, tmp.arrow.html)
         if (annot.footer.show)
             footer <- paste0(footer,
-            paste(arrow.html, sprintf("Significantly smaller at the %s%% confidence level",
-            round((1-annot.zstatistic.confidence) * 100)),
+            paste(tmp.arrow.html, sprintf("Significantly %s at the %s%% confidence level",
+            c("decreased", "increased"), round((1-annot.zstatistic.confidence) * 100)),
             sep = "", collapse = annot.legend.sep))
+        if (column.totals.above.show && !is.null(col.totals.annot.data))
+            totals.annot.text <- getZStatAnnot(
+            col.totals.annot.data[,,ind.zstat], z.threshold, tmp.arrow.html)
+
     }
 
     legend.show <- setShowLegend(legend.show, NCOL(chart.matrix))
@@ -562,7 +567,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                   y.line.color, y.line.width, y.grid.width * grid.show, y.grid.color,
                   ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance, y.tick.format,
                   y.tick.prefix, y.tick.suffix,
-                  y.tick.show, y.zero, y.zero.line.width, y.zero.line.color,
+                  y.tick.show, y.zero, 0, y.zero.line.color,
                   y.hovertext.format)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
@@ -637,13 +642,21 @@ StackedColumnWithStatisticalSignificance <- function(x,
                       alpha = marker.border.opacity),
                       width = marker.border.width))
 
+        tmp.y <- if (num.categories.below.axis) abs(y) else y
+        tmp.y.str <- formatByD3(tmp.y, y.hovertext.format, y.tick.prefix, y.tick.suffix)
+        tmp.x.str <- formatByD3(x, x.hovertext.format, x.tick.prefix, x.tick.suffix)
+        if (xaxis$type  == "category")
+            tmp.hover.text <- paste0(tmp.x.str, ": ", tmp.y.str)
+        else
+            tmp.hover.text <- paste0("(", tmp.x.str, ", ", tmp.y.str, ")")
+
         # This is the main trace for each data series
         p <- add_trace(p, x = x, y = y.filled, type = "bar",
                        orientation = "v", marker = marker, name = legend.text[i],
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family)),
-                       hovertemplate = setHoverTemplate(i, xaxis, chart.matrix),
-                       legendgroup = if (is.stacked && any(data.label.show)) "all" else i)
+                       hoverinfo = "text+name", text = tmp.hover.text,
+                       legendgroup =  "all")
 
 
         # Plotly text marker positions are not spaced properly when placed to
@@ -659,7 +672,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     data.label.sign = getSign(data.annotations$y[,i], yaxis),
                     NULL, annot.data, i,
                     xaxis = "x2", yaxis = "y",
-                    data.label.font[[i]], is.stacked, data.label.centered)
+                    data.label.font[[i]], TRUE, data.label.centered)
     }
 
     # Arrow Annotations to the right of the bar
@@ -676,7 +689,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                 NULL, annot.data, 1,
                 xaxis = "x2", yaxis = "y",
                 data.label.font = data.label.font,
-                is.stacked, data.label.centered, "right")
+                TRUE, data.label.centered, "right")
 
 
     # Column totals
@@ -698,12 +711,16 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     hide.sign = TRUE,
                     center.data.labels = FALSE)
     if (column.totals.above.show)
+    {
+        # Add invisible string to center the column totals 
+        pre.annot <- gsub("color:.*?;", "color:transparent;", totals.annot.text)
         p <- addDataLabelAnnotations(p, name = "Column totals - above",
                 type = "Column",
                 data.label.xpos = totals.annotations$x[,1], 
                 data.label.ypos = totals.annotations$y[,m],
                 data.label.show = rep(TRUE, n),
-                data.label.text = round(totals.annotations$y[,m], column.totals.above.decimals),
+                data.label.text = paste0(pre.annot, totals.annotations$text[,m],
+                totals.annot.text),
                 data.label.sign = rep(1, n),
                 annotation.list = NULL, annot.data, 1,
                 xaxis = "x2", yaxis = "y",
@@ -711,13 +728,14 @@ StackedColumnWithStatisticalSignificance <- function(x,
                 color = column.totals.above.font.size, 
                 size = column.totals.above.font.size),
                 is.stacked = FALSE, data.label.centered = FALSE)
+    }
     if (column.totals.below.show)
         p <- addDataLabelAnnotations(p, name = "Column totals - below",
                 type = "Column",
                 data.label.xpos = totals.annotations$x[,1], 
                 data.label.ypos = totals.annotations$y[,num.categories.below.axis],
                 data.label.show = rep(TRUE, n),
-                data.label.text = -round(totals.annotations$y[,num.categories.below.axis], column.totals.below.decimals),
+                data.label.text = totals.annotations$text[,num.categories.below.axis],
                 data.label.sign = rep(-1, n),
                 annotation.list = NULL, annot.data, 1,
                 xaxis = "x2", yaxis = "y",
@@ -735,6 +753,13 @@ StackedColumnWithStatisticalSignificance <- function(x,
     annotations[[n+3]] <- setSubtitle(subtitle, subtitle.font, margins)
     annotations <- Filter(Negate(is.null), annotations)
 
+    shapes <- NULL
+    if (isTRUE(y.zero)) # default plotly zero line is shown below bars
+        shapes <- list(type = "line", layer = "above",
+            yref = "y", y0 = 0, y1 = 0,
+            xref = "paper", x0 = 0, x1 = 1,
+            line = list(color = y.zero.line.color, width = y.zero.line.width))
+
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
@@ -746,6 +771,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
         xaxis = xaxis,
         margin = margins,
         annotations =  annotations,
+        shapes = shapes,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
         hoverlabel = list(namelength = -1, bordercolor = "transparent",
@@ -757,15 +783,31 @@ StackedColumnWithStatisticalSignificance <- function(x,
     #attr(p, "can-run-in-root-dom") <- TRUE
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
-    attr(result, "ChartType") <- if (is.stacked) "Column Stacked" else "Column Clustered"
+    attr(result, "ChartType") <- "Column Stacked"
     result
 }
 
-
-convertColumnLettersToArrows <- function(colcmp.matrix, arrow.html)
+getZStatAnnot <- function(z.data, z.threshold, arrow.html)
 {
-    n <- nrow(colcmp.matrix)
-    m <- ncol(colcmp.matrix)
+    if (length(dim(z.data)) < 2)
+        z.data <- as.matrix(z.data)
+    n <- NROW(z.data)
+    m <- NCOL(z.data)
+    annot.txt <- matrix("", n, m)
+    ind <- which(z.data > z.threshold)
+    annot.txt[ind] <- arrow.html[2]
+    ind <- which(z.data < -z.threshold)
+    annot.txt[ind] <- arrow.html[1]
+    return(annot.txt)
+}
+
+
+getColCmpAnnot <- function(colcmp.matrix, arrow.html)
+{
+    if (length(dim(colcmp.matrix)) < 2)
+        colcmp.matrix <- as.matrix(colcmp.matrix)
+    n <- NROW(colcmp.matrix)
+    m <- NCOL(colcmp.matrix)
     annot.txt <- matrix("", n, m)
 
     for (i in 1:n)
@@ -796,4 +838,36 @@ convertColumnLettersToArrows <- function(colcmp.matrix, arrow.html)
         }
     }
     return(annot.txt)
+}
+
+convertQTableTo3DArray <- function(x)
+{
+    # This is possibly valid output 
+    # e.g. crosstab: nominal multi grid x nominal has 4 dimensions
+    # But what to do with it? 
+    if (length(dim(x)) >= 3)
+        return(x)
+
+    # 1-column table with multiple statistics in 2nd dimension
+    if (length(dim(x)) == 2 && is.null(attr(x, "statistic")))
+    {
+        dn <- dimnames(x)
+        dn <- c(dn[1], "", dn[2])
+        x <- array(x, dim = sapply(dn, length), dimnames = dn)
+        return(x)
+    
+    } else
+    {
+        dn <- dimnames(x)
+        if (is.null(dimnames(x)))
+        {
+            dn <- list()
+            dn[[1]] <- names(x)
+        }
+        if (length(dn) == 1)
+            dn[[2]] <- ""
+        dn[[3]] <- paste0("", attr(x, "statistic"))
+        x <- array(x, dim = sapply(dn, length), dimnames = dn)
+    }
+    return(x)
 }
