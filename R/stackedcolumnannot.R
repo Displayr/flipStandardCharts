@@ -387,10 +387,17 @@ StackedColumnWithStatisticalSignificance <- function(x,
     # Save data for annotating column totals before 
     # rows/columns are removed 
     col.totals.annot.data <- NULL
-    ind <- grep("NET|SUM|Total", dimnames(x)[[2]])[1]
-    if (length(ind) > 0 && column.totals.above.show)
-        col.totals.annot.data <- if (!transpose) x[,ind,,drop = FALSE]
-                                 else            x[ind,,,drop = FALSE]
+    if (!transpose)
+    {
+        ind <- grep("NET|SUM|Total", dimnames(x)[[2]])[1]
+        if (length(ind) > 0 && column.totals.above.show)
+            col.totals.annot.data <- x[,ind,,drop = FALSE]
+    } else
+    {
+        ind <- grep("NET|SUM|Total", dimnames(x)[[1]])[1]
+        if (length(ind) > 0 && column.totals.above.show)
+            col.totals.annot.data <- x[ind,,,drop = FALSE]
+    }
     
     x <- RemoveRowsAndOrColumns(x, 
             row.names.to.remove = row.names.to.remove,
@@ -525,7 +532,6 @@ StackedColumnWithStatisticalSignificance <- function(x,
         if (column.totals.above.show && !is.null(col.totals.annot.data))
             totals.annot.text <- getColCmpAnnot(
             col.totals.annot.data[,,ind.colcmp], tmp.arrow.html)
-
 
     } else if ("z-Statistic" %in% dimnames(annot.data)[[3]])
     {
@@ -719,8 +725,10 @@ StackedColumnWithStatisticalSignificance <- function(x,
                 data.label.xpos = totals.annotations$x[,1], 
                 data.label.ypos = totals.annotations$y[,m],
                 data.label.show = rep(TRUE, n),
-                data.label.text = paste0(pre.annot, totals.annotations$text[,m],
-                totals.annot.text),
+                data.label.text = paste0(pre.annot, 
+                    formatByD3(totals.annotations$y[,m], 
+                    data.label.format, data.label.prefix, data.label.suffix),
+                    totals.annot.text),
                 data.label.sign = rep(1, n),
                 annotation.list = NULL, annot.data, 1,
                 xaxis = "x2", yaxis = "y",
@@ -735,7 +743,8 @@ StackedColumnWithStatisticalSignificance <- function(x,
                 data.label.xpos = totals.annotations$x[,1], 
                 data.label.ypos = totals.annotations$y[,num.categories.below.axis],
                 data.label.show = rep(TRUE, n),
-                data.label.text = totals.annotations$text[,num.categories.below.axis],
+                data.label.text = formatByD3(totals.annotations$y[,num.categories],
+                    data.label.format, data.label.prefix, data.label.suffix),
                 data.label.sign = rep(-1, n),
                 annotation.list = NULL, annot.data, 1,
                 xaxis = "x2", yaxis = "y",
