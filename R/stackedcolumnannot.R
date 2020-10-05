@@ -34,9 +34,24 @@
 #' @param annot.arrow.colors A vector of colors for the arrows.
 #'  For column comparisons, the number of colors should equal the number of columns.
 #'  For z-Statistic, the colors are assigned to 'down' and 'up' arrows.
-#' @param annot.zstatistic.confidence Threshold above which arrows are shown
+#' @param annot.alpha Threshold above which arrows are shown
 #'  next to the columns. Note that the confidence level is related to
 #'  the z-Statistics in the input table by \code{z = qnorm(1-p/2)}.
+#' @param annot.differences.show Logical; whether to show the difference
+#'  statistics if they are included in the input table.
+#' @param annot.differences.decimals Number of decimals shown in the 
+#'  difference annotations.
+#' @param annot.differences.sign.show Logical; whether to show the sign
+#'  of the difference.
+#' @param annot.differences.offset Horizontal offset (towards the right)
+#'  of the difference annotation from the bars. If not specified, then 
+#'  it will be determined from \code{bar.gap}.
+#' @param annot.differences.font.family Font family of the 
+#'  differences annotations
+#' @param annot.differences.font.color Font color of the 
+#'  differences annotations
+#' @param annot.differences.font.size Font size of the 
+#'  differences annotations
 #' @param column.totals.above.show Show data labels containing the total of
 #'  the categories above the x-axis.
 #' @param column.totals.above.font.family Font family of \code{column.totals.above}.
@@ -245,18 +260,25 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     row.names.to.remove = "NET, SUM, Total",
                     column.names.to.remove = "NET, SUM, Total",
                     colors = ChartColors(max(1, NCOL(x), na.rm = TRUE)),
-                    annot.footer.show = TRUE,
-                    annot.arrow.size = 15,
-                    annot.arrow.colors = ChartColors(9, "Strong colors"),
-                    annot.arrow.offset = NULL,
-                    annot.arrow.symbols = c("&#129051;", "&#129049;", "&#8673;"),
-                    annot.zstatistic.confidence = 0.05,
-                    annot.legend.sep = " ",
                     opacity = NULL,
                     type = "Stacked",
                     global.font.family = "Arial",
                     global.font.color = rgb(44, 44, 44, maxColorValue = 255),
                     font.unit = "px",
+                    annot.footer.show = TRUE,
+                    annot.arrow.size = 15,
+                    annot.arrow.colors = ChartColors(9, "Strong colors"),
+                    annot.arrow.offset = NULL,
+                    annot.arrow.symbols = c("&#129051;", "&#129049;", "&#8673;"),
+                    annot.alpha = 0.05,
+                    annot.legend.sep = " ",
+                    annot.differences.show = TRUE,
+                    annot.differences.decimals = 0,
+                    annot.differences.sign.show = TRUE,
+                    annot.differences.font.family = global.font.family,
+                    annot.differences.font.color = global.font.color,
+                    annot.differences.font.size = 10,
+                    annot.differences.offset = NULL,
                     column.totals.above.show = FALSE,
                     column.totals.above.font.family = global.font.family,
                     column.totals.above.font.color = global.font.color,
@@ -508,6 +530,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
     # as a single trace, which will render faster than multiple traces
     # These annotations will be shown on the right of the bars    
     annot.text <- NULL
+    diff.annot.text <- NULL
     totals.annot.text <- NULL
     if ("Column Comparisons" %in% dimnames(annot.data)[[3]])
     {
@@ -530,13 +553,13 @@ StackedColumnWithStatisticalSignificance <- function(x,
                 paste(tmp.arrow.html, arrow.desc, sep = "", collapse = annot.legend.sep))
         }
         if (column.totals.above.show && !is.null(col.totals.annot.data))
-            totals.annot.text <- getColCmpAnnot(
+             totals.annot.text <- getColCmpAnnot(
             col.totals.annot.data[,,ind.colcmp], tmp.arrow.html)
 
     } else if ("z-Statistic" %in% dimnames(annot.data)[[3]])
     {
         ind.zstat <- which(dimnames(annot.data)[[3]] == "z-Statistic")
-        z.threshold <- qnorm(1 - (annot.zstatistic.confidence/2))
+        z.threshold <- qnorm(1 - (annot.alpha/2))
         tmp.arrow.html <- sprintf("<span style=\"color:%s; font-size:%.0fpx;\">%s</span>",
                 annot.arrow.colors[1:2], annot.arrow.size, 
                 annot.arrow.symbols[1:2])
@@ -544,12 +567,33 @@ StackedColumnWithStatisticalSignificance <- function(x,
         if (annot.footer.show)
             footer <- paste0(footer,
             paste(tmp.arrow.html, sprintf("Significantly %s at the %s%% confidence level",
-            c("decreased", "increased"), round((1-annot.zstatistic.confidence) * 100)),
+            c("decreased", "increased"), round((1-annot.alpha) * 100)),
             sep = "", collapse = annot.legend.sep))
         if (column.totals.above.show && !is.null(col.totals.annot.data))
             totals.annot.text <- getZStatAnnot(
             col.totals.annot.data[,,ind.zstat], z.threshold, tmp.arrow.html)
 
+    } else if (all(c("Differences", "p") %in% dimnames(annot.data)[[3]]))
+    {
+        tmp.arrow.html <- sprintf("<span style=\"color:%s; font-size:%.0fpx;\">%s</span>",
+                annot.arrow.colors[1:2], annot.arrow.size, 
+                annot.arrow.symbols[1:2])
+        annot.text <- getPDiffAnnot(annot.data, annot.alpha, tmp.arrow.html)
+
+        if (annot.footer.show)
+            footer <- paste0(footer,
+            paste(tmp.arrow.html, sprintf("Significantly %s at the %s%% confidence level",
+            c("decreased", "increased"), round((1-annot.alpha) * 100)),
+            sep = "", collapse = annot.legend.sep))
+        if (column.totals.above.show && !is.null(col.totals.annot.data))
+            totals.annot.text <- getPDiffAnnot(
+            col.totals.annot.data, annot.alpha, tmp.arrow.html)
+        if (annot.differences.show)
+        {
+            diff.annot.text <- formatC(annot.data[,,"Differences"], format = "f",
+                digits = annot.differences.decimals,
+                flag = if (annot.differences.sign.show) "+" else "")
+        }
     }
 
     legend.show <- setShowLegend(legend.show, NCOL(chart.matrix))
@@ -694,9 +738,28 @@ StackedColumnWithStatisticalSignificance <- function(x,
                 data.label.sign = getSign(as.vector(data.annotations$y), yaxis),
                 NULL, annot.data, 1,
                 xaxis = "x2", yaxis = "y",
-                data.label.font = data.label.font,
+                data.label.font = data.label.font[[1]],
                 TRUE, data.label.centered, "right")
 
+    if (!is.null(diff.annot.text))
+    {
+        if (is.null(annot.differences.offset) || 
+            !is.numeric(annot.differences.offset))
+            annot.differences.offset <- annot.arrow.offset * 1.2
+        xdiff <- (data.annotations$x[2,1] - data.annotations$x[1,1]) * 
+            annot.differences.offset
+        p <- addDataLabelAnnotations(p, type = "Column", "Differences",
+                data.label.xpos = as.vector(data.annotations$x) + 2*xdiff,
+                data.label.ypos = as.vector(data.annotations$y),
+                data.label.show = rep(TRUE, n*m),
+                data.label.text = diff.annot.text, 
+                data.label.sign = getSign(as.vector(data.annotations$y), yaxis),
+                NULL, annot.data, 1,
+                xaxis = "x2", yaxis = "y",
+                data.label.font = list(family = annot.differences.font.family,
+                color = annot.differences.font.color, size = annot.differences.font.size),
+                TRUE, data.label.centered, "right")
+    }
 
     # Column totals
     if (column.totals.above.show || column.totals.below.show)
@@ -743,7 +806,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                 data.label.xpos = totals.annotations$x[,1], 
                 data.label.ypos = totals.annotations$y[,num.categories.below.axis],
                 data.label.show = rep(TRUE, n),
-                data.label.text = formatByD3(totals.annotations$y[,num.categories],
+                data.label.text = formatByD3(totals.annotations$y[,num.categories.below.axis],
                     data.label.format, data.label.prefix, data.label.suffix),
                 data.label.sign = rep(-1, n),
                 annotation.list = NULL, annot.data, 1,
@@ -807,6 +870,27 @@ getZStatAnnot <- function(z.data, z.threshold, arrow.html)
     annot.txt[ind] <- arrow.html[2]
     ind <- which(z.data < -z.threshold)
     annot.txt[ind] <- arrow.html[1]
+    return(annot.txt)
+}
+
+getPDiffAnnot <- function(annot.data, p.thres, arrow.html)
+{
+    n <- nrow(annot.data)
+    m <- ncol(annot.data)
+    annot.txt <- matrix("", n, m)
+    ind.p <- which(dimnames(annot.data)[[3]] == "p")
+    ind.d <- which(dimnames(annot.data)[[3]] == "Differences")
+
+    ind <- which(annot.data[,,ind.p] < p.thres, arr.ind = TRUE)
+    if (length(ind) == 0 || nrow(ind) == 0)
+        return(annot.txt)
+    for (i in 1:nrow(ind))
+    {
+        if (annot.data[ind[i,1], ind[i,2], ind.d] < 0)
+            annot.txt[ind[i,1], ind[i,2]] <- arrow.html[1]
+        else
+            annot.txt[ind[i,1], ind[i,2]] <- arrow.html[2]
+    }
     return(annot.txt)
 }
 

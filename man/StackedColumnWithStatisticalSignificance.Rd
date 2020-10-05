@@ -11,18 +11,25 @@ StackedColumnWithStatisticalSignificance(
   row.names.to.remove = "NET, SUM, Total",
   column.names.to.remove = "NET, SUM, Total",
   colors = ChartColors(max(1, NCOL(x), na.rm = TRUE)),
-  annot.footer.show = TRUE,
-  annot.arrow.size = 15,
-  annot.arrow.colors = ChartColors(9, "Strong colors"),
-  annot.arrow.offset = NULL,
-  annot.arrow.symbols = c("&#129051;", "&#129049;", "&#8673;"),
-  annot.zstatistic.confidence = 0.05,
-  annot.legend.sep = " ",
   opacity = NULL,
   type = "Stacked",
   global.font.family = "Arial",
   global.font.color = rgb(44, 44, 44, maxColorValue = 255),
   font.unit = "px",
+  annot.footer.show = TRUE,
+  annot.arrow.size = 15,
+  annot.arrow.colors = ChartColors(9, "Strong colors"),
+  annot.arrow.offset = NULL,
+  annot.arrow.symbols = c("&#129051;", "&#129049;", "&#8673;"),
+  annot.alpha = 0.05,
+  annot.legend.sep = " ",
+  annot.differences.show = TRUE,
+  annot.differences.decimals = 0,
+  annot.differences.sign.show = TRUE,
+  annot.differences.font.family = global.font.family,
+  annot.differences.font.color = global.font.color,
+  annot.differences.font.size = 10,
+  annot.differences.offset = NULL,
   column.totals.above.show = FALSE,
   column.totals.above.font.family = global.font.family,
   column.totals.above.font.color = global.font.color,
@@ -163,6 +170,21 @@ are also respected. Note that PrepareData is not used before the function.}
 \item{colors}{Character; a vector containing one or more colors specified
 as hex codes.}
 
+\item{opacity}{Opacity of bars as an alpha value (0 to 1).}
+
+\item{type}{One of "Column", "Stacked Column" or "100\% Stacked Column"}
+
+\item{global.font.family}{Character; font family for all occurrences of any
+font attribute for the chart unless specified individually.}
+
+\item{global.font.color}{Global font color as a named color in character format
+(e.g. "black") or an a hex code.}
+
+\item{font.unit}{One of "px" of "pt". By default all font sizes are 
+specified in terms of pixels ("px"). But changing this to "pt" will
+mean that the font sizes will be in terms points ("pt"), which will 
+be consistent with font sizes in text boxes.}
+
 \item{annot.footer.show}{Append a description explaining annotations in chart footer.}
 
 \item{annot.arrow.size}{Size of the arrows in pixels.}
@@ -181,7 +203,7 @@ used to show arrows. They are (in order):
 2. Up arrow for z-Statistics and upper-case Column Comparisons
 3. Up arrow for lower-case Column Comparisons}
 
-\item{annot.zstatistic.confidence}{Threshold above which arrows are shown
+\item{annot.alpha}{Threshold above which arrows are shown
 next to the columns. Note that the confidence level is related to
 the z-Statistics in the input table by \code{z = qnorm(1-p/2)}.}
 
@@ -189,20 +211,27 @@ the z-Statistics in the input table by \code{z = qnorm(1-p/2)}.}
 the annotation symbols in the legend. By default it is a space as it works
 with line-wrap etc. But "<br>" can also be a good option for readibility.}
 
-\item{opacity}{Opacity of bars as an alpha value (0 to 1).}
+\item{annot.differences.show}{Logical; whether to show the difference
+statistics if they are included in the input table.}
 
-\item{type}{One of "Column", "Stacked Column" or "100\% Stacked Column"}
+\item{annot.differences.decimals}{Number of decimals shown in the 
+difference annotations.}
 
-\item{global.font.family}{Character; font family for all occurrences of any
-font attribute for the chart unless specified individually.}
+\item{annot.differences.sign.show}{Logical; whether to show the sign
+of the difference.}
 
-\item{global.font.color}{Global font color as a named color in character format
-(e.g. "black") or an a hex code.}
+\item{annot.differences.font.family}{Font family of the 
+differences annotations}
 
-\item{font.unit}{One of "px" of "pt". By default all font sizes are 
-specified in terms of pixels ("px"). But changing this to "pt" will
-mean that the font sizes will be in terms points ("pt"), which will 
-be consistent with font sizes in text boxes.}
+\item{annot.differences.font.color}{Font color of the 
+differences annotations}
+
+\item{annot.differences.font.size}{Font size of the 
+differences annotations}
+
+\item{annot.differences.offset}{Horizontal offset (towards the right)
+of the difference annotation from the bars. If not specified, then 
+it will be determined from \code{bar.gap}.}
 
 \item{column.totals.above.show}{Show data labels containing the total of
 the categories above the x-axis.}
