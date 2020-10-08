@@ -21,7 +21,7 @@ StackedColumnWithStatisticalSignificance(
   annot.arrow.colors = ChartColors(9, "Strong colors"),
   annot.arrow.offset = NULL,
   annot.arrow.symbols = c("&#129051;", "&#129049;", "&#8673;"),
-  annot.alpha = 0.05,
+  annot.sig.level = 0.05,
   annot.legend.sep = " ",
   annot.differences.show = TRUE,
   annot.differences.decimals = 0,
@@ -51,7 +51,7 @@ StackedColumnWithStatisticalSignificance(
   footer.font.color = global.font.color,
   footer.font.size = 8,
   footer.wrap = TRUE,
-  footer.wrap.nchar = 100,
+  footer.wrap.nchar = 200,
   footer.align = "center",
   background.fill.color = "transparent",
   background.fill.opacity = 1,
@@ -203,9 +203,8 @@ used to show arrows. They are (in order):
 2. Up arrow for z-Statistics and upper-case Column Comparisons
 3. Up arrow for lower-case Column Comparisons}
 
-\item{annot.alpha}{Threshold above which arrows are shown
-next to the columns. Note that the confidence level is related to
-the z-Statistics in the input table by \code{z = qnorm(1-p/2)}.}
+\item{annot.sig.level}{Significance level above which arrows are shown
+next to the columns.}
 
 \item{annot.legend.sep}{The string used between different entries describing
 the annotation symbols in the legend. By default it is a space as it works

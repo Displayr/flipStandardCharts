@@ -34,9 +34,8 @@
 #' @param annot.arrow.colors A vector of colors for the arrows.
 #'  For column comparisons, the number of colors should equal the number of columns.
 #'  For z-Statistic, the colors are assigned to 'down' and 'up' arrows.
-#' @param annot.alpha Threshold above which arrows are shown
-#'  next to the columns. Note that the confidence level is related to
-#'  the z-Statistics in the input table by \code{z = qnorm(1-p/2)}.
+#' @param annot.sig.level Significance level above which arrows are shown
+#'  next to the columns. 
 #' @param annot.differences.show Logical; whether to show the difference
 #'  statistics if they are included in the input table.
 #' @param annot.differences.decimals Number of decimals shown in the 
@@ -270,7 +269,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     annot.arrow.colors = ChartColors(9, "Strong colors"),
                     annot.arrow.offset = NULL,
                     annot.arrow.symbols = c("&#129051;", "&#129049;", "&#8673;"),
-                    annot.alpha = 0.05,
+                    annot.sig.level = 0.05,
                     annot.legend.sep = " ",
                     annot.differences.show = TRUE,
                     annot.differences.decimals = 0,
@@ -300,7 +299,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     footer.font.color = global.font.color,
                     footer.font.size = 8,
                     footer.wrap = TRUE,
-                    footer.wrap.nchar = 100,
+                    footer.wrap.nchar = 200,
                     footer.align = "center",
                     background.fill.color = "transparent",
                     background.fill.opacity = 1,
@@ -401,9 +400,10 @@ StackedColumnWithStatisticalSignificance <- function(x,
 {
     ErrorIfNotEnoughData(x)
     x <- convertQTableTo3DArray(x)
-    #if (length(dim(x)) < 3)
-    #    stop("Input data should be a Q Table with cell statistics ",
-    #    "'z-Statistic' or 'Column Comparisons'.")
+    if (length(dim(x)) < 3 || dim(x)[3] <= 1)
+        warning("Input data does not contain cell statistics. ",
+        "No annotations for statistical signficance will be added. ",
+        "It may be preferrable to use Visualizations - Column Chart instead.")
     colcmp.names <- colnames(x) # used for column comparisons
   
     # Save data for annotating column totals before 
@@ -438,24 +438,6 @@ StackedColumnWithStatisticalSignificance <- function(x,
         warning("Parameter 'bar gap' must be between 0 and 1. ",
                 "Invalid 'bar gap' set to default value of 0.15.")
         bar.gap <- 0.15
-    }
-    # For the other chart types, the font size conversion
-    # happens inside flipChart::CChart
-    if (tolower(font.unit) %in% c("pt", "point", "points"))
-    {
-        fsc <- 1.3333
-        column.totals.above.font.size = round(fsc * column.totals.above.font.size, 0)
-        column.totals.below.font.size = round(fsc * column.totals.below.font.size, 0)
-        title.font.size = round(fsc * title.font.size, 0)
-        subtitle.font.size = round(fsc * subtitle.font.size, 0)
-        footer.font.size =round(fsc * footer.font.size, 0)
-        legend.font.size = round(fsc * legend.font.size, 0)
-        hovertext.font.size = round(fsc * hovertext.font.size, 0)
-        y.title.font.size = round(fsc * y.title.font.size, 0)
-        y.tick.font.size = round(fsc * y.tick.font.size, 0)
-        x.title.font.size = round(fsc * x.title.font.size, 0)
-        x.tick.font.size = round(fsc * x.tick.font.size, 0)
-        data.label.font.size = round(fsc * data.label.font.size, 0)
     }
 
 
@@ -559,7 +541,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
     } else if ("z-Statistic" %in% dimnames(annot.data)[[3]])
     {
         ind.zstat <- which(dimnames(annot.data)[[3]] == "z-Statistic")
-        z.threshold <- qnorm(1 - (annot.alpha/2))
+        z.threshold <- qnorm(1 - (annot.sig.level/2))
         tmp.arrow.html <- sprintf("<span style=\"color:%s; font-size:%.0fpx;\">%s</span>",
                 annot.arrow.colors[1:2], annot.arrow.size, 
                 annot.arrow.symbols[1:2])
@@ -567,7 +549,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
         if (annot.footer.show)
             footer <- paste0(footer,
             paste(tmp.arrow.html, sprintf("Significantly %s at the %s%% confidence level",
-            c("decreased", "increased"), round((1-annot.alpha) * 100)),
+            c("decreased", "increased"), round((1-annot.sig.level) * 100)),
             sep = "", collapse = annot.legend.sep))
         if (column.totals.above.show && !is.null(col.totals.annot.data))
             totals.annot.text <- getZStatAnnot(
@@ -578,16 +560,16 @@ StackedColumnWithStatisticalSignificance <- function(x,
         tmp.arrow.html <- sprintf("<span style=\"color:%s; font-size:%.0fpx;\">%s</span>",
                 annot.arrow.colors[1:2], annot.arrow.size, 
                 annot.arrow.symbols[1:2])
-        annot.text <- getPDiffAnnot(annot.data, annot.alpha, tmp.arrow.html)
+        annot.text <- getPDiffAnnot(annot.data, annot.sig.level, tmp.arrow.html)
 
         if (annot.footer.show)
             footer <- paste0(footer,
             paste(tmp.arrow.html, sprintf("Significantly %s at the %s%% confidence level",
-            c("decreased", "increased"), round((1-annot.alpha) * 100)),
+            c("decreased", "increased"), round((1-annot.sig.level) * 100)),
             sep = "", collapse = annot.legend.sep))
         if (column.totals.above.show && !is.null(col.totals.annot.data))
             totals.annot.text <- getPDiffAnnot(
-            col.totals.annot.data, annot.alpha, tmp.arrow.html)
+            col.totals.annot.data, annot.sig.level, tmp.arrow.html)
         if (annot.differences.show)
         {
             diff.annot.text <- formatC(annot.data[,,"Differences"], format = "f",
