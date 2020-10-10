@@ -7,20 +7,20 @@
 #' to be plotted, with the name/rownames used as the column names of the chart. Numeric and date labels
 #' will be parsed automatically.
 #' @param type One of "Column", "Stacked Column" or "100\% Stacked Column"
-#' @param font.unit One of "px" of "pt". By default all font sizes are 
+#' @param font.unit One of "px" of "pt". By default all font sizes are
 #'  specified in terms of pixels ("px"). But changing this to "pt" will
-#'  mean that the font sizes will be in terms points ("pt"), which will 
+#'  mean that the font sizes will be in terms points ("pt"), which will
 #'  be consistent with font sizes in text boxes.
 #' @param num.categories.below.axis Number of categories shown below
 #'  x-axis pointing downwards.
-#' @param transpose Swaps the rows and columns of \code{x}. The rows 
-#'  and columns of the additional statistics used to create annotations 
+#' @param transpose Swaps the rows and columns of \code{x}. The rows
+#'  and columns of the additional statistics used to create annotations
 #'  are also respected. Note that PrepareData is not used before the function.
 #' @param row.names.to.remove Names of rows that are not shown in the chart.
 #' @param column.names.to.remove Names of columns that are not shown in the chart.
 #' @param annot.footer.show Append a description explaining annotations in chart footer.
 #' @param annot.arrow.size Size of the arrows in pixels.
-#' @param annot.arrow.offset Horizontal offset (towards the right) of 
+#' @param annot.arrow.offset Horizontal offset (towards the right) of
 #'  the arrows from the bars. If not specified, then it will be
 #'  determined from \code{bar.gap}.
 #' @param annot.legend.sep The string used between different entries describing
@@ -28,28 +28,30 @@
 #'  with line-wrap etc. But "<br>" can also be a good option for readibility.
 #' @param annot.arrow.symbols A vector of three characters (or html symbols)
 #'  used to show arrows. They are (in order):
-#'  1. Down arrow for z-Statistics
-#'  2. Up arrow for z-Statistics and upper-case Column Comparisons
+#'  1. Up arrow for z-Statistics and upper-case Column Comparisons
+#'  2. Down arrow for z-Statistics
 #'  3. Up arrow for lower-case Column Comparisons
 #' @param annot.arrow.colors A vector of colors for the arrows.
 #'  For column comparisons, the number of colors should equal the number of columns.
 #'  For z-Statistic, the colors are assigned to 'down' and 'up' arrows.
 #' @param annot.sig.level Significance level above which arrows are shown
-#'  next to the columns. 
+#'  next to the columns.
 #' @param annot.differences.show Logical; whether to show the difference
 #'  statistics if they are included in the input table.
-#' @param annot.differences.decimals Number of decimals shown in the 
+#' @param annot.differences.decimals Number of decimals shown in the
 #'  difference annotations.
+#' @param annot.differences.prefix Option text to prepend to annot.differences.
+#' @param annot.differences.suffix Option text to append to annot.differences.
 #' @param annot.differences.sign.show Logical; whether to show the sign
 #'  of the difference.
 #' @param annot.differences.offset Horizontal offset (towards the right)
-#'  of the difference annotation from the bars. If not specified, then 
+#'  of the difference annotation from the bars. If not specified, then
 #'  it will be determined from \code{bar.gap}.
-#' @param annot.differences.font.family Font family of the 
+#' @param annot.differences.font.family Font family of the
 #'  differences annotations
-#' @param annot.differences.font.color Font color of the 
+#' @param annot.differences.font.color Font color of the
 #'  differences annotations
-#' @param annot.differences.font.size Font size of the 
+#' @param annot.differences.font.size Font size of the
 #'  differences annotations
 #' @param column.totals.above.show Show data labels containing the total of
 #'  the categories above the x-axis.
@@ -87,17 +89,17 @@
 #' @param opacity Opacity of bars as an alpha value (0 to 1).
 #' @param colors Character; a vector containing one or more colors specified
 #'  as hex codes.
-#' @param background.fill.color Background color in character format 
+#' @param background.fill.color Background color in character format
 #'  (e.g. "black") or a hex code.
 #' @param background.fill.opacity Background opacity as an alpha value (0 to 1).
 #' @param charting.area.fill.color Charting area background color as
 #'  a named color in character format (e.g. "black") or a hex code.
-#' @param charting.area.fill.opacity Charting area background opacity 
+#' @param charting.area.fill.opacity Charting area background opacity
 #'  as an alpha value (0 to 1).
-#' @param legend.show Controls whether legend is shown. This can be a 
-#'  logical (\code{TRUE} or \code{FALSE});or a string ("Show" or "Hide"). 
+#' @param legend.show Controls whether legend is shown. This can be a
+#'  logical (\code{TRUE} or \code{FALSE});or a string ("Show" or "Hide").
 #'  If it is \code{TRUE} or \code{NA} (the default), a legend will be
-#'  shown only if there is more than one data series. To force a legend 
+#'  shown only if there is more than one data series. To force a legend
 #'  to be shown even with 1 data series, use "Show" instead.
 #' @param legend.wrap Logical; whether the legend text should be wrapped.
 #' @param legend.wrap.nchar Number of characters (approximately) in each
@@ -137,13 +139,13 @@
 #' @param y.line.width y-axis line width in pixels (0 = no line).
 #' @param y.line.color y-axis line color as a named color in character format
 #' (e.g. "black") or a hex code.
-#' @param y.tick.mark.length Length of tick marks in pixels. 
+#' @param y.tick.mark.length Length of tick marks in pixels.
 #'  Ticks are only shown when \code{y.line.width > 0}.
-#' @param y.bounds.minimum Minimum of range for plotting; For a date axis 
+#' @param y.bounds.minimum Minimum of range for plotting; For a date axis
 #'  this should be supplied as a date string.
 #'  For a categorical axis, the index of the category (0-based) should be used.
 #' @param y.bounds.maximum Maximum of range for plotting; NULL = no manual range set.
-#' @param y.tick.distance Distance between tick marks. Requires that 
+#' @param y.tick.distance Distance between tick marks. Requires that
 #'  \code{y.bounds.minimum} and \code{y.bounds.maximum} have been set.
 #' @param y.zero Whether the y-axis should include zero.
 #' @param y.zero.line.width Width in pixels of zero line;
@@ -152,7 +154,7 @@
 #'  rgb(0, 0, 0, maxColorValue = 255)).
 #' @param y.data.reversed Logical; whether to reverse y-axis or not
 #' @param y.grid.width Width of y-grid lines in pixels; 0 = no line
-#' @param y.grid.color Color of y-grid lines as a named color in 
+#' @param y.grid.color Color of y-grid lines as a named color in
 #'  character format (e.g. "black") or a hex code.
 #' @param y.tick.show Whether to display the y-axis tick labels
 #' @param y.tick.suffix y-axis tick label suffix
@@ -179,7 +181,7 @@
 #' @param x.tick.marks Character; whether and where to show tick marks on the
 #' x-axis.  Can be "outside", "inside", "none"
 #' @param x.tick.mark.length Length of tick marks in pixels.
-#' @param x.bounds.minimum Minimum of range for plotting; For a date axis 
+#' @param x.bounds.minimum Minimum of range for plotting; For a date axis
 #'  this should be supplied as a date string. For a categorical axis,
 #'  the index of the category (0-based) should be used.
 #' @param x.bounds.maximum Maximum of range for
@@ -216,9 +218,9 @@
 #' @param hovertext.font.size Font size of hover text.
 #' @param marker.border.width Width in pixels of border/line
 #'  around series bars; 0 is no line
-#' @param marker.border.colors Character; a vector containing one or more 
+#' @param marker.border.colors Character; a vector containing one or more
 #'  colors specified as hex codes.
-#' @param marker.border.opacity Opacity of border around bars as an 
+#' @param marker.border.opacity Opacity of border around bars as an
 #'  alpha value (0 to 1).
 #' @param tooltip.show Logical; whether to show a tooltip on hover.
 #' @param modebar.show Logical; whether to show the zoom menu buttons or not.
@@ -229,7 +231,7 @@
 #' @param bar.gap Chart proportion between each bar or column if using
 #'  bar or column charts, or between each cluster of bars or columns.
 #' @param data.label.show Logical; whether to show data labels.
-#' @param data.label.centered Logical; whether data labels in Stacked Column 
+#' @param data.label.centered Logical; whether data labels in Stacked Column
 #'  charts should have the data labels vertically centered.
 #' @param data.label.font.family Character; font family for data label.
 #' @param data.label.font.size Integer; Font size for data label.px.
@@ -237,7 +239,7 @@
 #'  in character format (e.g. "black") or an a hex code. This can be a single
 #'  color, a vector of colors (1 for each series/column), or a comma separated list
 #'  of colors
-#' @param data.label.font.autocolor Logical; Whether font color should 
+#' @param data.label.font.autocolor Logical; Whether font color should
 #'  be automatically determined (black or white) based on the color of the
 #'  background column if stacked.
 #' @param data.label.format A string representing a d3 formatting code.
@@ -251,7 +253,7 @@
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom flipTables AsTidyTabularData RemoveRowsAndOrColumns
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
-#' @importFrom stats qnorm 
+#' @importFrom stats qnorm
 #' @export
 StackedColumnWithStatisticalSignificance <- function(x,
                     num.categories.below.axis = 0,
@@ -268,11 +270,13 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     annot.arrow.size = 15,
                     annot.arrow.colors = ChartColors(9, "Strong colors"),
                     annot.arrow.offset = NULL,
-                    annot.arrow.symbols = c("&#129051;", "&#129049;", "&#8673;"),
+                    annot.arrow.symbols = c("&#129049;", "&#129051;", "&#8673;"),
                     annot.sig.level = 0.05,
-                    annot.legend.sep = " ",
+                    annot.legend.sep = " &#183; ",
                     annot.differences.show = TRUE,
                     annot.differences.decimals = 0,
+                    annot.differences.prefix = "",
+                    annot.differences.suffix = "",
                     annot.differences.sign.show = TRUE,
                     annot.differences.font.family = global.font.family,
                     annot.differences.font.color = global.font.color,
@@ -299,7 +303,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     footer.font.color = global.font.color,
                     footer.font.size = 8,
                     footer.wrap = TRUE,
-                    footer.wrap.nchar = 200,
+                    footer.wrap.nchar = 150,
                     footer.align = "center",
                     background.fill.color = "transparent",
                     background.fill.opacity = 1,
@@ -405,9 +409,9 @@ StackedColumnWithStatisticalSignificance <- function(x,
         "No annotations for statistical signficance will be added. ",
         "It may be preferrable to use Visualizations - Column Chart instead.")
     colcmp.names <- colnames(x) # used for column comparisons
-  
-    # Save data for annotating column totals before 
-    # rows/columns are removed 
+
+    # Save data for annotating column totals before
+    # rows/columns are removed
     col.totals.annot.data <- NULL
     if (!transpose)
     {
@@ -420,8 +424,8 @@ StackedColumnWithStatisticalSignificance <- function(x,
         if (length(ind) > 0 && column.totals.above.show)
             col.totals.annot.data <- x[ind,,,drop = FALSE]
     }
-    
-    x <- RemoveRowsAndOrColumns(x, 
+
+    x <- RemoveRowsAndOrColumns(x,
             row.names.to.remove = row.names.to.remove,
             column.names.to.remove = column.names.to.remove)
     if (transpose)
@@ -448,7 +452,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
     chart.matrix <- checkMatrixNames(x)
     if (!is.numeric(chart.matrix))
         stop("Input data should be numeric.")
-    if (num.categories.below.axis > 0 && 
+    if (num.categories.below.axis > 0 &&
         any(!is.na(chart.matrix) & chart.matrix < 0))
         stop("All values in input data must be positive when some categories are shown below the axis")
     n <- nrow(chart.matrix)
@@ -510,7 +514,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
 
     # Stacked charts cannot be toggled so annotations can be added
     # as a single trace, which will render faster than multiple traces
-    # These annotations will be shown on the right of the bars    
+    # These annotations will be shown on the right of the bars
     annot.text <- NULL
     diff.annot.text <- NULL
     totals.annot.text <- NULL
@@ -521,60 +525,71 @@ StackedColumnWithStatisticalSignificance <- function(x,
         annot.arrow.colors <- rep(annot.arrow.colors, length = n.colcmp)
         tmp.arrow.html <- matrix(nrow = n.colcmp, ncol = 2,
             sprintf("<span style=\"color:%s; font-size:%.0fpx;\">%s</span>",
-                rep(annot.arrow.colors, 2), annot.arrow.size, 
-                rep(annot.arrow.symbols[2:3], each = n.colcmp)))
+                rep(annot.arrow.colors, 2), annot.arrow.size,
+                rep(annot.arrow.symbols[c(1,3)], each = n.colcmp)))
         annot.text <- getColCmpAnnot(annot.data[,,ind.colcmp], tmp.arrow.html)
+        if (column.totals.above.show && !is.null(col.totals.annot.data))
+             totals.annot.text <- getColCmpAnnot(
+            col.totals.annot.data[,,ind.colcmp], tmp.arrow.html)
+
         if (annot.footer.show)
         {
+            tmp.arrow.html <- rmFontSize(tmp.arrow.html)
             arrow.desc <- sprintf("Significantly %s %s %s",
                 "greater than",
                 rep(colcmp.names, 2),
-                rep(c("at the 99.9% confidence level", 
+                rep(c("at the 99.9% confidence level",
                 "at the 95% confidence level"), each = n.colcmp))
             footer <- paste0(footer,
                 paste(tmp.arrow.html, arrow.desc, sep = "", collapse = annot.legend.sep))
         }
-        if (column.totals.above.show && !is.null(col.totals.annot.data))
-             totals.annot.text <- getColCmpAnnot(
-            col.totals.annot.data[,,ind.colcmp], tmp.arrow.html)
 
     } else if ("z-Statistic" %in% dimnames(annot.data)[[3]])
     {
         ind.zstat <- which(dimnames(annot.data)[[3]] == "z-Statistic")
         z.threshold <- qnorm(1 - (annot.sig.level/2))
         tmp.arrow.html <- sprintf("<span style=\"color:%s; font-size:%.0fpx;\">%s</span>",
-                annot.arrow.colors[1:2], annot.arrow.size, 
+                annot.arrow.colors[1:2], annot.arrow.size,
                 annot.arrow.symbols[1:2])
         annot.text <- getZStatAnnot(annot.data[,,ind.zstat], z.threshold, tmp.arrow.html)
-        if (annot.footer.show)
-            footer <- paste0(footer,
-            paste(tmp.arrow.html, sprintf("Significantly %s at the %s%% confidence level",
-            c("decreased", "increased"), round((1-annot.sig.level) * 100)),
-            sep = "", collapse = annot.legend.sep))
         if (column.totals.above.show && !is.null(col.totals.annot.data))
             totals.annot.text <- getZStatAnnot(
             col.totals.annot.data[,,ind.zstat], z.threshold, tmp.arrow.html)
+        if (annot.footer.show)
+        {
+            tmp.arrow.html <- rmFontSize(tmp.arrow.html)
+            footer <- paste0(footer,
+            paste(tmp.arrow.html, sprintf("Significant %s at the %s%% confidence level",
+            c("increase", "decrease"), round((1-annot.sig.level) * 100)),
+            sep = "", collapse = annot.legend.sep))
+        }
 
     } else if (all(c("Differences", "p") %in% dimnames(annot.data)[[3]]))
     {
         tmp.arrow.html <- sprintf("<span style=\"color:%s; font-size:%.0fpx;\">%s</span>",
-                annot.arrow.colors[1:2], annot.arrow.size, 
+                annot.arrow.colors[1:2], annot.arrow.size,
                 annot.arrow.symbols[1:2])
         annot.text <- getPDiffAnnot(annot.data, annot.sig.level, tmp.arrow.html)
-
-        if (annot.footer.show)
-            footer <- paste0(footer,
-            paste(tmp.arrow.html, sprintf("Significantly %s at the %s%% confidence level",
-            c("decreased", "increased"), round((1-annot.sig.level) * 100)),
-            sep = "", collapse = annot.legend.sep))
         if (column.totals.above.show && !is.null(col.totals.annot.data))
             totals.annot.text <- getPDiffAnnot(
             col.totals.annot.data, annot.sig.level, tmp.arrow.html)
         if (annot.differences.show)
         {
-            diff.annot.text <- formatC(annot.data[,,"Differences"], format = "f",
-                digits = annot.differences.decimals,
-                flag = if (annot.differences.sign.show) "+" else "")
+            empty.arrow <- paste0("<span style='color:transparent; font-size:",
+                round(annot.arrow.size), "px;'>", annot.arrow.symbols[1], "</span>")
+            diff.annot.text <- paste0(annot.differences.prefix, empty.arrow, 
+                formatC(annot.data[,,"Differences"], 
+                format = "f", digits = annot.differences.decimals,
+                flag = if (annot.differences.sign.show) "+" else ""),
+                annot.differences.suffix)
+        }
+        if (annot.footer.show)
+        {
+            tmp.arrow.html <- rmFontSize(tmp.arrow.html)
+            footer <- paste0(footer,
+            paste(tmp.arrow.html, sprintf("Significant %s at the %s%% confidence level",
+            c("increase", "decrease"), round((1-annot.sig.level) * 100)),
+            sep = "", collapse = annot.legend.sep))
         }
     }
 
@@ -648,7 +663,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     margin.right, margin.inner.pad)
     margins$autoexpand <- margin.autoexpand
 
-    
+
     # Add invisible line to force all categorical labels to be shown
     # Type "scatter" ensures y-axis tick bounds are treated properly
     # but it also adds extra space next to the y-axis
@@ -725,16 +740,16 @@ StackedColumnWithStatisticalSignificance <- function(x,
 
     if (!is.null(diff.annot.text))
     {
-        if (is.null(annot.differences.offset) || 
+        if (is.null(annot.differences.offset) ||
             !is.numeric(annot.differences.offset))
-            annot.differences.offset <- annot.arrow.offset * 1.2
-        xdiff <- (data.annotations$x[2,1] - data.annotations$x[1,1]) * 
+            annot.differences.offset <- (1 - bar.gap)/2
+        xdiff <- (data.annotations$x[2,1] - data.annotations$x[1,1]) *
             annot.differences.offset
         p <- addDataLabelAnnotations(p, type = "Column", "Differences",
-                data.label.xpos = as.vector(data.annotations$x) + 2*xdiff,
+                data.label.xpos = as.vector(data.annotations$x) + xdiff,
                 data.label.ypos = as.vector(data.annotations$y),
                 data.label.show = rep(TRUE, n*m),
-                data.label.text = diff.annot.text, 
+                data.label.text = diff.annot.text,
                 data.label.sign = getSign(as.vector(data.annotations$y), yaxis),
                 NULL, annot.data, 1,
                 xaxis = "x2", yaxis = "y",
@@ -763,29 +778,29 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     center.data.labels = FALSE)
     if (column.totals.above.show)
     {
-        # Add invisible string to center the column totals 
+        # Add invisible string to center the column totals
         pre.annot <- gsub("color:.*?;", "color:transparent;", totals.annot.text)
         p <- addDataLabelAnnotations(p, name = "Column totals - above",
                 type = "Column",
-                data.label.xpos = totals.annotations$x[,1], 
+                data.label.xpos = totals.annotations$x[,1],
                 data.label.ypos = totals.annotations$y[,m],
                 data.label.show = rep(TRUE, n),
-                data.label.text = paste0(pre.annot, 
-                    formatByD3(totals.annotations$y[,m], 
+                data.label.text = paste0(pre.annot,
+                    formatByD3(totals.annotations$y[,m],
                     data.label.format, data.label.prefix, data.label.suffix),
                     totals.annot.text),
                 data.label.sign = rep(1, n),
                 annotation.list = NULL, annot.data, 1,
                 xaxis = "x2", yaxis = "y",
                 data.label.font = list(family = column.totals.above.font.family,
-                color = column.totals.above.font.size, 
+                color = column.totals.above.font.color,
                 size = column.totals.above.font.size),
                 is.stacked = FALSE, data.label.centered = FALSE)
     }
     if (column.totals.below.show)
         p <- addDataLabelAnnotations(p, name = "Column totals - below",
                 type = "Column",
-                data.label.xpos = totals.annotations$x[,1], 
+                data.label.xpos = totals.annotations$x[,1],
                 data.label.ypos = totals.annotations$y[,num.categories.below.axis],
                 data.label.show = rep(TRUE, n),
                 data.label.text = formatByD3(totals.annotations$y[,num.categories.below.axis],
@@ -794,10 +809,10 @@ StackedColumnWithStatisticalSignificance <- function(x,
                 annotation.list = NULL, annot.data, 1,
                 xaxis = "x2", yaxis = "y",
                 data.label.font = list(family = column.totals.below.font.family,
-                color = column.totals.below.font.size, 
+                color = column.totals.below.font.color,
                 size = column.totals.below.font.size),
                 is.stacked = FALSE, data.label.centered = FALSE)
-        
+
 
     # Add text elements surrounding chart
     annotations <- NULL
@@ -841,6 +856,9 @@ StackedColumnWithStatisticalSignificance <- function(x,
     result
 }
 
+# z.data is matrix of z-statistics
+# z.threshold is the threshold z-score use to determine significance
+# arrow.html is a vector of two html strings: 1) up-arrow, 2) down-arrow
 getZStatAnnot <- function(z.data, z.threshold, arrow.html)
 {
     if (length(dim(z.data)) < 2)
@@ -849,12 +867,15 @@ getZStatAnnot <- function(z.data, z.threshold, arrow.html)
     m <- NCOL(z.data)
     annot.txt <- matrix("", n, m)
     ind <- which(z.data > z.threshold)
-    annot.txt[ind] <- arrow.html[2]
-    ind <- which(z.data < -z.threshold)
     annot.txt[ind] <- arrow.html[1]
+    ind <- which(z.data < -z.threshold)
+    annot.txt[ind] <- arrow.html[2]
     return(annot.txt)
 }
 
+# annot.data is a 3d array containing p-values and Differences
+# p.thres is the significance level of the test
+# arrow.html is a vector of two html strings: 1) up-arrow, 2) down-arrow
 getPDiffAnnot <- function(annot.data, p.thres, arrow.html)
 {
     n <- nrow(annot.data)
@@ -869,14 +890,15 @@ getPDiffAnnot <- function(annot.data, p.thres, arrow.html)
     for (i in 1:nrow(ind))
     {
         if (annot.data[ind[i,1], ind[i,2], ind.d] < 0)
-            annot.txt[ind[i,1], ind[i,2]] <- arrow.html[1]
-        else
             annot.txt[ind[i,1], ind[i,2]] <- arrow.html[2]
+        else
+            annot.txt[ind[i,1], ind[i,2]] <- arrow.html[1]
     }
     return(annot.txt)
 }
 
-
+# colcmp is the 2d matrix that contains the letters describing column comparison
+# arrow.html is a vector of 
 getColCmpAnnot <- function(colcmp.matrix, arrow.html)
 {
     if (length(dim(colcmp.matrix)) < 2)
@@ -889,7 +911,7 @@ getColCmpAnnot <- function(colcmp.matrix, arrow.html)
     {
         for (j in 1:m)
         {
-            if (is.na(colcmp.matrix[i,j]) || colcmp.matrix[i,j] == "" || 
+            if (is.na(colcmp.matrix[i,j]) || colcmp.matrix[i,j] == "" ||
                 colcmp.matrix[i, j] == "-")
                 next
 
@@ -917,9 +939,9 @@ getColCmpAnnot <- function(colcmp.matrix, arrow.html)
 
 convertQTableTo3DArray <- function(x)
 {
-    # This is possibly valid output 
+    # This is possibly valid output
     # e.g. crosstab: nominal multi grid x nominal has 4 dimensions
-    # But what to do with it? 
+    # But what to do with it?
     if (length(dim(x)) >= 3)
         return(x)
 
@@ -930,7 +952,7 @@ convertQTableTo3DArray <- function(x)
         dn <- c(dn[1], "", dn[2])
         x <- array(x, dim = sapply(dn, length), dimnames = dn)
         return(x)
-    
+
     } else
     {
         dn <- dimnames(x)
@@ -946,3 +968,12 @@ convertQTableTo3DArray <- function(x)
     }
     return(x)
 }
+
+# This function removes the font-size attribute
+# of the arrows in the footer text. This avoids the problem of arrows overlapping
+# when there are multiple rows of text
+rmFontSize <- function(x)
+{
+    return(gsub("font-size.*?;", "", x))
+}
+    

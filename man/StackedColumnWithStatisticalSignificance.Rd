@@ -20,11 +20,13 @@ StackedColumnWithStatisticalSignificance(
   annot.arrow.size = 15,
   annot.arrow.colors = ChartColors(9, "Strong colors"),
   annot.arrow.offset = NULL,
-  annot.arrow.symbols = c("&#129051;", "&#129049;", "&#8673;"),
+  annot.arrow.symbols = c("&#129049;", "&#129051;", "&#8673;"),
   annot.sig.level = 0.05,
-  annot.legend.sep = " ",
+  annot.legend.sep = " &#183; ",
   annot.differences.show = TRUE,
   annot.differences.decimals = 0,
+  annot.differences.prefix = "",
+  annot.differences.suffix = "",
   annot.differences.sign.show = TRUE,
   annot.differences.font.family = global.font.family,
   annot.differences.font.color = global.font.color,
@@ -51,7 +53,7 @@ StackedColumnWithStatisticalSignificance(
   footer.font.color = global.font.color,
   footer.font.size = 8,
   footer.wrap = TRUE,
-  footer.wrap.nchar = 200,
+  footer.wrap.nchar = 150,
   footer.align = "center",
   background.fill.color = "transparent",
   background.fill.opacity = 1,
@@ -159,8 +161,8 @@ will be parsed automatically.}
 \item{num.categories.below.axis}{Number of categories shown below
 x-axis pointing downwards.}
 
-\item{transpose}{Swaps the rows and columns of \code{x}. The rows 
-and columns of the additional statistics used to create annotations 
+\item{transpose}{Swaps the rows and columns of \code{x}. The rows
+and columns of the additional statistics used to create annotations
 are also respected. Note that PrepareData is not used before the function.}
 
 \item{row.names.to.remove}{Names of rows that are not shown in the chart.}
@@ -180,9 +182,9 @@ font attribute for the chart unless specified individually.}
 \item{global.font.color}{Global font color as a named color in character format
 (e.g. "black") or an a hex code.}
 
-\item{font.unit}{One of "px" of "pt". By default all font sizes are 
+\item{font.unit}{One of "px" of "pt". By default all font sizes are
 specified in terms of pixels ("px"). But changing this to "pt" will
-mean that the font sizes will be in terms points ("pt"), which will 
+mean that the font sizes will be in terms points ("pt"), which will
 be consistent with font sizes in text boxes.}
 
 \item{annot.footer.show}{Append a description explaining annotations in chart footer.}
@@ -193,14 +195,14 @@ be consistent with font sizes in text boxes.}
 For column comparisons, the number of colors should equal the number of columns.
 For z-Statistic, the colors are assigned to 'down' and 'up' arrows.}
 
-\item{annot.arrow.offset}{Horizontal offset (towards the right) of 
+\item{annot.arrow.offset}{Horizontal offset (towards the right) of
 the arrows from the bars. If not specified, then it will be
 determined from \code{bar.gap}.}
 
 \item{annot.arrow.symbols}{A vector of three characters (or html symbols)
 used to show arrows. They are (in order):
-1. Down arrow for z-Statistics
-2. Up arrow for z-Statistics and upper-case Column Comparisons
+1. Up arrow for z-Statistics and upper-case Column Comparisons
+2. Down arrow for z-Statistics
 3. Up arrow for lower-case Column Comparisons}
 
 \item{annot.sig.level}{Significance level above which arrows are shown
@@ -213,23 +215,27 @@ with line-wrap etc. But "<br>" can also be a good option for readibility.}
 \item{annot.differences.show}{Logical; whether to show the difference
 statistics if they are included in the input table.}
 
-\item{annot.differences.decimals}{Number of decimals shown in the 
+\item{annot.differences.decimals}{Number of decimals shown in the
 difference annotations.}
+
+\item{annot.differences.prefix}{Option text to prepend to annot.differences.}
+
+\item{annot.differences.suffix}{Option text to append to annot.differences.}
 
 \item{annot.differences.sign.show}{Logical; whether to show the sign
 of the difference.}
 
-\item{annot.differences.font.family}{Font family of the 
+\item{annot.differences.font.family}{Font family of the
 differences annotations}
 
-\item{annot.differences.font.color}{Font color of the 
+\item{annot.differences.font.color}{Font color of the
 differences annotations}
 
-\item{annot.differences.font.size}{Font size of the 
+\item{annot.differences.font.size}{Font size of the
 differences annotations}
 
 \item{annot.differences.offset}{Horizontal offset (towards the right)
-of the difference annotation from the bars. If not specified, then 
+of the difference annotation from the bars. If not specified, then
 it will be determined from \code{bar.gap}.}
 
 \item{column.totals.above.show}{Show data labels containing the total of
@@ -287,7 +293,7 @@ line of the footer when \code{footer.wrap} \code{TRUE}.}
 
 \item{footer.align}{One of "center", "left" or "right".}
 
-\item{background.fill.color}{Background color in character format 
+\item{background.fill.color}{Background color in character format
 (e.g. "black") or a hex code.}
 
 \item{background.fill.opacity}{Background opacity as an alpha value (0 to 1).}
@@ -295,13 +301,13 @@ line of the footer when \code{footer.wrap} \code{TRUE}.}
 \item{charting.area.fill.color}{Charting area background color as
 a named color in character format (e.g. "black") or a hex code.}
 
-\item{charting.area.fill.opacity}{Charting area background opacity 
+\item{charting.area.fill.opacity}{Charting area background opacity
 as an alpha value (0 to 1).}
 
-\item{legend.show}{Controls whether legend is shown. This can be a 
-logical (\code{TRUE} or \code{FALSE});or a string ("Show" or "Hide"). 
+\item{legend.show}{Controls whether legend is shown. This can be a
+logical (\code{TRUE} or \code{FALSE});or a string ("Show" or "Hide").
 If it is \code{TRUE} or \code{NA} (the default), a legend will be
-shown only if there is more than one data series. To force a legend 
+shown only if there is more than one data series. To force a legend
 to be shown even with 1 data series, use "Show" instead.}
 
 \item{legend.orientation}{Character; One of 'Vertical' or 'Horizontal'}
@@ -373,16 +379,16 @@ character format (e.g. "black") or a hex code.}
 \item{y.line.color}{y-axis line color as a named color in character format
 (e.g. "black") or a hex code.}
 
-\item{y.tick.mark.length}{Length of tick marks in pixels. 
+\item{y.tick.mark.length}{Length of tick marks in pixels.
 Ticks are only shown when \code{y.line.width > 0}.}
 
-\item{y.bounds.minimum}{Minimum of range for plotting; For a date axis 
+\item{y.bounds.minimum}{Minimum of range for plotting; For a date axis
 this should be supplied as a date string.
 For a categorical axis, the index of the category (0-based) should be used.}
 
 \item{y.bounds.maximum}{Maximum of range for plotting; NULL = no manual range set.}
 
-\item{y.tick.distance}{Distance between tick marks. Requires that 
+\item{y.tick.distance}{Distance between tick marks. Requires that
 \code{y.bounds.minimum} and \code{y.bounds.maximum} have been set.}
 
 \item{y.zero}{Whether the y-axis should include zero.}
@@ -397,7 +403,7 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{y.grid.width}{Width of y-grid lines in pixels; 0 = no line}
 
-\item{y.grid.color}{Color of y-grid lines as a named color in 
+\item{y.grid.color}{Color of y-grid lines as a named color in
 character format (e.g. "black") or a hex code.}
 
 \item{y.tick.show}{Whether to display the y-axis tick labels}
@@ -442,7 +448,7 @@ x-axis.  Can be "outside", "inside", "none"}
 
 \item{x.tick.mark.length}{Length of tick marks in pixels.}
 
-\item{x.bounds.minimum}{Minimum of range for plotting; For a date axis 
+\item{x.bounds.minimum}{Minimum of range for plotting; For a date axis
 this should be supplied as a date string. For a categorical axis,
 the index of the category (0-based) should be used.}
 
@@ -498,10 +504,10 @@ when \code{label.wrap} is \code{TRUE}.}
 \item{marker.border.width}{Width in pixels of border/line
 around series bars; 0 is no line}
 
-\item{marker.border.colors}{Character; a vector containing one or more 
+\item{marker.border.colors}{Character; a vector containing one or more
 colors specified as hex codes.}
 
-\item{marker.border.opacity}{Opacity of border around bars as an 
+\item{marker.border.opacity}{Opacity of border around bars as an
 alpha value (0 to 1).}
 
 \item{tooltip.show}{Logical; whether to show a tooltip on hover.}
@@ -513,10 +519,10 @@ bar or column charts, or between each cluster of bars or columns.}
 
 \item{data.label.show}{Logical; whether to show data labels.}
 
-\item{data.label.centered}{Logical; whether data labels in Stacked Column 
+\item{data.label.centered}{Logical; whether data labels in Stacked Column
 charts should have the data labels vertically centered.}
 
-\item{data.label.font.autocolor}{Logical; Whether font color should 
+\item{data.label.font.autocolor}{Logical; Whether font color should
 be automatically determined (black or white) based on the color of the
 background column if stacked.}
 
