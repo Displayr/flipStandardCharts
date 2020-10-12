@@ -44,6 +44,7 @@ notifications:
     on_success: change
     on_failure: always
 
+
 # Warning notifications and downstream package builds are implemented
 # by calling R functions so they can be updated in this package without
 # committing a new change to .travis.yml in each repository
