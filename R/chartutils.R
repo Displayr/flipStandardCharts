@@ -368,7 +368,7 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE,
              else                           suppressWarnings(try(predict(tmp.fit, data.frame(x = x.fit), se = CI.show)))
     if (inherits(y.fit, "try-error"))
     {
-        warning("Could not fit trend line to data. Check that you expect to map a single x-value to a single y-value.") 
+        warning("Could not fit trend line to data. Check that you expect to map a single x-value to a single y-value.")
         y.fit <- NULL
         lb <- NULL
         ub <- NULL
@@ -1104,6 +1104,7 @@ lineBreakEveryN <- function(x, n = 21, remove.empty = TRUE)
     patt <- if (remove.empty) "\\s+"
             else              " "
 
+    x <- TrimWhitespace(x)
     max.len <- nchar(x)
     next.wb <- regexpr(patt, x, perl = TRUE)
     if (next.wb == -1 || is.na(next.wb))
@@ -1120,7 +1121,7 @@ lineBreakEveryN <- function(x, n = 21, remove.empty = TRUE)
 
         if (next.html != -1 && next.html < next.wb)
         {
-            tmp.text <- substr(x, 1, next.html + attr(next.html, "match.length") - 1) 
+            tmp.text <- substr(x, 1, next.html + attr(next.html, "match.length") - 1)
             if (c.len + next.html > n)
             {
                 final <- paste0(final, "<br>", tmp.text)
