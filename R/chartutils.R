@@ -1104,11 +1104,11 @@ lineBreakEveryN <- function(x, n = 21, remove.empty = TRUE)
     patt <- if (remove.empty) "\\s+"
             else              " "
 
-    x <- TrimWhitespace(x)
     max.len <- nchar(x)
     next.wb <- regexpr(patt, x, perl = TRUE)
     if (next.wb == -1 || is.na(next.wb))
         return(x)
+    x <- TrimWhitespace(x)
     final <- substr(x, 1, next.wb - 1)
     c.len <- next.wb - 1
     x <- substr(x, next.wb + attr(next.wb, "match.length"), max.len)
