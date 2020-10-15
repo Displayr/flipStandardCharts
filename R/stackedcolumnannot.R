@@ -577,8 +577,8 @@ StackedColumnWithStatisticalSignificance <- function(x,
         {
             empty.arrow <- paste0("<span style='color:transparent; font-size:",
                 round(annot.arrow.size), "px;'>", annot.arrow.symbols[1], "</span>")
-            diff.annot.text <- paste0(annot.differences.prefix, empty.arrow, 
-                formatC(annot.data[,,"Differences"], 
+            diff.annot.text <- paste0(annot.differences.prefix, empty.arrow,
+                formatC(annot.data[,,"Differences"],
                 format = "f", digits = annot.differences.decimals,
                 flag = if (annot.differences.sign.show) "+" else ""),
                 annot.differences.suffix)
@@ -803,7 +803,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                 data.label.xpos = totals.annotations$x[,1],
                 data.label.ypos = totals.annotations$y[,num.categories.below.axis],
                 data.label.show = rep(TRUE, n),
-                data.label.text = formatByD3(totals.annotations$y[,num.categories.below.axis],
+                data.label.text = formatByD3(abs(totals.annotations$y[,num.categories.below.axis]),
                     data.label.format, data.label.prefix, data.label.suffix),
                 data.label.sign = rep(-1, n),
                 annotation.list = NULL, annot.data, 1,
@@ -898,7 +898,7 @@ getPDiffAnnot <- function(annot.data, p.thres, arrow.html)
 }
 
 # colcmp is the 2d matrix that contains the letters describing column comparison
-# arrow.html is a vector of 
+# arrow.html is a vector of
 getColCmpAnnot <- function(colcmp.matrix, arrow.html)
 {
     if (length(dim(colcmp.matrix)) < 2)
@@ -976,4 +976,4 @@ rmFontSize <- function(x)
 {
     return(gsub("font-size.*?;", "", x))
 }
-    
+
