@@ -32,6 +32,7 @@ StackedColumnWithStatisticalSignificance(
   annot.differences.font.color = global.font.color,
   annot.differences.font.size = 10,
   annot.differences.offset = NULL,
+  annot.hide.small.bar = TRUE,
   column.totals.above.show = FALSE,
   column.totals.above.font.family = global.font.family,
   column.totals.above.font.color = global.font.color,
@@ -237,6 +238,10 @@ differences annotations}
 \item{annot.differences.offset}{Horizontal offset (towards the right)
 of the difference annotation from the bars. If not specified, then
 it will be determined from \code{bar.gap}.}
+
+\item{annot.hide.small.bar}{Hide annotations (arrow and differences)
+when the bar is smaller than the proportion of total range
+(the proportion as specified by \code{data.label.threshold}.}
 
 \item{column.totals.above.show}{Show data labels containing the total of
 the categories above the x-axis.}

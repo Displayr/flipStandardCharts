@@ -53,6 +53,9 @@
 #'  differences annotations
 #' @param annot.differences.font.size Font size of the
 #'  differences annotations
+#' @param annot.hide.small.bar Hide annotations (arrow and differences)
+#'  when the bar is smaller than the proportion of total range
+#'  (the proportion as specified by \code{data.label.threshold}.
 #' @param column.totals.above.show Show data labels containing the total of
 #'  the categories above the x-axis.
 #' @param column.totals.above.font.family Font family of \code{column.totals.above}.
@@ -282,6 +285,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     annot.differences.font.color = global.font.color,
                     annot.differences.font.size = 10,
                     annot.differences.offset = NULL,
+                    annot.hide.small.bar = TRUE,
                     column.totals.above.show = FALSE,
                     column.totals.above.font.family = global.font.family,
                     column.totals.above.font.color = global.font.color,
@@ -518,6 +522,8 @@ StackedColumnWithStatisticalSignificance <- function(x,
     annot.text <- NULL
     diff.annot.text <- NULL
     totals.annot.text <- NULL
+    if (nchar(footer) > 0)
+        footer <- paste0(footer, "<br>")
     if ("Column Comparisons" %in% dimnames(annot.data)[[3]])
     {
         ind.colcmp <- which(dimnames(annot.data)[[3]] == "Column Comparisons")
@@ -631,6 +637,8 @@ StackedColumnWithStatisticalSignificance <- function(x,
     x.range <- getRange(x.labels, xaxis, axisFormat)
 
     # Set up second x-axis for data labels
+    # Even when data.label.show is false, data.annotations
+    # is used to position arrow annotations etc
     xaxis2 <- list(overlaying = "x", visible = FALSE, range = x.range)
     data.annotations <- dataLabelPositions(chart.matrix = chart.matrix,
                         axis.type = xaxis$type,
@@ -727,6 +735,13 @@ StackedColumnWithStatisticalSignificance <- function(x,
     if (is.null(annot.arrow.offset) || !is.numeric(annot.arrow.offset))
         annot.arrow.offset <- (1 - bar.gap)/2
     xdiff <- (data.annotations$x[2,1] - data.annotations$x[1,1]) * annot.arrow.offset
+    if (annot.hide.small.bar)
+    {
+        ind <- which(nchar(data.annotations$text) == 0)
+        if (length(ind) > 0)
+            warning("Some significant values were not shown because the bars were too small.")
+        annot.text[ind] <- ""
+    }
     p <- addDataLabelAnnotations(p, type = "Column", "Annotations",
                 data.label.xpos = as.vector(data.annotations$x) + xdiff,
                 data.label.ypos = as.vector(data.annotations$y),
@@ -745,6 +760,8 @@ StackedColumnWithStatisticalSignificance <- function(x,
             annot.differences.offset <- (1 - bar.gap)/2
         xdiff <- (data.annotations$x[2,1] - data.annotations$x[1,1]) *
             annot.differences.offset
+        if (annot.hide.small.bar)
+            diff.annot.text[which(nchar(data.annotations$text) == 0)] <- ""
         p <- addDataLabelAnnotations(p, type = "Column", "Differences",
                 data.label.xpos = as.vector(data.annotations$x) + xdiff,
                 data.label.ypos = as.vector(data.annotations$y),

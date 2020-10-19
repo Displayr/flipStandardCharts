@@ -124,7 +124,10 @@ test_that("Charts with annotations",
     expect_error(StackedColumnWithStatisticalSignificance(tb1d.with.zstat), NA)
     expect_error(StackedColumnWithStatisticalSignificance(tb.with.zstat), NA)
     expect_error(StackedColumnWithStatisticalSignificance(tb.with.colcmp), NA)
-    expect_error(StackedColumnWithStatisticalSignificance(tb.from.diff), NA)
+    expect_error(StackedColumnWithStatisticalSignificance(tb.from.diff,
+                annot.hide.small.bar = FALSE), NA)
+    expect_warning(StackedColumnWithStatisticalSignificance(tb.from.diff,
+                annot.hide.small.bar = TRUE), "Some significant values were not shown")
 
     xx <- structure(1:10, .Names = c("A", "B", "C", "D", "E", "F", "G",
         "H", "I", "J"))
