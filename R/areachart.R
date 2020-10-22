@@ -226,6 +226,10 @@ Area <- function(x,
         series.mode <- "lines"
     else if (line.thickness == 0 && marker.show == "none")
         series.mode <- "lines"
+    if (fit.type != "None" && is.null(fit.line.colors))
+        fit.line.colors <- colors
+    if (fit.CI.show && is.null(fit.CI.colors))
+        fit.CI.colors <- fit.line.colors
 
     eval(colors) # not sure why, but this is necessary for bars to appear properly
     if (is.null(opacity))

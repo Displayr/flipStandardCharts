@@ -195,6 +195,11 @@ Bar <- function(x,
         opacity <- if (fit.type == "None") 1 else 0.6
     if (is.null(marker.border.opacity))
         marker.border.opacity <- opacity
+    if (fit.type != "None" && is.null(fit.line.colors))
+        fit.line.colors <- colors
+    if (fit.CI.show && is.null(fit.CI.colors))
+        fit.CI.colors <- fit.line.colors
+
     eval(colors) # not sure why, but this is necessary for bars to appear properly
 
     if (is.stacked && data.label.font.autocolor)

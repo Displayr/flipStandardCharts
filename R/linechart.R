@@ -190,6 +190,11 @@ Line <-   function(x,
         marker.opacity <- opacity
     if (is.null(marker.border.opacity))
         marker.border.opacity <- marker.opacity
+    if (fit.type != "None" && is.null(fit.line.colors))
+        fit.line.colors <- colors
+    if (fit.CI.show && is.null(fit.CI.colors))
+        fit.CI.colors <- fit.line.colors
+
     eval(colors) # not sure why, but this is necessary for bars to appear properly
 
     if (data.label.show.at.ends || marker.show.at.ends)

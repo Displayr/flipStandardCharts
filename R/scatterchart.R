@@ -219,6 +219,10 @@ Scatter <- function(x = NULL,
     if (sum(nchar(y.hovertext.format)) == 0)
         y.hovertext.format <- y.tick.format
     warning.prefix <- if (!is.null(small.mult.index)) paste0("Chart ", small.mult.index, ": ") else ""
+    if (fit.type != "None" && is.null(fit.line.colors))
+        fit.line.colors <- colors
+    if (fit.CI.show && is.null(fit.CI.colors))
+        fit.CI.colors <- fit.line.colors
 
 
     # Grouping font attributes to simplify passing to plotly

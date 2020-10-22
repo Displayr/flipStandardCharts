@@ -472,6 +472,11 @@ Column <- function(x,
 
     # Store data for chart annotations
     annot.data <- x
+    if (fit.type != "None" && is.null(fit.line.colors))
+        fit.line.colors <- colors
+    if (fit.CI.show && is.null(fit.CI.colors))
+        fit.CI.colors <- fit.line.colors
+
 
     # Prepare data for plotting chart
     chart.matrix <- checkMatrixNames(x)
