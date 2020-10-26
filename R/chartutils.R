@@ -368,7 +368,7 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE,
              else                           suppressWarnings(try(predict(tmp.fit, data.frame(x = x.fit), se = CI.show)))
     if (inherits(y.fit, "try-error"))
     {
-        warning("Could not fit trend line to data. Check that you expect to map a single x-value to a single y-value.") 
+        warning("Could not fit trend line to data. Check that you expect to map a single x-value to a single y-value.")
         y.fit <- NULL
         lb <- NULL
         ub <- NULL
@@ -845,6 +845,10 @@ setCustomMargins <- function(margins, margin.top, margin.bottom, margin.left,
 }
 
 
+# setTitle, setSubtitle and setFooter return a list which can be used
+# in plotly to create an annotation. The allowed names of the
+# components in the list are described in
+# https://plotly.com/r/reference/layout/annotations/
 setTitle <- function(title, title.font, margins)
 {
     if (sum(nchar(title)) == 0)
@@ -863,17 +867,18 @@ setSubtitle <- function(subtitle, subtitle.font, margins)
                 yref = "paper", y = 1.0, yanchor = "bottom", showarrow = FALSE))
 }
 
-setFooter <- function(footer, footer.font, margins)
+setFooter <- function(footer, footer.font, margins, x.align = "center")
 {
     if (sum(nchar(footer)) == 0)
         return(NULL)
+    xpos <- switch(x.align, center = 0.5, left = 0, right = 1)
 
     footer.nline <- sum(gregexpr("<br>", footer)[[1]] > -1) + 1
     footer.npad <- max(0, ceiling(margins$b/footer.font$size/1.25) - footer.nline - 2)
     footer <- paste0("&nbsp;", paste(rep("<br>", footer.npad), collapse = ""), footer)
-    return(list(text = footer, font = footer.font,
-                xref = "paper", x = 0.5, yref = "paper", y = 0.0,
-                yanchor = "top", xanchor = "center", showarrow = FALSE))
+    return(list(text = footer, font = footer.font, align = x.align,
+                xref = "paper", x = xpos, yref = "paper", y = 0.0,
+                yanchor = "top", xanchor = x.align, showarrow = FALSE))
 }
 
 # This differs from as.numeric in that it returns NULL
@@ -1093,45 +1098,73 @@ cum.signed.data <- function(x)
     return(result)
 }
 
-## Takes a single string and puts <br> in place of the closest space preceding the n= value character.
-## E.g. if n= 20 then count 20 characters.  The space preceding character 20 is replaced by "<br>".
-lineBreakEveryN <- function(x, n = 21, remove.empty)
+# Takes a single string and puts <br> in place of the closest space
+# preceding the word at the max.nchar position.
+# E.g. if n = 20 then count 20 characters.  The space preceding character 20
+# is replaced by "<br>".
+lineBreakEveryN <- function(x, max.nchar = 21, remove.empty = TRUE)
 {
-    if (n <= 0)
+    if (max.nchar <= 0)
         stop("Wrap line length cannot be smaller than 1")
 
-    w.list <- strsplit(x, " ")[[1]]
-    if (remove.empty)
-        w.list <- w.list[which(nchar(w.list) > 0)]
-    if (length(w.list) == 0)
-        return(" ")
-    final <- w.list[1]
-    c.len <- lengthLastLine(final)
-    for (ww in w.list[-1])
+    patt <- if (remove.empty) "\\s+"
+            else              " "
+
+    tot.nchar <- nchar(x)
+    next.wb <- regexpr(patt, x, perl = TRUE)
+    if (next.wb == -1 || is.na(next.wb))
+        return(x)
+    x <- TrimWhitespace(x)
+    final <- substr(x, 1, next.wb - 1) # text after line breaks have been inserted
+    cur.nchar <- next.wb - 1  # running count of characters in current line
+    x <- substr(x, next.wb + attr(next.wb, "match.length"), tot.nchar)
+    while (next.wb != -1)
     {
-        new.len <- c.len + nchar(ww) + 1
-        if (new.len > n)
+        # Find position of next wordbreak or html tag
+        next.wb <- regexpr(patt, x, perl = TRUE)
+        next.html <- regexpr("<.*?>", x, perl = TRUE)
+        if (next.wb == -1)
+            break
+
+        # Decide whether to place a line break before the
+        # next html tag or word (whichever comes first)
+        if (next.html != -1 && next.html < next.wb)
         {
-            final <- paste0(final, "<br>", ww)
-            c.len <- lengthLastLine(ww)
-        } else if (grepl("<br>", ww))
-        {
-            final <- paste0(final, " ", ww)
-            c.len <- lengthLastLine(ww)
+            tmp.text <- substr(x, 1, next.html + attr(next.html, "match.length") - 1)
+            if (cur.nchar + next.html > max.nchar)
+            {
+                final <- paste0(final, "<br>", tmp.text)
+                cur.nchar <- next.html - 1
+
+            } else
+            {
+                final <- paste0(final, tmp.text)
+                cur.nchar <- cur.nchar + next.html
+            }
+            if (grepl("<br>", tmp.text))
+                cur.nchar <- 0
+            x <- substr(x, next.html + attr(next.html, "match.length"), tot.nchar)
+
         } else
         {
-            final <- paste0(final, " ", ww)
-            c.len <- new.len
+            tmp.text <- substr(x, 1, next.wb - 1)
+
+            if (cur.nchar + next.wb > max.nchar)
+            {
+                final <- paste0(final, "<br>", tmp.text)
+                cur.nchar <- next.wb - 1
+
+            } else
+            {
+                final <- paste(final, tmp.text, sep = " ")
+                cur.nchar <- cur.nchar + next.wb
+            }
+            x <- substr(x, next.wb + attr(next.wb, "match.length"), tot.nchar)
         }
     }
-    final
+    final <- paste(final, x, sep = if (cur.nchar + nchar(x) + 1 > max.nchar) "<br>" else " ")
 }
 
-lengthLastLine <- function(x)
-{
-    tmp <- strsplit(x, split = "<br>")[[1]]
-    return(nchar(tmp[length(tmp)]))
-}
 
 #' Format long labels for html by truncating and wrapping
 #'

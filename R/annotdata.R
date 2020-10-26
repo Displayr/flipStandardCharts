@@ -1,17 +1,19 @@
 
 # This is only used for Bar/Column type charts
 addDataLabelAnnotations <- function(p, type, name, data.label.xpos, data.label.ypos,
-        data.label.show, data.label.text, data.label.sign, annotation.list, annot.data, i,
-        xaxis, yaxis, data.label.font, is.stacked, data.label.centered)
+        data.label.show, data.label.text, data.label.sign, 
+        annotation.list, annot.data, i,
+        xaxis, yaxis, data.label.font, is.stacked, data.label.centered, 
+        data.label.horizontal.align = "center")
 {
     if (type == "Column")
     {
         if (is.stacked)
             data.label.sign <- -1 * data.label.sign
         if (is.stacked && data.label.centered)
-            textalign <- "middle center"
+            textalign <- paste("middle", data.label.horizontal.align)
         else
-            textalign <- ifelse(data.label.sign >= 0, "top center", "bottom center")
+            textalign <- paste(ifelse(data.label.sign >= 0, "top", "bottom"), data.label.horizontal.align)
         data.label.pos <- ifelse(data.label.sign < 0, 3, 0 + (is.stacked & !data.label.centered))
     } else
     {

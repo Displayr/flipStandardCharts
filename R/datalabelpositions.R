@@ -13,11 +13,15 @@ dataLabelPositions <- function(chart.matrix,
                                 dates,
                                 reversed = FALSE,
                                 font,
+                                hide.sign = FALSE,
                                 center.data.labels = FALSE)
 {
+    text.values <- chart.matrix * data.label.mult
+    if (hide.sign)
+        text.values <- abs(text.values)
     text <- if (!is.null(annotations)) annotations
             else paste(bar.prefix,
-                  FormatAsReal(chart.matrix * data.label.mult, decimals = bar.decimals),
+                  FormatAsReal(text.values, decimals = bar.decimals),
                   bar.suffix, sep = "")
 
     chart.matrix[which(is.na(chart.matrix))] <- 0
@@ -33,7 +37,7 @@ dataLabelPositions <- function(chart.matrix,
         else
             cum.signed.data(chart.matrix)
 
-        largest.bar <- max(rowSums(chart.matrix))
+        largest.bar <- max(rowSums(abs(chart.matrix)))
         if (is.null(display.threshold))
             display.threshold <- 0.05
         text[abs(chart.matrix) < largest.bar * display.threshold] <- ""
