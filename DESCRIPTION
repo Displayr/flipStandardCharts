@@ -12,7 +12,6 @@ Depends: R (>= 2.10)
 LazyData: TRUE
 Imports:
     d3vennR,
-    devtools,
     dygraphs (>= 1.1.1.6-1),
     flipChartBasics,
     flipData,
@@ -25,13 +24,11 @@ Imports:
     mgcv,
     htmltools,
     htmlwidgets,
-    httr,
     jsonlite,
     leaflet,
     parcoords,
     plotly,
     pryr, 
-    rgdal,
     rhtmlDonut,
     rhtmlHeatmap,
     rhtmlLabeledScatter,
@@ -40,7 +37,6 @@ Imports:
     sp,
     streamgraph,
     stringr,
-    XML,
     xts,
 Remotes:
     cran/rgdal@1.5-12,

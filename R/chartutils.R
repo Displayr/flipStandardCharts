@@ -845,6 +845,10 @@ setCustomMargins <- function(margins, margin.top, margin.bottom, margin.left,
 }
 
 
+# setTitle, setSubtitle and setFooter return a list which can be used
+# in plotly to create an annotation. The allowed names of the
+# components in the list are described in
+# https://plotly.com/r/reference/layout/annotations/
 setTitle <- function(title, title.font, margins)
 {
     if (sum(nchar(title)) == 0)
@@ -1094,66 +1098,71 @@ cum.signed.data <- function(x)
     return(result)
 }
 
-## Takes a single string and puts <br> in place of the closest space preceding the n= value character.
-## E.g. if n= 20 then count 20 characters.  The space preceding character 20 is replaced by "<br>".
-lineBreakEveryN <- function(x, n = 21, remove.empty = TRUE)
+# Takes a single string and puts <br> in place of the closest space
+# preceding the word at the max.nchar position.
+# E.g. if n = 20 then count 20 characters.  The space preceding character 20
+# is replaced by "<br>".
+lineBreakEveryN <- function(x, max.nchar = 21, remove.empty = TRUE)
 {
-    if (n <= 0)
+    if (max.nchar <= 0)
         stop("Wrap line length cannot be smaller than 1")
 
     patt <- if (remove.empty) "\\s+"
             else              " "
 
-    max.len <- nchar(x)
+    tot.nchar <- nchar(x)
     next.wb <- regexpr(patt, x, perl = TRUE)
     if (next.wb == -1 || is.na(next.wb))
         return(x)
     x <- TrimWhitespace(x)
-    final <- substr(x, 1, next.wb - 1)
-    c.len <- next.wb - 1
-    x <- substr(x, next.wb + attr(next.wb, "match.length"), max.len)
+    final <- substr(x, 1, next.wb - 1) # text after line breaks have been inserted
+    cur.nchar <- next.wb - 1  # running count of characters in current line
+    x <- substr(x, next.wb + attr(next.wb, "match.length"), tot.nchar)
     while (next.wb != -1)
     {
+        # Find position of next wordbreak or html tag
         next.wb <- regexpr(patt, x, perl = TRUE)
         next.html <- regexpr("<.*?>", x, perl = TRUE)
         if (next.wb == -1)
             break
 
+        # Decide whether to place a line break before the
+        # next html tag or word (whichever comes first)
         if (next.html != -1 && next.html < next.wb)
         {
             tmp.text <- substr(x, 1, next.html + attr(next.html, "match.length") - 1)
-            if (c.len + next.html > n)
+            if (cur.nchar + next.html > max.nchar)
             {
                 final <- paste0(final, "<br>", tmp.text)
-                c.len <- next.html - 1
+                cur.nchar <- next.html - 1
 
             } else
             {
                 final <- paste0(final, tmp.text)
-                c.len <- c.len + next.html
+                cur.nchar <- cur.nchar + next.html
             }
             if (grepl("<br>", tmp.text))
-                c.len <- 0
-            x <- substr(x, next.html + attr(next.html, "match.length"), max.len)
+                cur.nchar <- 0
+            x <- substr(x, next.html + attr(next.html, "match.length"), tot.nchar)
 
         } else
         {
             tmp.text <- substr(x, 1, next.wb - 1)
 
-            if (c.len + next.wb > n)
+            if (cur.nchar + next.wb > max.nchar)
             {
                 final <- paste0(final, "<br>", tmp.text)
-                c.len <- next.wb - 1
+                cur.nchar <- next.wb - 1
 
             } else
             {
                 final <- paste(final, tmp.text, sep = " ")
-                c.len <- c.len + next.wb
+                cur.nchar <- cur.nchar + next.wb
             }
-            x <- substr(x, next.wb + attr(next.wb, "match.length"), max.len)
+            x <- substr(x, next.wb + attr(next.wb, "match.length"), tot.nchar)
         }
     }
-    final <- paste(final, x, sep = if (c.len + nchar(x) + 1 > n) "<br>" else " ")
+    final <- paste(final, x, sep = if (cur.nchar + nchar(x) + 1 > max.nchar) "<br>" else " ")
 }
 
 
