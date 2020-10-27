@@ -1117,7 +1117,7 @@ lineBreakEveryN <- function(x, max.nchar = 21, remove.empty = TRUE)
     x <- TrimWhitespace(x)
     final <- ""
     cur.nchar <- 0
-    sep <- ""  # separator - no space is added before first word or after html tags
+    line.is.empty <- TRUE
     while (next.wb != -1)
     {
         # Find position of next wordbreak or html tag
@@ -1136,7 +1136,7 @@ lineBreakEveryN <- function(x, max.nchar = 21, remove.empty = TRUE)
                 final <- paste0(final, tmp.text)
                 cur.nchar <- 0
 
-            } else if (cur.nchar + next.html > max.nchar)
+            } else if (!line.is.empty && cur.nchar + next.html - 1 > max.nchar)
             {
                 final <- paste0(final, "<br>", tmp.text)
                 cur.nchar <- next.html - 1
@@ -1149,24 +1149,24 @@ lineBreakEveryN <- function(x, max.nchar = 21, remove.empty = TRUE)
             if (grepl("<br>", tmp.text))
                 cur.nchar <- 0
             x <- substr(x, next.html + attr(next.html, "match.length"), tot.nchar)
-            sep <- ""
+            line.is.empty <- TRUE
 
         } else
         {
             tmp.text <- substr(x, 1, next.wb - 1)
 
-            if (cur.nchar + next.wb > max.nchar)
+            if (!line.is.empty && cur.nchar + next.wb > max.nchar)
             {
                 final <- paste0(final, "<br>", tmp.text)
                 cur.nchar <- next.wb - 1
 
             } else
             {
-                final <- paste(final, tmp.text, sep = sep)
-                cur.nchar <- cur.nchar + next.wb
+                final <- paste(final, tmp.text, sep = if (line.is.empty) "" else " ")
+                cur.nchar <- cur.nchar + next.wb - line.is.empty
             }
             x <- substr(x, next.wb + attr(next.wb, "match.length"), tot.nchar)
-            sep <- " "
+            line.is.empty <- FALSE
         }
     }
     if (nchar(final) == 0)
