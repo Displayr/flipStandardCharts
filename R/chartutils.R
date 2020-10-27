@@ -1117,12 +1117,12 @@ lineBreakEveryN <- function(x, max.nchar = 21, remove.empty = TRUE)
     x <- TrimWhitespace(x)
     final <- ""
     cur.nchar <- 0
-    line.is.empty <- TRUE
     while (next.wb != -1)
     {
         # Find position of next wordbreak or html tag
         next.wb <- regexpr(patt, x, perl = TRUE)
         next.html <- regexpr("<.*?>", x, perl = TRUE)
+        line.is.empty <- cur.nchar == 0
         if (next.wb == -1)
             break
 
@@ -1136,26 +1136,31 @@ lineBreakEveryN <- function(x, max.nchar = 21, remove.empty = TRUE)
                 final <- paste0(final, tmp.text)
                 cur.nchar <- 0
 
-            } else if (!line.is.empty && cur.nchar + next.html - 1 > max.nchar)
+            } else if (next.html == 1)
+            {
+                final <- paste0(final, tmp.text)
+                # cur.nchar and unchanged
+
+            } else if (!line.is.empty && cur.nchar + next.html - line.is.empty > max.nchar)
             {
                 final <- paste0(final, "<br>", tmp.text)
                 cur.nchar <- next.html - 1
 
             } else
             {
-                final <- paste0(final, tmp.text)
-                cur.nchar <- cur.nchar + next.html - 1
+                final <- paste(final, tmp.text, sep = if (line.is.empty) "" else " ")
+                cur.nchar <- cur.nchar + next.html - line.is.empty
             }
-            if (grepl("<br>", tmp.text))
-                cur.nchar <- 0
             x <- substr(x, next.html + attr(next.html, "match.length"), tot.nchar)
-            line.is.empty <- TRUE
 
         } else
         {
             tmp.text <- substr(x, 1, next.wb - 1)
+            if (next.wb == 1)
+            {
+                # final and cur.nchar unchanged
 
-            if (!line.is.empty && cur.nchar + next.wb > max.nchar)
+            } else if (!line.is.empty && cur.nchar + next.wb > max.nchar)
             {
                 final <- paste0(final, "<br>", tmp.text)
                 cur.nchar <- next.wb - 1
@@ -1166,7 +1171,6 @@ lineBreakEveryN <- function(x, max.nchar = 21, remove.empty = TRUE)
                 cur.nchar <- cur.nchar + next.wb - line.is.empty
             }
             x <- substr(x, next.wb + attr(next.wb, "match.length"), tot.nchar)
-            line.is.empty <- FALSE
         }
     }
     if (nchar(final) == 0)

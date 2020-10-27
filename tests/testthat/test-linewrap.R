@@ -17,12 +17,18 @@ test_that("Line wrap",
     expect_equal(res3, c("Coca-Cola", "Diet Coke", "Coke Zero", "Pepsi",
         "Diet Pepsi", "Pepsi Max", "Dislike all cola", "Don't care"))
 
-    x.with.html <- "<b>Bugs & Spiders</b><br>(10 cases missing)"
-    res4 <- autoFormatLongLabels(x.with.html, wordwrap = TRUE, n = 10)
-    expect_equal(res4, "<b>Bugs &<br>Spiders</b><br>(10 cases<br>missing)")
+    x.with.html <- c("<b>Bugs & Spiders</b><br>(10 cases missing)",
+        "<b>Technology fascinating</b><br>(5 cases missing)",
+        "<b>Allows to keep in touch</b><br>(3 cases missing)")
+    res4 <- autoFormatLongLabels(x.with.html, wordwrap = TRUE, n = 21)
+    expect_equal(res4, c("<b>Bugs & Spiders</b><br>(10 cases missing)",
+        "<b>Technology<br>fascinating</b><br>(5 cases missing)",
+        "<b>Allows to keep in<br>touch</b><br>(3 cases missing)"))
 
     res5 <- autoFormatLongLabels(x.with.html, wordwrap = TRUE, n = 5)
-    expect_equal(res5, "<b>Bugs<br>&<br>Spiders</b><br>(10<br>cases<br>missing)")
+    expect_equal(res5, c("<b>Bugs<br>&<br>Spiders</b><br>(10<br>cases<br>missing)",
+        "<b>Technology<br>fascinating</b><br>(5<br>cases<br>missing)",
+        "<b>Allows<br>to<br>keep<br>in<br>touch</b><br>(3<br>cases<br>missing)"))
 
     x.short <- "Part-time worker"
     res6 <- autoFormatLongLabels(x.short, wordwrap = TRUE, n = 6)
