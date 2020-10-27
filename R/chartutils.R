@@ -1115,9 +1115,9 @@ lineBreakEveryN <- function(x, max.nchar = 21, remove.empty = TRUE)
     if (next.wb == -1 || is.na(next.wb))
         return(x)
     x <- TrimWhitespace(x)
-    final <- substr(x, 1, next.wb - 1) # text after line breaks have been inserted
-    cur.nchar <- next.wb - 1  # running count of characters in current line
-    x <- substr(x, next.wb + attr(next.wb, "match.length"), tot.nchar)
+    final <- ""
+    cur.nchar <- 0
+    sep <- ""  # separator - no space is added before first word or after html tags
     while (next.wb != -1)
     {
         # Find position of next wordbreak or html tag
@@ -1131,7 +1131,12 @@ lineBreakEveryN <- function(x, max.nchar = 21, remove.empty = TRUE)
         if (next.html != -1 && next.html < next.wb)
         {
             tmp.text <- substr(x, 1, next.html + attr(next.html, "match.length") - 1)
-            if (cur.nchar + next.html > max.nchar)
+            if (tmp.text == "<br>")
+            {
+                final <- paste0(final, tmp.text)
+                cur.nchar <- 0
+
+            } else if (cur.nchar + next.html > max.nchar)
             {
                 final <- paste0(final, "<br>", tmp.text)
                 cur.nchar <- next.html - 1
@@ -1139,11 +1144,12 @@ lineBreakEveryN <- function(x, max.nchar = 21, remove.empty = TRUE)
             } else
             {
                 final <- paste0(final, tmp.text)
-                cur.nchar <- cur.nchar + next.html
+                cur.nchar <- cur.nchar + next.html - 1
             }
             if (grepl("<br>", tmp.text))
                 cur.nchar <- 0
             x <- substr(x, next.html + attr(next.html, "match.length"), tot.nchar)
+            sep <- ""
 
         } else
         {
@@ -1156,13 +1162,18 @@ lineBreakEveryN <- function(x, max.nchar = 21, remove.empty = TRUE)
 
             } else
             {
-                final <- paste(final, tmp.text, sep = " ")
+                final <- paste(final, tmp.text, sep = sep)
                 cur.nchar <- cur.nchar + next.wb
             }
             x <- substr(x, next.wb + attr(next.wb, "match.length"), tot.nchar)
+            sep <- " "
         }
     }
-    final <- paste(final, x, sep = if (cur.nchar + nchar(x) + 1 > max.nchar) "<br>" else " ")
+    if (nchar(final) == 0)
+        final <- TrimWhitespace(x)
+    else if (nchar(x) > 0)
+        final <- paste(final, x, sep = if (cur.nchar + nchar(x) + 1 > max.nchar) "<br>" else " ")
+    return(final)
 }
 
 
