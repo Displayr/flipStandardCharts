@@ -10,6 +10,7 @@ StackedColumnWithStatisticalSignificance(
   transpose = FALSE,
   row.names.to.remove = "NET, SUM, Total",
   column.names.to.remove = "NET, SUM, Total",
+  reverse.series.order = FALSE,
   colors = ChartColors(max(1, NCOL(x), na.rm = TRUE)),
   opacity = NULL,
   type = "Stacked",
@@ -23,6 +24,7 @@ StackedColumnWithStatisticalSignificance(
   annot.arrow.symbols = c("&#129049;", "&#129051;", "&#8673;"),
   annot.sig.level = 0.05,
   annot.legend.sep = " &#183; ",
+  append.annot.differences.to.datalabel = FALSE,
   annot.differences.show = TRUE,
   annot.differences.decimals = 0,
   annot.differences.prefix = "",
@@ -170,6 +172,9 @@ are also respected. Note that PrepareData is not used before the function.}
 
 \item{column.names.to.remove}{Names of columns that are not shown in the chart.}
 
+\item{reverse.series.order}{Reverse the order in which the data series are shown
+(i.e. the order of the columns in \code{x}).}
+
 \item{colors}{Character; a vector containing one or more colors specified
 as hex codes.}
 
@@ -212,6 +217,9 @@ next to the columns.}
 \item{annot.legend.sep}{The string used between different entries describing
 the annotation symbols in the legend. By default it is a space as it works
 with line-wrap etc. But "<br>" can also be a good option for readibility.}
+
+\item{append.annot.differences.to.datalabel}{Logical; Show difference statistics
+appended to the data labels (inside the bars).}
 
 \item{annot.differences.show}{Logical; whether to show the difference
 statistics if they are included in the input table.}

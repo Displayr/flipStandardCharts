@@ -18,6 +18,8 @@
 #'  are also respected. Note that PrepareData is not used before the function.
 #' @param row.names.to.remove Names of rows that are not shown in the chart.
 #' @param column.names.to.remove Names of columns that are not shown in the chart.
+#' @param reverse.series.order Reverse the order in which the data series are shown
+#'  (i.e. the order of the columns in \code{x}).
 #' @param annot.footer.show Append a description explaining annotations in chart footer.
 #' @param annot.arrow.size Size of the arrows in pixels.
 #' @param annot.arrow.offset Horizontal offset (towards the right) of
@@ -40,6 +42,8 @@
 #'  statistics if they are included in the input table.
 #' @param annot.differences.decimals Number of decimals shown in the
 #'  difference annotations.
+#' @param append.annot.differences.to.datalabel Logical; Show difference statistics
+#'  appended to the data labels (inside the bars).
 #' @param annot.differences.prefix Option text to prepend to annot.differences.
 #' @param annot.differences.suffix Option text to append to annot.differences.
 #' @param annot.differences.sign.show Logical; whether to show the sign
@@ -263,6 +267,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     transpose = FALSE,
                     row.names.to.remove = "NET, SUM, Total",
                     column.names.to.remove = "NET, SUM, Total",
+                    reverse.series.order = FALSE,
                     colors = ChartColors(max(1, NCOL(x), na.rm = TRUE)),
                     opacity = NULL,
                     type = "Stacked",
@@ -276,6 +281,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     annot.arrow.symbols = c("&#129049;", "&#129051;", "&#8673;"),
                     annot.sig.level = 0.05,
                     annot.legend.sep = " &#183; ",
+                    append.annot.differences.to.datalabel = FALSE,
                     annot.differences.show = TRUE,
                     annot.differences.decimals = 0,
                     annot.differences.prefix = "",
@@ -409,9 +415,9 @@ StackedColumnWithStatisticalSignificance <- function(x,
     ErrorIfNotEnoughData(x)
     x <- convertQTableTo3DArray(x)
     if (length(dim(x)) < 3 || dim(x)[3] <= 1)
-        warning("Input data does not contain cell statistics. ",
-        "No annotations for statistical signficance will be added. ",
-        "It may be preferrable to use Visualizations - Column Chart instead.")
+        warning("No annotations for statistical signficance are shown ",
+        "as input tables do not contain additional cell statistics ",
+        "such as 'Column Comparisons' or 'z-Statistic'.")
     colcmp.names <- colnames(x) # used for column comparisons
 
     # Save data for annotating column totals before
@@ -447,6 +453,8 @@ StackedColumnWithStatisticalSignificance <- function(x,
                 "Invalid 'bar gap' set to default value of 0.15.")
         bar.gap <- 0.15
     }
+    if (reverse.series.order)
+        x <- x[,NCOL(x):1,,drop = FALSE]
 
 
     # Store data for chart annotations
@@ -581,9 +589,11 @@ StackedColumnWithStatisticalSignificance <- function(x,
             col.totals.annot.data, annot.sig.level, tmp.arrow.html)
         if (annot.differences.show)
         {
-            empty.arrow <- paste0("<span style='color:transparent; font-size:",
-                round(annot.arrow.size), "px;'>", annot.arrow.symbols[1], "</span>")
-            diff.annot.text <- paste0(annot.differences.prefix, empty.arrow,
+            empty.arrow <- ""
+            if (!append.annot.differences.to.datalabel)
+                empty.arrow <- paste0("<span style='color:transparent; font-size:",
+                    round(annot.arrow.size), "px;'>", annot.arrow.symbols[1], "</span>")
+            diff.annot.text <- paste0(empty.arrow, annot.differences.prefix,
                 formatC(annot.data[,,"Differences"],
                 format = "f", digits = annot.differences.decimals,
                 flag = if (annot.differences.sign.show) "+" else ""),
@@ -657,6 +667,20 @@ StackedColumnWithStatisticalSignificance <- function(x,
                         hide.sign = TRUE,
                         center.data.labels = data.label.centered)
 
+    if (append.annot.differences.to.datalabel)
+    {
+        tmp.n <- NROW(data.annotations$text)
+        tmp.m <- NCOL(data.annotations$text)
+        ind.blank <- which(nchar(data.annotations$text) == 0)
+        data.annotations$text <- matrix(paste0(data.annotations$text,
+            "<span style='font-family:", annot.differences.font.family,
+            "; font-size:", annot.differences.font.size, font.unit,
+            "; color:", annot.differences.font.color, ";'>",
+            diff.annot.text, "</span>"), nrow = tmp.n, ncol = tmp.m)
+        data.annotations$text[ind.blank] <- ""
+        diff.annot.text <- NULL
+    }
+
 
 
     # Work out margin spacing
@@ -667,6 +691,11 @@ StackedColumnWithStatisticalSignificance <- function(x,
 
     legend.text <- autoFormatLongLabels(colnames(chart.matrix), legend.wrap, legend.wrap.nchar)
     margins <- setMarginsForLegend(margins, legend.show, legend, legend.text, right.axis = FALSE)
+
+    # Increase default margin on the right because there may be many
+    # arrows shown for column comparisons
+    if ("Column Comparisons" %in% dimnames(annot.data)[[3]])
+        margins$r <- 80
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
     margins$autoexpand <- margin.autoexpand
@@ -901,7 +930,7 @@ getPDiffAnnot <- function(annot.data, p.thres, arrow.html)
     ind.p <- which(dimnames(annot.data)[[3]] == "p")
     ind.d <- which(dimnames(annot.data)[[3]] == "Differences")
 
-    ind <- which(annot.data[,,ind.p] < p.thres, arr.ind = TRUE)
+    ind <- which(annot.data[,,ind.p,drop = FALSE] < p.thres, arr.ind = TRUE)
     if (length(ind) == 0 || nrow(ind) == 0)
         return(annot.txt)
     for (i in 1:nrow(ind))
