@@ -692,10 +692,11 @@ StackedColumnWithStatisticalSignificance <- function(x,
     legend.text <- autoFormatLongLabels(colnames(chart.matrix), legend.wrap, legend.wrap.nchar)
     margins <- setMarginsForLegend(margins, legend.show, legend, legend.text, right.axis = FALSE)
 
-    # Increase default margin on the right because there may be many
-    # arrows shown for column comparisons
-    if ("Column Comparisons" %in% dimnames(annot.data)[[3]])
-        margins$r <- 80
+    # Set default margin on the right to ensure there is space
+    # for annotation arrows on the right of the bars
+    # This default is also smaller than the space estimated by
+    # to be needed for the legend
+    margins$r <- 80
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
     margins$autoexpand <- margin.autoexpand
