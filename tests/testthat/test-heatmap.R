@@ -53,7 +53,7 @@ test_that("HeatMap Fonts",
 
 
 v1 <- seq(1:10)
-v2 <- matrix(head(letters, 20), ncol = 1)
+v2 <- matrix(verbs::First(letters, 20), ncol = 1)
 colnames(v2) <- c("COL")
 t1 <- matrix(seq(100), nrow = 20, ncol = 10)
 rownames(t1) <- rownames(three.cols)[1:20]
