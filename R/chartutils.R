@@ -954,7 +954,7 @@ setValRange <- function(min, max, values, show.zero = FALSE, use.defaults = TRUE
         max <- NULL
 
     # If no range is specified, then use defaults
-    if (use.defaults && is.null(min) && is.null(max) && margin.autoexpand)
+    if (use.defaults && is.null(min) && is.null(max))
         return(list(min = NULL, max = NULL))
 
     if (is.list(values) && !is.null(values$labels.on.x))
