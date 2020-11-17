@@ -764,7 +764,9 @@ StackedColumnWithStatisticalSignificance <- function(x,
     # These are shown even if no data labels are shown
     if (is.null(annot.arrow.offset) || !is.numeric(annot.arrow.offset))
         annot.arrow.offset <- (1 - bar.gap)/2
-    xdiff <- (data.annotations$x[2,1] - data.annotations$x[1,1]) * annot.arrow.offset
+    xdiff <- annot.arrow.offset # in case the data only has one row
+    if (nrow(data.annotations$x) >= 2)
+        xdiff <- (data.annotations$x[2,1] - data.annotations$x[1,1]) * annot.arrow.offset
     if (annot.hide.small.bar)
     {
         ind <- which(nchar(data.annotations$text) == 0)
@@ -788,7 +790,9 @@ StackedColumnWithStatisticalSignificance <- function(x,
         if (is.null(annot.differences.offset) ||
             !is.numeric(annot.differences.offset))
             annot.differences.offset <- (1 - bar.gap)/2
-        xdiff <- (data.annotations$x[2,1] - data.annotations$x[1,1]) *
+        xdiff <- annot.differences.offset
+        if (nrow(data.annotations$x) >= 2)
+            xdiff <- (data.annotations$x[2,1] - data.annotations$x[1,1]) *
             annot.differences.offset
         if (annot.hide.small.bar)
             diff.annot.text[which(nchar(data.annotations$text) == 0)] <- ""
