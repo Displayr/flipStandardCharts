@@ -91,3 +91,9 @@ test_that("No warnings",
     expect_error(BarMultiColor(tb, data.label.show = TRUE, data.label.format = ".0f"), NA)
 })
 
+test_that("ColumnMultiColor + missing endpoints",
+{
+    xx <- c(A = 1, B = 2, C = NA)
+    expect_error(ColumnMultiColor(xx, data.label.show = TRUE), NA)
+})
+
