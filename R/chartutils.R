@@ -574,7 +574,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
                     tickformatmanual, tickprefix, ticksuffix, tickshow,
                     show.zero, zero.line.width, zero.line.color,
                     hovertext.format.manual, labels = NULL, num.series = 1,
-                    with.bars = FALSE)
+                    with.bars = FALSE, num.maxticks = NULL)
 {
     axis.type <- if (side %in% c("bottom", "top")) axisLabels$x.axis.type else axisLabels$y.axis.type
     has.line <- !is.null(linewidth) && linewidth > 0
@@ -598,6 +598,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
     tickformat <- checkD3Format(tickformatmanual, axis.type)
     hoverformat <- checkD3Format(hovertext.format.manual, axis.type, "Hovertext")
 
+    # Categorical axis of a bar chart
     if ((!axisLabels$labels.on.x) && side %in% c("left","right"))
     {
         autorange <- FALSE
@@ -624,6 +625,11 @@ setAxis <- function(title, side, axisLabels, titlefont,
                 {
                     tickmode <- "linear"
                     tick0 <- axisLabels$ymd[1]
+                    if (!is.null(num.maxticks) && tmp.n > num.maxticks)
+                    {
+                        tmp.mult <- floor(tmp.n/num.maxticks) + 1
+                        tmp.dist <- tmp.dist * tmp.mult
+                    }
                     tickdistance <- tmp.dist * 1000
                 }
             }
@@ -674,6 +680,11 @@ setAxis <- function(title, side, axisLabels, titlefont,
                 # ensure that ticks are shown at each bar
                 tickmode <- "linear"
                 tick0 <- axisLabels$ymd[1]
+                if (!is.null(num.maxticks) && tmp.n > num.maxticks)
+                {
+                    tmp.mult <- floor(tmp.n/num.maxticks) + 1
+                    tmp.dist <- tmp.dist * tmp.mult
+                }
                 tickdistance <- tmp.dist * 1000
             }
         }
@@ -707,6 +718,14 @@ setAxis <- function(title, side, axisLabels, titlefont,
     else
         title <- NULL
 
+    if (!is.null(num.maxticks) && tickmode == "auto" && axis.type != "category")
+    {
+        # plotly only uses nticks when tickmode is auto 
+        if (is.null(nticks) || nticks > num.maxticks)
+            nticks <- num.maxticks
+    }
+    #cat("side:", side, ", tickmode:", tickmode, ", nticks:", nticks, 
+    #    ", dtick:", tickdistance, "\n")
     return (list(title = title,
                  side = side, type = axis.type,
                  tickfont = tickfont,

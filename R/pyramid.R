@@ -44,6 +44,7 @@ Pyramid <- function(x,
                     y.bounds.minimum = NULL,
                     y.bounds.maximum = NULL,
                     y.tick.distance = NULL,
+                    y.tick.maxnum = 10,
                     y.zero = FALSE,
                     y.zero.line.width = 0,
                     y.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
@@ -69,6 +70,7 @@ Pyramid <- function(x,
                     x.tick.mark.length = 5,
                     x.bounds.maximum = NULL,
                     x.tick.distance = NULL,
+                    x.tick.maxnum = NULL,
                     x.zero = TRUE,
                     x.zero.line.width = 0,
                     x.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
@@ -178,14 +180,14 @@ Pyramid <- function(x,
                   ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance,
                   y.tick.format, y.tick.prefix, y.tick.suffix, y.tick.show,
                   y.zero, y.zero.line.width, y.zero.line.color,
-                  y.hovertext.format)
+                  y.hovertext.format, num.maxticks = y.tick.maxnum)
     yaxis$nticks = NROW(chart.matrix)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance,
                   x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show,
                   x.zero, x.zero.line.width, x.zero.line.color,
-                  x.hovertext.format)
+                  x.hovertext.format, num.maxticks = x.tick.maxnum)
 
     # Work out margin spacing
     margins <- list(t = 20, b = 20, r = 60, l = 80, pad = 0)
