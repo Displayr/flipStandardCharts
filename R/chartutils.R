@@ -724,8 +724,8 @@ setAxis <- function(title, side, axisLabels, titlefont,
         if (is.null(nticks) || nticks > num.maxticks)
             nticks <- num.maxticks
     }
-    #cat("side:", side, ", tickmode:", tickmode, ", nticks:", nticks, 
-    #    ", dtick:", tickdistance, "\n")
+    cat("side:", side, ", tickmode:", tickmode, ", nticks:", nticks, 
+        ", dtick:", tickdistance, ", range:", range, "\n")
     return (list(title = title,
                  side = side, type = axis.type,
                  tickfont = tickfont,

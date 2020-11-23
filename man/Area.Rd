@@ -98,7 +98,7 @@ Area(
   x.bounds.minimum = NULL,
   x.bounds.maximum = NULL,
   x.tick.distance = NULL,
-  x.tick.maxnum = 10,
+  x.tick.maxnum = 11,
   x.zero = FALSE,
   x.zero.line.width = 0,
   x.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
