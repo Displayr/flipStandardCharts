@@ -97,7 +97,7 @@ Scatter(
   y.bounds.minimum = NULL,
   y.bounds.maximum = NULL,
   y.tick.distance = NULL,
-  y.tick.maxnum = 11,
+  y.tick.maxnum = NULL,
   y.zero = FALSE,
   y.zero.line.width = 0,
   y.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
