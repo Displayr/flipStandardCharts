@@ -568,13 +568,59 @@ getDateAxisRange <- function(label.dates, new.range = NULL)
     return(as.character(range))
 }
 
+# In most cases the plotly defaults 
+# (tickmode = "auto" and tickdistance not set) 
+# works fine, but when there is a short series of daily 
+# (i.e. not montly or yearly) data, plotly will place ticks
+# on every Sunday which does not align with the data points.
+# This is especially ugly in bar and column charts but also 
+# makes line and area charts harder to read
+# In these cases, we manually specify the tick distance
+# for a date axis (which means that tickmode = "linear")
+setDateTickDistance <- function(date.labels, num.maxticks)
+{
+    n <- length(date.labels)
+    if (n < 2 || n > 10)
+        return(NULL)
+    tmp.dist <- difftime(date.labels[n], date.labels[1], units = "secs")/(n-1)
+    
+    # Use plotly defaults if the data is monthly or yearly 
+    use.auto.ticks <- TRUE
+    if (tmp.dist <= 86400) # time scale is less than a day
+        use.auto.ticks <- FALSE
+    else if (tmp.dist <= 0.9 * 31536000) # on the scale of a year
+        use.auto.ticks <- all(as.numeric(format(date.labels, "%d")) == 1)
+    else # whether to show month/day
+        use.auto.ticks <- all(as.numeric(format(date.labels, "%j")) == 1)
+
+    # If axis range is considerable larger than the intervals between ticks
+    # use plotly defaults 
+    if (difftime(max(date.labels), min(date.labels), units = "secs") > 
+        (n+1) * tmp.dist)
+        use.auto.ticks <- TRUE
+
+    # Override plotly defaults by specifying tickdistance
+    if (!use.auto.ticks)
+    {
+        if (!is.null(num.maxticks) && n > num.maxticks)
+        {
+            tmp.mult <- floor(n/num.maxticks) + 1
+            tmp.dist <- tmp.dist * tmp.mult
+        }
+        tickdistance <- tmp.dist * 1000 # in units of milliseconds
+        return(tickdistance)
+    }
+    return(NULL)
+}
+
+
 setAxis <- function(title, side, axisLabels, titlefont,
                     linecolor, linewidth, gridwidth, gridcolor,
                     ticks, tickfont, tickangle, ticklen, tickdistance,
                     tickformatmanual, tickprefix, ticksuffix, tickshow,
                     show.zero, zero.line.width, zero.line.color,
                     hovertext.format.manual, labels = NULL, num.series = 1,
-                    with.bars = FALSE)
+                    with.bars = FALSE, num.maxticks = NULL)
 {
     axis.type <- if (side %in% c("bottom", "top")) axisLabels$x.axis.type else axisLabels$y.axis.type
     has.line <- !is.null(linewidth) && linewidth > 0
@@ -598,6 +644,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
     tickformat <- checkD3Format(tickformatmanual, axis.type)
     hoverformat <- checkD3Format(hovertext.format.manual, axis.type, "Hovertext")
 
+    # Categorical axis of a bar chart
     if ((!axisLabels$labels.on.x) && side %in% c("left","right"))
     {
         autorange <- FALSE
@@ -606,25 +653,15 @@ setAxis <- function(title, side, axisLabels, titlefont,
             is.autorange <- is.null(ticks$range)
             range <- rev(getDateAxisRange(axisLabels$ymd, range))
 
-            # Override default tick positions if there are only a few bars
-            if (with.bars && is.autorange && length(axisLabels$labels) <= 10 && length(axisLabels$labels) >= 2)
+            # Check whether or not to override tick positions 
+            if (with.bars && is.autorange)
             {
-                tmp.n <- length(axisLabels$ymd)
-                tmp.dist <- (difftime(axisLabels$ymd[tmp.n], axisLabels$ymd[1], units = "secs"))/
-                                (tmp.n - 1)
-                use.auto.ticks <- TRUE
-                if (tmp.dist <= 86400) # days
-                    use.auto.ticks <- FALSE
-                else if (tmp.dist <= 0.9 * 31536000) # whether to show day
-                    use.auto.ticks <- all(as.numeric(format(axisLabels$ymd, "%d")) == 1)
-                else # whether to show month/day
-                    use.auto.ticks <- all(as.numeric(format(axisLabels$ymd, "%j")) == 1)
-
-                if (!use.auto.ticks && difftime(max(axisLabels$ymd), min(axisLabels$ymd), units = "secs") < 11 * tmp.dist)
+                tmp.dist <- setDateTickDistance(axisLabels$ymd, num.maxticks)
+                if (!is.null(tmp.dist))
                 {
                     tickmode <- "linear"
                     tick0 <- axisLabels$ymd[1]
-                    tickdistance <- tmp.dist * 1000
+                    tickdistance <- tmp.dist
                 }
             }
         }
@@ -654,27 +691,15 @@ setAxis <- function(title, side, axisLabels, titlefont,
         if (ticks$autorange == "reversed" || rev)
             range <- rev(range)
 
-        # Override default tick positions if there are only a few column bars
-        # and if there will not be too many ticks
+        # Check whether or not to override tick positions 
         if (is.autorange && length(axisLabels$labels) <= 10)
         {
-            tmp.n <- length(axisLabels$ymd)
-            tmp.dist <- (difftime(axisLabels$ymd[tmp.n], axisLabels$ymd[1], units = "secs"))/
-                            (tmp.n - 1)
-            use.auto.ticks <- TRUE
-            if (tmp.dist <= 86400) # days
-                use.auto.ticks <- FALSE
-            else if (tmp.dist <= 0.9 * 31536000) # whether to show day
-                use.auto.ticks <- all(as.numeric(format(axisLabels$ymd, "%d")) == 1)
-            else # whether to show month/day
-                use.auto.ticks <- all(as.numeric(format(axisLabels$ymd, "%j")) == 1)
-
-            if (!use.auto.ticks && difftime(max(axisLabels$ymd), min(axisLabels$ymd), units = "secs") < 11 * tmp.dist)
+            tmp.dist <- setDateTickDistance(axisLabels$ymd, num.maxticks)
+            if (!is.null(tmp.dist))
             {
-                # ensure that ticks are shown at each bar
                 tickmode <- "linear"
                 tick0 <- axisLabels$ymd[1]
-                tickdistance <- tmp.dist * 1000
+                tickdistance <- tmp.dist
             }
         }
     }
@@ -707,6 +732,12 @@ setAxis <- function(title, side, axisLabels, titlefont,
     else
         title <- NULL
 
+    if (!is.null(num.maxticks) && tickmode == "auto" && axis.type != "category")
+    {
+        # plotly only uses nticks when tickmode is auto 
+        if (is.null(nticks) || nticks > num.maxticks)
+            nticks <- num.maxticks
+    }
     return (list(title = title,
                  side = side, type = axis.type,
                  tickfont = tickfont,

@@ -77,6 +77,7 @@ Line(
   y.bounds.minimum = NULL,
   y.bounds.maximum = NULL,
   y.tick.distance = NULL,
+  y.tick.maxnum = NULL,
   y.zero = TRUE,
   y.zero.line.width = 0,
   y.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
@@ -103,6 +104,7 @@ Line(
   x.bounds.minimum = NULL,
   x.bounds.maximum = NULL,
   x.tick.distance = NULL,
+  x.tick.maxnum = 11,
   x.zero = FALSE,
   x.zero.line.width = 0,
   x.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
@@ -320,6 +322,10 @@ For a categorical axis, the index of the category (0-based) should be used.}
 
 \item{y.tick.distance}{Distance between tick marks. Requires that \code{y.bounds.minimum} and \code{y.bounds.maximum} have been set.}
 
+\item{y.tick.maxnum}{Maximum number of ticks shown on the axis.
+This setting is ignored if \code{y.tick.distance} is set or 
+if the axis is categorical}
+
 \item{y.zero}{Whether the y-axis should include zero.}
 
 \item{y.zero.line.width}{Width in pixels of zero line;}
@@ -386,6 +392,11 @@ plotting; NULL = no manual range set.  Must be greater than x.bounds.minimum}
 \item{x.tick.distance}{Tick mark distance in
 x-axis units between minimum and maximum for plotting; NULL = no manual
 range set.}
+
+\item{x.tick.maxnum}{Maximum number of ticks shown on the axis.
+It defaults to 11 which gives the same output from plotly as NULL.
+This setting is ignored if \code{x.tick.distance} is set or 
+if the axis is categorical}
 
 \item{x.zero}{Whether the x-axis should include zero.}
 

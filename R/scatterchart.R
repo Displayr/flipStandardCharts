@@ -129,6 +129,7 @@ Scatter <- function(x = NULL,
                          y.bounds.minimum = NULL,
                          y.bounds.maximum = NULL,
                          y.tick.distance = NULL,
+                         y.tick.maxnum = NULL,
                          y.zero = FALSE,
                          y.zero.line.width = 0,
                          y.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
@@ -155,6 +156,7 @@ Scatter <- function(x = NULL,
                          x.bounds.minimum = NULL,
                          x.bounds.maximum = NULL,
                          x.tick.distance = NULL,
+                         x.tick.maxnum = 11,
                          x.zero = FALSE,
                          x.zero.line.width = 0,
                          x.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
@@ -569,13 +571,13 @@ Scatter <- function(x = NULL,
                   ytick, ytick.font, y.tick.angle, y.tick.mark.length,
                   y.tick.distance, y.tick.format, y.tick.prefix, y.tick.suffix,
                   y.tick.show, y.zero, y.zero.line.width, y.zero.line.color,
-                  y.hovertext.format)
+                  y.hovertext.format, num.maxticks = y.tick.maxnum)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length,
                   x.tick.distance, x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show,
                   x.zero, x.zero.line.width, x.zero.line.color,
-                  x.hovertext.format, axisFormat$labels)
+                  x.hovertext.format, axisFormat$labels, num.maxticks = x.tick.maxnum)
     if (!y.tick.on.label)
         yaxis$tickson <- "boundaries"
     if (!x.tick.on.label)

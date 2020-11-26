@@ -103,6 +103,9 @@
 #'  For a categorical axis, the index of the category (0-based) should be used.
 #' @param y.bounds.maximum Maximum of range for plotting; NULL = no manual range set.
 #' @param y.tick.distance Distance between tick marks. Requires that \code{y.bounds.minimum} and \code{y.bounds.maximum} have been set.
+#' @param y.tick.maxnum Maximum number of ticks shown on the axis.
+#'  This setting is ignored if \code{y.tick.distance} is set or 
+#'  if the axis is categorical
 #' @param y.zero Whether the y-axis should include zero.
 #' @param y.zero.line.width Width in pixels of zero line;
 #' @param y.zero.line.color Color of horizontal zero line as a named
@@ -139,6 +142,9 @@
 #'  For a categorical axis, the index of the category (0-based) should be used.
 #' @param y2.bounds.maximum Maximum of range for plotting; NULL = no manual range set.
 #' @param y2.tick.distance Distance between tick marks. Requires that \code{y.bounds.minimum} and \code{y.bounds.maximum} have been set.
+#' @param y2.tick.maxnum Maximum number of ticks shown on the axis.
+#'  This setting is ignored if \code{y2.tick.distance} is set or 
+#'  if the axis is categorical
 #' @param y2.zero Whether the y-axis should include zero.
 #' @param y2.zero.line.width Width in pixels of zero line;
 #' @param y2.zero.line.color Color of horizontal zero line as a named
@@ -181,6 +187,10 @@
 #' @param x.tick.distance Tick mark distance in
 #' x-axis units between minimum and maximum for plotting; NULL = no manual
 #' range set.
+#' @param x.tick.maxnum Maximum number of ticks shown on the axis.
+#'  It defaults to 11 which gives the same output from plotly as NULL.
+#'  This setting is ignored if \code{x.tick.distance} is set or 
+#'  if the axis is categorical
 #' @param x.zero Whether the x-axis should include zero.
 #' @param x.zero.line.width Width in pixels of zero line.
 #' @param x.zero.line.color Color of horizontal zero (origin) line as a named
@@ -375,6 +385,7 @@ Column <- function(x,
                     y.bounds.minimum = NULL,
                     y.bounds.maximum = NULL,
                     y.tick.distance = NULL,
+                    y.tick.maxnum = NULL,
                     y.zero = TRUE,
                     y.zero.line.width = 0,
                     y.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
@@ -400,6 +411,7 @@ Column <- function(x,
                     y2.bounds.minimum = NULL,
                     y2.bounds.maximum = NULL,
                     y2.tick.distance = NULL,
+                    y2.tick.maxnum = NULL,
                     y2.zero = TRUE,
                     y2.zero.line.width = 0,
                     y2.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
@@ -426,6 +438,7 @@ Column <- function(x,
                     x.bounds.minimum = NULL,
                     x.bounds.maximum = NULL,
                     x.tick.distance = NULL,
+                    x.tick.maxnum = 11,
                     x.zero = FALSE,
                     x.zero.line.width = 0,
                     x.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
@@ -558,12 +571,12 @@ Column <- function(x,
                   ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance, y.tick.format,
                   y.tick.prefix, y.tick.suffix,
                   y.tick.show, y.zero, y.zero.line.width, y.zero.line.color,
-                  y.hovertext.format)
+                  y.hovertext.format, num.maxticks = y.tick.maxnum)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, x.tick.format,
                   x.tick.prefix, x.tick.suffix, x.tick.show, x.zero, x.zero.line.width, x.zero.line.color,
-                  x.hovertext.format, axisFormat$labels, num.series = NCOL(chart.matrix), with.bars = TRUE)
+                  x.hovertext.format, axisFormat$labels, num.series = NCOL(chart.matrix), with.bars = TRUE, num.maxticks = x.tick.maxnum)
 
     yaxis2 <- NULL
 
@@ -665,7 +678,7 @@ Column <- function(x,
                           y2.tick, y2.tick.font, y2.tick.angle, y2.tick.mark.length, y2.tick.distance,
                           y2.tick.format, y2.tick.prefix, y2.tick.suffix,
                           y2.tick.show, y2.zero, y2.zero.line.width, y2.zero.line.color,
-                          y2.hovertext.format)
+                          y2.hovertext.format, num.maxticks = y2.tick.maxnum)
         yaxis2$overlaying <- "y"
 
         n2 <- ncol(x2)
