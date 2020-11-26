@@ -376,6 +376,7 @@ x-axis units between minimum and maximum for plotting; NULL = no manual
 range set.}
 
 \item{x.tick.maxnum}{Maximum number of ticks shown on the axis.
+It defaults to 11 which gives the same output from plotly as NULL.
 This setting is ignored if \code{x.tick.distance} is set or 
 if the axis is categorical}
 

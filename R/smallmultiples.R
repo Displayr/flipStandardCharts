@@ -263,6 +263,10 @@ SmallMultiples <- function(x,
     if (any(h.offset >= 1/nrows))
         stop("'Top padding' and 'Bottom padding' should be between 0 and 1/nrows (",
              round(1/nrows, 4), ")")
+
+    # In Bar/Column, values for x/y.tick.maxnum default to 11
+    # Here we try to generalise to make the axis less crowded
+    # if more subplots are shown.
     if (is.null(x.tick.maxnum))
         x.tick.maxnum <- floor(11/ncols) + 1
     if (is.null(y.tick.maxnum))

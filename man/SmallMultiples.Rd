@@ -114,6 +114,7 @@ plotting; NULL = no manual range set.  Must be greater than x.bounds.minimum}
 For a categorical axis, the index of the category (0-based) should be used.}
 
 \item{x.tick.maxnum}{Maximum number of ticks shown on the axis.
+It defaults to 11 which gives the same output from plotly as NULL.
 This setting is ignored if \code{x.tick.distance} is set or 
 if the axis is categorical}
 
