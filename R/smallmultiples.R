@@ -269,7 +269,7 @@ SmallMultiples <- function(x,
     # if more subplots are shown.
     if (is.null(x.tick.maxnum) &&
         !chart.type %in% c("Bar", "BarMultiColor", "Pyramid" ))
-        y.tick.maxnum <- max(5, floor(11/nrows) + 1)
+        x.tick.maxnum <- max(5, floor(11/nrows) + 1)
 
 
     # Construct charts
