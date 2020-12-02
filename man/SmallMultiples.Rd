@@ -115,11 +115,11 @@ For a categorical axis, the index of the category (0-based) should be used.}
 
 \item{x.tick.maxnum}{Maximum number of ticks shown on the axis.
 It defaults to 11 which gives the same output from plotly as NULL.
-This setting is ignored if \code{x.tick.distance} is set or 
+This setting is ignored if \code{x.tick.distance} is set or
 if the axis is categorical}
 
 \item{y.tick.maxnum}{Maximum number of ticks shown on the axis.
-This setting is ignored if \code{y.tick.distance} is set or 
+This setting is ignored if \code{y.tick.distance} is set or
 if the axis is categorical}
 
 \item{values.bounds.maximum}{Numeric; specifies the maximum value in the colorscale.}

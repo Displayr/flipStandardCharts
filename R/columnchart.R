@@ -560,8 +560,11 @@ Column <- function(x,
     # Format axis labels
     axisFormat <- formatLabels(chart.matrix, type, x.tick.label.wrap, x.tick.label.wrap.nchar,
                                x.tick.format, y.tick.format)
+
+    # In most cases, if the user does not specify a range we just let plotly determine the defaults
+    # But in some cases adding data labels to column charts will case the default range to expand
     use.default.range <- TRUE
-    if (!is.null(x.tick.distance) || (!x.zero && axisFormat$x.axis.type != "date" && data.label.show))
+    if (!is.null(x.tick.distance) || (!x.zero && axisFormat$x.axis.type != "date" && any(data.label.show)))
         use.default.range <- FALSE
     x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, axisFormat, x.zero, use.default.range, is.bar = TRUE)
     y.range <- setValRange(y.bounds.minimum, y.bounds.maximum, chart.matrix, y.zero, is.null(y.tick.distance))
