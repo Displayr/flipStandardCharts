@@ -104,7 +104,7 @@
 #' @param y.bounds.maximum Maximum of range for plotting; NULL = no manual range set.
 #' @param y.tick.distance Distance between tick marks. Requires that \code{y.bounds.minimum} and \code{y.bounds.maximum} have been set.
 #' @param y.tick.maxnum Maximum number of ticks shown on the axis.
-#'  This setting is ignored if \code{y.tick.distance} is set or 
+#'  This setting is ignored if \code{y.tick.distance} is set or
 #'  if the axis is categorical
 #' @param y.zero Whether the y-axis should include zero.
 #' @param y.zero.line.width Width in pixels of zero line;
@@ -143,7 +143,7 @@
 #' @param y2.bounds.maximum Maximum of range for plotting; NULL = no manual range set.
 #' @param y2.tick.distance Distance between tick marks. Requires that \code{y.bounds.minimum} and \code{y.bounds.maximum} have been set.
 #' @param y2.tick.maxnum Maximum number of ticks shown on the axis.
-#'  This setting is ignored if \code{y2.tick.distance} is set or 
+#'  This setting is ignored if \code{y2.tick.distance} is set or
 #'  if the axis is categorical
 #' @param y2.zero Whether the y-axis should include zero.
 #' @param y2.zero.line.width Width in pixels of zero line;
@@ -189,7 +189,7 @@
 #' range set.
 #' @param x.tick.maxnum Maximum number of ticks shown on the axis.
 #'  It defaults to 11 which gives the same output from plotly as NULL.
-#'  This setting is ignored if \code{x.tick.distance} is set or 
+#'  This setting is ignored if \code{x.tick.distance} is set or
 #'  if the axis is categorical
 #' @param x.zero Whether the x-axis should include zero.
 #' @param x.zero.line.width Width in pixels of zero line.
@@ -561,7 +561,7 @@ Column <- function(x,
     axisFormat <- formatLabels(chart.matrix, type, x.tick.label.wrap, x.tick.label.wrap.nchar,
                                x.tick.format, y.tick.format)
 
-    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, axisFormat, x.zero, is.null(x.tick.distance), is.bar = TRUE)
+    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, axisFormat, x.zero, FALSE, is.bar = TRUE)
     y.range <- setValRange(y.bounds.minimum, y.bounds.maximum, chart.matrix, y.zero, is.null(y.tick.distance))
     xtick <- setTicks(x.range$min, x.range$max, x.tick.distance, x.data.reversed, is.bar = TRUE)
     ytick <- setTicks(y.range$min, y.range$max, y.tick.distance, y.data.reversed)
