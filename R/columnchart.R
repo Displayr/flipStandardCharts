@@ -561,7 +561,7 @@ Column <- function(x,
     axisFormat <- formatLabels(chart.matrix, type, x.tick.label.wrap, x.tick.label.wrap.nchar,
                                x.tick.format, y.tick.format)
     use.default.range <- TRUE
-    if (!is.null(x.tick.distance) || data.label.show)
+    if (!is.null(x.tick.distance) || (!x.zero && axisFormat$x.axis.type != "date" && data.label.show))
         use.default.range <- FALSE
     x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, axisFormat, x.zero, use.default.range, is.bar = TRUE)
     y.range <- setValRange(y.bounds.minimum, y.bounds.maximum, chart.matrix, y.zero, is.null(y.tick.distance))
