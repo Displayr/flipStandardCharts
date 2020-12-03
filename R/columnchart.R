@@ -643,13 +643,12 @@ Column <- function(x,
         xaxis$autorange <- FALSE
         xaxis$range <- x.range
         if (xaxis$type == "date")
-        {
             xaxis$range <- getDateAxisRange(x.all.labels)
-            if (x.data.reversed)
-            {
-                x.range <- rev(x.range)
-                xaxis$range <- rev(xaxis$range)
-            }
+
+        if (x.data.reversed)
+        {
+            x.range <- rev(x.range)
+            xaxis$range <- rev(xaxis$range)
         }
     }
     else
