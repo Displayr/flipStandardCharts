@@ -645,7 +645,7 @@ Column <- function(x,
         if (xaxis$type == "date")
             xaxis$range <- getDateAxisRange(x.all.labels)
 
-        if (x.data.reversed)
+        if (x.data.reversed && !x.zero)
         {
             x.range <- rev(x.range)
             xaxis$range <- rev(xaxis$range)
