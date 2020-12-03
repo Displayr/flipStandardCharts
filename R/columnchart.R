@@ -621,35 +621,24 @@ Column <- function(x,
                      ") do not have the same type as the input data (",
                      xaxis$type, ").")
         }
-
-
-
-
         x2.labels <- formatLabels(x2, "Column", x.tick.label.wrap, x.tick.label.wrap.nchar,
             x.tick.format, y2.tick.format)$labels
         x.all.labels <- unique(c(x.all.labels, x2.labels))
 
         # Force chart to used combined dataset to set x-axis range
-        xaxis$range <- c(NA, NA)
-        old.range <- x.range
-        x.range <- getRange(x.all.labels, xaxis, NULL)
-        if (!is.null(old.range) && xaxis$type != "date") # user-specified bounds
+        # But we don't touch the date axis
+        if (xaxis$type != "date")
         {
-            if (!isBlank(x.bounds.minimum))
-                x.range[1] <- old.range[1]
-            if (!isBlank(x.bounds.maximum))
-                x.range[2] <- old.range[2]
-        }
-        xaxis$autorange <- FALSE
-        xaxis$range <- x.range
-        if (xaxis$type == "date")
-            xaxis$range <- getDateAxisRange(x.all.labels)
-
-        if (x.data.reversed && !x.zero)
-        {
-            x.range <- rev(x.range)
-            xaxis$range <- rev(xaxis$range)
-        }
+            old.range.reversed <- isReversed(xaxis) && xaxis$autorange != "reversed"
+            xaxis$range <- c(NA, NA)
+            old.range <- x.range
+            x.range <- getRange(x.all.labels, xaxis, NULL)
+            xaxis$autorange <- FALSE
+            xaxis$range <- x.range
+            if (old.range.reversed)
+                xaxis$range <- x.range <- rev(x.range)
+        } else
+            x.range <- getRange(x.labels, xaxis, axisFormat)
     }
     else
         x.range <- getRange(x.labels, xaxis, axisFormat)
