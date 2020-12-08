@@ -476,6 +476,10 @@ Scatter <- function(x = NULL,
     num.series <- if (scatter.colors.as.numeric) 1 else num.groups
     
     colors <- vectorize(colors, num.groups)
+    if (is.null(fit.line.colors))
+        fit.line.colors <- colors
+    if (is.null(fit.CI.colors))
+        fit.CI.colors <- fit.line.colors
     if (is.null(line.colors))
         line.colors <- colors
     if (is.null(marker.border.colors))
