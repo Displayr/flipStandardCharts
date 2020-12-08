@@ -221,10 +221,6 @@ Scatter <- function(x = NULL,
     if (sum(nchar(y.hovertext.format)) == 0)
         y.hovertext.format <- y.tick.format
     warning.prefix <- if (!is.null(small.mult.index)) paste0("Chart ", small.mult.index, ": ") else ""
-    if (fit.type != "None" && is.null(fit.line.colors))
-        fit.line.colors <- colors
-    if (fit.CI.show && is.null(fit.CI.colors))
-        fit.CI.colors <- fit.line.colors
 
 
     # Grouping font attributes to simplify passing to plotly
@@ -475,14 +471,24 @@ Scatter <- function(x = NULL,
     else
         g.list <- unique(groups[!is.na(groups)])
 
-    if (length(colors) < length(g.list))
-        colors <- paste0(colors, rep("", length(g.list)))
-
     num.groups <- length(g.list)
     groups <- groups[not.na]
     num.series <- if (scatter.colors.as.numeric) 1 else num.groups
-    marker.symbols <- vectorize(marker.symbols, length(g.list))
-    data.label.font.color <- vectorize(data.label.font.color, length(g.list))
+    
+    colors <- vectorize(colors, num.groups)
+    if (is.null(fit.line.colors))
+        fit.line.colors <- colors
+    if (is.null(fit.CI.colors))
+        fit.CI.colors <- fit.line.colors
+    if (is.null(line.colors))
+        line.colors <- colors
+    if (is.null(marker.border.colors))
+        marker.border.colors <- colors
+    line.colors <- vectorize(line.colors, num.groups)
+    marker.border.colors <- vectorize(marker.border.colors, num.groups)
+
+    marker.symbols <- vectorize(marker.symbols, num.groups)
+    data.label.font.color <- vectorize(data.label.font.color, num.groups)
     data.label.font = lapply(data.label.font.color,
         function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
 

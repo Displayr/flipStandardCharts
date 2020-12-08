@@ -141,6 +141,12 @@ Radar <- function(x,
         marker.show <- FALSE
     if (is.null(marker.opacity))
         marker.opacity <- opacity
+    
+    # Set colors
+    colors <- vectorize(colors, n)
+    if (is.null(marker.colors))
+        marker.colors <- colors
+    marker.colors <- vectorize(marker.colors, n)
 
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
     subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)

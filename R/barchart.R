@@ -197,19 +197,24 @@ Bar <- function(x,
         opacity <- if (fit.type == "None") 1 else 0.6
     if (is.null(marker.border.opacity))
         marker.border.opacity <- opacity
+    
+    # Set colors
+    n <- ncol(chart.matrix)
+    colors <- vectorize(colors, n)
     if (fit.type != "None" && is.null(fit.line.colors))
         fit.line.colors <- colors
     if (fit.CI.show && is.null(fit.CI.colors))
         fit.CI.colors <- fit.line.colors
-
-    eval(colors) # not sure why, but this is necessary for bars to appear properly
+    if (is.null(marker.border.colors))
+        marker.border.colors <- colors
+    marker.border.colors <- vectorize(marker.border.colors, n)
 
     if (is.stacked && data.label.font.autocolor)
         dlab.color <- autoFontColor(colors)
     else
-        dlab.color <- vectorize(data.label.font.color, ncol(chart.matrix))
+        dlab.color <- vectorize(data.label.font.color, n)
 
-    data.label.show <- vectorize(data.label.show, ncol(chart.matrix), nrow(chart.matrix))
+    data.label.show <- vectorize(data.label.show, n, nrow(chart.matrix))
     data.label.font = lapply(dlab.color,
         function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
