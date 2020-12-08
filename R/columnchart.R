@@ -485,13 +485,6 @@ Column <- function(x,
 
     # Store data for chart annotations
     annot.data <- x
-    if (fit.type != "None" && is.null(fit.line.colors))
-        fit.line.colors <- colors
-    if (fit.CI.show && is.null(fit.CI.colors))
-        fit.CI.colors <- fit.line.colors
-
-
-    # Prepare data for plotting chart
     chart.matrix <- checkMatrixNames(x)
     if (!is.numeric(chart.matrix))
         stop("Input data should be numeric.")
@@ -529,13 +522,22 @@ Column <- function(x,
         opacity <- if (fit.type == "None") 1 else 0.6
     if (is.null(marker.border.opacity))
         marker.border.opacity <- opacity
-    colors <- paste0(rep("", NROW(chart.matrix)), colors)
+    n <- ncol(chart.matrix)
+    colors <- vectorize(colors, n)
+    if (fit.type != "None" && is.null(fit.line.colors))
+        fit.line.colors <- colors
+    if (fit.CI.show && is.null(fit.CI.colors))
+        fit.CI.colors <- fit.line.colors
+    if (is.null(marker.border.colors))
+        marker.border.colors <- colors
+    marker.border.colors <- vectorize(marker.border.colors, n)
+
 
     if (is.stacked && data.label.font.autocolor)
         dlab.color <- autoFontColor(colors)
     else
-        dlab.color <- vectorize(data.label.font.color, ncol(chart.matrix))
-    data.label.show <- vectorize(data.label.show, NCOL(chart.matrix), NROW(chart.matrix))
+        dlab.color <- vectorize(data.label.font.color, n)
+    data.label.show <- vectorize(data.label.show, n, NROW(chart.matrix))
 
     data.label.font = lapply(dlab.color,
         function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
@@ -686,6 +688,13 @@ Column <- function(x,
                 ends.show[max(ind),i] <- TRUE
             }
         }
+        x2.colors <- vectorize(x2.colors, n2)
+        if (is.null(x2.marker.colors))
+            x2.marker.colors <- x2.colors
+        x2.marker.colors <- vectorize(x2.marker.colors, n2)
+        if (is.null(x2.marker.border.colors))
+            x2.marker.border.colors <- x2.marker.colors
+        x2.marker.border.colors <- vectorize(x2.marker.border.colors, n2)
         x2.data.label.show <- if (x2.data.label.show.at.ends) ends.show
                            else vectorize(x2.data.label.show, n2, m2)
         x2.marker.show <- if (x2.marker.show.at.ends) ends.show

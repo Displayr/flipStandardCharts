@@ -228,12 +228,24 @@ Area <- function(x,
         series.mode <- "lines"
     else if (line.thickness == 0 && marker.show == "none")
         series.mode <- "lines"
+
+    # Set colors
+    n <- ncol(chart.matrix)
+    colors <- vectorize(colors, n)
     if (fit.type != "None" && is.null(fit.line.colors))
         fit.line.colors <- colors
     if (fit.CI.show && is.null(fit.CI.colors))
         fit.CI.colors <- fit.line.colors
+    if (is.null(line.colors))
+        line.colors <- colors
+    if (is.null(marker.colors))
+        marker.colors <- colors
+    if (is.null(marker.border.colors))
+        marker.border.colors <- marker.colors
+    line.colors <- vectorize(line.colors, n)
+    marker.colors <- vectorize(marker.colors, n)
+    marker.border.colors <- vectorize(marker.border.colors, n)
 
-    eval(colors) # not sure why, but this is necessary for bars to appear properly
     if (is.null(opacity))
         opacity <- if (!is.stacked || fit.type != "None") 0.4 else 1
     if (opacity == 1 && !is.stacked && ncol(chart.matrix) > 1)
@@ -335,7 +347,7 @@ Area <- function(x,
                           color = toRGB(line.colors[i], alpha = line.opacity))
 
             marker <- NULL
-            if (!is.null(series.mode) && regexpr('marker', series.mode) >= 1)
+            if (isTRUE(grepl('marker', series.mode)))
                 marker <- list(size = marker.size,
                            color = toRGB(marker.colors[i], alpha = marker.opacity),
                            symbol = marker.symbols[i],
