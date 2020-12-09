@@ -57,6 +57,17 @@ test_that("Use charting options",
     pp <- LabeledScatter(dat, scatter.sizes.column = 0)
     expect_equal(attr(pp, "ChartType"), "X Y Scatter")
 
+    dat2 <- structure(list(Length = c(1, 2, 4, 5, 7),
+            Width = c(6, 2, 4, 2, 4), Random = c(1, 2, 3, 4, 5),
+            Class = c("X", "X", "Y", "Y", "Y")), .Names = c("Length", "Width",
+            "Random", "Class"), row.names = c("a", "b", "c", "d", "e"),
+            scatter.variable.indices = structure(c(1, 2, 3, 4),
+            .Names = c("x", "y", "sizes", "colors")), class = "data.frame")
+    pp <- SmallMultiples(dat2, "Scatter")
+    expect_equal(attr(pp, "ChartType", colors), "Bubble")
+    pp <- SmallMultiples(dat2, "Scatter", scatter.sizes.column = 4)
+    expect_equal(attr(pp, "ChartType", colors), "X Y Scatter")
+
     pp <- Line(dat.2d, marker.show = TRUE)
     expect_equal(attr(pp, "ChartType"), "Line Markers")
     pp <- Line(dat.2d, marker.show = TRUE, marker.show.at.ends = TRUE)

@@ -144,7 +144,9 @@ SmallMultiples <- function(x,
             indexes <- indexes[!is.empty]
         }
         npanels <- length(indexes)
-
+        scatter.chart.type <- if (is.na(scatter.sizes.column) ||
+            scatter.sizes.column == 0 || scatter.sizes.column > NCOL(x))
+            "X Y Scatter" else "Bubble"
     } else
     {
         npanels <- NCOL(x)
@@ -558,7 +560,7 @@ SmallMultiples <- function(x,
     class(result) <- "StandardChart"
     attr(result, "ChartType") <- switch(chart.type,
         GeographicMap = "Filled Map",
-        Scatter = "X Y Scatter",
+        Scatter = scatter.chart.type,
         Bar = "Bar Clustered",
         Pyramid = "Bar Clustered",
         BarMultiColor = "Bar Clustered",
