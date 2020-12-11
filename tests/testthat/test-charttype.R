@@ -72,6 +72,9 @@ test_that("Use charting options",
     expect_equal(attr(pp, "ChartType"), "Line Markers")
     pp <- Line(dat.2d, marker.show = TRUE, marker.show.at.ends = TRUE)
     expect_equal(attr(pp, "ChartType"), "Line")
+
+    pp <- Radar(dat.2d)
+    expect_equal(attr(pp, "ChartType"), "Radar Filled")
 })
 
 

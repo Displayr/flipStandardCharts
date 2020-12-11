@@ -141,7 +141,7 @@ Radar <- function(x,
         marker.show <- FALSE
     if (is.null(marker.opacity))
         marker.opacity <- opacity
-    
+
     # Set colors
     colors <- vectorize(colors, n)
     if (is.null(marker.colors))
@@ -401,7 +401,7 @@ Radar <- function(x,
     #attr(p, "can-run-in-root-dom") <- TRUE
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
-    attr(result, "ChartType") <- "Radar"
+    attr(result, "ChartType") <- "Radar Filled"
     result
 }
 
