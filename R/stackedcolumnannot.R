@@ -258,7 +258,7 @@
 #'  charts.
 #' @importFrom grDevices rgb
 #' @importFrom flipChartBasics ChartColors
-#' @importFrom flipTables AsTidyTabularData RemoveRowsAndOrColumns
+#' @importFrom flipTables AsTidyTabularData RemoveRowsAndOrColumns ConvertQTableToArray
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats qnorm
 #' @export
@@ -413,8 +413,9 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     data.label.threshold = NULL)
 {
     ErrorIfNotEnoughData(x)
-    x <- convertQTableTo3DArray(x)
-    if (length(dim(x)) < 3 || dim(x)[3] <= 1)
+    x <- ConvertQTableToArray(x)
+    if (length(dim(x)) < 3 ||
+        !any(dimnames(x)[[3]] %in% c("z-Statistic", "Column Comparisons", "p")))
         warning("No annotations for statistical signficance are shown ",
         "as input tables do not contain additional cell statistics ",
         "such as 'Column Comparisons' or 'z-Statistic'.")
@@ -834,7 +835,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
         p <- addDataLabelAnnotations(p, name = "Column totals - above",
                 type = "Column",
                 data.label.xpos = totals.annotations$x[,1],
-                data.label.ypos = totals.annotations$y[,m],
+                data.label.ypos = apply(totals.annotations$y, 1, max, na.rm = TRUE),
                 data.label.show = rep(TRUE, n),
                 data.label.text = paste0(pre.annot,
                     formatByD3(totals.annotations$y[,m],
@@ -986,38 +987,6 @@ getColCmpAnnot <- function(colcmp.matrix, arrow.html)
         }
     }
     return(annot.txt)
-}
-
-convertQTableTo3DArray <- function(x)
-{
-    # This is possibly valid output
-    # e.g. crosstab: nominal multi grid x nominal has 4 dimensions
-    # But what to do with it?
-    if (length(dim(x)) >= 3)
-        return(x)
-
-    # 1-column table with multiple statistics in 2nd dimension
-    if (length(dim(x)) == 2 && is.null(attr(x, "statistic")))
-    {
-        dn <- dimnames(x)
-        dn <- c(dn[1], "", dn[2])
-        x <- array(x, dim = sapply(dn, length), dimnames = dn)
-        return(x)
-
-    } else
-    {
-        dn <- dimnames(x)
-        if (is.null(dimnames(x)))
-        {
-            dn <- list()
-            dn[[1]] <- names(x)
-        }
-        if (length(dn) == 1)
-            dn[[2]] <- ""
-        dn[[3]] <- paste0("", attr(x, "statistic"))
-        x <- array(x, dim = sapply(dn, length), dimnames = dn)
-    }
-    return(x)
 }
 
 # This function removes the font-size attribute
