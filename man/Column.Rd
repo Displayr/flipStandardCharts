@@ -11,6 +11,7 @@ Column(
   opacity = NULL,
   type = "Column",
   annotation.list = NULL,
+  overlay.annotation.list = NULL,
   fit.type = "None",
   fit.window.size = 2,
   fit.line.colors = colors,
@@ -206,6 +207,8 @@ a separate axis for these lines will be shown on the right.}
 \item{type}{One of "Column", "Stacked Column" or "100\% Stacked Column"}
 
 \item{annotation.list}{Optional list of annotations to modify the data labels.}
+
+\item{overlay.annotation.list}{Optional list of annotations that is overlayed on top of the chart.}
 
 \item{fit.type}{Character; type of line of best fit. Can be one of "None", "Linear", "LOESS",
 "Friedman's super smoother", "Cubic spline", "Moving average", "Centered moving average".}
