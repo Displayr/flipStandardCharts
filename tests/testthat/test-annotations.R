@@ -70,6 +70,36 @@ a5 <- list(list(type = "Arrow - up", data = "p", threstype = "below threshold",
     size = 20, width = 1, offset = 0, font.family = "Arial",
     font.weight = "normal", font.style = "normal"))
 
+test_that("Overlay annotations",
+{
+    expect_error(Column(data.with.stats[-10,-3,], type = "Column",
+        overlay.annotation.list = list(list(type = "Arrow - up", data = "p",
+        threstype = "below threshold", threshold = "0.05",
+        relative.pos = 0.0,  valign = "top", halign = "center",
+        offset = 5, color = "red", size = 20,
+        font.family = "Arial"), list(type = "Arrow - down", data = "p",
+        threstype = "above threshold", threshold = "0.05", color = "blue",
+        relative.pos = 1.0,  valign = "top", halign = "center",
+        size = 20, offset = 5, font.family = "Arial",
+        font.weight = "normal", font.style = "normal"))), NA)
+
+
+    expect_error(Column(data.with.stats[-10,-3,], type = "Stacked", bar.gap = 0.3,
+        data.label.show = TRUE,
+        overlay.annotation.list = list(list(type = "Custom symbol",
+        custom.symbol = "★", data = "p",
+        threstype = "below threshold", threshold = "0.05",
+        relative.pos = 0.5,  valign = "middle", halign = "right",
+        offset = 25, color = "red", size = 12,
+        font.family = "Arial"),
+        list(type = "Text", data = "p", format = ".2e", prefix = "p = ",
+        threstype = "below threshold", threshold = "0.05", color = "#555555",
+        relative.pos = 0.0,  valign = "top", halign = "center",
+        size = 6, offset = 2, font.family = "Arial",
+        font.weight = "normal", font.style = "normal"))), NA)
+})
+
+
 test_that("Annotations",
 {
     expect_error(Column(data.with.stats, data.label.show = TRUE, annotation.list=list(list(data="p", type = "Arrow - up", threstype = "above threshold", threshold = 0.05, color = "#FF0000", size = 15))), NA)
