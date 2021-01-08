@@ -435,7 +435,7 @@ Distribution <-   function(x,
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity))")
     eval(parse(text = txt))
 
-    #attr(p, "can-run-in-root-dom") <- TRUE
+    attr(p, "can-run-in-root-dom") <- TRUE
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     if (n.variables == 1)
