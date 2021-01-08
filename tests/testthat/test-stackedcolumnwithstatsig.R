@@ -218,7 +218,11 @@ NA, NA, NA, NA, NA), statistic = "z-Statistic", .Dim = c(6L,
 test_that("Charts with annotations",
 {
     expect_error(StackedColumnWithStatisticalSignificance(tb1d.with.zstat), NA)
+    expect_error(StackedColumnWithStatisticalSignificance(tb1d.with.zstat, transpose = TRUE,
+        reverse.series.order = TRUE, column.totals.above.show = TRUE), NA)
     expect_error(StackedColumnWithStatisticalSignificance(tb.with.zstat), NA)
+    expect_error(StackedColumnWithStatisticalSignificance(tb.with.zstat, transpose = TRUE,
+        reverse.series.order = TRUE, column.totals.above.show = TRUE), NA)
     expect_error(StackedColumnWithStatisticalSignificance(tb.with.colcmp), NA)
     expect_error(StackedColumnWithStatisticalSignificance(tb.from.diff,
                 annot.hide.small.bar = FALSE), NA)

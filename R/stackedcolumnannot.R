@@ -445,7 +445,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
         if (!is.null(col.totals.annot.data))
             col.totals.annot.data <- aperm(col.totals.annot.data, c(2,1,3))
     }
-    if (!is.null(col.totals.annot.data))
+    if (!is.null(col.totals.annot.data) && sum(nchar(rownames(x))) > 0)
         col.totals.annot.data <- col.totals.annot.data[rownames(x),,,drop = FALSE]
 
     if (bar.gap < 0.0 || bar.gap >= 1.0)
