@@ -871,6 +871,7 @@ Column <- function(x,
         for (j in seq_along(overlay.annotation.list))
         {
             a.tmp <- overlay.annotation.list[[j]]
+            a.tmp$threshold <- parseThreshold(a.tmp$threshold)
             tmp.dat <- getAnnotData(annot.data, a.tmp$data, i)
             ind.sel <- extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype)
             if (length(ind.sel) == 0)
