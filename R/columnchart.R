@@ -872,7 +872,8 @@ Column <- function(x,
         {
             a.tmp <- overlay.annotation.list[[j]]
             a.tmp$threshold <- parseThreshold(a.tmp$threshold)
-            tmp.dat <- getAnnotData(annot.data, a.tmp$data, i)
+            tmp.dat <- getAnnotData(annot.data, a.tmp$data, i, 
+                as.numeric = !grepl("Text", a.tmp$type) && a.tmp$data != "Column Comparisons")
             ind.sel <- extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype)
             if (length(ind.sel) == 0)
                 next
@@ -886,7 +887,9 @@ Column <- function(x,
             tmp.align <- paste(if (is.null(a.tmp$valign)) "middle" else tolower(a.tmp$valign),
                             if (is.null(a.tmp$halign)) "center" else tolower(a.tmp$halign))
 
-            if (a.tmp$type == "Text")
+            if (a.tmp$data == "Column Comparisons" && grepl("Arrow", a.tmp$type))
+                tmp.text <- getColCmpArrowHtml(tmp.dat[ind.sel], a.tmp$size)
+            else if (a.tmp$type == "Text")
                 tmp.text <- formatByD3(tmp.dat[ind.sel], a.tmp$format, a.tmp$prefix, a.tmp$suffix)
             else if (a.tmp$type == "Arrow - up")
                 tmp.text <- "&#129049;"
