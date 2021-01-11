@@ -867,46 +867,43 @@ Column <- function(x,
                     data.label.font[[i]], is.stacked, data.label.centered)
 
         # Create annotations separately for each series
-        # so they can be toggled using the legend 
-        for (j in seq_along(overlay.annotation.list))
+        # so they can be toggled using the legend
+        for (curr.annot.ind in seq_along(overlay.annotation.list))
         {
-            a.tmp <- overlay.annotation.list[[j]]
-            a.tmp$threshold <- parseThreshold(a.tmp$threshold)
-            tmp.dat <- getAnnotData(annot.data, a.tmp$data, i, 
-                as.numeric = !grepl("Text", a.tmp$type) && a.tmp$data != "Column Comparisons")
-            ind.sel <- extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype)
+            curr.annot <- overlay.annotation.list[[curr.annot.ind]]
+            curr.annot$threshold <- parseThreshold(curr.annot$threshold)
+            tmp.dat <- getAnnotData(annot.data, curr.annot$data, i,
+                as.numeric = !grepl("Text", curr.annot$type) && curr.annot$data != "Column Comparisons")
+            ind.sel <- extractSelectedAnnot(tmp.dat, curr.annot$threshold, curr.annot$threstype)
             if (length(ind.sel) == 0)
                 next
 
-            if (!isTRUE(a.tmp$relative.pos >= 0.0) || !isTRUE(a.tmp$relative.pos <= 1.0))
-                stop(paste0("Relative position of annotation overlay should be ", 
-                "between 0.0 (base of bar) to 1.0 (top of bar)"))
-            tmp.ypos <- if (is.stacked) data.overlay.annot$y[ind.sel,i] - 
-                            (chart.matrix[ind.sel,i] * (1 - a.tmp$relative.pos))
-                        else data.overlay.annot$y[ind.sel,i] * a.tmp$relative.pos
-            tmp.align <- paste(if (is.null(a.tmp$valign)) "middle" else tolower(a.tmp$valign),
-                            if (is.null(a.tmp$halign)) "center" else tolower(a.tmp$halign))
+            tmp.ypos <- if (is.stacked) data.overlay.annot$y[ind.sel,i] -
+                            (chart.matrix[ind.sel,i] * (1 - curr.annot$relative.pos))
+                        else data.overlay.annot$y[ind.sel,i] * curr.annot$relative.pos
+            tmp.align <- paste(if (is.null(curr.annot$valign)) "middle" else tolower(curr.annot$valign),
+                            if (is.null(curr.annot$halign)) "center" else tolower(curr.annot$halign))
 
-            if (a.tmp$data == "Column Comparisons" && grepl("Arrow", a.tmp$type))
-                tmp.text <- getColCmpArrowHtml(tmp.dat[ind.sel], a.tmp$size)
-            else if (a.tmp$type == "Text")
-                tmp.text <- formatByD3(tmp.dat[ind.sel], a.tmp$format, a.tmp$prefix, a.tmp$suffix)
-            else if (a.tmp$type == "Arrow - up")
-                tmp.text <- "&#129049;"
-            else if (a.tmp$type == "Arrow - down")
-                tmp.text <- "&#129051;"
+            if (curr.annot$data == "Column Comparisons" && grepl("Arrow", curr.annot$type))
+                curr.annot.text <- getColCmpArrowHtml(tmp.dat[ind.sel], curr.annot$size)
+            else if (curr.annot$type == "Text")
+                curr.annot.text <- formatByD3(tmp.dat[ind.sel], curr.annot$format, curr.annot$prefix, curr.annot$suffix)
+            else if (curr.annot$type == "Arrow - up")
+                curr.annot.text <- "&#129049;"
+            else if (curr.annot$type == "Arrow - down")
+                curr.annot.text <- "&#129051;"
             else
-                tmp.text <- a.tmp$custom.symbol
-            tmp.text <- rep(tmp.text, length = length(ind.sel))
+                curr.annot.text <- curr.annot$custom.symbol
+            curr.annot.text <- rep(curr.annot.text, length = length(ind.sel))
 
             p <- add_trace(p, y = tmp.ypos,
                 x = data.overlay.annot$x[ind.sel,i],
                 type = "scatter", mode = "markers+text", hoverinfo = "skip",
                 xaxis = "x2", yaxis = "y", showlegend = FALSE,
-                marker = list(opacity = 0.0, size = sum(a.tmp$offset)),
-                text = tmp.text, textposition = tmp.align,
-                textfont = list(family = a.tmp$font.family, size = a.tmp$size,
-                    color = a.tmp$color),
+                marker = list(opacity = 0.0, size = sum(curr.annot$offset)),
+                text = curr.annot.text, textposition = tmp.align,
+                textfont = list(family = curr.annot$font.family, size = curr.annot$size,
+                    color = curr.annot$color),
                 legendgroup = if (is.stacked) "all" else i,
                 cliponaxis = FALSE)
         }

@@ -2,7 +2,6 @@
 # the annotations attached to data labels
 
 context("Annotation overlays")
-library(flipStandardCharts)
 
 data.with.stats <- structure(c(2.75482093663912, 6.06060606060606, 12.6721763085399,
 18.4573002754821, 24.7933884297521, 15.9779614325069, 6.06060606060606,
@@ -98,13 +97,14 @@ NA, "d f", "b", NA, "a B c e", "d", "b", NA, "a B c", NA, NA), .Dim = c(2L,
 
 test_that("Showing column comparisons with arrows",
 {
-    Column(dat.with.colcmp, type = "Stacked",
+    expect_error(Column(dat.with.colcmp, type = "Stacked",
         overlay.annotation.list = list(list(type = "Arrow - up",
         data = "Column Comparisons", threstype = "above threshold", threshold = " ",
         relative.pos = 0.5, halign = "Center", valign = "Middle", offset = 0,
-        color = "#FF0000", size = 11, font.family = "Arial")))
+        color = "#FF0000", size = 11, font.family = "Arial"))), NA)
 
-    Column(dat.with.colcmp, overlay.annotation.list = list(list(type = "Arrow - up",
+    expect_error(Column(dat.with.colcmp,
+        overlay.annotation.list = list(list(type = "Arrow - up",
         data = "Column Comparisons", threstype = "above threshold", threshold = " ",
         relative.pos = 0, halign = "Center", valign = "Top", offset = 5,
         color = "#444444", size = 11, font.family = "Courier New"),
@@ -115,9 +115,5 @@ test_that("Showing column comparisons with arrows",
         list(type = "Arrow - up", data = "z-Statistic",
         threstype = "above threshold", threshold = "1.96",
         relative.pos = 1.0, halign = "Center", valign = "Top", offset = 5,
-        color = "#0000FF", size = 15)))
+        color = "#0000FF", size = 15))), NA)
 })
-
-
-
-
