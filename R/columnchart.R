@@ -872,22 +872,22 @@ Column <- function(x,
         {
             curr.annot <- overlay.annotation.list[[curr.annot.ind]]
             curr.annot$threshold <- parseThreshold(curr.annot$threshold)
-            tmp.dat <- getAnnotData(annot.data, curr.annot$data, i,
+            curr.dat <- getAnnotData(annot.data, curr.annot$data, i,
                 as.numeric = !grepl("Text", curr.annot$type) && curr.annot$data != "Column Comparisons")
-            ind.sel <- extractSelectedAnnot(tmp.dat, curr.annot$threshold, curr.annot$threstype)
+            ind.sel <- extractSelectedAnnot(curr.dat, curr.annot$threshold, curr.annot$threstype)
             if (length(ind.sel) == 0)
                 next
 
-            tmp.ypos <- if (is.stacked) data.overlay.annot$y[ind.sel,i] -
+            curr.annot.ypos <- if (is.stacked) data.overlay.annot$y[ind.sel,i] -
                             (chart.matrix[ind.sel,i] * (1 - curr.annot$relative.pos))
                         else data.overlay.annot$y[ind.sel,i] * curr.annot$relative.pos
-            tmp.align <- paste(if (is.null(curr.annot$valign)) "middle" else tolower(curr.annot$valign),
+            curr.annot.align <- paste(if (is.null(curr.annot$valign)) "middle" else tolower(curr.annot$valign),
                             if (is.null(curr.annot$halign)) "center" else tolower(curr.annot$halign))
 
             if (curr.annot$data == "Column Comparisons" && grepl("Arrow", curr.annot$type))
-                curr.annot.text <- getColCmpArrowHtml(tmp.dat[ind.sel], curr.annot$size)
+                curr.annot.text <- getColCmpArrowHtml(curr.dat[ind.sel], curr.annot$size)
             else if (curr.annot$type == "Text")
-                curr.annot.text <- formatByD3(tmp.dat[ind.sel], curr.annot$format, curr.annot$prefix, curr.annot$suffix)
+                curr.annot.text <- formatByD3(curr.dat[ind.sel], curr.annot$format, curr.annot$prefix, curr.annot$suffix)
             else if (curr.annot$type == "Arrow - up")
                 curr.annot.text <- "&#129049;"
             else if (curr.annot$type == "Arrow - down")
@@ -896,12 +896,12 @@ Column <- function(x,
                 curr.annot.text <- curr.annot$custom.symbol
             curr.annot.text <- rep(curr.annot.text, length = length(ind.sel))
 
-            p <- add_trace(p, y = tmp.ypos,
+            p <- add_trace(p, y = curr.annot.ypos,
                 x = data.overlay.annot$x[ind.sel,i],
                 type = "scatter", mode = "markers+text", hoverinfo = "skip",
                 xaxis = "x2", yaxis = "y", showlegend = FALSE,
                 marker = list(opacity = 0.0, size = sum(curr.annot$offset)),
-                text = curr.annot.text, textposition = tmp.align,
+                text = curr.annot.text, textposition = curr.annot.align,
                 textfont = list(family = curr.annot$font.family, size = curr.annot$size,
                     color = curr.annot$color),
                 legendgroup = if (is.stacked) "all" else i,
