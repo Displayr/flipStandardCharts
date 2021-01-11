@@ -9,6 +9,7 @@
 #'  a separate axis for these lines will be shown on the right.
 #' @param type One of "Column", "Stacked Column" or "100\% Stacked Column"
 #' @param annotation.list Optional list of annotations to modify the data labels.
+#' @param overlay.annotation.list Optional list of annotations that is overlayed on top of the chart.
 #' @param average.series y-values of additional data series which is shown as a line. Used by \code{SmallMultiples}.
 #' @param average.color Color of the \code{average.series} as a hex code or string
 #' @param fit.type Character; type of line of best fit. Can be one of "None", "Linear", "LOESS",
@@ -296,6 +297,7 @@ Column <- function(x,
                     opacity = NULL,
                     type = "Column",
                     annotation.list = NULL,
+                    overlay.annotation.list = NULL,
                     fit.type = "None", # can be "Smooth" or anything else
                     fit.window.size = 2,
                     fit.line.colors = colors,
@@ -663,6 +665,24 @@ Column <- function(x,
                         font = data.label.font,
                         center.data.labels = data.label.centered)
 
+    if (!is.null(overlay.annotation.list))
+        data.overlay.annot <- dataLabelPositions(chart.matrix = chart.matrix,
+                        axis.type = xaxis$type,
+                        annotations = NULL,
+                        data.label.mult = data.label.mult,
+                        bar.decimals = data.label.decimals,
+                        bar.prefix = data.label.prefix,
+                        bar.suffix = data.label.suffix,
+                        barmode = barmode,
+                        swap.axes.and.data = FALSE,
+                        bar.gap = bar.gap,
+                        display.threshold = data.label.threshold,
+                        dates = axisFormat$ymd,
+                        reversed = isReversed(yaxis),
+                        font = data.label.font,
+                        center.data.labels = FALSE)
+
+
     # Set up second y-axis (for secondary data)
     if (!is.null(x2))
     {
@@ -846,10 +866,54 @@ Column <- function(x,
                     xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x", yaxis = "y",
                     data.label.font[[i]], is.stacked, data.label.centered)
 
+        # Create annotations separately for each series
+        # so they can be toggled using the legend
+        for (curr.annot.ind in seq_along(overlay.annotation.list))
+        {
+            curr.annot <- overlay.annotation.list[[curr.annot.ind]]
+            curr.annot$threshold <- parseThreshold(curr.annot$threshold)
+            curr.dat <- getAnnotData(annot.data, curr.annot$data, i,
+                as.numeric = !grepl("Text", curr.annot$type) && curr.annot$data != "Column Comparisons")
+            ind.sel <- extractSelectedAnnot(curr.dat, curr.annot$threshold, curr.annot$threstype)
+            if (length(ind.sel) == 0)
+                next
+
+            curr.annot.ypos <- if (is.stacked) data.overlay.annot$y[ind.sel,i] -
+                            (chart.matrix[ind.sel,i] * (1 - curr.annot$relative.pos))
+                        else data.overlay.annot$y[ind.sel,i] * curr.annot$relative.pos
+            curr.annot.align <- paste(if (is.null(curr.annot$valign)) "middle" else tolower(curr.annot$valign),
+                            if (is.null(curr.annot$halign)) "center" else tolower(curr.annot$halign))
+
+            if (curr.annot$data == "Column Comparisons" && grepl("Arrow", curr.annot$type))
+                curr.annot.text <- getColCmpArrowHtml(curr.dat[ind.sel], curr.annot$size)
+            else if (curr.annot$type == "Text")
+                curr.annot.text <- formatByD3(curr.dat[ind.sel], curr.annot$format, curr.annot$prefix, curr.annot$suffix)
+            else if (curr.annot$type == "Arrow - up")
+                curr.annot.text <- "&#129049;"
+            else if (curr.annot$type == "Arrow - down")
+                curr.annot.text <- "&#129051;"
+            else
+                curr.annot.text <- curr.annot$custom.symbol
+            curr.annot.text <- rep(curr.annot.text, length = length(ind.sel))
+
+            p <- add_trace(p, y = curr.annot.ypos,
+                x = data.overlay.annot$x[ind.sel,i],
+                type = "scatter", mode = "markers+text", hoverinfo = "skip",
+                xaxis = "x2", yaxis = "y", showlegend = FALSE,
+                marker = list(opacity = 0.0, size = sum(curr.annot$offset)),
+                text = curr.annot.text, textposition = curr.annot.align,
+                textfont = list(family = curr.annot$font.family, size = curr.annot$size,
+                    color = curr.annot$color),
+                legendgroup = if (is.stacked) "all" else i,
+                cliponaxis = FALSE)
+        }
     }
 
     if (!any(data.label.show) && length(annotation.list) > 0)
-        warning("Annotations are ignored when data labels are not shown.")
+        warning("Annotations are ignored when data labels are not shown. ",
+            "Try using 'Annotation Overlay' instead.")
+
+
 
     # Plot trace for second y-axis last so that they are shown last in legend
     if (!is.null(x2) && !is.stacked)

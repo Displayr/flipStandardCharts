@@ -244,3 +244,14 @@ checkAnnotType <- function(annot.type, chart.type)
         return(TRUE)
 }
 
+getColCmpArrowHtml <- function(cell.text, arrow.size)
+{
+    labels <- unlist(strsplit(cell.text, split = "\\s"))
+    arrow.code <- "&#129049;" # always use up-arrow
+    
+    res <- paste0("<span style='font-size:", arrow.size - 3,
+        "px'>", labels, "</span>", arrow.code)
+    res <- paste(res, collapse = "<br>")
+    return(res)
+}
+
