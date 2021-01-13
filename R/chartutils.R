@@ -86,10 +86,18 @@ checkMatrixNames <- function(x, assign.col.names = TRUE)
         return(x)
     }
 
-    # Convert into a matrix format
+    # Convert into a matrix format and extract primary statistic
     old.names <- c(dimnames(x), NA, NA) # ensure there are at least 2 elements
     new.x <- if (length(dim(x)) == 3) matrix(x, nrow(x), ncol(x), dimnames = old.names[1:2]) # explicitly specify dimensions
              else as.matrix(suppressWarnings(AsTidyTabularData(x))) # handles 1d data + statistic properly
+
+    # Convert into a matrix format
+    stat <- attr(x, "statistic")
+    #new.x <- ConvertQTableToArray(x)
+    #if (is.null(stat) && length(dim(new.x)) == 3)
+    #    stat <- dimnames(new.x)[[3]][1]
+    #if (length(dim(new.x)) == 3)
+    #    new.x <- as.matrix(new.x[,,1]) # extract primary statistic
 
     # Try to convert character matrix to numeric
     # This may occur in Q-tables with a character statistic (e.g. 'Column Comparisons')
@@ -102,17 +110,21 @@ checkMatrixNames <- function(x, assign.col.names = TRUE)
         dimnames(new.x) <- old.names
     }
 
-    # Many of the charts use the statistic attribute
-    x <- CopyAttributes(new.x, x)
+    # Convert percentage data to decimal form 
+    stat <- attr(x, "statistic")
+    if (is.null(stat) && !is.null(dimnames(x)))
+        stat <- dimnames(x)[[length(dim(x))]][1]
+    if (isTRUE(grepl("%", stat)))
+        new.x <- new.x/100
 
     # Assign row/column names if missing
-    if (is.null(rownames(x)))
-        rownames(x) <- 1:nrow(x)
-    if (is.null(colnames(x)) && assign.col.names)
-        colnames(x) <- sprintf("Series %d", 1:ncol(x))
-    if (any(duplicated(rownames(x))))
+    if (is.null(rownames(new.x)))
+        rownames(new.x) <- 1:NROW(new.x)
+    if (is.null(colnames(new.x)) && assign.col.names)
+        colnames(new.x) <- sprintf("Series %d", 1:NCOL(new.x))
+    if (any(duplicated(rownames(new.x))))
         stop("Row names of the input table must be unique.")
-    return(x)
+    return(new.x)
 }
 
 checkTableList <- function(y, trend.lines)
