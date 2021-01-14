@@ -94,7 +94,7 @@ GeographicMap <- function(x,
     values.bounds.minimum <- charToNumeric(values.bounds.minimum)
     values.bounds.maximum <- charToNumeric(values.bounds.maximum)
 
-    table <- cleanMapInput(x)
+    table <- cleanMapInput(checkMatrixNames(x))
 
     # Find map.type from rownames
     names <- tolower(rownames(table))
