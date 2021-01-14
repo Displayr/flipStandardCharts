@@ -559,27 +559,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                 paste(tmp.arrow.html, arrow.desc, sep = "", collapse = annot.legend.sep))
         }
 
-    } else if ("z-Statistic" %in% dimnames(annot.data)[[3]])
-    {
-        ind.zstat <- which(dimnames(annot.data)[[3]] == "z-Statistic")
-        z.threshold <- qnorm(1 - (annot.sig.level/2))
-        tmp.arrow.html <- sprintf("<span style=\"color:%s; font-size:%.0fpx;\">%s</span>",
-                annot.arrow.colors[1:2], annot.arrow.size,
-                annot.arrow.symbols[1:2])
-        annot.text <- getZStatAnnot(annot.data[,,ind.zstat], z.threshold, tmp.arrow.html)
-        if (column.totals.above.show && !is.null(col.totals.annot.data))
-            totals.annot.text <- getZStatAnnot(
-            col.totals.annot.data[,,ind.zstat], z.threshold, tmp.arrow.html)
-        if (annot.footer.show)
-        {
-            tmp.arrow.html <- rmFontSize(tmp.arrow.html)
-            footer <- paste0(footer,
-            paste(tmp.arrow.html, sprintf("Significant %s at the %s%% confidence level",
-            c("increase", "decrease"), round((1-annot.sig.level) * 100)),
-            sep = "", collapse = annot.legend.sep))
-        }
-
-    } else if (all(c("Differences", "p") %in% dimnames(annot.data)[[3]]))
+    }  else if (all(c("Differences", "p") %in% dimnames(annot.data)[[3]]))
     {
         tmp.arrow.html <- sprintf("<span style=\"color:%s; font-size:%.0fpx;\">%s</span>",
                 annot.arrow.colors[1:2], annot.arrow.size,
@@ -608,6 +588,26 @@ StackedColumnWithStatisticalSignificance <- function(x,
             c("increase", "decrease"), round((1-annot.sig.level) * 100)),
             sep = "", collapse = annot.legend.sep))
         }
+    } else if ("z-Statistic" %in% dimnames(annot.data)[[3]])
+    {
+        ind.zstat <- which(dimnames(annot.data)[[3]] == "z-Statistic")
+        z.threshold <- qnorm(1 - (annot.sig.level/2))
+        tmp.arrow.html <- sprintf("<span style=\"color:%s; font-size:%.0fpx;\">%s</span>",
+                annot.arrow.colors[1:2], annot.arrow.size,
+                annot.arrow.symbols[1:2])
+        annot.text <- getZStatAnnot(annot.data[,,ind.zstat], z.threshold, tmp.arrow.html)
+        if (column.totals.above.show && !is.null(col.totals.annot.data))
+            totals.annot.text <- getZStatAnnot(
+            col.totals.annot.data[,,ind.zstat], z.threshold, tmp.arrow.html)
+        if (annot.footer.show)
+        {
+            tmp.arrow.html <- rmFontSize(tmp.arrow.html)
+            footer <- paste0(footer,
+            paste(tmp.arrow.html, sprintf("Significant %s at the %s%% confidence level",
+            c("increase", "decrease"), round((1-annot.sig.level) * 100)),
+            sep = "", collapse = annot.legend.sep))
+        }
+
     }
 
     legend.show <- setShowLegend(legend.show, NCOL(chart.matrix))
