@@ -115,7 +115,10 @@ checkMatrixNames <- function(x, assign.col.names = TRUE)
     if (is.null(stat) && !is.null(dimnames(x)))
         stat <- dimnames(x)[[length(dim(x))]][1]
     if (isTRUE(grepl("%", stat)))
+    {
         new.x <- new.x/100
+        attr(new.x, "statistic") <- NULL
+    }
 
     # Assign row/column names if missing
     if (is.null(rownames(new.x)))
@@ -1476,10 +1479,14 @@ vectorize <- function(x, n, nrow = NULL, split = ",")
 
 getColumn <- function(x, i)
 {
+    res <- x
     if (length(dim(x)) == 2)
-        return(x[,i,drop = FALSE])
+        res <- x[,i,drop = FALSE]
     if (length(dim(x)) == 3)
-        return(x[,i, , drop = FALSE])
+        res <- x[,i, , drop = FALSE]
+    if (!is.null(attr(x, "statistic")))
+        attr(res, "statistic") <- attr(x, "statistic")
+    return(res)
 }
 
 

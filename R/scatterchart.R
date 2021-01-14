@@ -194,6 +194,9 @@ Scatter <- function(x = NULL,
                          col.min = NULL,
                          col.max = NULL)
 {
+    if (is.array(x) && isTRUE(grepl("%", attr(x, "statistic"))))
+        x <- x/100
+
     # Use labeled scatterplots if multiple tables are provided
     if ((is.list(x) && !is.data.frame(x)) || !scatter.labels.as.hovertext)
     {

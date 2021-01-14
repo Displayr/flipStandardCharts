@@ -83,6 +83,8 @@ Pie <- function(x,
         if (is.null(x.labels))
             x.labels <- as.character(1:length(x))
         y.values <- as.numeric(x)
+        if (isTRUE(grepl("%", attr(x, "statistic"))))
+            y.values <- y.values/100
     }
     else if (is.array(x) || is.matrix(x) && is.numeric(x) || all(unlist(lapply(x, is.numeric))))
     {
