@@ -180,7 +180,7 @@ SmallMultiples <- function(x,
         data.label.font.color <- vectorize(data.label.font.color, npanels)
 
     all.values <- if (chart.type == "Scatter") x[,scatter.y.column]
-                  else if (length(dim(x)) == 3) checkMatrixNames(x)
+                  else if (is.array(x)) checkMatrixNames(x)
                   else unlist(x)
     values.max = max(0, all.values, na.rm = TRUE)
     values.min = min(0, all.values, na.rm = TRUE)
