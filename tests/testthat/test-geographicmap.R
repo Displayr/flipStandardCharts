@@ -19,7 +19,7 @@ world.multi.series.table <- structure(c(-10, 0, NA, 50, 60, 90, 150, 140, 180, 1
 country.codes <- seq(4)
 names(country.codes) <- c("AUS", "HUN", "SOM", "PAK")
 
-region.pct <- structure(c(-0.17, 0.155, NA, 0.39), .Names = c("Midwest", "Northeast", "South", "West"), statistic = "%")
+region.pct <- structure(c(-0.17, 0.155, NA, 0.39) * 100, .Names = c("Midwest", "Northeast", "South", "West"), statistic = "%")
 
 continents <- rnorm(5) * 100
 names(continents) <- c("Asia", "Europe", "Oceania", "North America", "Africa")
@@ -103,7 +103,7 @@ test_that ("Ambiguous names DS-2016", {
     expect_error(GeographicMap(ambiguous), NA)
 })
 
-names(austria.state.table)[1:5] <- "XXX"
+names(austria.state.table)[1:5] <- c("aaaaa", "bbbbb", "ccccc", "ddddd", "eeeee")
 test_that ("Most unmatched", {
     expect_warning(GeographicMap(austria.state.table), "5 rows of the input data were not matched.")
 })
