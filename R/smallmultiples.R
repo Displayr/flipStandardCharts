@@ -555,7 +555,7 @@ SmallMultiples <- function(x,
     margins$autoexpand <- margin.autoexpand
     res <- layout(res, showlegend = is.geo, margin = margins,
                   annotations = annotations)
-    attr(res, "can-run-in-root-dom") <- TRUE
+    ##attr(res, "can-run-in-root-dom") <- TRUE  RS-7009
     result <- list(htmlwidget = res)
     class(result) <- "StandardChart"
     attr(result, "ChartType") <- switch(chart.type,
