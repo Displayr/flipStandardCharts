@@ -125,7 +125,7 @@ Scatter <- function(x = NULL,
                          y.title.font.size = 12,
                          y.line.width = 0,
                          y.line.color = rgb(0, 0, 0, maxColorValue = 255),
-                         y.tick.mark.length = 5,
+                         y.tick.mark.length = 0,
                          y.bounds.minimum = NULL,
                          y.bounds.maximum = NULL,
                          y.tick.distance = NULL,
@@ -152,7 +152,7 @@ Scatter <- function(x = NULL,
                          x.title.font.size = 12,
                          x.line.width = 0,
                          x.line.color = rgb(0, 0, 0, maxColorValue = 255),
-                         x.tick.mark.length = 5,
+                         x.tick.mark.length = 3,
                          x.bounds.minimum = NULL,
                          x.bounds.maximum = NULL,
                          x.tick.distance = NULL,
@@ -474,7 +474,7 @@ Scatter <- function(x = NULL,
     num.groups <- length(g.list)
     groups <- groups[not.na]
     num.series <- if (scatter.colors.as.numeric) 1 else num.groups
-    
+
     colors <- vectorize(colors, num.groups)
     if (is.null(fit.line.colors))
         fit.line.colors <- colors

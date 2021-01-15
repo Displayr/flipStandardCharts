@@ -92,7 +92,7 @@ Line <-   function(x,
                     y.title.font.size = 12,
                     y.line.width = 0,
                     y.line.color = rgb(0, 0, 0, maxColorValue = 255),
-                    y.tick.mark.length = 5,
+                    y.tick.mark.length = 0,
                     y.bounds.minimum = NULL,
                     y.bounds.maximum = NULL,
                     y.tick.distance = NULL,
@@ -119,7 +119,7 @@ Line <-   function(x,
                     x.line.width = 0,
                     x.line.color = rgb(0, 0, 0, maxColorValue = 255),
                     x.tick.marks = "",
-                    x.tick.mark.length = 5,
+                    x.tick.mark.length = 3,
                     x.bounds.minimum = NULL,
                     x.bounds.maximum = NULL,
                     x.tick.distance = NULL,
@@ -165,11 +165,11 @@ Line <-   function(x,
                     data.label.suffix = "")
 {
     ErrorIfNotEnoughData(x)
-    
+
     # Store data for chart annotations
     annot.data <- x
     chart.matrix <- checkMatrixNames(x)
-    
+
     if (is.null(line.thickness))
         line.thickness <- 3
     matrix.labels <- names(dimnames(chart.matrix))
@@ -192,7 +192,7 @@ Line <-   function(x,
         marker.opacity <- opacity
     if (is.null(marker.border.opacity))
         marker.border.opacity <- marker.opacity
-    
+
     # Set colors
     n <- ncol(chart.matrix)
     colors <- vectorize(colors, n)
@@ -434,7 +434,7 @@ Line <-   function(x,
             p <- add_trace(p, x = x, y = y, type = "scatter", name = y.label,
                    cliponaxis = FALSE, mode = "markers+text",
                    marker = list(size = data.label.offset, color=colors[i], opacity = 0),
-                   text = source.text[ind.show], 
+                   text = source.text[ind.show],
                    textfont = data.label.font[[i]], textposition = dlab.pos[i],
                    showlegend = FALSE, legendgroup = i,
                    hoverlabel = list(font = list(color = autoFontColor(colors[i]),

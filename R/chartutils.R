@@ -568,12 +568,12 @@ getDateAxisRange <- function(label.dates, new.range = NULL)
     return(as.character(range))
 }
 
-# In most cases the plotly defaults 
-# (tickmode = "auto" and tickdistance not set) 
-# works fine, but when there is a short series of daily 
+# In most cases the plotly defaults
+# (tickmode = "auto" and tickdistance not set)
+# works fine, but when there is a short series of daily
 # (i.e. not montly or yearly) data, plotly will place ticks
 # on every Sunday which does not align with the data points.
-# This is especially ugly in bar and column charts but also 
+# This is especially ugly in bar and column charts but also
 # makes line and area charts harder to read
 # In these cases, we manually specify the tick distance
 # for a date axis (which means that tickmode = "linear")
@@ -583,8 +583,8 @@ setDateTickDistance <- function(date.labels, num.maxticks)
     if (n < 2 || n > 10)
         return(NULL)
     tmp.dist <- difftime(date.labels[n], date.labels[1], units = "secs")/(n-1)
-    
-    # Use plotly defaults if the data is monthly or yearly 
+
+    # Use plotly defaults if the data is monthly or yearly
     use.auto.ticks <- TRUE
     if (tmp.dist <= 86400) # time scale is less than a day
         use.auto.ticks <- FALSE
@@ -594,8 +594,8 @@ setDateTickDistance <- function(date.labels, num.maxticks)
         use.auto.ticks <- all(as.numeric(format(date.labels, "%j")) == 1)
 
     # If axis range is considerable larger than the intervals between ticks
-    # use plotly defaults 
-    if (difftime(max(date.labels), min(date.labels), units = "secs") > 
+    # use plotly defaults
+    if (difftime(max(date.labels), min(date.labels), units = "secs") >
         (n+1) * tmp.dist)
         use.auto.ticks <- TRUE
 
@@ -653,7 +653,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
             is.autorange <- is.null(ticks$range)
             range <- rev(getDateAxisRange(axisLabels$ymd, range))
 
-            # Check whether or not to override tick positions 
+            # Check whether or not to override tick positions
             if (with.bars && is.autorange)
             {
                 tmp.dist <- setDateTickDistance(axisLabels$ymd, num.maxticks)
@@ -691,7 +691,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
         if (ticks$autorange == "reversed" || rev)
             range <- rev(range)
 
-        # Check whether or not to override tick positions 
+        # Check whether or not to override tick positions
         if (is.autorange && length(axisLabels$labels) <= 10)
         {
             tmp.dist <- setDateTickDistance(axisLabels$ymd, num.maxticks)
@@ -734,7 +734,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
 
     if (!is.null(num.maxticks) && tickmode == "auto" && axis.type != "category")
     {
-        # plotly only uses nticks when tickmode is auto 
+        # plotly only uses nticks when tickmode is auto
         if (is.null(nticks) || nticks > num.maxticks)
             nticks <- num.maxticks
     }
@@ -746,8 +746,8 @@ setAxis <- function(title, side, axisLabels, titlefont,
                  showgrid = gridwidth > 0, gridwidth = gridwidth,
                  gridcolor = gridcolor, tickmode = tickmode, nticks = nticks,
                  tickvals = ticks$tickvals, ticktext = ticks$ticktext,
-                 ticks = if (has.line) "outside" else "", tickangle = tickangle,
-                 ticklen = ticklen, tickcolor = linecolor, tickfont = tickfont,
+                 ticklabelposition = "outside", tickangle = tickangle,
+                 ticklen = ticklen, tickcolor = "transparent", tickfont = tickfont,
                  dtick = tickdistance, tickformat = tickformat, tick0 = tick0,
                  tickprefix = tickprefix, ticksuffix = ticksuffix,
                  hoverformat = hoverformat, layer = "below traces",
