@@ -43,7 +43,7 @@ Box(
   values.title.font.size = 12,
   values.line.width = 0,
   values.line.color = rgb(0, 0, 0, maxColorValue = 255),
-  values.tick.mark.length = 5,
+  values.tick.mark.length = 0,
   values.bounds.minimum = NULL,
   values.bounds.maximum = NULL,
   values.tick.distance = NULL,

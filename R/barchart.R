@@ -78,7 +78,7 @@ Bar <- function(x,
                     y.title.font.size = 12,
                     y.line.width = 0,
                     y.line.color = rgb(0, 0, 0, maxColorValue = 255),
-                    y.tick.mark.length = 5,
+                    y.tick.mark.length = 3,
                     y.bounds.minimum = NULL,
                     y.bounds.maximum = NULL,
                     y.tick.distance = NULL,
@@ -105,7 +105,7 @@ Bar <- function(x,
                     x.line.width = 0,
                     x.line.color = rgb(0, 0, 0, maxColorValue = 255),
                     x.tick.marks = "",
-                    x.tick.mark.length = 5,
+                    x.tick.mark.length = 3,
                     x.bounds.minimum = NULL,
                     x.bounds.maximum = NULL,
                     x.tick.distance = NULL,
@@ -197,7 +197,7 @@ Bar <- function(x,
         opacity <- if (fit.type == "None") 1 else 0.6
     if (is.null(marker.border.opacity))
         marker.border.opacity <- opacity
-    
+
     # Set colors
     n <- ncol(chart.matrix)
     colors <- vectorize(colors, n)
