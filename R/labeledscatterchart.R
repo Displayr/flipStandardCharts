@@ -173,6 +173,13 @@ LabeledScatter <- function(x = NULL,
             logo.urls <- rep(logo.urls, num.tables)
     }
 
+    tmp.stat <- attr(x, "statistic")
+    if ((is.array(x) || is.numeric(x)) && isTRUE(grepl("%", tmp.stat)))
+    {
+        x <- x/100
+        attr(x, "statistic") <- NULL
+    }
+
     if (is.matrix(x) || is.data.frame(x))
     {
         .isValidColumnIndex <- function(n) {return (!is.null(n) && !is.na(n) && n > 0 && n <= ncol(x))}

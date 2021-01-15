@@ -93,6 +93,7 @@ BarPictograph <- function(x,
         warning("Only the first series will be shown.")
         x <- x[,1]
     }
+    attr(x, "statistic") <- stat
     x <- checkMatrixNames(x)[,1]
 
 
