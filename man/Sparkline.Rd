@@ -38,7 +38,7 @@ Sparkline(
   x.axis.color = rgb(44, 44, 44, maxColorValue = 255),
   x.axis.width = 1,
   x.tick.show = x.axis.show,
-  x.tick.length = NULL,
+  x.tick.length = 3,
   x.tick.font.family = global.font.family,
   x.tick.font.color = global.font.color,
   x.tick.font.size = 10,
@@ -47,7 +47,7 @@ Sparkline(
   y.axis.color = rgb(44, 44, 44, maxColorValue = 255),
   y.axis.width = 1,
   y.tick.show = y.axis.show,
-  y.tick.length = NULL,
+  y.tick.length = 3,
   y.tick.font.family = global.font.family,
   y.tick.font.color = global.font.color,
   y.tick.font.size = 10,
@@ -135,9 +135,9 @@ See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 
 \item{x.axis.width}{Integer; Width of the x-axis line in pixels.}
 
-\item{x.tick.show}{Logical; Whether to show ticklabels. This only has an effect is \code{x.tick.show} is true.}
+\item{x.tick.show}{Logical; Whether to show ticklabels. This only has an effect is \code{x.axis.show} is true.}
 
-\item{x.tick.length}{Numeric; length of tick marks if \code{x.tick.show}.}
+\item{x.tick.length}{Numeric; length of tick marks if \code{x.axis.show}.}
 
 \item{x.tick.font.family}{Character; x-axis tick label font family}
 

@@ -22,7 +22,7 @@
 #' @param x.axis.show Logical; Whether to show the x-axis.
 #' @param x.axis.color Character; Color of the x-axis line.
 #' @param x.axis.width Integer; Width of the x-axis line in pixels.
-#' @param x.tick.show Logical; Whether to show ticklabels. This only has an effect is \code{x.tick.show} is true.
+#' @param x.tick.show Logical; Whether to show ticklabels. This only has an effect is \code{x.axis.show} is true.
 #' @param y.axis.show Logical; Whether to show the y-axis.
 #' @param y.tick.show Logical; Whether to show ticklabels. This only has an effect is \code{y.tick.show} is true.
 #' @param y.axis.color Character; Color of the y-axis line.
@@ -55,7 +55,7 @@
 #' in character format (e.g. "black") or an a hex code.
 #' @param x.tick.font.family Character; x-axis tick label font family
 #' @param x.tick.font.size Integer; x-axis tick label font size
-#' @param x.tick.length Numeric; length of tick marks if \code{x.tick.show}.
+#' @param x.tick.length Numeric; length of tick marks if \code{x.axis.show}.
 #' @param background.fill.color Background color in character format (e.g. "black") or a hex code.
 #' @param background.fill.opacity Background opacity as an alpha value (0 to 1).
 #' @param margin.top Margin between plot area and the top of the graphic in pixels
@@ -110,7 +110,7 @@ Sparkline <- function(x,
 		x.axis.color = rgb(44, 44, 44, maxColorValue = 255),
 		x.axis.width = 1,
         x.tick.show = x.axis.show,
-        x.tick.length = NULL,
+        x.tick.length = 3,
 		x.tick.font.family = global.font.family,
 		x.tick.font.color = global.font.color,
 		x.tick.font.size = 10,
@@ -119,7 +119,7 @@ Sparkline <- function(x,
 		y.axis.color = rgb(44, 44, 44, maxColorValue = 255),
 		y.axis.width = 1,
         y.tick.show = y.axis.show,
-        y.tick.length = NULL,
+        y.tick.length = 3,
 		y.tick.font.family = global.font.family,
 		y.tick.font.color = global.font.color,
 		y.tick.font.size = 10,
@@ -216,17 +216,18 @@ Sparkline <- function(x,
     x <- as.numeric(x)
     xaxis <- list(side = "bottom", type = axisFormat$x.axis.type, categoryorder = "trace",
                 showgrid = FALSE, showline = x.axis.show, zeroline = FALSE, automargin = type != "Box",
-                showticklabels = x.axis.show, ticks = if (x.axis.show) "outside" else "",
+                showticklabels = x.axis.show, ticklabelposition = "outside", 
                 tickfont = list(size = if (x.tick.show) x.tick.font.size else 1,
 						   		color = if (x.tick.show) x.tick.font.color else "transparent",
-				family = x.tick.font.family), tickformat = x.tick.format, ticklen = x.tick.length,
+				family = x.tick.font.family), tickformat = x.tick.format, 
+                ticklen = if (x.tick.show) x.tick.length else 0,
                 linewidth = x.axis.width, linecolor = x.axis.color, tickcolor = x.axis.color)
     yaxis <- list(side = "left", showgrid = FALSE, showline = y.axis.show, zeroline = FALSE,
                 automargin = type != "Box",
-                showticklabels = y.axis.show, ticks = if (y.axis.show) "outside" else "",
+                showticklabels = y.axis.show, ticklabel.position = "outside", 
                 tickfont = list(size = if (y.tick.show) y.tick.font.size else 1,
 							 	color = if (y.tick.show) y.tick.font.color else "transparent",
-				family = y.tick.font.family), ticklen = y.tick.length,
+				family = y.tick.font.family), ticklen = if (y.tick.show) y.tick.length else 0,
 				hoverformat = hover.format, tickformat = y.tick.format,
                 linewidth = y.axis.width, linecolor = y.axis.color, tickcolor = y.axis.color)
 

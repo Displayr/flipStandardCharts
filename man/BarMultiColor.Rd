@@ -69,7 +69,7 @@ BarMultiColor(
   x.line.width = 0,
   x.line.color = rgb(0, 0, 0, maxColorValue = 255),
   x.tick.marks = "",
-  x.tick.mark.length = 3,
+  x.tick.mark.length = 0,
   x.bounds.minimum = NULL,
   x.bounds.maximum = NULL,
   x.tick.distance = NULL,
