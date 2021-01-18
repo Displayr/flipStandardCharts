@@ -90,14 +90,7 @@ checkMatrixNames <- function(x, assign.col.names = TRUE)
     old.names <- c(dimnames(x), NA, NA) # ensure there are at least 2 elements
     new.x <- if (length(dim(x)) == 3) matrix(x, nrow(x), ncol(x), dimnames = old.names[1:2]) # explicitly specify dimensions
              else as.matrix(suppressWarnings(AsTidyTabularData(x))) # handles 1d data + statistic properly
-
-    # Convert into a matrix format
     stat <- attr(x, "statistic")
-    #new.x <- ConvertQTableToArray(x)
-    #if (is.null(stat) && length(dim(new.x)) == 3)
-    #    stat <- dimnames(new.x)[[3]][1]
-    #if (length(dim(new.x)) == 3)
-    #    new.x <- as.matrix(new.x[,,1]) # extract primary statistic
 
     # Try to convert character matrix to numeric
     # This may occur in Q-tables with a character statistic (e.g. 'Column Comparisons')
@@ -110,7 +103,7 @@ checkMatrixNames <- function(x, assign.col.names = TRUE)
         dimnames(new.x) <- old.names
     }
 
-    # Convert percentage data to decimal form 
+    # Convert percentage data to decimal form
     stat <- attr(x, "statistic")
     if (is.null(stat) && !is.null(dimnames(x)))
         stat <- dimnames(x)[[length(dim(x))]][1]
