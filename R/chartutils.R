@@ -738,7 +738,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
         if (is.null(nticks) || nticks > num.maxticks)
             nticks <- num.maxticks
     }
-    return (list(title = title,
+    return (list(title = title, fixedrange = TRUE,
                  side = side, type = axis.type,
                  tickfont = tickfont,
                  showline = has.line, linecolor = linecolor,

@@ -650,7 +650,8 @@ StackedColumnWithStatisticalSignificance <- function(x,
     # Set up second x-axis for data labels
     # Even when data.label.show is false, data.annotations
     # is used to position arrow annotations etc
-    xaxis2 <- list(overlaying = "x", visible = FALSE, range = x.range)
+    xaxis2 <- list(overlaying = "x", visible = FALSE, range = x.range,
+        fixedrange = TRUE)
     data.annotations <- dataLabelPositions(chart.matrix = chart.matrix,
                         axis.type = xaxis$type,
                         annotations = NULL,

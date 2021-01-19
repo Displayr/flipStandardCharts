@@ -277,7 +277,8 @@ Bar <- function(x,
 
     # Set up numeric x-axis - this is used for data labels and hovertext
     y.range <- getRange(x, yaxis, axisFormat)
-    yaxis2 <- list(overlaying = "y", visible = FALSE, range = y.range)
+    yaxis2 <- list(overlaying = "y", visible = FALSE, range = y.range,
+        fixedrange = TRUE)
     data.annotations <- dataLabelPositions(chart.matrix = chart.matrix,
                         axis.type = yaxis$type,
                         annotations = NULL,
