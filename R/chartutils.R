@@ -90,7 +90,6 @@ checkMatrixNames <- function(x, assign.col.names = TRUE)
     old.names <- c(dimnames(x), NA, NA) # ensure there are at least 2 elements
     new.x <- if (length(dim(x)) == 3) matrix(x, nrow(x), ncol(x), dimnames = old.names[1:2]) # explicitly specify dimensions
              else as.matrix(suppressWarnings(AsTidyTabularData(x))) # handles 1d data + statistic properly
-    stat <- attr(x, "statistic")
 
     # Try to convert character matrix to numeric
     # This may occur in Q-tables with a character statistic (e.g. 'Column Comparisons')
