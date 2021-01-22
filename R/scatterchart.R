@@ -194,6 +194,13 @@ Scatter <- function(x = NULL,
                          col.min = NULL,
                          col.max = NULL)
 {
+    tmp.stat <- attr(x, "statistic")
+    if ((is.array(x) || is.numeric(x)) && isTRUE(grepl("%", tmp.stat)))
+    {
+        x <- x/100
+        attr(x, "statistic") <- NULL
+    }
+
     # Use labeled scatterplots if multiple tables are provided
     if ((is.list(x) && !is.data.frame(x)) || !scatter.labels.as.hovertext)
     {
@@ -210,7 +217,6 @@ Scatter <- function(x = NULL,
     annot.data <- x
 
     # Adjust some of the the default default tick formats
-    tmp.stat <- attr(x, "statistic")
     if (!is.null(tmp.stat) && grepl("%)?$", tmp.stat))
     {
         if (nchar(x.tick.format) == 0 || grepl("[0-9]$", x.tick.format))
