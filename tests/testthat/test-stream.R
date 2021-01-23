@@ -33,7 +33,7 @@ test_that("Stream",
               # Errors
 
               expect_error(Stream(invalid), "Stream requires the rownames of the input data.")
-              expect_error(Stream(invalid.2), "Stream requires numeric data to be plotted.")
+              expect_error(Stream(invalid.2), "Stream graphs should have a tabular input")
               expect_error(Stream(dat, x.tick.interval = 6, x.tick.units = "Month", x.tick.format = ".2f"), "x-axis tick format and units are incompatible.")
 
               # Automatic formatting

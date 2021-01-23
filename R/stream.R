@@ -47,11 +47,11 @@ Stream <- function(x,
                    margin.bottom = 30,
                    margin.right = 40)
 {
-    if (is.null(dim(x)) || length(dim(x)) == 1L) {
+    if (!is.list(x) && (is.array(x) || is.numeric(x)))
+        x <- checkMatrixNames(x)
+    else if (is.data.frame(x))
         x <- as.matrix(x)
-        colnames(x) <- ""
-    }
-    if (!is.matrix(x) && !is.data.frame(x) && !is.array(x))
+    else
         stop("Stream graphs should have a tabular input (e.g., a matrix).")
     if (!x.tick.units %in% c("Automatic", "Number", "Day", "Month", "Year"))
         stop("x.tick.units must be one of 'Automatic', 'Number', 'Day', 'Month' or 'Year'.")

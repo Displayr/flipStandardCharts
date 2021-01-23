@@ -238,8 +238,8 @@ Distribution <-   function(x,
     ErrorIfNotEnoughData(x, require.tidy = FALSE, require.notAllMissing = TRUE)
     if (length(x) == 1 && is.list(x) && NCOL(x[[1]]) > 1)
         x <- x[[1]]
-    if (is.matrix(x))
-        x <- as.data.frame(x)
+    if (!is.list(x) && (is.array(x) || is.numeric(x)))
+        x <- as.data.frame(checkMatrixNames(x))
     else if (!is.list(x))
     {
         if (is.array(x) && length(dim(x)) == 1)
