@@ -500,9 +500,11 @@ StackedColumnWithStatisticalSignificance <- function(x,
     # Some minimal data cleaning
     # Assume formatting and Qtable/attribute handling already done
     data.label.mult <- 1
-    if (percentFromD3(data.label.format)) {
-        data.label.suffix <- paste0("%", data.label.suffix)
+    data.label.suffix.2 <- data.label.suffix
+    if (percentFromD3(data.label.format))
+    {
         data.label.mult <- 100
+        data.label.suffix.2 <- paste0("%", data.label.suffix.2)
     }
     data.label.decimals <- decimalsFromD3(data.label.format)
 
@@ -669,7 +671,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                         data.label.mult = data.label.mult,
                         bar.decimals = data.label.decimals,
                         bar.prefix = data.label.prefix,
-                        bar.suffix = data.label.suffix,
+                        bar.suffix = data.label.suffix.2,
                         barmode = barmode,
                         swap.axes.and.data = FALSE,
                         bar.gap = bar.gap,
@@ -830,7 +832,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     data.label.mult = data.label.mult,
                     bar.decimals = data.label.decimals,
                     bar.prefix = data.label.prefix,
-                    bar.suffix = data.label.suffix,
+                    bar.suffix = data.label.suffix.2,
                     barmode = barmode,
                     swap.axes.and.data = FALSE,
                     bar.gap = bar.gap,
