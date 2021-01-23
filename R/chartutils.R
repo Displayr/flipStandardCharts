@@ -1498,3 +1498,16 @@ readLineThickness <- function(line.thickness, n)
     line.thickness <- suppressWarnings(line.thickness * rep(1, n)) # suppress warnings about recyling
     return(line.thickness)
 }
+
+# Returns true if the d3 format corresponds to the output
+# of PrepareNumbers when the user has set Number Type to "Automatic"
+isAutoFormat <- function(x)
+{
+    if (nchar(x) == 0)
+        return(TRUE)
+    if (x == "")
+        return(TRUE)
+    if (grepl("\\d$", x))
+        return(TRUE)
+    return(FALSE)
+}
