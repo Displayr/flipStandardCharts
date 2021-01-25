@@ -1,7 +1,7 @@
 Package: flipStandardCharts
 Type: Package
 Title: Standard R interactive charts
-Version: 1.19.1
+Version: 1.19.2
 Author: Displayr <opensource@displayr.com>
 Maintainer: Displayr <opensource@displayr.com>
 Description: Wrapper for other charting packages. The goal is to provide a
@@ -39,6 +39,7 @@ Imports:
     stringr,
     verbs,
     xts,
+    abind
 Remotes:
     cran/rgdal@1.5-12,
     Displayr/plotly,
@@ -47,9 +48,9 @@ Remotes:
     Displayr/flipData,
     Displayr/flipExampleData,
     Displayr/flipFormat,
-    Displayr/flipTables@DS-3202,
+    Displayr/flipTables,
     Displayr/flipTime,
-    Displayr/flipTransformations@DS-3202,
+    Displayr/flipTransformations,
     Displayr/rhtmlPictographs,
     Displayr/rhtmlDonut,
     Displayr/rhtmlHeatmap,

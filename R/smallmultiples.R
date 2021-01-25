@@ -30,6 +30,7 @@
 #' @inherit Scatter
 #' @inherit GeographicMap
 #' @importFrom plotly subplot
+#' @importFrom abind abind
 #' @importFrom flipU CollectWarnings
 #' @examples
 #' x <- matrix(1:21, 7, 3, dimnames = list(letters[1:7], LETTERS[1:3]))
@@ -167,7 +168,7 @@ SmallMultiples <- function(x,
             if (chart.type == "Scatter")
                 indexes <- indexes[x.order]
             else
-                x <- x[, x.order, drop = FALSE]
+                x <- CopyAttributes(x[, x.order, drop = FALSE], x)
             npanels <- length(x.order)
         }
     }
@@ -275,14 +276,29 @@ SmallMultiples <- function(x,
 
 
     # Construct charts
-    .bind_mean <- function(a, b, rev = FALSE)
+    .bind_mean <- function(a, b)
     {
         if (is.null(b))
             return(a)
-        else if (rev)
-            return(cbind(Average = b, a))
+        stat <- attr(a, "statistic")
+        if (length(dim(a)) == 3)
+        {
+            num.stats <- dim(a)[3]
+            stat <- dimnames(a)[[3]][1]
+            dnn <- dimnames(a)
+            dnn[[2]] <- "Average"
+            b <- array(c(b, rep(NA, length(b) * num.stats)), dim = c(length(b), 1, num.stats),
+                dimnames = dnn)
+        }
+        if (isTRUE(grepl("%", stat)))
+            b <- b * 100
+
+        if (length(dim(a)) == 3)
+            res <- abind(a, b, along = 2)
         else
-            return(cbind(a, Average = b))
+            res <- cbind(a, Average = b)
+        attr(res, "statistic") <- stat
+        return(res)
     }
 
 
