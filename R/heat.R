@@ -154,6 +154,14 @@ Heat <- function(x,
 
     mat <- checkMatrixNames(stripClassAndCallFromXtabs(x), assign.col.names = FALSE)
     ErrorIfNotEnoughData(mat)
+    if (isPercentData(x))
+    {
+        if (isAutoFormat(y.hovertext.format))
+            y.hovertext.format <- paste0(y.hovertext.format, "%")
+        if (isAutoFormat(data.label.format))
+            data.label.format <- paste0(data.label.format, "%")
+    }
+
 
     if (nchar(gsub("\\s", "", x.title, perl = TRUE)) == 0)
         x.title <- ""

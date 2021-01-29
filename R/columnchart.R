@@ -478,6 +478,16 @@ Column <- function(x,
                     average.color = rgb(230, 230, 230, maxColorValue = 255))
 {
     ErrorIfNotEnoughData(x)
+    if (isPercentData(x))
+    {
+        if (isAutoFormat(y.tick.format))
+            y.tick.format <- paste0(y.tick.format, "%")
+        if (isAutoFormat(y.hovertext.format))
+            y.hovertext.format <- paste0(y.hovertext.format, "%")
+        if (isAutoFormat(data.label.format))
+            data.label.format <- paste0(data.label.format, "%")
+    }
+
     if (bar.gap < 0.0 || bar.gap >= 1.0)
     {
         warning("Parameter 'bar gap' must be between 0 and 1. ",

@@ -75,6 +75,8 @@ Pie <- function(x,
                      pie.border.color = rgb(255, 255, 255, maxColorValue = 255))
 {
     ErrorIfNotEnoughData(x)
+    if (isPercentData(x) && isAutoFormat(data.label.format))
+        data.label.format <- paste0(data.label.format, "%")
     groups <- NULL
 
     if (is.null(dim(x)) || length(dim(x)) == 1 || is.data.frame(x) && nrow(x) == 1)

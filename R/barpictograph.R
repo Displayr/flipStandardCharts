@@ -80,22 +80,27 @@ BarPictograph <- function(x,
                        maximum.number.icons = 10000,
                        print.config = FALSE)
 {
-    # Ensure that input data x is a named vector
-    # Transpose if data is the wrong way around
+    ErrorIfNotEnoughData(x)
     stat <- attr(x, "statistic")
+    if (isPercentData(x))
+    {
+        if (isAutoFormat(data.label.format))
+            data.label.format <- paste0(data.label.format, "%")
+    }
+    x <- checkMatrixNames(x)
+
+    # Transpose if data is the wrong way around
     if (NROW(x) == 1 && NCOL(x) > 1)
         x <- t(x)
-    n <- NROW(x)
-    if (n > 100)
-        stop("Input data containing ", n, " rows is too large to show (maximum 100 rows).")
     if (NCOL(x) > 1)
     {
         warning("Only the first series will be shown.")
-        x <- x[,1]
+        x <- x[,1, drop = FALSE]
     }
-    attr(x, "statistic") <- stat
-    x <- checkMatrixNames(x)[,1]
 
+    n <- NROW(x)
+    if (n > 100)
+        stop("Input data containing ", n, " rows is too large to show (maximum 100 rows).")
 
     # Set default values
     if (is.na(scale))

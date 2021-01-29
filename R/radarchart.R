@@ -115,6 +115,16 @@ Radar <- function(x,
 {
     # Check data
     ErrorIfNotEnoughData(x)
+    if (isPercentData(x))
+    {
+        if (isAutoFormat(y.tick.format))
+            y.tick.format <- paste0(y.tick.format, "%")
+        if (isAutoFormat(y.hovertext.format))
+            y.hovertext.format <- paste0(y.hovertext.format, "%")
+        if (isAutoFormat(data.label.format))
+            data.label.format <- paste0(data.label.format, "%")
+    }
+
     chart.matrix <- checkMatrixNames(x)
     if (any(!is.finite(chart.matrix)))
         stop("Radar charts cannot contain missing or non-finite values.\n")
@@ -175,14 +185,6 @@ Radar <- function(x,
     tick.vals <- seq(from = y.bounds.minimum, to = y.bounds.maximum, by = sum(y.tick.distance, na.rm = TRUE))
     r.max <- abs(y.bounds.maximum - y.bounds.minimum)
 
-    # Extract formatting from d3
-    stat <- attr(x, "statistic")
-    #if (!is.null(stat) && grepl("%)?$", stat))
-    #{
-    #    if (hover.format.function == "") hover.format.function <- ".0%"
-    #    if (tick.format.function == "") tick.format.function <- ".0%"
-    #    if (data.label.format.function == "") data.label.format.function <- ".0%"
-    #}
     hover.format.function <- ifelse(percentFromD3(y.hovertext.format), FormatAsPercent, FormatAsReal)
     tick.format.function <- ifelse(percentFromD3(y.tick.format), FormatAsPercent, FormatAsReal)
     data.label.format.function <- ifelse(percentFromD3(data.label.format), FormatAsPercent, FormatAsReal)

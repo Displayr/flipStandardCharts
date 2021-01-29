@@ -47,6 +47,8 @@ Stream <- function(x,
                    margin.bottom = 30,
                    margin.right = 40)
 {
+    if (isPercentData(x) && isAutoFormat(y.tick.format))
+        y.tick.format <- paste0(y.tick.format, "%")
     if (!is.list(x) && (is.array(x) || is.numeric(x)))
         x <- checkMatrixNames(x)
     else if (is.data.frame(x))

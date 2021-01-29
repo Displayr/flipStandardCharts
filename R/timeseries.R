@@ -66,6 +66,13 @@ TimeSeries <- function(x = NULL,
                     y.hovertext.prefix = y.tick.prefix,
                     y.hovertext.suffix = y.tick.suffix)
 {
+    if (isPercentData(x))
+    {
+        if (isAutoFormat(y.tick.format))
+            y.tick.format <- paste0(y.tick.format, "%")
+        if (isAutoFormat(y.hovertext.format))
+            y.hovertext.format <- paste0(y.hovertext.format, "%")
+    }
 
     if (!is.list(x) && (is.array(x) || is.numeric(x)))
         x <- checkMatrixNames(x)

@@ -93,7 +93,8 @@ GeographicMap <- function(x,
     requireNamespace("sp")
     values.bounds.minimum <- charToNumeric(values.bounds.minimum)
     values.bounds.maximum <- charToNumeric(values.bounds.maximum)
-
+    if (isPercentData(x) && isAutoFormat(values.hovertext.format))
+        values.hovertext.format <- paste0(values.hovertext.format, "%")
     table <- cleanMapInput(checkMatrixNames(x))
 
     # Find map.type from rownames

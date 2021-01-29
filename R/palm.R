@@ -61,6 +61,8 @@ Palm <- function(table,
 {
     ErrorIfNotEnoughData(table)
     stat <- attr(table, "statistic")
+    if (isPercentData(table) && isAutoFormat(y.tick.format))
+        y.tick.format <- paste0(y.tick.format, "%")
     table <- checkMatrixNames(table)
 
     #  Automatic formatting with statistic of '%'

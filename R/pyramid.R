@@ -106,28 +106,33 @@ Pyramid <- function(x,
                     modebar.show = FALSE,
                     bar.gap = 0.15)
 {
-    if (length(dim(x)) > 1)
+    ErrorIfNotEnoughData(x)
+    if (isPercentData(x))
     {
-        if (NROW(x) == 1 && NCOL(x) > 1)
-            x <- t(x)
-        if (NCOL(x) > 1)
-        {
-            warning("'Pyramid' showing only the first column of the input data. ",
-                    "To show multiple series, use Small Multiples or change the chart type to 'Bar'.")
-            x <- x[,1]
-        }
+        if (isAutoFormat(x.tick.format))
+            x.tick.format <- paste0(x.tick.format, "%")
+        if (isAutoFormat(x.hovertext.format))
+            x.hovertext.format <- paste0(x.hovertext.format, "%")
+        if (isAutoFormat(data.label.format))
+            data.label.format <- paste0(data.label.format, "%")
     }
-    ss <- sign(x[is.finite(x)])
+    chart.matrix <- checkMatrixNames(x)
+    if (NROW(chart.matrix) == 1 && NCOL(chart.matrix) > 1)
+       chart.matrix <- t(chart.matrix)
+    if (NCOL(chart.matrix) > 1)
+    {
+        warning("'Pyramid' showing only show a single series. To show multiple series use Small Multiples")
+        chart.matrix <- chart.matrix[,1, drop = FALSE]
+    }
+    ss <- sign(chart.matrix[is.finite(chart.matrix)])
     if (any(ss * ss[1] < 0))
         stop("'Pyramid' charts cannot show a mixture of positive and negative values.")
-    chart.matrix <- checkMatrixNames(x)
     if (bar.gap < 0.0 || bar.gap >= 1.0)
     {
         warning("Parameter 'bar gap' must be between 0 and 1. ",
                 "Invalid 'bar gap' set to default value of 0.15.")
         bar.gap <- 0.15
     }
-
 
     matrix.labels <- names(dimnames(chart.matrix))
     if (nchar(y.title) == 0 && length(matrix.labels) == 2)

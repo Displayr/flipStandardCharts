@@ -421,8 +421,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
         "such as 'Column Comparisons' or 'z-Statistic'.")
     colcmp.names <- colnames(x) # used for column comparisons
 
-    is.pct <- grepl("%", dimnames(x)[[3]][1])
-    if (is.pct)
+    if (isPercentData(x))
     {
         if (isAutoFormat(y.tick.format))
             y.tick.format <- paste0(y.tick.format, "%")

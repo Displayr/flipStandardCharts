@@ -156,6 +156,16 @@ Bar <- function(x,
         bar.gap <- 0.15
     }
     annot.data <- x
+    if (isPercentData(x))
+    {
+        if (isAutoFormat(x.tick.format))
+            x.tick.format <- paste0(x.tick.format, "%")
+        if (isAutoFormat(x.hovertext.format))
+            x.hovertext.format <- paste0(x.hovertext.format, "%")
+        if (isAutoFormat(data.label.format))
+            data.label.format <- paste0(data.label.format, "%")
+    }
+
 
     chart.matrix <- checkMatrixNames(x)
     is.stacked <- grepl("Stacked", type, fixed=T)

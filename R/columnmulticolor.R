@@ -110,6 +110,16 @@ ColumnMultiColor <- function(x,
                     bar.gap = 0.15)
 {
     ErrorIfNotEnoughData(x)
+    if (isPercentData(x))
+    {
+        if (isAutoFormat(y.tick.format))
+            y.tick.format <- paste0(y.tick.format, "%")
+        if (isAutoFormat(y.hovertext.format))
+            y.hovertext.format <- paste0(y.hovertext.format, "%")
+        if (isAutoFormat(data.label.format))
+            data.label.format <- paste0(data.label.format, "%")
+    }
+
     chart.matrix <- checkMatrixNames(x)
     annot.data <- x
     if (NCOL(chart.matrix) > 1)

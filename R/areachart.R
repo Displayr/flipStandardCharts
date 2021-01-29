@@ -159,6 +159,16 @@ Area <- function(x,
 {
     # Data checking
     ErrorIfNotEnoughData(x)
+    if (isPercentData(x))
+    {
+        if (isAutoFormat(y.tick.format))
+            y.tick.format <- paste0(y.tick.format, "%")
+        if (isAutoFormat(y.hovertext.format))
+            y.hovertext.format <- paste0(y.hovertext.format, "%")
+        if (isAutoFormat(data.label.format))
+            data.label.format <- paste0(data.label.format, "%")
+    }
+
     chart.matrix <- checkMatrixNames(x)
     is.stacked <- grepl("Stacked", type, fixed = TRUE)
     if (is.stacked && ncol(chart.matrix) < 2)
