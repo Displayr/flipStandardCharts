@@ -97,7 +97,7 @@ BarPictograph <- function(x,
         warning("Only the first series will be shown.")
         x <- x[,1, drop = FALSE]
     }
-
+    x <- x[,1]
     n <- NROW(x)
     if (n > 100)
         stop("Input data containing ", n, " rows is too large to show (maximum 100 rows).")
