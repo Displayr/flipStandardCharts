@@ -1318,7 +1318,7 @@ decimalsFromD3 <- function(format, default = 0)
 {
     if (length(format) == 0 || format == "")
         return(default)
-    return(Sum(regmatches(format, regexpr("\\d+", format)), remove.missing = FALSE))
+    return(Sum(as.numeric(regmatches(format, regexpr("\\d+", format))), remove.missing = FALSE))
 }
 
 #' Whether to format as percentages based on a d3 format string.
@@ -1523,8 +1523,8 @@ isPercentData <- function(data)
 {
     if (isTRUE(grepl("%", attr(data, "statistic"))))
         return(TRUE)
-    ndim <- length(dim(data))    
-    if (is.null(attr(data, "statistic")) && 
+    ndim <- length(dim(data))
+    if (is.null(attr(data, "statistic")) &&
         isTRUE(grepl("%", dimnames(data)[[ndim]][1])))
         return(TRUE)
     return(FALSE)
