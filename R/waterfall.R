@@ -242,7 +242,7 @@
 #'         stop(paste(type, "requires more than one series. Use Column Chart instead for this data."))
 #'     if (is.stacked && (any(is.na(chart.matrix)) || any(chart.matrix < 0)))
 #'         stop("Stacked charts cannot be produced with missing or negative values.")
-#'     if (is.hundred.percent.stacked && any(rowSums(chart.matrix) == 0))
+#'     if (is.hundred.percent.stacked && any(SumRows(chart.matrix) == 0))
 #'         stop("100% stacked charts cannot be produced with rows that do not contain positive values.")
 #'     if (any(!is.finite(chart.matrix)))
 #'         warning("Missing values have been set to zero.")
