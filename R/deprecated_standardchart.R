@@ -305,6 +305,7 @@
 #' @importFrom flipData GetTidyTwoDimensionalArray
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
+#' @importFrom verbs Sum
 #' @examples
 #' z <- c(5, 6, 2, 1.5, 9, 2.2)
 #' Chart(y = z, type = "Area")
@@ -1068,7 +1069,7 @@ Chart <-   function(y = NULL,
                  "or a data frame consisting entirely of numerics is required.")
     if (is.data.frame(chart.matrix))
     {
-        if (sum(sapply(chart.matrix, is.numeric)) == ncol(chart.matrix))
+        if (Sum(sapply(chart.matrix, is.numeric), remove.missing = FALSE) == ncol(chart.matrix))
             chart.matrix <- as.matrix(chart.matrix)
         else
             stop(msg)
@@ -1234,12 +1235,12 @@ Chart <-   function(y = NULL,
         title.nline <- 0
         if (nchar(title) > 0)
         {
-            title.nline <- sum(gregexpr("<br>", title)[[1]] > -1) + 1
+            title.nline <- Sum(gregexpr("<br>", title)[[1]] > -1, remove.missing = FALSE) + 1
             margin.top <- margin.top + (title.font.size * title.nline * 1.25)
         }
         if (nchar(subtitle) > 0)
         {
-            subtitle.nline <- sum(gregexpr("<br>", subtitle)[[1]] > -1) + 1.5
+            subtitle.nline <- Sum(gregexpr("<br>", subtitle)[[1]] > -1, remove.missing = FALSE) + 1.5
             margin.top <- margin.top + (subtitle.font.size * subtitle.nline * 1.25)
             subtitle.npad <- max(0, round(title.nline * subtitle.font.size/title.font.size * 0.9))
             subtitle <- paste0(paste(rep("<br>", subtitle.npad), collapse=""), subtitle)
@@ -1251,13 +1252,13 @@ Chart <-   function(y = NULL,
                          else 20
         if (nchar(x.title) > 0 && type != "Radar")
         {
-            x.title.nline <- sum(gregexpr("<br>", x.title)[[1]] > -1) + 1
+            x.title.nline <- Sum(gregexpr("<br>", x.title)[[1]] > -1, remove.missing = FALSE) + 1
             margin.bottom <- margin.bottom + (x.title.font.size * x.title.nline * 1.25)
         }
         if (nchar(footer) > 0)
         {
             footer <- autoFormatLongLabels(footer, wordwrap=footer.wordwrap, n=footer.wordwrap.nchar, truncate=FALSE)
-            footer.nline <- sum(gregexpr("<br>", footer)[[1]] > -1) + 2 + (type == "Radar")
+            footer.nline <- Sum(gregexpr("<br>", footer)[[1]] > -1, remove.missing = FALSE) + 2 + (type == "Radar")
             margin.bottom <- margin.bottom + (footer.font.size * footer.nline * 1.25)
             # footer position cannot be determined until after x-axis labels have been formatted
         }
@@ -1633,7 +1634,7 @@ Chart <-   function(y = NULL,
         lab.len <- if (is.bar.chart) font.asp * y.tick.font.size * lab.nchar
                    else font.asp * x.tick.font.size * lab.nchar
         lab.nline <- if (is.character(x.labels)) max(sapply(gregexpr("<br>", x.labels),
-                         function(x){sum(x > -1)}))
+                         function(x){Sum(x > -1, remove.missing = FALSE)}))
                      else 0
 
         if (is.null(x.tick.angle))
@@ -1673,7 +1674,7 @@ Chart <-   function(y = NULL,
     subtitle.axis <- NULL
     if (nchar(footer) > 0)
     {
-        footer.nline <- sum(gregexpr("<br>", footer)[[1]] > -1) + 1
+        footer.nline <- Sum(gregexpr("<br>", footer)[[1]] > -1, remove.missing = FALSE) + 1
         footer.npad <- max(0, ceiling(margin.bottom/footer.font.size/1.25) - footer.nline - 2)
         footer <- paste0(paste(rep("<br>", footer.npad), collapse=""), footer)
         footer.axis <- list(overlaying="x", side = "bottom", anchor="free", position=0,

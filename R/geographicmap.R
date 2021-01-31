@@ -50,6 +50,7 @@
 #' data <- seq(4)
 #' names(data) <- c("France", "China", "Brazil", "Canada")
 #' GeographicMap(data)
+#' @importFrom verbs Sum
 #' @export
 GeographicMap <- function(x,
                           country,
@@ -245,8 +246,8 @@ GeographicMap <- function(x,
     coords.names <- tolower(coords[[structure]])
     incorrect.names <- !tolower(rownames(table)) %in% coords.names
 
-    if (sum(incorrect.names) > 0.75 * nrow(table))
-        warning(paste0(sum(incorrect.names), " rows of the input data were not matched with",
+    if (Sum(incorrect.names, remove.missing = FALSE) > 0.75 * nrow(table))
+        warning(paste0(Sum(incorrect.names, remove.missing = FALSE), " rows of the input data were not matched with",
                        " geographic entity names. Please check that the data you are plotting is one of:",
                        " countries; states of a country; continents; US regions; or US, UK or Australian zip codes."))
     if (any(incorrect.names))

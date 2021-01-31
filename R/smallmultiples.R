@@ -32,6 +32,7 @@
 #' @importFrom plotly subplot
 #' @importFrom abind abind
 #' @importFrom flipU CollectWarnings
+#' @importFrom verbs Sum
 #' @examples
 #' x <- matrix(1:21, 7, 3, dimnames = list(letters[1:7], LETTERS[1:3]))
 #' SmallMultiples(x, "Column", colors=c("red","green","blue"))
@@ -128,10 +129,10 @@ SmallMultiples <- function(x,
 
     if (chart.type == "Scatter")
     {
-        if (sum(scatter.groups.column, na.rm = TRUE) <= 0)
+        if (Sum(scatter.groups.column) <= 0)
             scatter.groups.column <- NCOL(x)
 
-        if (sum(scatter.groups.column, na.rm = TRUE) <= 0 || NCOL(x) < scatter.groups.column)
+        if (Sum(scatter.groups.column) <= 0 || NCOL(x) < scatter.groups.column)
             scatter.groups.column <- NCOL(x)
         if (isTRUE(unname(scatter.colors.column == scatter.groups.column)))
             scatter.colors.column <- 0
@@ -245,11 +246,11 @@ SmallMultiples <- function(x,
 
     # Layout and positioning
     if (is.null(margin.top) || is.na(margin.top))
-        margin.top <- 20 + title.font.size * (sum(nchar(title) > 0, na.rm = TRUE))
+        margin.top <- 20 + title.font.size * (Sum(nchar(title) > 0))
     if (is.null(margin.bottom) || is.na(margin.bottom))
-        margin.bottom <- 30 + x.title.font.size * (sum(nchar(x.title) > 0, na.rm = TRUE))
+        margin.bottom <- 30 + x.title.font.size * (Sum(nchar(x.title) > 0))
     if (is.null(margin.left) || is.na(margin.left))
-        margin.left <- 30 + y.title.font.size * (sum(nchar(y.title) > 0, na.rm = TRUE))
+        margin.left <- 30 + y.title.font.size * (Sum(nchar(y.title) > 0))
     if (is.null(margin.right) || is.na(margin.right))
         margin.right <- 20
 
@@ -313,11 +314,11 @@ SmallMultiples <- function(x,
             scatter.sizes.column > 0 && scatter.sizes.column <= NCOL(x))
         {
             notNA.ind <- 1:nrow(x)
-            if (sum(scatter.x.column, na.rm = TRUE) > 0)
+            if (Sum(scatter.x.column) > 0)
                 notNA.ind <- intersect(notNA.ind, which(!is.na(x[,scatter.x.column])))
-            if (sum(scatter.y.column, na.rm = TRUE) > 0)
+            if (Sum(scatter.y.column) > 0)
                 notNA.ind <- intersect(notNA.ind, which(!is.na(x[,scatter.y.column])))
-            if (sum(scatter.colors.column, na.rm = TRUE) > 0)
+            if (Sum(scatter.colors.column) > 0)
                 notNA.ind <- intersect(notNA.ind, which(!is.na(x[,scatter.colors.column])))
             sc.tmp <- abs(AsNumeric(x[notNA.ind, scatter.sizes.column], binary = FALSE))
             sz.min <- min(sc.tmp, na.rm = TRUE)
@@ -549,7 +550,7 @@ SmallMultiples <- function(x,
     margins <- list(l = margin.left, r = margin.right, b = margin.bottom, t = margin.top)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
-    if (sum(nchar(subtitle)) > 0)
+    if (Sum(nchar(subtitle), remove.missing = FALSE) > 0)
         subtitle <- paste0(subtitle, "<br>&nbsp;<br>")
     annotations <- list(setSubtitle(subtitle, subtitle.font, margins),
                         setTitle(title, title.font, margins),

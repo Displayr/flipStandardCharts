@@ -187,7 +187,7 @@ LabeledScatter <- function(x = NULL,
             scatter.labels <- rownames(x)
         if (is.null(y) && .isValidColumnIndex(scatter.y.column))
         {
-            if (sum(nchar(y.title), na.rm = TRUE) == 0 && !is.null(colnames(x)) && !scatter.mult.yvals)
+            if (Sum(nchar(y.title)) == 0 && !is.null(colnames(x)) && !scatter.mult.yvals)
                 y.title <- colnames(x)[scatter.y.column]
             y <- x[,scatter.y.column]
         }
@@ -203,7 +203,7 @@ LabeledScatter <- function(x = NULL,
                 scatter.colors.name <- colnames(x)[scatter.colors.column]
             scatter.colors <- x[,scatter.colors.column]
         }
-        if (sum(nchar(x.title), na.rm = TRUE) == 0 && (!is.null(colnames(x))) &&
+        if (Sum(nchar(x.title)) == 0 && (!is.null(colnames(x))) &&
             .isValidColumnIndex(scatter.x.column) && !scatter.mult.yvals)
             x.title <- colnames(x)[scatter.x.column]
         if (!.isValidColumnIndex(scatter.x.column))
@@ -221,18 +221,18 @@ LabeledScatter <- function(x = NULL,
     if (is.null(x))
     {
         x <- rep(0, length(y))
-        if (sum(nchar(x.bounds.minimum)) == 0)
+        if (Sum(nchar(x.bounds.minimum), remove.missing = FALSE) == 0)
             x.bounds.minimum = -0.25
-        if (sum(nchar(x.bounds.maximum)) == 0)
+        if (Sum(nchar(x.bounds.maximum), remove.missing = FALSE) == 0)
             x.bounds.maximum = 0.25
     }
     n <- length(x)
     if (is.null(y))
     {
         y <- rep(0, n)
-        if (sum(nchar(y.bounds.minimum)) == 0)
+        if (Sum(nchar(y.bounds.minimum), remove.missing = FALSE) == 0)
             y.bounds.minimum = -0.25
-        if (sum(nchar(y.bounds.maximum)) == 0)
+        if (Sum(nchar(y.bounds.maximum), remove.missing = FALSE) == 0)
             y.bounds.maximum = 0.25
     }
     if (swap.x.and.y)
@@ -253,7 +253,7 @@ LabeledScatter <- function(x = NULL,
     x.not.na <- if (is.numeric(x)) is.finite(x) else !is.na(x)
     y.not.na <- if (is.numeric(y)) is.finite(y) else !is.na(y)
     not.na <- x.not.na & y.not.na
-    if (sum(not.na) != n)
+    if (Sum(not.na, remove.missing = FALSE) != n)
         warning("Data points with missing values have been omitted.")
 
     n <- length(x)
@@ -289,7 +289,7 @@ LabeledScatter <- function(x = NULL,
             not.na <- not.na & is.finite(scatter.colors)
         }
     }
-    if (sum(not.na) == 0)
+    if (Sum(not.na, remove.missing = FALSE) == 0)
         stop("No non-NA points to plot.")
     not.na <- which(not.na) # indexing makes re-ordering easier later
     if (is.finite(scatter.max.labels) && scatter.max.labels < 0)
@@ -366,7 +366,7 @@ LabeledScatter <- function(x = NULL,
     }
     if (!is.null(logo.urls))
         lab.tidy <- logo.urls
-    .isEmptyName <- function(x) { sum(nchar(trimws(x)), na.rm = TRUE) == 0 }
+    .isEmptyName <- function(x) { Sum(nchar(trimws(x))) == 0 }
     if (length(footer) == 0 || nchar(footer) == 0)
     {
         footer <- ""
@@ -378,7 +378,7 @@ LabeledScatter <- function(x = NULL,
             footer <- sprintf("%sArea of points are proportional to absolute value of '%s'; ",
                               footer, scatter.sizes.name)
     }
-    if (sum(nchar(footer)) > 0 && footer != " ")
+    if (Sum(nchar(footer), remove.missing = FALSE) > 0 && footer != " ")
         footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
 
     # Convert axis to the appropriate type based on axis values and tick format

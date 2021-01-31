@@ -24,6 +24,7 @@
 #' @importFrom flipU IsRServer
 #' @importFrom xts xts
 #' @importFrom htmlwidgets onRender
+#' @importFrom verbs Sum
 #' @export
 TimeSeries <- function(x = NULL,
                     range.bars = FALSE,
@@ -188,7 +189,7 @@ TimeSeries <- function(x = NULL,
     dg <- dyLegend(dg, labelsSeparateLines = tolower(substr(legend.orientation,1,1)) == "v")
 
     top.offset <- 0
-    if (sum(nchar(title), na.rm = TRUE) > 0)
+    if (Sum(nchar(title)) > 0)
         top.offset <- title.font.size + hovertext.font.size
 
     width.constraint <- ""
@@ -218,7 +219,7 @@ TimeSeries <- function(x = NULL,
 tickFormat  <- function(format.str, prefix, suffix, default.medium.values = TRUE)
 {
     # Avoid showing 200 in scientific notation
-    if (sum(nchar(format.str), na.rm = TRUE) == 0 && default.medium.values)
+    if (Sum(nchar(format.str)) == 0 && default.medium.values)
         format.str <- ".0f"
 
     # Set decimal places if none supplied

@@ -36,6 +36,7 @@
 #' @importFrom flipTransformations AsNumeric ParseText
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
+#' @importFrom verbs Sum
 #' @export
 Scatter <- function(x = NULL,
                          y = NULL,
@@ -222,9 +223,9 @@ Scatter <- function(x = NULL,
         if (nchar(x.tick.format) == 0 || grepl("[0-9]$", x.tick.format))
             x.tick.format = paste0(x.tick.format, "%")
     }
-    if (sum(nchar(x.hovertext.format)) == 0)
+    if (Sum(nchar(x.hovertext.format), remove.missing = FALSE) == 0)
         x.hovertext.format <- x.tick.format
-    if (sum(nchar(y.hovertext.format)) == 0)
+    if (Sum(nchar(y.hovertext.format), remove.missing = FALSE) == 0)
         y.hovertext.format <- y.tick.format
     warning.prefix <- if (!is.null(small.mult.index)) paste0("Chart ", small.mult.index, ": ") else ""
 
@@ -257,7 +258,7 @@ Scatter <- function(x = NULL,
             scatter.labels <- rownames(x)
         if (is.null(y) && .isValidColumnIndex(scatter.y.column))
         {
-            if (sum(nchar(y.title), na.rm = TRUE) == 0 && !is.null(colnames(x)) && !scatter.mult.yvals)
+            if (Sum(nchar(y.title)) == 0 && !is.null(colnames(x)) && !scatter.mult.yvals)
                 y.title <- colnames(x)[scatter.y.column]
             y <- x[,scatter.y.column]
         }
@@ -273,7 +274,7 @@ Scatter <- function(x = NULL,
                 scatter.colors.name <- colnames(x)[scatter.colors.column]
             scatter.colors <- x[,scatter.colors.column]
         }
-        if (sum(nchar(x.title), na.rm = TRUE) == 0 && (!is.null(colnames(x))) &&
+        if (Sum(nchar(x.title)) == 0 && (!is.null(colnames(x))) &&
             .isValidColumnIndex(scatter.x.column) && !scatter.mult.yvals)
             x.title <- colnames(x)[scatter.x.column]
         if (!.isValidColumnIndex(scatter.x.column))
@@ -330,7 +331,7 @@ Scatter <- function(x = NULL,
 
     # Remove NAs
     not.na <- !is.na(x) & !is.na(y)
-    if (sum(not.na) != n)
+    if (Sum(not.na, remove.missing = FALSE) != n)
         warning(warning.prefix, "Data points with missing values have been omitted.")
     n <- length(x)
     if (!is.null(scatter.sizes))
@@ -359,7 +360,7 @@ Scatter <- function(x = NULL,
         groups <- rep("Series 1", n)
     }
 
-    if (sum(not.na) == 0)
+    if (Sum(not.na, remove.missing = FALSE) == 0)
         stop("No non-NA points to plot.")
     if (any(not.na))
     {
@@ -375,7 +376,7 @@ Scatter <- function(x = NULL,
             scatter.colors <- scatter.colors[which(not.na)]
     }
 
-    n <- sum(not.na)
+    n <- Sum(not.na, remove.missing = FALSE)
     if (!is.null(scatter.sizes))
     {
         sz.tmp <- abs(AsNumeric(scatter.sizes, binary = FALSE))
@@ -500,7 +501,7 @@ Scatter <- function(x = NULL,
 
 
     # hovertext
-    .isEmptyName <- function(x) { sum(nchar(trimws(x)), na.rm = TRUE) == 0 }
+    .isEmptyName <- function(x) { Sum(nchar(trimws(x))) == 0 }
     source.text <- paste0(scatter.labels, " (", formatByD3(x, x.hovertext.format, x.tick.prefix, x.tick.suffix), ", ",
                           formatByD3(y, y.hovertext.format, y.tick.prefix, y.tick.suffix), ")")
     source.text <- trimws(source.text)

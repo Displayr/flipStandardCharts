@@ -145,6 +145,7 @@
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict sd
 #' @importFrom flipTransformations AsNumeric
+#' @importFrom verbs Sum
 #' @export
 Distribution <-   function(x,
     weights = NULL,
@@ -312,7 +313,7 @@ Distribution <-   function(x,
             warning("Means, medians, quartiles, and values, will often cause problems when added to a box plot (as the box plot already shows this information).")
     }
     # Titles and footers
-    if (sum(nchar(values.title), na.rm = TRUE) == 0)
+    if (Sum(nchar(values.title)) == 0)
         values.title.font.size = 0
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
     subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
@@ -323,7 +324,7 @@ Distribution <-   function(x,
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate = FALSE)
 
     # Work out margin spacing
-    labels.nline <- max(sapply(gregexpr("<br>", labels), function(x){sum(x > -1)}), na.rm = TRUE) + 1
+    labels.nline <- max(sapply(gregexpr("<br>", labels), function(x){Sum(x > -1, remove.missing = FALSE)}), na.rm = TRUE) + 1
     if (vertical)
         margins <- list(t = 20, b = 40 + categories.tick.font.size * labels.nline, r = 60,
                         l = 60 + values.title.font.size, pad = 0)
@@ -567,7 +568,7 @@ createWeights <- function(x, weights)
     rep(list(weights), length(x))
     # group.sizes <- sapply(x, length)
     # if (is.null(weights))
-    #     weights <- rep(1, sum(group.sizes))
+    #     weights <- rep(1, Sum(group.sizes))
     # groups <- rep(1:length(x), group.sizes)
     # tapply(weights, groups, c)
 }

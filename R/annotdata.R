@@ -1,5 +1,6 @@
 
 # This is only used for Bar/Column type charts
+#' @importFrom verbs Sum
 addDataLabelAnnotations <- function(p, type, name, data.label.xpos, data.label.ypos,
         data.label.show, data.label.text, data.label.sign, 
         annotation.list, annot.data, i,
@@ -61,8 +62,8 @@ addDataLabelAnnotations <- function(p, type, name, data.label.xpos, data.label.y
             tmp.dat <- getAnnotData(annot.data, a.tmp$data, i)
             ind.sel <- extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype)
             tmp.text <- rep("", n)
-            left.pad <- paste(rep(" ", sum(a.tmp$shiftright, na.rm = TRUE)), collapse = "")
-            right.pad <- paste(rep(" ", sum(a.tmp$shiftleft, na.rm = TRUE)), collapse = "")
+            left.pad <- paste(rep(" ", Sum(a.tmp$shiftright)), collapse = "")
+            right.pad <- paste(rep(" ", Sum(a.tmp$shiftleft)), collapse = "")
             tmp.text[ind.sel] <- paste0(left.pad, switch(a.tmp$type,
                 "Circle - thick outline" = "<b>&#11096;</b>",
                 "Circle - thin outline" = "&#11096;",
@@ -141,13 +142,14 @@ extractSelectedAnnot <- function(data, threshold, threstype)
         return(which(data < threshold))
 }
 
+#' @importFrom verbs Sum
 addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat)
 {
     # Fix font size so that the units do not change in size when the font size increases
     left.pad <- ""
-    if (sum(annotation$shiftright, na.rm = TRUE) > 0)
+    if (Sum(annotation$shiftright) > 0)
         left.pad <- paste0("<span style='font-size: 2px'>",
-                    paste(rep(" ", sum(annotation$shiftright, na.rm = TRUE)), collapse = ""),
+                    paste(rep(" ", Sum(annotation$shiftright)), collapse = ""),
                     "</span>")
 
     if (annotation$type == "Shadow")

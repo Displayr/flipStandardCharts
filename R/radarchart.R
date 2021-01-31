@@ -23,6 +23,7 @@
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom plotly plot_ly layout config
 #' @importFrom flipFormat FormatAsReal
+#' @importFrom verbs Sum
 #' @export
 Radar <- function(x,
                     title = "",
@@ -182,7 +183,7 @@ Radar <- function(x,
         mult <- max(1, floor((abs(y.diff)/base)/5))
         y.tick.distance <- sign(y.diff) * base * mult
     }
-    tick.vals <- seq(from = y.bounds.minimum, to = y.bounds.maximum, by = sum(y.tick.distance, na.rm = TRUE))
+    tick.vals <- seq(from = y.bounds.minimum, to = y.bounds.maximum, by = Sum(y.tick.distance))
     r.max <- abs(y.bounds.maximum - y.bounds.minimum)
 
     hover.format.function <- ifelse(percentFromD3(y.hovertext.format), FormatAsPercent, FormatAsReal)
@@ -229,7 +230,7 @@ Radar <- function(x,
     g.list <- unique(pos$Group)
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate = FALSE)
     margins <- list(b = 20, l = 0, r = 0, t = 20, inner = 0)
-    if (sum(nchar(subtitle)) > 0)
+    if (Sum(nchar(subtitle), remove.missing = FALSE) > 0)
         subtitle <- paste0("<br>&nbsp;", subtitle, "<br>&nbsp;") # extra vertical space
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)

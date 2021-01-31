@@ -69,6 +69,7 @@
 #' @param font.unit Set to 'pt' (default) to get font sizing consistent with textboxes.
 #' Otherwise fonts will be taken to be specified in pixels.
 #' @importFrom plotly plot_ly config layout add_trace
+#' @importFrom verbs Sum
 #' @examples
 #' xx <- rnorm(10)
 #' Sparkline(xx, background.fill.color = "black", background.fill.opacity = 1)
@@ -178,9 +179,9 @@ Sparkline <- function(x,
         line.color <- fill.color
         line.opacity <- fill.opacity
     }
-	if (sum(nchar(y.tick.format)) == 0 || grepl("[0-9]$", y.tick.format))
+	if (Sum(nchar(y.tick.format), remove.missing = FALSE) == 0 || grepl("[0-9]$", y.tick.format))
 		y.tick.format <- if (data.is.percent) paste0(y.tick.format, "%") else paste0(y.tick.format, "f")
-	if (sum(nchar(hover.format)) == 0 || grepl("[0-9]$", hover.format))
+	if (Sum(nchar(hover.format), remove.missing = FALSE) == 0 || grepl("[0-9]$", hover.format))
 		hover.format <- if (data.is.percent) paste0(hover.format, "%") else paste0(hover.format, "f")
 
     if (tolower(font.unit) %in% c("pt", "point", "points"))

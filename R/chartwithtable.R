@@ -46,6 +46,7 @@
 #' @param ... Extra arguments passed to the charting function
 #' @inherit Column
 #' @importFrom plotly subplot
+#' @importFrom verbs Sum
 #' @export
 ChartWithTable <- function(x,
                            table,
@@ -186,7 +187,7 @@ ChartWithTable <- function(x,
                     margin.right, 0)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
-    if (sum(nchar(subtitle)) > 0)
+    if (Sum(nchar(subtitle), remove.missing = FALSE) > 0)
         subtitle <- paste0("<br>&nbsp;<br>", subtitle)
     annotations <- list(setSubtitle(subtitle, subtitle.font, margins),
                         setTitle(title, title.font, margins),
