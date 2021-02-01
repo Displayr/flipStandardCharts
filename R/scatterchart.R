@@ -331,7 +331,7 @@ Scatter <- function(x = NULL,
 
     # Remove NAs
     not.na <- !is.na(x) & !is.na(y)
-    if (Sum(not.na, remove.missing = FALSE) != n)
+    if (!all(not.na))
         warning(warning.prefix, "Data points with missing values have been omitted.")
     n <- length(x)
     if (!is.null(scatter.sizes))
@@ -360,7 +360,7 @@ Scatter <- function(x = NULL,
         groups <- rep("Series 1", n)
     }
 
-    if (Sum(not.na, remove.missing = FALSE) == 0)
+    if (all(!not.na))
         stop("No non-NA points to plot.")
     if (any(not.na))
     {
@@ -376,7 +376,7 @@ Scatter <- function(x = NULL,
             scatter.colors <- scatter.colors[which(not.na)]
     }
 
-    n <- Sum(not.na, remove.missing = FALSE)
+    n <- sum(not.na)
     if (!is.null(scatter.sizes))
     {
         sz.tmp <- abs(AsNumeric(scatter.sizes, binary = FALSE))

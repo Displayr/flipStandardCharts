@@ -253,7 +253,7 @@ LabeledScatter <- function(x = NULL,
     x.not.na <- if (is.numeric(x)) is.finite(x) else !is.na(x)
     y.not.na <- if (is.numeric(y)) is.finite(y) else !is.na(y)
     not.na <- x.not.na & y.not.na
-    if (Sum(not.na, remove.missing = FALSE) != n)
+    if (!all(not.na))
         warning("Data points with missing values have been omitted.")
 
     n <- length(x)
@@ -289,7 +289,7 @@ LabeledScatter <- function(x = NULL,
             not.na <- not.na & is.finite(scatter.colors)
         }
     }
-    if (Sum(not.na, remove.missing = FALSE) == 0)
+    if (all(!not.na))
         stop("No non-NA points to plot.")
     not.na <- which(not.na) # indexing makes re-ordering easier later
     if (is.finite(scatter.max.labels) && scatter.max.labels < 0)
