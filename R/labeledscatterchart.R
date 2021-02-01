@@ -136,7 +136,7 @@ LabeledScatter <- function(x = NULL,
         ErrorIfNotEnoughData(x, require.tidy = FALSE)
 
     logo.urls <- NULL
-    if (!is.null(logos) && any(nchar(logos) != 0))
+    if (!is.null(logos) && any(nzchar(logos) != 0))
     {
         logo.urls <- try(TextAsVector(logos))
         if (inherits(logo.urls, "try-error"))
@@ -187,7 +187,7 @@ LabeledScatter <- function(x = NULL,
             scatter.labels <- rownames(x)
         if (is.null(y) && .isValidColumnIndex(scatter.y.column))
         {
-            if (Sum(nchar(y.title)) == 0 && !is.null(colnames(x)) && !scatter.mult.yvals)
+            if (!any(nzchar(y.title)) && !is.null(colnames(x)) && !scatter.mult.yvals)
                 y.title <- colnames(x)[scatter.y.column]
             y <- x[,scatter.y.column]
         }
@@ -203,7 +203,7 @@ LabeledScatter <- function(x = NULL,
                 scatter.colors.name <- colnames(x)[scatter.colors.column]
             scatter.colors <- x[,scatter.colors.column]
         }
-        if (Sum(nchar(x.title)) == 0 && (!is.null(colnames(x))) &&
+        if (!any(nzchar(x.title)) && (!is.null(colnames(x))) &&
             .isValidColumnIndex(scatter.x.column) && !scatter.mult.yvals)
             x.title <- colnames(x)[scatter.x.column]
         if (!.isValidColumnIndex(scatter.x.column))
@@ -221,18 +221,18 @@ LabeledScatter <- function(x = NULL,
     if (is.null(x))
     {
         x <- rep(0, length(y))
-        if (Sum(nchar(x.bounds.minimum), remove.missing = FALSE) == 0)
+        if (!any(nzchar(x.bounds.minimum)))
             x.bounds.minimum = -0.25
-        if (Sum(nchar(x.bounds.maximum), remove.missing = FALSE) == 0)
+        if (!any(nzchar(x.bounds.maximum)))
             x.bounds.maximum = 0.25
     }
     n <- length(x)
     if (is.null(y))
     {
         y <- rep(0, n)
-        if (Sum(nchar(y.bounds.minimum), remove.missing = FALSE) == 0)
+        if (!any(nzchar(y.bounds.minimum)))
             y.bounds.minimum = -0.25
-        if (Sum(nchar(y.bounds.maximum), remove.missing = FALSE) == 0)
+        if (!any(nzchar(y.bounds.maximum)))
             y.bounds.maximum = 0.25
     }
     if (swap.x.and.y)
@@ -366,7 +366,7 @@ LabeledScatter <- function(x = NULL,
     }
     if (!is.null(logo.urls))
         lab.tidy <- logo.urls
-    .isEmptyName <- function(x) { Sum(nchar(trimws(x))) == 0 }
+    .isEmptyName <- function(x) !any(nzchar(trimws(x)))
     if (length(footer) == 0 || nchar(footer) == 0)
     {
         footer <- ""
@@ -378,7 +378,7 @@ LabeledScatter <- function(x = NULL,
             footer <- sprintf("%sArea of points are proportional to absolute value of '%s'; ",
                               footer, scatter.sizes.name)
     }
-    if (Sum(nchar(footer), remove.missing = FALSE) > 0 && footer != " ")
+    if (any(nzchar(footer)) && footer != " ")
         footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
 
     # Convert axis to the appropriate type based on axis values and tick format

@@ -36,7 +36,6 @@
 #' @importFrom flipTransformations AsNumeric ParseText
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
-#' @importFrom verbs Sum
 #' @export
 Scatter <- function(x = NULL,
                          y = NULL,
@@ -223,9 +222,9 @@ Scatter <- function(x = NULL,
         if (nchar(x.tick.format) == 0 || grepl("[0-9]$", x.tick.format))
             x.tick.format = paste0(x.tick.format, "%")
     }
-    if (Sum(nchar(x.hovertext.format), remove.missing = FALSE) == 0)
+    if (!any(nzchar(x.hovertext.format)))
         x.hovertext.format <- x.tick.format
-    if (Sum(nchar(y.hovertext.format), remove.missing = FALSE) == 0)
+    if (!any(nzchar(y.hovertext.format)))
         y.hovertext.format <- y.tick.format
     warning.prefix <- if (!is.null(small.mult.index)) paste0("Chart ", small.mult.index, ": ") else ""
 
@@ -258,7 +257,7 @@ Scatter <- function(x = NULL,
             scatter.labels <- rownames(x)
         if (is.null(y) && .isValidColumnIndex(scatter.y.column))
         {
-            if (Sum(nchar(y.title)) == 0 && !is.null(colnames(x)) && !scatter.mult.yvals)
+            if (!any(nzchar(y.title)) && !is.null(colnames(x)) && !scatter.mult.yvals)
                 y.title <- colnames(x)[scatter.y.column]
             y <- x[,scatter.y.column]
         }
@@ -274,7 +273,7 @@ Scatter <- function(x = NULL,
                 scatter.colors.name <- colnames(x)[scatter.colors.column]
             scatter.colors <- x[,scatter.colors.column]
         }
-        if (Sum(nchar(x.title)) == 0 && (!is.null(colnames(x))) &&
+        if (!any(nzchar(x.title)) && (!is.null(colnames(x))) &&
             .isValidColumnIndex(scatter.x.column) && !scatter.mult.yvals)
             x.title <- colnames(x)[scatter.x.column]
         if (!.isValidColumnIndex(scatter.x.column))
@@ -684,7 +683,7 @@ Scatter <- function(x = NULL,
                     annot.text[ind.sel] <- addAnnotToDataLabel(annot.text[ind.sel], a.tmp, tmp.dat[ind.sel])
             }
         }
-        if (any(nchar(annot.text) > 0))
+        if (any(nzchar(annot.text) > 0))
             p <- add_trace(p, x = x[ind], y = y[ind], showlegend = FALSE, cliponaxis = FALSE,
                    type = "scatter", mode = "markers+text", hoverinfo = "skip",
                    marker = list(size = pmax(1.0, tmp.size - 7), sizemode = "diameter", color = "transparent",

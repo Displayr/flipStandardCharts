@@ -187,7 +187,7 @@ ChartWithTable <- function(x,
                     margin.right, 0)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
-    if (Sum(nchar(subtitle), remove.missing = FALSE) > 0)
+    if (any(nzchar(subtitle)))
         subtitle <- paste0("<br>&nbsp;<br>", subtitle)
     annotations <- list(setSubtitle(subtitle, subtitle.font, margins),
                         setTitle(title, title.font, margins),

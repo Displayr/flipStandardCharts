@@ -848,7 +848,7 @@ Chart <-   function(y = NULL,
             if (length(logo.urls) != logo.required.length)
                 stop(sprintf("Number of URLs supplied in logos is %d but must be equal to the number of %s in the table (%d)\n",
                              length(logo.urls), ifelse(transpose, "columns", "rows"), logo.required.length))
-            if (any(nchar(logo.urls) == 0))
+            if (any(nzchar(logo.urls) == 0))
                 stop("Logos cannot be an empty string\n")
             if (num.tables > 1)
                 logo.urls <- rep(logo.urls, num.tables)

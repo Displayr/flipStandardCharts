@@ -621,7 +621,6 @@ setDateTickDistance <- function(date.labels, num.maxticks)
     return(NULL)
 }
 
-#' @importFrom verbs Sum
 setAxis <- function(title, side, axisLabels, titlefont,
                     linecolor, linewidth, gridwidth, gridcolor,
                     ticks, tickfont, tickangle, ticklen, tickdistance,
@@ -635,7 +634,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
     if (!tickshow)
         tickfont$size <- 0
 
-    if (!is.null(labels) && any(!is.na(labels)) && any(nchar(labels) > 0) &&
+    if (!is.null(labels) && any(!is.na(labels)) && any(nzchar(labels) > 0) &&
          is.null(tickangle) && side %in% c("bottom", "top"))
     {
         lab.nchar <- max(c(0, nchar(unlist(strsplit(split = "<br>", as.character(labels))))), na.rm = TRUE)
@@ -735,7 +734,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
         !(length(axisLabels$labels) == 1 && is.numeric(axisLabels$labels)))
         nticks <- min(length(axisLabels$labels) + 1, 11)
 
-    if (Sum(nchar(title), remove.missing = FALSE) > 0)
+    if (any(nzchar(title)))
         title <- list(text = title, font = titlefont)
     else
         title <- NULL
@@ -809,7 +808,7 @@ setMarginsForAxis <- function(margins, labels, axis)
         new.margin <- lab.len
 
     title.nline <- 0
-    if (Sum(nchar(axis$title), remove.missing = FALSE) > 0 && axis$title != " ")
+    if (any(nzchar(axis$title)) > 0 && axis$title != " ")
         title.nline <- Sum(gregexpr("<br>", axis$title)[[1]] > -1, remove.missing = FALSE) + 1
     title.pad <- max(0, axis$title$font$size) * title.nline * 1.25
 
@@ -892,30 +891,27 @@ setCustomMargins <- function(margins, margin.top, margin.bottom, margin.left,
 # in plotly to create an annotation. The allowed names of the
 # components in the list are described in
 # https://plotly.com/r/reference/layout/annotations/
-#' @importFrom verbs Sum
 setTitle <- function(title, title.font, margins)
 {
-    if (Sum(nchar(title), remove.missing = FALSE) == 0)
+    if (!any(nzchar(title)))
         return(NULL)
     return(list(text = title, font = title.font,
                 xref = "paper", x = 0.5, yshift = margins$t * 0.5,
                 yref = "paper", y = 1.0, yanchor = "middle", showarrow = FALSE))
 }
 
-#' @importFrom verbs Sum
 setSubtitle <- function(subtitle, subtitle.font, margins)
 {
-    if (Sum(nchar(subtitle), remove.missing = FALSE) == 0)
+    if (!any(nzchar(subtitle)))
         return(NULL)
     return(list(text = subtitle, font = subtitle.font,
                 xref = "paper", x = 0.5, #xshift = (margins$r - margins$l)/2,
                 yref = "paper", y = 1.0, yanchor = "bottom", showarrow = FALSE))
 }
 
-#' @importFrom verbs Sum
 setFooter <- function(footer, footer.font, margins, x.align = "center")
 {
-    if (Sum(nchar(footer), remove.missing = FALSE) == 0)
+    if (!any(nzchar(footer)))
         return(NULL)
     xpos <- switch(x.align, center = 0.5, left = 0, right = 1)
 
@@ -1342,7 +1338,6 @@ percentFromD3 <- function(format)
 #' @param prefix Optional string to prepend to output
 #' @param suffix Optional string to append to output
 #' @param decimals Default number of decimals shown; used if not specified in \code{format}
-#' @importFrom verbs Sum
 formatByD3 <- function(x, format, prefix = "", suffix = "", percent = FALSE, decimals = 2)
 {
     n <- length(x)
@@ -1367,7 +1362,7 @@ formatByD3 <- function(x, format, prefix = "", suffix = "", percent = FALSE, dec
 
         if (percentFromD3(format) || percent)
             x.str <- paste0(formatC(x*100, format = "f", digits = decimalsFromD3(format, 0), big.mark = big.mark), "%")
-        else if (Sum(nchar(tmp.fmt)) == 0 || tmp.fmt == "f")
+        else if (!any(nzchar(tmp.fmt)) || tmp.fmt == "f")
             x.str <- FormatAsReal(x, decimals = decimalsFromD3(format, decimals), comma.for.thousands = use.comma)
         else
             x.str <- formatC(x, format = tmp.fmt, digits = decimalsFromD3(format, decimals), big.mark = big.mark)
@@ -1394,14 +1389,13 @@ commaFromD3 <- function(format)
 # Gives a warning if the axis.type is incompatible
 # Will also specify a numeric format if none is supplied
 # convert is only used by LabeledScatter
-#' @importFrom verbs Sum
 checkD3Format <- function(format, axis.type, warning.type = "Axis label", convert = FALSE)
 {
     # This is to avoid LabeledScatter's problem with date formatting
     if (convert && axis.type == "date" && Sum(nchar(format)) == 0)
         return("%b %d %Y")
 
-    if (Sum(nchar(format)) == 0)
+    if (!any(nzchar(format)))
         return("")
     if (substr(format, nchar(format), nchar(format)) %in% c("", 0:9)) # automatic formatting
     {

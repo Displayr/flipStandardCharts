@@ -313,7 +313,7 @@ Distribution <-   function(x,
             warning("Means, medians, quartiles, and values, will often cause problems when added to a box plot (as the box plot already shows this information).")
     }
     # Titles and footers
-    if (Sum(nchar(values.title)) == 0)
+    if (!any(nzchar(values.title)))
         values.title.font.size = 0
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
     subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
