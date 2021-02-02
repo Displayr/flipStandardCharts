@@ -176,6 +176,10 @@ addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat)
             new.text <- "&#129049;"
         else if (annotation$type == "Arrow - down")
             new.text <- "&#129051;"
+        else if (annotation$type == "Caret - up")
+            new.text <- "&#9650;"
+        else if (annotation$type == "Caret - down")
+            new.text <- "&#9660;"
         else if (grepl("Text", annotation$type))
             new.text <- formatByD3(tmp.dat, annotation$format, annotation$prefix, annotation$suffix)
         else if (annotation$type == "Hide")
@@ -224,6 +228,7 @@ checkAnnotType <- function(annot.type, chart.type)
     # These annotation types are implemented for all charts 
     # which support annotations e.g. Line 
     allowed.types <- c('Arrow - up', 'Arrow - down', 'Border',
+       'Caret - up', 'Caret - down',
        'Circle - filled', 'Circle - thick outline', 'Circle - thin outline',
        'Hide', 'Shadow', 'Text - after data label', 'Text - before data label')
 

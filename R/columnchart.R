@@ -903,6 +903,10 @@ Column <- function(x,
                 curr.annot.text <- "&#129049;"
             else if (curr.annot$type == "Arrow - down")
                 curr.annot.text <- "&#129051;"
+            else if (curr.annot$type == "Caret - up")
+                curr.annot.text <- "&#9650;"
+            else if (curr.annot$type == "Caret - down")
+                curr.annot.text <- "&#9660;"
             else
                 curr.annot.text <- curr.annot$custom.symbol
             curr.annot.text <- rep(curr.annot.text, length = length(ind.sel))
