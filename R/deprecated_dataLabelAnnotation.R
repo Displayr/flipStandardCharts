@@ -31,7 +31,7 @@ dataLabelAnnotation <- function(chart.matrix,
         else
             cum.data(chart.matrix, "cumulative.sum")
 
-        largest.bar <- max(SumRows(chart.matrix, remove.missing = FALSE))
+        largest.bar <- max(SumRows(chart.matrix, remove.columns = NULL, remove.missing = FALSE))
         if (is.null(display.threshold))
             display.threshold <- 0.05
         text[chart.matrix < largest.bar * display.threshold] <- ""

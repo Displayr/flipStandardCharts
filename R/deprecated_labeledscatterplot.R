@@ -33,7 +33,7 @@ scatterplotData <- function(chart.matrix,
         }
 
         warning("Data points with missing values have been omitted.")
-        not.na <- which(!is.na(SumRows(chart.matrix, remove.missing = FALSE)) & col.not.na)
+        not.na <- which(!is.na(SumRows(chart.matrix, remove.columns = NULL, remove.missing = FALSE)) & col.not.na)
 
         if (length(not.na) == 0)
             stop("No non-missing values to plot")
