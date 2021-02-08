@@ -17,7 +17,6 @@
 #' @param data.label.offset Numeric; controls the distance between the data points to
 #'  the data label.
 #' @param hovertext.show Logical; whether to show hovertext.
-#' @param aspect.fixed Logical; whether to fix aspect ratio. This should usually be set to true to avoid
 #'      making a particular category look larger than the others. However, it is not supported with small-multiples
 #' @importFrom grDevices rgb
 #' @importFrom flipChartBasics ChartColors
@@ -31,7 +30,6 @@ Radar <- function(x,
                     title.font.size = 16,
                     colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
                     opacity = NULL,
-                    aspect.fixed = TRUE,
                     background.fill.color =  "transparent",
                     background.fill.opacity = 1,
                     charting.area.fill.color = background.fill.color,
@@ -234,9 +232,10 @@ Radar <- function(x,
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
     xaxis = list(title = "", showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE,
-               categoryorder = "array", categoryarray = g.list)
+               categoryorder = "array", categoryarray = g.list, 
+               constrain = "domain", scaleanchor = "y", scaleratio = 1)
     yaxis = list(title = "", showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE,
-               scaleanchor = if (aspect.fixed) "x" else NULL, scaleratio = 1)
+               constrain = "domain", scaleanchor = "x", scaleratio = 1)
 
     legend.text <- autoFormatLongLabels(colnames(chart.matrix), legend.wrap, legend.wrap.nchar)
     margins <- setMarginsForLegend(margins, legend.show, legend, legend.text, type = "radar")
