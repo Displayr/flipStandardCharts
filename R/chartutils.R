@@ -627,7 +627,8 @@ setAxis <- function(title, side, axisLabels, titlefont,
                     tickformatmanual, tickprefix, ticksuffix, tickshow,
                     show.zero, zero.line.width, zero.line.color,
                     hovertext.format.manual, labels = NULL, num.series = 1,
-                    with.bars = FALSE, num.maxticks = NULL)
+                    with.bars = FALSE, num.maxticks = NULL,
+                    zoom.enable = TRUE)
 {
     axis.type <- if (side %in% c("bottom", "top")) axisLabels$x.axis.type else axisLabels$y.axis.type
     has.line <- !is.null(linewidth) && linewidth > 0
@@ -745,7 +746,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
         if (is.null(nticks) || nticks > num.maxticks)
             nticks <- num.maxticks
     }
-    return (list(title = title, fixedrange = FALSE,
+    return (list(title = title, fixedrange = !zoom.enable,
                  side = side, type = axis.type,
                  tickfont = tickfont,
                  showline = has.line, linecolor = linecolor,

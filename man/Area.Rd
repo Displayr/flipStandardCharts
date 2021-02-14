@@ -130,6 +130,7 @@ Area(
   marker.border.opacity = 1,
   tooltip.show = TRUE,
   modebar.show = FALSE,
+  zoom.enable = TRUE,
   data.label.show = FALSE,
   data.label.font.autocolor = FALSE,
   data.label.font.family = global.font.family,
@@ -450,6 +451,10 @@ markers as an alpha value (0 to 1).}
 \item{tooltip.show}{Logical; whether to show a tooltip on hover.}
 
 \item{modebar.show}{Logical; whether to show the zoom menu buttons or not.}
+
+\item{zoom.enable}{Logical; whether to enable zoom on the chart. 
+For Bar and Column charts with data labels it may be useful to turn off zoom
+because data labels and annotations can be misplace on zoom.}
 
 \item{data.label.show}{Logical; whether to show data labels.}
 

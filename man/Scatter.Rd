@@ -43,6 +43,7 @@ Scatter(
   legend.wrap.nchar = 30,
   tooltip.show = TRUE,
   modebar.show = FALSE,
+  zoom.enable = TRUE,
   global.font.family = "Arial",
   global.font.color = rgb(44, 44, 44, maxColorValue = 255),
   title = "",
@@ -246,6 +247,10 @@ line of the legend when \code{legend.wrap} \code{TRUE}.}
 \item{tooltip.show}{Logical; whether to show a tooltip on hover.}
 
 \item{modebar.show}{Logical; whether to show the zoom menu buttons or not.}
+
+\item{zoom.enable}{Logical; whether to enable zoom on the chart. 
+For Bar and Column charts with data labels it may be useful to turn off zoom
+because data labels and annotations can be misplace on zoom.}
 
 \item{global.font.family}{Character; font family for all occurrences of any
 font attribute for the chart unless specified individually.}

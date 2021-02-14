@@ -107,6 +107,7 @@ BarMultiColor <- function(x,
                     x.hovertext.format = data.label.format,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
+                    zoom.enable = TRUE,
                     bar.gap = 0.15)
 {
     ErrorIfNotEnoughData(x)
@@ -188,13 +189,13 @@ BarMultiColor <- function(x,
                   ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance,
                   y.tick.format, y.tick.prefix, y.tick.suffix, y.tick.show,
                   y.zero, y.zero.line.width, y.zero.line.color,
-                  y.hovertext.format, num.maxticks = y.tick.maxnum)
+                  y.hovertext.format, num.maxticks = y.tick.maxnum, zoom.enable = zoom.enable)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance,
                   x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show,
                   x.zero, x.zero.line.width, x.zero.line.color,
-                  x.hovertext.format, num.maxticks = x.tick.maxnum)
+                  x.hovertext.format, num.maxticks = x.tick.maxnum, zoom.enable, zoom.enable)
 
     # Work out margin spacing
     margins <- list(t = 20, b = 20, r = 60, l = 80, pad = 0)

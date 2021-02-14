@@ -107,6 +107,7 @@ BarMultiColor(
   x.hovertext.format = data.label.format,
   tooltip.show = TRUE,
   modebar.show = FALSE,
+  zoom.enable = TRUE,
   bar.gap = 0.15
 )
 }
@@ -367,6 +368,10 @@ See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 \item{tooltip.show}{Logical; whether to show a tooltip on hover.}
 
 \item{modebar.show}{Logical; whether to show the zoom menu buttons or not.}
+
+\item{zoom.enable}{Logical; whether to enable zoom on the chart. 
+For Bar and Column charts with data labels it may be useful to turn off zoom
+because data labels and annotations can be misplace on zoom.}
 
 \item{bar.gap}{Chart proportion between each bar or column if using
 bar or column charts, or between each cluster of bars or columns.}

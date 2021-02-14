@@ -148,6 +148,7 @@ Area <- function(x,
                     marker.border.opacity = 1,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
+                    zoom.enable = TRUE,
                     data.label.show = FALSE,
                     data.label.font.autocolor = FALSE,
                     data.label.font.family = global.font.family,
@@ -303,12 +304,14 @@ Area <- function(x,
                   ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance,
                   y.tick.format, y.tick.prefix, y.tick.suffix,
                   y.tick.show, y.zero, y.zero.line.width, y.zero.line.color,
-                  y.hovertext.format, num.maxticks = y.tick.maxnum)
+                  y.hovertext.format, num.maxticks = y.tick.maxnum, zoom.enable = zoom.enable)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance,
-                  x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show, x.zero, x.zero.line.width, x.zero.line.color,
-                  x.hovertext.format, axisFormat$labels, num.maxticks = x.tick.maxnum)
+                  x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show, 
+                  x.zero, x.zero.line.width, x.zero.line.color,
+                  x.hovertext.format, axisFormat$labels, num.maxticks = x.tick.maxnum,
+                  zoom.enable = zoom.enable)
 
     # Work out margin spacing
     margins <- list(t = 20, b = 20, r = 60, l = 80, pad = 0)

@@ -134,6 +134,7 @@ Line(
   marker.border.opacity = NULL,
   tooltip.show = TRUE,
   modebar.show = FALSE,
+  zoom.enable = TRUE,
   data.label.show = FALSE,
   data.label.show.at.ends = FALSE,
   data.label.position = "Top",
@@ -466,6 +467,10 @@ around series bars; 0 is no line}
 \item{tooltip.show}{Logical; whether to show a tooltip on hover.}
 
 \item{modebar.show}{Logical; whether to show the zoom menu buttons or not.}
+
+\item{zoom.enable}{Logical; whether to enable zoom on the chart. 
+For Bar and Column charts with data labels it may be useful to turn off zoom
+because data labels and annotations can be misplace on zoom.}
 
 \item{data.label.show}{Logical; whether to show data labels.}
 

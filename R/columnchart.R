@@ -224,6 +224,9 @@
 #' @param marker.border.opacity Opacity of border around bars as an alpha value (0 to 1).
 #' @param tooltip.show Logical; whether to show a tooltip on hover.
 #' @param modebar.show Logical; whether to show the zoom menu buttons or not.
+#' @param zoom.enable Logical; whether to enable zoom on the chart. 
+#'  For Bar and Column charts with data labels it may be useful to turn off zoom
+#'  because data labels and annotations can be misplace on zoom.
 #' @param global.font.family Character; font family for all occurrences of any
 #' font attribute for the chart unless specified individually.
 #' @param global.font.color Global font color as a named color in character format
@@ -463,6 +466,7 @@ Column <- function(x,
                     marker.border.opacity = NULL,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
+                    zoom.enable = TRUE,
                     bar.gap = 0.15,
                     data.label.show = FALSE,
                     data.label.centered = FALSE,
@@ -590,12 +594,13 @@ Column <- function(x,
                   ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance, y.tick.format,
                   y.tick.prefix, y.tick.suffix,
                   y.tick.show, y.zero, y.zero.line.width, y.zero.line.color,
-                  y.hovertext.format, num.maxticks = y.tick.maxnum)
+                  y.hovertext.format, num.maxticks = y.tick.maxnum, 
+                  zoom.enable = zoom.enable)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, x.tick.format,
                   x.tick.prefix, x.tick.suffix, x.tick.show, x.zero, x.zero.line.width, x.zero.line.color,
-                  x.hovertext.format, axisFormat$labels, num.series = NCOL(chart.matrix), with.bars = TRUE, num.maxticks = x.tick.maxnum)
+                  x.hovertext.format, axisFormat$labels, num.series = NCOL(chart.matrix), with.bars = TRUE, num.maxticks = x.tick.maxnum, zoom.enable = zoom.enable)
 
     yaxis2 <- NULL
 
