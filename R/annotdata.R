@@ -141,7 +141,7 @@ extractSelectedAnnot <- function(data, threshold, threstype)
         return(which(data < threshold))
 }
 
-addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat)
+addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat, prepend = FALSE)
 {
     # Fix font size so that the units do not change in size when the font size increases
     left.pad <- ""
@@ -189,7 +189,7 @@ addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat)
 
         if (annotation$type == "Hide")
             data.label.text <- ""
-        else if (annotation$type == "Text - before data label")
+        else if (annotation$type == "Text - before data label" || prepend)
             data.label.text <- paste0(left.pad, new.text, data.label.text)
         else
             data.label.text <- paste0(data.label.text, left.pad, new.text)

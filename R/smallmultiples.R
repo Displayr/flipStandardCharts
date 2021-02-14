@@ -385,6 +385,7 @@ SmallMultiples <- function(x,
 
         plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(.bind_mean(getColumn(x, i), average.series),
                                                      hovertext.show = c(TRUE, TRUE),
+                                                     small.mult = TRUE,
                                                      line.thickness = line.thickness[i],
                                                      colors = c(colors[i], average.color),
                                                      grid.show = FALSE, x.tick.show = FALSE,
