@@ -48,6 +48,27 @@ test_that("Overlay annotations",
         size = 20, offset = 5, font.family = "Arial",
         font.weight = "normal", font.style = "normal"))), NA)
 
+    expect_error(Radar(data.with.stats[-10,-3,],
+        overlay.annotation.list = list(list(type = "Caret - up", data = "p",
+        threstype = "below threshold", threshold = "0.05",
+        relative.pos = 0.0,  valign = "top", halign = "center",
+        offset = 5, color = "red", size = 20,
+        font.family = "Arial"), list(type = "Caret - down", data = "p",
+        threstype = "above threshold", threshold = "0.05", color = "blue",
+        relative.pos = 1.0,  valign = "top", halign = "center",
+        size = 20, offset = 5, font.family = "Arial",
+        font.weight = "normal", font.style = "normal"))), NA)
+
+    expect_error(Radar(data.with.stats[-10,-3,],
+        overlay.annotation.list = list(list(type = "Caret - up", data = "p",
+        threstype = "below threshold", threshold = "0.05",
+        #relative.pos = 0.0,  valign = "top", halign = "center", offset = 5,
+        color = NULL, size = 20,
+        font.family = "Arial"), list(type = "Caret - down", data = "p",
+        threstype = "above threshold", threshold = "0.05", color = NULL,
+        #relative.pos = 1.0,  valign = "top", halign = "center", offset = 5,
+        size = 20, font.family = "Arial",
+        font.weight = "normal", font.style = "normal"))), NA)
 
     expect_error(Column(data.with.stats[-10,-3,], type = "Stacked", bar.gap = 0.3,
         data.label.show = TRUE,

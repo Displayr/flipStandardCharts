@@ -6,6 +6,9 @@
 \usage{
 Radar(
   x,
+  annotation.list = NULL,
+  small.mult = FALSE,
+  overlay.annotation.list = NULL,
   title = "",
   title.font.family = global.font.family,
   title.font.color = global.font.color,
@@ -97,6 +100,12 @@ Radar(
 \arguments{
 \item{x}{Input data in the form of a vector or matrix. The categories used
 to create the radar (i.e. the x-axis) is taken from the names/rownames of x.}
+
+\item{annotation.list}{Optional list of annotations to modify the data labels.}
+
+\item{small.mult}{An internal parameter used to indicate the chart is being called as a small multiple.}
+
+\item{overlay.annotation.list}{Optional list of annotations that is overlayed on top of the chart.}
 
 \item{title}{Character; chart title.}
 

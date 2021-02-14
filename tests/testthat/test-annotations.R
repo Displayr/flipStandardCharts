@@ -107,6 +107,11 @@ test_that("Annotations",
     expect_error(SmallMultiples(data.with.stats[-10,,], "Line", annotation.list = a5,
         data.label.show = TRUE, data.label.show.at.ends = TRUE,
         marker.show.at.ends = TRUE, marker.size = 10), NA)
+
+    expect_error(Radar(data.with.stats[-10,,], annotation.list = a5,
+        data.label.show = TRUE), NA)
+    expect_error(SmallMultiples(data.with.stats[-10,,], "Radar",
+        annotation.list = a5, data.label.show = TRUE, average.show = TRUE), NA)
 })
 
 dat2 <- structure(c(38.8888888888889, 0, 0, 11.1111111111111, 18.1818181818182,

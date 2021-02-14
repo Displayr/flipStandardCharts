@@ -18,12 +18,16 @@
 #'  the data label.
 #' @param hovertext.show Logical; whether to show hovertext.
 #'      making a particular category look larger than the others. However, it is not supported with small-multiples
+#' @param small.mult An internal parameter used to indicate the chart is being called as a small multiple.
 #' @importFrom grDevices rgb
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom plotly plot_ly layout config
 #' @importFrom flipFormat FormatAsReal
 #' @export
 Radar <- function(x,
+                    annotation.list = NULL,
+                    small.mult = FALSE,
+                    overlay.annotation.list = NULL,  
                     title = "",
                     title.font.family = global.font.family,
                     title.font.color = global.font.color,
@@ -123,6 +127,7 @@ Radar <- function(x,
             data.label.format <- paste0(data.label.format, "%")
     }
 
+    annot.data <- x
     chart.matrix <- checkMatrixNames(x)
     if (any(!is.finite(chart.matrix)))
         stop("Radar charts cannot contain missing or non-finite values.\n")
@@ -206,6 +211,7 @@ Radar <- function(x,
                       Name = rep(rownames(chart.matrix)[c(1:m,1)], n),
                       Group = if (NCOL(chart.matrix) == 1 && colnames(chart.matrix)[1] == "Series.1") ""
                               else rep(colnames(chart.matrix), each = m+1),
+                      row = rep(c(1:m,1), n),
                       stringsAsFactors  =  T, check.names = F)
 
     chart.matrix <- rbind(chart.matrix, chart.matrix[1,])
@@ -273,32 +279,52 @@ Radar <- function(x,
         }
     }
 
-    # Position of labels (x-axis)
-    annotations <- NULL
-    if (x.tick.show)
+    # Initialise x-axis labels
+    xlab <- if (x.tick.show) autoFormatLongLabels(rownames(chart.matrix)[1:m],
+                                x.tick.label.wrap, x.tick.label.wrap.nchar)
+            else             rep("", m)
+
+
+    # Create annotations separately for each series
+    # so they can be toggled using the legend
+    for (ggi in 1:n)
     {
-        xanch <- rep("center", m)
-        xanch[which(abs(outer[,2]) < r.max/100 & sign(outer[,1]) < 0)] <- "right"
-        xanch[which(abs(outer[,2]) < r.max/100 & sign(outer[,1]) > 0)] <- "left"
+        for (curr.annot.ind in seq_along(overlay.annotation.list))
+        {
+            curr.annot <- overlay.annotation.list[[curr.annot.ind]]
+            curr.annot$threshold <- parseThreshold(curr.annot$threshold)
+            curr.dat <- getAnnotData(annot.data, curr.annot$data, ggi,
+                as.numeric = !grepl("Text", curr.annot$type) && curr.annot$data != "Column Comparisons")
+            ind.sel <- extractSelectedAnnot(curr.dat, curr.annot$threshold, curr.annot$threstype)
+            if (is.null(curr.annot$color))
+                curr.annot$color <- colors[ggi]
+            for (ii in ind.sel)
+                xlab[ii] <- addAnnotToDataLabel(xlab[ii], curr.annot, curr.dat[ii],
+                    prepend = calcXAlign(ii, m) == "left") 
 
-        xlab <- autoFormatLongLabels(rownames(chart.matrix)[1:m],
-                    x.tick.label.wrap, x.tick.label.wrap.nchar)
-        font.asp <- fontAspectRatio(x.tick.font.family)
-        theta <- (0.5 - 2 * (0:(m-1))/m) * pi
-        yshift <- sin(theta) * 15
-        xshift <- cos(theta)
+        }
+    }
 
+    # Add x-axis labels
+    # If x-axis label are not shown, annotations may still be present
+    annotations <- NULL
+    if (any(nchar(xlab) > 0))
+    {
+
+        # We use annotations rather than a text trace because
+        # plotly will automatically expand margins to keep annotations visible
         annotations <- lapply(1:m, function(ii) list(text = xlab[ii], font = x.tick.font,
                         x = outer[ii,1], y = outer[ii,2], xref = "x", yref = "y",
-                        showarrow = FALSE, yshift = yshift[ii],
-                        xanchor = xanch[ii], xshift = xshift[ii]))
+                        xanchor = calcXAlign(ii, m, return.anchor = TRUE), 
+                        yanchor = calcYAlign(ii, m, return.anchor = TRUE),
+                        showarrow = FALSE, ax = 0, ay = 0))
     }
 
     n <- length(g.list)
     if (is.null(line.thickness))
         line.thickness <- 3
 
-    if (length(data.label.show) > 1 && n == 2) # small multiples
+    if (small.mult && length(data.label.show) > 1 && n == 2) # small multiples
     {
         line.thickness <- c(line.thickness, 0)
         opacity <- c(opacity, if (opacity == 0.0) 0.2 else opacity)
@@ -359,15 +385,45 @@ Radar <- function(x,
 
         if (any(data.label.show[,ggi]))
         {
+            # Sequentially apply annotations
+            for (j in seq_along(annotation.list))
+            {
+                if (!checkAnnotType(annotation.list[[j]]$type, "Line"))
+                    next
+                annotation.list[[j]]$threshold <- parseThreshold(annotation.list[[j]]$threshold)
+                a.tmp <- annotation.list[[j]]
+                tmp.dat <- getAnnotData(annot.data, a.tmp$data, ggi, as.numeric = !grepl("Text", a.tmp$type))
+                ind.sel <- extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype)
+                pos$DataLabels[ind[ind.sel]] <- addAnnotToDataLabel(pos$DataLabels[ind[ind.sel]], a.tmp, tmp.dat[ind.sel])
+            }
+
             ind2 <- intersect(ind, which(data.label.show))
-            x.offset <- sign(pos$x[ind2]) * data.label.offset[ggi] *
-                        (r.max + abs(max(pos$x[ind2])))/2
-            y.offset <- sign(pos$y[ind2]) * data.label.offset[ggi] *
-                        (r.max + abs(max(pos$y[ind2])))/2
-            p <- add_trace(p, x = pos$x[ind2] + x.offset, y = pos$y[ind2] + y.offset,
-                    type = "scatter", mode = "text", legendgroup = g.list[ggi],
-                    showlegend = FALSE, hoverinfo = "skip", text = pos$DataLabels[ind2],
-                    textfont = data.label.font[[ggi]])
+            
+            # For single-series or small multiples we prefer to use annotations
+            # because they can be dragged, and are less likely to be truncated
+            # by plotly. However, annotations do not toggle with the legend
+            # so they are not used for multiple overlapping data series 
+            if (n == 1 || small.mult)
+            {
+                annotations <- c(annotations,
+                    lapply(ind2, function(ii) list(text = pos$DataLabels[ii],
+                        font = data.label.font[[ggi]], x = pos$x[ii], 
+                        y = pos$y[ii], xref = "x", yref = "y",
+                        xshift = 2, yshift = 2,
+                        xanchor = calcXAlign(pos$row[ii], m, return.anchor = TRUE),
+                        yanchor = calcYAlign(pos$row[ii], m, return.anchor = TRUE),
+                        showarrow = TRUE, ax = 0, ay = 0, arrowsize = 0.3)))
+            } else
+            {
+                p <- add_trace(p, x = pos$x[ind2], y = pos$y[ind2],
+                    type = "scatter", mode = "markers+text", legendgroup = g.list[ggi],
+                    textposition = paste(calcXAlign(pos$row[ind2], m), 
+                    calcYAlign(pos$row[ind2], n)), showlegend = FALSE, 
+                    hoverinfo = "skip", marker = list(opacity = 0, size = 2, 
+                    color = toRGB(colors[ggi])),
+                    text = pos$DataLabels[ind2],
+                    textfont = data.label.font[[ggi]], cliponaxis = FALSE)
+            }
         }
     }
 
@@ -395,6 +451,13 @@ Radar <- function(x,
                 font = list(size = hovertext.font.size, family = hovertext.font.family)),
             xaxis = xaxis, yaxis = yaxis, shapes = grid,
             legend = legend, showlegend = legend.show)
+
+    # allow data labels to be movable (annotations with showarrow = TRUE)
+    # but turn off editing to other parts of the text
+    p <- config(p, editable = TRUE, 
+                edits = list(annotationPosition = FALSE, annotationTail = TRUE,
+                annotationText = FALSE, shapePosition = FALSE,
+                axisTitleText = FALSE, titleText = FALSE, legendText = FALSE))
 
 
     p <- config(p, displayModeBar = modebar.show)
@@ -476,4 +539,46 @@ setRadarAxisBounds <- function(y.bounds.minimum,
     return(list(min = y.bounds.minimum, max = y.bounds.maximum))
 }
 
+
+# return.anchor indicates that the return values
+# will be used for annotations, otherwise they
+# will be used in textposition of a text trace
+# note that they have the oppositie meaning
+calcXAlign <- function(index, length, return.anchor = FALSE)
+{
+    theta <- (0.5 - 2 * (index - 1)/length) * pi
+    x.align <- rep("center", length(theta))
+   
+    if (return.anchor)
+    {
+        x.align[cos(theta) > 0.3] <- "left"
+        x.align[cos(theta) < -0.3] <- "right"
+
+    } else
+    {
+        x.align[cos(theta) > 0.3] <- "right"
+        x.align[cos(theta) < -0.3] <- "left"
+    }
+
+    return(x.align)
+}
+
+calcYAlign <- function(index, length, return.anchor = FALSE)
+{
+    theta <- (0.5 - 2 * (index - 1)/length) * pi
+    y.align <- rep("middle", length(theta))
+   
+    if (return.anchor)
+    {
+        y.align[sin(theta) > 0.5] <- "bottom"
+        y.align[sin(theta) < -0.5] <- "top"
+
+    } else
+    {
+        y.align[sin(theta) > 0.5] <- "top"
+        y.align[sin(theta) < -0.5] <- "bottom"
+    }
+
+    return(y.align)
+}
 
