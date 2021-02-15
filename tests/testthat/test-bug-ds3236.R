@@ -3,7 +3,7 @@
 # (these may have been manually added to the user to work around previous
 # handling of percentage data)
 
-context("Bug-DS2326")
+context("Bug-DS3236")
 
 data.with.stats <- structure(c(2.75482093663912, 6.06060606060606, 12.6721763085399,
 18.4573002754821, 24.7933884297521, 15.9779614325069, 6.06060606060606,
