@@ -100,6 +100,7 @@ Radar <- function(x,
                     data.label.font.family = global.font.family,
                     data.label.font.size = 10,
                     data.label.font.color = global.font.color,
+                    data.label.font.autocolor = FALSE,
                     data.label.format = "",
                     data.label.prefix = "",
                     data.label.suffix = "",
@@ -177,11 +178,12 @@ Radar <- function(x,
                         FALSE, legend.orientation)
 
     y.axis.offset <- if (any(data.label.show)) 1.1 + data.label.font.size/100
-                     else                      1.0
+                     else                      1.1
     y.bounds <- setRadarAxisBounds(y.bounds.minimum, y.bounds.maximum,
                                    chart.matrix, y.axis.offset)
     y.bounds.minimum <- y.bounds$min
     y.bounds.maximum <- y.bounds$max
+    reverse.axis <- y.bounds.minimum > y.bounds.maximum
 
     if (is.null(y.tick.distance))
     {
@@ -320,8 +322,9 @@ Radar <- function(x,
         # plotly will automatically expand margins to keep annotations visible
         annotations <- lapply(1:m, function(ii) list(text = xlab[ii], font = x.tick.font,
                         x = outer[ii,1], y = outer[ii,2], xref = "x", yref = "y",
-                        xanchor = calcXAlign(ii, m, return.anchor = TRUE), 
-                        yanchor = calcYAlign(ii, m, return.anchor = TRUE),
+                        xanchor = calcXAlign(ii, m, return.anchor = !reverse.axis), 
+                        yanchor = calcYAlign(ii, m, return.anchor = !reverse.axis),
+                        xshift = 0, yshift = 0,
                         showarrow = FALSE, ax = 0, ay = 0))
     }
 
@@ -345,7 +348,8 @@ Radar <- function(x,
     hovertext.show <- vectorize(hovertext.show, n)
     data.label.show <- rbind(vectorize(data.label.show, n, m), FALSE)
     data.label.offset <- sapply(vectorize(data.label.offset, n), charToNumeric)
-    data.label.font.color <- vectorize(data.label.font.color, n)
+    data.label.font.color <- if (data.label.font.autocolor) colors
+                             else vectorize(data.label.font.color, n)
     data.label.font = lapply(data.label.font.color,
         function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
 
@@ -422,8 +426,8 @@ Radar <- function(x,
             {
                 p <- add_trace(p, x = pos$x[ind2], y = pos$y[ind2],
                     type = "scatter", mode = "markers+text", legendgroup = g.list[ggi],
-                    textposition = paste(calcXAlign(pos$row[ind2], m), 
-                    calcYAlign(pos$row[ind2], n)), showlegend = FALSE, 
+                    textposition = paste(calcXAlign(pos$row[ind2], m, return.anchor = reverse.axis), 
+                    calcYAlign(pos$row[ind2], n, return.anchor = reverse.axis)), showlegend = FALSE, 
                     hoverinfo = "skip", marker = list(opacity = 0, size = 2, 
                     color = toRGB(colors[ggi])),
                     text = pos$DataLabels[ind2],
@@ -508,17 +512,17 @@ calcPolarCoord <- function(r, r0 = 0)
 setRadarAxisBounds <- function(y.bounds.minimum,
                                y.bounds.maximum,
                                chart.matrix,
-                               offset = 1.0)
+                               offset = 1.1)
 {
     if (is.character(y.bounds.maximum))
         y.bounds.maximum <- charToNumeric(y.bounds.maximum)
     if (is.character(y.bounds.minimum))
         y.bounds.minimum <- charToNumeric(y.bounds.minimum)
     range0 <- range(chart.matrix, na.rm = TRUE)
-    if (length(y.bounds.maximum) == 0)
+    if (sum(nzchar(y.bounds.maximum)) == 0)
         y.bounds.maximum <- if (isTRUE(y.bounds.minimum >= range0[2])) range0[1]
                             else                                       offset * range0[2]
-    if (length(y.bounds.minimum) == 0)
+    if (sum(nzchar(y.bounds.minimum)) == 0)
         y.bounds.minimum <- if (length(chart.matrix) == 1)                  min(0, min(chart.matrix))
                             else if (isTRUE(y.bounds.maximum <= range0[1])) range0[2]
                             else                                            min(0, min(chart.matrix))
