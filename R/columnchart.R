@@ -490,6 +490,11 @@ Column <- function(x,
             y.hovertext.format <- paste0(y.hovertext.format, "%")
         if (isAutoFormat(data.label.format))
             data.label.format <- paste0(data.label.format, "%")
+
+        sfx <- checkSuffixForExtraPercent(c(y.tick.suffix, data.label.suffix),
+            c(y.tick.format, data.label.format))
+        y.tick.suffix <- sfx[1]
+        data.label.suffix <- sfx[2]
     }
 
     if (bar.gap < 0.0 || bar.gap >= 1.0)
@@ -625,6 +630,21 @@ Column <- function(x,
     x.all.labels <- x.labels
     if (!is.null(x2))
     {
+        if (isPercentData(x2))
+        {
+            if (isAutoFormat(y2.tick.format))
+                y2.tick.format <- paste0(y2.tick.format, "%")
+            if (isAutoFormat(y2.hovertext.format))
+                y2.hovertext.format <- paste0(y2.hovertext.format, "%")
+            if (isAutoFormat(data.label.format))
+                x2.data.label.format <- paste0(data.label.format, "%")
+        
+            sfx <- checkSuffixForExtraPercent(c(y2.tick.suffix, x2.data.label.suffix),
+                c(y2.tick.format, x2.data.label.format))
+            y2.tick.suffix <- sfx[1]
+            x2.data.label.suffix <- sfx[2]
+        }
+
         # Set up x-axis values for x2
         x2 <- checkMatrixNames(x2)
         x2.axis.type <- getAxisType(rownames(x2), format = x.tick.format)

@@ -119,6 +119,12 @@ BarMultiColor <- function(x,
             x.hovertext.format <- paste0(x.hovertext.format, "%")
         if (isAutoFormat(data.label.format))
             data.label.format <- paste0(data.label.format, "%")
+
+        sfx <- checkSuffixForExtraPercent(c(x.tick.suffix, data.label.suffix),
+            c(x.tick.format, data.label.format))
+        x.tick.suffix <- sfx[1]
+        data.label.suffix <- sfx[2]
+
     }
 
     chart.matrix <- checkMatrixNames(x)
