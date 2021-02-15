@@ -115,6 +115,25 @@ Pyramid <- function(x,
             x.hovertext.format <- paste0(x.hovertext.format, "%")
         if (isAutoFormat(data.label.format))
             data.label.format <- paste0(data.label.format, "%")
+
+        extra.percent <- FALSE
+        if (checkSuffixForExtraPercent(x.tick.suffix, x.tick.format))
+        {
+            x.tick.suffix <- sub("%", "", x.tick.suffix)
+            extra.percent <- TRUE
+        }
+        if (checkSuffixForExtraPercent(data.label.suffix, data.label.format))
+        {
+            data.label.suffix <- sub("%", "", data.label.suffix)
+            extra.percent <- TRUE
+        }
+
+        # Only show warning once
+        if (extra.percent)
+            warning("A percentage sign is automatically added to percent data. ",
+                "The first '%' in the suffix will be ignored.")
+
+
     }
     chart.matrix <- checkMatrixNames(x)
     if (NROW(chart.matrix) == 1 && NCOL(chart.matrix) > 1)

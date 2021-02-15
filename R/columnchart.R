@@ -490,6 +490,23 @@ Column <- function(x,
             y.hovertext.format <- paste0(y.hovertext.format, "%")
         if (isAutoFormat(data.label.format))
             data.label.format <- paste0(data.label.format, "%")
+
+        extra.percent <- FALSE
+        if (checkSuffixForExtraPercent(y.tick.suffix, y.tick.format))
+        {
+            y.tick.suffix <- sub("%", "", y.tick.suffix)
+            extra.percent <- TRUE
+        }
+        if (checkSuffixForExtraPercent(data.label.suffix, data.label.format))
+        {
+            data.label.suffix <- sub("%", "", data.label.suffix)
+            extra.percent <- TRUE
+        }
+
+        # Only show warning once
+        if (extra.percent)
+            warning("A percentage sign is automatically added to percent data. ",
+                "The first '%' in the suffix will be ignored.")
     }
 
     if (bar.gap < 0.0 || bar.gap >= 1.0)
@@ -625,6 +642,35 @@ Column <- function(x,
     x.all.labels <- x.labels
     if (!is.null(x2))
     {
+
+        if (isPercentData(x2))
+        {
+            if (isAutoFormat(y2.tick.format))
+                y2.tick.format <- paste0(y2.tick.format, "%")
+            if (isAutoFormat(y2.hovertext.format))
+                y2.hovertext.format <- paste0(y2.hovertext.format, "%")
+            if (isAutoFormat(data.label.format))
+                x2.data.label.format <- paste0(data.label.format, "%")
+
+            extra.percent <- FALSE
+            if (checkSuffixForExtraPercent(y2.tick.suffix, y2.tick.format))
+            {
+                y2.tick.suffix <- sub("%", "", y2.tick.suffix)
+                extra.percent <- TRUE
+            }
+            if (checkSuffixForExtraPercent(x2.data.label.suffix, x2.data.label.format))
+            {
+                x2.data.label.suffix <- sub("%", "", x2.data.label.suffix)
+                extra.percent <- TRUE
+            }
+            # Only show warning once
+            if (extra.percent)
+                warning("A percentage sign is automatically added to percent data. ",
+                    "The first '%' in the suffix will be ignored.")
+
+        }
+
+
         # Set up x-axis values for x2
         x2 <- checkMatrixNames(x2)
         x2.axis.type <- getAxisType(rownames(x2), format = x.tick.format)

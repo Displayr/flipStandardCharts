@@ -1517,9 +1517,21 @@ isPercentData <- function(data)
 {
     if (isTRUE(grepl("%", attr(data, "statistic"))))
         return(TRUE)
-    ndim <- length(dim(data))    
-    if (is.null(attr(data, "statistic")) && 
+    ndim <- length(dim(data))
+    if (is.null(attr(data, "statistic")) &&
         isTRUE(grepl("%", dimnames(data)[[ndim]][1])))
         return(TRUE)
     return(FALSE)
+}
+
+# y.tick.format, y.hovertext.format, y2.tick.format, y2.hovertext.format
+# data.label.format
+
+checkSuffixForExtraPercent <- function(suffix, format)
+{
+    if (isTRUE(grepl("%", format)) && isTRUE(grepl("%", suffix)))
+        return(TRUE)
+    else
+        return(FALSE)
+
 }

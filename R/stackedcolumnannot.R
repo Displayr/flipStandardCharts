@@ -257,6 +257,24 @@ StackedColumnWithStatisticalSignificance <- function(x,
             y.hovertext.format <- paste0(y.hovertext.format, "%")
         if (isAutoFormat(data.label.format))
             data.label.format <- paste0(data.label.format, "%")
+
+        extra.percent <- FALSE
+        if (checkSuffixForExtraPercent(y.tick.suffix, y.tick.format))
+        {
+            y.tick.suffix <- sub("%", "", y.tick.suffix)
+            extra.percent <- TRUE
+        }
+        if (checkSuffixForExtraPercent(data.label.suffix, data.label.format))
+        {
+            data.label.suffix <- sub("%", "", data.label.suffix)
+            extra.percent <- TRUE
+        }
+
+        # Only show warning once
+        if (extra.percent)
+            warning("A percentage sign is automatically added to percent data. ",
+                "The first '%' in the suffix will be ignored.")
+
     }
 
     # Save data for annotating column totals before
