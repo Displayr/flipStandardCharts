@@ -64,12 +64,7 @@ Palm <- function(table,
     if (isPercentData(table) && isAutoFormat(y.tick.format))
     {
         y.tick.format <- paste0(y.tick.format, "%")
-        if (checkSuffixForExtraPercent(y.tick.suffix, y.tick.format))
-        {
-            y.tick.suffix <- sub("%", "", y.tick.suffix)
-            warning("A percentage sign is automatically added to percent data. ",
-                "The first '%' in the suffix will be ignored.")
-        }
+        y.tick.suffix <- checkSuffixForExtraPercent(y.tick.suffix, y.tick.format)
     }
     table <- checkMatrixNames(table)
 

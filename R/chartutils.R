@@ -1526,12 +1526,16 @@ isPercentData <- function(data)
 
 # y.tick.format, y.hovertext.format, y2.tick.format, y2.hovertext.format
 # data.label.format
-
 checkSuffixForExtraPercent <- function(suffix, format)
 {
-    if (isTRUE(grepl("%", format)) && isTRUE(grepl("%", suffix)))
-        return(TRUE)
-    else
-        return(FALSE)
-
+    new.suffix <- suffix
+    for (i in seq_along(suffix))
+    {
+        if (isTRUE(grepl("%", format[i])) && isTRUE(grepl("%", suffix[i])))
+            new.suffix[i] <- sub("%", "", suffix[i])
+    }
+    if (any(new.suffix != suffix))
+        warning("A percentage sign is automatically added to percent data. ",
+            "The first '%' in the suffix will be ignored.")
+    return(new.suffix)
 }

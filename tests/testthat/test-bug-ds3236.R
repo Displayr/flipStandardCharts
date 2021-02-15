@@ -1,6 +1,6 @@
 # For backwards compatibility, check that we do not add an extra percentage sign
 # to value axis tick labels and data labels
-# (these may have been manually added to the user to work around previous
+# (these may have been manually added by the user to work around previous
 # handling of percentage data)
 
 context("Bug-DS3236")

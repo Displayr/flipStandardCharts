@@ -169,23 +169,10 @@ Area <- function(x,
         if (isAutoFormat(data.label.format))
             data.label.format <- paste0(data.label.format, "%")
 
-        extra.percent <- FALSE
-        if (checkSuffixForExtraPercent(y.tick.suffix, y.tick.format))
-        {
-            y.tick.suffix <- sub("%", "", y.tick.suffix)
-            extra.percent <- TRUE
-        }
-        if (checkSuffixForExtraPercent(data.label.suffix, data.label.format))
-        {
-            data.label.suffix <- sub("%", "", data.label.suffix)
-            extra.percent <- TRUE
-        }
-
-        # Only show warning once
-        if (extra.percent)
-            warning("A percentage sign is automatically added to percent data. ",
-                "The first '%' in the suffix will be ignored.")
-
+        sfx <- checkSuffixForExtraPercent(c(y.tick.suffix, data.label.suffix),
+            c(y.tick.format, data.label.format))
+        y.tick.suffix <- sfx[1]
+        data.label.suffix <- sfx[2]
     }
 
     chart.matrix <- checkMatrixNames(x)

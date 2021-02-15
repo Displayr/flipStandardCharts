@@ -491,22 +491,10 @@ Column <- function(x,
         if (isAutoFormat(data.label.format))
             data.label.format <- paste0(data.label.format, "%")
 
-        extra.percent <- FALSE
-        if (checkSuffixForExtraPercent(y.tick.suffix, y.tick.format))
-        {
-            y.tick.suffix <- sub("%", "", y.tick.suffix)
-            extra.percent <- TRUE
-        }
-        if (checkSuffixForExtraPercent(data.label.suffix, data.label.format))
-        {
-            data.label.suffix <- sub("%", "", data.label.suffix)
-            extra.percent <- TRUE
-        }
-
-        # Only show warning once
-        if (extra.percent)
-            warning("A percentage sign is automatically added to percent data. ",
-                "The first '%' in the suffix will be ignored.")
+        sfx <- checkSuffixForExtraPercent(c(y.tick.suffix, data.label.suffix),
+            c(y.tick.format, data.label.format))
+        y.tick.suffix <- sfx[1]
+        data.label.suffix <- sfx[2]
     }
 
     if (bar.gap < 0.0 || bar.gap >= 1.0)
@@ -642,7 +630,6 @@ Column <- function(x,
     x.all.labels <- x.labels
     if (!is.null(x2))
     {
-
         if (isPercentData(x2))
         {
             if (isAutoFormat(y2.tick.format))
@@ -651,25 +638,12 @@ Column <- function(x,
                 y2.hovertext.format <- paste0(y2.hovertext.format, "%")
             if (isAutoFormat(data.label.format))
                 x2.data.label.format <- paste0(data.label.format, "%")
-
-            extra.percent <- FALSE
-            if (checkSuffixForExtraPercent(y2.tick.suffix, y2.tick.format))
-            {
-                y2.tick.suffix <- sub("%", "", y2.tick.suffix)
-                extra.percent <- TRUE
-            }
-            if (checkSuffixForExtraPercent(x2.data.label.suffix, x2.data.label.format))
-            {
-                x2.data.label.suffix <- sub("%", "", x2.data.label.suffix)
-                extra.percent <- TRUE
-            }
-            # Only show warning once
-            if (extra.percent)
-                warning("A percentage sign is automatically added to percent data. ",
-                    "The first '%' in the suffix will be ignored.")
-
+        
+            sfx <- checkSuffixForExtraPercent(c(y2.tick.suffix, x2.data.label.suffix),
+                c(y2.tick.format, x2.data.label.format))
+            y2.tick.suffix <- sfx[1]
+            x2.data.label.suffix <- sfx[2]
         }
-
 
         # Set up x-axis values for x2
         x2 <- checkMatrixNames(x2)
