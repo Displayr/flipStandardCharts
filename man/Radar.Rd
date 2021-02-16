@@ -7,7 +7,6 @@
 Radar(
   x,
   annotation.list = NULL,
-  small.mult = FALSE,
   overlay.annotation.list = NULL,
   title = "",
   title.font.family = global.font.family,
@@ -86,6 +85,8 @@ Radar(
   data.label.prefix = "",
   data.label.suffix = "",
   data.label.values.only = FALSE,
+  average.series = NULL,
+  average.color = rgb(230, 230, 230, maxColorValue = 255),
   subtitle = "",
   subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color,
@@ -103,8 +104,6 @@ Radar(
 to create the radar (i.e. the x-axis) is taken from the names/rownames of x.}
 
 \item{annotation.list}{Optional list of annotations to modify the data labels.}
-
-\item{small.mult}{An internal parameter used to indicate the chart is being called as a small multiple.}
 
 \item{overlay.annotation.list}{Optional list of annotations that is overlayed on top of the chart.}
 
@@ -243,8 +242,7 @@ format (e.g. "black") or a hex code.}
 \item{y.tick.format}{A string representing a d3 formatting code.
 See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 
-\item{hovertext.show}{Logical; whether to show hovertext.
-making a particular category look larger than the others. However, it is not supported with small-multiples}
+\item{hovertext.show}{Logical; whether to show hovertext.}
 
 \item{y.hovertext.format}{A string representing a d3 formatting code
 See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
@@ -298,6 +296,10 @@ See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 
 \item{data.label.values.only}{Logical; whether to show only the values in the
 datal labels instead of the default category label and values.}
+
+\item{average.series}{y-values of additional data series which is shown as a line. Used by \code{SmallMultiples}.}
+
+\item{average.color}{Color of the \code{average.series} as a hex code or string}
 
 \item{subtitle}{Character}
 

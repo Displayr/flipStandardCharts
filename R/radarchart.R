@@ -17,8 +17,6 @@
 #' @param data.label.offset Numeric; controls the distance between the data points to
 #'  the data label.
 #' @param hovertext.show Logical; whether to show hovertext.
-#'      making a particular category look larger than the others. However, it is not supported with small-multiples
-#' @param small.mult An internal parameter used to indicate the chart is being called as a small multiple.
 #' @importFrom grDevices rgb
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom plotly plot_ly layout config
@@ -26,7 +24,6 @@
 #' @export
 Radar <- function(x,
                     annotation.list = NULL,
-                    small.mult = FALSE,
                     overlay.annotation.list = NULL,  
                     title = "",
                     title.font.family = global.font.family,
@@ -105,6 +102,8 @@ Radar <- function(x,
                     data.label.prefix = "",
                     data.label.suffix = "",
                     data.label.values.only = FALSE,
+                    average.series = NULL,
+                    average.color = rgb(230, 230, 230, maxColorValue = 255),
                     subtitle = "",
                     subtitle.font.family = global.font.family,
                     subtitle.font.color = global.font.color,
@@ -178,7 +177,7 @@ Radar <- function(x,
                         FALSE, legend.orientation)
 
     y.axis.offset <- if (any(data.label.show)) 1.1 + data.label.font.size/100
-                     else                      1.1
+                     else                      1.0
     y.bounds <- setRadarAxisBounds(y.bounds.minimum, y.bounds.maximum,
                                    chart.matrix, y.axis.offset)
     y.bounds.minimum <- y.bounds$min
@@ -324,24 +323,13 @@ Radar <- function(x,
                         x = outer[ii,1], y = outer[ii,2], xref = "x", yref = "y",
                         xanchor = calcXAlign(ii, m, return.anchor = !reverse.axis), 
                         yanchor = calcYAlign(ii, m, return.anchor = !reverse.axis),
-                        xshift = 0, yshift = 0,
+                        xshift = calcXShift(ii, m), yshift = calcYShift(ii, m),
                         showarrow = FALSE, ax = 0, ay = 0))
     }
 
     n <- length(g.list)
     if (is.null(line.thickness))
         line.thickness <- 3
-
-    if (small.mult && length(data.label.show) > 1 && n == 2) # small multiples
-    {
-        line.thickness <- c(line.thickness, 0)
-        opacity <- c(opacity, if (opacity == 0.0) 0.2 else opacity)
-    }
-    else
-    {
-        line.thickness <- vectorize(line.thickness, n)
-        opacity <- vectorize(opacity, n)
-    }
 
     line.thickness <- vectorize(line.thickness, n)
     opacity <- vectorize(opacity, n)
@@ -379,6 +367,27 @@ Radar <- function(x,
                     line = list(width = line.thickness[ggi], color = toRGB(colors[ggi])))
     }
 
+    if (!is.null(average.series))
+    {
+        avg.pos <- calcPolarCoord(average.series, r0 = y.bounds.minimum)
+        p <- add_trace(p, x = avg.pos[,1], y = avg.pos[,2], name = "Average",
+                    type = "scatter", mode = series.mode, fill = "toself",
+                    marker = series.marker, showlegend = FALSE,
+                    fillcolor = toRGB(average.color, alpha = max(0.2, opacity[1])),
+                    hoverinfo = "all", hoveron = "points",
+                    line = list(width = 0, color = toRGB(average.color)),
+                    text = sprintf("%s: %s%s%s", rownames(chart.matrix), 
+                    y.tick.prefix, hover.format.function(average.series[c(1:m,1)], 
+                    decimals = y.hovertext.decimals,
+                    comma.for.thousands = commaFromD3(y.hovertext.format)), 
+                    y.tick.suffix), 
+                    hovertemplate = paste0("%{text}<extra>", "Average", "</extra>"),
+                    hoverlabel = list(font = list(color = autoFontColor(average.color),
+                    size = hovertext.font.size, family = hovertext.font.family)),
+                    marker = list(size = 5, color = toRGB(average.color)))
+
+    }
+
     # Markers are added as a separate trace to allow overlapping hoverinfo
     for (ggi in n:1)
     {
@@ -412,15 +421,16 @@ Radar <- function(x,
             # because they can be dragged, and are less likely to be truncated
             # by plotly. However, annotations do not toggle with the legend
             # so they are not used for multiple overlapping data series 
-            if (n == 1 || small.mult)
+            if (n == 1)
             {
                 annotations <- c(annotations,
                     lapply(ind2, function(ii) list(text = pos$DataLabels[ii],
                         font = data.label.font[[ggi]], x = pos$x[ii], 
                         y = pos$y[ii], xref = "x", yref = "y",
-                        xshift = 2, yshift = 2,
-                        xanchor = calcXAlign(pos$row[ii], m, return.anchor = TRUE),
-                        yanchor = calcYAlign(pos$row[ii], m, return.anchor = TRUE),
+                        xshift = calcXShift(pos$row[ii], m), 
+                        yshift = calcYShift(pos$row[ii], m),
+                        xanchor = calcXAlign(pos$row[ii], m, return.anchor = !reverse.axis),
+                        yanchor = calcYAlign(pos$row[ii], m, return.anchor = !reverse.axis),
                         showarrow = TRUE, ax = 0, ay = 0, arrowsize = 0.3)))
             } else
             {
@@ -512,7 +522,7 @@ calcPolarCoord <- function(r, r0 = 0)
 setRadarAxisBounds <- function(y.bounds.minimum,
                                y.bounds.maximum,
                                chart.matrix,
-                               offset = 1.1)
+                               offset = 1.0)
 {
     if (is.character(y.bounds.maximum))
         y.bounds.maximum <- charToNumeric(y.bounds.maximum)
@@ -546,6 +556,18 @@ setRadarAxisBounds <- function(y.bounds.minimum,
                 "Please specify a value outside [", range0[1], ", ", range0[2], "].")
 
     return(list(min = y.bounds.minimum, max = y.bounds.maximum))
+}
+
+calcXShift <- function(index, length)
+{
+    theta <- (0.5 - 2 * (index - 1)/length) * pi
+    return(cos(theta)*5)
+}
+
+calcYShift <- function(index, length)
+{
+    theta <- (0.5 - 2 * (index - 1)/length) * pi
+    return(sin(theta) * 5)
 }
 
 

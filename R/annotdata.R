@@ -114,14 +114,23 @@ getAnnotData <- function(data, name, series, as.numeric = TRUE)
 
     d.dim <- dim(data)
     d.len <- length(d.dim)
-    d.names <- dimnames(data)[[d.len]]
-    if (is.null(d.names))
-        d.names <- as.character(1:d.len)
+    if (!is.null(attr(data, "statistic")))
+        d.names <- attr(data, "statistic")
+    else
+    {
+        d.names <- dimnames(data)[[d.len]]
+        if (is.null(d.names))
+            d.names <- as.character(1:d.len)
+    }
     ind <- match(paste0("", name), d.names)
     if (is.na(ind))
         stop("Annotation data does not contain a statistic named '", name, "'. ",
                 "Allowable names are: '", paste(d.names, collapse = "', '"), "'. ")
-    if (length(d.dim) == 3)
+    if (isTRUE(attr(data, "statistic") == name) && length(d.dim) == 2)
+        new.dat <- data[,series]
+    else if (isTRUE(attr(data, "statistic") == name))
+        new.dat <- data
+    else if (length(d.dim) == 3)
         new.dat <- data[,series, ind]
     else
         new.dat <- data[,ind]
@@ -180,6 +189,8 @@ addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat, prepend = 
             new.text <- "&#9650;"
         else if (annotation$type == "Caret - down")
             new.text <- "&#9660;"
+        else if (annotation$type == "Custom text")
+            new.text <- annotation$custom.symbol
         else if (grepl("Text", annotation$type))
             new.text <- formatByD3(tmp.dat, annotation$format, annotation$prefix, annotation$suffix)
         else if (annotation$type == "Hide")

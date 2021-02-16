@@ -11,6 +11,8 @@ Line(
   shape = c("linear", "spline")[1],
   smoothing = 1,
   colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
+  average.series = NULL,
+  average.color = rgb(230, 230, 230, maxColorValue = 255),
   annotation.list = NULL,
   opacity = NULL,
   fit.type = "None",
@@ -161,6 +163,10 @@ will be parsed automatically.}
 \item{smoothing}{Numeric; smoothing if \code{shape} is "spline".}
 
 \item{colors}{Character; a vector containing one or more colors specified as hex codes.}
+
+\item{average.series}{y-values of additional data series which is shown as a line. Used by \code{SmallMultiples}.}
+
+\item{average.color}{Color of the \code{average.series} as a hex code or string}
 
 \item{annotation.list}{Optional list of annotations to modify the data labels.}
 

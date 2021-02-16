@@ -27,6 +27,8 @@ Area <- function(x,
                     type = "Area",
                     colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
                     opacity = NULL,
+                    average.series = NULL,
+                    average.color = rgb(230, 230, 230, maxColorValue = 255),
                     fit.line.colors = colors,
                     fit.type = "None", # can be "Smooth" or anything else
                     fit.ignore.last = FALSE,
@@ -262,6 +264,18 @@ Area <- function(x,
     marker.colors <- vectorize(marker.colors, n)
     marker.border.colors <- vectorize(marker.border.colors, n)
 
+    if (!is.null(average.series))
+    {
+        chart.matrix <- cbind(chart.matrix, "Average" = average.series)
+        colors <- c(colors, average.color)
+        fit.line.colors <- c(fit.line.colors, average.color)
+        fit.CI.colors <- c(fit.CI.colors, average.color)
+        line.colors <- c(line.colors, average.color)
+        line.thickness <- line.thickness[c(1:n,1)]
+        marker.colors <- c(marker.colors, average.color)
+        marker.border.colors <- c(marker.colors, average.color)
+    }
+
     if (is.null(opacity))
         opacity <- if (!is.stacked || fit.type != "None") 0.4 else 1
     if (opacity == 1 && !is.stacked && ncol(chart.matrix) > 1)
@@ -443,7 +457,7 @@ Area <- function(x,
                             line = list(color=fit.CI.colors[i], width=0, shape='spline'))
                 }
             }
-            if (any(data.label.show[,i]))
+            if (any(data.label.show[,i]) && i <= n) # no data labels shown for average.series
             {
                 ind.show <- which(data.label.show[,i])
                 y <- as.numeric(chart.matrix[ind.show, i])

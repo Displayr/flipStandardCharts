@@ -936,10 +936,16 @@ Column <- function(x,
                 curr.annot.text <- curr.annot$custom.symbol
             curr.annot.text <- rep(curr.annot.text, length = length(ind.sel))
 
-            p <- add_trace(p, y = curr.annot.ypos,
-                x = data.overlay.annot$x[ind.sel,i],
+            # For clustered column charts we use numeric "x2" axis
+            # But for single series directly map back to "x" axis (possibly categoric)
+            # This is necessary because small multiples do not work with
+            # multiple x/y axis
+            xpos <- if (NCOL(chart.matrix) > 1) data.overlay.annot$x[ind.sel,i]
+                    else x.labels[ind.sel]
+            p <- add_trace(p, x = xpos, y = curr.annot.ypos,
                 type = "scatter", mode = "markers+text", hoverinfo = "skip",
-                xaxis = "x2", yaxis = "y", showlegend = FALSE,
+                xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x",
+                yaxis = "y", showlegend = FALSE,
                 marker = list(opacity = 0.0, size = sum(curr.annot$offset)),
                 text = curr.annot.text, textposition = curr.annot.align,
                 textfont = list(family = curr.annot$font.family, size = curr.annot$size,

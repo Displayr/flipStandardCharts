@@ -9,6 +9,8 @@ Area(
   type = "Area",
   colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
   opacity = NULL,
+  average.series = NULL,
+  average.color = rgb(230, 230, 230, maxColorValue = 255),
   fit.line.colors = colors,
   fit.type = "None",
   fit.ignore.last = FALSE,
@@ -151,6 +153,10 @@ will be parsed automatically.}
 \item{colors}{Character; a vector containing one or more colors specified as hex codes.}
 
 \item{opacity}{Opacity of bars as an alpha value (0 to 1).}
+
+\item{average.series}{y-values of additional data series which is shown as a line. Used by \code{SmallMultiples}.}
+
+\item{average.color}{Color of the \code{average.series} as a hex code or string}
 
 \item{fit.line.colors}{Character; a vector containing one or more colors specified as hex codes.}
 

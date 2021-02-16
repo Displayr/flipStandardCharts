@@ -48,25 +48,31 @@ test_that("Overlay annotations",
         size = 20, offset = 5, font.family = "Arial",
         font.weight = "normal", font.style = "normal"))), NA)
 
-    expect_error(Radar(data.with.stats[-10,-3,],
-        overlay.annotation.list = list(list(type = "Caret - up", data = "p",
+    expect_error(SmallMultiples(data.with.stats[-10,-3,], "Column",
+        overlay.annotation.list = list(list(type = "Arrow - up", data = "p",
         threstype = "below threshold", threshold = "0.05",
         relative.pos = 0.0,  valign = "top", halign = "center",
         offset = 5, color = "red", size = 20,
-        font.family = "Arial"), list(type = "Caret - down", data = "p",
+        font.family = "Arial"), list(type = "Arrow - down", data = "p",
         threstype = "above threshold", threshold = "0.05", color = "blue",
         relative.pos = 1.0,  valign = "top", halign = "center",
         size = 20, offset = 5, font.family = "Arial",
         font.weight = "normal", font.style = "normal"))), NA)
 
+
+    expect_error(SmallMultiples(data.with.stats[-10,-3,], "Radar",
+        overlay.annotation.list = list(list(type = "Custom text",
+        custom.symbol = "*", data = "p",
+        threstype = "below threshold", threshold = "0.05",
+        color = "red", size = 20,
+        font.family = "Arial"))), NA)
+
     expect_error(Radar(data.with.stats[-10,-3,],
         overlay.annotation.list = list(list(type = "Caret - up", data = "p",
         threstype = "below threshold", threshold = "0.05",
-        #relative.pos = 0.0,  valign = "top", halign = "center", offset = 5,
         color = NULL, size = 20,
         font.family = "Arial"), list(type = "Caret - down", data = "p",
         threstype = "above threshold", threshold = "0.05", color = NULL,
-        #relative.pos = 1.0,  valign = "top", halign = "center", offset = 5,
         size = 20, font.family = "Arial",
         font.weight = "normal", font.style = "normal"))), NA)
 
@@ -137,4 +143,34 @@ test_that("Showing column comparisons with arrows",
         threstype = "above threshold", threshold = "1.96",
         relative.pos = 1.0, halign = "Center", valign = "Top", offset = 5,
         color = "#0000FF", size = 15))), NA)
+})
+
+tb1d.with.single.stat <- structure(c(`Less than $15,000` = 3.25318246110325, `$15,001 to $30,000` = 10.8910891089109,
+`$30,001 to $45,000` = 10.3253182461103, `$45,001 to $60,000` = 18.2461103253182,
+`$60,001 to $90,000` = 22.3479490806223, `$90,001 to $120,000` = 14.5685997171146,
+`$120,001 to $150,000` = 8.34512022630834, `$150,001 to $200,000` = 6.22347949080622,
+`$200,001 or more` = 5.7991513437058), .Dim = 9L, .Dimnames = list(
+    c("Less than $15,000", "$15,001 to $30,000", "$30,001 to $45,000",
+    "$45,001 to $60,000", "$60,001 to $90,000", "$90,001 to $120,000",
+    "$120,001 to $150,000", "$150,001 to $200,000", "$200,001 or more")), statistic = "%",
+    basedescriptiontext = "sample size = 707; total sample size = 800; 93 missing",
+    basedescription = list(Minimum = 707L, Maximum = 707L, Range = FALSE, Total = 800L,
+    Missing = 93L, EffectiveSampleSize = 707L, EffectiveSampleSizeProportion = 100,
+    FilteredProportion = 0), questiontypes = "PickOne", span = list(
+    rows = structure(list(c("Less than $15,000", "$15,001 to $30,000",
+    "$30,001 to $45,000", "$45,001 to $60,000", "$60,001 to $90,000",
+    "$90,001 to $120,000", "$120,001 to $150,000", "$150,001 to $200,000",
+    "$200,001 or more", "NET")), class = "data.frame", .Names = "", row.names = c(NA,
+    10L))), name = "table.Income", questions = c("Income", "SUMMARY"
+), assigned.rownames = TRUE)
+
+aa.txt <- list(list(type = "Text", data = "%", custom.symbol = NULL, threstype = "above threshold",
+    threshold = " 8", relative.pos = 0, halign = "Center",
+    valign = "Top", offset = 5, color = "#CD343C", size = 15,
+    format = "", prefix = "", suffix = "", font.family = "Arial"))
+
+
+test_that("Annotations for tables with only one statistic",
+{
+    expect_error(Column(tb1d.with.single.stat, overlay.annotation.list = aa.txt), NA)
 })

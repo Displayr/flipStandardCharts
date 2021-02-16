@@ -276,32 +276,6 @@ SmallMultiples <- function(x,
 
 
     # Construct charts
-    .bind_mean <- function(a, b)
-    {
-        if (is.null(b))
-            return(a)
-        stat <- attr(a, "statistic")
-        if (length(dim(a)) == 3)
-        {
-            num.stats <- dim(a)[3]
-            stat <- dimnames(a)[[3]][1]
-            dnn <- dimnames(a)
-            dnn[[2]] <- "Average"
-            b <- array(c(b, rep(NA, length(b) * num.stats)), dim = c(length(b), 1, num.stats),
-                dimnames = dnn)
-        }
-        if (isTRUE(grepl("%", stat)))
-            b <- b * 100
-
-        if (length(dim(a)) == 3)
-            res <- abind(a, b, along = 2)
-        else
-            res <- cbind(a, Average = b)
-        attr(res, "statistic") <- stat
-        return(res)
-    }
-
-
     if (chart.type == "Scatter")
     {
         if (average.show)
@@ -383,13 +357,13 @@ SmallMultiples <- function(x,
             line.thickness <- TextAsVector(line.thickness)
         line.thickness <- suppressWarnings(paste0(line.thickness, rep("", npanels)))
 
-        plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(.bind_mean(getColumn(x, i), average.series),
-                                                     hovertext.show = c(TRUE, TRUE),
-                                                     small.mult = TRUE,
+        plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(getColumn(x, i),
                                                      line.thickness = line.thickness[i],
-                                                     colors = c(colors[i], average.color),
+                                                     colors = colors[i],
+                                                     average.series = average.series,
+                                                     average.color = average.color,
                                                      grid.show = FALSE, x.tick.show = FALSE,
-                                                     data.label.show = cbind(data.label.show[,i], FALSE),
+                                                     data.label.show = data.label.show[,i],
                                                      data.label.prefix = data.label.prefix[,i],
                                                      data.label.suffix = data.label.suffix[,i],
                                                      data.label.font.color = data.label.font.color[i],
@@ -506,17 +480,19 @@ SmallMultiples <- function(x,
             line.thickness <- TextAsVector(line.thickness)
         line.thickness <- suppressWarnings(paste0(line.thickness, rep("", npanels)))
 
-        plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(.bind_mean(getColumn(x, i), average.series),
-                                                     colors = c(colors[i], average.color),
+        plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(getColumn(x, i),
+                                                     colors = colors[i], 
+                                                     average.series = average.series,
+                                                     average.color = average.color,
                                                      line.thickness = line.thickness[i],
-                                                     fit.line.colors = c(fit.line.colors[i], average.color),
-                                                     fit.CI.colors = c(fit.CI.colors[i], average.color),
+                                                     fit.line.colors = fit.line.colors[i],
+                                                     fit.CI.colors = fit.CI.colors[i],
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
                                                      grid.show = grid.show,
-                                                     data.label.show = cbind(data.label.show[,i], FALSE),
-                                                     data.label.prefix = cbind(data.label.prefix[,i], ""),
-                                                     data.label.suffix = cbind(data.label.suffix[,i], ""),
+                                                     data.label.show = data.label.show[,i],
+                                                     data.label.prefix = data.label.prefix[,i],
+                                                     data.label.suffix = data.label.suffix[,i],
                                                      data.label.font.color = data.label.font.color[i],
                                                      x.tick.show = x.tick.show, x.tick.angle = x.tick.angle,
                                                      y.bounds.maximum = y.bounds.maximum,
