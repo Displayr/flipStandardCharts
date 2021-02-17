@@ -246,9 +246,9 @@ SmallMultiples <- function(x,
     if (is.null(margin.top) || is.na(margin.top))
         margin.top <- 20 + title.font.size * any(nzchar(title, keepNA = TRUE), na.rm = TRUE)
     if (is.null(margin.bottom) || is.na(margin.bottom))
-        margin.bottom <- 30 + x.title.font.size * any(nzchar(title, keepNA = TRUE), na.rm = TRUE)
+        margin.bottom <- 30 + x.title.font.size * any(nzchar(x.title, keepNA = TRUE), na.rm = TRUE)
     if (is.null(margin.left) || is.na(margin.left))
-        margin.left <- 30 + y.title.font.size * any(nzchar(title, keepNA = TRUE), na.rm = TRUE)
+        margin.left <- 30 + y.title.font.size * any(nzchar(y.title, keepNA = TRUE), na.rm = TRUE)
     if (is.null(margin.right) || is.na(margin.right))
         margin.right <- 20
 
