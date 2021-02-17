@@ -58,7 +58,6 @@ SmallMultiples(
   data.label.suffix = "",
   data.label.font.color = global.font.color,
   line.thickness = NULL,
-  grid.show = TRUE,
   x.tick.show = TRUE,
   x.tick.angle = NULL,
   legend.show = TRUE,
@@ -211,8 +210,6 @@ color, a vector of colors (1 for each series/column), or a comma separated list
 of colors}
 
 \item{line.thickness}{Thickness, in pixels, of the series line}
-
-\item{grid.show}{Logical; whether to show grid lines.}
 
 \item{x.tick.show}{Whether to display the x-axis tick labels}
 

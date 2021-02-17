@@ -454,7 +454,7 @@ Radar <- function(x,
     if (grid.show && y.grid.width > 0 && y.tick.show && !is.null(tick.vals))
     {
         for (i in 1:length(tick.vals))
-            annotations[[annot.len+3+i]] <- list(x = 0,
+            annotations[[length(annotations)+1]] <- list(x = 0,
                 y = tick.vals[i] - y.bounds.minimum,
                 font = y.tick.font, showarrow = FALSE, xanchor = "right",
                 xshift = -5, xref = "x", yref = "y",

@@ -64,8 +64,8 @@ test_that("Overlay annotations",
         overlay.annotation.list = list(list(type = "Custom text",
         custom.symbol = "*", data = "p",
         threstype = "below threshold", threshold = "0.05",
-        color = "red", size = 20,
-        font.family = "Arial"))), NA)
+        color = "red", size = 20, font.family = "Arial")),
+        x.tick.font.size = 9, average.show = TRUE), NA)
 
     expect_error(Radar(data.with.stats[-10,-3,],
         overlay.annotation.list = list(list(type = "Caret - up", data = "p",
