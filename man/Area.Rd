@@ -154,7 +154,10 @@ will be parsed automatically.}
 
 \item{opacity}{Opacity of bars as an alpha value (0 to 1).}
 
-\item{average.series}{y-values of additional data series which is shown as a line. Used by \code{SmallMultiples}.}
+\item{average.series}{a vector of values which create an additional data series named "Average".
+This is usually used by \code{SmallMultiples}. For bar/column charts, the average is shown as a line,
+for Line and Area, the average series is shown in the same way as the other data series
+but it is shown without data labels.}
 
 \item{average.color}{Color of the \code{average.series} as a hex code or string}
 
@@ -464,8 +467,12 @@ because data labels and annotations can be misplace on zoom.}
 
 \item{data.label.show}{Logical; whether to show data labels.}
 
-\item{data.label.font.autocolor}{Logical; Whether font color should be automatically determined
-(black or white) based on the color of the background column if stacked.}
+\item{data.label.font.autocolor}{Logical; Whether font color should be 
+automatically determined. For Line and Radar charts, the data labels will
+colored in the series color. For stacked bar and column charts the
+data labels will be black or white depending on the color of the 
+bar (which background the data label). For non-stacked bar and column
+charts, this option is ignored.}
 
 \item{data.label.font.family}{Character; font family for data label.}
 

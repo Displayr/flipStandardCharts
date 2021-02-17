@@ -239,7 +239,7 @@ Radar <- function(x,
     g.list <- unique(pos$Group)
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate = FALSE)
     margins <- list(b = 20, l = 0, r = 0, t = 20, inner = 0)
-    if (sum(nchar(subtitle)) > 0)
+    if (any(nzchar(subtitle)))
         subtitle <- paste0("<br>&nbsp;", subtitle, "<br>&nbsp;") # extra vertical space
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
@@ -314,7 +314,7 @@ Radar <- function(x,
     # Add x-axis labels
     # If x-axis label are not shown, annotations may still be present
     annotations <- NULL
-    if (any(nchar(xlab) > 0))
+    if (any(nzchar(xlab)))
     {
 
         # We use annotations rather than a text trace because

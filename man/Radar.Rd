@@ -284,8 +284,12 @@ in character format (e.g. "black") or an a hex code. This can be a single
 color, a vector of colors (1 for each series/column), or a comma separated list
 of colors}
 
-\item{data.label.font.autocolor}{Logical; Whether font color should be automatically determined
-(black or white) based on the color of the background column if stacked.}
+\item{data.label.font.autocolor}{Logical; Whether font color should be 
+automatically determined. For Line and Radar charts, the data labels will
+colored in the series color. For stacked bar and column charts the
+data labels will be black or white depending on the color of the 
+bar (which background the data label). For non-stacked bar and column
+charts, this option is ignored.}
 
 \item{data.label.format}{A string representing a d3 formatting code.
 See https://github.com/mbostock/d3/wiki/Formatting#numbers}
@@ -297,7 +301,10 @@ See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 \item{data.label.values.only}{Logical; whether to show only the values in the
 datal labels instead of the default category label and values.}
 
-\item{average.series}{y-values of additional data series which is shown as a line. Used by \code{SmallMultiples}.}
+\item{average.series}{a vector of values which create an additional data series named "Average".
+This is usually used by \code{SmallMultiples}. For bar/column charts, the average is shown as a line,
+for Line and Area, the average series is shown in the same way as the other data series
+but it is shown without data labels.}
 
 \item{average.color}{Color of the \code{average.series} as a hex code or string}
 

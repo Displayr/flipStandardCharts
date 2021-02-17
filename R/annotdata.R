@@ -126,11 +126,13 @@ getAnnotData <- function(data, name, series, as.numeric = TRUE)
     if (is.na(ind))
         stop("Annotation data does not contain a statistic named '", name, "'. ",
                 "Allowable names are: '", paste(d.names, collapse = "', '"), "'. ")
-    if (isTRUE(attr(data, "statistic") == name) && length(d.dim) == 2)
+
+    match.single.stat <- isTRUE(attr(data, "statistic") == name)
+    if (match.single.stat && d.len == 2)
         new.dat <- data[,series]
-    else if (isTRUE(attr(data, "statistic") == name))
+    else if (match.single.stat)
         new.dat <- data
-    else if (length(d.dim) == 3)
+    else if (d.len == 3)
         new.dat <- data[,series, ind]
     else
         new.dat <- data[,ind]
@@ -150,6 +152,21 @@ extractSelectedAnnot <- function(data, threshold, threstype)
         return(which(data < threshold))
 }
 
+
+#' Adds html code to the data labels include the annotation
+#' @return The modified character vector \code{data.label.text}.
+#' @param data.label.text A character vector containing the original data labels
+#'  which is to be annotated
+#' @param annotation An element of the \code{annotation.list} passed to the
+#' top level charting function. The is usually a list with named elements
+#' such as "type", "size", "font.family", "format". Note that this
+#' function will not handle annotation of type "Circle - xxx" or "Marker border"
+#' because these are implemented as additional traces.
+#' @param tmp.dat A slice of \code{annot.dat} which matches data.label.text
+#' It is used when \code{annotation$type} is "Text".
+#' @param prepend Logical; when true, the annotation will be added to the
+#  beginning of data.label.text instead of the end.
+#' @keywords internal
 addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat, prepend = FALSE)
 {
     # Fix font size so that the units do not change in size when the font size increases
@@ -195,7 +212,7 @@ addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat, prepend = 
             new.text <- formatByD3(tmp.dat, annotation$format, annotation$prefix, annotation$suffix)
         else if (annotation$type == "Hide")
             new.text <- ""
-        if (nchar(new.style) > 0)
+        if (any(nzchar(new.style)))
             new.text <- paste0("<span style='", new.style, "'>", new.text, "</span>")
 
         if (annotation$type == "Hide")

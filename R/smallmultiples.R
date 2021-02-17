@@ -244,11 +244,11 @@ SmallMultiples <- function(x,
 
     # Layout and positioning
     if (is.null(margin.top) || is.na(margin.top))
-        margin.top <- 20 + title.font.size * (sum(nchar(title) > 0, na.rm = TRUE))
+        margin.top <- 20 + title.font.size * any(nzchar(title, keepNA = TRUE), na.rm = TRUE)
     if (is.null(margin.bottom) || is.na(margin.bottom))
-        margin.bottom <- 30 + x.title.font.size * (sum(nchar(x.title) > 0, na.rm = TRUE))
+        margin.bottom <- 30 + x.title.font.size * any(nzchar(title, keepNA = TRUE), na.rm = TRUE)
     if (is.null(margin.left) || is.na(margin.left))
-        margin.left <- 30 + y.title.font.size * (sum(nchar(y.title) > 0, na.rm = TRUE))
+        margin.left <- 30 + y.title.font.size * any(nzchar(title, keepNA = TRUE), na.rm = TRUE)
     if (is.null(margin.right) || is.na(margin.right))
         margin.right <- 20
 
@@ -279,7 +279,7 @@ SmallMultiples <- function(x,
     {
         if (average.show)
             warning("Averages cannot be shown for small multiples with scatterplot.")
-        empty.footer <- length(footer) == 0 || nchar(footer) == 0
+        empty.footer <- !any(nzchar(footer)) 
         sz.min <- NULL
         sz.max <- NULL
         if (!is.null(scatter.sizes.column) && !is.na(scatter.sizes.column) &&
@@ -523,7 +523,7 @@ SmallMultiples <- function(x,
     margins <- list(l = margin.left, r = margin.right, b = margin.bottom, t = margin.top)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
-    if (sum(nchar(subtitle)) > 0)
+    if (any(nzchar(subtitle)))
         subtitle <- paste0(subtitle, "<br>&nbsp;<br>")
     annotations <- list(setSubtitle(subtitle, subtitle.font, margins),
                         setTitle(title, title.font, margins),
