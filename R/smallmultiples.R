@@ -89,7 +89,6 @@ SmallMultiples <- function(x,
                            data.label.suffix = "",
                            data.label.font.color = global.font.color,
                            line.thickness = NULL,
-                           grid.show = TRUE,
                            x.tick.show = TRUE,
                            x.tick.angle = NULL,
                            legend.show = TRUE,
@@ -245,11 +244,11 @@ SmallMultiples <- function(x,
 
     # Layout and positioning
     if (is.null(margin.top) || is.na(margin.top))
-        margin.top <- 20 + title.font.size * (sum(nchar(title) > 0, na.rm = TRUE))
+        margin.top <- 20 + title.font.size * any(nzchar(title, keepNA = TRUE), na.rm = TRUE)
     if (is.null(margin.bottom) || is.na(margin.bottom))
-        margin.bottom <- 30 + x.title.font.size * (sum(nchar(x.title) > 0, na.rm = TRUE))
+        margin.bottom <- 30 + x.title.font.size * any(nzchar(x.title, keepNA = TRUE), na.rm = TRUE)
     if (is.null(margin.left) || is.na(margin.left))
-        margin.left <- 30 + y.title.font.size * (sum(nchar(y.title) > 0, na.rm = TRUE))
+        margin.left <- 30 + y.title.font.size * any(nzchar(y.title, keepNA = TRUE), na.rm = TRUE)
     if (is.null(margin.right) || is.na(margin.right))
         margin.right <- 20
 
@@ -276,37 +275,11 @@ SmallMultiples <- function(x,
 
 
     # Construct charts
-    .bind_mean <- function(a, b)
-    {
-        if (is.null(b))
-            return(a)
-        stat <- attr(a, "statistic")
-        if (length(dim(a)) == 3)
-        {
-            num.stats <- dim(a)[3]
-            stat <- dimnames(a)[[3]][1]
-            dnn <- dimnames(a)
-            dnn[[2]] <- "Average"
-            b <- array(c(b, rep(NA, length(b) * num.stats)), dim = c(length(b), 1, num.stats),
-                dimnames = dnn)
-        }
-        if (isTRUE(grepl("%", stat)))
-            b <- b * 100
-
-        if (length(dim(a)) == 3)
-            res <- abind(a, b, along = 2)
-        else
-            res <- cbind(a, Average = b)
-        attr(res, "statistic") <- stat
-        return(res)
-    }
-
-
     if (chart.type == "Scatter")
     {
         if (average.show)
             warning("Averages cannot be shown for small multiples with scatterplot.")
-        empty.footer <- length(footer) == 0 || nchar(footer) == 0
+        empty.footer <- !any(nzchar(footer)) 
         sz.min <- NULL
         sz.max <- NULL
         if (!is.null(scatter.sizes.column) && !is.na(scatter.sizes.column) &&
@@ -358,7 +331,7 @@ SmallMultiples <- function(x,
                                                      fit.CI.colors = fit.CI.colors[i],
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
-                                                     grid.show = grid.show, data.label.show = data.label.show,
+                                                     data.label.show = data.label.show,
                                                      x.tick.show = x.tick.show, x.tick.angle = x.tick.angle,
                                                      y.bounds.maximum = y.bounds.maximum,
                                                      y.bounds.minimum = y.bounds.minimum,
@@ -383,12 +356,13 @@ SmallMultiples <- function(x,
             line.thickness <- TextAsVector(line.thickness)
         line.thickness <- suppressWarnings(paste0(line.thickness, rep("", npanels)))
 
-        plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(.bind_mean(getColumn(x, i), average.series),
-                                                     hovertext.show = c(TRUE, TRUE),
+        plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(getColumn(x, i),
                                                      line.thickness = line.thickness[i],
-                                                     colors = c(colors[i], average.color),
-                                                     grid.show = FALSE, x.tick.show = FALSE,
-                                                     data.label.show = cbind(data.label.show[,i], FALSE),
+                                                     colors = colors[i],
+                                                     average.series = average.series,
+                                                     average.color = average.color,
+                                                     x.tick.show = x.tick.show,
+                                                     data.label.show = data.label.show[,i],
                                                      data.label.prefix = data.label.prefix[,i],
                                                      data.label.suffix = data.label.suffix[,i],
                                                      data.label.font.color = data.label.font.color[i],
@@ -426,7 +400,7 @@ SmallMultiples <- function(x,
                                                      fit.CI.colors = fit.CI.colors[i],
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
-                                                     grid.show = grid.show, data.label.show = data.label.show[,i],
+                                                     data.label.show = data.label.show[,i],
                                                      data.label.prefix = data.label.prefix[,i],
                                                      data.label.suffix = data.label.suffix[,i],
                                                      data.label.font.color = data.label.font.color[i],
@@ -458,7 +432,7 @@ SmallMultiples <- function(x,
                                                      colors = if (color.as.matrix) colors[,i] else colors,
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
-                                                     grid.show = grid.show, data.label.show = data.label.show[,i],
+                                                     data.label.show = data.label.show[,i],
                                                      data.label.prefix = data.label.prefix[,i],
                                                      data.label.suffix = data.label.suffix[,i],
                                                      data.label.font.color = data.label.font.color,
@@ -505,17 +479,18 @@ SmallMultiples <- function(x,
             line.thickness <- TextAsVector(line.thickness)
         line.thickness <- suppressWarnings(paste0(line.thickness, rep("", npanels)))
 
-        plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(.bind_mean(getColumn(x, i), average.series),
-                                                     colors = c(colors[i], average.color),
+        plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(getColumn(x, i),
+                                                     colors = colors[i], 
+                                                     average.series = average.series,
+                                                     average.color = average.color,
                                                      line.thickness = line.thickness[i],
-                                                     fit.line.colors = c(fit.line.colors[i], average.color),
-                                                     fit.CI.colors = c(fit.CI.colors[i], average.color),
+                                                     fit.line.colors = fit.line.colors[i],
+                                                     fit.CI.colors = fit.CI.colors[i],
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
-                                                     grid.show = grid.show,
-                                                     data.label.show = cbind(data.label.show[,i], FALSE),
-                                                     data.label.prefix = cbind(data.label.prefix[,i], ""),
-                                                     data.label.suffix = cbind(data.label.suffix[,i], ""),
+                                                     data.label.show = data.label.show[,i],
+                                                     data.label.prefix = data.label.prefix[,i],
+                                                     data.label.suffix = data.label.suffix[,i],
                                                      data.label.font.color = data.label.font.color[i],
                                                      x.tick.show = x.tick.show, x.tick.angle = x.tick.angle,
                                                      y.bounds.maximum = y.bounds.maximum,
@@ -548,7 +523,7 @@ SmallMultiples <- function(x,
     margins <- list(l = margin.left, r = margin.right, b = margin.bottom, t = margin.top)
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
-    if (sum(nchar(subtitle)) > 0)
+    if (any(nzchar(subtitle)))
         subtitle <- paste0(subtitle, "<br>&nbsp;<br>")
     annotations <- list(setSubtitle(subtitle, subtitle.font, margins),
                         setTitle(title, title.font, margins),

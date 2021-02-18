@@ -328,8 +328,12 @@ around series bars; 0 is no line}
 
 \item{data.label.show}{Logical; whether to show data labels.}
 
-\item{data.label.font.autocolor}{Logical; Whether font color should be automatically determined
-(black or white) based on the color of the background column if stacked.}
+\item{data.label.font.autocolor}{Logical; Whether font color should be 
+automatically determined. For Line and Radar charts, the data labels will
+colored in the series color. For stacked bar and column charts the
+data labels will be black or white depending on the color of the 
+bar (which background the data label). For non-stacked bar and column
+charts, this option is ignored.}
 
 \item{data.label.font.family}{Character; font family for data label.}
 

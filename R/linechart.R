@@ -30,6 +30,8 @@ Line <-   function(x,
                     shape = c("linear", "spline")[1],
                     smoothing = 1,
                     colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
+                    average.series = NULL,
+                    average.color = rgb(230, 230, 230, maxColorValue = 255),
                     annotation.list = NULL,
                     opacity = NULL,
                     fit.type = "None", # can be "Smooth" or anything else
@@ -263,6 +265,19 @@ Line <-   function(x,
                         legend.position.x, legend.position.y, FALSE, legend.orientation)
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
 
+    if (!is.null(average.series))
+    {
+        chart.matrix <- cbind(chart.matrix, average.series)
+        colnames(chart.matrix)[ncol(chart.matrix)] <- "Average"
+        colors <- c(colors, average.color)
+        fit.line.colors <- c(fit.line.colors, average.color)
+        fit.CI.colors <- c(fit.CI.colors, average.color)
+        line.type <- line.type[c(1:n,1)]
+        marker.show <- cbind(marker.show, FALSE)
+        marker.size <- marker.size[,c(1:n,1)] # doesn't matter - marker is not shown
+        marker.symbols <- marker.symbols[,c(1:n,1)]
+    }
+
     # Format axis labels
     axisFormat <- formatLabels(chart.matrix, "Line", x.tick.label.wrap, x.tick.label.wrap.nchar,
                                x.tick.format, y.tick.format)
@@ -424,7 +439,7 @@ Line <-   function(x,
     # Add data labels last to ensure they show on top of the lines
     # This also overrides the hoverlabels so we need to re-create them
     # We use a text trace instead of annotations because it will toggle with the legend
-    for (i in 1:ncol(chart.matrix))
+    for (i in 1:n) # does not include average.series
     {
         if (any(data.label.show[,i]))
         {

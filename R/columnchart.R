@@ -10,7 +10,10 @@
 #' @param type One of "Column", "Stacked Column" or "100\% Stacked Column"
 #' @param annotation.list Optional list of annotations to modify the data labels.
 #' @param overlay.annotation.list Optional list of annotations that is overlayed on top of the chart.
-#' @param average.series y-values of additional data series which is shown as a line. Used by \code{SmallMultiples}.
+#' @param average.series a vector of values which create an additional data series named "Average".
+#' This is usually used by \code{SmallMultiples}. For bar/column charts, the average is shown as a line,
+#' for Line and Area, the average series is shown in the same way as the other data series
+#' but it is shown without data labels.
 #' @param average.color Color of the \code{average.series} as a hex code or string
 #' @param fit.type Character; type of line of best fit. Can be one of "None", "Linear", "LOESS",
 #'          "Friedman's super smoother", "Cubic spline", "Moving average", "Centered moving average".
@@ -234,15 +237,20 @@
 #' @param bar.gap Chart proportion between each bar or column if using
 #' bar or column charts, or between each cluster of bars or columns.
 #' @param data.label.show Logical; whether to show data labels.
-#' @param data.label.centered Logical; whether data labels in Stacked Column charts should have the data labels vertically centered.
+#' @param data.label.centered Logical; whether data labels in Stacked Column 
+#' charts should have the data labels vertically centered.
 #' @param data.label.font.family Character; font family for data label.
 #' @param data.label.font.size Integer; Font size for data label.px.
 #' @param data.label.font.color Font color as a named color
 #' in character format (e.g. "black") or an a hex code. This can be a single
 #' color, a vector of colors (1 for each series/column), or a comma separated list
 #' of colors
-#' @param data.label.font.autocolor Logical; Whether font color should be automatically determined
-#' (black or white) based on the color of the background column if stacked.
+#' @param data.label.font.autocolor Logical; Whether font color should be 
+#' automatically determined. For Line and Radar charts, the data labels will
+#' colored in the series color. For stacked bar and column charts the
+#' data labels will be black or white depending on the color of the 
+#' bar (which background the data label). For non-stacked bar and column
+#' charts, this option is ignored.
 #' @param data.label.format A string representing a d3 formatting code.
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers
 #' @param data.label.prefix Character; prefix for data values.
@@ -936,10 +944,16 @@ Column <- function(x,
                 curr.annot.text <- curr.annot$custom.symbol
             curr.annot.text <- rep(curr.annot.text, length = length(ind.sel))
 
-            p <- add_trace(p, y = curr.annot.ypos,
-                x = data.overlay.annot$x[ind.sel,i],
+            # For clustered column charts we use numeric "x2" axis
+            # But for single series directly map back to "x" axis (possibly categoric)
+            # This is necessary because small multiples do not work with
+            # multiple x/y axis
+            xpos <- if (NCOL(chart.matrix) > 1) data.overlay.annot$x[ind.sel,i]
+                    else x.labels[ind.sel]
+            p <- add_trace(p, x = xpos, y = curr.annot.ypos,
                 type = "scatter", mode = "markers+text", hoverinfo = "skip",
-                xaxis = "x2", yaxis = "y", showlegend = FALSE,
+                xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x",
+                yaxis = "y", showlegend = FALSE,
                 marker = list(opacity = 0.0, size = sum(curr.annot$offset)),
                 text = curr.annot.text, textposition = curr.annot.align,
                 textfont = list(family = curr.annot$font.family, size = curr.annot$size,

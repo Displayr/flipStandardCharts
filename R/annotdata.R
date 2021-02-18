@@ -114,14 +114,25 @@ getAnnotData <- function(data, name, series, as.numeric = TRUE)
 
     d.dim <- dim(data)
     d.len <- length(d.dim)
-    d.names <- dimnames(data)[[d.len]]
-    if (is.null(d.names))
-        d.names <- as.character(1:d.len)
+    if (!is.null(attr(data, "statistic")))
+        d.names <- attr(data, "statistic")
+    else
+    {
+        d.names <- dimnames(data)[[d.len]]
+        if (is.null(d.names))
+            d.names <- as.character(1:d.len)
+    }
     ind <- match(paste0("", name), d.names)
     if (is.na(ind))
         stop("Annotation data does not contain a statistic named '", name, "'. ",
                 "Allowable names are: '", paste(d.names, collapse = "', '"), "'. ")
-    if (length(d.dim) == 3)
+
+    match.single.stat <- isTRUE(attr(data, "statistic") == name)
+    if (match.single.stat && d.len == 2)
+        new.dat <- data[,series]
+    else if (match.single.stat)
+        new.dat <- data
+    else if (d.len == 3)
         new.dat <- data[,series, ind]
     else
         new.dat <- data[,ind]
@@ -141,7 +152,22 @@ extractSelectedAnnot <- function(data, threshold, threstype)
         return(which(data < threshold))
 }
 
-addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat)
+
+#' Adds html code to the data labels include the annotation
+#' @return The modified character vector \code{data.label.text}.
+#' @param data.label.text A character vector containing the original data labels
+#'  which is to be annotated
+#' @param annotation An element of the \code{annotation.list} passed to the
+#' top level charting function. The is usually a list with named elements
+#' such as "type", "size", "font.family", "format". Note that this
+#' function will not handle annotation of type "Circle - xxx" or "Marker border"
+#' because these are implemented as additional traces.
+#' @param tmp.dat A slice of \code{annot.dat} which matches data.label.text
+#' It is used when \code{annotation$type} is "Text".
+#' @param prepend Logical; when true, the annotation will be added to the
+#  beginning of data.label.text instead of the end.
+#' @keywords internal
+addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat, prepend = FALSE)
 {
     # Fix font size so that the units do not change in size when the font size increases
     left.pad <- ""
@@ -180,16 +206,18 @@ addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat)
             new.text <- "&#9650;"
         else if (annotation$type == "Caret - down")
             new.text <- "&#9660;"
+        else if (annotation$type == "Custom text")
+            new.text <- annotation$custom.symbol
         else if (grepl("Text", annotation$type))
             new.text <- formatByD3(tmp.dat, annotation$format, annotation$prefix, annotation$suffix)
         else if (annotation$type == "Hide")
             new.text <- ""
-        if (nchar(new.style) > 0)
+        if (any(nzchar(new.style)))
             new.text <- paste0("<span style='", new.style, "'>", new.text, "</span>")
 
         if (annotation$type == "Hide")
             data.label.text <- ""
-        else if (annotation$type == "Text - before data label")
+        else if (annotation$type == "Text - before data label" || prepend)
             data.label.text <- paste0(left.pad, new.text, data.label.text)
         else
             data.label.text <- paste0(data.label.text, left.pad, new.text)
