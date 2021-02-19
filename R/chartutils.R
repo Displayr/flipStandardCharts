@@ -105,7 +105,12 @@ checkMatrixNames <- function(x, assign.col.names = TRUE)
     # Convert percentage data to decimal form
     stat <- attr(x, "statistic")
     if (is.null(stat) && !is.null(dimnames(x)))
-        stat <- dimnames(x)[[length(dim(x))]][1]
+    {
+        # Add extra check so we don't accidently use column names of R table
+        if (length(dimnames(x)) >= 3 || 
+            all(c("questions", "name") %in% names(attributes(x))))
+            stat <- dimnames(x)[[length(dim(x))]][1]
+    }
     if (isTRUE(grepl("%", stat)))
     {
         new.x <- new.x/100
