@@ -279,7 +279,7 @@ SmallMultiples <- function(x,
     {
         if (average.show)
             warning("Averages cannot be shown for small multiples with scatterplot.")
-        empty.footer <- !any(nzchar(footer)) 
+        empty.footer <- !any(nzchar(footer))
         sz.min <- NULL
         sz.max <- NULL
         if (!is.null(scatter.sizes.column) && !is.na(scatter.sizes.column) &&
@@ -480,7 +480,7 @@ SmallMultiples <- function(x,
         line.thickness <- suppressWarnings(paste0(line.thickness, rep("", npanels)))
 
         plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(getColumn(x, i),
-                                                     colors = colors[i], 
+                                                     colors = colors[i],
                                                      average.series = average.series,
                                                      average.color = average.color,
                                                      line.thickness = line.thickness[i],
@@ -542,7 +542,7 @@ SmallMultiples <- function(x,
     }
     res$sizingPolicy$browser$padding <- if (margin.autoexpand) 40 # so existing charts don't move
                                         else                   0
-    margins$autoexpand <- margin.autoexpand
+    margins$autoexpand <- if (chart.type == "GeographicMap") TRUE else margin.autoexpand
     res <- layout(res, showlegend = is.geo, margin = margins,
                   annotations = annotations)
     #attr(res, "can-run-in-root-dom") <- TRUE
