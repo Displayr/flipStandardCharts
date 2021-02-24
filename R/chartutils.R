@@ -103,15 +103,7 @@ checkMatrixNames <- function(x, assign.col.names = TRUE)
     }
 
     # Convert percentage data to decimal form
-    stat <- attr(x, "statistic")
-    if (is.null(stat) && !is.null(dimnames(x)))
-    {
-        # Add extra check so we don't accidently use column names of R table
-        if (length(dimnames(x)) >= 3 || 
-            all(c("questions", "name") %in% names(attributes(x))))
-            stat <- dimnames(x)[[length(dim(x))]][1]
-    }
-    if (isTRUE(grepl("%", stat)))
+    if (isPercentData(x))
     {
         new.x <- new.x/100
         attr(new.x, "statistic") <- NULL
@@ -1520,12 +1512,16 @@ isAutoFormat <- function(x)
 
 isPercentData <- function(data)
 {
-    if (isTRUE(grepl("%", attr(data, "statistic"))))
+    stat <- attr(data, "statistic")
+    if (isTRUE(grepl("%", stat)))
         return(TRUE)
     ndim <- length(dim(data))
-    if (is.null(attr(data, "statistic")) &&
-        isTRUE(grepl("%", dimnames(data)[[ndim]][1])))
-        return(TRUE)
+    if (is.null(stat) && !is.null(dimnames(data)))
+    {
+        stat <- dimnames(data)[[ndim]][1]
+        if (ndim >= 3 || all(c("questions", "name") %in% names(attributes(data))))
+            return(isTRUE(grepl("%", stat)))
+    }
     return(FALSE)
 }
 

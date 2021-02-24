@@ -151,6 +151,16 @@ test_that("checkMatrixNames",
         structure(c(0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09,
         0.1), .Dim = c(10L, 1L), .Dimnames = list(c("A", "B", "C", "D",
     "E", "F", "G", "H", "I", "J"), "Series 1")))
+})
 
+# Check function used for automatically detecting value axis formatting
+test_that("isPercentData",
+{
+    tb1 <- structure(list(`100ab%` = c(0.5, 1, 0)), row.names = c("a", "b",
+        "c"), assigned.rownames = TRUE, class = "data.frame")
+    expect_equal(isPercentData(tb1), FALSE)
 
+    expect_equal(isPercentData(tab.2d.nonQ), FALSE)
+    expect_equal(isPercentData(tab1d.with.stats), TRUE)
+    expect_equal(isPercentData(tab2d.with.stats), TRUE)
 })
