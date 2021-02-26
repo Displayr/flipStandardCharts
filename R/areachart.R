@@ -547,7 +547,7 @@ Area <- function(x,
         hoverlabel = list(namelength = -1, bordercolor = "transparent",
             font = list(size = hovertext.font.size, family = hovertext.font.family))
     )
-    #attr(p, "can-run-in-root-dom") <- TRUE
+    attr(p, "can-run-in-root-dom") <- TRUE
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     attr(result, "ChartType") <- if (is.stacked) "Area Stacked" else "Area"
