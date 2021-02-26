@@ -266,7 +266,7 @@ ColumnMultiColor <- function(x,
         bargap = bar.gap,
         barmode = 'overlay'
     )
-    #attr(p, "can-run-in-root-dom") <- TRUE
+    attr(p, "can-run-in-root-dom") <- TRUE
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     attr(result, "ChartType") <- "Column Clustered"
