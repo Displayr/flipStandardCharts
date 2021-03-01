@@ -437,7 +437,7 @@ around series bars; 0 is no line}
 
 \item{modebar.show}{Logical; whether to show the zoom menu buttons or not.}
 
-\item{zoom.enable}{Logical; whether to enable zoom on the chart. 
+\item{zoom.enable}{Logical; whether to enable zoom on the chart.
 For Bar and Column charts with data labels it may be useful to turn off zoom
 because data labels and annotations can be misplace on zoom.}
 
@@ -446,10 +446,10 @@ bar or column charts, or between each cluster of bars or columns.}
 
 \item{data.label.show}{Logical; whether to show data labels.}
 
-\item{data.label.font.autocolor}{Logical; Whether font color should be 
+\item{data.label.font.autocolor}{Logical; Whether font color should be
 automatically determined. For Line and Radar charts, the data labels will
 colored in the series color. For stacked bar and column charts the
-data labels will be black or white depending on the color of the 
+data labels will be black or white depending on the color of the
 bar (which background the data label). For non-stacked bar and column
 charts, this option is ignored.}
 

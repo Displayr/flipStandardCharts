@@ -457,7 +457,9 @@ Line <-   function(x,
                     next
                 annotation.list[[j]]$threshold <- parseThreshold(annotation.list[[j]]$threshold)
                 a.tmp <- annotation.list[[j]]
-                tmp.dat <- getAnnotData(annot.data, a.tmp$data, i, as.numeric = !grepl("Text", a.tmp$type))
+                tmp.dat <- getAnnotData(annot.data, a.tmp$data, i, 
+                    as.numeric = !grepl("Text", a.tmp$type) && 
+                    a.tmp$data != "Column Comparisons")
                 ind.sel <- extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype)
                 source.text[ind.sel] <- addAnnotToDataLabel(source.text[ind.sel], a.tmp, tmp.dat[ind.sel])
             }

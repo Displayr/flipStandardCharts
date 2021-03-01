@@ -130,6 +130,11 @@ test_that("Showing column comparisons with arrows",
         relative.pos = 0.5, halign = "Center", valign = "Middle", offset = 0,
         color = "#FF0000", size = 11, font.family = "Arial"))), NA)
 
+    expect_error(Radar(aperm(dat.with.colcmp, c(2,1,3)),
+        overlay.annotation.list = list(list(type = "Arrow - up",
+        data = "Column Comparisons", threstype = "above threshold", threshold = " ",
+        color = NULL, size = 11, font.family = "Impact"))), NA)
+
     expect_error(Column(dat.with.colcmp,
         overlay.annotation.list = list(list(type = "Arrow - up",
         data = "Column Comparisons", threstype = "above threshold", threshold = " ",

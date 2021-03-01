@@ -248,7 +248,7 @@ line of the legend when \code{legend.wrap} \code{TRUE}.}
 
 \item{modebar.show}{Logical; whether to show the zoom menu buttons or not.}
 
-\item{zoom.enable}{Logical; whether to enable zoom on the chart. 
+\item{zoom.enable}{Logical; whether to enable zoom on the chart.
 For Bar and Column charts with data labels it may be useful to turn off zoom
 because data labels and annotations can be misplace on zoom.}
 

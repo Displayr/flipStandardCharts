@@ -198,7 +198,9 @@ addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat, prepend = 
             new.style <- paste0(new.style, "font-style:", annotation$font.style, ";")
 
         new.text <- ""
-        if (annotation$type == "Arrow - up")
+        if (annotation$data == "Column Comparisons" && grepl("Arrow", annotation$type))
+            new.text <- paste0(" ", getColCmpArrowHtml(tmp.dat, annotation$size), " ")
+        else if (annotation$type == "Arrow - up")
             new.text <- "&#129049;"
         else if (annotation$type == "Arrow - down")
             new.text <- "&#129051;"
@@ -277,7 +279,7 @@ checkAnnotType <- function(annot.type, chart.type)
         return(TRUE)
 }
 
-getColCmpArrowHtml <- function(cell.text, arrow.size)
+getColCmpArrowHtml <- function(cell.text, arrow.size, sep = " ")
 {
     arrow.code <- "&#129049;" # always use up-arrow
     res <- rep("", length(cell.text))
@@ -287,7 +289,7 @@ getColCmpArrowHtml <- function(cell.text, arrow.size)
         tmp <- paste0("<span style='font-size:", arrow.size - 3, "px'>", 
             unlist(strsplit(cell.text[i], split = "\\s")),
             "</span>", arrow.code)
-        res[i] <- paste(tmp, collapse = "<br>")
+        res[i] <- paste(tmp, collapse = sep)
     }
     return(res)
 }

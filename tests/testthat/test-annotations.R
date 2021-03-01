@@ -147,6 +147,14 @@ test_that("Input matrix converted to character",
              threshold = "-", threstype = "above threshold",
              color = "red", font.family = "Courier New"))), NA)
 
+    expect_error(Column(dat.with.text[-11,,], data.label.show = TRUE,
+        annotation.list = list(
+        list(type = "Text - after data label", data = "Column Comparisons",
+             font.style = "normal", font.weight = "normal",
+             format = ".3f", prefix = "", suffix = "",
+             threshold = "-", threstype = "above threshold",
+             color = "red", font.family = "Courier New"))), NA)
+
 })
 
 test_that("No errors for all chart types",

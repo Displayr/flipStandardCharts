@@ -227,7 +227,7 @@
 #' @param marker.border.opacity Opacity of border around bars as an alpha value (0 to 1).
 #' @param tooltip.show Logical; whether to show a tooltip on hover.
 #' @param modebar.show Logical; whether to show the zoom menu buttons or not.
-#' @param zoom.enable Logical; whether to enable zoom on the chart. 
+#' @param zoom.enable Logical; whether to enable zoom on the chart.
 #'  For Bar and Column charts with data labels it may be useful to turn off zoom
 #'  because data labels and annotations can be misplace on zoom.
 #' @param global.font.family Character; font family for all occurrences of any
@@ -237,7 +237,7 @@
 #' @param bar.gap Chart proportion between each bar or column if using
 #' bar or column charts, or between each cluster of bars or columns.
 #' @param data.label.show Logical; whether to show data labels.
-#' @param data.label.centered Logical; whether data labels in Stacked Column 
+#' @param data.label.centered Logical; whether data labels in Stacked Column
 #' charts should have the data labels vertically centered.
 #' @param data.label.font.family Character; font family for data label.
 #' @param data.label.font.size Integer; Font size for data label.px.
@@ -245,10 +245,10 @@
 #' in character format (e.g. "black") or an a hex code. This can be a single
 #' color, a vector of colors (1 for each series/column), or a comma separated list
 #' of colors
-#' @param data.label.font.autocolor Logical; Whether font color should be 
+#' @param data.label.font.autocolor Logical; Whether font color should be
 #' automatically determined. For Line and Radar charts, the data labels will
 #' colored in the series color. For stacked bar and column charts the
-#' data labels will be black or white depending on the color of the 
+#' data labels will be black or white depending on the color of the
 #' bar (which background the data label). For non-stacked bar and column
 #' charts, this option is ignored.
 #' @param data.label.format A string representing a d3 formatting code.
@@ -607,7 +607,7 @@ Column <- function(x,
                   ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance, y.tick.format,
                   y.tick.prefix, y.tick.suffix,
                   y.tick.show, y.zero, y.zero.line.width, y.zero.line.color,
-                  y.hovertext.format, num.maxticks = y.tick.maxnum, 
+                  y.hovertext.format, num.maxticks = y.tick.maxnum,
                   zoom.enable = zoom.enable)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
@@ -646,7 +646,7 @@ Column <- function(x,
                 y2.hovertext.format <- paste0(y2.hovertext.format, "%")
             if (isAutoFormat(data.label.format))
                 x2.data.label.format <- paste0(data.label.format, "%")
-        
+
             sfx <- checkSuffixForExtraPercent(c(y2.tick.suffix, x2.data.label.suffix),
                 c(y2.tick.format, x2.data.label.format))
             y2.tick.suffix <- sfx[1]
@@ -917,7 +917,8 @@ Column <- function(x,
             curr.annot <- overlay.annotation.list[[curr.annot.ind]]
             curr.annot$threshold <- parseThreshold(curr.annot$threshold)
             curr.dat <- getAnnotData(annot.data, curr.annot$data, i,
-                as.numeric = !grepl("Text", curr.annot$type) && curr.annot$data != "Column Comparisons")
+                as.numeric = !grepl("Text", curr.annot$type) &&
+                curr.annot$data != "Column Comparisons")
             ind.sel <- extractSelectedAnnot(curr.dat, curr.annot$threshold, curr.annot$threstype)
             if (length(ind.sel) == 0)
                 next
@@ -929,7 +930,7 @@ Column <- function(x,
                             if (is.null(curr.annot$halign)) "center" else tolower(curr.annot$halign))
 
             if (curr.annot$data == "Column Comparisons" && grepl("Arrow", curr.annot$type))
-                curr.annot.text <- getColCmpArrowHtml(curr.dat[ind.sel], curr.annot$size)
+                curr.annot.text <- getColCmpArrowHtml(curr.dat[ind.sel], curr.annot$size, "<br>")
             else if (curr.annot$type == "Text")
                 curr.annot.text <- formatByD3(curr.dat[ind.sel], curr.annot$format, curr.annot$prefix, curr.annot$suffix)
             else if (curr.annot$type == "Arrow - up")
