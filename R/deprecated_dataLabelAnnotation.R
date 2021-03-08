@@ -2,6 +2,7 @@
 # See dataLabelPositions which handles axis-type more consistently
 
 #' @importFrom flipFormat FormatAsReal
+#' @importFrom verbs SumRows
 dataLabelAnnotation <- function(chart.matrix,
                                 annotations = NULL,
                                 data.label.mult = 1,
@@ -30,7 +31,7 @@ dataLabelAnnotation <- function(chart.matrix,
         else
             cum.data(chart.matrix, "cumulative.sum")
 
-        largest.bar <- max(rowSums(chart.matrix))
+        largest.bar <- max(SumRows(chart.matrix, remove.columns = NULL, remove.missing = FALSE))
         if (is.null(display.threshold))
             display.threshold <- 0.05
         text[chart.matrix < largest.bar * display.threshold] <- ""

@@ -178,9 +178,9 @@ Sparkline <- function(x,
         line.color <- fill.color
         line.opacity <- fill.opacity
     }
-	if (sum(nchar(y.tick.format)) == 0 || grepl("[0-9]$", y.tick.format))
+	if (!any(nzchar(y.tick.format)) || grepl("[0-9]$", y.tick.format))
 		y.tick.format <- if (data.is.percent) paste0(y.tick.format, "%") else paste0(y.tick.format, "f")
-	if (sum(nchar(hover.format)) == 0 || grepl("[0-9]$", hover.format))
+	if (!any(nzchar(hover.format)) || grepl("[0-9]$", hover.format))
 		hover.format <- if (data.is.percent) paste0(hover.format, "%") else paste0(hover.format, "f")
 
     if (tolower(font.unit) %in% c("pt", "point", "points"))
@@ -216,15 +216,15 @@ Sparkline <- function(x,
     x <- as.numeric(x)
     xaxis <- list(side = "bottom", type = axisFormat$x.axis.type, categoryorder = "trace",
                 showgrid = FALSE, showline = x.axis.show, zeroline = FALSE, automargin = type != "Box",
-                showticklabels = x.axis.show, ticklabelposition = "outside", 
+                showticklabels = x.axis.show, ticklabelposition = "outside",
                 tickfont = list(size = if (x.tick.show) x.tick.font.size else 1,
 						   		color = if (x.tick.show) x.tick.font.color else "transparent",
-				family = x.tick.font.family), tickformat = x.tick.format, 
+				family = x.tick.font.family), tickformat = x.tick.format,
                 ticklen = if (x.tick.show) x.tick.length else 0,
                 linewidth = x.axis.width, linecolor = x.axis.color, tickcolor = x.axis.color)
     yaxis <- list(side = "left", showgrid = FALSE, showline = y.axis.show, zeroline = FALSE,
                 automargin = type != "Box",
-                showticklabels = y.axis.show, ticklabel.position = "outside", 
+                showticklabels = y.axis.show, ticklabel.position = "outside",
                 tickfont = list(size = if (y.tick.show) y.tick.font.size else 1,
 							 	color = if (y.tick.show) y.tick.font.color else "transparent",
 				family = y.tick.font.family), ticklen = if (y.tick.show) y.tick.length else 0,

@@ -1,9 +1,10 @@
 
 # This is only used for Bar/Column type charts
+#' @importFrom verbs Sum
 addDataLabelAnnotations <- function(p, type, name, data.label.xpos, data.label.ypos,
-        data.label.show, data.label.text, data.label.sign, 
+        data.label.show, data.label.text, data.label.sign,
         annotation.list, annot.data, i,
-        xaxis, yaxis, data.label.font, is.stacked, data.label.centered, 
+        xaxis, yaxis, data.label.font, is.stacked, data.label.centered,
         data.label.horizontal.align = "center")
 {
     if (type == "Column")
@@ -61,8 +62,8 @@ addDataLabelAnnotations <- function(p, type, name, data.label.xpos, data.label.y
             tmp.dat <- getAnnotData(annot.data, a.tmp$data, i)
             ind.sel <- extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype)
             tmp.text <- rep("", n)
-            left.pad <- paste(rep(" ", sum(a.tmp$shiftright, na.rm = TRUE)), collapse = "")
-            right.pad <- paste(rep(" ", sum(a.tmp$shiftleft, na.rm = TRUE)), collapse = "")
+            left.pad <- paste(rep(" ", Sum(a.tmp$shiftright)), collapse = "")
+            right.pad <- paste(rep(" ", Sum(a.tmp$shiftleft)), collapse = "")
             tmp.text[ind.sel] <- paste0(left.pad, switch(a.tmp$type,
                 "Circle - thick outline" = "<b>&#11096;</b>",
                 "Circle - thin outline" = "&#11096;",
@@ -146,7 +147,7 @@ extractSelectedAnnot <- function(data, threshold, threstype)
     n <- NROW(data)
     if (is.null(threstype) || is.null(threshold))
         return(1:n)
-    else if (threstype == "above threshold")      
+    else if (threstype == "above threshold")
         return(which(data > threshold))
     else
         return(which(data < threshold))
@@ -166,14 +167,15 @@ extractSelectedAnnot <- function(data, threshold, threstype)
 #' It is used when \code{annotation$type} is "Text".
 #' @param prepend Logical; when true, the annotation will be added to the
 #  beginning of data.label.text instead of the end.
+#' @importFrom verbs Sum
 #' @keywords internal
 addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat, prepend = FALSE)
 {
     # Fix font size so that the units do not change in size when the font size increases
     left.pad <- ""
-    if (sum(annotation$shiftright, na.rm = TRUE) > 0)
+    if ((n.shift.right <- Sum(annotation$shiftright)) > 0)
         left.pad <- paste0("<span style='font-size: 2px'>",
-                    paste(rep(" ", sum(annotation$shiftright, na.rm = TRUE)), collapse = ""),
+                    paste(rep(" ", n.shift.right), collapse = ""),
                     "</span>")
 
     if (annotation$type == "Shadow")
@@ -230,7 +232,7 @@ addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat, prepend = 
 # This function in used in Bar/Column/Line and only converts
 # text input into numeric values because the y-axis is always numeric
 # Scatterplot uses a slightly more complicated function because
-# the y-axis can also be a date or categorical so the 
+# the y-axis can also be a date or categorical so the
 # threshold needs to be converted accordingly.
 
 parseThreshold <- function(x)
@@ -238,7 +240,7 @@ parseThreshold <- function(x)
     if (is.null(x))
         return(x)
 
-    # Convert string to numeric where possible 
+    # Convert string to numeric where possible
     tmp <- suppressWarnings(as.numeric(x))
     if (!is.na(tmp))
         return(tmp)
@@ -255,8 +257,8 @@ checkAnnotType <- function(annot.type, chart.type)
         return(FALSE)
     }
 
-    # These annotation types are implemented for all charts 
-    # which support annotations e.g. Line 
+    # These annotation types are implemented for all charts
+    # which support annotations e.g. Line
     allowed.types <- c('Arrow - up', 'Arrow - down', 'Border',
        'Caret - up', 'Caret - down',
        'Circle - filled', 'Circle - thick outline', 'Circle - thin outline',
@@ -264,7 +266,7 @@ checkAnnotType <- function(annot.type, chart.type)
 
     # Additional annotation types only implemented on some chart types
     if (chart.type == "Bar")
-        allowed.types <- c(allowed.types, 
+        allowed.types <- c(allowed.types,
            'Circle - filled', 'Circle - thick outline', 'Circle - thin outline')
     else if (chart.type == "Scatter")
         allowed.types <- c(allowed.types, 'Marker border')
@@ -286,7 +288,7 @@ getColCmpArrowHtml <- function(cell.text, arrow.size, sep = " ")
 
     for (i in 1:length(cell.text))
     {
-        tmp <- paste0("<span style='font-size:", arrow.size - 3, "px'>", 
+        tmp <- paste0("<span style='font-size:", arrow.size - 3, "px'>",
             unlist(strsplit(cell.text[i], split = "\\s")),
             "</span>", arrow.code)
         res[i] <- paste(tmp, collapse = sep)

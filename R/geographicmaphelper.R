@@ -143,6 +143,7 @@ tidyCountryName <- function(country)
 #' @return Character string; the corrected country name
 #' @examples
 #' FindCountryFromRegions(c("Bavaria", "Hesse"))
+#' @importFrom verbs Sum
 #' @export
 FindCountryFromRegions <- function(states) {
 
@@ -154,7 +155,7 @@ FindCountryFromRegions <- function(states) {
     {
         all.states <- admin1.name.map[[current]]
         all.states <- c(names(all.states), unique(unlist(all.states)))
-        matches <- sum(tolower(states) %in% tolower(all.states))
+        matches <- Sum(tolower(states) %in% tolower(all.states), remove.missing = FALSE)
         if (matches > 0)
             country.matches[[current]] <- matches
     }

@@ -32,6 +32,7 @@
 #' @param print.config Print configuration string based to \code{rhtmlPictographs::graphic}. This is useful for debugging.
 #' @importFrom rhtmlPictographs graphic
 #' @importFrom flipChartBasics ChartColors
+#' @importFrom verbs Sum
 #' @export
 #' @examples
 #' BarPictograph(1:5, image = "Sick person")
@@ -41,7 +42,7 @@ BarPictograph <- function(x,
                        image = "Stickman",
                        custom.image = NULL,
                        base.image = "",
-                       hide.base.image = sum(nchar(custom.image)) == 0,
+                       hide.base.image = !any(nzchar(custom.image)),
                        base.icon.color = "",
                        scale = NA,
                        total.icons = NA,
@@ -116,7 +117,7 @@ BarPictograph <- function(x,
     x <- x/scale
 
     # Icon layout
-    if (sum(nchar(custom.image)) > 0 && sum(nchar(base.image)) == 0)
+    if (any(nzchar(custom.image)) && !any(nzchar(base.image)))
         hide.base.image <- TRUE
     icon.nrow <- NA # only icon.ncol is used for bar charts
     if (!is.na(icon.ncol) && any(icon.ncol > total.icons))
@@ -285,7 +286,7 @@ BarPictograph <- function(x,
     if (!hide.base.image && is.null(custom.image))
         base.image <- image.url
     base.image.str <- ""
-    if (sum(nchar(base.image), na.rm = T) > 0)
+    if (any(nzchar(base.image)))
     {
         base.icon.color.str <- ifelse(nchar(base.icon.color) > 0, paste0(base.icon.color, ":"), "")
         base.image.str <- ifelse(nchar(base.image) > 0, paste("\"baseImage\":\"", image.type, ":", base.icon.color.str, base.image, "\",", sep = ""), "")
@@ -299,7 +300,7 @@ BarPictograph <- function(x,
     # Exact dimensions should not matter as long as aspect ratio is correct
     # But rounding errors can happen if graphic.resolution is not chosen well
     dim.str <- ""
-    row.height <- paste0("\"proportion:", floor(icon.nrow/sum(icon.nrow)*1000)/1000, "\"")
+    row.height <- paste0("\"proportion:", floor(icon.nrow/Sum(icon.nrow, remove.missing = FALSE)*1000)/1000, "\"")
     column.width <- "\"flexible:graphic\""
 
     # Setting up graphic cells (bars of icons)
@@ -341,7 +342,7 @@ BarPictograph <- function(x,
 
     # Check that the number of icons is not too big
     if (hide.base.image)
-        num.icons <- sum(prop * total.icons)
+        num.icons <- Sum(prop * total.icons, remove.missing = FALSE)
     else
         num.icons <- length(prop) * total.icons
     if (num.icons > maximum.number.icons)

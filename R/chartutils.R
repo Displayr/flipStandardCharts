@@ -512,6 +512,7 @@ d3FormatType <- function(format)
 }
 
 #' @importFrom flipTime AsDateTime
+#' @importFrom verbs Sum
 #' @noRd
 formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, x.format, y.format)
 {
@@ -543,7 +544,7 @@ formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, x.format, y.fo
     if (axis.type == "date")
     {
         ymd <- AsDateTime(labels, on.parse.failure = "silent")
-        n.dup <- sum(duplicated(ymd))
+        n.dup <- Sum(duplicated(ymd), remove.missing = FALSE)
         if (n.dup > 0)
             warning("Date axis has ", n.dup, " duplicated values. There may have been error parsing dates.")
         labels <- ymd
@@ -617,7 +618,6 @@ setDateTickDistance <- function(date.labels, num.maxticks)
     return(NULL)
 }
 
-
 setAxis <- function(title, side, axisLabels, titlefont,
                     linecolor, linewidth, gridwidth, gridcolor,
                     ticks, tickfont, tickangle, ticklen, tickdistance,
@@ -632,7 +632,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
     if (!tickshow)
         tickfont$size <- 0
 
-    if (!is.null(labels) && any(!is.na(labels)) && any(nchar(labels) > 0) &&
+    if (!is.null(labels) && any(!is.na(labels)) && any(nzchar(labels) > 0) &&
          is.null(tickangle) && side %in% c("bottom", "top"))
     {
         lab.nchar <- max(c(0, nchar(unlist(strsplit(split = "<br>", as.character(labels))))), na.rm = TRUE)
@@ -732,7 +732,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
         !(length(axisLabels$labels) == 1 && is.numeric(axisLabels$labels)))
         nticks <- min(length(axisLabels$labels) + 1, 11)
 
-    if (sum(nchar(title)) > 0)
+    if (any(nzchar(title)))
         title <- list(text = title, font = titlefont)
     else
         title <- NULL
@@ -785,7 +785,7 @@ fontAspectRatio <- function(font)
     font.asp
 }
 
-
+#' @importFrom verbs Sum
 setMarginsForAxis <- function(margins, labels, axis)
 {
     if (!is.character(labels) && !is.null(labels$labels))
@@ -798,7 +798,7 @@ setMarginsForAxis <- function(margins, labels, axis)
     font.asp <- fontAspectRatio(axis$tickfont$family)
     lab.len <- font.asp * axis$tickfont$size * lab.nchar * 1.25
     lab.nline <- if (is.character(labels)) max(0, sapply(gregexpr("<br>", labels),
-                     function(x){sum(x > -1)}), na.rm = TRUE)
+                     function(x){Sum(x > -1, remove.missing = FALSE)}), na.rm = TRUE)
                  else 0
 
     new.margin <- 0
@@ -806,8 +806,8 @@ setMarginsForAxis <- function(margins, labels, axis)
         new.margin <- lab.len
 
     title.nline <- 0
-    if (sum(nchar(axis$title)) > 0 && axis$title != " ")
-        title.nline <- sum(gregexpr("<br>", axis$title)[[1]] > -1) + 1
+    if (any(nzchar(axis$title)) > 0 && axis$title != " ")
+        title.nline <- Sum(gregexpr("<br>", axis$title)[[1]] > -1, remove.missing = FALSE) + 1
     title.pad <- max(0, axis$title$font$size) * title.nline * 1.25
 
     if (axis$side == "right")
@@ -828,25 +828,26 @@ setMarginsForAxis <- function(margins, labels, axis)
     return(margins)
 }
 
+#' @importFrom verbs Sum
 setMarginsForText <- function(margins, title, subtitle, footer,
                         title.font.size, subtitle.font.size, footer.font.size)
 {
     title.nline <- 0
     if (nchar(title) > 0)
     {
-        title.nline <- sum(gregexpr("<br>", title)[[1]] > -1) + 1
+        title.nline <- Sum(gregexpr("<br>", title)[[1]] > -1, remove.missing = FALSE) + 1
         margins$t <- margins$t + (title.font.size * title.nline * 1.25)
     }
     if (nchar(subtitle) > 0)
     {
         # We leave twice the space for subtitles, because titles are always
         # positioned halfway down the top margin
-        subtitle.nline <- sum(gregexpr("<br>", subtitle)[[1]] > -1) + 1.5
+        subtitle.nline <- Sum(gregexpr("<br>", subtitle)[[1]] > -1, remove.missing = FALSE) + 1.5
         margins$t <- margins$t + (subtitle.font.size * subtitle.nline) * 0.8 * 2
     }
     if (nchar(footer) > 0 && footer != " ")
     {
-        footer.nline <- sum(gregexpr("<br>", footer)[[1]] > -1) + 4
+        footer.nline <- Sum(gregexpr("<br>", footer)[[1]] > -1) + 4
         margins$b <- margins$b + (footer.font.size * footer.nline * 1.25)
     }
     margins
@@ -890,7 +891,7 @@ setCustomMargins <- function(margins, margin.top, margin.bottom, margin.left,
 # https://plotly.com/r/reference/layout/annotations/
 setTitle <- function(title, title.font, margins)
 {
-    if (sum(nchar(title)) == 0)
+    if (!any(nzchar(title)))
         return(NULL)
     return(list(text = title, font = title.font,
                 xref = "paper", x = 0.5, yshift = margins$t * 0.5,
@@ -899,7 +900,7 @@ setTitle <- function(title, title.font, margins)
 
 setSubtitle <- function(subtitle, subtitle.font, margins)
 {
-    if (sum(nchar(subtitle)) == 0)
+    if (!any(nzchar(subtitle)))
         return(NULL)
     return(list(text = subtitle, font = subtitle.font,
                 xref = "paper", x = 0.5, #xshift = (margins$r - margins$l)/2,
@@ -908,11 +909,11 @@ setSubtitle <- function(subtitle, subtitle.font, margins)
 
 setFooter <- function(footer, footer.font, margins, x.align = "center")
 {
-    if (sum(nchar(footer)) == 0)
+    if (!any(nzchar(footer)))
         return(NULL)
     xpos <- switch(x.align, center = 0.5, left = 0, right = 1)
 
-    footer.nline <- sum(gregexpr("<br>", footer)[[1]] > -1) + 1
+    footer.nline <- Sum(gregexpr("<br>", footer)[[1]] > -1, remove.missing = FALSE) + 1
     footer.npad <- max(0, ceiling(margins$b/footer.font$size/1.25) - footer.nline - 2)
     footer <- paste0("&nbsp;", paste(rep("<br>", footer.npad), collapse = ""), footer)
     return(list(text = footer, font = footer.font, align = x.align,
@@ -1311,7 +1312,7 @@ decimalsFromD3 <- function(format, default = 0)
 {
     if (length(format) == 0 || format == "")
         return(default)
-    return(sum(as.numeric(regmatches(format, regexpr("\\d+", format)))))
+    return(Sum(as.numeric(regmatches(format, regexpr("\\d+", format))), remove.missing = FALSE))
 }
 
 #' Whether to format as percentages based on a d3 format string.
@@ -1359,7 +1360,7 @@ formatByD3 <- function(x, format, prefix = "", suffix = "", percent = FALSE, dec
 
         if (percentFromD3(format) || percent)
             x.str <- paste0(formatC(x*100, format = "f", digits = decimalsFromD3(format, 0), big.mark = big.mark), "%")
-        else if (sum(nchar(tmp.fmt), na.rm = T) == 0 || tmp.fmt == "f")
+        else if (!any(nzchar(tmp.fmt)) || tmp.fmt == "f")
             x.str <- FormatAsReal(x, decimals = decimalsFromD3(format, decimals), comma.for.thousands = use.comma)
         else
             x.str <- formatC(x, format = tmp.fmt, digits = decimalsFromD3(format, decimals), big.mark = big.mark)
@@ -1389,10 +1390,10 @@ commaFromD3 <- function(format)
 checkD3Format <- function(format, axis.type, warning.type = "Axis label", convert = FALSE)
 {
     # This is to avoid LabeledScatter's problem with date formatting
-    if (convert && axis.type == "date" && sum(nchar(format), na.rm = TRUE) == 0)
+    if (convert && axis.type == "date" && Sum(nchar(format)) == 0)
         return("%b %d %Y")
 
-    if (sum(nchar(format), na.rm = TRUE) == 0)
+    if (!any(nzchar(format)))
         return("")
     if (substr(format, nchar(format), nchar(format)) %in% c("", 0:9)) # automatic formatting
     {

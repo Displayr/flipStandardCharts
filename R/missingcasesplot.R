@@ -5,7 +5,7 @@
 #' @param raw.data Matrix or data frame.
 #' @param fill.color Color to show the missing value.
 #' @param fill.opacity Alpha transparence between 0 and 1 (or \code{NULL}).
-#'  By default automatically tries to adjust opacity depending on the number of 
+#'  By default automatically tries to adjust opacity depending on the number of
 #'  missing values. However if there is a very high density of missing values, you may need to manually
 #'  reduce the fill opacity to observe differences in saturated regions.
 #' @param base.color Background color of chart.
@@ -25,6 +25,7 @@
 #' @param tooltip.show Logical, indicating whether or not to show a tooltip on hover. The default is off, because
 #'  turning on tooltips with large data sets can make the chart slow to render.
 #' @param enable.zoom Logical, indicating whether of not to allow the chart to be zoomable.
+#' @importFrom verbs SumColumns
 #' @export
 MissingCasesPlot <- function(raw.data,
     fill.color = "#5C9AD3",
@@ -120,11 +121,11 @@ MissingCasesPlot <- function(raw.data,
     {
         x.labels <- paste0(x.labels, if (x.tick.label.wrap) "<br>(" else " (")
         if (show.counts.missing)
-            x.labels <- paste0(x.labels, colSums(dat), " cases ")
+            x.labels <- paste0(x.labels, SumColumns(dat, remove.rows = NULL, remove.missing = FALSE), " cases ")
         if (show.counts.missing && show.percentages.missing)
             x.labels <- paste(x.labels, "or ")
         if (show.percentages.missing)
-            x.labels <- paste0(x.labels, round(colSums(dat)/nrow(dat)*100), "%")
+            x.labels <- paste0(x.labels, round(SumColumns(dat, remove.rows = NULL, remove.missing = FALSE)/nrow(dat)*100), "%")
         x.labels <- paste0(x.labels, " missing)")
     }
     x.labels <- autoFormatLongLabels(x.labels, x.tick.label.wrap, x.tick.label.wrap.nchar, truncate = FALSE)
@@ -133,7 +134,7 @@ MissingCasesPlot <- function(raw.data,
                   tickvals = 0:(ncol(dat)-1), ticktext = x.labels,
                   showgrid = FALSE, zeroline = FALSE, fixedrange = !enable.zoom)
     yaxis <- list(side = "left", ticklen = 0, tickfont = y.tick.font, range = rev(range(index)),
-                  tickmode = "auto", nticks = min(nrow(dat) + 1, 11), 
+                  tickmode = "auto", nticks = min(nrow(dat) + 1, 11),
                   showgrid = FALSE, zeroline = FALSE, fixedrange = !enable.zoom)
 
     margins <- list(t = 20, r = 60, l = 80, b = 20, pad = 0)
@@ -156,9 +157,9 @@ MissingCasesPlot <- function(raw.data,
         {
             ypos <- index[ind[ii,1]]
             annotations[[n+ii]] <- list(text = ypos, x = ind[ii,2] - 1, y = ypos,
-            yanchor = switch(tolower(data.label.position), above = "bottom", 
-                below = "top", "center"), 
-            bgcolor = rgb(t(col2rgb(base.color)), maxColorValue = 255, 
+            yanchor = switch(tolower(data.label.position), above = "bottom",
+                below = "top", "center"),
+            bgcolor = rgb(t(col2rgb(base.color)), maxColorValue = 255,
                 alpha = data.label.bg.opacity*255),
             xref = "x", yref = "y", showarrow = FALSE, font = data.label.font)
         }
@@ -173,9 +174,9 @@ MissingCasesPlot <- function(raw.data,
 
     if (is.null(fill.opacity) || is.na(fill.opacity))
     {
-        if (max(colSums(dat)) > 1000)
+        if (max(SumColumns(dat, remove.rows = NULL, remove.missing = FALSE)) > 1000)
             fill.opacity <- 0.2
-        else if (max(colSums(dat)) > 200)
+        else if (max(SumColumns(dat, remove.rows = NULL, remove.missing = FALSE)) > 200)
             fill.opacity <- 0.5
         else
             fill.opacity <- 1.0
@@ -185,10 +186,10 @@ MissingCasesPlot <- function(raw.data,
     # Main plot
     if (nrow(dat) > 200)
     {
-        p <- plot_ly(x = c(-0.5, ncol(dat)-0.5), y = range(index), 
+        p <- plot_ly(x = c(-0.5, ncol(dat)-0.5), y = range(index),
                 type = "scatter", mode = "none")
         line.obj <- list(width = 0.5, color = fill.col.alpha)
-    
+
     } else
     {
         # If there is only a small number of points use heatmap to ensure space is filled
@@ -198,13 +199,13 @@ MissingCasesPlot <- function(raw.data,
                  zsmooth = FALSE, connectgaps = FALSE, showscale = FALSE)
         line.obj <- list(width = 1, color = fill.col.alpha)
     }
-   
+
     # Add lines in case heatmap does not show missing values.
     # If tooltips are shown, an extra data point is added
     # so that hover responds to the middle of the line
     na.ind <- which(dat > 0, arr.ind = TRUE)
     if (nrow(na.ind) > 0)
-    { 
+    {
         pt.xpos <- if (tooltip.show) c(-1.5, -1, -0.5, NA) else c(-1.5, -0.5, NA)
         pt.ypos <- if (tooltip.show) c(0, 0, 0, NA) else c(0, 0, NA)
         pt.len <- length(pt.xpos)

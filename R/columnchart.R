@@ -297,6 +297,7 @@
 #' @importFrom flipTables AsTidyTabularData
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
+#' @importFrom verbs Sum
 #' @examples
 #' z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L),
 #'       .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
@@ -955,7 +956,7 @@ Column <- function(x,
                 type = "scatter", mode = "markers+text", hoverinfo = "skip",
                 xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x",
                 yaxis = "y", showlegend = FALSE,
-                marker = list(opacity = 0.0, size = sum(curr.annot$offset)),
+                marker = list(opacity = 0.0, size = Sum(curr.annot$offset, remove.missing = FALSE)),
                 text = curr.annot.text, textposition = curr.annot.align,
                 textfont = list(family = curr.annot$font.family, size = curr.annot$size,
                     color = curr.annot$color),

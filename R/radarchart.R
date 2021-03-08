@@ -21,6 +21,7 @@
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom plotly plot_ly layout config
 #' @importFrom flipFormat FormatAsReal
+#' @importFrom verbs Sum
 #' @export
 Radar <- function(x,
                     annotation.list = NULL,
@@ -191,7 +192,7 @@ Radar <- function(x,
         mult <- max(1, floor((abs(y.diff)/base)/5))
         y.tick.distance <- sign(y.diff) * base * mult
     }
-    tick.vals <- seq(from = y.bounds.minimum, to = y.bounds.maximum, by = sum(y.tick.distance, na.rm = TRUE))
+    tick.vals <- seq(from = y.bounds.minimum, to = y.bounds.maximum, by = Sum(y.tick.distance))
     r.max <- abs(y.bounds.maximum - y.bounds.minimum)
 
     hover.format.function <- ifelse(percentFromD3(y.hovertext.format), FormatAsPercent, FormatAsReal)
