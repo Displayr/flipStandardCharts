@@ -91,6 +91,7 @@ Distribution(
   hovertext.font.family = global.font.family,
   hovertext.font.size = 11,
   hover.on = c("all", "points")[1],
+  zoom.enable = TRUE,
   tooltip.show = TRUE,
   modebar.show = FALSE
 )
@@ -311,6 +312,10 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{hover.on}{Only used for boxplot. If "all", then all the hovertext (for median,
 for the element near the cursor will be shown.}
+
+\item{zoom.enable}{Logical; whether to enable zoom on the chart. 
+For Bar and Column charts with data labels it may be useful to turn off zoom
+because data labels and annotations can be misplace on zoom.}
 
 \item{tooltip.show}{Logical; whether to show a tooltip on hover.}
 

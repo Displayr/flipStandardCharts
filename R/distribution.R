@@ -127,6 +127,10 @@
 #' @param categories.tick.label.wrap Logical; whether to wrap long labels on the x-axis.
 #' @param categories.tick.label.wrap.nchar Integer; number of characters in each line when \code{categories.tick.label.wrap} is \code{TRUE}.
 #' @param modebar.show Logical; whether to show the zoom menu buttons or not.
+#' @param zoom.enable Logical; whether to enable zoom on the chart. 
+#'  For Bar and Column charts with data labels it may be useful to turn off zoom
+#'  because data labels and annotations can be misplace on zoom.
+
 #' @param global.font.family Character; font family for all occurrences of any
 #' font attribute for the chart unless specified individually.
 #' @param global.font.color Global font color as a named color in character format
@@ -232,6 +236,7 @@ Distribution <-   function(x,
     hovertext.font.family = global.font.family,
     hovertext.font.size = 11,
     hover.on = c("all", "points")[1],
+    zoom.enable = TRUE,
     tooltip.show = TRUE,
     modebar.show = FALSE)
 {
@@ -414,11 +419,12 @@ Distribution <-   function(x,
         values.bounds.minimum <- rng[1]
     if (is.null(values.bounds.maximum))
         values.bounds.maximum <- rng[2]
-    values.axis <- setAxis(values.title, "left", axisFormat, values.title.font, values.line.color, values.line.width, values.grid.width, values.grid.color,
-                  values.tick, values.tick.font, values.tick.angle, values.tick.mark.length, values.tick.distance,
-                  values.tick.format, values.tick.prefix, values.tick.suffix, values.tick.show,
-                  FALSE, values.zero.line.width, values.zero.line.color,
-                  values.hovertext.format)
+    values.axis <- setAxis(values.title, "left", axisFormat, values.title.font, 
+         values.line.color, values.line.width, values.grid.width, values.grid.color,
+         values.tick, values.tick.font, values.tick.angle, values.tick.mark.length, 
+         values.tick.distance, values.tick.format, values.tick.prefix, 
+         values.tick.suffix, values.tick.show, FALSE, values.zero.line.width, 
+         values.zero.line.color, values.hovertext.format, zoom.enable = zoom.enable)
     hover.mode <- if (tooltip.show) "'closest'" else "FALSE"
     txt <- paste0("p <- layout(p,
         autosize = TRUE,
@@ -438,7 +444,7 @@ Distribution <-   function(x,
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity))")
     eval(parse(text = txt))
 
-    #attr(p, "can-run-in-root-dom") <- TRUE
+    attr(p, "can-run-in-root-dom") <- TRUE
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     if (n.variables == 1)

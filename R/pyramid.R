@@ -115,6 +115,11 @@ Pyramid <- function(x,
             x.hovertext.format <- paste0(x.hovertext.format, "%")
         if (isAutoFormat(data.label.format))
             data.label.format <- paste0(data.label.format, "%")
+
+        sfx <- checkSuffixForExtraPercent(c(x.tick.suffix, data.label.suffix),
+            c(x.tick.format, data.label.format))
+        x.tick.suffix <- sfx[1]
+        data.label.suffix <- sfx[2]
     }
     chart.matrix <- checkMatrixNames(x)
     if (NROW(chart.matrix) == 1 && NCOL(chart.matrix) > 1)
@@ -274,7 +279,7 @@ Pyramid <- function(x,
         bargap = bar.gap,
         barmode = 'overlay'
     )
-    #attr(p, "can-run-in-root-dom") <- TRUE
+    attr(p, "can-run-in-root-dom") <- TRUE
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     attr(result, "ChartType") <- "Bar Clustered"

@@ -10,7 +10,10 @@
 #' @param type One of "Column", "Stacked Column" or "100\% Stacked Column"
 #' @param annotation.list Optional list of annotations to modify the data labels.
 #' @param overlay.annotation.list Optional list of annotations that is overlayed on top of the chart.
-#' @param average.series y-values of additional data series which is shown as a line. Used by \code{SmallMultiples}.
+#' @param average.series a vector of values which create an additional data series named "Average".
+#' This is usually used by \code{SmallMultiples}. For bar/column charts, the average is shown as a line,
+#' for Line and Area, the average series is shown in the same way as the other data series
+#' but it is shown without data labels.
 #' @param average.color Color of the \code{average.series} as a hex code or string
 #' @param fit.type Character; type of line of best fit. Can be one of "None", "Linear", "LOESS",
 #'          "Friedman's super smoother", "Cubic spline", "Moving average", "Centered moving average".
@@ -224,6 +227,9 @@
 #' @param marker.border.opacity Opacity of border around bars as an alpha value (0 to 1).
 #' @param tooltip.show Logical; whether to show a tooltip on hover.
 #' @param modebar.show Logical; whether to show the zoom menu buttons or not.
+#' @param zoom.enable Logical; whether to enable zoom on the chart.
+#'  For Bar and Column charts with data labels it may be useful to turn off zoom
+#'  because data labels and annotations can be misplace on zoom.
 #' @param global.font.family Character; font family for all occurrences of any
 #' font attribute for the chart unless specified individually.
 #' @param global.font.color Global font color as a named color in character format
@@ -231,15 +237,20 @@
 #' @param bar.gap Chart proportion between each bar or column if using
 #' bar or column charts, or between each cluster of bars or columns.
 #' @param data.label.show Logical; whether to show data labels.
-#' @param data.label.centered Logical; whether data labels in Stacked Column charts should have the data labels vertically centered.
+#' @param data.label.centered Logical; whether data labels in Stacked Column
+#' charts should have the data labels vertically centered.
 #' @param data.label.font.family Character; font family for data label.
 #' @param data.label.font.size Integer; Font size for data label.px.
 #' @param data.label.font.color Font color as a named color
 #' in character format (e.g. "black") or an a hex code. This can be a single
 #' color, a vector of colors (1 for each series/column), or a comma separated list
 #' of colors
-#' @param data.label.font.autocolor Logical; Whether font color should be automatically determined
-#' (black or white) based on the color of the background column if stacked.
+#' @param data.label.font.autocolor Logical; Whether font color should be
+#' automatically determined. For Line and Radar charts, the data labels will
+#' colored in the series color. For stacked bar and column charts the
+#' data labels will be black or white depending on the color of the
+#' bar (which background the data label). For non-stacked bar and column
+#' charts, this option is ignored.
 #' @param data.label.format A string representing a d3 formatting code.
 #' See https://github.com/mbostock/d3/wiki/Formatting#numbers
 #' @param data.label.prefix Character; prefix for data values.
@@ -464,6 +475,7 @@ Column <- function(x,
                     marker.border.opacity = NULL,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
+                    zoom.enable = TRUE,
                     bar.gap = 0.15,
                     data.label.show = FALSE,
                     data.label.centered = FALSE,
@@ -487,6 +499,11 @@ Column <- function(x,
             y.hovertext.format <- paste0(y.hovertext.format, "%")
         if (isAutoFormat(data.label.format))
             data.label.format <- paste0(data.label.format, "%")
+
+        sfx <- checkSuffixForExtraPercent(c(y.tick.suffix, data.label.suffix),
+            c(y.tick.format, data.label.format))
+        y.tick.suffix <- sfx[1]
+        data.label.suffix <- sfx[2]
     }
 
     if (bar.gap < 0.0 || bar.gap >= 1.0)
@@ -591,12 +608,13 @@ Column <- function(x,
                   ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance, y.tick.format,
                   y.tick.prefix, y.tick.suffix,
                   y.tick.show, y.zero, y.zero.line.width, y.zero.line.color,
-                  y.hovertext.format, num.maxticks = y.tick.maxnum)
+                  y.hovertext.format, num.maxticks = y.tick.maxnum,
+                  zoom.enable = zoom.enable)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, x.tick.format,
                   x.tick.prefix, x.tick.suffix, x.tick.show, x.zero, x.zero.line.width, x.zero.line.color,
-                  x.hovertext.format, axisFormat$labels, num.series = NCOL(chart.matrix), with.bars = TRUE, num.maxticks = x.tick.maxnum)
+                  x.hovertext.format, axisFormat$labels, num.series = NCOL(chart.matrix), with.bars = TRUE, num.maxticks = x.tick.maxnum, zoom.enable = zoom.enable)
 
     yaxis2 <- NULL
 
@@ -621,6 +639,21 @@ Column <- function(x,
     x.all.labels <- x.labels
     if (!is.null(x2))
     {
+        if (isPercentData(x2))
+        {
+            if (isAutoFormat(y2.tick.format))
+                y2.tick.format <- paste0(y2.tick.format, "%")
+            if (isAutoFormat(y2.hovertext.format))
+                y2.hovertext.format <- paste0(y2.hovertext.format, "%")
+            if (isAutoFormat(data.label.format))
+                x2.data.label.format <- paste0(data.label.format, "%")
+
+            sfx <- checkSuffixForExtraPercent(c(y2.tick.suffix, x2.data.label.suffix),
+                c(y2.tick.format, x2.data.label.format))
+            y2.tick.suffix <- sfx[1]
+            x2.data.label.suffix <- sfx[2]
+        }
+
         # Set up x-axis values for x2
         x2 <- checkMatrixNames(x2)
         x2.axis.type <- getAxisType(rownames(x2), format = x.tick.format)
@@ -885,7 +918,8 @@ Column <- function(x,
             curr.annot <- overlay.annotation.list[[curr.annot.ind]]
             curr.annot$threshold <- parseThreshold(curr.annot$threshold)
             curr.dat <- getAnnotData(annot.data, curr.annot$data, i,
-                as.numeric = !grepl("Text", curr.annot$type) && curr.annot$data != "Column Comparisons")
+                as.numeric = !grepl("Text", curr.annot$type) &&
+                curr.annot$data != "Column Comparisons")
             ind.sel <- extractSelectedAnnot(curr.dat, curr.annot$threshold, curr.annot$threstype)
             if (length(ind.sel) == 0)
                 next
@@ -897,21 +931,31 @@ Column <- function(x,
                             if (is.null(curr.annot$halign)) "center" else tolower(curr.annot$halign))
 
             if (curr.annot$data == "Column Comparisons" && grepl("Arrow", curr.annot$type))
-                curr.annot.text <- getColCmpArrowHtml(curr.dat[ind.sel], curr.annot$size)
+                curr.annot.text <- getColCmpArrowHtml(curr.dat[ind.sel], curr.annot$size, "<br>")
             else if (curr.annot$type == "Text")
                 curr.annot.text <- formatByD3(curr.dat[ind.sel], curr.annot$format, curr.annot$prefix, curr.annot$suffix)
             else if (curr.annot$type == "Arrow - up")
                 curr.annot.text <- "&#129049;"
             else if (curr.annot$type == "Arrow - down")
                 curr.annot.text <- "&#129051;"
+            else if (curr.annot$type == "Caret - up")
+                curr.annot.text <- "&#9650;"
+            else if (curr.annot$type == "Caret - down")
+                curr.annot.text <- "&#9660;"
             else
                 curr.annot.text <- curr.annot$custom.symbol
             curr.annot.text <- rep(curr.annot.text, length = length(ind.sel))
 
-            p <- add_trace(p, y = curr.annot.ypos,
-                x = data.overlay.annot$x[ind.sel,i],
+            # For clustered column charts we use numeric "x2" axis
+            # But for single series directly map back to "x" axis (possibly categoric)
+            # This is necessary because small multiples do not work with
+            # multiple x/y axis
+            xpos <- if (NCOL(chart.matrix) > 1) data.overlay.annot$x[ind.sel,i]
+                    else x.labels[ind.sel]
+            p <- add_trace(p, x = xpos, y = curr.annot.ypos,
                 type = "scatter", mode = "markers+text", hoverinfo = "skip",
-                xaxis = "x2", yaxis = "y", showlegend = FALSE,
+                xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x",
+                yaxis = "y", showlegend = FALSE,
                 marker = list(opacity = 0.0, size = Sum(curr.annot$offset, remove.missing = FALSE)),
                 text = curr.annot.text, textposition = curr.annot.align,
                 textfont = list(family = curr.annot$font.family, size = curr.annot$size,
@@ -996,7 +1040,7 @@ Column <- function(x,
         bargap = bar.gap,
         barmode = barmode
     )
-    #attr(p, "can-run-in-root-dom") <- TRUE
+    attr(p, "can-run-in-root-dom") <- TRUE
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     attr(result, "ChartType") <- if (is.stacked) "Column Stacked" else "Column Clustered"

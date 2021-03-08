@@ -28,6 +28,8 @@ Area <- function(x,
                     type = "Area",
                     colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
                     opacity = NULL,
+                    average.series = NULL,
+                    average.color = rgb(230, 230, 230, maxColorValue = 255),
                     fit.line.colors = colors,
                     fit.type = "None", # can be "Smooth" or anything else
                     fit.ignore.last = FALSE,
@@ -149,6 +151,7 @@ Area <- function(x,
                     marker.border.opacity = 1,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
+                    zoom.enable = TRUE,
                     data.label.show = FALSE,
                     data.label.font.autocolor = FALSE,
                     data.label.font.family = global.font.family,
@@ -168,6 +171,11 @@ Area <- function(x,
             y.hovertext.format <- paste0(y.hovertext.format, "%")
         if (isAutoFormat(data.label.format))
             data.label.format <- paste0(data.label.format, "%")
+
+        sfx <- checkSuffixForExtraPercent(c(y.tick.suffix, data.label.suffix),
+            c(y.tick.format, data.label.format))
+        y.tick.suffix <- sfx[1]
+        data.label.suffix <- sfx[2]
     }
 
     chart.matrix <- checkMatrixNames(x)
@@ -257,6 +265,18 @@ Area <- function(x,
     marker.colors <- vectorize(marker.colors, n)
     marker.border.colors <- vectorize(marker.border.colors, n)
 
+    if (!is.null(average.series))
+    {
+        chart.matrix <- cbind(chart.matrix, "Average" = average.series)
+        colors <- c(colors, average.color)
+        fit.line.colors <- c(fit.line.colors, average.color)
+        fit.CI.colors <- c(fit.CI.colors, average.color)
+        line.colors <- c(line.colors, average.color)
+        line.thickness <- line.thickness[c(1:n,1)]
+        marker.colors <- c(marker.colors, average.color)
+        marker.border.colors <- c(marker.colors, average.color)
+    }
+
     if (is.null(opacity))
         opacity <- if (!is.stacked || fit.type != "None") 0.4 else 1
     if (opacity == 1 && !is.stacked && ncol(chart.matrix) > 1)
@@ -304,12 +324,14 @@ Area <- function(x,
                   ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance,
                   y.tick.format, y.tick.prefix, y.tick.suffix,
                   y.tick.show, y.zero, y.zero.line.width, y.zero.line.color,
-                  y.hovertext.format, num.maxticks = y.tick.maxnum)
+                  y.hovertext.format, num.maxticks = y.tick.maxnum, zoom.enable = zoom.enable)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance,
-                  x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show, x.zero, x.zero.line.width, x.zero.line.color,
-                  x.hovertext.format, axisFormat$labels, num.maxticks = x.tick.maxnum)
+                  x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show, 
+                  x.zero, x.zero.line.width, x.zero.line.color,
+                  x.hovertext.format, axisFormat$labels, num.maxticks = x.tick.maxnum,
+                  zoom.enable = zoom.enable)
 
     # Work out margin spacing
     margins <- list(t = 20, b = 20, r = 60, l = 80, pad = 0)
@@ -436,7 +458,7 @@ Area <- function(x,
                             line = list(color=fit.CI.colors[i], width=0, shape='spline'))
                 }
             }
-            if (any(data.label.show[,i]))
+            if (any(data.label.show[,i]) && i <= n) # no data labels shown for average.series
             {
                 ind.show <- which(data.label.show[,i])
                 y <- as.numeric(chart.matrix[ind.show, i])
@@ -526,7 +548,7 @@ Area <- function(x,
         hoverlabel = list(namelength = -1, bordercolor = "transparent",
             font = list(size = hovertext.font.size, family = hovertext.font.family))
     )
-    #attr(p, "can-run-in-root-dom") <- TRUE
+    attr(p, "can-run-in-root-dom") <- TRUE
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     attr(result, "ChartType") <- if (is.stacked) "Area Stacked" else "Area"

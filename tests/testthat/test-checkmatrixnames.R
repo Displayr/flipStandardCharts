@@ -34,6 +34,17 @@ tab1d.with.stats <- structure(c(3.25318246110325, 10.8910891089109, 10.325318246
     "NET"), c("%", "p")), name = "Income", questions = c("Income",
 "SUMMARY"))
 
+tab.2d.nonQ <- structure(c(21.7684616846345, 16.8273954590784, 23.6218418617686,
+22.3939814605362, 15.3883195339823, 20.2682378794749, 22.3469131808503,
+19.5399118569831, 24.9071455030989, 12.9377915795928, 24.2191612233134,
+14.4972683594848, 26.9645648467198, 22.8280612061214, 11.4909443643606,
+21.4238052135251, 16.9520193150924, 23.230939342932, 22.1717903016062,
+16.2214458268442, 21.7684616846345, 16.8273954590784, 23.6218418617686,
+22.3939814605362, 15.3883195339823), .Dim = c(5L, 5L), .Dimnames = list(
+    c("Available", "Clean", "Dependable", "Informed", "Safe"),
+    c("< 15%", "15 - 50%", "> 50% and Regional median",
+    "Regional median", "NET")))
+
 tab.as.char <- structure(c("11.1111111111111", "33.3333333333333", "37.037037037037",
     "3.7037037037037", "0", "14.8148148148148", "0", "100", "40.8284023668639",
     "8.87573964497041", "19.5266272189349", "7.69230769230769", "3.55029585798817",
@@ -97,6 +108,20 @@ test_that("checkMatrixNames",
         "$120,001 to $150,000", "$150,001 to $200,000", "$200,001 or more",
         "NET"), "Series 1")))
 
+    # Does not unexpectedly divide by 100
+    res <- checkMatrixNames(tab.2d.nonQ)
+    expect_equal(res, structure(c(21.7684616846345, 16.8273954590784,
+        23.6218418617686, 22.3939814605362, 15.3883195339823, 20.2682378794749,
+        22.3469131808503, 19.5399118569831, 24.9071455030989, 12.9377915795928,
+        24.2191612233134, 14.4972683594848, 26.9645648467198, 22.8280612061214,
+        11.4909443643606, 21.4238052135251, 16.9520193150924, 23.230939342932,
+        22.1717903016062, 16.2214458268442, 21.7684616846345, 16.8273954590784,
+        23.6218418617686, 22.3939814605362, 15.3883195339823),
+        .Dim = c(5L, 5L), .Dimnames = list(
+        c("Available", "Clean", "Dependable", "Informed", "Safe"),
+        c("< 15%", "15 - 50%", "> 50% and Regional median", "Regional median",
+        "NET"))))
+
     res <- checkMatrixNames(tab.as.char)
     expect_equal(res, structure(c(0.111111111111111,
         0.333333333333333, 0.37037037037037, 0.037037037037037, 0,
@@ -126,6 +151,16 @@ test_that("checkMatrixNames",
         structure(c(0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09,
         0.1), .Dim = c(10L, 1L), .Dimnames = list(c("A", "B", "C", "D",
     "E", "F", "G", "H", "I", "J"), "Series 1")))
+})
 
+# Check function used for automatically detecting value axis formatting
+test_that("isPercentData",
+{
+    tb1 <- structure(list(`100ab%` = c(0.5, 1, 0)), row.names = c("a", "b",
+        "c"), assigned.rownames = TRUE, class = "data.frame")
+    expect_equal(isPercentData(tb1), FALSE)
 
+    expect_equal(isPercentData(tab.2d.nonQ), FALSE)
+    expect_equal(isPercentData(tab1d.with.stats), TRUE)
+    expect_equal(isPercentData(tab2d.with.stats), TRUE)
 })

@@ -134,6 +134,7 @@ Bar <- function(x,
                     marker.border.opacity = opacity,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
+                    zoom.enable = TRUE,
                     bar.gap = 0.15,
                     data.label.show = FALSE,
                     data.label.font.autocolor = FALSE,
@@ -164,8 +165,12 @@ Bar <- function(x,
             x.hovertext.format <- paste0(x.hovertext.format, "%")
         if (isAutoFormat(data.label.format))
             data.label.format <- paste0(data.label.format, "%")
-    }
 
+        sfx <- checkSuffixForExtraPercent(c(x.tick.suffix, data.label.suffix),
+            c(x.tick.format, data.label.format))
+        x.tick.suffix <- sfx[1]
+        data.label.suffix <- sfx[2]
+    }
 
     chart.matrix <- checkMatrixNames(x)
     is.stacked <- grepl("Stacked", type, fixed=T)
@@ -262,13 +267,14 @@ Bar <- function(x,
                   ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance,
                   y.tick.format, y.tick.prefix, y.tick.suffix, y.tick.show,
                   y.zero, y.zero.line.width, y.zero.line.color,
-                  y.hovertext.format, with.bars = TRUE, num.maxticks = y.tick.maxnum)
+                  y.hovertext.format, with.bars = TRUE, num.maxticks = y.tick.maxnum,
+                  zoom.enable = zoom.enable)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance,
                   x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show,
                   x.zero, x.zero.line.width, x.zero.line.color,
-                  x.hovertext.format, num.maxticks = x.tick.maxnum)
+                  x.hovertext.format, num.maxticks = x.tick.maxnum, zoom.enable = zoom.enable)
 
     # Work out margin spacing
     margins <- list(t = 20, b = 20, r = 60, l = 80, pad = 0)
@@ -446,7 +452,7 @@ Bar <- function(x,
         bargap = bar.gap,
         barmode = barmode
     )
-    #attr(p, "can-run-in-root-dom") <- TRUE
+    attr(p, "can-run-in-root-dom") <- TRUE
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     attr(result, "ChartType") <- if (is.stacked) "Bar Stacked" else "Bar Clustered"

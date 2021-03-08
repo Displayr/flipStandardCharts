@@ -115,6 +115,7 @@ test_that("parseThreshold",
 test_that("addAnnotToDataLabel",
 {
     for (tt in c("Shadow", "Border", "Arrow - up", "Arrow - down",
+                 "Caret - up", "Caret - down",
                 "Hide", "Text - before data label", "Text - after data label"))
     {
         a.tmp <- list(type = tt, data = "p",

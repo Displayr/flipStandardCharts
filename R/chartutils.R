@@ -103,10 +103,7 @@ checkMatrixNames <- function(x, assign.col.names = TRUE)
     }
 
     # Convert percentage data to decimal form
-    stat <- attr(x, "statistic")
-    if (is.null(stat) && !is.null(dimnames(x)))
-        stat <- dimnames(x)[[length(dim(x))]][1]
-    if (isTRUE(grepl("%", stat)))
+    if (isPercentData(x))
     {
         new.x <- new.x/100
         attr(new.x, "statistic") <- NULL
@@ -627,7 +624,8 @@ setAxis <- function(title, side, axisLabels, titlefont,
                     tickformatmanual, tickprefix, ticksuffix, tickshow,
                     show.zero, zero.line.width, zero.line.color,
                     hovertext.format.manual, labels = NULL, num.series = 1,
-                    with.bars = FALSE, num.maxticks = NULL)
+                    with.bars = FALSE, num.maxticks = NULL,
+                    zoom.enable = TRUE)
 {
     axis.type <- if (side %in% c("bottom", "top")) axisLabels$x.axis.type else axisLabels$y.axis.type
     has.line <- !is.null(linewidth) && linewidth > 0
@@ -745,7 +743,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
         if (is.null(nticks) || nticks > num.maxticks)
             nticks <- num.maxticks
     }
-    return (list(title = title, fixedrange = TRUE,
+    return (list(title = title, fixedrange = !zoom.enable,
                  side = side, type = axis.type,
                  tickfont = tickfont,
                  showline = has.line, linecolor = linecolor,
@@ -1515,11 +1513,31 @@ isAutoFormat <- function(x)
 
 isPercentData <- function(data)
 {
-    if (isTRUE(grepl("%", attr(data, "statistic"))))
+    stat <- attr(data, "statistic")
+    if (isTRUE(grepl("%", stat)))
         return(TRUE)
     ndim <- length(dim(data))
-    if (is.null(attr(data, "statistic")) &&
-        isTRUE(grepl("%", dimnames(data)[[ndim]][1])))
-        return(TRUE)
+    if (is.null(stat) && !is.null(dimnames(data)))
+    {
+        stat <- dimnames(data)[[ndim]][1]
+        if (ndim >= 3 || all(c("questions", "name") %in% names(attributes(data))))
+            return(isTRUE(grepl("%", stat)))
+    }
     return(FALSE)
+}
+
+# y.tick.format, y.hovertext.format, y2.tick.format, y2.hovertext.format
+# data.label.format
+checkSuffixForExtraPercent <- function(suffix, format)
+{
+    new.suffix <- suffix
+    for (i in seq_along(suffix))
+    {
+        if (isTRUE(grepl("%", format[i])) && isTRUE(grepl("%", suffix[i])))
+            new.suffix[i] <- sub("%", "", suffix[i])
+    }
+    if (any(new.suffix != suffix))
+        warning("A percentage sign is automatically added to percent data. ",
+            "The first '%' in the suffix will be ignored.")
+    return(new.suffix)
 }

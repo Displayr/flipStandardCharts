@@ -3,6 +3,7 @@
 #' Stacked Column charts with annotations showing statistical
 #'  significance of z-Statistics or Column Comparisons
 #'
+#' @inherit Column
 #' @param x Input data may be a matrix or a vector, containing the height of the columns
 #' to be plotted, with the name/rownames used as the column names of the chart. Numeric and date labels
 #' will be parsed automatically.
@@ -70,27 +71,6 @@
 #' @param column.totals.below.font.family Font family of \code{column.totals.below}.
 #' @param column.totals.below.font.color Font color of \code{column.totals.below}.
 #' @param column.totals.below.font.size Font size of \code{column.totals.below}.
-#' @param title Character; chart title.
-#' @param title.font.family Character; title font family. Can be "Arial Black",
-#' "Arial", "Comic Sans MS", "Courier New", "Georgia", "Impact",
-#' "Lucida Console", "Lucida Sans Unicode", "Marlett", "Symbol", "Tahoma",
-#' "Times New Roman", "Trebuchet MS", "Verdana", "Webdings"
-#' @param title.font.color Title font color as a named color in character
-#' format (e.g. "black") or a hex code.
-#' @param title.font.size Integer; Title font size; default = 10.
-#' @param subtitle Character
-#' @param subtitle.font.color subtitle font color as a named color in
-#'  character format (e.g. "black") or an a hex code.
-#' @param subtitle.font.family Character; subtitle font family
-#' @param subtitle.font.size Integer; subtitle font size
-#' @param footer Character
-#' @param footer.font.color footer font color as a named color in
-#'  character format (e.g. "black") or an a hex code.
-#' @param footer.font.family Character; footer font family
-#' @param footer.font.size Integer; footer font size
-#' @param footer.wrap Logical; whether the footer text should be wrapped.
-#' @param footer.wrap.nchar Number of characters (approximately) in each
-#'  line of the footer when \code{footer.wrap} \code{TRUE}.
 #' @param footer.align One of "center", "left" or "right".
 #' @param grid.show Logical; whether to show grid lines.
 #' @param opacity Opacity of bars as an alpha value (0 to 1).
@@ -103,159 +83,6 @@
 #'  a named color in character format (e.g. "black") or a hex code.
 #' @param charting.area.fill.opacity Charting area background opacity
 #'  as an alpha value (0 to 1).
-#' @param legend.show Controls whether legend is shown. This can be a
-#'  logical (\code{TRUE} or \code{FALSE});or a string ("Show" or "Hide").
-#'  If it is \code{TRUE} or \code{NA} (the default), a legend will be
-#'  shown only if there is more than one data series. To force a legend
-#'  to be shown even with 1 data series, use "Show" instead.
-#' @param legend.wrap Logical; whether the legend text should be wrapped.
-#' @param legend.wrap.nchar Number of characters (approximately) in each
-#'  line of the legend when \code{legend.wrap} \code{TRUE}.
-#' @param legend.fill.color Legend fill color as a named color in character format
-#'  (e.g. "black") or a hex code.
-#' @param legend.fill.opacity Legend fill opacity as an alpha value (0 to 1).
-#' @param legend.ascending Logical; TRUE for ascending, FALSE for descending.
-#'  By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.
-#' @param legend.border.color Legend border color as a named color in character
-#'  format (e.g. "black") or a hex code.
-#' @param legend.border.line.width Width in pixels of the border
-#' around the legend.  0 = no border.
-#' @param legend.position.x A numeric controlling the position of the legend.
-#'  Values range from -0.5 (left) to 1.5 (right).
-#' @param legend.position.y A numeric controlling the position of the legend.
-#'  Values range from 0 (bottom) to 1 (top).
-#' @param legend.font.color Legend font color as a named color in character
-#'  format (e.g. "black") or a hex code.
-#' @param legend.font.family Character; legend font family.
-#' @param legend.font.size Integer; Legend font size.
-#' @param legend.orientation Character; One of 'Vertical' or 'Horizontal'
-#' @param margin.autoexpand Logical; Whether extra space can be added to the
-#'  margins to allow space for axis/legend/data labels or other chart elements.
-#' @param margin.top Margin between plot area and the top of the graphic in pixels
-#' @param margin.bottom Margin between plot area and the bottom of the graphic in pixels
-#' @param margin.left Margin between plot area and the left of the graphic in pixels
-#' @param margin.right Margin between plot area and the right of the graphic in pixels
-#' @param margin.inner.pad Padding in pixels between plot proper
-#'  and axis lines
-#' @param y.title Character, y-axis title; defaults to chart input values;
-#'  to turn off set to "FALSE".
-#' @param y.title.font.color y-axis title font color as a named color in
-#'  character format (e.g. "black") or a hex code.
-#' @param y.title.font.family Character; y-axis title font family
-#' @param y.title.font.size Integer; y-axis title font size
-#' @param y.line.width y-axis line width in pixels (0 = no line).
-#' @param y.line.color y-axis line color as a named color in character format
-#' (e.g. "black") or a hex code.
-#' @param y.tick.mark.length Length of tick marks in pixels.
-#'  Ticks are only shown when \code{y.line.width > 0}.
-#' @param y.bounds.minimum Minimum of range for plotting; For a date axis
-#'  this should be supplied as a date string.
-#'  For a categorical axis, the index of the category (0-based) should be used.
-#' @param y.bounds.maximum Maximum of range for plotting; NULL = no manual range set.
-#' @param y.tick.distance Distance between tick marks. Requires that
-#'  \code{y.bounds.minimum} and \code{y.bounds.maximum} have been set.
-#' @param y.zero Whether the y-axis should include zero.
-#' @param y.zero.line.width Width in pixels of zero line;
-#' @param y.zero.line.color Color of horizontal zero line as a named
-#'  color in character format (e.g. "black") or an rgb value (e.g.
-#'  rgb(0, 0, 0, maxColorValue = 255)).
-#' @param y.data.reversed Logical; whether to reverse y-axis or not
-#' @param y.grid.width Width of y-grid lines in pixels; 0 = no line
-#' @param y.grid.color Color of y-grid lines as a named color in
-#'  character format (e.g. "black") or a hex code.
-#' @param y.tick.show Whether to display the y-axis tick labels
-#' @param y.tick.suffix y-axis tick label suffix
-#' @param y.tick.prefix y-axis tick label prefix
-#' @param y.tick.format A string representing a d3 formatting code.
-#' See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format
-#' @param y.hovertext.format A string representing a d3 formatting code
-#' See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format
-#' @param y.tick.angle y-axis tick label angle in degrees.
-#' 90 = vertical; 0 = horizontal
-#' @param y.tick.font.color y-axis tick label font color as a named color
-#' in character format (e.g. "black") or an a hex code.
-#' @param y.tick.font.family Character; y-axis tick label font family
-#' @param y.tick.font.size Integer; y-axis tick label font size
-#' @param x.title Character, x-axis title; defaults to chart input values;
-#' to turn off set to "FALSE".
-#' @param x.title.font.color x-axis title font color as a named color in
-#' character format (e.g. "black") or an a hex code.
-#' @param x.title.font.family Character; x-axis title font family
-#' @param x.title.font.size Integer; x-axis title font size
-#' @param x.line.width x-axis line in pixels, 0 = no line
-#' @param x.line.color x-axis line color as a named color in character format
-#' (e.g. "black") or a hex code.
-#' @param x.tick.marks Character; whether and where to show tick marks on the
-#' x-axis.  Can be "outside", "inside", "none"
-#' @param x.tick.mark.length Length of tick marks in pixels.
-#' @param x.bounds.minimum Minimum of range for plotting; For a date axis
-#'  this should be supplied as a date string. For a categorical axis,
-#'  the index of the category (0-based) should be used.
-#' @param x.bounds.maximum Maximum of range for
-#'  plotting; NULL = no manual range set.  Must be greater than x.bounds.minimum
-#' @param x.tick.distance Tick mark distance in
-#'  x-axis units between minimum and maximum for plotting; NULL = no manual
-#'  range set.
-#' @param x.zero Whether the x-axis should include zero.
-#' @param x.zero.line.width Width in pixels of zero line.
-#' @param x.zero.line.color Color of horizontal zero (origin) line as a named
-#'  color in character format (e.g. "black") or an rgb value (e.g.
-#'  rgb(0, 0, 0, maxColorValue = 255)).
-#' @param x.data.reversed Logical; whether to reverse x-axis or not
-#' @param x.grid.width Width of y-grid lines in pixels; 0 = no line
-#' @param x.grid.color Color of y-grid lines as a named color in character
-#'  format (e.g. "black") or a hex code.
-#' @param x.tick.show Whether to display the x-axis tick labels
-#' @param x.tick.suffix x-axis tick label suffix
-#' @param x.tick.prefix x-axis tick label prefix
-#' @param x.tick.format A string representing a d3 formatting code.
-#'  See https://github.com/mbostock/d3/wiki/Formatting#numbers
-#' @param x.hovertext.format A string representing a d3 formatting code.
-#' See https://github.com/mbostock/d3/wiki/Formatting#numbers
-#' @param x.tick.angle x-axis tick label angle in degrees.
-#' 90 = vertical; 0 = horizontal
-#' @param x.tick.font.color X-axis tick label font color as a named color in
-#' character format (e.g. "black") or an a hex code.
-#' @param x.tick.font.family Character; x-axis tick label font family
-#' @param x.tick.font.size Integer; x-axis tick label font size
-#' @param x.tick.label.wrap Logical; whether to wrap long labels on the x-axis.
-#' @param x.tick.label.wrap.nchar Integer; number of characters in each line
-#'  when \code{label.wrap} is \code{TRUE}.
-#' @param hovertext.font.family Font family of hover text.
-#' @param hovertext.font.size Font size of hover text.
-#' @param marker.border.width Width in pixels of border/line
-#'  around series bars; 0 is no line
-#' @param marker.border.colors Character; a vector containing one or more
-#'  colors specified as hex codes.
-#' @param marker.border.opacity Opacity of border around bars as an
-#'  alpha value (0 to 1).
-#' @param tooltip.show Logical; whether to show a tooltip on hover.
-#' @param modebar.show Logical; whether to show the zoom menu buttons or not.
-#' @param global.font.family Character; font family for all occurrences of any
-#'  font attribute for the chart unless specified individually.
-#' @param global.font.color Global font color as a named color in character format
-#'  (e.g. "black") or an a hex code.
-#' @param bar.gap Chart proportion between each bar or column if using
-#'  bar or column charts, or between each cluster of bars or columns.
-#' @param data.label.show Logical; whether to show data labels.
-#' @param data.label.centered Logical; whether data labels in Stacked Column
-#'  charts should have the data labels vertically centered.
-#' @param data.label.font.family Character; font family for data label.
-#' @param data.label.font.size Integer; Font size for data label.px.
-#' @param data.label.font.color Font color as a named color
-#'  in character format (e.g. "black") or an a hex code. This can be a single
-#'  color, a vector of colors (1 for each series/column), or a comma separated list
-#'  of colors
-#' @param data.label.font.autocolor Logical; Whether font color should
-#'  be automatically determined (black or white) based on the color of the
-#'  background column if stacked.
-#' @param data.label.format A string representing a d3 formatting code.
-#'  See https://github.com/mbostock/d3/wiki/Formatting#numbers
-#' @param data.label.prefix Character; prefix for data values.
-#' @param data.label.suffix Character; suffix for data values.
-#' @param data.label.threshold The proportion of the total range below which
-#'  data labels should not be displayed. Only applicable for pie, bar and column
-#'  charts.
 #' @importFrom grDevices rgb
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom flipTables AsTidyTabularData RemoveRowsAndOrColumns ConvertQTableToArray
@@ -401,6 +228,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     marker.border.opacity = NULL,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
+                    zoom.enable = TRUE,
                     bar.gap = 0.5,
                     data.label.show = FALSE,
                     data.label.centered = TRUE,
@@ -430,6 +258,11 @@ StackedColumnWithStatisticalSignificance <- function(x,
             y.hovertext.format <- paste0(y.hovertext.format, "%")
         if (isAutoFormat(data.label.format))
             data.label.format <- paste0(data.label.format, "%")
+
+        sfx <- checkSuffixForExtraPercent(c(y.tick.suffix, data.label.suffix),
+            c(y.tick.format, data.label.format))
+        y.tick.suffix <- sfx[1]
+        data.label.suffix <- sfx[2]
     }
 
     # Save data for annotating column totals before
@@ -642,15 +475,17 @@ StackedColumnWithStatisticalSignificance <- function(x,
 
     yaxis <- setAxis(y.title, "left", axisFormat, y.title.font,
                   y.line.color, y.line.width, y.grid.width * grid.show, y.grid.color,
-                  ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance, y.tick.format,
-                  y.tick.prefix, y.tick.suffix,
+                  ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance, 
+                  y.tick.format, y.tick.prefix, y.tick.suffix,
                   y.tick.show, y.zero, 0, y.zero.line.color,
-                  y.hovertext.format)
+                  y.hovertext.format, zoom.enable = zoom.enable)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
-                  xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, x.tick.format,
-                  x.tick.prefix, x.tick.suffix, x.tick.show, x.zero, x.zero.line.width, x.zero.line.color,
-                  x.hovertext.format, axisFormat$labels, num.series = NCOL(chart.matrix), with.bars = TRUE)
+                  xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, 
+                  x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show, 
+                  x.zero, x.zero.line.width, x.zero.line.color,
+                  x.hovertext.format, axisFormat$labels, num.series = NCOL(chart.matrix), 
+                  with.bars = TRUE, zoom.enable = zoom.enable)
 
     yaxis2 <- NULL
 
@@ -915,7 +750,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
         bargap = bar.gap,
         barmode = barmode
     )
-    #attr(p, "can-run-in-root-dom") <- TRUE
+    attr(p, "can-run-in-root-dom") <- TRUE
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     attr(result, "ChartType") <- "Column Stacked"

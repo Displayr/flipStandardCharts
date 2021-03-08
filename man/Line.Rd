@@ -11,6 +11,8 @@ Line(
   shape = c("linear", "spline")[1],
   smoothing = 1,
   colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
+  average.series = NULL,
+  average.color = rgb(230, 230, 230, maxColorValue = 255),
   annotation.list = NULL,
   opacity = NULL,
   fit.type = "None",
@@ -134,6 +136,7 @@ Line(
   marker.border.opacity = NULL,
   tooltip.show = TRUE,
   modebar.show = FALSE,
+  zoom.enable = TRUE,
   data.label.show = FALSE,
   data.label.show.at.ends = FALSE,
   data.label.position = "Top",
@@ -160,6 +163,13 @@ will be parsed automatically.}
 \item{smoothing}{Numeric; smoothing if \code{shape} is "spline".}
 
 \item{colors}{Character; a vector containing one or more colors specified as hex codes.}
+
+\item{average.series}{a vector of values which create an additional data series named "Average".
+This is usually used by \code{SmallMultiples}. For bar/column charts, the average is shown as a line,
+for Line and Area, the average series is shown in the same way as the other data series
+but it is shown without data labels.}
+
+\item{average.color}{Color of the \code{average.series} as a hex code or string}
 
 \item{annotation.list}{Optional list of annotations to modify the data labels.}
 
@@ -467,6 +477,10 @@ around series bars; 0 is no line}
 
 \item{modebar.show}{Logical; whether to show the zoom menu buttons or not.}
 
+\item{zoom.enable}{Logical; whether to enable zoom on the chart.
+For Bar and Column charts with data labels it may be useful to turn off zoom
+because data labels and annotations can be misplace on zoom.}
+
 \item{data.label.show}{Logical; whether to show data labels.}
 
 \item{data.label.show.at.ends}{Logical; show data labels at the beginning and end of each
@@ -482,8 +496,12 @@ in character format (e.g. "black") or an a hex code. This can be a single
 color, a vector of colors (1 for each series/column), or a comma separated list
 of colors}
 
-\item{data.label.font.autocolor}{Logical; Whether font color should be automatically determined
-(black or white) based on the color of the background column if stacked.}
+\item{data.label.font.autocolor}{Logical; Whether font color should be
+automatically determined. For Line and Radar charts, the data labels will
+colored in the series color. For stacked bar and column charts the
+data labels will be black or white depending on the color of the
+bar (which background the data label). For non-stacked bar and column
+charts, this option is ignored.}
 
 \item{data.label.font.size}{Integer; Font size for data label.px.}
 

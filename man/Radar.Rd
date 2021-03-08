@@ -6,13 +6,14 @@
 \usage{
 Radar(
   x,
+  annotation.list = NULL,
+  overlay.annotation.list = NULL,
   title = "",
   title.font.family = global.font.family,
   title.font.color = global.font.color,
   title.font.size = 16,
   colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
   opacity = NULL,
-  aspect.fixed = TRUE,
   background.fill.color = "transparent",
   background.fill.opacity = 1,
   charting.area.fill.color = background.fill.color,
@@ -79,10 +80,13 @@ Radar(
   data.label.font.family = global.font.family,
   data.label.font.size = 10,
   data.label.font.color = global.font.color,
+  data.label.font.autocolor = FALSE,
   data.label.format = "",
   data.label.prefix = "",
   data.label.suffix = "",
   data.label.values.only = FALSE,
+  average.series = NULL,
+  average.color = rgb(230, 230, 230, maxColorValue = 255),
   subtitle = "",
   subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color,
@@ -99,6 +103,10 @@ Radar(
 \item{x}{Input data in the form of a vector or matrix. The categories used
 to create the radar (i.e. the x-axis) is taken from the names/rownames of x.}
 
+\item{annotation.list}{Optional list of annotations to modify the data labels.}
+
+\item{overlay.annotation.list}{Optional list of annotations that is overlayed on top of the chart.}
+
 \item{title}{Character; chart title.}
 
 \item{title.font.family}{Character; title font family. Can be "Arial Black",
@@ -114,9 +122,6 @@ format (e.g. "black") or a hex code.}
 \item{colors}{Character; a vector containing one or more colors specified as hex codes.}
 
 \item{opacity}{Opacity of area fill colors as an alpha value (0 to 1).}
-
-\item{aspect.fixed}{Logical; whether to fix aspect ratio. This should usually be set to true to avoid
-making a particular category look larger than the others. However, it is not supported with small-multiples}
 
 \item{background.fill.color}{Background color in character format (e.g. "black") or a hex code.}
 
@@ -279,6 +284,13 @@ in character format (e.g. "black") or an a hex code. This can be a single
 color, a vector of colors (1 for each series/column), or a comma separated list
 of colors}
 
+\item{data.label.font.autocolor}{Logical; Whether font color should be
+automatically determined. For Line and Radar charts, the data labels will
+colored in the series color. For stacked bar and column charts the
+data labels will be black or white depending on the color of the
+bar (which background the data label). For non-stacked bar and column
+charts, this option is ignored.}
+
 \item{data.label.format}{A string representing a d3 formatting code.
 See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 
@@ -288,6 +300,13 @@ See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 
 \item{data.label.values.only}{Logical; whether to show only the values in the
 datal labels instead of the default category label and values.}
+
+\item{average.series}{a vector of values which create an additional data series named "Average".
+This is usually used by \code{SmallMultiples}. For bar/column charts, the average is shown as a line,
+for Line and Area, the average series is shown in the same way as the other data series
+but it is shown without data labels.}
+
+\item{average.color}{Color of the \code{average.series} as a hex code or string}
 
 \item{subtitle}{Character}
 

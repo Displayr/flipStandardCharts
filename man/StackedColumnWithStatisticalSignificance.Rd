@@ -143,6 +143,7 @@ StackedColumnWithStatisticalSignificance(
   marker.border.opacity = NULL,
   tooltip.show = TRUE,
   modebar.show = FALSE,
+  zoom.enable = TRUE,
   bar.gap = 0.5,
   data.label.show = FALSE,
   data.label.centered = TRUE,
@@ -317,11 +318,10 @@ a named color in character format (e.g. "black") or a hex code.}
 \item{charting.area.fill.opacity}{Charting area background opacity
 as an alpha value (0 to 1).}
 
-\item{legend.show}{Controls whether legend is shown. This can be a
-logical (\code{TRUE} or \code{FALSE});or a string ("Show" or "Hide").
-If it is \code{TRUE} or \code{NA} (the default), a legend will be
-shown only if there is more than one data series. To force a legend
-to be shown even with 1 data series, use "Show" instead.}
+\item{legend.show}{Controls whether legend is shown. This can be a logical (\code{TRUE} or \code{FALSE});
+or a string ("Show" or "Hide"). If it is \code{TRUE} or \code{NA} (the default), a legend will be
+shown only if there is more than one data series. To force a legend to be shown even with 1
+data series, use "Show" instead.}
 
 \item{legend.orientation}{Character; One of 'Vertical' or 'Horizontal'}
 
@@ -372,8 +372,8 @@ By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.}
 \item{margin.inner.pad}{Padding in pixels between plot proper
 and axis lines}
 
-\item{margin.autoexpand}{Logical; Whether extra space can be added to the
-margins to allow space for axis/legend/data labels or other chart elements.}
+\item{margin.autoexpand}{Logical; Whether extra space can be added to the margins
+to allow space for axis/legend/data labels or other chart elements.}
 
 \item{grid.show}{Logical; whether to show grid lines.}
 
@@ -392,17 +392,14 @@ character format (e.g. "black") or a hex code.}
 \item{y.line.color}{y-axis line color as a named color in character format
 (e.g. "black") or a hex code.}
 
-\item{y.tick.mark.length}{Length of tick marks in pixels.
-Ticks are only shown when \code{y.line.width > 0}.}
+\item{y.tick.mark.length}{Length of tick marks in pixels. Ticks are only shown when \code{y.line.width > 0}.}
 
-\item{y.bounds.minimum}{Minimum of range for plotting; For a date axis
-this should be supplied as a date string.
+\item{y.bounds.minimum}{Minimum of range for plotting; For a date axis this should be supplied as a date string.
 For a categorical axis, the index of the category (0-based) should be used.}
 
 \item{y.bounds.maximum}{Maximum of range for plotting; NULL = no manual range set.}
 
-\item{y.tick.distance}{Distance between tick marks. Requires that
-\code{y.bounds.minimum} and \code{y.bounds.maximum} have been set.}
+\item{y.tick.distance}{Distance between tick marks. Requires that \code{y.bounds.minimum} and \code{y.bounds.maximum} have been set.}
 
 \item{y.zero}{Whether the y-axis should include zero.}
 
@@ -416,8 +413,8 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{y.grid.width}{Width of y-grid lines in pixels; 0 = no line}
 
-\item{y.grid.color}{Color of y-grid lines as a named color in
-character format (e.g. "black") or a hex code.}
+\item{y.grid.color}{Color of y-grid lines as a named color in character
+format (e.g. "black") or a hex code.}
 
 \item{y.tick.show}{Whether to display the y-axis tick labels}
 
@@ -461,9 +458,8 @@ x-axis.  Can be "outside", "inside", "none"}
 
 \item{x.tick.mark.length}{Length of tick marks in pixels.}
 
-\item{x.bounds.minimum}{Minimum of range for plotting; For a date axis
-this should be supplied as a date string. For a categorical axis,
-the index of the category (0-based) should be used.}
+\item{x.bounds.minimum}{Minimum of range for plotting; For a date axis this should be supplied as a date string.
+For a categorical axis, the index of the category (0-based) should be used.}
 
 \item{x.bounds.maximum}{Maximum of range for
 plotting; NULL = no manual range set.  Must be greater than x.bounds.minimum}
@@ -511,21 +507,22 @@ character format (e.g. "black") or an a hex code.}
 
 \item{x.tick.label.wrap}{Logical; whether to wrap long labels on the x-axis.}
 
-\item{x.tick.label.wrap.nchar}{Integer; number of characters in each line
-when \code{label.wrap} is \code{TRUE}.}
+\item{x.tick.label.wrap.nchar}{Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.}
 
 \item{marker.border.width}{Width in pixels of border/line
 around series bars; 0 is no line}
 
-\item{marker.border.colors}{Character; a vector containing one or more
-colors specified as hex codes.}
+\item{marker.border.colors}{Character; a vector containing one or more colors specified as hex codes.}
 
-\item{marker.border.opacity}{Opacity of border around bars as an
-alpha value (0 to 1).}
+\item{marker.border.opacity}{Opacity of border around bars as an alpha value (0 to 1).}
 
 \item{tooltip.show}{Logical; whether to show a tooltip on hover.}
 
 \item{modebar.show}{Logical; whether to show the zoom menu buttons or not.}
+
+\item{zoom.enable}{Logical; whether to enable zoom on the chart.
+For Bar and Column charts with data labels it may be useful to turn off zoom
+because data labels and annotations can be misplace on zoom.}
 
 \item{bar.gap}{Chart proportion between each bar or column if using
 bar or column charts, or between each cluster of bars or columns.}
@@ -535,9 +532,12 @@ bar or column charts, or between each cluster of bars or columns.}
 \item{data.label.centered}{Logical; whether data labels in Stacked Column
 charts should have the data labels vertically centered.}
 
-\item{data.label.font.autocolor}{Logical; Whether font color should
-be automatically determined (black or white) based on the color of the
-background column if stacked.}
+\item{data.label.font.autocolor}{Logical; Whether font color should be
+automatically determined. For Line and Radar charts, the data labels will
+colored in the series color. For stacked bar and column charts the
+data labels will be black or white depending on the color of the
+bar (which background the data label). For non-stacked bar and column
+charts, this option is ignored.}
 
 \item{data.label.font.family}{Character; font family for data label.}
 
@@ -562,4 +562,9 @@ charts.}
 \description{
 Stacked Column charts with annotations showing statistical
  significance of z-Statistics or Column Comparisons
+}
+\examples{
+z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L),
+      .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
+Column(z, type="Stacked Column")
 }

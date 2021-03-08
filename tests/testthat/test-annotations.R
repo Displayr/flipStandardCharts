@@ -107,6 +107,11 @@ test_that("Annotations",
     expect_error(SmallMultiples(data.with.stats[-10,,], "Line", annotation.list = a5,
         data.label.show = TRUE, data.label.show.at.ends = TRUE,
         marker.show.at.ends = TRUE, marker.size = 10), NA)
+
+    expect_error(Radar(data.with.stats[-10,,], annotation.list = a5,
+        data.label.show = TRUE), NA)
+    expect_error(SmallMultiples(data.with.stats[-10,,], "Radar",
+        annotation.list = a5, data.label.show = TRUE, average.show = TRUE), NA)
 })
 
 dat2 <- structure(c(38.8888888888889, 0, 0, 11.1111111111111, 18.1818181818182,
@@ -135,6 +140,14 @@ dat.with.text <- structure(c("0", "8.55263157894737", "7.23684210526316", "7.894
 test_that("Input matrix converted to character",
 {
     expect_error(Column(dat.with.text, data.label.show = TRUE,
+        annotation.list = list(
+        list(type = "Text - after data label", data = "Column Comparisons",
+             font.style = "normal", font.weight = "normal",
+             format = ".3f", prefix = "", suffix = "",
+             threshold = "-", threstype = "above threshold",
+             color = "red", font.family = "Courier New"))), NA)
+
+    expect_error(Column(dat.with.text[-11,,], data.label.show = TRUE,
         annotation.list = list(
         list(type = "Text - after data label", data = "Column Comparisons",
              font.style = "normal", font.weight = "normal",

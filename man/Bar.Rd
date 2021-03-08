@@ -124,6 +124,7 @@ Bar(
   marker.border.opacity = opacity,
   tooltip.show = TRUE,
   modebar.show = FALSE,
+  zoom.enable = TRUE,
   bar.gap = 0.15,
   data.label.show = FALSE,
   data.label.font.autocolor = FALSE,
@@ -436,13 +437,21 @@ around series bars; 0 is no line}
 
 \item{modebar.show}{Logical; whether to show the zoom menu buttons or not.}
 
+\item{zoom.enable}{Logical; whether to enable zoom on the chart.
+For Bar and Column charts with data labels it may be useful to turn off zoom
+because data labels and annotations can be misplace on zoom.}
+
 \item{bar.gap}{Chart proportion between each bar or column if using
 bar or column charts, or between each cluster of bars or columns.}
 
 \item{data.label.show}{Logical; whether to show data labels.}
 
-\item{data.label.font.autocolor}{Logical; Whether font color should be automatically determined
-(black or white) based on the color of the background column if stacked.}
+\item{data.label.font.autocolor}{Logical; Whether font color should be
+automatically determined. For Line and Radar charts, the data labels will
+colored in the series color. For stacked bar and column charts the
+data labels will be black or white depending on the color of the
+bar (which background the data label). For non-stacked bar and column
+charts, this option is ignored.}
 
 \item{data.label.font.family}{Character; font family for data label.}
 
@@ -464,7 +473,10 @@ See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 data labels should not be displayed. Only applicable for pie, bar and column
 charts.}
 
-\item{average.series}{y-values of additional data series which is shown as a line. Used by \code{SmallMultiples}.}
+\item{average.series}{a vector of values which create an additional data series named "Average".
+This is usually used by \code{SmallMultiples}. For bar/column charts, the average is shown as a line,
+for Line and Area, the average series is shown in the same way as the other data series
+but it is shown without data labels.}
 
 \item{average.color}{Color of the \code{average.series} as a hex code or string}
 }

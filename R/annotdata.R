@@ -2,9 +2,9 @@
 # This is only used for Bar/Column type charts
 #' @importFrom verbs Sum
 addDataLabelAnnotations <- function(p, type, name, data.label.xpos, data.label.ypos,
-        data.label.show, data.label.text, data.label.sign, 
+        data.label.show, data.label.text, data.label.sign,
         annotation.list, annot.data, i,
-        xaxis, yaxis, data.label.font, is.stacked, data.label.centered, 
+        xaxis, yaxis, data.label.font, is.stacked, data.label.centered,
         data.label.horizontal.align = "center")
 {
     if (type == "Column")
@@ -115,14 +115,25 @@ getAnnotData <- function(data, name, series, as.numeric = TRUE)
 
     d.dim <- dim(data)
     d.len <- length(d.dim)
-    d.names <- dimnames(data)[[d.len]]
-    if (is.null(d.names))
-        d.names <- as.character(1:d.len)
+    if (!is.null(attr(data, "statistic")))
+        d.names <- attr(data, "statistic")
+    else
+    {
+        d.names <- dimnames(data)[[d.len]]
+        if (is.null(d.names))
+            d.names <- as.character(1:d.len)
+    }
     ind <- match(paste0("", name), d.names)
     if (is.na(ind))
         stop("Annotation data does not contain a statistic named '", name, "'. ",
                 "Allowable names are: '", paste(d.names, collapse = "', '"), "'. ")
-    if (length(d.dim) == 3)
+
+    match.single.stat <- isTRUE(attr(data, "statistic") == name)
+    if (match.single.stat && d.len == 2)
+        new.dat <- data[,series]
+    else if (match.single.stat)
+        new.dat <- data
+    else if (d.len == 3)
         new.dat <- data[,series, ind]
     else
         new.dat <- data[,ind]
@@ -136,20 +147,35 @@ extractSelectedAnnot <- function(data, threshold, threstype)
     n <- NROW(data)
     if (is.null(threstype) || is.null(threshold))
         return(1:n)
-    else if (threstype == "above threshold")      
+    else if (threstype == "above threshold")
         return(which(data > threshold))
     else
         return(which(data < threshold))
 }
 
+
+#' Adds html code to the data labels include the annotation
+#' @return The modified character vector \code{data.label.text}.
+#' @param data.label.text A character vector containing the original data labels
+#'  which is to be annotated
+#' @param annotation An element of the \code{annotation.list} passed to the
+#' top level charting function. The is usually a list with named elements
+#' such as "type", "size", "font.family", "format". Note that this
+#' function will not handle annotation of type "Circle - xxx" or "Marker border"
+#' because these are implemented as additional traces.
+#' @param tmp.dat A slice of \code{annot.dat} which matches data.label.text
+#' It is used when \code{annotation$type} is "Text".
+#' @param prepend Logical; when true, the annotation will be added to the
+#  beginning of data.label.text instead of the end.
 #' @importFrom verbs Sum
-addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat)
+#' @keywords internal
+addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat, prepend = FALSE)
 {
     # Fix font size so that the units do not change in size when the font size increases
     left.pad <- ""
-    if (Sum(annotation$shiftright) > 0)
+    if ((n.shift.right <- Sum(annotation$shiftright)) > 0)
         left.pad <- paste0("<span style='font-size: 2px'>",
-                    paste(rep(" ", Sum(annotation$shiftright)), collapse = ""),
+                    paste(rep(" ", n.shift.right), collapse = ""),
                     "</span>")
 
     if (annotation$type == "Shadow")
@@ -174,20 +200,28 @@ addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat)
             new.style <- paste0(new.style, "font-style:", annotation$font.style, ";")
 
         new.text <- ""
-        if (annotation$type == "Arrow - up")
+        if (annotation$data == "Column Comparisons" && grepl("Arrow", annotation$type))
+            new.text <- paste0(" ", getColCmpArrowHtml(tmp.dat, annotation$size), " ")
+        else if (annotation$type == "Arrow - up")
             new.text <- "&#129049;"
         else if (annotation$type == "Arrow - down")
             new.text <- "&#129051;"
+        else if (annotation$type == "Caret - up")
+            new.text <- "&#9650;"
+        else if (annotation$type == "Caret - down")
+            new.text <- "&#9660;"
+        else if (annotation$type == "Custom text")
+            new.text <- annotation$custom.symbol
         else if (grepl("Text", annotation$type))
             new.text <- formatByD3(tmp.dat, annotation$format, annotation$prefix, annotation$suffix)
         else if (annotation$type == "Hide")
             new.text <- ""
-        if (nchar(new.style) > 0)
+        if (any(nzchar(new.style)))
             new.text <- paste0("<span style='", new.style, "'>", new.text, "</span>")
 
         if (annotation$type == "Hide")
             data.label.text <- ""
-        else if (annotation$type == "Text - before data label")
+        else if (annotation$type == "Text - before data label" || prepend)
             data.label.text <- paste0(left.pad, new.text, data.label.text)
         else
             data.label.text <- paste0(data.label.text, left.pad, new.text)
@@ -198,7 +232,7 @@ addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat)
 # This function in used in Bar/Column/Line and only converts
 # text input into numeric values because the y-axis is always numeric
 # Scatterplot uses a slightly more complicated function because
-# the y-axis can also be a date or categorical so the 
+# the y-axis can also be a date or categorical so the
 # threshold needs to be converted accordingly.
 
 parseThreshold <- function(x)
@@ -206,7 +240,7 @@ parseThreshold <- function(x)
     if (is.null(x))
         return(x)
 
-    # Convert string to numeric where possible 
+    # Convert string to numeric where possible
     tmp <- suppressWarnings(as.numeric(x))
     if (!is.na(tmp))
         return(tmp)
@@ -223,15 +257,16 @@ checkAnnotType <- function(annot.type, chart.type)
         return(FALSE)
     }
 
-    # These annotation types are implemented for all charts 
-    # which support annotations e.g. Line 
+    # These annotation types are implemented for all charts
+    # which support annotations e.g. Line
     allowed.types <- c('Arrow - up', 'Arrow - down', 'Border',
+       'Caret - up', 'Caret - down',
        'Circle - filled', 'Circle - thick outline', 'Circle - thin outline',
        'Hide', 'Shadow', 'Text - after data label', 'Text - before data label')
 
     # Additional annotation types only implemented on some chart types
     if (chart.type == "Bar")
-        allowed.types <- c(allowed.types, 
+        allowed.types <- c(allowed.types,
            'Circle - filled', 'Circle - thick outline', 'Circle - thin outline')
     else if (chart.type == "Scatter")
         allowed.types <- c(allowed.types, 'Marker border')
@@ -246,17 +281,17 @@ checkAnnotType <- function(annot.type, chart.type)
         return(TRUE)
 }
 
-getColCmpArrowHtml <- function(cell.text, arrow.size)
+getColCmpArrowHtml <- function(cell.text, arrow.size, sep = " ")
 {
     arrow.code <- "&#129049;" # always use up-arrow
     res <- rep("", length(cell.text))
 
     for (i in 1:length(cell.text))
     {
-        tmp <- paste0("<span style='font-size:", arrow.size - 3, "px'>", 
+        tmp <- paste0("<span style='font-size:", arrow.size - 3, "px'>",
             unlist(strsplit(cell.text[i], split = "\\s")),
             "</span>", arrow.code)
-        res[i] <- paste(tmp, collapse = "<br>")
+        res[i] <- paste(tmp, collapse = sep)
     }
     return(res)
 }
