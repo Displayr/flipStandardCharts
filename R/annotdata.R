@@ -261,7 +261,6 @@ checkAnnotType <- function(annot.type, chart.type)
     # which support annotations e.g. Line
     allowed.types <- c('Arrow - up', 'Arrow - down', 'Border',
        'Caret - up', 'Caret - down',
-       'Circle - filled', 'Circle - thick outline', 'Circle - thin outline',
        'Hide', 'Shadow', 'Text - after data label', 'Text - before data label')
 
     # Additional annotation types only implemented on some chart types
@@ -296,3 +295,94 @@ getColCmpArrowHtml <- function(cell.text, arrow.size, sep = " ")
     return(res)
 }
 
+# Create attribute list for exporting annotations to powerpoint
+getPointSegmentsForPPT <- function(x, index, annot, dat)
+{
+    # Shape-type annotation are added in separate function
+    if (!grepl("Circle|Border|Shadow|Hide", annot$type))
+    {
+        tmp.seg <- list(list(Font = setFontForPPT(annot),
+                        Text = setTextForPPT(annot)))
+    }
+
+    for (i in 1:length(index))
+    {
+        if (grepl("^Text", annot$type))
+            tmp.seg$Text <- formatByD3(dat[i], annot$format, annot$prefix, annot$suffix)
+
+        ii <- index[i]
+        if (annot$type == "Hide")
+            x[[ii]]$Segments <- list()
+        else if (grepl("Circle|Border|Shadow", annot$type))
+            x[[ii]] <- setShapeForPPT(x[[ii]], annot) # overrides previous shapes
+        else if (annot$type == "Text - before data label")
+            x[[ii]]$Segments <- c(tmp.seg, x[[ii]]$Segments)
+        else
+            x[[ii]]$Segments <- c(x[[ii]]$Segments, tmp.seg)
+    }
+    return(x)
+}
+
+setFontForPPT <- function(annotation)
+{
+    font <- list()
+    if (!is.null(annotation$color))
+        font$color <- annotation$color
+    if (!is.null(annotation$size))
+        font$size <- annotation$size / 1.333 # convert px to pt
+    if (!is.null(annotation$font.family))
+        font$family <- annotation$font.family
+    if (!is.null(annotation$font.weight))
+        font$bold <- isTRUE(tolower(annotation$font.weight) == "bold")
+    if (!is.null(annotation$font.style))
+        font$italic <- isTRUE(tolower(annotation$font.style) == "italic")
+
+    if (length(font) == 0)
+        return(NULL)
+    return (font)
+}
+
+setShapeForPPT <- function(pt, annotation)
+{
+    if (annotation$type == "Border")
+    {
+        pt$OutlineShape <- "Rectangle"
+        pt$OutlineStyle <- "Solid"
+        pt$OutlineColor <- annotation$color
+        pt$OutlineWidth <- annotation$width/1.3333 # convert px to pt
+    }
+    else if (annotation$type == "Shadow")
+    {
+        pt$BackgroundShadow <- TRUE
+        pt$BackgroundColor <- annotation$color
+    }
+    else if (annotation$type == "Circle - filled")
+    {
+        pt$OutlineShape <- "Ellipse"
+        pt$OutlineStyle <- "Solid"
+        if (is.null(pt$OutlineColor))
+            pt$OutlineColor <- "#FFFFFF00"
+        pt$BackgroundColor <- annotation$color
+    }
+    else
+    {
+        pt$OutlineShape <- "Ellipse"
+        pt$OutlineStyle <- "Solid"
+        pt$OutlineColor <- annotation$color
+        pt$OutlineWidth <- if (annotation$type == "Circle - thin outline") 1
+                           else                                            3
+    }
+    return(pt)
+}
+
+# From https://stackoverflow.com/questions/5060076/convert-html-character-entity-encoding-in-r
+unescape_html <- function(str){
+  xml2::xml_text(xml2::read_html(paste0("<x>", str, "</x>")))
+}
+
+setTextForPPT <- function(annot)
+{
+    symbol <- switch(annot$type, "Arrow - up" = "&#129049;", "Arrow - down" = "&#129051;",
+        "Caret - up" = "&#9650;", "Caret - down" = "&#9660;", annot$custom.symbol)
+    return(unescape_html(symbol))
+}

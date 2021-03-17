@@ -294,8 +294,8 @@ Line <-   function(x,
                   y.hovertext.format, num.maxticks = y.tick.maxnum, zoom.enable = zoom.enable)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
-                  xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, 
-                  x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show, 
+                  xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance,
+                  x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show,
                   x.zero, x.zero.line.width, x.zero.line.color,
                   x.hovertext.format, axisFormat$labels, num.maxticks = x.tick.maxnum,
                   zoom.enable = zoom.enable)
@@ -439,6 +439,7 @@ Line <-   function(x,
     # Add data labels last to ensure they show on top of the lines
     # This also overrides the hoverlabels so we need to re-create them
     # We use a text trace instead of annotations because it will toggle with the legend
+    chart.labels <- list(SeriesLabels = list())
     for (i in 1:n) # does not include average.series
     {
         if (any(data.label.show[,i]))
@@ -450,19 +451,42 @@ Line <-   function(x,
                  data.label.function(chart.matrix[, i], decimals = data.label.decimals),
                  dlab.suffix[,i], sep = "")
 
+            # Add attribute for PPT exporting
+            chart.labels$SeriesLabels[[i]] <- list(Position = "Top",
+                Font = setFontForPPT(data.label.font[[i]]),
+                ShowCategoryName = FALSE, ShowLeaderLines = FALSE,
+                ShowLegendKey = FALSE, ShowPercent = percentFromD3(data.label.format),
+                ShowSeriesName = FALSE, ShowValue = TRUE, CustomPoints = NULL)
+
+            # Initialise custom points if annotations are used
+            if (!is.null(annotation.list))
+                pt.segs <- lapply((1:nrow(chart.matrix)),
+                    function(ii) return(list(Index=ii-1, Segments=list(list(Field="Value")))))
+
             # Sequentially apply annotations
+            count.annots <- 0
             for (j in seq_along(annotation.list))
             {
                 if (!checkAnnotType(annotation.list[[j]]$type, "Line"))
                     next
                 annotation.list[[j]]$threshold <- parseThreshold(annotation.list[[j]]$threshold)
                 a.tmp <- annotation.list[[j]]
-                tmp.dat <- getAnnotData(annot.data, a.tmp$data, i, 
-                    as.numeric = !grepl("Text", a.tmp$type) && 
+                tmp.dat <- getAnnotData(annot.data, a.tmp$data, i,
+                    as.numeric = !grepl("Text", a.tmp$type) &&
                     a.tmp$data != "Column Comparisons")
                 ind.sel <- extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype)
-                source.text[ind.sel] <- addAnnotToDataLabel(source.text[ind.sel], a.tmp, tmp.dat[ind.sel])
+                if (length(ind.sel) > 0)
+                {
+                    count.annots <- count.annots + length(ind.sel)
+                    source.text[ind.sel] <- addAnnotToDataLabel(source.text[ind.sel],
+                        a.tmp, tmp.dat[ind.sel])
+                    pt.segs <- getPointSegmentsForPPT(pt.segs, ind.sel, a.tmp, tmp.dat[ind.sel])
+                }
             }
+            if (count.annots > 0)
+                chart.labels$SeriesLabels[[i]]$CustomPoints <- pt.segs
+
+
             data.label.offset <- rep(line.thickness[i]/2, length(ind.show))
             if (any(marker.show[,i]))
                 data.label.offset[which(marker.show[ind.show,i])] <- pmax(marker.size[ind.show,i], data.label.offset)
@@ -478,6 +502,8 @@ Line <-   function(x,
                    hovertemplate = setHoverTemplate(i, xaxis, chart.matrix))
         }
     }
+    if (length(chart.labels$SeriesLabels) == 0 || sum(sapply(chart.labels$SeriesLabels, length)) == 0)
+        chart.labels <- NULL
 
     annot <- list(setSubtitle(subtitle, subtitle.font, margins),
                            setTitle(title, title.font, margins),
@@ -504,6 +530,7 @@ Line <-   function(x,
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     attr(result, "ChartType") <- if (all(marker.show)) "Line Markers" else "Line"
+    attr(result, "ChartLabels") <- chart.labels
     result
 }
 

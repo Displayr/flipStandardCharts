@@ -62,7 +62,7 @@ MissingCasesPlot(
 \item{fill.color}{Color to show the missing value.}
 
 \item{fill.opacity}{Alpha transparence between 0 and 1 (or \code{NULL}).
-By default automatically tries to adjust opacity depending on the number of 
+By default automatically tries to adjust opacity depending on the number of
 missing values. However if there is a very high density of missing values, you may need to manually
 reduce the fill opacity to observe differences in saturated regions.}
 
