@@ -201,9 +201,9 @@ addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat, prepend = 
 
         new.text <- ""
         if (annotation$data == "Column Comparisons" && grepl("Arrow", annotation$type))
-            new.text <- paste0(" ", getColCmpArrowHtml(tmp.dat, annotation$size), " ", "&#129049;")
+            new.text <- paste0(" ", getColCmpArrowHtml(tmp.dat, annotation$size, " ", "&#129049;"), " ")
         else if (annotation$data == "Column Comparisons" && grepl("Caret", annotation$type))
-            new.text <- paste0(" ", getColCmpArrowHtml(tmp.dat, annotation$size), " ", "&9650;")
+            new.text <- paste0(" ", getColCmpArrowHtml(tmp.dat, annotation$size, " ", "&#9650;"), " ")
         else if (annotation$type == "Arrow - up")
             new.text <- "&#129049;"
         else if (annotation$type == "Arrow - down")
@@ -299,7 +299,7 @@ getColCmpArrowHtml <- function(cell.text, arrow.size, sep = " ", arrow.code = "&
 
     for (i in 1:length(cell.text))
     {
-        tmp <- paste0(prefix, unlist(strsplit(cell.text[i], split = "\\s")), suffix)
+        tmp <- paste0(prefix, unlist(strsplit(cell.text[i], split = "\\s+")), suffix)
         res[i] <- paste(tmp, collapse = sep)
     }
     return(res)
@@ -319,11 +319,11 @@ getPointSegmentsForPPT <- function(x, index, annot, dat)
     {
         # Set text only if it depends on the data
         if (grepl("^Text", annot$type))
-            tmp.seg$Text <- formatByD3(dat[i], annot$format, annot$prefix, annot$suffix)
+            tmp.seg[[1]]$Text <- formatByD3(dat[i], annot$format, annot$prefix, annot$suffix)
         else if (annot$data == "Column Comparisons" && grepl("Arrow", annot$type))
-            tmp.seg$Text <- unescape_html(getColCmpArrowHtml(dat[i], NULL, " ", "&#129049;"))
+            tmp.seg[[1]]$Text <- unescape_html(getColCmpArrowHtml(dat[i], NULL, " ", "&#129049;"))
         else if (annot$data == "Column Comparisons" && grepl("Caret", annot$type))
-            tmp.seg$Text <- unescape_html(getColCmpArrowHtml(dat[i], NULL, " ", "&#9650;"))
+            tmp.seg[[1]]$Text <- unescape_html(getColCmpArrowHtml(dat[i], NULL, " ", "&#9650;"))
 
         ii <- index[i]
         if (annot$type == "Hide") # segments still has to be appendable
