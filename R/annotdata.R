@@ -201,7 +201,9 @@ addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat, prepend = 
 
         new.text <- ""
         if (annotation$data == "Column Comparisons" && grepl("Arrow", annotation$type))
-            new.text <- paste0(" ", getColCmpArrowHtml(tmp.dat, annotation$size), " ")
+            new.text <- paste0(" ", getColCmpArrowHtml(tmp.dat, annotation$size), " ", "&#129049;")
+        else if (annotation$data == "Column Comparisons" && grepl("Caret", annotation$type))
+            new.text <- paste0(" ", getColCmpArrowHtml(tmp.dat, annotation$size), " ", "&9650;")
         else if (annotation$type == "Arrow - up")
             new.text <- "&#129049;"
         else if (annotation$type == "Arrow - down")
@@ -280,16 +282,24 @@ checkAnnotType <- function(annot.type, chart.type)
         return(TRUE)
 }
 
-getColCmpArrowHtml <- function(cell.text, arrow.size, sep = " ")
+getColCmpArrowHtml <- function(cell.text, arrow.size, sep = " ", arrow.code = "&#129049;")
 {
-    arrow.code <- "&#129049;" # always use up-arrow
     res <- rep("", length(cell.text))
+
+    if (is.null(arrow.size)) # no html styling
+    {
+        prefix <- ""
+        suffix <- arrow.code
+
+    } else
+    {
+        prefix <- paste0("<span style='font-size:", arrow.size - 3, "px'>")
+        suffix <- paste0("</span>", arrow.code)
+    }
 
     for (i in 1:length(cell.text))
     {
-        tmp <- paste0("<span style='font-size:", arrow.size - 3, "px'>",
-            unlist(strsplit(cell.text[i], split = "\\s")),
-            "</span>", arrow.code)
+        tmp <- paste0(prefix, unlist(strsplit(cell.text[i], split = "\\s")), suffix)
         res[i] <- paste(tmp, collapse = sep)
     }
     return(res)
@@ -307,11 +317,16 @@ getPointSegmentsForPPT <- function(x, index, annot, dat)
 
     for (i in 1:length(index))
     {
+        # Set text only if it depends on the data
         if (grepl("^Text", annot$type))
             tmp.seg$Text <- formatByD3(dat[i], annot$format, annot$prefix, annot$suffix)
+        else if (annot$data == "Column Comparisons" && grepl("Arrow", annot$type))
+            tmp.seg$Text <- unescape_html(getColCmpArrowHtml(dat[i], NULL, " ", "&#129049;"))
+        else if (annot$data == "Column Comparisons" && grepl("Caret", annot$type))
+            tmp.seg$Text <- unescape_html(getColCmpArrowHtml(dat[i], NULL, " ", "&#9650;"))
 
         ii <- index[i]
-        if (annot$type == "Hide")
+        if (annot$type == "Hide") # segments still has to be appendable
             x[[ii]]$Segments <- list()
         else if (grepl("Circle|Border|Shadow", annot$type))
             x[[ii]] <- setShapeForPPT(x[[ii]], annot) # overrides previous shapes
@@ -319,6 +334,21 @@ getPointSegmentsForPPT <- function(x, index, annot, dat)
             x[[ii]]$Segments <- c(tmp.seg, x[[ii]]$Segments)
         else
             x[[ii]]$Segments <- c(x[[ii]]$Segments, tmp.seg)
+    }
+    return(x)
+}
+
+# R attribute parsing code does not like empty lists
+checkForEmptySegs <- function(x)
+{
+    for (i in length(x):1) # traverse backwards so smaller indexes still valid
+    {
+        if (length(x[[i]]$Segments) == 0)
+            x[[i]]$Segment <- NULL
+
+        if (is.null(x[[i]]$Segment) && !isTRUE(x[[i]]$ShowValue) &&
+            is.null(x[[i]]$BackgroundColor) && is.null(x[[i]]$OutlineColor))
+            x[[i]] <- NULL
     }
     return(x)
 }
@@ -375,10 +405,6 @@ setShapeForPPT <- function(pt, annotation)
     return(pt)
 }
 
-# From https://stackoverflow.com/questions/5060076/convert-html-character-entity-encoding-in-r
-unescape_html <- function(str){
-  xml2::xml_text(xml2::read_html(paste0("<x>", str, "</x>")))
-}
 
 setTextForPPT <- function(annot)
 {
@@ -386,3 +412,10 @@ setTextForPPT <- function(annot)
         "Caret - up" = "&#9650;", "Caret - down" = "&#9660;", annot$custom.symbol)
     return(unescape_html(symbol))
 }
+# From https://stackoverflow.com/questions/5060076/convert-html-character-entity-encoding-in-r
+
+unescape_html <- function(str){
+  xml2::xml_text(xml2::read_html(paste0("<x>", str, "</x>")))
+}
+
+

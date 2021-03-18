@@ -461,13 +461,11 @@ Line <-   function(x,
             # Initialise custom points if annotations are used
             if (!is.null(annotation.list) || length(ind.show) < nrow(chart.matrix))
             {
+                chart.labels$SeriesLabels[[i]]$ShowValue <- FALSE
                 pt.segs <- lapply((1:nrow(chart.matrix)),
                     function(ii) return(list(Index=ii-1, Segments=list(list(Field="Value")))))
                 for (ii in setdiff(1:nrow(chart.matrix), ind.show))
-                {
                     pt.segs[[ii]]$Segments <- NULL
-                    pt.segs[[ii]]$ShowValue <- FALSE
-                }
             }
 
             # Sequentially apply annotations
@@ -488,6 +486,11 @@ Line <-   function(x,
                         a.tmp, tmp.dat[ind.sel])
                     pt.segs <- getPointSegmentsForPPT(pt.segs, ind.sel, a.tmp, tmp.dat[ind.sel])
                 }
+            }
+            if (!is.null(annotation.list) || length(ind.show) < nrow(chart.matrix))
+            {
+                pt.segs <- checkForEmptySegs(pt.segs)
+                chart.labels$SeriesLabels[[i]]$CustomPoints <- pt.segs
             }
 
             data.label.offset <- rep(line.thickness[i]/2, length(ind.show))
