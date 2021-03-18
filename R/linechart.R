@@ -459,12 +459,18 @@ Line <-   function(x,
                 ShowSeriesName = FALSE, ShowValue = TRUE, CustomPoints = NULL)
 
             # Initialise custom points if annotations are used
-            if (!is.null(annotation.list))
+            if (!is.null(annotation.list) || length(ind.show) < nrow(chart.matrix))
+            {
                 pt.segs <- lapply((1:nrow(chart.matrix)),
                     function(ii) return(list(Index=ii-1, Segments=list(list(Field="Value")))))
+                for (ii in setdiff(1:nrow(chart.matrix), ind.show))
+                {
+                    pt.segs[[ii]]$Segments <- NULL
+                    pt.segs[[ii]]$ShowValue <- FALSE
+                }
+            }
 
             # Sequentially apply annotations
-            count.annots <- 0
             for (j in seq_along(annotation.list))
             {
                 if (!checkAnnotType(annotation.list[[j]]$type, "Line"))
@@ -474,18 +480,15 @@ Line <-   function(x,
                 tmp.dat <- getAnnotData(annot.data, a.tmp$data, i,
                     as.numeric = !grepl("Text", a.tmp$type) &&
                     a.tmp$data != "Column Comparisons")
-                ind.sel <- extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype)
+                ind.sel <- intersect(ind.show,
+                                extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype))
                 if (length(ind.sel) > 0)
                 {
-                    count.annots <- count.annots + length(ind.sel)
                     source.text[ind.sel] <- addAnnotToDataLabel(source.text[ind.sel],
                         a.tmp, tmp.dat[ind.sel])
                     pt.segs <- getPointSegmentsForPPT(pt.segs, ind.sel, a.tmp, tmp.dat[ind.sel])
                 }
             }
-            if (count.annots > 0)
-                chart.labels$SeriesLabels[[i]]$CustomPoints <- pt.segs
-
 
             data.label.offset <- rep(line.thickness[i]/2, length(ind.show))
             if (any(marker.show[,i]))
