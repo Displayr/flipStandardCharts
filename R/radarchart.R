@@ -313,22 +313,6 @@ Radar <- function(x,
         }
     }
 
-    # Add x-axis labels
-    # If x-axis label are not shown, annotations may still be present
-    annotations <- NULL
-    if (any(nzchar(xlab)))
-    {
-
-        # We use annotations rather than a text trace because
-        # plotly will automatically expand margins to keep annotations visible
-        annotations <- lapply(1:m, function(ii) list(text = xlab[ii], font = x.tick.font,
-                        x = outer[ii,1], y = outer[ii,2], xref = "x", yref = "y",
-                        xanchor = calcXAlign(ii, m, return.anchor = !reverse.axis), 
-                        yanchor = calcYAlign(ii, m, return.anchor = !reverse.axis),
-                        xshift = calcXShift(ii, m), yshift = calcYShift(ii, m),
-                        showarrow = FALSE, ax = 0, ay = 0))
-    }
-
     n <- length(g.list)
     if (is.null(line.thickness))
         line.thickness <- 3
@@ -344,6 +328,7 @@ Radar <- function(x,
         function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
 
     # Main trace
+    annotations <- list()
     for (ggi in 1:n)
     {
         series.mode <- "lines"
@@ -448,6 +433,21 @@ Radar <- function(x,
                     textfont = data.label.font[[ggi]], cliponaxis = FALSE)
             }
         }
+    }
+
+    # Add x-axis labels
+    # If x-axis label are not shown, annotations may still be present
+    if (any(nzchar(xlab)))
+    {
+        # We use annotations rather than a text trace because
+        # plotly will automatically expand margins to keep annotations visible
+        annotations <-  c(annotations,
+                        lapply(1:m, function(ii) list(text = xlab[ii], font = x.tick.font,
+                        x = outer[ii,1], y = outer[ii,2], xref = "x", yref = "y",
+                        xanchor = calcXAlign(ii, m, return.anchor = !reverse.axis), 
+                        yanchor = calcYAlign(ii, m, return.anchor = !reverse.axis),
+                        xshift = calcXShift(ii, m), yshift = calcYShift(ii, m),
+                        showarrow = FALSE, ax = 0, ay = 0)))
     }
 
     annot.len <- length(annotations)
