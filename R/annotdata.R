@@ -349,6 +349,13 @@ checkForEmptySegs <- function(x)
         if (is.null(x[[i]]$Segment) && !isTRUE(x[[i]]$ShowValue) &&
             is.null(x[[i]]$BackgroundColor) && is.null(x[[i]]$OutlineColor))
             x[[i]] <- NULL
+
+        # Simplify value-only segments to enable toggling in powerpoint
+        if (length(x[[i]]$Segments) == 1 && x[[i]]$Segments[[1]]$Field == "Value")
+        {
+            x[[i]]$ShowValue <- TRUE
+            x[[i]]$Segments <- NULL
+        }
     }
     return(x)
 }
@@ -408,12 +415,15 @@ setShapeForPPT <- function(pt, annotation)
 
 setTextForPPT <- function(annot)
 {
+    # We use unescape_html rather than directly supplying unicode because
+    # Users might have added some other custom html entities that need coverting
     symbol <- switch(annot$type, "Arrow - up" = "&#129049;", "Arrow - down" = "&#129051;",
         "Caret - up" = "&#9650;", "Caret - down" = "&#9660;", annot$custom.symbol)
     return(unescape_html(symbol))
 }
-# From https://stackoverflow.com/questions/5060076/convert-html-character-entity-encoding-in-r
 
+
+# From https://stackoverflow.com/questions/5060076/convert-html-character-entity-encoding-in-r
 unescape_html <- function(str){
   xml2::xml_text(xml2::read_html(paste0("<x>", str, "</x>")))
 }
