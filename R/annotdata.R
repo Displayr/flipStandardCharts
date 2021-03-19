@@ -262,7 +262,7 @@ checkAnnotType <- function(annot.type, chart.type)
     # These annotation types are implemented for all charts
     # which support annotations e.g. Line
     allowed.types <- c('Arrow - up', 'Arrow - down', 'Border',
-       'Caret - up', 'Caret - down',
+       'Caret - up', 'Caret - down', "Custom text",
        'Hide', 'Shadow', 'Text - after data label', 'Text - before data label')
 
     # Additional annotation types only implemented on some chart types
@@ -338,26 +338,23 @@ getPointSegmentsForPPT <- function(x, index, annot, dat)
     return(x)
 }
 
-# R attribute parsing code does not like empty lists
-checkForEmptySegs <- function(x)
+# Tidy up empty segments and points where possible
+tidyPtSegments <- function(pts)
 {
-    for (i in length(x):1) # traverse backwards so smaller indexes still valid
+    for (i in length(pts):1) # traverse backwards so smaller indexes still valid
     {
-        if (length(x[[i]]$Segments) == 0)
-            x[[i]]$Segment <- NULL
-
-        if (is.null(x[[i]]$Segment) && !isTRUE(x[[i]]$ShowValue) &&
-            is.null(x[[i]]$BackgroundColor) && is.null(x[[i]]$OutlineColor))
-            x[[i]] <- NULL
-
         # Simplify value-only segments to enable toggling in powerpoint
-        if (length(x[[i]]$Segments) == 1 && x[[i]]$Segments[[1]]$Field == "Value")
+        if (length(pts[[i]]$Segments) == 1 && pts[[i]]$Segments[[1]]$Field == "Value")
         {
-            x[[i]]$ShowValue <- TRUE
-            x[[i]]$Segments <- NULL
+            pts[[i]]$ShowValue <- TRUE
+            pts[[i]]$Segments <- NULL
         }
+
+        # Remove empty points - empty label cannnot have outline anyway
+        if (length(pts[[i]]$Segments) == 0 && !isTRUE(pts[[i]]$ShowValue))
+            pts[[i]] <- NULL
     }
-    return(x)
+    return(pts)
 }
 
 setFontForPPT <- function(annotation)

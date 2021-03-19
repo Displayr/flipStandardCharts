@@ -489,7 +489,7 @@ Line <-   function(x,
             }
             if (!is.null(annotation.list) || length(ind.show) < nrow(chart.matrix))
             {
-                pt.segs <- checkForEmptySegs(pt.segs)
+                pt.segs <- tidyPtSegments(pt.segs)
                 chart.labels$SeriesLabels[[i]]$CustomPoints <- pt.segs
             }
 
