@@ -453,17 +453,18 @@ Line <-   function(x,
 
             # Add attribute for PPT exporting
             chart.labels$SeriesLabels[[i]] <- list(Position = "Top",
-                Font = setFontForPPT(data.label.font[[i]]),
-                ShowCategoryName = FALSE, ShowLeaderLines = FALSE,
-                ShowLegendKey = FALSE, ShowPercent = percentFromD3(data.label.format),
-                ShowSeriesName = FALSE, ShowValue = TRUE, CustomPoints = NULL)
+                Font = setFontForPPT(data.label.font[[i]]), ShowValue = TRUE)
 
             # Initialise custom points if annotations are used
-            if (!is.null(annotation.list) || length(ind.show) < nrow(chart.matrix))
+            if (!is.null(annotation.list) || length(ind.show) < nrow(chart.matrix) ||
+                any(nzchar(dlab.prefix[,i])) || any(nzchar(dlab.suffix[,i])))
             {
                 chart.labels$SeriesLabels[[i]]$ShowValue <- FALSE
                 pt.segs <- lapply((1:nrow(chart.matrix)),
-                    function(ii) return(list(Index=ii-1, Segments=list(list(Field="Value")))))
+                    function(ii) return(list(Index = ii-1, Segments = c(
+                        if (nzchar(dlab.prefix[ii,i])) list(list(Text = dlab.prefix[ii,i])) else NULL,
+                        list(list(Field="Value")),
+                        if (nzchar(dlab.suffix[ii,i])) list(list(Text = dlab.suffix[ii,i])) else NULL))))
                 for (ii in setdiff(1:nrow(chart.matrix), ind.show))
                     pt.segs[[ii]]$Segments <- NULL
             }
@@ -487,10 +488,17 @@ Line <-   function(x,
                     pt.segs <- getPointSegmentsForPPT(pt.segs, ind.sel, a.tmp, tmp.dat[ind.sel])
                 }
             }
-            if (!is.null(annotation.list) || length(ind.show) < nrow(chart.matrix))
+            if (!is.null(annotation.list) || length(ind.show) < nrow(chart.matrix) ||
+                any(nzchar(dlab.prefix[,i])) || any(nzchar(dlab.suffix[,i])))
             {
                 pt.segs <- tidyPtSegments(pt.segs)
-                chart.labels$SeriesLabels[[i]]$CustomPoints <- pt.segs
+                if (isTRUE(attr(pt.segs, "SeriesShowValue")))
+                {
+                    chart.labels$SeriesLabels[[i]]$ShowValue <- TRUE
+                    attr(pt.segs, "SeriesShowValue") <- NULL
+                }
+                if (length(pt.segs) > 0)
+                    chart.labels$SeriesLabels[[i]]$CustomPoints <- pt.segs
             }
 
             data.label.offset <- rep(line.thickness[i]/2, length(ind.show))

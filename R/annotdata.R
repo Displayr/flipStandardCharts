@@ -339,8 +339,9 @@ getPointSegmentsForPPT <- function(x, index, annot, dat)
 }
 
 # Tidy up empty segments and points where possible
-tidyPtSegments <- function(pts)
+tidyPtSegments <- function(pts, num.pts)
 {
+    pt.info <- rep(0, num.pts) # 0 = no label; 1 = value-only label; 2 = has modification
     for (i in length(pts):1) # traverse backwards so smaller indexes still valid
     {
         # Simplify value-only segments to enable toggling in powerpoint
@@ -348,12 +349,47 @@ tidyPtSegments <- function(pts)
         {
             pts[[i]]$ShowValue <- TRUE
             pts[[i]]$Segments <- NULL
-        }
+
+            if (is.null(pts[[i]]$OutlineColor) && is.null(pts[[i]]$BackgroundColor))
+                pt.info[pts[[i]]$Index + 1] <- 1 # value-only label
+            else
+                pt.info[pts[[i]]$Index + 1] <- 2 
+
+        } else if (length(pts[[i]]$Segments) > 0)
+            pt.info[pts[[i]]$Index + 1] <- 2 # or would the index be better?
 
         # Remove empty points - empty label cannnot have outline anyway
         if (length(pts[[i]]$Segments) == 0 && !isTRUE(pts[[i]]$ShowValue))
+        {
+            pt.info[pts[[i]]$Index + 1] <- 0
             pts[[i]] <- NULL
+        }
     }
+
+    # Switch default point from ShowValue = FALSE to ShowValue = TRUE
+    # This tries to preserve series-level toggling in Excel 
+    # when there is more than 1 value-only points 
+    if (length(which(pt.info == 1)) > 1)
+    {
+        new.pts <- list()
+        jj <- 1
+        k <- 1
+        for (j in 1:length(pt.info))
+        {
+            if (pt.info[j] == 0)
+                new.pts <- c(new.pts, list(list(Index = j-1, ShowValue = FALSE)))
+            else if (pt.info[j] == 1)
+                jj <- jj + 1 # no new point to add because this is represented by SeriesLabels
+            else
+            {
+                new.pts <- c(new.pts, pts[jj])
+                jj <- jj + 1
+            }   
+        }
+        attr(new.pts, "SeriesShowValue") <- TRUE
+        return(new.pts)
+    }
+
     return(pts)
 }
 
@@ -380,8 +416,7 @@ setShapeForPPT <- function(pt, annotation)
 {
     if (annotation$type == "Border")
     {
-        pt$OutlineShape <- "Rectangle"
-        pt$OutlineStyle <- "Solid"
+        pt$OutlineStyle <- "Solid"  # shape defaults to rectangle
         pt$OutlineColor <- annotation$color
         pt$OutlineWidth <- annotation$width/1.3333 # convert px to pt
     }
