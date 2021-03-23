@@ -130,10 +130,16 @@ test_that("Showing column comparisons with arrows",
         relative.pos = 0.5, halign = "Center", valign = "Middle", offset = 0,
         color = "#FF0000", size = 11, font.family = "Arial"))), NA)
 
-    expect_error(Radar(aperm(dat.with.colcmp, c(2,1,3)),
+    expect_error(pp <- Radar(aperm(dat.with.colcmp, c(2,1,3)),
         overlay.annotation.list = list(list(type = "Arrow - up",
         data = "Column Comparisons", threstype = "above threshold", threshold = " ",
         color = NULL, size = 11, font.family = "Impact"))), NA)
+    expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$ShowValue, FALSE)
+    expect_equal(length(attr(pp, "ChartLabels")$SeriesLabels[[2]]$CustomPoints), 4)
+    expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[2]]$CustomPoints[[4]],
+        list(Index = 5, ShowValue = FALSE, Segments = list(list(Font = list(
+        color = "#ED7D31", size = 8.25206301575394, family = "Impact"),
+        Text = "a🠙 B🠙 c🠙"))))
 
     expect_error(Column(dat.with.colcmp,
         overlay.annotation.list = list(list(type = "Arrow - up",

@@ -32,7 +32,7 @@ vec.with.stats <- structure(c(3.25318246110325, 10.8910891089109, 10.32531824611
     "NET"), c("%", "p")), name = "Income", questions = c("Income",
 "SUMMARY"))
 
-for (charting.func in c("Line", "Radar"))
+for (charting.func in c("Line", "Radar", "Bar"))
 {
     cfunc <- get(charting.func)
     test_that(paste(charting.func, "ChartLabels with no annotations"),
@@ -44,8 +44,10 @@ for (charting.func in c("Line", "Radar"))
         pp <- cfunc(data.with.stats[-10,,], data.label.show = TRUE,
                    data.label.font.autocolor = TRUE)
         expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$ShowValue, TRUE)
-        expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$Font$color, "#5C9AD3")
-        expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[2]]$Font$color, "#ED7D31")
+        expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$Font$color,
+                     if (charting.func %in% c("Radar", "Line")) "#5C9AD3" else "#2C2C2C")
+        expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[2]]$Font$color,
+                     if (charting.func %in% c("Radar", "Line")) "#ED7D31" else "#2C2C2C")
         expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[2]]$CustomPoints, NULL)
 
         pp <- cfunc(data.with.stats[-10,,], data.label.show = TRUE, data.label.prefix = "$")

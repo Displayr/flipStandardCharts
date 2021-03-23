@@ -469,37 +469,19 @@ Line <-   function(x,
                 for (ii in setdiff(1:nrow(chart.matrix), ind.show))
                     pt.segs[[ii]]$Segments <- NULL
             }
-
-            # Sequentially apply annotations
-            for (j in seq_along(annotation.list))
+        
+            # Apply annotations
+            attr(source.text, "customPoints") <- pt.segs
+            source.text <- applyAllAnnotationsToDataLabels(source.text, annotation.list,
+                annot.data, i, ind.show, "Line", clean.pt.segs = TRUE)
+            pt.segs <- attr(source.text, "customPoints")
+            if (isTRUE(attr(pt.segs, "SeriesShowValue")))
             {
-                if (!checkAnnotType(annotation.list[[j]]$type, "Line"))
-                    next
-                annotation.list[[j]]$threshold <- parseThreshold(annotation.list[[j]]$threshold)
-                a.tmp <- annotation.list[[j]]
-                tmp.dat <- getAnnotData(annot.data, a.tmp$data, i,
-                    as.numeric = !grepl("Text", a.tmp$type) &&
-                    a.tmp$data != "Column Comparisons")
-                ind.sel <- intersect(ind.show,
-                                extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype))
-                if (length(ind.sel) > 0)
-                {
-                    source.text[ind.sel] <- addAnnotToDataLabel(source.text[ind.sel],
-                        a.tmp, tmp.dat[ind.sel])
-                    pt.segs <- getPointSegmentsForPPT(pt.segs, ind.sel, a.tmp, tmp.dat[ind.sel])
-                }
+                chart.labels$SeriesLabels[[i]]$ShowValue <- TRUE
+                attr(pt.segs, "SeriesShowValue") <- NULL
             }
-            if (!is.null(pt.segs))
-            {
-                pt.segs <- tidyPtSegments(pt.segs, nrow(chart.matrix))
-                if (isTRUE(attr(pt.segs, "SeriesShowValue")))
-                {
-                    chart.labels$SeriesLabels[[i]]$ShowValue <- TRUE
-                    attr(pt.segs, "SeriesShowValue") <- NULL
-                }
-                if (length(pt.segs) > 0)
-                    chart.labels$SeriesLabels[[i]]$CustomPoints <- pt.segs
-            }
+            if (length(pt.segs) > 0)
+                chart.labels$SeriesLabels[[i]]$CustomPoints <- pt.segs
 
             data.label.offset <- rep(line.thickness[i]/2, length(ind.show))
             if (any(marker.show[,i]))
