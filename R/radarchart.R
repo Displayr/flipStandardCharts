@@ -292,26 +292,6 @@ Radar <- function(x,
             else             rep("", m)
 
 
-    # Create annotations separately for each series
-    # so they can be toggled using the legend
-    for (ggi in 1:n)
-    {
-        for (curr.annot.ind in seq_along(overlay.annotation.list))
-        {
-            curr.annot <- overlay.annotation.list[[curr.annot.ind]]
-            curr.annot$threshold <- parseThreshold(curr.annot$threshold)
-            curr.dat <- getAnnotData(annot.data, curr.annot$data, ggi,
-                as.numeric = !grepl("Text", curr.annot$type) && 
-                curr.annot$data != "Column Comparisons")
-            ind.sel <- extractSelectedAnnot(curr.dat, curr.annot$threshold, curr.annot$threstype)
-            if (is.null(curr.annot$color))
-                curr.annot$color <- colors[ggi]
-            for (ii in ind.sel)
-                xlab[ii] <- addAnnotToDataLabel(xlab[ii], curr.annot, curr.dat[ii],
-                    prepend = calcXAlign(ii, m) == "left") 
-
-        }
-    }
 
     n <- length(g.list)
     if (is.null(line.thickness))
@@ -376,6 +356,7 @@ Radar <- function(x,
     }
 
     # Markers are added as a separate trace to allow overlapping hoverinfo
+    chart.labels <- list(SeriesLabels = list())
     for (ggi in n:1)
     {
         ind <- which(pos$Group == g.list[ggi])
@@ -387,6 +368,24 @@ Radar <- function(x,
                     hoverlabel = list(font = list(color = autoFontColor(colors[ggi]),
                     size = hovertext.font.size, family = hovertext.font.family)),
                     marker = list(size = 5, color = toRGB(colors[ggi])))
+
+        # Add attribute for PPT exporting
+        # Note that even without data labels, overlay annotations can still be present
+        chart.labels$SeriesLabels[[ggi]] <- list(Font = setFontForPPT(data.label.font[[ggi]]), ShowValue = FALSE)
+        pt.segs <- lapply(1:m,
+            function(ii)
+            {
+                pt <- list(Index = ii-1)
+                if (data.label.show[ii,ggi])
+                    pt$Segments <-  c(
+                    if (nzchar(data.label.prefix[ii,ggi])) list(list(Text = data.label.prefix[ii,ggi])) else NULL,
+                    list(list(Field="Value")),
+                    if (nzchar(data.label.suffix[ii,ggi])) list(list(Text = data.label.suffix[ii,ggi])) else NULL)
+                else
+                    pt$ShowValue <- FALSE
+                return(pt)
+            }
+        )
 
         if (any(data.label.show[,ggi]))
         {
@@ -401,9 +400,13 @@ Radar <- function(x,
                     as.numeric = !grepl("Text", a.tmp$type) &&
                     a.tmp$data != "Column Comparisons")
                 ind.sel <- extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype)
-                pos$DataLabels[ind[ind.sel]] <- addAnnotToDataLabel(pos$DataLabels[ind[ind.sel]], a.tmp, tmp.dat[ind.sel])
+                if (length(ind.sel) > 0)
+                {   
+                    pos$DataLabels[ind[ind.sel]] <- addAnnotToDataLabel(pos$DataLabels[ind[ind.sel]], 
+                       a.tmp, tmp.dat[ind.sel])
+                    pt.segs <- getPointSegmentsForPPT(pt.segs, ind.sel, a.tmp, tmp.dat[ind.sel])
+                }
             }
-
             ind2 <- intersect(ind, which(data.label.show))
             
             # For single-series or small multiples we prefer to use annotations
@@ -433,7 +436,39 @@ Radar <- function(x,
                     textfont = data.label.font[[ggi]], cliponaxis = FALSE)
             }
         }
+
+        # Append annotations to category labels
+        # We want to do this last so that it is not affected by "Hide" in data label annotation 
+        for (curr.annot.ind in seq_along(overlay.annotation.list))
+        {
+            curr.annot <- overlay.annotation.list[[curr.annot.ind]]
+            curr.annot$threshold <- parseThreshold(curr.annot$threshold)
+            curr.dat <- getAnnotData(annot.data, curr.annot$data, ggi,
+                as.numeric = !grepl("Text", curr.annot$type) && 
+                curr.annot$data != "Column Comparisons")
+            ind.sel <- extractSelectedAnnot(curr.dat, curr.annot$threshold, curr.annot$threstype)
+            if (is.null(curr.annot$color))
+                curr.annot$color <- colors[ggi]
+            for (ii in ind.sel)
+            {
+                xlab[ii] <- addAnnotToDataLabel(xlab[ii], curr.annot, curr.dat[ii],
+                    prepend = calcXAlign(ii, m) == "left") 
+                pt.segs <- getPointSegmentsForPPT(pt.segs, ii, curr.annot, curr.dat[ii])
+            }
+        }
+
+        # Clean up PPT chart labels
+        pt.segs <- tidyPtSegments(pt.segs, m)
+        if (isTRUE(attr(pt.segs, "SeriesShowValue")))
+        {
+            chart.labels$SeriesLabels[[ggi]]$ShowValue <- TRUE
+            attr(pt.segs, "SeriesShowValue") <- NULL
+        }
+        if (length(pt.segs) > 0)
+            chart.labels$SeriesLabels[[ggi]]$CustomPoints <- pt.segs
     }
+    if (sum(unlist(sapply(chart.labels$SeriesLabels, function(s) { return(s$ShowValue + length(s$CustomPoints)) }))) == 0)
+        chart.labels <- NULL
 
     # Add x-axis labels
     # If x-axis label are not shown, annotations may still be present
@@ -489,6 +524,7 @@ Radar <- function(x,
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     attr(result, "ChartType") <- "Radar Filled"
+    attr(result, "ChartLabels") <- chart.labels
     result
 }
 

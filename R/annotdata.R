@@ -341,11 +341,13 @@ getPointSegmentsForPPT <- function(x, index, annot, dat)
 # Tidy up empty segments and points where possible
 tidyPtSegments <- function(pts, num.pts)
 {
+    if (length(pts) == 0)
+        return(pts)
     pt.info <- rep(0, num.pts) # 0 = no label; 1 = value-only label; 2 = has modification
     for (i in length(pts):1) # traverse backwards so smaller indexes still valid
     {
         # Simplify value-only segments to enable toggling in powerpoint
-        if (length(pts[[i]]$Segments) == 1 && pts[[i]]$Segments[[1]]$Field == "Value")
+        if (length(pts[[i]]$Segments) == 1 && isTRUE(pts[[i]]$Segments[[1]]$Field == "Value"))
         {
             pts[[i]]$ShowValue <- TRUE
             pts[[i]]$Segments <- NULL
@@ -369,11 +371,10 @@ tidyPtSegments <- function(pts, num.pts)
     # Switch default point from ShowValue = FALSE to ShowValue = TRUE
     # This tries to preserve series-level toggling in Excel 
     # when there is more than 1 value-only points 
-    if (length(which(pt.info == 1)) > 1)
+    if (length(which(pt.info == 1)) > 1 && length(pts) > 0)
     {
         new.pts <- list()
         jj <- 1
-        k <- 1
         for (j in 1:length(pt.info))
         {
             if (pt.info[j] == 0)
@@ -389,7 +390,6 @@ tidyPtSegments <- function(pts, num.pts)
         attr(new.pts, "SeriesShowValue") <- TRUE
         return(new.pts)
     }
-
     return(pts)
 }
 
