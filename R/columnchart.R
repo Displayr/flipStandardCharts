@@ -541,6 +541,9 @@ Column <- function(x,
         data.label.mult <- 100
     }
     data.label.decimals <- decimalsFromD3(data.label.format)
+    data.label.prefix <- vectorize(data.label.prefix, ncol(chart.matrix), nrow(chart.matrix), split = NULL)
+    data.label.suffix <- vectorize(data.label.suffix, ncol(chart.matrix), nrow(chart.matrix), split = NULL)
+
 
     matrix.labels <- names(dimnames(chart.matrix))
     if (nchar(x.title) == 0 && length(matrix.labels) == 2)
@@ -634,6 +637,7 @@ Column <- function(x,
     p <- plot_ly(as.data.frame(chart.matrix))
     x.labels <- axisFormat$labels
     y.labels <- colnames(chart.matrix)
+    chart.labels <- list(SeriesLabels = list())
 
     # Set up numeric x-axis - this is used for data labels and hovertext
     x.all.labels <- x.labels
@@ -846,6 +850,27 @@ Column <- function(x,
                       alpha = marker.border.opacity),
                       width = marker.border.width))
 
+        # Add attribute for PPT exporting
+        # Note that even without data labels, overlay annotations can still be present
+        chart.labels$SeriesLabels[[i]] <- list(Font = setFontForPPT(data.label.font[[i]]), ShowValue = FALSE)
+        tmp.suffix <- if (percentFromD3(data.label.format)) sub("%", "", data.label.suffix[,i])
+                      else                                               data.label.suffix[,i]
+
+        pt.segs <- lapply(1:nrow(chart.matrix),
+            function(ii)
+            {
+                pt <- list(Index = ii-1)
+                if (data.label.show[ii,i])
+                    pt$Segments <-  c(
+                    if (nzchar(data.label.prefix[ii,i])) list(list(Text = data.label.prefix[ii,i])) else NULL,
+                    list(list(Field="Value")),
+                    if (nzchar(tmp.suffix[ii])) list(list(Text = tmp.suffix[ii])) else NULL)
+                else
+                    pt$ShowValue <- FALSE
+                return(pt)
+            }
+        )
+
         # This is the main trace for each data series
         p <- add_trace(p, x = x, y = y.filled, type = "bar",
                        orientation = "v", marker = marker, name = legend.text[i],
@@ -900,16 +925,27 @@ Column <- function(x,
         # the below the bar (i.e. negative values or reversed axis).
         # Adjusted by controlling the size of the marker
         # Hover must be included because this trace hides existing hover items
-        if (any(data.label.show))
-            p <- addDataLabelAnnotations(p, type = "Column", legend.text[i],
+        if (any(data.label.show[,i]))
+        {
+            # Apply annotations to data label
+            # Circle annotations are added to pt.segs but not to the data labels
+            ind.show <- which(data.label.show[,i])
+            data.label.text <- data.annotations$text[,i]
+            data.label.nchar <- nchar(data.label.text) # get length before adding html tags
+            attr(data.label.text, "customPoints") <- pt.segs
+            data.label.text <- applyAllAnnotationsToDataLabels(data.label.text, annotation.list,
+            annot.data, i, ind.show, "Bar", clean.pt.segs = FALSE)
+            pt.segs <- attr(data.label.text, "customPoints")
+            p <- addBarTypeChartLabelAnnotTrace(p, type = "Column", legend.text[i],
                     data.label.xpos = if (NCOL(chart.matrix) > 1) data.annotations$x[,i] else x,
                     data.label.ypos = data.annotations$y[,i],
                     data.label.show = data.label.show[,i],
-                    data.label.text = data.annotations$text[,i],
-                    data.label.sign = getSign(data.annotations$y[,i], yaxis),
+                    data.label.text = data.label.text,
+                    data.label.sign = getSign(data.annotations$y[,i], yaxis), data.label.nchar,
                     annotation.list, annot.data, i,
                     xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x", yaxis = "y",
                     data.label.font[[i]], is.stacked, data.label.centered)
+        }
 
         # Create annotations separately for each series
         # so they can be toggled using the legend
@@ -962,6 +998,20 @@ Column <- function(x,
                     color = curr.annot$color),
                 legendgroup = if (is.stacked) "all" else i,
                 cliponaxis = FALSE)
+            pt.segs <- getPointSegmentsForPPT(pt.segs, ind.sel, curr.annot, curr.dat[ind.sel])
+        }
+
+        # Clean up PPT chart labels
+        pt.segs <- tidyPtSegments(pt.segs, nrow(chart.matrix))
+        if (!is.null(pt.segs))
+        {
+            if (isTRUE(attr(pt.segs, "SeriesShowValue")))
+            {
+                chart.labels$SeriesLabels[[i]]$ShowValue <- TRUE
+                attr(pt.segs, "SeriesShowValue") <- NULL
+            }
+            if (length(pt.segs) > 0)
+                chart.labels$SeriesLabels[[i]]$CustomPoints <- pt.segs
         }
     }
 
@@ -1020,6 +1070,9 @@ Column <- function(x,
     annotations[[n+2]] <- setFooter(footer, footer.font, margins)
     annotations[[n+3]] <- setSubtitle(subtitle, subtitle.font, margins)
     annotations <- Filter(Negate(is.null), annotations)
+    
+    if (sum(unlist(sapply(chart.labels$SeriesLabels, function(s) { return(s$ShowValue + length(s$CustomPoints)) }))) == 0)
+        chart.labels <- NULL
 
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
@@ -1044,6 +1097,9 @@ Column <- function(x,
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     attr(result, "ChartType") <- if (is.stacked) "Column Stacked" else "Column Clustered"
+    attr(result, "ChartLabels") <- chart.labels
+    if (!is.null(x2))
+        attr(result, "ChartWarning") <- "The secondary values axis cannot be exported to PowerPoint"
     result
 }
 

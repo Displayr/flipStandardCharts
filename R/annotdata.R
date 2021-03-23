@@ -205,29 +205,6 @@ addBarTypeChartLabelAnnotTrace <- function(p, type, name, data.label.xpos, data.
     return(p)
 }
 
-getBarTypeChartLabelAlign <- function(type, is.stacked, data.label.centered, data.label.show,
-       data.label.sign, data.label.xpos, data.label.horizontal.align = "center")
-{
-    if (type == "Column")
-    {
-        if (is.stacked)
-            data.label.sign <- -1 * data.label.sign
-        if (is.stacked && data.label.centered)
-            textalign <- paste("middle", data.label.horizontal.align)
-        else
-            textalign <- paste(ifelse(data.label.sign >= 0, "top", "bottom"), data.label.horizontal.align)
-        data.label.pos <- ifelse(data.label.sign < 0, 3, 0 + (is.stacked & !data.label.centered))
-    } else
-    {
-        textalign <- if (is.stacked) "middle center"
-                     else            ifelse(data.label.sign >= 0, "middle right", "middle left")
-        data.label.pos <- if (is.stacked) 0
-                          else            ifelse(data.label.xpos < 0, 7, 3)
-    }
-    if (length(textalign) > 1)
-        textalign <- textalign[data.label.show]
-    return(textalign)
-}
 
 # Returns data labels after annotations are applied
 # The 'customPoints' attribute is a component of the ChartLabels attribute for powerpoint
@@ -260,7 +237,7 @@ applyAllAnnotationsToDataLabels <- function(data.label.text, annotation.list,
             pt.segs <- getPointSegmentsForPPT(pt.segs, ind.sel, a.tmp, tmp.dat[ind.sel])
         }
     }
-    if (!is.null(pt.segs))
+    if (clean.pt.segs && !is.null(pt.segs))
     {
         pt.segs <- tidyPtSegments(pt.segs, length(data.label.text))
         #if (isTRUE(attr(pt.segs, "SeriesShowValue")))

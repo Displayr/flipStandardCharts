@@ -141,7 +141,7 @@ test_that("Showing column comparisons with arrows",
         color = "#ED7D31", size = 8.25206301575394, family = "Impact"),
         Text = "a🠙 B🠙 c🠙"))))
 
-    expect_error(Column(dat.with.colcmp,
+    expect_error(pp <- Column(dat.with.colcmp,
         overlay.annotation.list = list(list(type = "Arrow - up",
         data = "Column Comparisons", threstype = "above threshold", threshold = " ",
         relative.pos = 0, halign = "Center", valign = "Top", offset = 5,
@@ -154,6 +154,10 @@ test_that("Showing column comparisons with arrows",
         threstype = "above threshold", threshold = "1.96",
         relative.pos = 1.0, halign = "Center", valign = "Top", offset = 5,
         color = "#0000FF", size = 15))), NA)
+    expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[2]]$CustomPoint[[1]]$Segments[[1]]$Text,
+                 "c🠙 D🠙 e🠙 F🠙")
+    expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[2]]$CustomPoint[[1]]$Segments[[2]]$Text,
+                 "🠙")
 })
 
 tb1d.with.single.stat <- structure(c(`Less than $15,000` = 3.25318246110325, `$15,001 to $30,000` = 10.8910891089109,

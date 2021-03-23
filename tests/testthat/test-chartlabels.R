@@ -32,7 +32,7 @@ vec.with.stats <- structure(c(3.25318246110325, 10.8910891089109, 10.32531824611
     "NET"), c("%", "p")), name = "Income", questions = c("Income",
 "SUMMARY"))
 
-for (charting.func in c("Line", "Radar", "Bar"))
+for (charting.func in c("Column", "Bar", "Line", "Radar"))
 {
     cfunc <- get(charting.func)
     test_that(paste(charting.func, "ChartLabels with no annotations"),

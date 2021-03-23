@@ -401,7 +401,7 @@ Bar <- function(x,
         {
             # Add attribute for PPT exporting
             ind.show <- which(data.label.show[,i])
-            chart.labels$SeriesLabels[[i]] <- list(Position = "Top",
+            chart.labels$SeriesLabels[[i]] <- list(
                 Font = setFontForPPT(data.label.font[[i]]), ShowValue = TRUE)
 
             # Initialise custom points if annotations are used
