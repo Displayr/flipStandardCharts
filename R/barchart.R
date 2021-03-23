@@ -425,6 +425,7 @@ Bar <- function(x,
             # Apply annotations
             # Circle annotations are added to pt.segs but not to the data labels
             data.label.text <- data.annotations$text[,i]
+            data.label.nchar <- nchar(data.label.text) # get length before adding html tags
             attr(data.label.text, "customPoints") <- pt.segs
             data.label.text <- applyAllAnnotationsToDataLabels(data.label.text, annotation.list,
             annot.data, i, ind.show, "Bar", clean.pt.segs = TRUE)
@@ -434,7 +435,7 @@ Bar <- function(x,
                     data.label.ypos = if (NCOL(chart.matrix) > 1) data.annotations$y[,i] else x,
                     data.label.show = data.label.show[,i],
                     data.label.text = data.label.text,
-                    data.label.sign = getSign(data.annotations$x[,i], xaxis),
+                    data.label.sign = getSign(data.annotations$x[,i], xaxis), data.label.nchar,
                     annotation.list, annot.data, i,
                     yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y", xaxis = "x",
                     data.label.font[[i]], is.stacked, data.label.centered = FALSE)

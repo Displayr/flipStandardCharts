@@ -357,7 +357,7 @@ Radar <- function(x,
 
     # Markers are added as a separate trace to allow overlapping hoverinfo
     chart.labels <- list(SeriesLabels = list())
-    for (ggi in n:1)
+    for (ggi in 1:n)
     {
         ind <- which(pos$Group == g.list[ggi])
         ind <- ind[-length(ind)] # remove last duplicated point

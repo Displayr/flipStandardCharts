@@ -109,7 +109,7 @@ addDataLabelAnnotations <- function(p, type, name, data.label.xpos, data.label.y
 # This is only used for Bar/Column type charts
 #' @importFrom verbs Sum
 addBarTypeChartLabelAnnotTrace <- function(p, type, name, data.label.xpos, data.label.ypos,
-        data.label.show, data.label.text, data.label.sign,
+        data.label.show, data.label.text, data.label.sign, data.label.nchar,
         annotation.list, annot.data, i,
         xaxis, yaxis, data.label.font, is.stacked, data.label.centered,
         data.label.horizontal.align = "center")
@@ -134,7 +134,6 @@ addBarTypeChartLabelAnnotTrace <- function(p, type, name, data.label.xpos, data.
         textalign <- textalign[data.label.show]
 
     n <- length(data.label.xpos)
-    data.label.nchar <- nchar(data.label.text) # get length before adding html tags
 
     # Find space to leave for circles   
     max.diam <- 0
