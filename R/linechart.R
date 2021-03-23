@@ -456,6 +456,7 @@ Line <-   function(x,
                 Font = setFontForPPT(data.label.font[[i]]), ShowValue = TRUE)
 
             # Initialise custom points if annotations are used
+            pt.segs <- NULL
             if (!is.null(annotation.list) || length(ind.show) < nrow(chart.matrix) ||
                 any(nzchar(dlab.prefix[,i])) || any(nzchar(dlab.suffix[,i])))
             {
@@ -488,10 +489,9 @@ Line <-   function(x,
                     pt.segs <- getPointSegmentsForPPT(pt.segs, ind.sel, a.tmp, tmp.dat[ind.sel])
                 }
             }
-            if (!is.null(annotation.list) || length(ind.show) < nrow(chart.matrix) ||
-                any(nzchar(dlab.prefix[,i])) || any(nzchar(dlab.suffix[,i])))
+            if (!is.null(pt.segs))
             {
-                pt.segs <- tidyPtSegments(pt.segs)
+                pt.segs <- tidyPtSegments(pt.segs, nrow(chart.matrix))
                 if (isTRUE(attr(pt.segs, "SeriesShowValue")))
                 {
                     chart.labels$SeriesLabels[[i]]$ShowValue <- TRUE
@@ -516,7 +516,7 @@ Line <-   function(x,
                    hovertemplate = setHoverTemplate(i, xaxis, chart.matrix))
         }
     }
-    if (length(chart.labels$SeriesLabels) == 0 || sum(sapply(chart.labels$SeriesLabels, length)) == 0)
+    if (sum(unlist(sapply(chart.labels$SeriesLabels, function(s) { return(s$ShowValue + length(s$CustomPoints)) }))) == 0)
         chart.labels <- NULL
 
     annot <- list(setSubtitle(subtitle, subtitle.font, margins),
