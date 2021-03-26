@@ -340,6 +340,9 @@ StackedColumnWithStatisticalSignificance <- function(x,
         data.label.suffix.2 <- paste0("%", data.label.suffix.2)
     }
     data.label.decimals <- decimalsFromD3(data.label.format)
+    data.label.prefix <- vectorize(data.label.prefix, ncol(chart.matrix), nrow(chart.matrix), split = NULL)
+    data.label.suffix <- vectorize(data.label.suffix, ncol(chart.matrix), nrow(chart.matrix), split = NULL)
+
 
     matrix.labels <- names(dimnames(chart.matrix))
     if (nchar(x.title) == 0 && length(matrix.labels) == 2)
@@ -377,6 +380,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
     annot.text <- NULL
     diff.annot.text <- NULL
     totals.annot.text <- NULL
+    tmp.arrow.html <- NULL
     if (nchar(footer) > 0)
         footer <- paste0(footer, "<br>")
     if ("Column Comparisons" %in% dimnames(annot.data)[[3]])
@@ -395,14 +399,13 @@ StackedColumnWithStatisticalSignificance <- function(x,
 
         if (annot.footer.show)
         {
-            tmp.arrow.html <- rmFontSize(tmp.arrow.html)
             arrow.desc <- sprintf("Significantly %s %s %s",
                 "greater than",
                 rep(colcmp.names, 2),
                 rep(c("at the 99.9% confidence level",
                 "at the 95% confidence level"), each = n.colcmp))
             footer <- paste0(footer,
-                paste(tmp.arrow.html, arrow.desc, sep = "", collapse = annot.legend.sep))
+                paste(rmFontSize(tmp.arrow.html), arrow.desc, sep = "", collapse = annot.legend.sep))
         }
 
     }  else if (all(c("Differences", "p") %in% dimnames(annot.data)[[3]]))
@@ -420,17 +423,19 @@ StackedColumnWithStatisticalSignificance <- function(x,
             if (!append.annot.differences.to.datalabel)
                 empty.arrow <- paste0("<span style='color:transparent; font-size:",
                     round(annot.arrow.size), "px;'>", annot.arrow.symbols[1], "</span>")
-            diff.annot.text <- paste0(empty.arrow, annot.differences.prefix,
+            diff.annot.labels <- paste0(annot.differences.prefix,
                 formatC(annot.data[,,"Differences"],
                 format = "f", digits = annot.differences.decimals,
                 flag = if (annot.differences.sign.show) "+" else ""),
                 annot.differences.suffix)
+            diff.annot.text <- paste0(empty.arrow, diff.annot.labels)
+            diff.annot.text <- matrix(diff.annot.text, NROW(chart.matrix), NCOL(chart.matrix))
+            diff.annot.labels <- matrix(diff.annot.labels, NROW(chart.matrix), NCOL(chart.matrix))
         }
         if (annot.footer.show)
         {
-            tmp.arrow.html <- rmFontSize(tmp.arrow.html)
             footer <- paste0(footer,
-            paste(tmp.arrow.html, sprintf("Significant %s at the %s%% confidence level",
+            paste(rmFontSize(tmp.arrow.html), sprintf("Significant %s at the %s%% confidence level",
             c("increase", "decrease"), round((1-annot.sig.level) * 100)),
             sep = "", collapse = annot.legend.sep))
         }
@@ -441,15 +446,14 @@ StackedColumnWithStatisticalSignificance <- function(x,
         tmp.arrow.html <- sprintf("<span style=\"color:%s; font-size:%.0fpx;\">%s</span>",
                 annot.arrow.colors[1:2], annot.arrow.size,
                 annot.arrow.symbols[1:2])
-        annot.text <- getZStatAnnot(annot.data[,,ind.zstat], z.threshold, tmp.arrow.html)
+        annot.text <- getZStatAnnot(annot.data[,,ind.zstat,drop = FALSE], z.threshold, tmp.arrow.html)
         if (column.totals.above.show && !is.null(col.totals.annot.data))
             totals.annot.text <- getZStatAnnot(
             col.totals.annot.data[,,ind.zstat], z.threshold, tmp.arrow.html)
         if (annot.footer.show)
         {
-            tmp.arrow.html <- rmFontSize(tmp.arrow.html)
             footer <- paste0(footer,
-            paste(tmp.arrow.html, sprintf("Significant %s at the %s%% confidence level",
+            paste(rmFontSize(tmp.arrow.html), sprintf("Significant %s at the %s%% confidence level",
             c("increase", "decrease"), round((1-annot.sig.level) * 100)),
             sep = "", collapse = annot.legend.sep))
         }
@@ -528,7 +532,6 @@ StackedColumnWithStatisticalSignificance <- function(x,
             "; color:", annot.differences.font.color, ";'>",
             diff.annot.text, "</span>"), nrow = tmp.n, ncol = tmp.m)
         data.annotations$text[ind.blank] <- ""
-        diff.annot.text <- NULL
     }
 
 
@@ -550,6 +553,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
                     margin.right, margin.inner.pad)
     margins$autoexpand <- margin.autoexpand
+    chart.labels <- list(SeriesLabels = list())
 
 
     # Add invisible line to force all categorical labels to be shown
@@ -593,21 +597,92 @@ StackedColumnWithStatisticalSignificance <- function(x,
                        hoverinfo = "text+name", text = tmp.hover.text,
                        legendgroup =  "all")
 
+        # Add attribute for PPT exporting
+        # Note that even without data labels, overlay annotations can still be present
+        chart.labels$SeriesLabels[[i]] <- list(Font = setFontForPPT(data.label.font[[i]]), ShowValue = FALSE)
+        tmp.suffix <- if (percentFromD3(data.label.format)) sub("%", "", data.label.suffix[,i])
+                      else                                               data.label.suffix[,i]
+
+        pt.segs <- lapply(1:nrow(chart.matrix),
+            function(ii)
+            {
+                pt <- list(Index = ii-1)
+                if (data.label.show[ii,i])
+                    pt$Segments <-  c(
+                    if (nzchar(data.label.prefix[ii,i])) list(list(Text = data.label.prefix[ii,i])) else NULL,
+                    list(list(Field="Value")),
+                    if (nzchar(tmp.suffix[ii])) list(list(Text = tmp.suffix[ii])) else NULL)
+                else
+                    pt$ShowValue <- FALSE
+                return(pt)
+            }
+        )
 
         # Plotly text marker positions are not spaced properly when placed to
         # the below the bar (i.e. negative values or reversed axis).
         # Adjusted by controlling the size of the marker
         # Hover must be included because this trace hides existing hover items
-        if (any(data.label.show))
-            p <- addDataLabelAnnotations(p, type = "Column", legend.text[i],
-                    data.label.xpos = data.annotations$x[,i],
+        if (any(data.label.show[,i]))
+        {
+            # Apply annotations to data label
+            ind.show <- which(data.label.show[,i])
+            data.label.text <- data.annotations$text[,i]
+            data.label.nchar <- nchar(data.label.text) # get length before adding html tags
+            attr(data.label.text, "customPoints") <- pt.segs
+            data.label.text <- applyAllAnnotationsToDataLabels(data.label.text, NULL,
+            annot.data, i, ind.show, "Bar", clean.pt.segs = FALSE)
+            pt.segs <- attr(data.label.text, "customPoints")
+            p <- addBarTypeChartLabelAnnotTrace(p, type = "Column", legend.text[i],
+                    data.label.xpos = if (NCOL(chart.matrix) > 1) data.annotations$x[,i] else x,
                     data.label.ypos = data.annotations$y[,i],
                     data.label.show = data.label.show[,i],
-                    data.label.text = data.annotations$text[,i],
-                    data.label.sign = getSign(data.annotations$y[,i], yaxis),
+                    data.label.text = data.label.text,
+                    data.label.sign = getSign(data.annotations$y[,i], yaxis), data.label.nchar,
                     NULL, annot.data, i,
-                    xaxis = "x2", yaxis = "y",
+                    xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x", yaxis = "y",
                     data.label.font[[i]], TRUE, data.label.centered)
+        }
+
+        # Add arrow annotations to chart labels
+        for (tmp.arrow in tmp.arrow.html)
+        {
+            ind.tmp <- grep(tmp.arrow, annot.text[,i], fixed = TRUE)
+            if (length(ind.tmp) > 0)
+            {  
+                tmp.color <- regmatches(tmp.arrow, regexec("color:(\\S+);", tmp.arrow))[[1]][2]
+                tmp.symbol <- regmatches(tmp.arrow, regexec(">(\\S+)</span>", tmp.arrow))[[1]][2]
+                pt.segs <- getPointSegmentsForPPT(pt.segs, ind.tmp, 
+                    annot = list(type = "Custom text", format = "Category", size = annot.arrow.size,
+                    font.family = "Arial", color = tmp.color, custom.symbol = tmp.symbol))
+            }
+        }
+
+        if (!is.null(diff.annot.text))
+        {
+            if (annot.hide.small.bar)
+                ind.diff.show <- which(nchar(data.annotations$text[,i]) > 0)
+            else
+                ind.diff.show <- 1:NROW(diff.annot.text)
+
+            if (length(ind.diff.show) > 0)
+                pt.segs <- getPointSegmentsForPPT(pt.segs, ind.diff.show,
+                list(type = "Text - after data label", color = annot.differences.font.color,
+                    size = annot.differences.font.size, font.family = annot.differences.font.family,
+                    format = "Category"), diff.annot.labels[ind.diff.show, i])
+        }
+
+        # Clean up PPT chart labels
+        pt.segs <- tidyPtSegments(pt.segs, nrow(chart.matrix))
+        if (!is.null(pt.segs))
+        {
+            if (isTRUE(attr(pt.segs, "SeriesShowValue")))
+            {
+                chart.labels$SeriesLabels[[i]]$ShowValue <- TRUE
+                attr(pt.segs, "SeriesShowValue") <- NULL
+            }
+            if (length(pt.segs) > 0)
+                chart.labels$SeriesLabels[[i]]$CustomPoints <- pt.segs
+        }
     }
 
     # Arrow Annotations to the right of the bar
@@ -624,18 +699,18 @@ StackedColumnWithStatisticalSignificance <- function(x,
             warning("Some significant values were not shown because the bars were too small.")
         annot.text[ind] <- ""
     }
-    p <- addDataLabelAnnotations(p, type = "Column", "Annotations",
+    p <- addBarTypeChartLabelAnnotTrace(p, type = "Column", "Annotations",
                 data.label.xpos = as.vector(data.annotations$x) + xdiff,
                 data.label.ypos = as.vector(data.annotations$y),
                 data.label.show = rep(TRUE, n*m),
                 data.label.text = as.vector(annot.text),
                 data.label.sign = getSign(as.vector(data.annotations$y), yaxis),
-                NULL, annot.data, 1,
+                0, NULL, annot.data, 1,
                 xaxis = "x2", yaxis = "y",
                 data.label.font = data.label.font[[1]],
                 TRUE, data.label.centered, "right")
 
-    if (!is.null(diff.annot.text))
+    if (!is.null(diff.annot.text) && !append.annot.differences.to.datalabel)
     {
         if (is.null(annot.differences.offset) ||
             !is.numeric(annot.differences.offset))
@@ -660,6 +735,9 @@ StackedColumnWithStatisticalSignificance <- function(x,
     }
 
     # Column totals
+    # These two sets of data labels are not added to ChartLabels because powerpoint has no way
+    # of adding labels associated with the whole column
+
     if (column.totals.above.show || column.totals.below.show)
         totals.annotations <- dataLabelPositions(chart.matrix = chart.matrix,
                     axis.type = xaxis$type,
@@ -677,11 +755,12 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     font = data.label.font,
                     hide.sign = TRUE,
                     center.data.labels = FALSE)
+
     if (column.totals.above.show)
     {
         # Add invisible string to center the column totals
         pre.annot <- gsub("color:.*?;", "color:transparent;", totals.annot.text)
-        p <- addDataLabelAnnotations(p, name = "Column totals - above",
+        p <- addBarTypeChartLabelAnnotTrace(p, name = "Column totals - above",
                 type = "Column",
                 data.label.xpos = totals.annotations$x[,1],
                 data.label.ypos = apply(totals.annotations$y, 1, max, na.rm = TRUE),
@@ -690,7 +769,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     formatByD3(totals.annotations$y[,m],
                     data.label.format, data.label.prefix, data.label.suffix),
                     totals.annot.text),
-                data.label.sign = rep(1, n),
+                data.label.sign = rep(1, n), 0,
                 annotation.list = NULL, annot.data, 1,
                 xaxis = "x2", yaxis = "y",
                 data.label.font = list(family = column.totals.above.font.family,
@@ -699,14 +778,14 @@ StackedColumnWithStatisticalSignificance <- function(x,
                 is.stacked = FALSE, data.label.centered = FALSE)
     }
     if (column.totals.below.show)
-        p <- addDataLabelAnnotations(p, name = "Column totals - below",
+        p <- addBarTypeChartLabelAnnotTrace(p, name = "Column totals - below",
                 type = "Column",
                 data.label.xpos = totals.annotations$x[,1],
                 data.label.ypos = totals.annotations$y[,num.categories.below.axis],
                 data.label.show = rep(TRUE, n),
                 data.label.text = formatByD3(abs(totals.annotations$y[,num.categories.below.axis]),
                     data.label.format, data.label.prefix, data.label.suffix),
-                data.label.sign = rep(-1, n),
+                data.label.sign = rep(-1, n), 0,
                 annotation.list = NULL, annot.data, 1,
                 xaxis = "x2", yaxis = "y",
                 data.label.font = list(family = column.totals.below.font.family,
@@ -722,6 +801,9 @@ StackedColumnWithStatisticalSignificance <- function(x,
     annotations[[n+2]] <- setFooter(footer, footer.font, margins, x.align = footer.align)
     annotations[[n+3]] <- setSubtitle(subtitle, subtitle.font, margins)
     annotations <- Filter(Negate(is.null), annotations)
+
+    if (sum(unlist(sapply(chart.labels$SeriesLabels, function(s) { return(s$ShowValue + length(s$CustomPoints)) }))) == 0)
+        chart.labels <- NULL
 
     shapes <- NULL
     if (isTRUE(y.zero)) # default plotly zero line is shown below bars
@@ -754,6 +836,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     attr(result, "ChartType") <- "Column Stacked"
+    attr(result, "ChartLabels") <- chart.labels
     result
 }
 

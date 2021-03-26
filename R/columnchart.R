@@ -850,27 +850,6 @@ Column <- function(x,
                       alpha = marker.border.opacity),
                       width = marker.border.width))
 
-        # Add attribute for PPT exporting
-        # Note that even without data labels, overlay annotations can still be present
-        chart.labels$SeriesLabels[[i]] <- list(Font = setFontForPPT(data.label.font[[i]]), ShowValue = FALSE)
-        tmp.suffix <- if (percentFromD3(data.label.format)) sub("%", "", data.label.suffix[,i])
-                      else                                               data.label.suffix[,i]
-
-        pt.segs <- lapply(1:nrow(chart.matrix),
-            function(ii)
-            {
-                pt <- list(Index = ii-1)
-                if (data.label.show[ii,i])
-                    pt$Segments <-  c(
-                    if (nzchar(data.label.prefix[ii,i])) list(list(Text = data.label.prefix[ii,i])) else NULL,
-                    list(list(Field="Value")),
-                    if (nzchar(tmp.suffix[ii])) list(list(Text = tmp.suffix[ii])) else NULL)
-                else
-                    pt$ShowValue <- FALSE
-                return(pt)
-            }
-        )
-
         # This is the main trace for each data series
         p <- add_trace(p, x = x, y = y.filled, type = "bar",
                        orientation = "v", marker = marker, name = legend.text[i],
@@ -920,6 +899,26 @@ Column <- function(x,
                     size = hovertext.font.size, family = hovertext.font.family)),
                     line = list(color = average.color))
 
+        # Add attribute for PPT exporting
+        # Note that even without data labels, overlay annotations can still be present
+        chart.labels$SeriesLabels[[i]] <- list(Font = setFontForPPT(data.label.font[[i]]), ShowValue = FALSE)
+        tmp.suffix <- if (percentFromD3(data.label.format)) sub("%", "", data.label.suffix[,i])
+                      else                                               data.label.suffix[,i]
+
+        pt.segs <- lapply(1:nrow(chart.matrix),
+            function(ii)
+            {
+                pt <- list(Index = ii-1)
+                if (data.label.show[ii,i])
+                    pt$Segments <-  c(
+                    if (nzchar(data.label.prefix[ii,i])) list(list(Text = data.label.prefix[ii,i])) else NULL,
+                    list(list(Field="Value")),
+                    if (nzchar(tmp.suffix[ii])) list(list(Text = tmp.suffix[ii])) else NULL)
+                else
+                    pt$ShowValue <- FALSE
+                return(pt)
+            }
+        )
 
         # Plotly text marker positions are not spaced properly when placed to
         # the below the bar (i.e. negative values or reversed axis).

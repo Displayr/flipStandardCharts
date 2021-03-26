@@ -584,7 +584,7 @@ setShapeForPPT <- function(pt, annotation)
         pt$OutlineStyle <- "Solid"
         pt$OutlineColor <- annotation$color
         pt$OutlineWidth <- if (annotation$type == "Circle - thin outline") 1
-                           else                                            3
+                           else                                            2
     }
     return(pt)
 }

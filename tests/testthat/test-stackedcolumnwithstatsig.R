@@ -293,18 +293,35 @@ NA, NA, NA, NA, NA), statistic = "z-Statistic", .Dim = c(6L,
 
 test_that("Charts with annotations",
 {
-    expect_error(StackedColumnWithStatisticalSignificance(tb1d.with.zstat), NA)
-    expect_error(StackedColumnWithStatisticalSignificance(tb1d.with.zstat, transpose = TRUE,
-        reverse.series.order = TRUE, column.totals.above.show = TRUE), NA)
+    expect_error(pp <- StackedColumnWithStatisticalSignificance(tb1d.with.zstat), NA)
+    expect_equal(length(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints), 3)
+    expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[2]],
+        list(Index = 7, ShowValue = FALSE, Segments = list(list(Font = list(
+        color = "#E41A1C", size = 11.2528132033008, family = "Arial"), Text = "🠙"))))
+
+    expect_error(pp <- StackedColumnWithStatisticalSignificance(tb1d.with.zstat, transpose = TRUE,
+        reverse.series.order = TRUE, column.totals.above.show = TRUE, data.label.show = TRUE), NA)
+    expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[2]]$CustomPoints[[1]],
+        list(Index = 0, Segments = list(list(Field = "Value"), list(Font = list(
+        color = "#E41A1C", size = 11.2528132033008, family = "Arial"), Text = "🠙"))))
+
     expect_error(StackedColumnWithStatisticalSignificance(tb.with.zstat), NA)
     expect_error(StackedColumnWithStatisticalSignificance(tb.with.zstat, transpose = TRUE,
         reverse.series.order = TRUE, column.totals.above.show = TRUE), NA)
     expect_error(StackedColumnWithStatisticalSignificance(tb.with.colcmp), NA)
     expect_error(StackedColumnWithStatisticalSignificance(tb.from.diff,
                 annot.hide.small.bar = FALSE), NA)
-    expect_warning(StackedColumnWithStatisticalSignificance(tb.from.diff,
-                annot.hide.small.bar = TRUE), "Some significant values were not shown")
-    expect_error(StackedColumnWithStatisticalSignificance(tb.from.diff2,
+    expect_warning(pp <- StackedColumnWithStatisticalSignificance(tb.from.diff,
+                annot.hide.small.bar = TRUE, data.label.show = TRUE),
+                "Some significant values were not shown")
+    expect_equal(attr(pp,"ChartLabels")$SeriesLabels[[2]]$CustomPoints[[2]],
+        list(Index = 1, Segments = list(list(Field = "Value"), list(Font = list(
+        color = "#377EB8", size = 11.2528132033008, family = "Arial"),
+        Text = "🠛"), list(Font = list(color = "#2C2C2C", size = 7.50187546886722,
+        family = "Arial"), Text = "-7"))))
+
+
+    expect_error(pp <- StackedColumnWithStatisticalSignificance(tb.from.diff2,
         column.totals.above.show = TRUE, column.totals.above.font.family = "Arial Black",
         annot.differences.prefix = "(", annot.differences.suffix = ")",
         data.label.show = TRUE, reverse.series.order = TRUE, num.categories.below.axis = 2), NA)
