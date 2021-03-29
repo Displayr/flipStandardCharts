@@ -301,6 +301,9 @@ test_that("Charts with annotations",
 
     expect_error(pp <- StackedColumnWithStatisticalSignificance(tb1d.with.zstat, transpose = TRUE,
         reverse.series.order = TRUE, column.totals.above.show = TRUE, data.label.show = TRUE), NA)
+    expect_equal(dimnames(attr(pp, "ChartData")),
+        list("", c("65 or more", "55 to 64", "50 to 54", "45 to 49",
+        "40 to 44", "35 to 39", "30 to 34", "25 to 29", "18 to 24")))
     expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[2]]$CustomPoints[[1]],
         list(Index = 0, Segments = list(list(Field = "Value"), list(Font = list(
         color = "#E41A1C", size = 11.2528132033008, family = "Arial"), Text = "🠙"))))
@@ -323,8 +326,19 @@ test_that("Charts with annotations",
 
     expect_error(pp <- StackedColumnWithStatisticalSignificance(tb.from.diff2,
         column.totals.above.show = TRUE, column.totals.above.font.family = "Arial Black",
-        annot.differences.prefix = "(", annot.differences.suffix = ")",
-        data.label.show = TRUE, reverse.series.order = TRUE, num.categories.below.axis = 2), NA)
+        annot.differences.prefix = "(", annot.differences.suffix = ")", annot.differences.font.size = 7,
+        data.label.show = TRUE, reverse.series.order = TRUE, num.categories.below.axis = 2,
+        column.totals.below.show = TRUE), NA)
+    expect_error(print(pp), NA)
+    expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$Font$size, 7.501875, tol=1e-6)
+    expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[9]]$Segments[[2]]$Font$size,
+                 5.251313, tol=1e-6)
+    expect_equal(dimnames(attr(pp, "ChartData")),
+        list(c("Less than $15,000", "$15,001 to $30,000", "$30,001 to $45,000",
+        "$45,001 to $60,000", "$60,001 to $90,000", "$90,001 to $120,000",
+        "$120,001 to $150,000", "$150,001 to $200,000", "$200,001 or more"
+        ), c("Don't care", "Dislike all cola", "Pepsi Max", "Diet Pepsi",
+        "Pepsi ", "Coke Zero", "Diet Coke", "Coca-Cola")))
 
     xx <- structure(1:10, .Names = c("A", "B", "C", "D", "E", "F", "G",
         "H", "I", "J"))

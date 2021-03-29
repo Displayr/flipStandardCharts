@@ -767,7 +767,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                 data.label.show = rep(TRUE, n),
                 data.label.text = paste0(pre.annot,
                     formatByD3(totals.annotations$y[,m],
-                    data.label.format, data.label.prefix, data.label.suffix),
+                    data.label.format, data.label.prefix[,m], data.label.suffix[,m]),
                     totals.annot.text),
                 data.label.sign = rep(1, n), 0,
                 annotation.list = NULL, annot.data, 1,
@@ -784,7 +784,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                 data.label.ypos = totals.annotations$y[,num.categories.below.axis],
                 data.label.show = rep(TRUE, n),
                 data.label.text = formatByD3(abs(totals.annotations$y[,num.categories.below.axis]),
-                    data.label.format, data.label.prefix, data.label.suffix),
+                    data.label.format, data.label.prefix[,m], data.label.suffix[,m]),
                 data.label.sign = rep(-1, n), 0,
                 annotation.list = NULL, annot.data, 1,
                 xaxis = "x2", yaxis = "y",
@@ -835,6 +835,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
     attr(p, "can-run-in-root-dom") <- TRUE
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
+    attr(result, "ChartData") <- chart.matrix
     attr(result, "ChartType") <- "Column Stacked"
     attr(result, "ChartLabels") <- chart.labels
     result
