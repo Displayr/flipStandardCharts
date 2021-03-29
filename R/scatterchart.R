@@ -635,6 +635,7 @@ Scatter <- function(x = NULL,
     p <- add_trace(p, x = tmp.x, y = tmp.y, type = "scatter",
            mode = "lines", hoverinfo = "none", showlegend = F, opacity = 0)
 
+    chart.labels <- list(SeriesLabels = list())
     for (ggi in 1:num.groups)
     {
         ind <- which(groups == g.list[ggi])
@@ -660,6 +661,22 @@ Scatter <- function(x = NULL,
                             line = list(width = marker.border.width,
                             color = toRGB(marker.border.colors[ggi], alpha = marker.border.opacity)))
 
+        # Add attribute for PPT exporting
+        # Note that even without data labels, overlay annotations can still be present
+        chart.labels$SeriesLabels[[ggi]] <- list(Font = setFontForPPT(data.label.font[[ggi]]), ShowValue = FALSE)
+        pt.segs <- lapply(1:length(ind),
+            function(ii)
+            {
+                pt <- list(Index = ii-1)
+                if (data.label.show)
+                    pt$Segments <-  list(list(Field="Value"))
+                else
+                    pt$Segments <- list()
+                return(pt)
+            }
+        )
+
+
         # Traces for annotation need to occur before main trace to avoid hiding hover info
         annot.text <- rep("", length(ind))
         for (j in seq_along(annotation.list))
@@ -683,8 +700,20 @@ Scatter <- function(x = NULL,
                        legendgroup = if (num.series > 1) ggi else 1, symbols = marker.symbols)
                 else
                     annot.text[ind.sel] <- addAnnotToDataLabel(annot.text[ind.sel], a.tmp, tmp.dat[ind.sel])
+                pt.segs <- getPointSegmentsForPPT(pt.segs, ind.sel, a.tmp, tmp.dat[ind.sel])
             }
         }
+
+        # Clean up PPT chart labels
+        pt.segs <- tidyPtSegments(pt.segs, length(ind))
+        if (isTRUE(attr(pt.segs, "SeriesShowValue")))
+        {
+            chart.labels$SeriesLabels[[ggi]]$ShowValue <- TRUE
+            attr(pt.segs, "SeriesShowValue") <- NULL
+        }
+        if (length(pt.segs) > 0)
+            chart.labels$SeriesLabels[[ggi]]$CustomPoints <- pt.segs
+
         if (any(nzchar(annot.text) > 0))
             p <- add_trace(p, x = x[ind], y = y[ind], showlegend = FALSE, cliponaxis = FALSE,
                    type = "scatter", mode = "markers+text", hoverinfo = "skip",
@@ -762,6 +791,9 @@ Scatter <- function(x = NULL,
         }
     }
 
+    if (sum(unlist(sapply(chart.labels$SeriesLabels, function(s) { return(s$ShowValue + length(s$CustomPoints)) }))) == 0)
+        chart.labels <- NULL
+
     annot <- list(setSubtitle(subtitle, subtitle.font, margins),
                   setTitle(title, title.font, margins),
                   if (is.null(small.mult.index)) setFooter(footer, footer.font, margins) else NULL)
@@ -788,6 +820,7 @@ Scatter <- function(x = NULL,
     class(result) <- "StandardChart"
     attr(result, "ChartType") <- if (!is.null(scatter.sizes)) "Bubble"
                                  else                         "X Y Scatter"
+    attr(result, "ChartLabels") <- chart.labels
     result
 }
 
