@@ -642,21 +642,8 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x", yaxis = "y",
                     data.label.font[[i]], TRUE, data.label.centered)
         }
-
-        # Add arrow annotations to chart labels
-        for (tmp.arrow in tmp.arrow.html)
-        {
-            ind.tmp <- grep(tmp.arrow, annot.text[,i], fixed = TRUE)
-            if (length(ind.tmp) > 0)
-            {  
-                tmp.color <- regmatches(tmp.arrow, regexec("color:(\\S+);", tmp.arrow))[[1]][2]
-                tmp.symbol <- regmatches(tmp.arrow, regexec(">(\\S+)</span>", tmp.arrow))[[1]][2]
-                pt.segs <- getPointSegmentsForPPT(pt.segs, ind.tmp, 
-                    annot = list(type = "Custom text", format = "Category", size = annot.arrow.size,
-                    font.family = "Arial", color = tmp.color, custom.symbol = tmp.symbol))
-            }
-        }
-
+        
+        # Add difference annotations to chart label attributes
         if (!is.null(diff.annot.text))
         {
             if (annot.hide.small.bar)
@@ -670,6 +657,21 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     size = annot.differences.font.size, font.family = annot.differences.font.family,
                     format = "Category"), diff.annot.labels[ind.diff.show, i])
         }
+
+        # Add arrow annotations to chart label attributes
+        for (tmp.arrow in tmp.arrow.html)
+        {
+            ind.tmp <- grep(tmp.arrow, annot.text[,i], fixed = TRUE)
+            if (length(ind.tmp) > 0)
+            {  
+                tmp.color <- regmatches(tmp.arrow, regexec("color:(\\S+);", tmp.arrow))[[1]][2]
+                tmp.symbol <- regmatches(tmp.arrow, regexec(">(\\S+)</span>", tmp.arrow))[[1]][2]
+                pt.segs <- getPointSegmentsForPPT(pt.segs, ind.tmp, 
+                    annot = list(type = "Custom text", format = "Category", size = annot.arrow.size,
+                    font.family = "Arial", color = tmp.color, custom.symbol = tmp.symbol))
+            }
+        }
+
 
         # Clean up PPT chart labels
         pt.segs <- tidyPtSegments(pt.segs, nrow(chart.matrix))

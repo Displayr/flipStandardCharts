@@ -318,10 +318,11 @@ test_that("Charts with annotations",
                 annot.hide.small.bar = TRUE, data.label.show = TRUE),
                 "Some significant values were not shown")
     expect_equal(attr(pp,"ChartLabels")$SeriesLabels[[2]]$CustomPoints[[2]],
-        list(Index = 1, Segments = list(list(Field = "Value"), list(Font = list(
+        list(Index = 1, Segments = list(list(Field = "Value"),
+        list(Font = list(color = "#2C2C2C", size = 7.50187546886722,
+        family = "Arial"), Text = "-7"), list(Font = list(
         color = "#377EB8", size = 11.2528132033008, family = "Arial"),
-        Text = "↓"), list(Font = list(color = "#2C2C2C", size = 7.50187546886722,
-        family = "Arial"), Text = "-7"))))
+        Text = "↓"))))
 
 
     expect_error(pp <- StackedColumnWithStatisticalSignificance(tb.from.diff2,
