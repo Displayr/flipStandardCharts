@@ -970,9 +970,9 @@ Column <- function(x,
             else if (curr.annot$type == "Text")
                 curr.annot.text <- formatByD3(curr.dat[ind.sel], curr.annot$format, curr.annot$prefix, curr.annot$suffix)
             else if (curr.annot$type == "Arrow - up")
-                curr.annot.text <- "&#129049;"
+                curr.annot.text <- "&#8593;"
             else if (curr.annot$type == "Arrow - down")
-                curr.annot.text <- "&#129051;"
+                curr.annot.text <- "&#8595;"
             else if (curr.annot$type == "Caret - up")
                 curr.annot.text <- "&#9650;"
             else if (curr.annot$type == "Caret - down")

@@ -297,7 +297,7 @@ test_that("Charts with annotations",
     expect_equal(length(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints), 3)
     expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[2]],
         list(Index = 7, ShowValue = FALSE, Segments = list(list(Font = list(
-        color = "#E41A1C", size = 11.2528132033008, family = "Arial"), Text = "🠙"))))
+        color = "#E41A1C", size = 11.2528132033008, family = "Arial"), Text = "↑"))))
 
     expect_error(pp <- StackedColumnWithStatisticalSignificance(tb1d.with.zstat, transpose = TRUE,
         reverse.series.order = TRUE, column.totals.above.show = TRUE, data.label.show = TRUE), NA)
@@ -306,7 +306,7 @@ test_that("Charts with annotations",
         "40 to 44", "35 to 39", "30 to 34", "25 to 29", "18 to 24")))
     expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[2]]$CustomPoints[[1]],
         list(Index = 0, Segments = list(list(Field = "Value"), list(Font = list(
-        color = "#E41A1C", size = 11.2528132033008, family = "Arial"), Text = "🠙"))))
+        color = "#E41A1C", size = 11.2528132033008, family = "Arial"), Text = "↑"))))
 
     expect_error(StackedColumnWithStatisticalSignificance(tb.with.zstat), NA)
     expect_error(StackedColumnWithStatisticalSignificance(tb.with.zstat, transpose = TRUE,
@@ -320,7 +320,7 @@ test_that("Charts with annotations",
     expect_equal(attr(pp,"ChartLabels")$SeriesLabels[[2]]$CustomPoints[[2]],
         list(Index = 1, Segments = list(list(Field = "Value"), list(Font = list(
         color = "#377EB8", size = 11.2528132033008, family = "Arial"),
-        Text = "🠛"), list(Font = list(color = "#2C2C2C", size = 7.50187546886722,
+        Text = "↓"), list(Font = list(color = "#2C2C2C", size = 7.50187546886722,
         family = "Arial"), Text = "-7"))))
 
 

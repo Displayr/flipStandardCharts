@@ -346,13 +346,13 @@ addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat, prepend = 
 
         new.text <- ""
         if (annotation$data == "Column Comparisons" && grepl("Arrow", annotation$type))
-            new.text <- paste0(" ", getColCmpArrowHtml(tmp.dat, annotation$size, " ", "&#129049;"), " ")
+            new.text <- paste0(" ", getColCmpArrowHtml(tmp.dat, annotation$size, " ", "&#8593;"), " ")
         else if (annotation$data == "Column Comparisons" && grepl("Caret", annotation$type))
             new.text <- paste0(" ", getColCmpArrowHtml(tmp.dat, annotation$size, " ", "&#9650;"), " ")
         else if (annotation$type == "Arrow - up")
-            new.text <- "&#129049;"
+            new.text <- "&#8593;"
         else if (annotation$type == "Arrow - down")
-            new.text <- "&#129051;"
+            new.text <- "&#8595;"
         else if (annotation$type == "Caret - up")
             new.text <- "&#9650;"
         else if (annotation$type == "Caret - down")
@@ -427,7 +427,7 @@ checkAnnotType <- function(annot.type, chart.type)
         return(TRUE)
 }
 
-getColCmpArrowHtml <- function(cell.text, arrow.size, sep = " ", arrow.code = "&#129049;")
+getColCmpArrowHtml <- function(cell.text, arrow.size, sep = " ", arrow.code = "&#8593;")
 {
     res <- rep("", length(cell.text))
 
@@ -466,7 +466,7 @@ getPointSegmentsForPPT <- function(x, index, annot, dat)
         if (grepl("^Text", annot$type))
             tmp.seg[[1]]$Text <- formatByD3(dat[i], annot$format, annot$prefix, annot$suffix)
         else if (annot$data == "Column Comparisons" && grepl("Arrow", annot$type))
-            tmp.seg[[1]]$Text <- unescape_html(getColCmpArrowHtml(dat[i], NULL, " ", "&#129049;"))
+            tmp.seg[[1]]$Text <- unescape_html(getColCmpArrowHtml(dat[i], NULL, " ", "&#8593;"))
         else if (annot$data == "Column Comparisons" && grepl("Caret", annot$type))
             tmp.seg[[1]]$Text <- unescape_html(getColCmpArrowHtml(dat[i], NULL, " ", "&#9650;"))
 

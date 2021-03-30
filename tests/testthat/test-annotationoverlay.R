@@ -139,7 +139,7 @@ test_that("Showing column comparisons with arrows",
     expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[2]]$CustomPoints[[4]],
         list(Index = 5, ShowValue = FALSE, Segments = list(list(Font = list(
         color = "#ED7D31", size = 8.25206301575394, family = "Impact"),
-        Text = "a🠙 B🠙 c🠙"))))
+        Text = "a↑ B↑ c↑"))))
 
     expect_error(pp <- Column(dat.with.colcmp,
         overlay.annotation.list = list(list(type = "Arrow - up",
@@ -155,7 +155,7 @@ test_that("Showing column comparisons with arrows",
         relative.pos = 1.0, halign = "Center", valign = "Top", offset = 5,
         color = "#0000FF", size = 15))), NA)
     expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[2]]$CustomPoint[[1]]$Segments[[1]]$Text,
-                 "c🠙 D🠙 e🠙 F🠙")
+                 "c↑ D↑ e↑ F↑")
     expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[2]]$CustomPoint[[1]]$Segments[[2]]$Text,
                  "↑")
 })
