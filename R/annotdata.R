@@ -594,7 +594,7 @@ setTextForPPT <- function(annot)
 {
     # We use unescape_html rather than directly supplying unicode because
     # Users might have added some other custom html entities that need coverting
-    symbol <- switch(annot$type, "Arrow - up" = "&#129049;", "Arrow - down" = "&#129051;",
+    symbol <- switch(annot$type, "Arrow - up" = "&#8593;", "Arrow - down" = "&#8595;",
         "Caret - up" = "&#9650;", "Caret - down" = "&#9660;", annot$custom.symbol)
     return(unescape_html(symbol))
 }

@@ -157,7 +157,7 @@ test_that("Showing column comparisons with arrows",
     expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[2]]$CustomPoint[[1]]$Segments[[1]]$Text,
                  "c🠙 D🠙 e🠙 F🠙")
     expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[2]]$CustomPoint[[1]]$Segments[[2]]$Text,
-                 "🠙")
+                 "↑")
 })
 
 tb1d.with.single.stat <- structure(c(`Less than $15,000` = 3.25318246110325, `$15,001 to $30,000` = 10.8910891089109,

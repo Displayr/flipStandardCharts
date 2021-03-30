@@ -835,6 +835,8 @@ StackedColumnWithStatisticalSignificance <- function(x,
     attr(p, "can-run-in-root-dom") <- TRUE
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
+    if (isPercentData(x))
+        attr(chart.matrix, "statistic") <- "%"
     attr(result, "ChartData") <- chart.matrix
     attr(result, "ChartType") <- "Column Stacked"
     attr(result, "ChartLabels") <- chart.labels
