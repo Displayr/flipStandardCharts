@@ -382,8 +382,6 @@ Radar <- function(x,
                     if (nzchar(data.label.prefix[ii,ggi])) list(list(Text = data.label.prefix[ii,ggi])) else NULL,
                     list(list(Field="Value")),
                     if (nzchar(data.label.suffix[ii,ggi])) list(list(Text = data.label.suffix[ii,ggi])) else NULL)
-                else
-                    pt$ShowValue <- FALSE
                 return(pt)
             }
         )
@@ -463,6 +461,7 @@ Radar <- function(x,
         if (isTRUE(attr(pt.segs, "SeriesShowValue")))
         {
             chart.labels$SeriesLabels[[ggi]]$ShowValue <- TRUE
+            chart.labels$SeriesLabels[[ggi]]$ShowCategoryName <- TRUE
             attr(pt.segs, "SeriesShowValue") <- NULL
         }
         if (length(pt.segs) > 0)

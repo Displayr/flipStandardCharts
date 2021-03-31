@@ -52,7 +52,12 @@ for (charting.func in c("Column", "Bar", "Line", "Radar"))
 
         pp <- cfunc(data.with.stats[-10,,], data.label.show = TRUE, data.label.prefix = "$")
         expect_equal(length(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints), 9)
-        expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[9]],
+        if (charting.func == "Radar")
+            expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[9]],
+            list(Index = 8, Segments = list(list(Field = "CategoryName"),
+            list(Text = "$"), list(Field = "Value"))))
+        else
+            expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[9]],
             list(Index = 8, Segments = list(list(Text = "$"), list(Field = "Value"))))
 
         if (charting.func == "Line")

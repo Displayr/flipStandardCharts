@@ -496,6 +496,8 @@ tidyPtSegments <- function(pts, num.pts, show.categoryname = FALSE)
         {
             pts[[i]]$ShowValue <- TRUE
             pts[[i]]$Segments <- NULL
+            if (show.categoryname)
+                pts[[i]]$ShowCategoryName <- TRUE
 
             if (is.null(pts[[i]]$OutlineColor) && is.null(pts[[i]]$BackgroundColor))
                 pt.info[pts[[i]]$Index + 1] <- 1 # value-only label
@@ -504,6 +506,9 @@ tidyPtSegments <- function(pts, num.pts, show.categoryname = FALSE)
 
         } else if (length(pts[[i]]$Segments) > 0)
             pt.info[pts[[i]]$Index + 1] <- 2 # or would the index be better?
+
+        if (show.categoryname && length(pts[[i]]$Segments) > 0)
+            pts[[i]]$Segments <- c(list(list(Field="CategoryName")), pts[[i]]$Segments)
 
         # Remove empty points - empty label cannnot have outline anyway
         if (length(pts[[i]]$Segments) == 0 && !isTRUE(pts[[i]]$ShowValue))
@@ -531,8 +536,6 @@ tidyPtSegments <- function(pts, num.pts, show.categoryname = FALSE)
                 jj <- jj + 1 # no new point to add because this is represented by SeriesLabels
             else
             {
-                if (show.categoryname)
-                    pts[[jj]]$Segments <- c(list(list(Field="CategoryName")), pts[[jj]]$Segments)
                 new.pts <- c(new.pts, pts[jj])
                 jj <- jj + 1
             }   
