@@ -1,110 +1,5 @@
 # This is only used for Bar/Column type charts
 #' @importFrom verbs Sum
-addDataLabelAnnotations <- function(p, type, name, data.label.xpos, data.label.ypos,
-        data.label.show, data.label.text, data.label.sign,
-        annotation.list, annot.data, i,
-        xaxis, yaxis, data.label.font, is.stacked, data.label.centered,
-        data.label.horizontal.align = "center")
-{
-    if (type == "Column")
-    {
-        if (is.stacked)
-            data.label.sign <- -1 * data.label.sign
-        if (is.stacked && data.label.centered)
-            textalign <- paste("middle", data.label.horizontal.align)
-        else
-            textalign <- paste(ifelse(data.label.sign >= 0, "top", "bottom"), data.label.horizontal.align)
-        data.label.pos <- ifelse(data.label.sign < 0, 3, 0 + (is.stacked & !data.label.centered))
-    } else
-    {
-        textalign <- if (is.stacked) "middle center"
-                     else            ifelse(data.label.sign >= 0, "middle right", "middle left")
-        data.label.pos <- if (is.stacked) 0
-                          else            ifelse(data.label.xpos < 0, 7, 3)
-    }
-    if (length(textalign) > 1)
-        textalign <- textalign[data.label.show]
-
-    n <- length(data.label.xpos)
-    data.label.nchar <- nchar(data.label.text) # get length before adding html tags
-    max.diam <- 0
-    # add arrow and text annotations as a prefix/suffix to existing data labels
-    for (j in seq_along(annotation.list))
-    {
-        if (!checkAnnotType(annotation.list[[j]]$type, "Bar"))
-            return(p)
-        annotation.list[[j]]$threshold <- parseThreshold(annotation.list[[j]]$threshold)
-        a.tmp <- annotation.list[[j]]
-        if (grepl("Circle", a.tmp$type))
-        {
-            if (a.tmp$type != "Circle - filled")
-            {
-                a.tmp$size <- a.tmp$size + 5
-                annotation.list[[j]]$size <- a.tmp$size
-            }
-            if (a.tmp$size > max.diam)
-                max.diam <- a.tmp$size + 0.01
-        } else
-        {
-            tmp.dat <- getAnnotData(annot.data, a.tmp$data, i, as.numeric = !grepl("Text", a.tmp$type))
-            ind.sel <- extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype)
-            data.label.text[ind.sel] <- addAnnotToDataLabel(data.label.text[ind.sel], a.tmp, tmp.dat[ind.sel])
-        }
-    }
-
-    # Circle annotations
-    for (j in seq_along(annotation.list))
-    {
-        a.tmp <- annotation.list[[j]]
-        if (grepl("Circle", a.tmp$type))
-        {
-            tmp.dat <- getAnnotData(annot.data, a.tmp$data, i)
-            ind.sel <- extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype)
-            tmp.text <- rep("", n)
-            left.pad <- paste(rep(" ", Sum(a.tmp$shiftright)), collapse = "")
-            right.pad <- paste(rep(" ", Sum(a.tmp$shiftleft)), collapse = "")
-            tmp.text[ind.sel] <- paste0(left.pad, switch(a.tmp$type,
-                "Circle - thick outline" = "<b>&#11096;</b>",
-                "Circle - thin outline" = "&#11096;",
-                "Circle - filled" = "&#11044;"), right.pad)
-            tmp.font <- list(family = data.label.font$family, color = a.tmp$color, size = a.tmp$size)
-
-            # Adjusting circle position
-            tmp.pos <- 0.01         # setting to 0 will result in default = 3 being used
-            if (!is.stacked)
-                tmp.pos <- max(0.01, (max.diam - a.tmp$size))
-            if (type == "Bar" && !is.stacked)
-                tmp.pos <- tmp.pos + (data.label.nchar * data.label.font$size * 0.3)
-            if (type == "Column" && !is.stacked)
-                tmp.pos <- tmp.pos + (data.label.sign < 0) * 5
-
-            p <- add_trace(p, x = data.label.xpos, y = data.label.ypos, cliponaxis = FALSE,
-                  type = "scatter", mode = "markers+text",
-                  text = tmp.text, textfont = tmp.font,
-                  marker = list(opacity = 0.0, color = "red", size = tmp.pos),
-                  xaxis = xaxis, yaxis = yaxis,
-                  textposition = textalign,
-                  showlegend = FALSE, hoverinfo = "skip",
-                  legendgroup = if (is.stacked) "all" else i)
-        }
-    }
-
-    # Add data annotations
-    tmp.offset <- if (!is.stacked) max(0, (max.diam - data.label.font$size))
-                  else             0.01
-    data.label.pos <- data.label.pos + tmp.offset
-    p <- add_trace(p, name = name,
-              x = data.label.xpos[data.label.show], y = data.label.ypos[data.label.show],
-              cliponaxis = FALSE, type = "scatter", mode = "markers+text",
-              marker = list(opacity = 0.0, size = data.label.pos),
-              xaxis = xaxis, yaxis = yaxis,
-              text = data.label.text[data.label.show], textfont = data.label.font,
-              textposition = textalign, showlegend = FALSE, hoverinfo = "skip",
-              legendgroup = if (is.stacked) "all" else i)
-    return(p)
-
-}
-
 
 # This is only used for Bar/Column type charts
 #' @importFrom verbs Sum
@@ -226,7 +121,7 @@ applyAllAnnotationsToDataLabels <- function(data.label.text, annotation.list,
         annotation.list[[j]]$threshold <- parseThreshold(annotation.list[[j]]$threshold)
         a.tmp <- annotation.list[[j]]
         tmp.dat <- getAnnotData(annot.data, a.tmp$data, series.index, 
-            as.numeric = !grepl("Text", a.tmp$type) && a.tmp != "Column Comparisons")
+            as.numeric = !grepl("Text", a.tmp$type) && a.tmp$data != "Column Comparisons")
         ind.sel <- intersect(rows.to.show,
                         extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype))
         if (length(ind.sel) > 0)
@@ -240,11 +135,6 @@ applyAllAnnotationsToDataLabels <- function(data.label.text, annotation.list,
     if (clean.pt.segs && !is.null(pt.segs))
     {
         pt.segs <- tidyPtSegments(pt.segs, length(data.label.text))
-        #if (isTRUE(attr(pt.segs, "SeriesShowValue")))
-        #{
-        #    chart.labels$SeriesLabels[[i]]$ShowValue <- TRUE
-        #    attr(pt.segs, "SeriesShowValue") <- NULL
-        #}
     }
     attr(data.label.text, "customPoints") <- pt.segs
     return(data.label.text)

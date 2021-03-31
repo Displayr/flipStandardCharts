@@ -723,12 +723,12 @@ StackedColumnWithStatisticalSignificance <- function(x,
             annot.differences.offset
         if (annot.hide.small.bar)
             diff.annot.text[which(nchar(data.annotations$text) == 0)] <- ""
-        p <- addDataLabelAnnotations(p, type = "Column", "Differences",
+        p <- addBarTypeChartLabelAnnotTrace(p, type = "Column", "Differences",
                 data.label.xpos = as.vector(data.annotations$x) + xdiff,
                 data.label.ypos = as.vector(data.annotations$y),
                 data.label.show = rep(TRUE, n*m),
                 data.label.text = diff.annot.text,
-                data.label.sign = getSign(as.vector(data.annotations$y), yaxis),
+                data.label.sign = getSign(as.vector(data.annotations$y), yaxis), 0,
                 NULL, annot.data, 1,
                 xaxis = "x2", yaxis = "y",
                 data.label.font = list(family = annot.differences.font.family,
