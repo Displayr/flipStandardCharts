@@ -440,15 +440,15 @@ setFontForPPT <- function(annotation)
 {
     font <- list()
     if (!is.null(annotation$color))
-        font$color <- annotation$color
+        font$color <- annotation$color[1]
     if (!is.null(annotation$size))
-        font$size <- annotation$size / 1.333 # convert px to pt
+        font$size <- annotation$size[1] / 1.333 # convert px to pt
     if (!is.null(annotation$font.family))
-        font$family <- annotation$font.family
+        font$family <- annotation$font.family[1]
     if (!is.null(annotation$font.weight))
-        font$bold <- isTRUE(tolower(annotation$font.weight) == "bold")
+        font$bold <- isTRUE(tolower(annotation$font.weight[1]) == "bold")
     if (!is.null(annotation$font.style))
-        font$italic <- isTRUE(tolower(annotation$font.style) == "italic")
+        font$italic <- isTRUE(tolower(annotation$font.style[1]) == "italic")
 
     if (length(font) == 0)
         return(NULL)
