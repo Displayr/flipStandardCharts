@@ -802,7 +802,7 @@ Scatter <- function(x = NULL,
             chart.labels <- list()
         if (any(nzchar(x.title)))
             chart.labels$PrimaryAxisTitle <- x.title
-        if (any(nzchar(x.title)))
+        if (any(nzchar(y.title)))
             chart.labels$ValueAxisTitle <- y.title
     }
 
