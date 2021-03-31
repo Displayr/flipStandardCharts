@@ -371,7 +371,7 @@ Radar <- function(x,
 
         # Add attribute for PPT exporting
         # Note that even without data labels, overlay annotations can still be present
-        chart.labels$SeriesLabels[[ggi]] <- list(Font = setFontForPPT(data.label.font[[ggi]]), ShowValue = FALSE)
+        chart.labels$SeriesLabels[[ggi]] <- list(Font = setFontForPPT(data.label.font[[ggi]]), ShowValue = FALSE, ShowCategoryName = FALSE, 
         pt.segs <- lapply(1:m,
             function(ii)
             {

@@ -794,6 +794,18 @@ Scatter <- function(x = NULL,
     if (sum(unlist(sapply(chart.labels$SeriesLabels, function(s) { return(s$ShowValue + length(s$CustomPoints)) }))) == 0)
         chart.labels <- NULL
 
+    # Chart title is added in flipChart but axis names from the variable names
+    # need to be assigned here
+    if (any(nzchar(x.title)) || any(nzchar(y.title)))
+    {
+        if (is.null(chart.labels))
+            chart.labels <- list()
+        if (any(nzchar(x.title)))
+            chart.labels$PrimaryAxisTitle <- x.title
+        if (any(nzchar(x.title)))
+            chart.labels$ValueAxisTitle <- y.title
+    }
+
     annot <- list(setSubtitle(subtitle, subtitle.font, margins),
                   setTitle(title, title.font, margins),
                   if (is.null(small.mult.index)) setFooter(footer, footer.font, margins) else NULL)
