@@ -484,7 +484,7 @@ getPointSegmentsForPPT <- function(x, index, annot, dat)
 }
 
 # Tidy up empty segments and points where possible
-tidyPtSegments <- function(pts, num.pts)
+tidyPtSegments <- function(pts, num.pts, show.categoryname = FALSE)
 {
     if (length(pts) == 0)
         return(pts)
@@ -523,11 +523,16 @@ tidyPtSegments <- function(pts, num.pts)
         for (j in 1:length(pt.info))
         {
             if (pt.info[j] == 0)
-                new.pts <- c(new.pts, list(list(Index = j-1, ShowValue = FALSE)))
+                new.pts <- c(new.pts, list(
+                    if (show.categoryname) list(Index = j-1, ShowValue = FALSE, ShowCategoryName = FALSE)
+                    else                   list(Index = j-1, ShowValue = FALSE)
+                ))
             else if (pt.info[j] == 1)
                 jj <- jj + 1 # no new point to add because this is represented by SeriesLabels
             else
             {
+                if (show.categoryname)
+                    pts[[jj]]$Segments <- c(list(list(Field="CategoryName")), pts[[jj]]$Segments)
                 new.pts <- c(new.pts, pts[jj])
                 jj <- jj + 1
             }   

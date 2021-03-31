@@ -73,20 +73,22 @@ for (charting.func in c("Column", "Bar", "Line", "Radar"))
             threstype = "below threshold", threshold = "0.05",
             color = "#ff0000", width = 2, offset = 1)))
         expect_equal(length(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints), 4)
-        expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[4]],
-            list(Index = 7, OutlineStyle = "Solid",
-            OutlineColor = "#ff0000", OutlineWidth = 1.50003750093752,
-            ShowValue = TRUE))
+        expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[4]]$Index, 7)
+        expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[4]]$OutlineStyle, "Solid")
+        expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[4]]$OutlineColor, "#ff0000")
+        expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[4]]$OutlineWidth, 1.5, tol=1e-2)
+        expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[4]]$OutlineWidth, 1.5, tol=1e-2)
+        expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[4]]$ShowValue, TRUE)
         expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[3]]$CustomPoints, NULL)
 
-        pp <- cfunc(data.with.stats[-10,,], data.label.show = TRUE,
+        pp <- cfunc(data.with.stats[-10,-3,], data.label.show = TRUE,
             annotation.list = list(list(type = "Hide", data = "p",
             threstype = "above threshold", threshold = "0.05",
             color = "#ff0000", width = 2, offset = 1)))
         #expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$ShowValue, FALSE)
         expect_equal(length(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints), 5)
-        expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[1]],
-            list(Index = 0, ShowValue = FALSE))
+        expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[1]]$Index, 0)
+        expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[1]]$ShowValue, FALSE)
 
         pp <- cfunc(data.with.stats[-10,,], data.label.show = TRUE,
             annotation.list = list(list(type = "Custom text", data = "p",
@@ -94,8 +96,11 @@ for (charting.func in c("Column", "Bar", "Line", "Radar"))
             color = "#ff0000", size = 21, offset = 1)))
         expect_equal(length(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints), 4)
         expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[2]]$ShowValue, TRUE)
+        tmp.seg <- list(list(Field = "Value"), list(
+            Font = list(color = "#ff0000", size = 15.7539384846212), Text = "*"))
+        if (charting.func == "Radar")
+            tmp.seg <- c(list(list(Field = "CategoryName")), tmp.seg)
         expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[3]],
-            list(Index = 6, Segments = list(list(Field = "Value"), list(
-            Font = list(color = "#ff0000", size = 15.7539384846212), Text = "*"))))
+            list(Index = 6, Segments = tmp.seg))
     })
 }
