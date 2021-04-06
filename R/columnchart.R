@@ -935,7 +935,7 @@ Column <- function(x,
             data.label.text <- applyAllAnnotationsToDataLabels(data.label.text, annotation.list,
             annot.data, i, ind.show, "Bar", clean.pt.segs = FALSE)
             pt.segs <- attr(data.label.text, "customPoints")
-            p <- addBarTypeChartLabelAnnotTrace(p, type = "Column", legend.text[i],
+            p <- addTraceForBarTypeDataLabelAnnotations(p, type = "Column", legend.text[i],
                     data.label.xpos = if (NCOL(chart.matrix) > 1) data.annotations$x[,i] else x,
                     data.label.ypos = data.annotations$y[,i],
                     data.label.show = data.label.show[,i],

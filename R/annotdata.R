@@ -1,6 +1,40 @@
-# This is only used for Bar/Column type charts
+#' This function adds traces for data labels and annotations to bar/column charts
+#' Because these type of charts show bars that up space surrounding the 
+#' position of the data point, it is necessary to be more careful about 
+#' the offset of the data labels (from the data point). Also, circle
+#' annotations can be added to the plot. These are added as separate traces
+#' to allow for more flexible positioning
+#' @param p the plotly plot object to which the trace is added
+#' @param type the type of the chart (i.e. Bar or Column)
+#' @param name the name to be given to the data label trace. This is visible in the hover text
+#' @param data.label.xpos The position of the data label trace on the xaxis.
+#'  This is usually a component of the output from \code{dataLabelPositions}. 
+#' @param data.label.ypos The position of the data label trace on the yaxis.
+#'  This is usually a component of the output from \code{dataLabelPositions}.
+#' @param data.label.show A logical vector of the same length as data.label.xpos
+#'  indicating whether a data label will be shown at each point.
+#' @param data.label.text A text vector of the same length as data.label.xpos
+#'  containing the text to show on the data label.
+#' @param data.label.sign The sign indicating whether the data point is positive or negative.
+#' @param data.label.nchar The maximum number of characters in the data labels.
+#'  This is used to position the circle annotations.
+#' @param annotation.list A list of annotations as given to the charting function.
+#' @param annot.data The data (usually a 3d array) used create the annotations.
+#' @param i The index of the data series. Used to control legend.group
+#' @param xaxis The name of the xaxis
+#' @param yaxis The neme of the yaxis
+#' @param data.label.font A list specifying the font to use.
+#' @param is.stacked A logical indicating if the chart is stackeed.
+#' @param data.label.centered A logical indicating if data label is placed at the center of bar. 
+#'  Only used in Stacked Column charts.
+#' @param data.label.horizontal.align Text to control the horizontal alignment
+#'  of labels on the column chart annotations
+
+ 
 #' @importFrom verbs Sum
-addBarTypeChartLabelAnnotTrace <- function(p, type, name, data.label.xpos, data.label.ypos,
+#' @keywords internal
+addTraceForBarTypeDataLabelAnnotations <- function(p, type, name, 
+        data.label.xpos, data.label.ypos,
         data.label.show, data.label.text, data.label.sign, data.label.nchar,
         annotation.list, annot.data, i,
         xaxis, yaxis, data.label.font, is.stacked, data.label.centered,
@@ -389,8 +423,8 @@ tidyPointSegments <- function(points, num.points, show.categoryname = FALSE)
 {
     if (length(points) == 0)
         return(points)
-    pt.info <- rep(0L, num.points) # 0 = no label; 1 = value-only label; 2 = has modification
-    for (i in length(points):1) # traverse backwards so smaller indexes still valid
+    pt.info <- integer(num.points)  # 0 = no label; 1 = value-only label; 2 = has modification
+    for (i in length(points):1)     # traverse backwards so smaller indexes still valid
     {
         # Simplify value-only segments to enable toggling in powerpoint
         if (length(points[[i]]$Segments) == 1 && isTRUE(points[[i]]$Segments[[1]]$Field == "Value"))

@@ -632,7 +632,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
             data.label.text <- applyAllAnnotationsToDataLabels(data.label.text, NULL,
             annot.data, i, ind.show, "Bar", clean.pt.segs = FALSE)
             pt.segs <- attr(data.label.text, "customPoints")
-            p <- addBarTypeChartLabelAnnotTrace(p, type = "Column", legend.text[i],
+            p <- addTraceForBarTypeDataLabelAnnotations(p, type = "Column", legend.text[i],
                     data.label.xpos = if (NCOL(chart.matrix) > 1) data.annotations$x[,i] else x,
                     data.label.ypos = data.annotations$y[,i],
                     data.label.show = data.label.show[,i],
@@ -701,7 +701,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
             warning("Some significant values were not shown because the bars were too small.")
         annot.text[ind] <- ""
     }
-    p <- addBarTypeChartLabelAnnotTrace(p, type = "Column", "Annotations",
+    p <- addTraceForBarTypeDataLabelAnnotations(p, type = "Column", "Annotations",
                 data.label.xpos = as.vector(data.annotations$x) + xdiff,
                 data.label.ypos = as.vector(data.annotations$y),
                 data.label.show = rep(TRUE, n*m),
@@ -723,7 +723,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
             annot.differences.offset
         if (annot.hide.small.bar)
             diff.annot.text[which(nchar(data.annotations$text) == 0)] <- ""
-        p <- addBarTypeChartLabelAnnotTrace(p, type = "Column", "Differences",
+        p <- addTraceForBarTypeDataLabelAnnotations(p, type = "Column", "Differences",
                 data.label.xpos = as.vector(data.annotations$x) + xdiff,
                 data.label.ypos = as.vector(data.annotations$y),
                 data.label.show = rep(TRUE, n*m),
@@ -762,7 +762,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
     {
         # Add invisible string to center the column totals
         pre.annot <- gsub("color:.*?;", "color:transparent;", totals.annot.text)
-        p <- addBarTypeChartLabelAnnotTrace(p, name = "Column totals - above",
+        p <- addTraceForBarTypeDataLabelAnnotations(p, name = "Column totals - above",
                 type = "Column",
                 data.label.xpos = totals.annotations$x[,1],
                 data.label.ypos = apply(totals.annotations$y, 1, max, na.rm = TRUE),
@@ -780,7 +780,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                 is.stacked = FALSE, data.label.centered = FALSE)
     }
     if (column.totals.below.show)
-        p <- addBarTypeChartLabelAnnotTrace(p, name = "Column totals - below",
+        p <- addTraceForBarTypeDataLabelAnnotations(p, name = "Column totals - below",
                 type = "Column",
                 data.label.xpos = totals.annotations$x[,1],
                 data.label.ypos = totals.annotations$y[,num.categories.below.axis],

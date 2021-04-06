@@ -257,7 +257,7 @@ ColumnMultiColor <- function(x,
             annot.data, 1, which(data.label.show), "Bar", clean.pt.segs = TRUE)
         pt.segs <- attr(data.label.text, "customPoints")
 
-        p <- addBarTypeChartLabelAnnotTrace(p, type = "Column", NULL,
+        p <- addTraceForBarTypeDataLabelAnnotations(p, type = "Column", NULL,
                 data.label.xpos = x, data.label.ypos = y.filled, data.label.text = data.label.text,
                 data.label.show = data.label.show, data.label.sign = getSign(y, yaxis), data.label.nchar,
                 annotation.list, annot.data, i = 1,
