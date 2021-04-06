@@ -293,7 +293,8 @@ BarMultiColor <- function(x,
                            setFooter(footer, footer.font, margins))
     annot <- Filter(Negate(is.null), annot)
     
-    if (sum(unlist(sapply(chart.labels$SeriesLabels, function(s) { return(s$ShowValue + length(s$CustomPoints)) }))) == 0)
+    serieslabels.num.changes <- vapply(chart.labels$SeriesLabels, function(s) isTRUE(s$ShowValue) + length(s$CustomPoints), numeric(1L))
+    if (sum(serieslabels.num.changes) == 0)
         chart.labels <- NULL
 
     p <- config(p, displayModeBar = modebar.show)

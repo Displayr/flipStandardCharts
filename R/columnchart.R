@@ -1001,7 +1001,7 @@ Column <- function(x,
         }
 
         # Clean up PPT chart labels
-        pt.segs <- tidyPtSegments(pt.segs, nrow(chart.matrix))
+        pt.segs <- tidyPointSegments(pt.segs, nrow(chart.matrix))
         if (!is.null(pt.segs))
         {
             if (isTRUE(attr(pt.segs, "SeriesShowValue")))
@@ -1069,8 +1069,9 @@ Column <- function(x,
     annotations[[n+2]] <- setFooter(footer, footer.font, margins)
     annotations[[n+3]] <- setSubtitle(subtitle, subtitle.font, margins)
     annotations <- Filter(Negate(is.null), annotations)
-    
-    if (sum(unlist(sapply(chart.labels$SeriesLabels, function(s) { return(s$ShowValue + length(s$CustomPoints)) }))) == 0)
+
+    serieslabels.num.changes <- vapply(chart.labels$SeriesLabels, function(s) isTRUE(s$ShowValue) + length(s$CustomPoints), numeric(1L))
+    if (sum(serieslabels.num.changes) == 0)
         chart.labels <- NULL
 
     p <- config(p, displayModeBar = modebar.show)

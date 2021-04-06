@@ -479,16 +479,16 @@ StackedColumnWithStatisticalSignificance <- function(x,
 
     yaxis <- setAxis(y.title, "left", axisFormat, y.title.font,
                   y.line.color, y.line.width, y.grid.width * grid.show, y.grid.color,
-                  ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance, 
+                  ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance,
                   y.tick.format, y.tick.prefix, y.tick.suffix,
                   y.tick.show, y.zero, 0, y.zero.line.color,
                   y.hovertext.format, zoom.enable = zoom.enable)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
-                  xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, 
-                  x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show, 
+                  xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance,
+                  x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show,
                   x.zero, x.zero.line.width, x.zero.line.color,
-                  x.hovertext.format, axisFormat$labels, num.series = NCOL(chart.matrix), 
+                  x.hovertext.format, axisFormat$labels, num.series = NCOL(chart.matrix),
                   with.bars = TRUE, zoom.enable = zoom.enable)
 
     yaxis2 <- NULL
@@ -642,7 +642,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x", yaxis = "y",
                     data.label.font[[i]], TRUE, data.label.centered)
         }
-        
+
         # Add difference annotations to chart label attributes
         if (!is.null(diff.annot.text))
         {
@@ -663,10 +663,10 @@ StackedColumnWithStatisticalSignificance <- function(x,
         {
             ind.tmp <- grep(tmp.arrow, annot.text[,i], fixed = TRUE)
             if (length(ind.tmp) > 0)
-            {  
+            {
                 tmp.color <- regmatches(tmp.arrow, regexec("color:(\\S+);", tmp.arrow))[[1]][2]
                 tmp.symbol <- regmatches(tmp.arrow, regexec(">(\\S+)</span>", tmp.arrow))[[1]][2]
-                pt.segs <- getPointSegmentsForPPT(pt.segs, ind.tmp, 
+                pt.segs <- getPointSegmentsForPPT(pt.segs, ind.tmp,
                     annot = list(type = "Custom text", format = "Category", size = annot.arrow.size,
                     font.family = "Arial", color = tmp.color, custom.symbol = tmp.symbol))
             }
@@ -674,7 +674,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
 
 
         # Clean up PPT chart labels
-        pt.segs <- tidyPtSegments(pt.segs, nrow(chart.matrix))
+        pt.segs <- tidyPointSegments(pt.segs, nrow(chart.matrix))
         if (!is.null(pt.segs))
         {
             if (isTRUE(attr(pt.segs, "SeriesShowValue")))
@@ -804,7 +804,8 @@ StackedColumnWithStatisticalSignificance <- function(x,
     annotations[[n+3]] <- setSubtitle(subtitle, subtitle.font, margins)
     annotations <- Filter(Negate(is.null), annotations)
 
-    if (sum(unlist(sapply(chart.labels$SeriesLabels, function(s) { return(s$ShowValue + length(s$CustomPoints)) }))) == 0)
+    serieslabels.num.changes <- vapply(chart.labels$SeriesLabels, function(s) isTRUE(s$ShowValue) + length(s$CustomPoints), numeric(1L))
+    if (sum(serieslabels.num.changes) == 0)
         chart.labels <- NULL
 
     shapes <- NULL

@@ -705,7 +705,7 @@ Scatter <- function(x = NULL,
         }
 
         # Clean up PPT chart labels
-        pt.segs <- tidyPtSegments(pt.segs, length(ind))
+        pt.segs <- tidyPointSegments(pt.segs, length(ind))
         if (isTRUE(attr(pt.segs, "SeriesShowValue")))
         {
             chart.labels$SeriesLabels[[ggi]]$ShowValue <- TRUE
@@ -791,7 +791,8 @@ Scatter <- function(x = NULL,
         }
     }
 
-    if (sum(unlist(sapply(chart.labels$SeriesLabels, function(s) { return(s$ShowValue + length(s$CustomPoints)) }))) == 0)
+    serieslabels.num.changes <- vapply(chart.labels$SeriesLabels, function(s) isTRUE(s$ShowValue) + length(s$CustomPoints), numeric(1L))
+    if (sum(serieslabels.num.changes) == 0)
         chart.labels <- NULL
 
     # Chart title is added in flipChart but axis names from the variable names

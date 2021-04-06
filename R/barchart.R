@@ -400,7 +400,6 @@ Bar <- function(x,
         if (any(data.label.show[,i]))
         {
             # Add attribute for PPT exporting
-            ind.show <- which(data.label.show[,i])
             chart.labels$SeriesLabels[[i]] <- list(
                 Font = setFontForPPT(data.label.font[[i]]), ShowValue = TRUE)
 
@@ -414,10 +413,10 @@ Bar <- function(x,
             {
                 chart.labels$SeriesLabels[[i]]$ShowValue <- FALSE
                 pt.segs <- lapply((1:nrow(chart.matrix)),
-                    function(ii) return(list(Index = ii-1, Segments = c(
+                    function(ii) list(Index = ii-1, Segments = c(
                         if (nzchar(data.label.prefix[ii,i])) list(list(Text = data.label.prefix[ii,i])) else NULL,
                         list(list(Field="Value")),
-                        if (nzchar(tmp.suffix[ii])) list(list(Text = tmp.suffix[ii])) else NULL))))
+                        if (nzchar(tmp.suffix[ii])) list(list(Text = tmp.suffix[ii])) else NULL)))
                 for (ii in setdiff(1:nrow(chart.matrix), ind.show))
                     pt.segs[[ii]]$Segments <- NULL
             }
@@ -480,7 +479,8 @@ Bar <- function(x,
     annotations[[n+3]] <- setTitle(title, title.font, margins)
     annotations <- Filter(Negate(is.null), annotations)
     
-    if (sum(unlist(sapply(chart.labels$SeriesLabels, function(s) { return(s$ShowValue + length(s$CustomPoints)) }))) == 0)
+    serieslabels.num.changes <- vapply(chart.labels$SeriesLabels, function(s) isTRUE(s$ShowValue) + length(s$CustomPoints), numeric(1L))
+    if (sum(serieslabels.num.changes) == 0)
         chart.labels <- NULL
 
     p <- config(p, displayModeBar = modebar.show)

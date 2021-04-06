@@ -1,8 +1,5 @@
 # This is only used for Bar/Column type charts
 #' @importFrom verbs Sum
-
-# This is only used for Bar/Column type charts
-#' @importFrom verbs Sum
 addBarTypeChartLabelAnnotTrace <- function(p, type, name, data.label.xpos, data.label.ypos,
         data.label.show, data.label.text, data.label.sign, data.label.nchar,
         annotation.list, annot.data, i,
@@ -30,7 +27,7 @@ addBarTypeChartLabelAnnotTrace <- function(p, type, name, data.label.xpos, data.
 
     n <- length(data.label.xpos)
 
-    # Find space to leave for circles   
+    # Find space to leave for circles
     max.diam <- 0
     for (j in seq_along(annotation.list))
     {
@@ -107,9 +104,12 @@ addBarTypeChartLabelAnnotTrace <- function(p, type, name, data.label.xpos, data.
 # re-attached to the data labels returned by this function.
 # This function can be called iteratively, but clean.pt.segs should only TRUE on the last call
 # Note that the full column of data should always be supplied because
-# strong assumptions are mode about the indexing
+# the index of the data which satistfies the conditions given in the annotations
+# is passed to getPointSegmentsForPPT which assumes the index
+# indicates the row in \code{chart.matrix} (starting from 1 not 0).
+# To specify that annotations are only applied to a subset of rows, use \code{rows.to.show} instead.
 
-applyAllAnnotationsToDataLabels <- function(data.label.text, annotation.list, 
+applyAllAnnotationsToDataLabels <- function(data.label.text, annotation.list,
     annot.data, series.index, rows.to.show,
     chart.type, clean.pt.segs = FALSE)
 {
@@ -120,25 +120,25 @@ applyAllAnnotationsToDataLabels <- function(data.label.text, annotation.list,
             return(data.label.text)
         annotation.list[[j]]$threshold <- parseThreshold(annotation.list[[j]]$threshold)
         a.tmp <- annotation.list[[j]]
-        tmp.dat <- getAnnotData(annot.data, a.tmp$data, series.index, 
+        tmp.dat <- getAnnotData(annot.data, a.tmp$data, series.index,
             as.numeric = !grepl("Text", a.tmp$type) && a.tmp$data != "Column Comparisons")
         ind.sel <- intersect(rows.to.show,
                         extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype))
         if (length(ind.sel) > 0)
         {
             if (!grepl("Circle", a.tmp$type))
-                data.label.text[ind.sel] <- addAnnotToDataLabel(data.label.text[ind.sel], 
+                data.label.text[ind.sel] <- addAnnotToDataLabel(data.label.text[ind.sel],
                     a.tmp, tmp.dat[ind.sel])
             pt.segs <- getPointSegmentsForPPT(pt.segs, ind.sel, a.tmp, tmp.dat[ind.sel])
         }
     }
     if (clean.pt.segs && !is.null(pt.segs))
     {
-        pt.segs <- tidyPtSegments(pt.segs, length(data.label.text))
+        pt.segs <- tidyPointSegments(pt.segs, length(data.label.text))
     }
     attr(data.label.text, "customPoints") <- pt.segs
     return(data.label.text)
-} 
+}
 
 
 getAnnotData <- function(data, name, series, as.numeric = TRUE)
@@ -325,7 +325,6 @@ getColCmpArrowHtml <- function(cell.text, arrow.size, sep = " ", arrow.code = "&
     {
         prefix <- ""
         suffix <- arrow.code
-
     } else
     {
         prefix <- paste0("<span style='font-size:", arrow.size - 3, "px'>")
@@ -340,8 +339,15 @@ getColCmpArrowHtml <- function(cell.text, arrow.size, sep = " ", arrow.code = "&
     return(res)
 }
 
-# Create attribute list for exporting annotations to powerpoint
-getPointSegmentsForPPT <- function(x, index, annot, dat)
+# Updates \code{points} to reflect annotations in \code{annot} being applied
+# at \code{index}.
+# \code{points} is a list of CustomPoints which can contain fields as described in
+# https://wiki.q-researchsoftware.com/wiki/PptPointLabel
+# While creating this list, we assume that there is one element for each
+# data point in the data series (i.e. each row of chart.matrix)
+# It is only after tidyPointSegments is called, that empty elements in
+# \code{points} are removed.
+getPointSegmentsForPPT <- function(points, index, annot, dat)
 {
     # Shape-type annotation are added in separate function
     if (!grepl("Circle|Border|Shadow|Hide", annot$type))
@@ -353,6 +359,8 @@ getPointSegmentsForPPT <- function(x, index, annot, dat)
     for (i in 1:length(index))
     {
         # Set text only if it depends on the data
+        # Note that we use i to select elements of dat because it is assumed that we are only
+        # passing the relevant sections of the data (i.e. dat is already subsetted by index)
         if (grepl("^Text", annot$type))
             tmp.seg[[1]]$Text <- formatByD3(dat[i], annot$format, annot$prefix, annot$suffix)
         else if (annot$data == "Column Comparisons" && grepl("Arrow", annot$type))
@@ -360,80 +368,83 @@ getPointSegmentsForPPT <- function(x, index, annot, dat)
         else if (annot$data == "Column Comparisons" && grepl("Caret", annot$type))
             tmp.seg[[1]]$Text <- unescape_html(getColCmpArrowHtml(dat[i], NULL, " ", "&#9650;"))
 
+        # Update points to reflect the change specified by annot
+        # note that the element of points corresponds to the row in chart.matrix
+        # so ii = index[i] is used instead of i
         ii <- index[i]
         if (annot$type == "Hide") # segments still has to be appendable
-            x[[ii]]$Segments <- list()
+            points[[ii]]$Segments <- list()
         else if (grepl("Circle|Border|Shadow", annot$type))
-            x[[ii]] <- setShapeForPPT(x[[ii]], annot) # overrides previous shapes
+            points[[ii]] <- setShapeForPPT(points[[ii]], annot) # overrides previous shapes
         else if (annot$type == "Text - before data label")
-            x[[ii]]$Segments <- c(tmp.seg, x[[ii]]$Segments)
+            points[[ii]]$Segments <- c(tmp.seg, points[[ii]]$Segments)
         else
-            x[[ii]]$Segments <- c(x[[ii]]$Segments, tmp.seg)
+            points[[ii]]$Segments <- c(points[[ii]]$Segments, tmp.seg)
     }
-    return(x)
+    return(points)
 }
 
 # Tidy up empty segments and points where possible
-tidyPtSegments <- function(pts, num.pts, show.categoryname = FALSE)
+tidyPointSegments <- function(points, num.points, show.categoryname = FALSE)
 {
-    if (length(pts) == 0)
-        return(pts)
-    pt.info <- rep(0, num.pts) # 0 = no label; 1 = value-only label; 2 = has modification
-    for (i in length(pts):1) # traverse backwards so smaller indexes still valid
+    if (length(points) == 0)
+        return(points)
+    pt.info <- rep(0L, num.points) # 0 = no label; 1 = value-only label; 2 = has modification
+    for (i in length(points):1) # traverse backwards so smaller indexes still valid
     {
         # Simplify value-only segments to enable toggling in powerpoint
-        if (length(pts[[i]]$Segments) == 1 && isTRUE(pts[[i]]$Segments[[1]]$Field == "Value"))
+        if (length(points[[i]]$Segments) == 1 && isTRUE(points[[i]]$Segments[[1]]$Field == "Value"))
         {
-            pts[[i]]$ShowValue <- TRUE
-            pts[[i]]$Segments <- NULL
+            points[[i]]$ShowValue <- TRUE
+            points[[i]]$Segments <- NULL
             if (show.categoryname)
-                pts[[i]]$ShowCategoryName <- TRUE
+                points[[i]]$ShowCategoryName <- TRUE
 
-            if (is.null(pts[[i]]$OutlineColor) && is.null(pts[[i]]$BackgroundColor))
-                pt.info[pts[[i]]$Index + 1] <- 1 # value-only label
+            if (is.null(points[[i]]$OutlineColor) && is.null(points[[i]]$BackgroundColor))
+                pt.info[points[[i]]$Index + 1] <- 1L # value-only label
             else
-                pt.info[pts[[i]]$Index + 1] <- 2 
+                pt.info[points[[i]]$Index + 1] <- 2L
 
-        } else if (length(pts[[i]]$Segments) > 0)
-            pt.info[pts[[i]]$Index + 1] <- 2 # or would the index be better?
+        } else if (length(points[[i]]$Segments) > 0)
+            pt.info[points[[i]]$Index + 1] <- 2L
 
-        if (show.categoryname && length(pts[[i]]$Segments) > 0)
-            pts[[i]]$Segments <- c(list(list(Field="CategoryName")), pts[[i]]$Segments)
+        if (show.categoryname && length(points[[i]]$Segments) > 0)
+            points[[i]]$Segments <- c(list(list(Field="CategoryName")), points[[i]]$Segments)
 
         # Remove empty points - empty label cannnot have outline anyway
-        if (length(pts[[i]]$Segments) == 0 && !isTRUE(pts[[i]]$ShowValue))
+        if (length(points[[i]]$Segments) == 0 && !isTRUE(points[[i]]$ShowValue))
         {
-            pt.info[pts[[i]]$Index + 1] <- 0
-            pts[[i]] <- NULL
+            pt.info[points[[i]]$Index + 1] <- 0L
+            points[[i]] <- NULL
         }
     }
 
     # Switch default point from ShowValue = FALSE to ShowValue = TRUE
-    # This tries to preserve series-level toggling in Excel 
-    # when there is more than 1 value-only points 
-    if (length(which(pt.info == 1)) > 1 && length(pts) > 0)
+    # This tries to preserve series-level toggling in Excel
+    # when there is more than 1 value-only points
+    if (any(pt.info == 1L) && length(points) > 0)
     {
-        new.pts <- list()
+        new.points <- list()
         jj <- 1
         for (j in 1:length(pt.info))
         {
-            if (pt.info[j] == 0)
-                new.pts <- c(new.pts, list(
+            if (pt.info[j] == 0L)
+                new.points <- c(new.points, list(
                     if (show.categoryname) list(Index = j-1, ShowValue = FALSE, ShowCategoryName = FALSE)
                     else                   list(Index = j-1, ShowValue = FALSE)
                 ))
-            else if (pt.info[j] == 1)
+            else if (pt.info[j] == 1L)
                 jj <- jj + 1 # no new point to add because this is represented by SeriesLabels
             else
             {
-                new.pts <- c(new.pts, pts[jj])
+                new.points <- c(new.points, points[jj])
                 jj <- jj + 1
-            }   
+            }
         }
-        attr(new.pts, "SeriesShowValue") <- TRUE
-        return(new.pts)
+        attr(new.points, "SeriesShowValue") <- TRUE
+        return(new.points)
     }
-    return(pts)
+    return(points)
 }
 
 setFontForPPT <- function(annotation)
