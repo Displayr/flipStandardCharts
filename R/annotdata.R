@@ -132,47 +132,6 @@ addTraceForBarTypeDataLabelAnnotations <- function(p, type, name,
 }
 
 
-# Returns data labels after annotations are applied
-# The 'customPoints' attribute is a component of the ChartLabels attribute for powerpoint
-# They are assumed to be attached to the data labels, and an updated version is
-# re-attached to the data labels returned by this function.
-# This function can be called iteratively, but clean.pt.segs should only TRUE on the last call
-# Note that the full column of data should always be supplied because
-# the index of the data which satistfies the conditions given in the annotations
-# is passed to getPointSegmentsForPPT which assumes the index
-# indicates the row in \code{chart.matrix} (starting from 1 not 0).
-# To specify that annotations are only applied to a subset of rows, use \code{rows.to.show} instead.
-
-applyAllAnnotationsToDataLabels <- function(data.label.text, annotation.list,
-    annot.data, series.index, rows.to.show,
-    chart.type, clean.pt.segs = FALSE)
-{
-    pt.segs <- attr(data.label.text, "customPoints")
-    for (j in seq_along(annotation.list))
-    {
-        if (!checkAnnotType(annotation.list[[j]]$type, chart.type))
-            return(data.label.text)
-        annotation.list[[j]]$threshold <- parseThreshold(annotation.list[[j]]$threshold)
-        a.tmp <- annotation.list[[j]]
-        tmp.dat <- getAnnotData(annot.data, a.tmp$data, series.index,
-            as.numeric = !grepl("Text", a.tmp$type) && a.tmp$data != "Column Comparisons")
-        ind.sel <- intersect(rows.to.show,
-                        extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype))
-        if (length(ind.sel) > 0)
-        {
-            if (!grepl("Circle", a.tmp$type))
-                data.label.text[ind.sel] <- addAnnotToDataLabel(data.label.text[ind.sel],
-                    a.tmp, tmp.dat[ind.sel])
-            pt.segs <- getPointSegmentsForPPT(pt.segs, ind.sel, a.tmp, tmp.dat[ind.sel])
-        }
-    }
-    if (clean.pt.segs && !is.null(pt.segs))
-    {
-        pt.segs <- tidyPointSegments(pt.segs, length(data.label.text))
-    }
-    attr(data.label.text, "customPoints") <- pt.segs
-    return(data.label.text)
-}
 
 
 getAnnotData <- function(data, name, series, as.numeric = TRUE)
@@ -371,6 +330,71 @@ getColCmpArrowHtml <- function(cell.text, arrow.size, sep = " ", arrow.code = "&
         res[i] <- paste(tmp, collapse = sep)
     }
     return(res)
+}
+
+
+# applyAllAnnotationsToDataLabels is basically a wrapper to apply multiple annotations
+# it updates both data.label.text to add html to add arrows/style elements
+# and applies getPointSegmentsForPPT to update the "customPoints" attribute
+# so the annotation can be correctly exported to PowerPoint.
+# The circle annotations are handled in a separate trace, so they do not
+# affect data.label.text, but they are still added to "customPoints".
+# The customPoints attribute consists of a list where each element corresponds
+# to a data point in the series with the structure described in
+# https://wiki.q-researchsoftware.com/wiki/PptPointLabel
+# Each point can contain a list of segments which make up different components
+# of the data label, with potentially field types (text, value or category name)
+# and different font/styling.
+
+# When the "customPoints" attribute (or pt.segs) is first initialised, the entire data label
+# is defined in terms of a list of segments. This makes it easier to iteratively apply
+# annotations. When it is called for the last time, \code{clean.pt.segs} should be set to TRUE
+# to indicate that pt.segs can be summarised to only describe differences from
+# the default data labels for the whole series (typically a data label containing 
+# only the value of the data point).
+
+# applyAllAnnotationsToDataLabels applies all annotations in \code{annotation.list}
+# to all points in the data series indicated by \code{series.index}. 
+# That is it takes a slice of the annot.data[,series.index,annot$data] and
+# compares this against \code{annot$threshold} to identify the data points to which
+# each annotation should be applied. Data points which are not included in \code{rows.to.show}
+# will be unmodified because those are points which are set to data.label.show = FALSE.
+
+# Note that \code{annot.data} is the full 3d array of data from the charting function.
+# The relevant sections of the data is extracted and passed to getPointSegmentsForPPT.
+# The row index of the selected annotation data is expected
+# to correspond to rows in \code{chart.matrix}
+# To specify that annotations are only applied to a subset of rows, use \code{rows.to.show}.
+
+applyAllAnnotationsToDataLabels <- function(data.label.text, annotation.list,
+    annot.data, series.index, rows.to.show,
+    chart.type, clean.pt.segs = FALSE)
+{
+    pt.segs <- attr(data.label.text, "customPoints")
+    for (j in seq_along(annotation.list))
+    {
+        if (!checkAnnotType(annotation.list[[j]]$type, chart.type))
+            return(data.label.text)
+        annotation.list[[j]]$threshold <- parseThreshold(annotation.list[[j]]$threshold)
+        a.tmp <- annotation.list[[j]]
+        tmp.dat <- getAnnotData(annot.data, a.tmp$data, series.index,
+            as.numeric = !grepl("Text", a.tmp$type) && a.tmp$data != "Column Comparisons")
+        ind.sel <- intersect(rows.to.show,
+                        extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype))
+        if (length(ind.sel) > 0)
+        {
+            if (!grepl("Circle", a.tmp$type))
+                data.label.text[ind.sel] <- addAnnotToDataLabel(data.label.text[ind.sel],
+                    a.tmp, tmp.dat[ind.sel])
+            pt.segs <- getPointSegmentsForPPT(pt.segs, ind.sel, a.tmp, tmp.dat[ind.sel])
+        }
+    }
+    if (clean.pt.segs && !is.null(pt.segs))
+    {
+        pt.segs <- tidyPointSegments(pt.segs, length(data.label.text))
+    }
+    attr(data.label.text, "customPoints") <- pt.segs
+    return(data.label.text)
 }
 
 # Updates \code{points} to reflect annotations in \code{annot} being applied
