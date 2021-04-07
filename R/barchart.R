@@ -460,8 +460,10 @@ Bar <- function(x,
         xpos <- if (NCOL(chart.matrix) > 1) data.annotations$x[,i] else y.filled
         hover.text <- if (yaxis$type == "category") paste0(x.hover.text, ": ", y.hover.text)
                       else paste0("(", y.hover.text, ", ", x.hover.text, ")")
-        hover.template <- if (NROW(chart.matrix) == 1) paste0("%{x}<extra>", legend.text[i], "</extra>")
-                          else paste0("%{text}<extra>", legend.text[i], "</extra>")
+
+        # hovertemplate is sometimes a little flaky, so %{text} does not always work
+        # we also avoid using %{x} because it is incorrect for stacked bar charts
+        hover.template <- paste0(hover.text, "<extra>", legend.text[i], "</extra>")
 
         p <- add_trace(p, x = xpos, y = ypos, type = "scatter", name = legend.text[i],
                    mode = "markers", marker = list(color = colors[i], opacity = 0),
