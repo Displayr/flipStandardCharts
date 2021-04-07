@@ -21,7 +21,7 @@ StackedColumnWithStatisticalSignificance(
   annot.arrow.size = 15,
   annot.arrow.colors = ChartColors(9, "Strong colors"),
   annot.arrow.offset = NULL,
-  annot.arrow.symbols = c("&#129049;", "&#129051;", "&#8673;"),
+  annot.arrow.symbols = c("&#8593;", "&#8595;", "&#8673;"),
   annot.sig.level = 0.05,
   annot.legend.sep = " &#183; ",
   append.annot.differences.to.datalabel = FALSE,

@@ -1,8 +1,41 @@
+#' This function adds traces for data labels and annotations to bar/column charts
+#' Because these type of charts show bars that up space surrounding the 
+#' position of the data point, it is necessary to be more careful about 
+#' the offset of the data labels (from the data point). Also, circle
+#' annotations can be added to the plot. These are added as separate traces
+#' to allow for more flexible positioning
+#' @param p the plotly plot object to which the trace is added
+#' @param type the type of the chart (i.e. Bar or Column)
+#' @param name the name to be given to the data label trace. This is visible in the hover text
+#' @param data.label.xpos The position of the data label trace on the xaxis.
+#'  This is usually a component of the output from \code{dataLabelPositions}. 
+#' @param data.label.ypos The position of the data label trace on the yaxis.
+#'  This is usually a component of the output from \code{dataLabelPositions}.
+#' @param data.label.show A logical vector of the same length as data.label.xpos
+#'  indicating whether a data label will be shown at each point.
+#' @param data.label.text A text vector of the same length as data.label.xpos
+#'  containing the text to show on the data label.
+#' @param data.label.sign The sign indicating whether the data point is positive or negative.
+#' @param data.label.nchar The maximum number of characters in the data labels.
+#'  This is used to position the circle annotations.
+#' @param annotation.list A list of annotations as given to the charting function.
+#' @param annot.data The data (usually a 3d array) used create the annotations.
+#' @param i The index of the data series. Used to control legend.group
+#' @param xaxis The name of the xaxis
+#' @param yaxis The neme of the yaxis
+#' @param data.label.font A list specifying the font to use.
+#' @param is.stacked A logical indicating if the chart is stackeed.
+#' @param data.label.centered A logical indicating if data label is placed at the center of bar. 
+#'  Only used in Stacked Column charts.
+#' @param data.label.horizontal.align Text to control the horizontal alignment
+#'  of labels on the column chart annotations
 
-# This is only used for Bar/Column type charts
+ 
 #' @importFrom verbs Sum
-addDataLabelAnnotations <- function(p, type, name, data.label.xpos, data.label.ypos,
-        data.label.show, data.label.text, data.label.sign,
+#' @keywords internal
+addTraceForBarTypeDataLabelAnnotations <- function(p, type, name, 
+        data.label.xpos, data.label.ypos,
+        data.label.show, data.label.text, data.label.sign, data.label.nchar,
         annotation.list, annot.data, i,
         xaxis, yaxis, data.label.font, is.stacked, data.label.centered,
         data.label.horizontal.align = "center")
@@ -27,13 +60,11 @@ addDataLabelAnnotations <- function(p, type, name, data.label.xpos, data.label.y
         textalign <- textalign[data.label.show]
 
     n <- length(data.label.xpos)
-    data.label.nchar <- nchar(data.label.text) # get length before adding html tags
+
+    # Find space to leave for circles
     max.diam <- 0
-    # add arrow and text annotations as a prefix/suffix to existing data labels
     for (j in seq_along(annotation.list))
     {
-        if (!checkAnnotType(annotation.list[[j]]$type, "Bar"))
-            return(p)
         annotation.list[[j]]$threshold <- parseThreshold(annotation.list[[j]]$threshold)
         a.tmp <- annotation.list[[j]]
         if (grepl("Circle", a.tmp$type))
@@ -45,15 +76,10 @@ addDataLabelAnnotations <- function(p, type, name, data.label.xpos, data.label.y
             }
             if (a.tmp$size > max.diam)
                 max.diam <- a.tmp$size + 0.01
-        } else
-        {
-            tmp.dat <- getAnnotData(annot.data, a.tmp$data, i, as.numeric = !grepl("Text", a.tmp$type))
-            ind.sel <- extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype)
-            data.label.text[ind.sel] <- addAnnotToDataLabel(data.label.text[ind.sel], a.tmp, tmp.dat[ind.sel])
         }
     }
 
-    # Circle annotations
+    # Add trace adding circle annotations
     for (j in seq_along(annotation.list))
     {
         a.tmp <- annotation.list[[j]]
@@ -103,8 +129,10 @@ addDataLabelAnnotations <- function(p, type, name, data.label.xpos, data.label.y
               textposition = textalign, showlegend = FALSE, hoverinfo = "skip",
               legendgroup = if (is.stacked) "all" else i)
     return(p)
-
 }
+
+
+
 
 getAnnotData <- function(data, name, series, as.numeric = TRUE)
 {
@@ -201,11 +229,13 @@ addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat, prepend = 
 
         new.text <- ""
         if (annotation$data == "Column Comparisons" && grepl("Arrow", annotation$type))
-            new.text <- paste0(" ", getColCmpArrowHtml(tmp.dat, annotation$size), " ")
+            new.text <- paste0(" ", getColCmpArrowHtml(tmp.dat, annotation$size, " ", "&#8593;"), " ")
+        else if (annotation$data == "Column Comparisons" && grepl("Caret", annotation$type))
+            new.text <- paste0(" ", getColCmpArrowHtml(tmp.dat, annotation$size, " ", "&#9650;"), " ")
         else if (annotation$type == "Arrow - up")
-            new.text <- "&#129049;"
+            new.text <- "&#8593;"
         else if (annotation$type == "Arrow - down")
-            new.text <- "&#129051;"
+            new.text <- "&#8595;"
         else if (annotation$type == "Caret - up")
             new.text <- "&#9650;"
         else if (annotation$type == "Caret - down")
@@ -260,8 +290,7 @@ checkAnnotType <- function(annot.type, chart.type)
     # These annotation types are implemented for all charts
     # which support annotations e.g. Line
     allowed.types <- c('Arrow - up', 'Arrow - down', 'Border',
-       'Caret - up', 'Caret - down',
-       'Circle - filled', 'Circle - thick outline', 'Circle - thin outline',
+       'Caret - up', 'Caret - down', "Custom text",
        'Hide', 'Shadow', 'Text - after data label', 'Text - before data label')
 
     # Additional annotation types only implemented on some chart types
@@ -281,18 +310,266 @@ checkAnnotType <- function(annot.type, chart.type)
         return(TRUE)
 }
 
-getColCmpArrowHtml <- function(cell.text, arrow.size, sep = " ")
+getColCmpArrowHtml <- function(cell.text, arrow.size, sep = " ", arrow.code = "&#8593;")
 {
-    arrow.code <- "&#129049;" # always use up-arrow
     res <- rep("", length(cell.text))
+
+    if (is.null(arrow.size)) # no html styling
+    {
+        prefix <- ""
+        suffix <- arrow.code
+    } else
+    {
+        prefix <- paste0("<span style='font-size:", arrow.size - 3, "px'>")
+        suffix <- paste0("</span>", arrow.code)
+    }
 
     for (i in 1:length(cell.text))
     {
-        tmp <- paste0("<span style='font-size:", arrow.size - 3, "px'>",
-            unlist(strsplit(cell.text[i], split = "\\s")),
-            "</span>", arrow.code)
+        tmp <- paste0(prefix, unlist(strsplit(cell.text[i], split = "\\s+")), suffix)
         res[i] <- paste(tmp, collapse = sep)
     }
     return(res)
 }
+
+
+# applyAllAnnotationsToDataLabels is basically a wrapper to apply multiple annotations
+# it updates both data.label.text to add html to add arrows/style elements
+# and applies getPointSegmentsForPPT to update the "customPoints" attribute
+# so the annotation can be correctly exported to PowerPoint.
+# The circle annotations are handled in a separate trace, so they do not
+# affect data.label.text, but they are still added to "customPoints".
+# The customPoints attribute consists of a list where each element corresponds
+# to a data point in the series with the structure described in
+# https://wiki.q-researchsoftware.com/wiki/PptPointLabel
+# Each point can contain a list of segments which make up different components
+# of the data label, with potentially field types (text, value or category name)
+# and different font/styling.
+
+# When the "customPoints" attribute (or pt.segs) is first initialised, the entire data label
+# is defined in terms of a list of segments. This makes it easier to iteratively apply
+# annotations. When it is called for the last time, \code{clean.pt.segs} should be set to TRUE
+# to indicate that pt.segs can be summarised to only describe differences from
+# the default data labels for the whole series (typically a data label containing 
+# only the value of the data point).
+
+# applyAllAnnotationsToDataLabels applies all annotations in \code{annotation.list}
+# to all points in the data series indicated by \code{series.index}. 
+# That is it takes a slice of the annot.data[,series.index,annot$data] and
+# compares this against \code{annot$threshold} to identify the data points to which
+# each annotation should be applied. Data points which are not included in \code{rows.to.show}
+# will be unmodified because those are points which are set to data.label.show = FALSE.
+
+# Note that \code{annot.data} is the full 3d array of data from the charting function.
+# The relevant sections of the data is extracted and passed to getPointSegmentsForPPT.
+# The row index of the selected annotation data is expected
+# to correspond to rows in \code{chart.matrix}
+# To specify that annotations are only applied to a subset of rows, use \code{rows.to.show}.
+
+applyAllAnnotationsToDataLabels <- function(data.label.text, annotation.list,
+    annot.data, series.index, rows.to.show,
+    chart.type, clean.pt.segs = FALSE)
+{
+    pt.segs <- attr(data.label.text, "customPoints")
+    for (j in seq_along(annotation.list))
+    {
+        if (!checkAnnotType(annotation.list[[j]]$type, chart.type))
+            return(data.label.text)
+        annotation.list[[j]]$threshold <- parseThreshold(annotation.list[[j]]$threshold)
+        a.tmp <- annotation.list[[j]]
+        tmp.dat <- getAnnotData(annot.data, a.tmp$data, series.index,
+            as.numeric = !grepl("Text", a.tmp$type) && a.tmp$data != "Column Comparisons")
+        ind.sel <- intersect(rows.to.show,
+                        extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype))
+        if (length(ind.sel) > 0)
+        {
+            if (!grepl("Circle", a.tmp$type))
+                data.label.text[ind.sel] <- addAnnotToDataLabel(data.label.text[ind.sel],
+                    a.tmp, tmp.dat[ind.sel])
+            pt.segs <- getPointSegmentsForPPT(pt.segs, ind.sel, a.tmp, tmp.dat[ind.sel])
+        }
+    }
+    if (clean.pt.segs && !is.null(pt.segs))
+    {
+        pt.segs <- tidyPointSegments(pt.segs, length(data.label.text))
+    }
+    attr(data.label.text, "customPoints") <- pt.segs
+    return(data.label.text)
+}
+
+# Updates \code{points} to reflect annotations in \code{annot} being applied
+# at \code{index}.
+# \code{points} is a list of CustomPoints which can contain fields as described in
+# https://wiki.q-researchsoftware.com/wiki/PptPointLabel
+# While creating this list, we assume that there is one element for each
+# data point in the data series (i.e. each row of chart.matrix)
+# It is only after tidyPointSegments is called, that empty elements in
+# \code{points} are removed.
+getPointSegmentsForPPT <- function(points, index, annot, dat)
+{
+    # Shape-type annotation are added in separate function
+    if (!grepl("Circle|Border|Shadow|Hide", annot$type))
+    {
+        tmp.seg <- list(list(Font = setFontForPPT(annot),
+                        Text = setTextForPPT(annot)))
+    }
+
+    for (i in 1:length(index))
+    {
+        # Set text only if it depends on the data
+        # Note that we use i to select elements of dat because it is assumed that we are only
+        # passing the relevant sections of the data (i.e. dat is already subsetted by index)
+        if (grepl("^Text", annot$type))
+            tmp.seg[[1]]$Text <- formatByD3(dat[i], annot$format, annot$prefix, annot$suffix)
+        else if (annot$data == "Column Comparisons" && grepl("Arrow", annot$type))
+            tmp.seg[[1]]$Text <- unescape_html(getColCmpArrowHtml(dat[i], NULL, " ", "&#8593;"))
+        else if (annot$data == "Column Comparisons" && grepl("Caret", annot$type))
+            tmp.seg[[1]]$Text <- unescape_html(getColCmpArrowHtml(dat[i], NULL, " ", "&#9650;"))
+
+        # Update points to reflect the change specified by annot
+        # note that the element of points corresponds to the row in chart.matrix
+        # so ii = index[i] is used instead of i
+        ii <- index[i]
+        if (annot$type == "Hide") # segments still has to be appendable
+            points[[ii]]$Segments <- list()
+        else if (grepl("Circle|Border|Shadow", annot$type))
+            points[[ii]] <- setShapeForPPT(points[[ii]], annot) # overrides previous shapes
+        else if (annot$type == "Text - before data label")
+            points[[ii]]$Segments <- c(tmp.seg, points[[ii]]$Segments)
+        else
+            points[[ii]]$Segments <- c(points[[ii]]$Segments, tmp.seg)
+    }
+    return(points)
+}
+
+# Tidy up empty segments and points where possible
+tidyPointSegments <- function(points, num.points, show.categoryname = FALSE)
+{
+    if (length(points) == 0)
+        return(points)
+    pt.info <- integer(num.points)  # 0 = no label; 1 = value-only label; 2 = has modification
+    for (i in length(points):1)     # traverse backwards so smaller indexes still valid
+    {
+        # Simplify value-only segments to enable toggling in powerpoint
+        if (length(points[[i]]$Segments) == 1 && isTRUE(points[[i]]$Segments[[1]]$Field == "Value"))
+        {
+            points[[i]]$ShowValue <- TRUE
+            points[[i]]$Segments <- NULL
+            if (show.categoryname)
+                points[[i]]$ShowCategoryName <- TRUE
+
+            if (is.null(points[[i]]$OutlineColor) && is.null(points[[i]]$BackgroundColor))
+                pt.info[points[[i]]$Index + 1] <- 1L # value-only label
+            else
+                pt.info[points[[i]]$Index + 1] <- 2L
+
+        } else if (length(points[[i]]$Segments) > 0)
+            pt.info[points[[i]]$Index + 1] <- 2L
+
+        if (show.categoryname && length(points[[i]]$Segments) > 0)
+            points[[i]]$Segments <- c(list(list(Field="CategoryName")), points[[i]]$Segments)
+
+        # Remove empty points - empty label cannnot have outline anyway
+        if (length(points[[i]]$Segments) == 0 && !isTRUE(points[[i]]$ShowValue))
+        {
+            pt.info[points[[i]]$Index + 1] <- 0L
+            points[[i]] <- NULL
+        }
+    }
+
+    # Switch default point from ShowValue = FALSE to ShowValue = TRUE
+    # This tries to preserve series-level toggling in Excel
+    # when there is more than 1 value-only points
+    if (any(pt.info == 1L) && length(points) > 0)
+    {
+        new.points <- list()
+        jj <- 1
+        for (j in 1:length(pt.info))
+        {
+            if (pt.info[j] == 0L)
+                new.points <- c(new.points, list(
+                    if (show.categoryname) list(Index = j-1, ShowValue = FALSE, ShowCategoryName = FALSE)
+                    else                   list(Index = j-1, ShowValue = FALSE)
+                ))
+            else if (pt.info[j] == 1L)
+                jj <- jj + 1 # no new point to add because this is represented by SeriesLabels
+            else
+            {
+                new.points <- c(new.points, points[jj])
+                jj <- jj + 1
+            }
+        }
+        attr(new.points, "SeriesShowValue") <- TRUE
+        return(new.points)
+    }
+    return(points)
+}
+
+setFontForPPT <- function(annotation)
+{
+    font <- list()
+    if (!is.null(annotation$color))
+        font$color <- annotation$color[1]
+    if (!is.null(annotation$size))
+        font$size <- annotation$size[1] / 1.333 # convert px to pt
+    if (!is.null(annotation$font.family))
+        font$family <- annotation$font.family[1]
+    if (!is.null(annotation$font.weight))
+        font$bold <- isTRUE(tolower(annotation$font.weight[1]) == "bold")
+    if (!is.null(annotation$font.style))
+        font$italic <- isTRUE(tolower(annotation$font.style[1]) == "italic")
+
+    if (length(font) == 0)
+        return(NULL)
+    return (font)
+}
+
+setShapeForPPT <- function(pt, annotation)
+{
+    if (annotation$type == "Border")
+    {
+        pt$OutlineStyle <- "Solid"  # shape defaults to rectangle
+        pt$OutlineColor <- annotation$color
+        pt$OutlineWidth <- annotation$width/1.3333 # convert px to pt
+    }
+    else if (annotation$type == "Shadow")
+    {
+        pt$BackgroundShadow <- TRUE
+        pt$BackgroundColor <- annotation$color
+    }
+    else if (annotation$type == "Circle - filled")
+    {
+        pt$OutlineShape <- "Ellipse"
+        pt$OutlineStyle <- "Solid"
+        if (is.null(pt$OutlineColor))
+            pt$OutlineColor <- "#FFFFFF00"
+        pt$BackgroundColor <- annotation$color
+    }
+    else
+    {
+        pt$OutlineShape <- "Ellipse"
+        pt$OutlineStyle <- "Solid"
+        pt$OutlineColor <- annotation$color
+        pt$OutlineWidth <- if (annotation$type == "Circle - thin outline") 1
+                           else                                            2
+    }
+    return(pt)
+}
+
+
+setTextForPPT <- function(annot)
+{
+    # We use unescape_html rather than directly supplying unicode because
+    # Users might have added some other custom html entities that need coverting
+    symbol <- switch(annot$type, "Arrow - up" = "&#8593;", "Arrow - down" = "&#8595;",
+        "Caret - up" = "&#9650;", "Caret - down" = "&#9660;", annot$custom.symbol)
+    return(unescape_html(symbol))
+}
+
+
+# From https://stackoverflow.com/questions/5060076/convert-html-character-entity-encoding-in-r
+unescape_html <- function(str){
+  xml2::xml_text(xml2::read_html(paste0("<x>", str, "</x>")))
+}
+
 

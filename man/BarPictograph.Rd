@@ -9,7 +9,7 @@ BarPictograph(
   image = "Stickman",
   custom.image = NULL,
   base.image = "",
-  hide.base.image = Sum(nchar(custom.image), remove.missing = FALSE) == 0,
+  hide.base.image = !any(nzchar(custom.image)),
   base.icon.color = "",
   scale = NA,
   total.icons = NA,

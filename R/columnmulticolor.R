@@ -164,6 +164,8 @@ ColumnMultiColor <- function(x,
         dlab.color <- vectorize(data.label.font.color, NROW(chart.matrix))
 
     data.label.show = vectorize(data.label.show, NROW(chart.matrix))
+    data.label.prefix = vectorize(data.label.prefix, NROW(chart.matrix))
+    data.label.suffix = vectorize(data.label.suffix, NROW(chart.matrix))
     data.label.font = list(family = data.label.font.family, size = data.label.font.size, color = dlab.color)
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
     subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
@@ -234,21 +236,53 @@ ColumnMultiColor <- function(x,
                    marker = marker, hoverlabel = list(font = hoverfont), cliponaxis = FALSE,
                    hovertemplate = "%{y}<extra>%{x}</extra>")
 
+    chart.labels <- list(SeriesLabels = list())
     if (any(data.label.show))
     {
-        source.text <- formatByD3(y, data.label.format,
+        # Initialize attribute for PPT exporting
+        chart.labels$SeriesLabels[[1]] <- list(Font = setFontForPPT(data.label.font), ShowValue = FALSE)
+        pt.segs <- lapply((1:NROW(chart.matrix)),
+            function(ii) return(list(Index = ii-1, Segments = c(
+                if (nzchar(data.label.prefix[ii])) list(list(Text = data.label.prefix[ii])) else NULL,
+                list(list(Field="Value")),
+                if (nzchar(data.label.suffix[ii])) list(list(Text = data.label.suffix[ii])) else NULL))))
+        for (ii in which(!data.label.show))
+            pt.segs[[ii]]$Segments <- NULL
+
+        data.label.text <- formatByD3(y, data.label.format,
                data.label.prefix, data.label.suffix, decimals = 0)
-        p <- addDataLabelAnnotations(p, type = "Column", NULL,
-                data.label.xpos = x, data.label.ypos = y.filled, data.label.text = source.text,
-                data.label.show = data.label.show, data.label.sign = getSign(y, yaxis),
+        data.label.nchar <- nchar(data.label.text) # get length before adding html tags
+        attr(data.label.text, "customPoints") <- pt.segs
+        data.label.text <- applyAllAnnotationsToDataLabels(data.label.text, annotation.list,
+            annot.data, 1, which(data.label.show), "Bar", clean.pt.segs = TRUE)
+        pt.segs <- attr(data.label.text, "customPoints")
+
+        p <- addTraceForBarTypeDataLabelAnnotations(p, type = "Column", NULL,
+                data.label.xpos = x, data.label.ypos = y.filled, data.label.text = data.label.text,
+                data.label.show = data.label.show, data.label.sign = getSign(y, yaxis), data.label.nchar,
                 annotation.list, annot.data, i = 1,
                 xaxis = "x", yaxis = "y", data.label.font, is.stacked = FALSE, data.label.centered = FALSE)
+
+        if (!is.null(pt.segs))
+        {
+            if (isTRUE(attr(pt.segs, "SeriesShowValue")))
+            {
+                chart.labels$SeriesLabels[[1]]$ShowValue <- TRUE
+                attr(pt.segs, "SeriesShowValue") <- NULL
+            }
+            if (length(pt.segs) > 0)
+                chart.labels$SeriesLabels[[1]]$CustomPoints <- pt.segs
+        }
     }
 
     annot <- list(setSubtitle(subtitle, subtitle.font, margins),
                            setTitle(title, title.font, margins),
                            setFooter(footer, footer.font, margins))
     annot <- Filter(Negate(is.null), annot)
+    
+    serieslabels.num.changes <- vapply(chart.labels$SeriesLabels, function(s) isTRUE(s$ShowValue) + length(s$CustomPoints), numeric(1L))
+    if (sum(serieslabels.num.changes) == 0)
+        chart.labels <- NULL
 
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
@@ -270,6 +304,7 @@ ColumnMultiColor <- function(x,
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     attr(result, "ChartType") <- "Column Clustered"
+    attr(result, "ChartLabels") <- chart.labels
     result
 }
 

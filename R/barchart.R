@@ -171,6 +171,7 @@ Bar <- function(x,
         x.tick.suffix <- sfx[1]
         data.label.suffix <- sfx[2]
     }
+    
 
     chart.matrix <- checkMatrixNames(x)
     is.stacked <- grepl("Stacked", type, fixed=T)
@@ -255,6 +256,8 @@ Bar <- function(x,
 
     if (!is.numeric(chart.matrix))
         stop("Input data should be numeric")
+    data.label.prefix <- vectorize(data.label.prefix, ncol(chart.matrix), nrow(chart.matrix), split = NULL)
+    data.label.suffix <- vectorize(data.label.suffix, ncol(chart.matrix), nrow(chart.matrix), split = NULL)
     tmp.label <- sprintf(paste0("%s%.", data.label.decimals, "f%s"),
                 data.label.prefix, max(chart.matrix), data.label.suffix)
     xtick <- setTicks(x.range$min, x.range$max, x.tick.distance, x.data.reversed,
@@ -315,7 +318,8 @@ Bar <- function(x,
         rownames(chart.matrix) <- 1:nrow(chart.matrix)
     x.labels <- axisFormat$labels
     y.labels <- colnames(chart.matrix)
-
+    chart.labels <- list(SeriesLabels = list())
+    
     ## Add a trace for each col of data in the matrix
     for (i in 1:ncol(chart.matrix))
     {
@@ -393,17 +397,58 @@ Bar <- function(x,
         # Plotly text marker positions are not spaced properly when placed to
         # the left of the bar (i.e. negative values or reversed axis).
         # Adjusted by controlling the size of the marker
-        if (any(data.label.show))
+        if (any(data.label.show[,i]))
         {
-            p <- addDataLabelAnnotations(p, type = "Bar", legend.text[i],
+            # Add attribute for PPT exporting
+            chart.labels$SeriesLabels[[i]] <- list(
+                Font = setFontForPPT(data.label.font[[i]]), ShowValue = TRUE)
+
+            # Initialise custom points if annotations are used
+            pt.segs <- NULL
+            ind.show <- which(data.label.show[,i])
+            tmp.suffix <- if (percentFromD3(data.label.format)) sub("%", "", data.label.suffix[,i])
+                          else                                               data.label.suffix[,i]
+            if (!is.null(annotation.list) || length(ind.show) < nrow(chart.matrix) ||
+                any(nzchar(data.label.prefix[,i])) || any(nzchar(data.label.suffix[,i])))
+            {
+                chart.labels$SeriesLabels[[i]]$ShowValue <- FALSE
+                pt.segs <- lapply((1:nrow(chart.matrix)),
+                    function(ii) list(Index = ii-1, Segments = c(
+                        if (nzchar(data.label.prefix[ii,i])) list(list(Text = data.label.prefix[ii,i])) else NULL,
+                        list(list(Field="Value")),
+                        if (nzchar(tmp.suffix[ii])) list(list(Text = tmp.suffix[ii])) else NULL)))
+                for (ii in setdiff(1:nrow(chart.matrix), ind.show))
+                    pt.segs[[ii]]$Segments <- NULL
+            }
+
+            # Apply annotations
+            # Circle annotations are added to pt.segs but not to the data labels
+            data.label.text <- data.annotations$text[,i]
+            data.label.nchar <- nchar(data.label.text) # get length before adding html tags
+            attr(data.label.text, "customPoints") <- pt.segs
+            data.label.text <- applyAllAnnotationsToDataLabels(data.label.text, annotation.list,
+            annot.data, i, ind.show, "Bar", clean.pt.segs = TRUE)
+            pt.segs <- attr(data.label.text, "customPoints")
+            p <- addTraceForBarTypeDataLabelAnnotations(p, type = "Bar", legend.text[i],
                     data.label.xpos = data.annotations$x[,i],
                     data.label.ypos = if (NCOL(chart.matrix) > 1) data.annotations$y[,i] else x,
                     data.label.show = data.label.show[,i],
-                    data.label.text = data.annotations$text[,i],
-                    data.label.sign = getSign(data.annotations$x[,i], xaxis),
+                    data.label.text = data.label.text,
+                    data.label.sign = getSign(data.annotations$x[,i], xaxis), data.label.nchar,
                     annotation.list, annot.data, i,
                     yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y", xaxis = "x",
                     data.label.font[[i]], is.stacked, data.label.centered = FALSE)
+
+            if (!is.null(pt.segs))
+            {
+                if (isTRUE(attr(pt.segs, "SeriesShowValue")))
+                {
+                    chart.labels$SeriesLabels[[i]]$ShowValue <- TRUE
+                    attr(pt.segs, "SeriesShowValue") <- NULL
+                }
+                if (length(pt.segs) > 0)
+                    chart.labels$SeriesLabels[[i]]$CustomPoints <- pt.segs
+            }
         }
 
         # Add scatter trace to ensure hover is always shown
@@ -433,6 +478,10 @@ Bar <- function(x,
     annotations[[n+2]] <- setSubtitle(subtitle, subtitle.font, margins)
     annotations[[n+3]] <- setTitle(title, title.font, margins)
     annotations <- Filter(Negate(is.null), annotations)
+    
+    serieslabels.num.changes <- vapply(chart.labels$SeriesLabels, function(s) isTRUE(s$ShowValue) + length(s$CustomPoints), numeric(1L))
+    if (sum(serieslabels.num.changes) == 0)
+        chart.labels <- NULL
 
     p <- config(p, displayModeBar = modebar.show)
     p$sizingPolicy$browser$padding <- 0
@@ -456,6 +505,7 @@ Bar <- function(x,
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     attr(result, "ChartType") <- if (is.stacked) "Bar Stacked" else "Bar Clustered"
+    attr(result, "ChartLabels") <- chart.labels
     result
 }
 

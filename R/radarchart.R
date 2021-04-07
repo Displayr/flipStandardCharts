@@ -25,7 +25,7 @@
 #' @export
 Radar <- function(x,
                     annotation.list = NULL,
-                    overlay.annotation.list = NULL,  
+                    overlay.annotation.list = NULL,
                     title = "",
                     title.font.family = global.font.family,
                     title.font.color = global.font.color,
@@ -245,7 +245,7 @@ Radar <- function(x,
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  subtitle.font.size, footer.font.size)
     xaxis = list(title = "", showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE,
-               categoryorder = "array", categoryarray = g.list, 
+               categoryorder = "array", categoryarray = g.list,
                constrain = "domain", scaleanchor = "y", scaleratio = 1)
     yaxis = list(title = "", showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE,
                constrain = "domain", scaleanchor = "x", scaleratio = 1)
@@ -292,42 +292,6 @@ Radar <- function(x,
             else             rep("", m)
 
 
-    # Create annotations separately for each series
-    # so they can be toggled using the legend
-    for (ggi in 1:n)
-    {
-        for (curr.annot.ind in seq_along(overlay.annotation.list))
-        {
-            curr.annot <- overlay.annotation.list[[curr.annot.ind]]
-            curr.annot$threshold <- parseThreshold(curr.annot$threshold)
-            curr.dat <- getAnnotData(annot.data, curr.annot$data, ggi,
-                as.numeric = !grepl("Text", curr.annot$type) && 
-                curr.annot$data != "Column Comparisons")
-            ind.sel <- extractSelectedAnnot(curr.dat, curr.annot$threshold, curr.annot$threstype)
-            if (is.null(curr.annot$color))
-                curr.annot$color <- colors[ggi]
-            for (ii in ind.sel)
-                xlab[ii] <- addAnnotToDataLabel(xlab[ii], curr.annot, curr.dat[ii],
-                    prepend = calcXAlign(ii, m) == "left") 
-
-        }
-    }
-
-    # Add x-axis labels
-    # If x-axis label are not shown, annotations may still be present
-    annotations <- NULL
-    if (any(nzchar(xlab)))
-    {
-
-        # We use annotations rather than a text trace because
-        # plotly will automatically expand margins to keep annotations visible
-        annotations <- lapply(1:m, function(ii) list(text = xlab[ii], font = x.tick.font,
-                        x = outer[ii,1], y = outer[ii,2], xref = "x", yref = "y",
-                        xanchor = calcXAlign(ii, m, return.anchor = !reverse.axis), 
-                        yanchor = calcYAlign(ii, m, return.anchor = !reverse.axis),
-                        xshift = calcXShift(ii, m), yshift = calcYShift(ii, m),
-                        showarrow = FALSE, ax = 0, ay = 0))
-    }
 
     n <- length(g.list)
     if (is.null(line.thickness))
@@ -344,6 +308,7 @@ Radar <- function(x,
         function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
 
     # Main trace
+    annotations <- list()
     for (ggi in 1:n)
     {
         series.mode <- "lines"
@@ -378,11 +343,11 @@ Radar <- function(x,
                     fillcolor = toRGB(average.color, alpha = max(0.2, opacity[1])),
                     hoverinfo = "all", hoveron = "points",
                     line = list(width = 0, color = toRGB(average.color)),
-                    text = sprintf("%s: %s%s%s", rownames(chart.matrix), 
-                    y.tick.prefix, hover.format.function(average.series[c(1:m,1)], 
+                    text = sprintf("%s: %s%s%s", rownames(chart.matrix),
+                    y.tick.prefix, hover.format.function(average.series[c(1:m,1)],
                     decimals = y.hovertext.decimals,
-                    comma.for.thousands = commaFromD3(y.hovertext.format)), 
-                    y.tick.suffix), 
+                    comma.for.thousands = commaFromD3(y.hovertext.format)),
+                    y.tick.suffix),
                     hovertemplate = paste0("%{text}<extra>", "Average", "</extra>"),
                     hoverlabel = list(font = list(color = autoFontColor(average.color),
                     size = hovertext.font.size, family = hovertext.font.family)),
@@ -391,7 +356,8 @@ Radar <- function(x,
     }
 
     # Markers are added as a separate trace to allow overlapping hoverinfo
-    for (ggi in n:1)
+    chart.labels <- list(SeriesLabels = list())
+    for (ggi in 1:n)
     {
         ind <- which(pos$Group == g.list[ggi])
         ind <- ind[-length(ind)] # remove last duplicated point
@@ -403,6 +369,23 @@ Radar <- function(x,
                     size = hovertext.font.size, family = hovertext.font.family)),
                     marker = list(size = 5, color = toRGB(colors[ggi])))
 
+        # Add attribute for PPT exporting
+        # Note that even without data labels, overlay annotations can still be present
+        chart.labels$SeriesLabels[[ggi]] <- list(Font = setFontForPPT(data.label.font[[ggi]]),
+            ShowValue = FALSE, ShowCategoryName = FALSE)
+        pt.segs <- lapply(1:m,
+            function(ii)
+            {
+                pt <- list(Index = ii-1)
+                if (data.label.show[ii,ggi])
+                    pt$Segments <-  c(
+                    if (nzchar(data.label.prefix[ii,ggi])) list(list(Text = data.label.prefix[ii,ggi])) else NULL,
+                    list(list(Field="Value")),
+                    if (nzchar(data.label.suffix[ii,ggi])) list(list(Text = data.label.suffix[ii,ggi])) else NULL)
+                return(pt)
+            }
+        )
+
         if (any(data.label.show[,ggi]))
         {
             # Sequentially apply annotations
@@ -412,26 +395,30 @@ Radar <- function(x,
                     next
                 annotation.list[[j]]$threshold <- parseThreshold(annotation.list[[j]]$threshold)
                 a.tmp <- annotation.list[[j]]
-                tmp.dat <- getAnnotData(annot.data, a.tmp$data, ggi, 
+                tmp.dat <- getAnnotData(annot.data, a.tmp$data, ggi,
                     as.numeric = !grepl("Text", a.tmp$type) &&
                     a.tmp$data != "Column Comparisons")
                 ind.sel <- extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype)
-                pos$DataLabels[ind[ind.sel]] <- addAnnotToDataLabel(pos$DataLabels[ind[ind.sel]], a.tmp, tmp.dat[ind.sel])
+                if (length(ind.sel) > 0)
+                {
+                    pos$DataLabels[ind[ind.sel]] <- addAnnotToDataLabel(pos$DataLabels[ind[ind.sel]],
+                       a.tmp, tmp.dat[ind.sel])
+                    pt.segs <- getPointSegmentsForPPT(pt.segs, ind.sel, a.tmp, tmp.dat[ind.sel])
+                }
             }
-
             ind2 <- intersect(ind, which(data.label.show))
-            
+
             # For single-series or small multiples we prefer to use annotations
             # because they can be dragged, and are less likely to be truncated
             # by plotly. However, annotations do not toggle with the legend
-            # so they are not used for multiple overlapping data series 
+            # so they are not used for multiple overlapping data series
             if (n == 1)
             {
                 annotations <- c(annotations,
                     lapply(ind2, function(ii) list(text = pos$DataLabels[ii],
-                        font = data.label.font[[ggi]], x = pos$x[ii], 
+                        font = data.label.font[[ggi]], x = pos$x[ii],
                         y = pos$y[ii], xref = "x", yref = "y",
-                        xshift = calcXShift(pos$row[ii], m), 
+                        xshift = calcXShift(pos$row[ii], m),
                         yshift = calcYShift(pos$row[ii], m),
                         xanchor = calcXAlign(pos$row[ii], m, return.anchor = !reverse.axis),
                         yanchor = calcYAlign(pos$row[ii], m, return.anchor = !reverse.axis),
@@ -440,14 +427,63 @@ Radar <- function(x,
             {
                 p <- add_trace(p, x = pos$x[ind2], y = pos$y[ind2],
                     type = "scatter", mode = "markers+text", legendgroup = g.list[ggi],
-                    textposition = paste(calcXAlign(pos$row[ind2], m, return.anchor = reverse.axis), 
-                    calcYAlign(pos$row[ind2], n, return.anchor = reverse.axis)), showlegend = FALSE, 
-                    hoverinfo = "skip", marker = list(opacity = 0, size = 2, 
+                    textposition = paste(calcXAlign(pos$row[ind2], m, return.anchor = reverse.axis),
+                    calcYAlign(pos$row[ind2], n, return.anchor = reverse.axis)), showlegend = FALSE,
+                    hoverinfo = "skip", marker = list(opacity = 0, size = 2,
                     color = toRGB(colors[ggi])),
                     text = pos$DataLabels[ind2],
                     textfont = data.label.font[[ggi]], cliponaxis = FALSE)
             }
         }
+
+        # Append annotations to category labels
+        # We want to do this last so that it is not affected by "Hide" in data label annotation
+        for (curr.annot.ind in seq_along(overlay.annotation.list))
+        {
+            curr.annot <- overlay.annotation.list[[curr.annot.ind]]
+            curr.annot$threshold <- parseThreshold(curr.annot$threshold)
+            curr.dat <- getAnnotData(annot.data, curr.annot$data, ggi,
+                as.numeric = !grepl("Text", curr.annot$type) &&
+                curr.annot$data != "Column Comparisons")
+            ind.sel <- extractSelectedAnnot(curr.dat, curr.annot$threshold, curr.annot$threstype)
+            if (is.null(curr.annot$color))
+                curr.annot$color <- colors[ggi]
+            for (ii in ind.sel)
+            {
+                xlab[ii] <- addAnnotToDataLabel(xlab[ii], curr.annot, curr.dat[ii],
+                    prepend = calcXAlign(ii, m) == "left")
+                pt.segs <- getPointSegmentsForPPT(pt.segs, ii, curr.annot, curr.dat[ii])
+            }
+        }
+
+        # Clean up PPT chart labels
+        pt.segs <- tidyPointSegments(pt.segs, m, show.categoryname = TRUE)
+        if (isTRUE(attr(pt.segs, "SeriesShowValue")))
+        {
+            chart.labels$SeriesLabels[[ggi]]$ShowValue <- TRUE
+            chart.labels$SeriesLabels[[ggi]]$ShowCategoryName <- TRUE
+            attr(pt.segs, "SeriesShowValue") <- NULL
+        }
+        if (length(pt.segs) > 0)
+            chart.labels$SeriesLabels[[ggi]]$CustomPoints <- pt.segs
+    }
+    serieslabels.num.changes <- vapply(chart.labels$SeriesLabels, function(s) isTRUE(s$ShowValue) + length(s$CustomPoints), numeric(1L))
+    if (sum(serieslabels.num.changes) == 0)
+        chart.labels <- NULL
+
+    # Add x-axis labels
+    # If x-axis label are not shown, annotations may still be present
+    if (any(nzchar(xlab)))
+    {
+        # We use annotations rather than a text trace because
+        # plotly will automatically expand margins to keep annotations visible
+        annotations <-  c(annotations,
+                        lapply(1:m, function(ii) list(text = xlab[ii], font = x.tick.font,
+                        x = outer[ii,1], y = outer[ii,2], xref = "x", yref = "y",
+                        xanchor = calcXAlign(ii, m, return.anchor = !reverse.axis),
+                        yanchor = calcYAlign(ii, m, return.anchor = !reverse.axis),
+                        xshift = calcXShift(ii, m), yshift = calcYShift(ii, m),
+                        showarrow = FALSE, ax = 0, ay = 0)))
     }
 
     annot.len <- length(annotations)
@@ -477,7 +513,7 @@ Radar <- function(x,
 
     # allow data labels to be movable (annotations with showarrow = TRUE)
     # but turn off editing to other parts of the text
-    p <- config(p, editable = TRUE, 
+    p <- config(p, editable = TRUE,
                 edits = list(annotationPosition = FALSE, annotationTail = TRUE,
                 annotationText = FALSE, shapePosition = FALSE,
                 axisTitleText = FALSE, titleText = FALSE, legendText = FALSE))
@@ -489,6 +525,7 @@ Radar <- function(x,
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     attr(result, "ChartType") <- "Radar Filled"
+    attr(result, "ChartLabels") <- chart.labels
     result
 }
 
@@ -583,7 +620,7 @@ calcXAlign <- function(index, length, return.anchor = FALSE)
 {
     theta <- (0.5 - 2 * (index - 1)/length) * pi
     x.align <- rep("center", length(theta))
-   
+
     if (return.anchor)
     {
         x.align[cos(theta) > 0.3] <- "left"
@@ -602,7 +639,7 @@ calcYAlign <- function(index, length, return.anchor = FALSE)
 {
     theta <- (0.5 - 2 * (index - 1)/length) * pi
     y.align <- rep("middle", length(theta))
-   
+
     if (return.anchor)
     {
         y.align[sin(theta) > 0.5] <- "bottom"
