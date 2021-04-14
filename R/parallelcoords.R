@@ -43,6 +43,7 @@
 #'  of lines drawn per second.
 #' @param width Numeric; Width of chart in pixels.
 #' @param height Numeric; Height of chart in pixels.
+#' @param max.nvar Numeric; Maximum number of variables that will be shown from \code{x}.
 #' @param ... Parameters which are ignored. This is included so calls expecting the
 #'     plotly implementation which had more parameters will not cause errors 
 #' @importFrom parcoords parcoords
@@ -67,6 +68,7 @@ ParallelCoordinates <- function(x,
                                 margin.bottom = 0,
                                 margin.left = 0,
                                 margin.right = 0,
+                                max.nvar = 100,
                                 auto.resize = TRUE,
                                 interactive = TRUE,
                                 queue = FALSE,
@@ -84,6 +86,15 @@ ParallelCoordinates <- function(x,
         fsc <- 1.3333
         label.font.size = round(fsc * label.font.size, 0)
         tick.font.size = round(fsc * tick.font.size, 0)
+    }
+
+    # Remove columns from x if necessary
+    if (ncol(x) > max.nvar)
+    {
+        warning("Only the first ", max.nvar, " variables will be shown. ",
+            "To show more variables increase 'max.nvar'. However, the output ",
+            "may be hard to read and very slow to render.")
+        x <- x[,1:max.nvar]
     }
 
     # Clean up column names

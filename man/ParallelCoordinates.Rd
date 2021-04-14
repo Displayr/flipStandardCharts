@@ -23,6 +23,7 @@ ParallelCoordinates(
   margin.bottom = 0,
   margin.left = 0,
   margin.right = 0,
+  max.nvar = 100,
   auto.resize = TRUE,
   interactive = TRUE,
   queue = FALSE,
@@ -83,6 +84,8 @@ graphic in pixels}
 
 \item{margin.right}{Margin between plot area and the right of the
 graphic in pixels}
+
+\item{max.nvar}{Numeric; Maximum number of variables that will be shown from \code{x}.}
 
 \item{auto.resize}{Whether the chart should resize automatically. It does not appear to work.}
 
