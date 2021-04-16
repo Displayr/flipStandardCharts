@@ -26,6 +26,7 @@
 #' @importFrom streamgraph streamgraph sg_fill_manual sg_axis_x sg_axis_y sg_colors
 #' @importFrom flipTime AsDateTime
 #' @importFrom verbs SumColumns
+#' @importFrom janitor round_half_up
 #' @export
 Stream <- function(x,
                    colors = c("#5C9AD3", "#ED7D31", "#A5A5A5", "#FFC000",
@@ -130,7 +131,7 @@ Stream <- function(x,
 
     # Rounding off data to make hovertext legible, but should not affect y-values on the graph
     data.magnitude <- floor(log10(min(SumColumns(x, remove.rows = NULL))))
-    x.round <- round(as.numeric(t(x)), max(0, 4 - data.magnitude))
+    x.round <- round_half_up(as.numeric(t(x)), max(0, 4 - data.magnitude))
     df <- data.frame(value = x.round, date = columns, key = rep(rownames(x), rep(ncol(x), nrow(x))))
 
     sg <- streamgraph(data = df,

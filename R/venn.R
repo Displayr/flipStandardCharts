@@ -34,7 +34,7 @@
 #' @export
 Venn <- function(x = NULL,
                  weights = NULL,
-                 colors = c("#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", 
+                 colors = c("#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd",
                             "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf"),
                  opacity = NULL,
                  global.font.family = "Arial",
@@ -80,13 +80,13 @@ Venn <- function(x = NULL,
         for (i in seq(length(x)))
             x[[i]]$size <- x[[i]]$size * 100
     }
-    
+
     # Tidying up parameters
     n.sets <- length(unique(unlist(sapply(x, function(s) return(unlist(s$sets))))))
     if (is.null(colors))
     {
          # d3.schemeCategory10
-        colors <- c("#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", 
+        colors <- c("#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd",
                     "#8c564b", "#e377c2", "#7f7f7f", "#bcbd22", "#17becf")
         data.label.font.autocolor <- TRUE # for compatibility with old wiki forms
     }
@@ -97,7 +97,7 @@ Venn <- function(x = NULL,
         data.label.font.color <- NULL
     else
         data.label.font.color <- rep(vectorize(data.label.font.color), length = n.sets)
-    
+
     # Creating the Venn diagram
     vv <- d3vennR(data = x, fontSize = data.label.font.size)
     vv$x$tasks <- list(
@@ -194,10 +194,11 @@ function(){
 #' @param nms The names of the labels
 #' @param weights Vector of weights
 #' @param data.label.decimals number of decimal places.
+#' @importFrom janitor round_half_up
 #' @importFrom verbs Sum
 convertDataFrameIntoJSON <- function(x, nms, weights, data.label.decimals)
 {
-    .sum <- function(cols)  {round(Sum(weights[apply(x[,cols + 1, drop = FALSE], 1, all)], remove.missing = FALSE), data.label.decimals)}
+    .sum <- function(cols)  {round_half_up(Sum(weights[apply(x[,cols + 1, drop = FALSE], 1, all)], remove.missing = FALSE), data.label.decimals)}
     .nm <- function(col) {nms[col + 1]}
     nms <- as.character(nms)
     k <- ncol(x)

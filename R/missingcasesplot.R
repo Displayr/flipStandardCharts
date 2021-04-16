@@ -125,7 +125,7 @@ MissingCasesPlot <- function(raw.data,
         if (show.counts.missing && show.percentages.missing)
             x.labels <- paste(x.labels, "or ")
         if (show.percentages.missing)
-            x.labels <- paste0(x.labels, round(SumColumns(dat, remove.rows = NULL, remove.missing = FALSE)/nrow(dat)*100), "%")
+            x.labels <- paste0(x.labels, round_half_up(SumColumns(dat, remove.rows = NULL, remove.missing = FALSE)/nrow(dat)*100), "%")
         x.labels <- paste0(x.labels, " missing)")
     }
     x.labels <- autoFormatLongLabels(x.labels, x.tick.label.wrap, x.tick.label.wrap.nchar, truncate = FALSE)
@@ -213,13 +213,13 @@ MissingCasesPlot <- function(raw.data,
         yvals <- rep(index[na.ind[,1]], each = pt.len) + pt.ypos
         hover.text <- NULL
         if (tooltip.show)
-            hover.text <- rep(autoFormatLongLabels(paste("Case", index[na.ind[,1]], "missing from", 
+            hover.text <- rep(autoFormatLongLabels(paste("Case", index[na.ind[,1]], "missing from",
                     paste0("<b>", colnames(dat)[na.ind[,2]], "</b>")), TRUE, 50), each = pt.len)
         hover.mode <- if (tooltip.show) "text" else "skip"
 
         p <- add_trace(p, x = xvals, y = yvals, line = line.obj,
-                hoverinfo = hover.mode, text = hover.text, 
-                type = "scatter", mode = "lines", showlegend = FALSE, 
+                hoverinfo = hover.mode, text = hover.text,
+                type = "scatter", mode = "lines", showlegend = FALSE,
                 z = NULL, zmin = NULL, zmax = NULL, zsmooth = NULL, showscale = NULL)
     }
 
@@ -228,7 +228,7 @@ MissingCasesPlot <- function(raw.data,
     p <- layout(p, xaxis = xaxis, yaxis = yaxis,
                 plot_bgcolor = toRGB(base.color),
                 paper_bgcolor = toRGB("white", alpha = 0),
-                hoverlabel = list(namelength = -1, font = hovertext.font, 
+                hoverlabel = list(namelength = -1, font = hovertext.font,
                     bordercolor = "transparent", bgcolor = rgb(0.05,0.05,0.05, alpha = 0.8)),
                 hovermode = if (tooltip.show) "closest" else FALSE,
                 dragmode = if (enable.zoom) "zoom" else FALSE,

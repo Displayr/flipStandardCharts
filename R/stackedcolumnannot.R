@@ -436,7 +436,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
         {
             footer <- paste0(footer,
             paste(rmFontSize(tmp.arrow.html), sprintf("Significant %s at the %s%% confidence level",
-            c("increase", "decrease"), round((1-annot.sig.level) * 100)),
+            c("increase", "decrease"), round_half_up((1-annot.sig.level) * 100)),
             sep = "", collapse = annot.legend.sep))
         }
     } else if ("z-Statistic" %in% dimnames(annot.data)[[3]])
@@ -454,7 +454,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
         {
             footer <- paste0(footer,
             paste(rmFontSize(tmp.arrow.html), sprintf("Significant %s at the %s%% confidence level",
-            c("increase", "decrease"), round((1-annot.sig.level) * 100)),
+            c("increase", "decrease"), round_half_up((1-annot.sig.level) * 100)),
             sep = "", collapse = annot.legend.sep))
         }
 

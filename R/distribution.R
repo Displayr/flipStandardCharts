@@ -127,7 +127,7 @@
 #' @param categories.tick.label.wrap Logical; whether to wrap long labels on the x-axis.
 #' @param categories.tick.label.wrap.nchar Integer; number of characters in each line when \code{categories.tick.label.wrap} is \code{TRUE}.
 #' @param modebar.show Logical; whether to show the zoom menu buttons or not.
-#' @param zoom.enable Logical; whether to enable zoom on the chart. 
+#' @param zoom.enable Logical; whether to enable zoom on the chart.
 #'  For Bar and Column charts with data labels it may be useful to turn off zoom
 #'  because data labels and annotations can be misplace on zoom.
 
@@ -419,11 +419,11 @@ Distribution <-   function(x,
         values.bounds.minimum <- rng[1]
     if (is.null(values.bounds.maximum))
         values.bounds.maximum <- rng[2]
-    values.axis <- setAxis(values.title, "left", axisFormat, values.title.font, 
+    values.axis <- setAxis(values.title, "left", axisFormat, values.title.font,
          values.line.color, values.line.width, values.grid.width, values.grid.color,
-         values.tick, values.tick.font, values.tick.angle, values.tick.mark.length, 
-         values.tick.distance, values.tick.format, values.tick.prefix, 
-         values.tick.suffix, values.tick.show, FALSE, values.zero.line.width, 
+         values.tick, values.tick.font, values.tick.angle, values.tick.mark.length,
+         values.tick.distance, values.tick.format, values.tick.prefix,
+         values.tick.suffix, values.tick.show, FALSE, values.zero.line.width,
          values.zero.line.color, values.hovertext.format, zoom.enable = zoom.enable)
     hover.mode <- if (tooltip.show) "'closest'" else "FALSE"
     txt <- paste0("p <- layout(p,
@@ -532,7 +532,7 @@ addDensities <- function(p,
                            marker = list(color = "transparent"),
                            hoverlabel = list(bgcolor = density.color[1]),
                            hoverinfo = "text",
-                           text = paste(names(five.num), round(five.num, 2)))
+                           text = paste(names(five.num), round_half_up(five.num, 2)))
         }
     } else if (density.type == "Histogram")
     {
@@ -599,7 +599,7 @@ addSummaryStatistics <- function(p, values, weights, vertical, show.mean, show.m
               mode = "markers",
               name = "",
               showlegend = FALSE,
-              text = round(values, 2),
+              text = round_half_up(values, 2),
               type = "scatter",
               xaxis = category.axis.2,
               yaxis = value.axis.2)
