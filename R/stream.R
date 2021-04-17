@@ -131,7 +131,7 @@ Stream <- function(x,
 
     # Rounding off data to make hovertext legible, but should not affect y-values on the graph
     data.magnitude <- floor(log10(min(SumColumns(x, remove.rows = NULL))))
-    x.round <- round_half_up(as.numeric(t(x)), max(0, 4 - data.magnitude))
+    x.round <- round(as.numeric(t(x)), max(0, 4 - data.magnitude))
     df <- data.frame(value = x.round, date = columns, key = rep(rownames(x), rep(ncol(x), nrow(x))))
 
     sg <- streamgraph(data = df,
