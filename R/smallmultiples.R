@@ -316,8 +316,12 @@ SmallMultiples <- function(x,
             if (empty.footer)
                 footer <- sprintf("%sPoints colored according to '%s'; ",
                               footer, colnames(x)[scatter.colors.column])
-        } else
+        } else 
+        {
+            if (length(colors) < npanels)
+                colors <- paste0(colors, rep("", npanels))
             colors <- as.list(colors)
+        }
 
         plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(x[indexes[[i]],],
                                                      scatter.x.column = scatter.x.column,

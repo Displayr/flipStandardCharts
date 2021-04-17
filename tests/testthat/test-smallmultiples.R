@@ -25,5 +25,5 @@ test_that("Small Multiples",
     expect_warning(SmallMultiples(dat[,1,drop=T], "Pyramid"))
     expect_error(SmallMultiples(dat, "Area", x.order=""), NA)
     expect_error(SmallMultiples(dat2, "Scatter", scatter.sizes.column = NA,
-                                scatter.colors.column = NA), NA)
+                                scatter.colors.column = NA, colors = "red"), NA)
 })
