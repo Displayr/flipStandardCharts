@@ -146,11 +146,11 @@ LabeledScatter <- function(x = NULL,
     # Try to store name of variables
     scatter.mult.yvals <- isTRUE(attr(x, "scatter.mult.yvals"))
     if (!is.null(scatter.sizes) && is.null(scatter.sizes.name))
-        scatter.sizes.name <- trimws(deparse(substitute(scatter.sizes)))
+        scatter.sizes.name <- deparse(substitute(scatter.sizes))
     if (!is.null(scatter.labels) && is.null(scatter.labels.name))
-        scatter.labels.name <- trimws(deparse(substitute(scatter.labels)))
+        scatter.labels.name <- deparse(substitute(scatter.labels))
     if (!is.null(scatter.colors) && is.null(scatter.colors.name))
-        scatter.colors.name <- trimws(deparse(substitute(scatter.colors)))
+        scatter.colors.name <- deparse(substitute(scatter.colors))
 
     num.tables <- 1
     groups <- NULL
@@ -195,12 +195,14 @@ LabeledScatter <- function(x = NULL,
         {
             if (is.null(scatter.sizes.name) && !is.null(colnames(x)))
                 scatter.sizes.name <- colnames(x)[scatter.sizes.column]
+            scatter.sizes.name <- trimws(scatter.sizes.name)
             scatter.sizes <- x[,scatter.sizes.column]
         }
         if (is.null(scatter.colors) && .isValidColumnIndex(scatter.colors.column))
         {
             if (is.null(scatter.colors.name) || nchar(scatter.colors.name) == 0)
                 scatter.colors.name <- colnames(x)[scatter.colors.column]
+            scatter.colors.name <- trimws(scatter.colors.name)
             scatter.colors <- x[,scatter.colors.column]
         }
         if (!any(nzchar(x.title)) && (!is.null(colnames(x))) &&
