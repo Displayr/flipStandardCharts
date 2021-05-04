@@ -146,11 +146,11 @@ LabeledScatter <- function(x = NULL,
     # Try to store name of variables
     scatter.mult.yvals <- isTRUE(attr(x, "scatter.mult.yvals"))
     if (!is.null(scatter.sizes) && is.null(scatter.sizes.name))
-        scatter.sizes.name <- deparse(substitute(scatter.sizes))
+        scatter.sizes.name <- trimws(deparse(substitute(scatter.sizes)))
     if (!is.null(scatter.labels) && is.null(scatter.labels.name))
-        scatter.labels.name <- deparse(substitute(scatter.labels))
+        scatter.labels.name <- trimws(deparse(substitute(scatter.labels)))
     if (!is.null(scatter.colors) && is.null(scatter.colors.name))
-        scatter.colors.name <- deparse(substitute(scatter.colors))
+        scatter.colors.name <- trimws(deparse(substitute(scatter.colors)))
 
     num.tables <- 1
     groups <- NULL
