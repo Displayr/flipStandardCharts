@@ -196,8 +196,9 @@ BarPictograph <- function(x,
         data.label.digits <- decimalsFromD3(data.label.format)
         data.label.values <- unlist(raw.x) * (1 + (99 * data.label.mult100))
         data.label.text <- sprintf("%s%s%s", data.label.prefix,
-            formatC(data.label.values, digits = data.label.digits, format = "f",
-            big.mark = data.label.bigmark), data.label.suffix)
+            formatC(round_half_up(data.label.values, data.label.digits), 
+                digits = data.label.digits, format = "f",
+                big.mark = data.label.bigmark), data.label.suffix)
 
         if (data.label.position %in% c("Above icons", "Below icons"))
         {

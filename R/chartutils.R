@@ -1357,13 +1357,19 @@ formatByD3 <- function(x, format, prefix = "", suffix = "", percent = FALSE, dec
         big.mark <- if (use.comma) "," else ""
         tmp.fmt <- gsub("[^deEfgGs]", "", format)
         tmp.fmt <- gsub("s", "g", tmp.fmt) # switch d3 SI-prefix format to scientific
+        num.decimals <- decimalsFromD3(format, decimals)
 
         if (percentFromD3(format) || percent)
-            x.str <- paste0(formatC(x*100, format = "f", digits = decimalsFromD3(format, 0), big.mark = big.mark), "%")
+        {
+            num.decimals <- decimalsFromD3(format, 0)
+            x.str <- paste0(formatC(round_half_up(x*100, num.decimals), 
+                format = "f", digits = num.decimals, big.mark = big.mark), "%")
+        }
         else if (!any(nzchar(tmp.fmt)) || tmp.fmt == "f")
-            x.str <- FormatAsReal(x, decimals = decimalsFromD3(format, decimals), comma.for.thousands = use.comma)
+            x.str <- FormatAsReal(x, decimals = num.decimals, comma.for.thousands = use.comma)
         else
-            x.str <- formatC(x, format = tmp.fmt, digits = decimalsFromD3(format, decimals), big.mark = big.mark)
+            x.str <- formatC(round_half_up(x, num.decimals), 
+                format = tmp.fmt, digits = num.decimals, big.mark = big.mark)
     }
     if (inherits(x, "Date") || inherits(x, "POSIXct") || inherits(x, "POSIXt"))
         x.str <- format(x, format)
