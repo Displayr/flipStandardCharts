@@ -1368,8 +1368,7 @@ formatByD3 <- function(x, format, prefix = "", suffix = "", percent = FALSE, dec
         else if (!any(nzchar(tmp.fmt)) || tmp.fmt == "f")
             x.str <- FormatAsReal(x, decimals = num.decimals, comma.for.thousands = use.comma)
         else
-            x.str <- formatC(round_half_up(x, num.decimals), 
-                format = tmp.fmt, digits = num.decimals, big.mark = big.mark)
+            x.str <- formatC(x, format = tmp.fmt, digits = num.decimals, big.mark = big.mark)
     }
     if (inherits(x, "Date") || inherits(x, "POSIXct") || inherits(x, "POSIXt"))
         x.str <- format(x, format)

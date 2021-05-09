@@ -300,10 +300,6 @@ Line <-   function(x,
                   x.hovertext.format, axisFormat$labels, num.maxticks = x.tick.maxnum,
                   zoom.enable = zoom.enable)
 
-    # Data label formatting
-    data.label.function <- ifelse(percentFromD3(data.label.format), FormatAsPercent, FormatAsReal)
-    data.label.decimals <- decimalsFromD3(data.label.format)
-
     # Work out margin spacing
     margins <- list(t = 20, b = 20, r = 60, l = 80, pad = 0)
     margins <- setMarginsForAxis(margins, axisFormat, xaxis)
@@ -447,9 +443,7 @@ Line <-   function(x,
             ind.show <- which(data.label.show[,i] & is.finite(chart.matrix[,i]))
             y <- as.numeric(chart.matrix[ind.show, i])
             x <- x.labels[ind.show]
-            source.text <- paste(dlab.prefix[,i],
-                 data.label.function(chart.matrix[, i], decimals = data.label.decimals),
-                 dlab.suffix[,i], sep = "")
+            source.text <- formatByD3(chart.matrix[,i], data.label.format, dlab.prefix[,i], dlab.suffix[,i])
 
             # Add attribute for PPT exporting
             chart.labels$SeriesLabels[[i]] <- list(Position = "Top",
