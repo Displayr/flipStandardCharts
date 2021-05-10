@@ -443,7 +443,8 @@ Line <-   function(x,
             ind.show <- which(data.label.show[,i] & is.finite(chart.matrix[,i]))
             y <- as.numeric(chart.matrix[ind.show, i])
             x <- x.labels[ind.show]
-            source.text <- formatByD3(chart.matrix[,i], data.label.format, dlab.prefix[,i], dlab.suffix[,i])
+            source.text <- formatByD3(chart.matrix[,i], data.label.format, 
+                dlab.prefix[,i], dlab.suffix[,i], decimals = 0)
 
             # Add attribute for PPT exporting
             chart.labels$SeriesLabels[[i]] <- list(Position = "Top",
