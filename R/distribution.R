@@ -419,7 +419,8 @@ Distribution <-   function(x,
         values.bounds.minimum <- rng[1]
     if (is.null(values.bounds.maximum))
         values.bounds.maximum <- rng[2]
-    values.axis <- setAxis(values.title, "left", axisFormat, values.title.font,
+    values.axis <- setAxis(values.title, if (vertical) "left" else "bottom", 
+         axisFormat, values.title.font,
          values.line.color, values.line.width, values.grid.width, values.grid.color,
          values.tick, values.tick.font, values.tick.angle, values.tick.mark.length,
          values.tick.distance, values.tick.format, values.tick.prefix,
@@ -432,9 +433,9 @@ Distribution <-   function(x,
         hovermode = ", hover.mode, ",",
         "showlegend = FALSE,
         showlegend = FALSE,",
-        violinCategoriesAxes(vertical, n.variables, gsub("'", "\\\\'", labels)), "
-        ", if (vertical) "y" else "x", "axis = values.axis,
-        margin = margins,
+        if (vertical) "y" else "x", "axis = values.axis,",
+        violinCategoriesAxes(vertical, n.variables, gsub("'", "\\\\'", labels)),
+        "margin = margins,
         annotations = list(setSubtitle(subtitle, subtitle.font, margins),
                            setTitle(title, title.font, margins),
                            setFooter(footer, footer.font, margins)),
@@ -589,7 +590,7 @@ addSummaryStatistics <- function(p, values, weights, vertical, show.mean, show.m
     if (show.values)
     {
         v2 <- values
-        v1 <- rep("rugplot", length(values))
+        v1 <- rep(0, length(values))
 
         p <- add_trace(p,
               x = if (vertical) v1 else v2,
@@ -601,8 +602,8 @@ addSummaryStatistics <- function(p, values, weights, vertical, show.mean, show.m
               showlegend = FALSE,
               text = round_half_up(values, 2),
               type = "scatter",
-              xaxis = category.axis.2,
-              yaxis = value.axis.2)
+              xaxis = category.axis,
+              yaxis = value.axis)
 
     }
     ### Violin plot
@@ -686,47 +687,16 @@ violinCategoryAxis <- function(i, label, n.variables, vertical, show.values, sho
 
 }
 
-rugCategoryAxis <- function(i, n.variables, vertical, show.density, show.mirror.density, show.values)
-{
-    if(i > n.variables ||!show.values)
-        return(NULL)
-
-    #offset <- max(10, n.variables+2)/2/100
-    #if (show.density && show.mirror.density)
-    #    domain = c(.5 - offset, .5 + offset)
-    #else if (show.density)
-    #    domain = c(0, 0.1)
-    #else if (show.mirror.density)
-    #    domain = c(.9, 1)
-
-    if (!show.mirror.density)
-        domain = c(if (show.values) .12 else 0, .95)
-    else if (!show.density)
-        domain = c(0, .9)
-    else
-        domain = c(0, 1)
-
-
-    list(autorange = TRUE,
-         domain = domain / n.variables + (i - 1) / n.variables,
-            autorange = TRUE,
-            #hoverformat = values.hovertext.format, does not work with type = "category"
-            range = c(-1, 1),
-            showgrid = FALSE,
-            showticklabels = FALSE,
-            title = "",
-            type = "category")}
 
 violinCategoriesAxes <- function(vertical, n.variables, labels)
 {
     standard.parameters <- "n.variables, vertical, show.values, show.density, show.mirror.density, categories.tick.font.family, categories.tick.font.size, categories.tick.font.color, values.hovertext.format"
-    axes <- paste0("xaxis = violinCategoryAxis(1, '", labels[1], "',", standard.parameters, "), xaxis2 = rugCategoryAxis(1, n.variables, vertical, show.density, show.mirror.density, show.values), ")
+    axes <- paste0("xaxis = violinCategoryAxis(1, '", labels[1], "',", standard.parameters, "),") 
     if (n.variables > 1)
     {
         sq <- seq(4, n.variables * 2 , 2)
         violin <- paste0("xaxis", sq - 1, " = violinCategoryAxis(", 2:n.variables, ", '", labels[-1], "',", standard.parameters, "), ", collapse = "")
-        rug <- paste0("xaxis", sq, " = rugCategoryAxis(", 2:n.variables, ", n.variables, vertical, show.density, show.mirror.density, show.values), ", collapse = "")
-        axes <- paste0(axes, violin, rug)
+        axes <- paste0(axes, violin)
     }
     if (!vertical)
         axes <- gsub("xaxis", "yaxis", axes)
