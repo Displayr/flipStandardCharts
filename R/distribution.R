@@ -401,7 +401,7 @@ Distribution <-   function(x,
         wgt <- prop.table(wgt) # Rebasing the weight (Required by the density function)
         from <- if (automatic.lower.density) rng[1] else from
         p <- addDensities(p, values, wgt, labels[v], vertical, show.density, show.mirror.density, density.type, histogram.cumulative, histogram.counts, bins, maximum.bins, box.points, category.axis, value.axis, density.color[v], values.color, bw, adjust, kernel, n, from, to, cut, hover.on)
-        p <- addSummaryStatistics(p, values, wgt, vertical,  show.mean, show.median, show.quartiles, show.range, show.values,
+        p <- addSummaryStatistics(p, values, wgt, vertical, show.density, show.mirror.density, show.mean, show.median, show.quartiles, show.range, show.values,
                                  mean.color, median.color, quartile.color, range.color, values.color,
                                  category.axis, value.axis)
 
@@ -580,15 +580,24 @@ createWeights <- function(x, weights)
 
 #' @importFrom stats density weighted.mean quantile
 #' @importFrom Hmisc wtd.quantile
-addSummaryStatistics <- function(p, values, weights, vertical, show.mean, show.median, show.quartiles, show.range, show.values,
+addSummaryStatistics <- function(p, values, weights, vertical, show.density, show.mirror.density, 
+                                 show.mean, show.median, show.quartiles, show.range, show.values,
                                  mean.color, median.color, quartile.color, range.color, values.color,
                                  category.axis, value.axis)
 {
     # Rug plot of values
     if (show.values)
     {
+        v.max <- max(abs(range(attr(p, "values.density")$y)))
+        if (show.density && show.mirror.density)
+            rug.pos <- 0
+        else if (show.density)
+            rug.pos <- -0.1 * v.max
+        else if (show.mirror.density)
+            rug.pos <- 0.1 * v.max
+
         v2 <- values
-        v1 <- rep(0, length(values))
+        v1 <- rep(rug.pos, length(values))
 
         p <- add_trace(p,
               x = if (vertical) v1 else v2,
