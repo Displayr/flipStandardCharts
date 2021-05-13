@@ -196,7 +196,7 @@ BarPictograph <- function(x,
         data.label.digits <- decimalsFromD3(data.label.format)
         data.label.values <- unlist(raw.x) * (1 + (99 * data.label.mult100))
         data.label.text <- sprintf("%s%s%s", data.label.prefix,
-            formatC(round_half_up(data.label.values, data.label.digits), 
+            formatC(round_half_up(data.label.values, data.label.digits),
                 digits = data.label.digits, format = "f",
                 big.mark = data.label.bigmark), data.label.suffix)
 
@@ -361,8 +361,8 @@ BarPictograph <- function(x,
 cleanPictographLabels <- function(x)
 {
     # New line characters were causing errors in the JSON
-    # Errors are now fixed but new lines are shown as spaces by rhtmlPictograph
-    x <- gsub("\n", "\\\\n", x)
+    # Note these can be coded as \n or \r
+    x <- gsub("\\s", " ", x)
 
     # These characters used to be shown as text but that is
     # probably not what the user wants to see
