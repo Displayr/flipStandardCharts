@@ -23,7 +23,7 @@
 #' format (e.g. "black") or a hex code.
 #' @param label.font.family Character; label font family.
 #' @param label.font.size Integer; Label font size.
-#' @param label.rotate Boolean; whether to rotate the variable names on the chart. 
+#' @param label.rotate Boolean; whether to rotate the variable names on the chart.
 #' @param tick.font.color Tick label font color as a named color in character
 #' format (e.g. "black") or a hex code.
 #' @param tick.font.family Character; tick label font family.
@@ -45,7 +45,7 @@
 #' @param height Numeric; Height of chart in pixels.
 #' @param max.nvar Numeric; Maximum number of variables that will be shown from \code{x}.
 #' @param ... Parameters which are ignored. This is included so calls expecting the
-#'     plotly implementation which had more parameters will not cause errors 
+#'     plotly implementation which had more parameters will not cause errors
 #' @importFrom parcoords parcoords
 #' @importFrom htmlwidgets JS
 #' @importFrom jsonlite toJSON
@@ -109,12 +109,12 @@ ParallelCoordinates <- function(x,
         tmp.name0 <- colnames(x)[i]
         tmp.name1 <- colnames(x)[i]
 		dimlist[[tmp.name1]] <- list(title = tmp.name0)
-		
+
         if (any(class(x[[i]]) %in% c("Date")))
         {
             x[,i] <- as.numeric(x[,i])
-            dimlist[[tmp.name1]] <- list(title = tmp.name0, 
-                tickFormat = JS('function(d){ x = new Date(d * 24 * 60 * 60 * 1000); 
+            dimlist[[tmp.name1]] <- list(title = tmp.name0,
+                tickFormat = JS('function(d){ x = new Date(d * 24 * 60 * 60 * 1000);
                                  return(x.toLocaleDateString()) }'))
         } else if ( any(class(x[[i]]) %in% c("POSIXct", "POSIXt")))
         {
@@ -122,12 +122,12 @@ ParallelCoordinates <- function(x,
             out.fmt <- "x.toLocaleDateString()"
             if (min(diff(sort(x[,i])), na.rm = TRUE) < (60 * 60 * 24))
                 out.fmt <- paste(out.fmt, "+ \" \" + x.toLocaleTimeString()")
-            dimlist[[tmp.name1]] <- list(title = tmp.name0, 
+            dimlist[[tmp.name1]] <- list(title = tmp.name0,
                 tickFormat = JS(paste0('function(d){ x = new Date(d * 1000);
                                  return(', out.fmt, ')}')))
         } else
 		    dimlist[[tmp.name1]] <- list(title = tmp.name0)
-		
+
         if (is.factor(x[[i]]))
 			tasks <- c(tasks, JS(orderCategoricalTicks(tmp.name1, levels(x[[i]]), reverse.axes)))
         else if (is.numeric(x[[i]]))
@@ -144,9 +144,9 @@ ParallelCoordinates <- function(x,
         {
             x <- data.frame(x, tmp.color = as.factor(group), check.names = FALSE)
             if (length(colors) <= 1)
-                colorScale <- JS('d3.scale.category20()')           
+                colorScale <- JS('d3.scale.category20()')
             else
-            { 
+            {
                 colors <- paste0(colors, rep("", nlevels(x$tmp.color)))[1:nlevels(x$tmp.color)]
                 colorScale = JS(sprintf('d3.scale.ordinal().range(%s).domain(%s)',
                     toJSON(colors), toJSON(levels(x$tmp.color))))
@@ -157,7 +157,7 @@ ParallelCoordinates <- function(x,
             if (length(colors) <= 1)
                 colors <- c("blue", "red")
             seq.len <- length(colors)
-            seq.val <- seq(from = min(x$tmp.color, na.rm = T), 
+            seq.val <- seq(from = min(x$tmp.color, na.rm = T),
                            to = max(x$tmp.color, na.rm = T),
                            length = seq.len)
             colorScale = JS(sprintf(
@@ -178,20 +178,21 @@ ParallelCoordinates <- function(x,
 
     # Apply formatting
     tasks <- c(tasks, JS(formatD3Text(tick.font.family,
-                    tick.font.color, tick.font.size))) 
+                    tick.font.color, tick.font.size)))
     tasks <- c(tasks, JS(formatD3Labels(label.font.family,
                     label.font.color, label.font.size, label.rotate)))
     tasks <- c(tasks, JS(removeD3CanvasMargin()))
     tasks <- c(tasks, JS(removeD3BodyPadding()))
 
-    #lapply(tasks, cat)
-    parcoords(x, alpha = opacity, dimensions = dimlist, tasks = tasks,
+    res <- parcoords(x, alpha = opacity, dimensions = dimlist, tasks = tasks,
         rownames = FALSE, composite = "darken", color = colors,
         brushMode = if (interactive) "1D-axes-multi" else NULL,
         margin = list(top = margin.top, bottom = margin.bottom,
             left = margin.left, right = margin.right),
         width = width, height = height, reorderable = interactive,
         autoresize = auto.resize, queue = queue, rate = queue.rate)
+    class(res) <- c(class(res), "visualization-selector")
+    return(res)
 }
 
 setD3Margin <- function()
@@ -284,7 +285,7 @@ function(){
 
 	this.parcoords.removeAxes();
 	this.parcoords.render();
-	
+
 	// duplicated from the widget js code
 	//  to make sure reorderable and brushes work
 	if( this.x.options.reorderable ) {
@@ -317,7 +318,7 @@ function(){
 
 	this.parcoords.removeAxes();
 	this.parcoords.render();
-	
+
 	// duplicated from the widget js code
 	//  to make sure reorderable and brushes work
 	if( this.x.options.reorderable ) {

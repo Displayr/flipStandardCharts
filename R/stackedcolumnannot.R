@@ -837,7 +837,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
     )
     attr(p, "can-run-in-root-dom") <- TRUE
     result <- list(htmlwidget = p)
-    class(result) <- "StandardChart"
+    class(result) <- c("StandardChart", "visualization-selector")
     if (isPercentData(annot.data))
     {
         chart.matrix <- chart.matrix * 100

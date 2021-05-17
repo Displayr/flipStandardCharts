@@ -195,16 +195,20 @@ Sparkline <- function(x,
 	if (!x.axis.show)
 		x.axis.width = 0
     if (type == "Box")
-        return(Box(x, hover.on = "points",
-        values.title = " ", density.color = fill.color,
-		values.tick.show = x.tick.show, values.tick.format = x.tick.format,
-		values.tick.font.color = x.tick.font.color, values.tick.font.size = x.tick.font.size,
-		values.line.width = x.axis.width, values.line.color = x.axis.color,
-		values.tick.font.family = x.tick.font.family, values.tick.mark.length = x.tick.length,
-		background.fill.color = background.fill.color,
-        background.fill.opacity = background.fill.opacity, vertical = FALSE,
-        margin.bottom = margin.bottom, margin.top = margin.top,
-        margin.left = margin.left, margin.right = margin.right))
+    {
+        res <- Box(x, hover.on = "points",
+            values.title = " ", density.color = fill.color,
+    		values.tick.show = x.tick.show, values.tick.format = x.tick.format,
+    		values.tick.font.color = x.tick.font.color, values.tick.font.size = x.tick.font.size,
+    		values.line.width = x.axis.width, values.line.color = x.axis.color,
+    		values.tick.font.family = x.tick.font.family, values.tick.mark.length = x.tick.length,
+    		background.fill.color = background.fill.color,
+            background.fill.opacity = background.fill.opacity, vertical = FALSE,
+            margin.bottom = margin.bottom, margin.top = margin.top,
+            margin.left = margin.left, margin.right = margin.right)
+        class(res) <- c(class(res), "Box")
+        return(res)
+    }
 
     n <- length(x)
     annot <- NULL
@@ -293,7 +297,7 @@ Sparkline <- function(x,
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity))
     attr(p, "can-run-in-root-dom") <- TRUE
     result <- list(htmlwidget = p)
-    class(result) <- "StandardChart"
+    class(result) <- c("StandardChart", "visualization-selector")
     result
 }
 
