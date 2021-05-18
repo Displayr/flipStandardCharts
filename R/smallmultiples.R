@@ -316,7 +316,7 @@ SmallMultiples <- function(x,
             if (empty.footer)
                 footer <- sprintf("%sPoints colored according to '%s'; ",
                               footer, colnames(x)[scatter.colors.column])
-        } else 
+        } else
         {
             if (length(colors) < npanels)
                 colors <- paste0(colors, rep("", npanels))
@@ -550,7 +550,7 @@ SmallMultiples <- function(x,
     margins$autoexpand <- if (chart.type == "GeographicMap") TRUE else margin.autoexpand
     res <- layout(res, showlegend = is.geo, margin = margins,
                   annotations = annotations)
-    #attr(res, "can-run-in-root-dom") <- TRUE
+    attr(res, "can-run-in-root-dom") <- TRUE
     result <- list(htmlwidget = res)
     class(result) <- "StandardChart"
     attr(result, "ChartType") <- switch(chart.type,
