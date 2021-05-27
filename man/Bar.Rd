@@ -27,14 +27,17 @@ Bar(
   title.font.family = global.font.family,
   title.font.color = global.font.color,
   title.font.size = 16,
+  title.align = "center",
   subtitle = "",
   subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color,
   subtitle.font.size = 12,
+  subtitle.align = "center",
   footer = "",
   footer.font.family = global.font.family,
   footer.font.color = global.font.color,
   footer.font.size = 8,
+  footer.align = "center",
   footer.wrap = TRUE,
   footer.wrap.nchar = 100,
   background.fill.color = "transparent",
@@ -195,6 +198,8 @@ format (e.g. "black") or a hex code.}
 
 \item{title.font.size}{Integer; Title font size; default = 10.}
 
+\item{title.align}{Horizontal alignment of title.}
+
 \item{subtitle}{Character}
 
 \item{subtitle.font.family}{Character; subtitle font family}
@@ -204,6 +209,8 @@ character format (e.g. "black") or an a hex code.}
 
 \item{subtitle.font.size}{Integer; subtitle font size}
 
+\item{subtitle.align}{Horizontal alignment of subtitle.}
+
 \item{footer}{Character}
 
 \item{footer.font.family}{Character; footer font family}
@@ -212,6 +219,8 @@ character format (e.g. "black") or an a hex code.}
 character format (e.g. "black") or an a hex code.}
 
 \item{footer.font.size}{Integer; footer font size}
+
+\item{footer.align}{Horizontal alignment of footer.}
 
 \item{footer.wrap}{Logical; whether the footer text should be wrapped.}
 

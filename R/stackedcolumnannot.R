@@ -71,7 +71,6 @@
 #' @param column.totals.below.font.family Font family of \code{column.totals.below}.
 #' @param column.totals.below.font.color Font color of \code{column.totals.below}.
 #' @param column.totals.below.font.size Font size of \code{column.totals.below}.
-#' @param footer.align One of "center", "left" or "right".
 #' @param grid.show Logical; whether to show grid lines.
 #' @param opacity Opacity of bars as an alpha value (0 to 1).
 #' @param colors Character; a vector containing one or more colors specified
@@ -132,10 +131,12 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     title.font.family = global.font.family,
                     title.font.color = global.font.color,
                     title.font.size = 16,
+                    title.align = "center",
                     subtitle = "",
                     subtitle.font.family = global.font.family,
                     subtitle.font.color = global.font.color,
                     subtitle.font.size = 12,
+                    subtitle.align = "center",
                     footer = "",
                     footer.font.family = global.font.family,
                     footer.font.color = global.font.color,
@@ -177,6 +178,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     y.line.width = 0,
                     y.line.color = rgb(0, 0, 0, maxColorValue = 255),
                     y.tick.mark.length = 0,
+                    y.tick.mark.color = "transparent",
                     y.bounds.minimum = NULL,
                     y.bounds.maximum = NULL,
                     y.tick.distance = NULL,
@@ -203,6 +205,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     x.line.color = rgb(0, 0, 0, maxColorValue = 255),
                     x.tick.marks = "",
                     x.tick.mark.length = 3,
+                    x.tick.mark.color = "transparent",
                     x.bounds.minimum = NULL,
                     x.bounds.maximum = NULL,
                     x.tick.distance = NULL,
@@ -482,13 +485,15 @@ StackedColumnWithStatisticalSignificance <- function(x,
                   ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance,
                   y.tick.format, y.tick.prefix, y.tick.suffix,
                   y.tick.show, y.zero, 0, y.zero.line.color,
-                  y.hovertext.format, zoom.enable = zoom.enable)
+                  y.hovertext.format, tickcolor = y.tick.mark.color,
+                  zoom.enable = zoom.enable)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance,
                   x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show,
                   x.zero, x.zero.line.width, x.zero.line.color,
-                  x.hovertext.format, axisFormat$labels, num.series = NCOL(chart.matrix),
+                  x.hovertext.format, axisFormat$labels, 
+                  num.series = NCOL(chart.matrix), tickcolor = x.tick.mark.color,
                   with.bars = TRUE, zoom.enable = zoom.enable)
 
     yaxis2 <- NULL
@@ -799,9 +804,9 @@ StackedColumnWithStatisticalSignificance <- function(x,
     # Add text elements surrounding chart
     annotations <- NULL
     n <- length(annotations)
-    annotations[[n+1]] <- setTitle(title, title.font, margins)
-    annotations[[n+2]] <- setFooter(footer, footer.font, margins, x.align = footer.align)
-    annotations[[n+3]] <- setSubtitle(subtitle, subtitle.font, margins)
+    annotations[[n+1]] <- setTitle(title, title.font, margins, title.align)
+    annotations[[n+2]] <- setFooter(footer, footer.font, margins, footer.align)
+    annotations[[n+3]] <- setSubtitle(subtitle, subtitle.font, margins, subtitle.align)
     annotations <- Filter(Negate(is.null), annotations)
 
     serieslabels.num.changes <- vapply(chart.labels$SeriesLabels, function(s) isTRUE(s$ShowValue) + length(s$CustomPoints), numeric(1L))

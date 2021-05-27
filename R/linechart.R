@@ -51,17 +51,17 @@ Line <-   function(x,
                     title.font.family = global.font.family,
                     title.font.color = global.font.color,
                     title.font.size = 16,
-                    title.halign = "center",
+                    title.align = "center",
                     subtitle = "",
                     subtitle.font.family = global.font.family,
                     subtitle.font.color = global.font.color,
                     subtitle.font.size = 12,
-                    subtitle.halign = "center",
+                    subtitle.align = "center",
                     footer = "",
                     footer.font.family = global.font.family,
                     footer.font.color = global.font.color,
                     footer.font.size = 8,
-                    footer.halign = "center",
+                    footer.align = "center",
                     footer.wrap = TRUE,
                     footer.wrap.nchar = 100,
                     grid.show = TRUE,
@@ -503,9 +503,9 @@ Line <-   function(x,
     if (sum(serieslabels.num.changes) == 0)
         chart.labels <- NULL
 
-    annot <- list(setSubtitle(subtitle, subtitle.font, margins, subtitle.halign),
-                           setTitle(title, title.font, margins, title.halign),
-                           setFooter(footer, footer.font, margins, footer.halign))
+    annot <- list(setSubtitle(subtitle, subtitle.font, margins, subtitle.align),
+                           setTitle(title, title.font, margins, title.align),
+                           setFooter(footer, footer.font, margins, footer.align))
     annot <- Filter(Negate(is.null), annot)
 
     p <- config(p, displayModeBar = modebar.show)

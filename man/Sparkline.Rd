@@ -39,6 +39,7 @@ Sparkline(
   x.axis.width = 1,
   x.tick.show = x.axis.show,
   x.tick.length = 3,
+  x.tick.color = x.axis.color,
   x.tick.font.family = global.font.family,
   x.tick.font.color = global.font.color,
   x.tick.font.size = 10,
@@ -48,6 +49,7 @@ Sparkline(
   y.axis.width = 1,
   y.tick.show = y.axis.show,
   y.tick.length = 3,
+  y.tick.color = y.axis.color,
   y.tick.font.family = global.font.family,
   y.tick.font.color = global.font.color,
   y.tick.font.size = 10,
@@ -139,6 +141,8 @@ See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 
 \item{x.tick.length}{Numeric; length of tick marks if \code{x.axis.show}.}
 
+\item{x.tick.color}{Color of tick marks on x-axis.}
+
 \item{x.tick.font.family}{Character; x-axis tick label font family}
 
 \item{x.tick.font.color}{x-axis tick label font color as a named color
@@ -158,6 +162,8 @@ See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
 \item{y.tick.show}{Logical; Whether to show ticklabels. This only has an effect is \code{y.tick.show} is true.}
 
 \item{y.tick.length}{Numeric; length of tick marks if \code{y.tick.show}.}
+
+\item{y.tick.color}{Color of tick marks on y-axis}
 
 \item{y.tick.font.family}{Character; y-axis tick label font family}
 

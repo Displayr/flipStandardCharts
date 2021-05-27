@@ -36,19 +36,19 @@
 #' @param title.font.color Title font color as a named color in character
 #' format (e.g. "black") or a hex code.
 #' @param title.font.size Integer; Title font size; default = 10.
-#' @param title.halign Horizontal alignment of title.
+#' @param title.align Horizontal alignment of title.
 #' @param subtitle Character
 #' @param subtitle.font.color subtitle font color as a named color in
 #' character format (e.g. "black") or an a hex code.
 #' @param subtitle.font.family Character; subtitle font family
 #' @param subtitle.font.size Integer; subtitle font size
-#' @param subtitle.halign Horizontal alignment of subtitle.
+#' @param subtitle.align Horizontal alignment of subtitle.
 #' @param footer Character
 #' @param footer.font.color footer font color as a named color in
 #' character format (e.g. "black") or an a hex code.
 #' @param footer.font.family Character; footer font family
 #' @param footer.font.size Integer; footer font size
-#' @param footer.halign Horizontal alignment of footer.
+#' @param footer.align Horizontal alignment of footer.
 #' @param footer.wrap Logical; whether the footer text should be wrapped.
 #' @param footer.wrap.nchar Number of characters (approximately) in each
 #' line of the footer when \code{footer.wrap} \code{TRUE}.
@@ -335,17 +335,17 @@ Column <- function(x,
                     title.font.family = global.font.family,
                     title.font.color = global.font.color,
                     title.font.size = 16,
-                    title.halign = "center",
+                    title.align = "center",
                     subtitle = "",
                     subtitle.font.family = global.font.family,
                     subtitle.font.color = global.font.color,
                     subtitle.font.size = 12,
-                    subtitle.halign = "center",
+                    subtitle.align = "center",
                     footer = "",
                     footer.font.family = global.font.family,
                     footer.font.color = global.font.color,
                     footer.font.size = 8,
-                    footer.halign = "center",
+                    footer.align = "center",
                     footer.wrap = TRUE,
                     footer.wrap.nchar = 100,
                     background.fill.color = "transparent",
@@ -1091,9 +1091,9 @@ Column <- function(x,
     # Add text elements surrounding chart
     annotations <- NULL
     n <- length(annotations)
-    annotations[[n+1]] <- setTitle(title, title.font, margins, title.halign)
-    annotations[[n+2]] <- setFooter(footer, footer.font, margins, footer.halign)
-    annotations[[n+3]] <- setSubtitle(subtitle, subtitle.font, margins, subtitle.halign)
+    annotations[[n+1]] <- setTitle(title, title.font, margins, title.align)
+    annotations[[n+2]] <- setFooter(footer, footer.font, margins, footer.align)
+    annotations[[n+3]] <- setSubtitle(subtitle, subtitle.font, margins, subtitle.align)
     annotations <- Filter(Negate(is.null), annotations)
 
     serieslabels.num.changes <- vapply(chart.labels$SeriesLabels, function(s) isTRUE(s$ShowValue) + length(s$CustomPoints), numeric(1L))

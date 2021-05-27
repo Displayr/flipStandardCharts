@@ -48,21 +48,21 @@
 #' @param title.font.color Title font color as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param title.font.size Title font size; default = 10.
-#' @param title.halign Horizontal alignment of title
+#' @param title.align Horizontal alignment of title
 #' @param subtitle Character
 #' @param subtitle.font.color subtitle font color as a named color in
 #' character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param subtitle.font.family Character; subtitle font family
 #' @param subtitle.font.size Integer; subtitle font size
-#' @param subtitle.halgin Horizontal alignment of subtitle
+#' @param subtitle.align Horizontal alignment of subtitle
 #' @param footer Character
 #' @param footer.font.color footer font color as a named color in
 #' character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
 #' @param footer.font.family Character; footer font family
 #' @param footer.font.size Integer; footer font size
-#' @param footer.halign Horizontal alignment of footer
+#' @param footer.align Horizontal alignment of footer
 #' @param footer.wrap Logical; whether the footer text should be wrapped.
 #' @param footer.wrap.nchar Number of characters (approximately) in each line of the footer when \code{footer.wordwrap} \code{TRUE}.
 
@@ -189,17 +189,17 @@ Distribution <-   function(x,
     title.font.family = global.font.family,
     title.font.color = global.font.color,
     title.font.size = 16,
-    title.halign = "center",
+    title.align = "center",
     subtitle = "",
     subtitle.font.family = global.font.family,
     subtitle.font.color = global.font.color,
     subtitle.font.size = 12,
-    subtitle.halign = "center",
+    subtitle.align = "center",
     footer = "",
     footer.font.family = global.font.family,
     footer.font.color = global.font.color,
     footer.font.size = 8,
-    footer.halign = "center",
+    footer.align = "center",
     footer.wrap = TRUE,
     footer.wrap.nchar = 100,
     background.fill.color = "transparent",
@@ -440,9 +440,9 @@ Distribution <-   function(x,
         if (vertical) "y" else "x", "axis = values.axis,",
         violinCategoriesAxes(vertical, n.variables, gsub("'", "\\\\'", labels)),
         "margin = margins,
-        annotations = list(setSubtitle(subtitle, subtitle.font, margins, subtitle.halign),
-                           setTitle(title, title.font, margins, title.halign),
-                           setFooter(footer, footer.font, margins, footer.halign)),
+        annotations = list(setSubtitle(subtitle, subtitle.font, margins, subtitle.align),
+                           setTitle(title, title.font, margins, title.align),
+                           setFooter(footer, footer.font, margins, footer.align)),
         hoverlabel = list(namelength = -1,
             font = list(size = hovertext.font.size, family = hovertext.font.family)),
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
