@@ -524,8 +524,8 @@ around series bars; 0 is no line}
 For Bar and Column charts with data labels it may be useful to turn off zoom
 because data labels and annotations can be misplace on zoom.}
 
-\item{bar.gap}{Chart proportion between each bar or column if using
-bar or column charts, or between each cluster of bars or columns.}
+\item{bar.gap}{Gap between adjacent bars with different coordinates in
+bar or column charts (in plot fraction).}
 
 \item{data.label.show}{Logical; whether to show data labels.}
 

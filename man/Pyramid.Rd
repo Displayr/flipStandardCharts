@@ -362,8 +362,8 @@ See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 
 \item{modebar.show}{Logical; whether to show the zoom menu buttons or not.}
 
-\item{bar.gap}{Chart proportion between each bar or column if using
-bar or column charts, or between each cluster of bars or columns.}
+\item{bar.gap}{Gap between adjacent bars with different coordinates in
+bar or column charts (in plot fraction).}
 }
 \description{
 Bar charts with a centred axis

@@ -889,21 +889,26 @@ setCustomMargins <- function(margins, margin.top, margin.bottom, margin.left,
 # in plotly to create an annotation. The allowed names of the
 # components in the list are described in
 # https://plotly.com/r/reference/layout/annotations/
-setTitle <- function(title, title.font, margins)
+setTitle <- function(title, title.font, margins, x.align = "center")
 {
     if (!any(nzchar(title)))
         return(NULL)
-    return(list(text = title, font = title.font,
-                xref = "paper", x = 0.5, yshift = margins$t * 0.5,
-                yref = "paper", y = 1.0, yanchor = "middle", showarrow = FALSE))
+    x.align <- tolower(x.align)
+    xpos <- switch(x.align, center = 0.5, left = 0, right = 1)
+    return(list(text = title, font = title.font, align = x.align,
+                xref = "paper", x = xpos, xanchor = x.align, 
+                yref = "paper", y = 1.0, yanchor = "middle", 
+                yshift = margins$t * 0.5, showarrow = FALSE))
 }
 
-setSubtitle <- function(subtitle, subtitle.font, margins)
+setSubtitle <- function(subtitle, subtitle.font, margins, x.align = "center")
 {
     if (!any(nzchar(subtitle)))
         return(NULL)
+    x.align <- tolower(x.align)
+    xpos <- switch(x.align, center = 0.5, left = 0, right = 1)
     return(list(text = subtitle, font = subtitle.font,
-                xref = "paper", x = 0.5, #xshift = (margins$r - margins$l)/2,
+                xref = "paper", x = xpos, xanchor = x.align,
                 yref = "paper", y = 1.0, yanchor = "bottom", showarrow = FALSE))
 }
 
@@ -911,6 +916,7 @@ setFooter <- function(footer, footer.font, margins, x.align = "center")
 {
     if (!any(nzchar(footer)))
         return(NULL)
+    x.align <- tolower(x.align)
     xpos <- switch(x.align, center = 0.5, left = 0, right = 1)
 
     footer.nline <- Sum(gregexpr("<br>", footer)[[1]] > -1, remove.missing = FALSE) + 1
