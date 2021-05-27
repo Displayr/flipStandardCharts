@@ -550,7 +550,7 @@ Column <- function(x,
     {
         warning("Parameter 'bar group gap' must be between 0 and 1. ",
                 "Invalid 'bar group gap' set to default value of 0.0.")
-        bar.gap <- 0.0
+        bar.group.gap <- 0.0
     }
 
     # Some minimal data cleaning
@@ -634,13 +634,15 @@ Column <- function(x,
                   ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance, y.tick.format,
                   y.tick.prefix, y.tick.suffix,
                   y.tick.show, y.zero, y.zero.line.width, y.zero.line.color,
-                  y.hovertext.format, num.maxticks = y.tick.maxnum,
+                  y.hovertext.format, num.maxticks = y.tick.maxnum, tickcolor = y.tick.mark.color,
                   zoom.enable = zoom.enable)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, x.tick.format,
                   x.tick.prefix, x.tick.suffix, x.tick.show, x.zero, x.zero.line.width, x.zero.line.color,
-                  x.hovertext.format, axisFormat$labels, num.series = NCOL(chart.matrix), with.bars = TRUE, num.maxticks = x.tick.maxnum, zoom.enable = zoom.enable)
+                  x.hovertext.format, axisFormat$labels, num.series = NCOL(chart.matrix), 
+                  with.bars = TRUE, tickcolor = x.tick.mark.color, num.maxticks = x.tick.maxnum, 
+                  zoom.enable = zoom.enable)
 
     yaxis2 <- NULL
 
@@ -765,7 +767,8 @@ Column <- function(x,
                           y2.tick, y2.tick.font, y2.tick.angle, y2.tick.mark.length, y2.tick.distance,
                           y2.tick.format, y2.tick.prefix, y2.tick.suffix,
                           y2.tick.show, y2.zero, y2.zero.line.width, y2.zero.line.color,
-                          y2.hovertext.format, num.maxticks = y2.tick.maxnum)
+                          y2.hovertext.format, num.maxticks = y2.tick.maxnum, 
+                          tickcolor = y2.tick.mark.color)
         yaxis2$overlaying <- "y"
 
         n2 <- ncol(x2)
@@ -1088,9 +1091,9 @@ Column <- function(x,
     # Add text elements surrounding chart
     annotations <- NULL
     n <- length(annotations)
-    annotations[[n+1]] <- setTitle(title, title.font, margins, x.align = title.halign)
-    annotations[[n+2]] <- setFooter(footer, footer.font, margins, x.align = footer.halign)
-    annotations[[n+3]] <- setSubtitle(subtitle, subtitle.font, margins, x.align = subtitle.halign)
+    annotations[[n+1]] <- setTitle(title, title.font, margins, title.halign)
+    annotations[[n+2]] <- setFooter(footer, footer.font, margins, footer.halign)
+    annotations[[n+3]] <- setSubtitle(subtitle, subtitle.font, margins, subtitle.halign)
     annotations <- Filter(Negate(is.null), annotations)
 
     serieslabels.num.changes <- vapply(chart.labels$SeriesLabels, function(s) isTRUE(s$ShowValue) + length(s$CustomPoints), numeric(1L))

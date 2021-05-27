@@ -1,6 +1,7 @@
 #' Pyramid
 #'
 #' Bar charts with a centred axis
+#' @inherit Column
 #' @inherit Bar
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom plotly plot_ly layout
@@ -14,14 +15,17 @@ Pyramid <- function(x,
                     title.font.family = global.font.family,
                     title.font.color = global.font.color,
                     title.font.size = 16,
+                    title.halign = "center",
                     subtitle = "",
                     subtitle.font.family = global.font.family,
                     subtitle.font.color = global.font.color,
                     subtitle.font.size = 12,
+                    subtitle.halign = "center",
                     footer = "",
                     footer.font.family = global.font.family,
                     footer.font.color = global.font.color,
                     footer.font.size = 8,
+                    footer.halign = "center",
                     footer.wrap = TRUE,
                     footer.wrap.nchar = 100,
                     background.fill.color = "transparent",
@@ -41,6 +45,7 @@ Pyramid <- function(x,
                     y.line.width = 0,
                     y.line.color = rgb(0, 0, 0, maxColorValue = 255),
                     y.tick.mark.length = 3,
+                    y.tick.mark.color = "transparent",
                     y.bounds.minimum = NULL,
                     y.bounds.maximum = NULL,
                     y.tick.distance = NULL,
@@ -68,6 +73,7 @@ Pyramid <- function(x,
                     x.line.color = rgb(0, 0, 0, maxColorValue = 255),
                     x.tick.marks = "",
                     x.tick.mark.length = 0,
+                    x.tick.mark.color = "transparent",
                     x.bounds.maximum = NULL,
                     x.tick.distance = NULL,
                     x.tick.maxnum = NULL,
@@ -193,14 +199,14 @@ Pyramid <- function(x,
                   ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance,
                   y.tick.format, y.tick.prefix, y.tick.suffix, y.tick.show,
                   y.zero, y.zero.line.width, y.zero.line.color,
-                  y.hovertext.format, num.maxticks = y.tick.maxnum)
+                  y.hovertext.format, num.maxticks = y.tick.maxnum, tickcolor = y.tick.mark.color)
     yaxis$nticks = NROW(chart.matrix)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance,
                   x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show,
                   x.zero, x.zero.line.width, x.zero.line.color,
-                  x.hovertext.format, num.maxticks = x.tick.maxnum)
+                  x.hovertext.format, num.maxticks = x.tick.maxnum, tickcolor = x.tick.mark.color)
 
     # Work out margin spacing
     margins <- list(t = 20, b = 20, r = 60, l = 80, pad = 0)
@@ -258,9 +264,9 @@ Pyramid <- function(x,
                    size = hovertext.font.size, family = hovertext.font.family),
                    bgcolor = colors), hovertemplate = "%{x}<extra>%{y}</extra>")
 
-    annot <- list(setSubtitle(subtitle, subtitle.font, margins),
-                           setTitle(title, title.font, margins),
-                           setFooter(footer, footer.font, margins))
+    annot <- list(setSubtitle(subtitle, subtitle.font, margins, subtitle.halign),
+                           setTitle(title, title.font, margins, title.halign),
+                           setFooter(footer, footer.font, margins, footer.halign))
     annot <- Filter(Negate(is.null), annot)
 
     p <- config(p, displayModeBar = modebar.show)

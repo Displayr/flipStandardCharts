@@ -41,14 +41,17 @@ Distribution(
   title.font.family = global.font.family,
   title.font.color = global.font.color,
   title.font.size = 16,
+  title.halign = "center",
   subtitle = "",
   subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color,
   subtitle.font.size = 12,
+  subtitle.halign = "center",
   footer = "",
   footer.font.family = global.font.family,
   footer.font.color = global.font.color,
   footer.font.size = 8,
+  footer.halign = "center",
   footer.wrap = TRUE,
   footer.wrap.nchar = 100,
   background.fill.color = "transparent",
@@ -182,6 +185,8 @@ format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{title.font.size}{Title font size; default = 10.}
 
+\item{title.halign}{Horizontal alignment of title}
+
 \item{subtitle}{Character}
 
 \item{subtitle.font.family}{Character; subtitle font family}
@@ -201,6 +206,8 @@ character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{footer.font.size}{Integer; footer font size}
+
+\item{footer.halign}{Horizontal alignment of footer}
 
 \item{footer.wrap}{Logical; whether the footer text should be wrapped.}
 
@@ -320,6 +327,8 @@ because data labels and annotations can be misplace on zoom.}
 \item{tooltip.show}{Logical; whether to show a tooltip on hover.}
 
 \item{modebar.show}{Logical; whether to show the zoom menu buttons or not.}
+
+\item{subtitle.halgin}{Horizontal alignment of subtitle}
 }
 \value{
 A \code{plotly} chart.

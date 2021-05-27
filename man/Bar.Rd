@@ -126,6 +126,7 @@ Bar(
   modebar.show = FALSE,
   zoom.enable = TRUE,
   bar.gap = 0.15,
+  bar.group.gap = 0,
   data.label.show = FALSE,
   data.label.font.autocolor = FALSE,
   data.label.font.family = global.font.family,
@@ -443,6 +444,9 @@ because data labels and annotations can be misplace on zoom.}
 
 \item{bar.gap}{Gap between adjacent bars with different coordinates in
 bar or column charts (in plot fraction).}
+
+\item{bar.group.gap}{Gap between bars at the same location (in plot fraction).
+This is only applicable for grouped bar/column charts.}
 
 \item{data.label.show}{Logical; whether to show data labels.}
 

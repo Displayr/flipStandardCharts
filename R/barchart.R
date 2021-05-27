@@ -136,6 +136,7 @@ Bar <- function(x,
                     modebar.show = FALSE,
                     zoom.enable = TRUE,
                     bar.gap = 0.15,
+                    bar.group.gap = 0.0,
                     data.label.show = FALSE,
                     data.label.font.autocolor = FALSE,
                     data.label.font.family = global.font.family,
@@ -150,12 +151,6 @@ Bar <- function(x,
 {
     # Data checking
     ErrorIfNotEnoughData(x)
-    if (bar.gap < 0.0 || bar.gap >= 1.0)
-    {
-        warning("Parameter 'bar gap' must be between 0 and 1. ",
-                "Invalid 'bar gap' set to default value of 0.15.")
-        bar.gap <- 0.15
-    }
     annot.data <- x
     if (isPercentData(x))
     {
@@ -189,6 +184,21 @@ Bar <- function(x,
         type <- "100% Stacked Bar"
     if (!is.stacked)
         type <- "Bar"
+
+    if (bar.gap < 0.0 || bar.gap >= 1.0)
+    {
+        warning("Parameter 'bar gap' must be between 0 and 1. ",
+                "Invalid 'bar gap' set to default value of 0.15.")
+        bar.gap <- 0.15
+    }
+    if (is.stacked || ncol(chart.matrix) < 2)
+        bar.group.gap <- 0.0
+    if (bar.group.gap < 0.0 || bar.group.gap >= 1.0)
+    {
+        warning("Parameter 'bar group gap' must be between 0 and 1. ",
+                "Invalid 'bar group gap' set to default value of 0.0.")
+        bar.group.gap <- 0.0
+    }
 
     # Some minimal data cleaning
     # Assume formatting and Qtable/attribute handling already done
@@ -500,7 +510,7 @@ Bar <- function(x,
             font = list(size = hovertext.font.size, family = hovertext.font.family)),
         hovermode = if (tooltip.show) "closest" else FALSE,
         annotations =  annotations,
-        bargap = bar.gap,
+        bargap = bar.gap, bargroupgap = bar.group.gap,
         barmode = barmode
     )
     attr(p, "can-run-in-root-dom") <- TRUE

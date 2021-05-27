@@ -30,6 +30,7 @@ Radar <- function(x,
                     title.font.family = global.font.family,
                     title.font.color = global.font.color,
                     title.font.size = 16,
+                    title.halign = "center",
                     colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
                     opacity = NULL,
                     background.fill.color =  "transparent",
@@ -109,10 +110,12 @@ Radar <- function(x,
                     subtitle.font.family = global.font.family,
                     subtitle.font.color = global.font.color,
                     subtitle.font.size = 12,
+                    subtitle.halign = "center",
                     footer = "",
                     footer.font.family = global.font.family,
                     footer.font.color = global.font.color,
                     footer.font.size = 8,
+                    footer.halign = "center",
                     footer.wrap = TRUE,
                     footer.wrap.nchar = 100)
 {
@@ -487,9 +490,9 @@ Radar <- function(x,
     }
 
     annot.len <- length(annotations)
-    annotations[[annot.len+1]] <- setFooter(footer, footer.font, margins)
-    annotations[[annot.len+2]] <- setTitle(title, title.font, margins)
-    annotations[[annot.len+3]] <- setSubtitle(subtitle, subtitle.font, margins)
+    annotations[[annot.len+1]] <- setFooter(footer, footer.font, margins, footer.halign)
+    annotations[[annot.len+2]] <- setTitle(title, title.font, margins, title.halign)
+    annotations[[annot.len+3]] <- setSubtitle(subtitle, subtitle.font, margins, subtitle.halign)
 
     if (grid.show && y.grid.width > 0 && y.tick.show && !is.null(tick.vals))
     {
