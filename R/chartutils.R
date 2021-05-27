@@ -624,7 +624,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
                     tickformatmanual, tickprefix, ticksuffix, tickshow,
                     show.zero, zero.line.width, zero.line.color,
                     hovertext.format.manual, labels = NULL, num.series = 1,
-                    with.bars = FALSE, num.maxticks = NULL,
+                    with.bars = FALSE, tickcolor = "transparent", num.maxticks = NULL,
                     zoom.enable = TRUE)
 {
     axis.type <- if (side %in% c("bottom", "top")) axisLabels$x.axis.type else axisLabels$y.axis.type
@@ -753,7 +753,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
                  tickvals = ticks$tickvals, ticktext = ticks$ticktext,
                  ticklabelposition = "outside", tickangle = tickangle,
                  ticklen = ticklen, tickfont = tickfont,
-                 tickcolor = if (has.line) linecolor else "transparent",
+                 tickcolor = tickcolor, #if (has.line) linecolor else "transparent",
                  dtick = tickdistance, tickformat = tickformat, tick0 = tick0,
                  tickprefix = tickprefix, ticksuffix = ticksuffix,
                  hoverformat = hoverformat, layer = "below traces",
