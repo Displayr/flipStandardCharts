@@ -28,14 +28,17 @@ Area(
   title.font.family = global.font.family,
   title.font.color = global.font.color,
   title.font.size = 16,
+  title.align = "center",
   subtitle = "",
   subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color,
   subtitle.font.size = 12,
+  subtitle.align = "center",
   footer = "",
   footer.font.family = global.font.family,
   footer.font.color = global.font.color,
   footer.font.size = 8,
+  footer.align = "center",
   footer.wrap = TRUE,
   footer.wrap.nchar = 100,
   background.fill.color = "transparent",
@@ -70,6 +73,7 @@ Area(
   y.line.width = 0,
   y.line.color = rgb(0, 0, 0, maxColorValue = 255),
   y.tick.mark.length = 0,
+  y.tick.mark.color = "transparent",
   y.bounds.minimum = NULL,
   y.bounds.maximum = NULL,
   y.tick.distance = NULL,
@@ -97,6 +101,7 @@ Area(
   x.line.color = rgb(0, 0, 0, maxColorValue = 255),
   x.tick.marks = "",
   x.tick.mark.length = 3,
+  x.tick.mark.color = "transparent",
   x.bounds.minimum = NULL,
   x.bounds.maximum = NULL,
   x.tick.distance = NULL,
@@ -203,6 +208,8 @@ format (e.g. "black") or a hex code.}
 
 \item{title.font.size}{Integer; Title font size; default = 10.}
 
+\item{title.align}{Horizontal alignment of title.}
+
 \item{subtitle}{Character}
 
 \item{subtitle.font.family}{Character; subtitle font family}
@@ -212,6 +219,8 @@ character format (e.g. "black") or an a hex code.}
 
 \item{subtitle.font.size}{Integer; subtitle font size}
 
+\item{subtitle.align}{Horizontal alignment of subtitle.}
+
 \item{footer}{Character}
 
 \item{footer.font.family}{Character; footer font family}
@@ -220,6 +229,8 @@ character format (e.g. "black") or an a hex code.}
 character format (e.g. "black") or an a hex code.}
 
 \item{footer.font.size}{Integer; footer font size}
+
+\item{footer.align}{Horizontal alignment of footer.}
 
 \item{footer.wrap}{Logical; whether the footer text should be wrapped.}
 
@@ -307,6 +318,8 @@ character format (e.g. "black") or a hex code.}
 
 \item{y.tick.mark.length}{Length of tick marks in pixels. Ticks are only shown when \code{y.line.width > 0}.}
 
+\item{y.tick.mark.color}{Color of tick marks (default transparent).}
+
 \item{y.bounds.minimum}{Minimum of range for plotting; For a date axis this should be supplied as a date string.
 For a categorical axis, the index of the category (0-based) should be used.}
 
@@ -374,6 +387,8 @@ character format (e.g. "black") or an a hex code.}
 x-axis.  Can be "outside", "inside", "none"}
 
 \item{x.tick.mark.length}{Length of tick marks in pixels.}
+
+\item{x.tick.mark.color}{Color of tick marks.}
 
 \item{x.bounds.minimum}{Minimum of range for plotting; For a date axis this should be supplied as a date string.
 For a categorical axis, the index of the category (0-based) should be used.}

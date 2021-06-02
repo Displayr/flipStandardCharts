@@ -36,16 +36,19 @@
 #' @param title.font.color Title font color as a named color in character
 #' format (e.g. "black") or a hex code.
 #' @param title.font.size Integer; Title font size; default = 10.
+#' @param title.align Horizontal alignment of title.
 #' @param subtitle Character
 #' @param subtitle.font.color subtitle font color as a named color in
 #' character format (e.g. "black") or an a hex code.
 #' @param subtitle.font.family Character; subtitle font family
 #' @param subtitle.font.size Integer; subtitle font size
+#' @param subtitle.align Horizontal alignment of subtitle.
 #' @param footer Character
 #' @param footer.font.color footer font color as a named color in
 #' character format (e.g. "black") or an a hex code.
 #' @param footer.font.family Character; footer font family
 #' @param footer.font.size Integer; footer font size
+#' @param footer.align Horizontal alignment of footer.
 #' @param footer.wrap Logical; whether the footer text should be wrapped.
 #' @param footer.wrap.nchar Number of characters (approximately) in each
 #' line of the footer when \code{footer.wrap} \code{TRUE}.
@@ -103,6 +106,7 @@
 #' @param y.line.color y-axis line color as a named color in character format
 #' (e.g. "black") or a hex code.
 #' @param y.tick.mark.length Length of tick marks in pixels. Ticks are only shown when \code{y.line.width > 0}.
+#' @param y.tick.mark.color Color of tick marks (default transparent).
 #' @param y.bounds.minimum Minimum of range for plotting; For a date axis this should be supplied as a date string.
 #'  For a categorical axis, the index of the category (0-based) should be used.
 #' @param y.bounds.maximum Maximum of range for plotting; NULL = no manual range set.
@@ -142,6 +146,7 @@
 #' @param y2.line.color y-axis line color as a named color in character format
 #' (e.g. "black") or a hex code.
 #' @param y2.tick.mark.length Length of tick marks in pixels. Ticks are only shown when \code{y.line.width > 0}.
+#' @param y2.tick.mark.color color of tick marks.
 #' @param y2.bounds.minimum Minimum of range for plotting; For a date axis this should be supplied as a date string.
 #'  For a categorical axis, the index of the category (0-based) should be used.
 #' @param y2.bounds.maximum Maximum of range for plotting; NULL = no manual range set.
@@ -184,6 +189,7 @@
 #' @param x.tick.marks Character; whether and where to show tick marks on the
 #' x-axis.  Can be "outside", "inside", "none"
 #' @param x.tick.mark.length Length of tick marks in pixels.
+#' @param x.tick.mark.color Color of tick marks.
 #' @param x.bounds.minimum Minimum of range for plotting; For a date axis this should be supplied as a date string.
 #'  For a categorical axis, the index of the category (0-based) should be used.
 #' @param x.bounds.maximum Maximum of range for
@@ -234,8 +240,10 @@
 #' font attribute for the chart unless specified individually.
 #' @param global.font.color Global font color as a named color in character format
 #' (e.g. "black") or an a hex code.
-#' @param bar.gap Chart proportion between each bar or column if using
-#' bar or column charts, or between each cluster of bars or columns.
+#' @param bar.gap Gap between adjacent bars with different coordinates in
+#' bar or column charts (in plot fraction).
+#' @param bar.group.gap Gap between bars at the same location (in plot fraction).
+#'  This is only applicable for grouped bar/column charts. 
 #' @param data.label.show Logical; whether to show data labels.
 #' @param data.label.centered Logical; whether data labels in Stacked Column
 #' charts should have the data labels vertically centered.
@@ -327,14 +335,17 @@ Column <- function(x,
                     title.font.family = global.font.family,
                     title.font.color = global.font.color,
                     title.font.size = 16,
+                    title.align = "center",
                     subtitle = "",
                     subtitle.font.family = global.font.family,
                     subtitle.font.color = global.font.color,
                     subtitle.font.size = 12,
+                    subtitle.align = "center",
                     footer = "",
                     footer.font.family = global.font.family,
                     footer.font.color = global.font.color,
                     footer.font.size = 8,
+                    footer.align = "center",
                     footer.wrap = TRUE,
                     footer.wrap.nchar = 100,
                     background.fill.color = "transparent",
@@ -396,6 +407,7 @@ Column <- function(x,
                     y.line.width = 0,
                     y.line.color = rgb(0, 0, 0, maxColorValue = 255),
                     y.tick.mark.length = 0,
+                    y.tick.mark.color = "transparent",
                     y.bounds.minimum = NULL,
                     y.bounds.maximum = NULL,
                     y.tick.distance = NULL,
@@ -422,6 +434,7 @@ Column <- function(x,
                     y2.line.width = 0,
                     y2.line.color = rgb(0, 0, 0, maxColorValue = 255),
                     y2.tick.mark.length = 0,
+                    y2.tick.mark.color = "tranparent",
                     y2.bounds.minimum = NULL,
                     y2.bounds.maximum = NULL,
                     y2.tick.distance = NULL,
@@ -449,6 +462,7 @@ Column <- function(x,
                     x.line.color = rgb(0, 0, 0, maxColorValue = 255),
                     x.tick.marks = "",
                     x.tick.mark.length = 3,
+                    x.tick.mark.color = "transparent",
                     x.bounds.minimum = NULL,
                     x.bounds.maximum = NULL,
                     x.tick.distance = NULL,
@@ -477,6 +491,7 @@ Column <- function(x,
                     modebar.show = FALSE,
                     zoom.enable = TRUE,
                     bar.gap = 0.15,
+                    bar.group.gap = 0.0,
                     data.label.show = FALSE,
                     data.label.centered = FALSE,
                     data.label.font.autocolor = FALSE,
@@ -506,13 +521,6 @@ Column <- function(x,
         data.label.suffix <- sfx[2]
     }
 
-    if (bar.gap < 0.0 || bar.gap >= 1.0)
-    {
-        warning("Parameter 'bar gap' must be between 0 and 1. ",
-                "Invalid 'bar gap' set to default value of 0.15.")
-        bar.gap <- 0.15
-    }
-
     # Store data for chart annotations
     annot.data <- x
     chart.matrix <- checkMatrixNames(x)
@@ -529,6 +537,21 @@ Column <- function(x,
     is.hundred.percent.stacked <- grepl("100% Stacked", type, fixed = TRUE)
     if (any(!is.finite(as.matrix(chart.matrix))))
         warning("Missing values have been set to zero.")
+
+    if (bar.gap < 0.0 || bar.gap >= 1.0)
+    {
+        warning("Parameter 'bar gap' must be between 0 and 1. ",
+                "Invalid 'bar gap' set to default value of 0.15.")
+        bar.gap <- 0.15
+    }
+    if (is.stacked || ncol(chart.matrix) < 2)
+        bar.group.gap <- 0.0
+    if (bar.group.gap < 0.0 || bar.group.gap >= 1.0)
+    {
+        warning("Parameter 'bar group gap' must be between 0 and 1. ",
+                "Invalid 'bar group gap' set to default value of 0.0.")
+        bar.group.gap <- 0.0
+    }
 
     # Some minimal data cleaning
     # Assume formatting and Qtable/attribute handling already done
@@ -611,13 +634,15 @@ Column <- function(x,
                   ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance, y.tick.format,
                   y.tick.prefix, y.tick.suffix,
                   y.tick.show, y.zero, y.zero.line.width, y.zero.line.color,
-                  y.hovertext.format, num.maxticks = y.tick.maxnum,
+                  y.hovertext.format, num.maxticks = y.tick.maxnum, tickcolor = y.tick.mark.color,
                   zoom.enable = zoom.enable)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, x.tick.format,
                   x.tick.prefix, x.tick.suffix, x.tick.show, x.zero, x.zero.line.width, x.zero.line.color,
-                  x.hovertext.format, axisFormat$labels, num.series = NCOL(chart.matrix), with.bars = TRUE, num.maxticks = x.tick.maxnum, zoom.enable = zoom.enable)
+                  x.hovertext.format, axisFormat$labels, num.series = NCOL(chart.matrix), 
+                  with.bars = TRUE, tickcolor = x.tick.mark.color, num.maxticks = x.tick.maxnum, 
+                  zoom.enable = zoom.enable)
 
     yaxis2 <- NULL
 
@@ -742,7 +767,8 @@ Column <- function(x,
                           y2.tick, y2.tick.font, y2.tick.angle, y2.tick.mark.length, y2.tick.distance,
                           y2.tick.format, y2.tick.prefix, y2.tick.suffix,
                           y2.tick.show, y2.zero, y2.zero.line.width, y2.zero.line.color,
-                          y2.hovertext.format, num.maxticks = y2.tick.maxnum)
+                          y2.hovertext.format, num.maxticks = y2.tick.maxnum, 
+                          tickcolor = y2.tick.mark.color)
         yaxis2$overlaying <- "y"
 
         n2 <- ncol(x2)
@@ -1065,9 +1091,9 @@ Column <- function(x,
     # Add text elements surrounding chart
     annotations <- NULL
     n <- length(annotations)
-    annotations[[n+1]] <- setTitle(title, title.font, margins)
-    annotations[[n+2]] <- setFooter(footer, footer.font, margins)
-    annotations[[n+3]] <- setSubtitle(subtitle, subtitle.font, margins)
+    annotations[[n+1]] <- setTitle(title, title.font, margins, title.align)
+    annotations[[n+2]] <- setFooter(footer, footer.font, margins, footer.align)
+    annotations[[n+3]] <- setSubtitle(subtitle, subtitle.font, margins, subtitle.align)
     annotations <- Filter(Negate(is.null), annotations)
 
     serieslabels.num.changes <- vapply(chart.labels$SeriesLabels, function(s) isTRUE(s$ShowValue) + length(s$CustomPoints), numeric(1L))
@@ -1091,6 +1117,7 @@ Column <- function(x,
             font = list(size = hovertext.font.size, family = hovertext.font.family)),
         hovermode = if (tooltip.show) "x" else FALSE,
         bargap = bar.gap,
+        bargroupgap = bar.group.gap,
         barmode = barmode
     )
     attr(p, "can-run-in-root-dom") <- TRUE

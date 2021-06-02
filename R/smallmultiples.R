@@ -65,14 +65,17 @@ SmallMultiples <- function(x,
                            title.font.family = global.font.family,
                            title.font.color = global.font.color,
                            title.font.size = 16,
+                           title.align = "center",
                            subtitle = "",
                            subtitle.font.family = global.font.family,
                            subtitle.font.color = global.font.color,
                            subtitle.font.size = 12,
+                           subtitle.align = "center",
                            footer = "",
                            footer.font.family = global.font.family,
                            footer.font.color = global.font.color,
                            footer.font.size = 8,
+                           footer.align = "center",
                            footer.wrap = TRUE,
                            footer.wrap.nchar = 100,
                            panel.title.show = TRUE,
@@ -530,9 +533,9 @@ SmallMultiples <- function(x,
                                  subtitle.font.size, footer.font.size)
     if (any(nzchar(subtitle)))
         subtitle <- paste0(subtitle, "<br>&nbsp;<br>")
-    annotations <- list(setSubtitle(subtitle, subtitle.font, margins),
-                        setTitle(title, title.font, margins),
-                        setFooter(footer, footer.font, margins))
+    annotations <- list(setSubtitle(subtitle, subtitle.font, margins, subtitle.align),
+                        setTitle(title, title.font, margins, title.align),
+                        setFooter(footer, footer.font, margins, footer.align))
     titles <- if (chart.type == "Scatter") names(indexes)
               else                         colnames(x)
     if (panel.title.show && !is.null(titles))

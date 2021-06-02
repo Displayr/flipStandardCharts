@@ -37,14 +37,17 @@ Bar <- function(x,
                     title.font.family = global.font.family,
                     title.font.color = global.font.color,
                     title.font.size = 16,
+                    title.align = "center",
                     subtitle = "",
                     subtitle.font.family = global.font.family,
                     subtitle.font.color = global.font.color,
                     subtitle.font.size = 12,
+                    subtitle.align = "center",
                     footer = "",
                     footer.font.family = global.font.family,
                     footer.font.color = global.font.color,
                     footer.font.size = 8,
+                    footer.align = "center",
                     footer.wrap = TRUE,
                     footer.wrap.nchar = 100,
                     background.fill.color = "transparent",
@@ -136,6 +139,7 @@ Bar <- function(x,
                     modebar.show = FALSE,
                     zoom.enable = TRUE,
                     bar.gap = 0.15,
+                    bar.group.gap = 0.0,
                     data.label.show = FALSE,
                     data.label.font.autocolor = FALSE,
                     data.label.font.family = global.font.family,
@@ -150,12 +154,6 @@ Bar <- function(x,
 {
     # Data checking
     ErrorIfNotEnoughData(x)
-    if (bar.gap < 0.0 || bar.gap >= 1.0)
-    {
-        warning("Parameter 'bar gap' must be between 0 and 1. ",
-                "Invalid 'bar gap' set to default value of 0.15.")
-        bar.gap <- 0.15
-    }
     annot.data <- x
     if (isPercentData(x))
     {
@@ -189,6 +187,21 @@ Bar <- function(x,
         type <- "100% Stacked Bar"
     if (!is.stacked)
         type <- "Bar"
+
+    if (bar.gap < 0.0 || bar.gap >= 1.0)
+    {
+        warning("Parameter 'bar gap' must be between 0 and 1. ",
+                "Invalid 'bar gap' set to default value of 0.15.")
+        bar.gap <- 0.15
+    }
+    if (is.stacked || ncol(chart.matrix) < 2)
+        bar.group.gap <- 0.0
+    if (bar.group.gap < 0.0 || bar.group.gap >= 1.0)
+    {
+        warning("Parameter 'bar group gap' must be between 0 and 1. ",
+                "Invalid 'bar group gap' set to default value of 0.0.")
+        bar.group.gap <- 0.0
+    }
 
     # Some minimal data cleaning
     # Assume formatting and Qtable/attribute handling already done
@@ -476,9 +489,9 @@ Bar <- function(x,
     }
     annotations <- NULL
     n <- length(annotations)
-    annotations[[n+1]] <- setFooter(footer, footer.font, margins)
-    annotations[[n+2]] <- setSubtitle(subtitle, subtitle.font, margins)
-    annotations[[n+3]] <- setTitle(title, title.font, margins)
+    annotations[[n+1]] <- setFooter(footer, footer.font, margins, footer.align)
+    annotations[[n+2]] <- setSubtitle(subtitle, subtitle.font, margins, subtitle.align)
+    annotations[[n+3]] <- setTitle(title, title.font, margins, title.align)
     annotations <- Filter(Negate(is.null), annotations)
     
     serieslabels.num.changes <- vapply(chart.labels$SeriesLabels, function(s) isTRUE(s$ShowValue) + length(s$CustomPoints), numeric(1L))
@@ -500,7 +513,7 @@ Bar <- function(x,
             font = list(size = hovertext.font.size, family = hovertext.font.family)),
         hovermode = if (tooltip.show) "closest" else FALSE,
         annotations =  annotations,
-        bargap = bar.gap,
+        bargap = bar.gap, bargroupgap = bar.group.gap,
         barmode = barmode
     )
     attr(p, "can-run-in-root-dom") <- TRUE

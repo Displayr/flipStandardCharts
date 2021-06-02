@@ -47,6 +47,7 @@
 #' @param y.tick.font.color y-axis tick label font color as a named color
 #' in character format (e.g. "black") or an a hex code.
 #' @param y.tick.length Numeric; length of tick marks if \code{y.tick.show}.
+#' @param y.tick.color Color of tick marks on y-axis
 #' @param y.tick.font.family Character; y-axis tick label font family
 #' @param y.tick.font.size Integer; y-axis tick label font size
 #' @param x.tick.format A string representing a d3 formatting code.
@@ -56,6 +57,7 @@
 #' @param x.tick.font.family Character; x-axis tick label font family
 #' @param x.tick.font.size Integer; x-axis tick label font size
 #' @param x.tick.length Numeric; length of tick marks if \code{x.axis.show}.
+#' @param x.tick.color Color of tick marks on x-axis.
 #' @param background.fill.color Background color in character format (e.g. "black") or a hex code.
 #' @param background.fill.opacity Background opacity as an alpha value (0 to 1).
 #' @param margin.top Margin between plot area and the top of the graphic in pixels
@@ -111,6 +113,7 @@ Sparkline <- function(x,
 		x.axis.width = 1,
         x.tick.show = x.axis.show,
         x.tick.length = 3,
+        x.tick.color = x.axis.color,
 		x.tick.font.family = global.font.family,
 		x.tick.font.color = global.font.color,
 		x.tick.font.size = 10,
@@ -120,6 +123,7 @@ Sparkline <- function(x,
 		y.axis.width = 1,
         y.tick.show = y.axis.show,
         y.tick.length = 3,
+        y.tick.color = y.axis.color,
 		y.tick.font.family = global.font.family,
 		y.tick.font.color = global.font.color,
 		y.tick.font.size = 10,
@@ -225,7 +229,7 @@ Sparkline <- function(x,
 						   		color = if (x.tick.show) x.tick.font.color else "transparent",
 				family = x.tick.font.family), tickformat = x.tick.format,
                 ticklen = if (x.tick.show) x.tick.length else 0,
-                linewidth = x.axis.width, linecolor = x.axis.color, tickcolor = x.axis.color)
+                linewidth = x.axis.width, linecolor = x.axis.color, tickcolor = x.tick.color)
     yaxis <- list(side = "left", showgrid = FALSE, showline = y.axis.show, zeroline = FALSE,
                 automargin = type != "Box",
                 showticklabels = y.axis.show, ticklabel.position = "outside",
@@ -233,7 +237,7 @@ Sparkline <- function(x,
 							 	color = if (y.tick.show) y.tick.font.color else "transparent",
 				family = y.tick.font.family), ticklen = if (y.tick.show) y.tick.length else 0,
 				hoverformat = hover.format, tickformat = y.tick.format,
-                linewidth = y.axis.width, linecolor = y.axis.color, tickcolor = y.axis.color)
+                linewidth = y.axis.width, linecolor = y.axis.color, tickcolor = y.tick.color)
 
     p <- plot_ly()
     if (type == "Area")

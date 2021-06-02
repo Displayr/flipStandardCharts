@@ -15,14 +15,17 @@ ColumnMultiColor <- function(x,
                     title.font.family = global.font.family,
                     title.font.color = global.font.color,
                     title.font.size = 16,
+                    title.align = "center",
                     subtitle = "",
                     subtitle.font.family = global.font.family,
                     subtitle.font.color = global.font.color,
                     subtitle.font.size = 12,
+                    subtitle.align = "center",
                     footer = "",
                     footer.font.family = global.font.family,
                     footer.font.color = global.font.color,
                     footer.font.size = 8,
+                    footer.align = "center",
                     footer.wrap = TRUE,
                     footer.wrap.nchar = 100,
                     background.fill.color = "transparent",
@@ -43,6 +46,7 @@ ColumnMultiColor <- function(x,
                     y.line.width = 0,
                     y.line.color = rgb(0, 0, 0, maxColorValue = 255),
                     y.tick.mark.length = 0,
+                    y.tick.mark.color = "transparent",
                     y.bounds.minimum = NULL,
                     y.bounds.maximum = NULL,
                     y.tick.distance = NULL,
@@ -70,6 +74,7 @@ ColumnMultiColor <- function(x,
                     x.line.color = rgb(0, 0, 0, maxColorValue = 255),
                     x.tick.marks = "",
                     x.tick.mark.length = 3,
+                    x.tick.mark.color = "transparent",
                     x.bounds.minimum = NULL,
                     x.bounds.maximum = NULL,
                     x.tick.distance = NULL,
@@ -191,14 +196,16 @@ ColumnMultiColor <- function(x,
                   ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance, 
                   y.tick.format, y.tick.prefix, y.tick.suffix,
                   y.tick.show, y.zero, y.zero.line.width, y.zero.line.color,
-                  y.hovertext.format, num.maxticks = y.tick.maxnum, zoom.enable = zoom.enable)
+                  y.hovertext.format, num.maxticks = y.tick.maxnum, 
+                  tickcolor = y.tick.mark.color, zoom.enable = zoom.enable)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, 
                   x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show, 
                   x.zero, x.zero.line.width, x.zero.line.color,
                   x.hovertext.format, axisFormat$labels, num.series = NCOL(chart.matrix), 
-                  with.bars = TRUE, num.maxticks = x.tick.maxnum, zoom.enable = zoom.enable)
+                  with.bars = TRUE, num.maxticks = x.tick.maxnum,
+                  tickcolor = x.tick.mark.color, zoom.enable = zoom.enable)
 
     # Work out margin spacing
     margins <- list(t = 20, b = 20, r = 60, l = 80, pad = 0)
@@ -275,9 +282,9 @@ ColumnMultiColor <- function(x,
         }
     }
 
-    annot <- list(setSubtitle(subtitle, subtitle.font, margins),
-                           setTitle(title, title.font, margins),
-                           setFooter(footer, footer.font, margins))
+    annot <- list(setSubtitle(subtitle, subtitle.font, margins, subtitle.align),
+                           setTitle(title, title.font, margins, title.align),
+                           setFooter(footer, footer.font, margins, footer.align))
     annot <- Filter(Negate(is.null), annot)
     
     serieslabels.num.changes <- vapply(chart.labels$SeriesLabels, function(s) isTRUE(s$ShowValue) + length(s$CustomPoints), numeric(1L))

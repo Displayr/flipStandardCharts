@@ -82,14 +82,17 @@ Scatter <- function(x = NULL,
                          title.font.family = global.font.family,
                          title.font.color = global.font.color,
                          title.font.size = 16,
+                         title.align = "center",
                          subtitle = "",
                          subtitle.font.family = global.font.family,
                          subtitle.font.color = global.font.color,
                          subtitle.font.size = 12,
+                         subtitle.align = "center",
                          footer = "",
                          footer.font.family = global.font.family,
                          footer.font.color = global.font.color,
                          footer.font.size = 8,
+                         footer.align = "center",
                          footer.wrap = TRUE,
                          footer.wrap.nchar = 100,
                          data.label.show = FALSE,
@@ -127,6 +130,7 @@ Scatter <- function(x = NULL,
                          y.line.width = 0,
                          y.line.color = rgb(0, 0, 0, maxColorValue = 255),
                          y.tick.mark.length = 0,
+                         y.tick.mark.color = "transparent",
                          y.bounds.minimum = NULL,
                          y.bounds.maximum = NULL,
                          y.tick.distance = NULL,
@@ -154,6 +158,7 @@ Scatter <- function(x = NULL,
                          x.line.width = 0,
                          x.line.color = rgb(0, 0, 0, maxColorValue = 255),
                          x.tick.mark.length = 3,
+                         x.tick.mark.color = "transparent",
                          x.bounds.minimum = NULL,
                          x.bounds.maximum = NULL,
                          x.tick.distance = NULL,
@@ -586,14 +591,15 @@ Scatter <- function(x = NULL,
                   ytick, ytick.font, y.tick.angle, y.tick.mark.length,
                   y.tick.distance, y.tick.format, y.tick.prefix, y.tick.suffix,
                   y.tick.show, y.zero, y.zero.line.width, y.zero.line.color,
-                  y.hovertext.format, num.maxticks = y.tick.maxnum, zoom.enable = zoom.enable)
+                  y.hovertext.format, num.maxticks = y.tick.maxnum, 
+                  tickcolor = y.tick.mark.color, zoom.enable = zoom.enable)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length,
                   x.tick.distance, x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show,
                   x.zero, x.zero.line.width, x.zero.line.color,
                   x.hovertext.format, axisFormat$labels, num.maxticks = x.tick.maxnum,
-                  zoom.enable = zoom.enable)
+                  tickcolor = x.tick.mark.color, zoom.enable = zoom.enable)
     if (!y.tick.on.label)
         yaxis$tickson <- "boundaries"
     if (!x.tick.on.label)
@@ -809,9 +815,9 @@ Scatter <- function(x = NULL,
             chart.labels$ValueAxisTitle <- y.title
     }
 
-    annot <- list(setSubtitle(subtitle, subtitle.font, margins),
-                  setTitle(title, title.font, margins),
-                  if (is.null(small.mult.index)) setFooter(footer, footer.font, margins) else NULL)
+    annot <- list(setSubtitle(subtitle, subtitle.font, margins, subtitle.align),
+                  setTitle(title, title.font, margins, title.align),
+                  if (is.null(small.mult.index)) setFooter(footer, footer.font, margins, footer.align) else NULL)
     annot <- Filter(Negate(is.null), annot)
 
     p <- config(p, displayModeBar = modebar.show)
