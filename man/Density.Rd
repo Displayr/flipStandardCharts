@@ -71,6 +71,7 @@ Density(
   categories.tick.font.color = global.font.color,
   categories.tick.font.family = global.font.family,
   categories.tick.font.size = 10,
+  categories.tick.angle = 0,
   categories.tick.label.wrap = TRUE,
   categories.tick.label.wrap.nchar = 21,
   hovertext.font.family = global.font.family,
@@ -251,6 +252,8 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{categories.tick.font.family}{Character; x-axis tick label font family}
 
 \item{categories.tick.font.size}{x-axis tick label font size}
+
+\item{categories.tick.angle}{Angle of the categories tick label.}
 
 \item{categories.tick.label.wrap}{Logical; whether to wrap long labels on the x-axis.}
 

@@ -86,6 +86,7 @@ Distribution(
   values.tick.font.color = global.font.color,
   values.tick.font.family = global.font.family,
   values.tick.font.size = 10,
+  categories.tick.angle = 0,
   categories.tick.font.color = global.font.color,
   categories.tick.font.family = global.font.family,
   categories.tick.font.size = 10,
@@ -302,6 +303,8 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{values.tick.font.family}{Character; y-axis tick label font family}
 
 \item{values.tick.font.size}{y-axis tick label font size}
+
+\item{categories.tick.angle}{Angle of the categories tick label.}
 
 \item{categories.tick.font.color}{X-axis tick label font color as a named color in
 character format (e.g. "black") or an rgb value (e.g.
