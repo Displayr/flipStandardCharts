@@ -58,9 +58,11 @@ Violin(
   values.line.width = 0,
   values.line.color = rgb(0, 0, 0, maxColorValue = 255),
   values.tick.mark.length = 0,
+  values.tick.mark.color = "transparent",
   values.bounds.minimum = NULL,
   values.bounds.maximum = NULL,
   values.tick.distance = NULL,
+  values.zero = FALSE,
   values.zero.line.width = 0,
   values.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
   values.grid.width = 1 * grid.show,
@@ -77,7 +79,8 @@ Violin(
   categories.tick.font.color = global.font.color,
   categories.tick.font.family = global.font.family,
   categories.tick.font.size = 10,
-  categories.tick.angle = 0,
+  categories.tick.angle = NULL,
+  categories.tick.mark.length = 0,
   categories.tick.label.wrap = TRUE,
   categories.tick.label.wrap.nchar = 21,
   hovertext.font.family = global.font.family,
@@ -220,6 +223,8 @@ max = 255)).}
 
 \item{values.tick.mark.length}{Length of tick marks in pixels.}
 
+\item{values.tick.mark.color}{Color of tick marks.}
+
 \item{values.bounds.minimum}{Minimum of range for plotting;
 NULL = no manual range set.  Must be less than values.bounds.maximum}
 
@@ -227,6 +232,8 @@ NULL = no manual range set.  Must be less than values.bounds.maximum}
 plotting; NULL = no manual range set.  Must be greater than values.bounds.minimum}
 
 \item{values.tick.distance}{The distance between the ticks. Requires that \code{values.bounds.minimum} and \code{values.bounds.maximum} have been set.}
+
+\item{values.zero}{Logical; whether a line should be shown when at values = 0.}
 
 \item{values.zero.line.width}{Width in pixels of zero line; 0 = no zero line
 shown}
@@ -272,6 +279,11 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{categories.tick.font.size}{x-axis tick label font size}
 
 \item{categories.tick.angle}{Angle of the categories tick label.}
+
+\item{categories.tick.mark.length}{Distance between tick labels (variable names)
+and axis. Note that this parameter name is chosen to be analgous to 
+the same parameter in other charts, but it is not a a true "tick" label
+so categories.tick.mark.color is set as transparent.}
 
 \item{categories.tick.label.wrap}{Logical; whether to wrap long labels on the x-axis.}
 
