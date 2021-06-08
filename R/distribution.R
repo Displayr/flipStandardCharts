@@ -347,7 +347,7 @@ Distribution <-   function(x,
 
     # Work out margin spacing
     if (vertical)
-        margins <- list(t = 20, b = 20, r = 60,
+        margins <- list(t = 20, b = 30, r = 60,
                         l = 60 + values.title.font.size, pad = 0)
     else
         margins <- list(t = 20, b = 30 + values.tick.font.size + values.title.font.size,
