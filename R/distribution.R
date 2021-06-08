@@ -353,7 +353,7 @@ Distribution <-   function(x,
         margins <- list(t = 20, b = 30 + values.tick.font.size + values.title.font.size,
                         r = 60, l = 20, pad = 0)
     if (is.null(categories.tick.angle))
-        categories.tick.angle <- if (vertical) 0 else 90
+        categories.tick.angle <- if (vertical) 0 else 270
 
     margins <- setMarginsForAxis(margins, labels, list(tickfont = categories.tick.font,
                      side = if (vertical) "bottom" else "left", tickangle = categories.tick.angle))
