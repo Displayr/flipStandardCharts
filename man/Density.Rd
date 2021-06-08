@@ -74,7 +74,7 @@ Density(
   categories.tick.font.family = global.font.family,
   categories.tick.font.size = 10,
   categories.tick.angle = NULL,
-  categories.tick.mark.length = 0,
+  categories.tick.mark.length = 20,
   categories.tick.label.wrap = TRUE,
   categories.tick.label.wrap.nchar = 21,
   hovertext.font.family = global.font.family,
@@ -263,7 +263,7 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{categories.tick.angle}{Angle of the categories tick label.}
 
 \item{categories.tick.mark.length}{Distance between tick labels (variable names)
-and axis. Note that this parameter name is chosen to be analgous to 
+and axis. Note that this parameter name is chosen to be analgous to
 the same parameter in other charts, but it is not a a true "tick" label
 so categories.tick.mark.color is set as transparent.}
 

@@ -133,7 +133,7 @@
 #' @param categories.tick.label.wrap.nchar Integer; number of characters in each line when \code{categories.tick.label.wrap} is \code{TRUE}.
 #' @param categories.tick.angle Angle of the categories tick label.
 #' @param categories.tick.mark.length Distance between tick labels (variable names)
-#'  and axis. Note that this parameter name is chosen to be analgous to 
+#'  and axis. Note that this parameter name is chosen to be analgous to
 #'  the same parameter in other charts, but it is not a a true "tick" label
 #'  so categories.tick.mark.color is set as transparent.
 #' @param modebar.show Logical; whether to show the zoom menu buttons or not.
@@ -244,7 +244,7 @@ Distribution <-   function(x,
     values.tick.font.family = global.font.family,
     values.tick.font.size = 10,
     categories.tick.angle = NULL,
-    categories.tick.mark.length = 0,
+    categories.tick.mark.length = 20,
     categories.tick.font.color = global.font.color,
     categories.tick.font.family = global.font.family,
     categories.tick.font.size = 10,
@@ -351,13 +351,14 @@ Distribution <-   function(x,
                         l = 60 + values.title.font.size, pad = 0)
     else
         margins <- list(t = 20, b = 30 + values.tick.font.size + values.title.font.size,
-                        r = 60, l = 20, pad = 0)
+                        r = 60, l = 0, pad = 0)
     if (is.null(categories.tick.angle))
         categories.tick.angle <- if (vertical) 0 else 270
 
-    margins <- setMarginsForAxis(margins, labels, list(tickfont = categories.tick.font,
+    if (vertical || categories.tick.angle == 0)
+        margins <- setMarginsForAxis(margins, labels, list(tickfont = categories.tick.font,
                      side = if (vertical) "bottom" else "left", tickangle = categories.tick.angle))
-    if (!vertical && margins$l < 80)    # for backwards compatibility
+    else    # to avoid affecting old charts
         margins$l <- 80
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  10, 10)
@@ -438,13 +439,13 @@ Distribution <-   function(x,
         values.bounds.minimum <- rng[1]
     if (is.null(values.bounds.maximum))
         values.bounds.maximum <- rng[2]
-    values.axis <- setAxis(values.title, if (vertical) "left" else "bottom", 
+    values.axis <- setAxis(values.title, if (vertical) "left" else "bottom",
          axisFormat, values.title.font,
          values.line.color, values.line.width, values.grid.width, values.grid.color,
          values.tick, values.tick.font, values.tick.angle, values.tick.mark.length,
          values.tick.distance, values.tick.format, values.tick.prefix,
          values.tick.suffix, values.tick.show, values.zero, values.zero.line.width,
-         values.zero.line.color, values.hovertext.format, 
+         values.zero.line.color, values.hovertext.format,
          tickcolor = values.tick.mark.color, zoom.enable = zoom.enable)
     hover.mode <- if (tooltip.show) "'closest'" else "FALSE"
     annotations <- setCategoriesAxesTitles(vertical, labels, categories.tick.font, categories.tick.angle, categories.tick.mark.length)
@@ -607,7 +608,7 @@ createWeights <- function(x, weights)
 
 #' @importFrom stats density weighted.mean quantile
 #' @importFrom Hmisc wtd.quantile
-addSummaryStatistics <- function(p, values, weights, vertical, show.density, show.mirror.density, 
+addSummaryStatistics <- function(p, values, weights, vertical, show.density, show.mirror.density,
                                  show.mean, show.median, show.quartiles, show.range, show.values,
                                  mean.color, median.color, quartile.color, range.color, values.color,
                                  category.axis, value.axis, value.names)
@@ -635,7 +636,7 @@ addSummaryStatistics <- function(p, values, weights, vertical, show.density, sho
               mode = "markers",
               name = "",
               showlegend = FALSE,
-              text = autoFormatLongLabels(paste0("<b>", trimws(round_half_up(v2, 2)), "</b>: ", v.tmp), 
+              text = autoFormatLongLabels(paste0("<b>", trimws(round_half_up(v2, 2)), "</b>: ", v.tmp),
                             wordwrap = TRUE, n = 30),
               type = "scatter",
               xaxis = category.axis,
@@ -747,13 +748,13 @@ setCategoriesAxesTitles <- function(vertical, labels, font, angle, ticklen)
     n <- length(labels)
     sq <- seq(1, n * 2 , 2)
     if (!vertical)
-        axes <- lapply(1:n, function(i) 
+        axes <- lapply(1:n, function(i)
             return(list(text = labels[i], showarrow = FALSE, font = font, textangle = angle,
                 xref = "paper", x = -0.01, xanchor = "right", xshift = -ticklen,
                 yref = paste0("y", sq[i], " domain"), y = 0.5)))
 
     else
-        axes <- lapply(1:n, function(i) 
+        axes <- lapply(1:n, function(i)
             return(list(text = labels[i], showarrow = FALSE, font = font, textangle = angle,
                 yref = "paper", y = 0.0, yanchor = "top", yshift = -ticklen,
                 xref = paste0("x", sq[i], " domain"), x = 0.5)))

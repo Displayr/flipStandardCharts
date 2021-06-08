@@ -78,7 +78,7 @@ Bean <- function(x,
                    categories.tick.angle = NULL,
                    categories.tick.label.wrap = TRUE,
                    categories.tick.label.wrap.nchar = 21,
-                   categories.tick.mark.length = 0,
+                   categories.tick.mark.length = 20,
                    hovertext.font.family = global.font.family,
                    hovertext.font.size = 11,
                    modebar.show = FALSE)
