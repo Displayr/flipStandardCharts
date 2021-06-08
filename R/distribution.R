@@ -235,7 +235,7 @@ Distribution <-   function(x,
     values.tick.font.color = global.font.color,
     values.tick.font.family = global.font.family,
     values.tick.font.size = 10,
-    categories.tick.angle = 0,
+    categories.tick.angle = NULL,
     categories.tick.font.color = global.font.color,
     categories.tick.font.family = global.font.family,
     categories.tick.font.size = 10,
@@ -343,9 +343,13 @@ Distribution <-   function(x,
     else
         margins <- list(t = 20, b = 30 + values.tick.font.size + values.title.font.size,
                         r = 60, l = 20, pad = 0)
+    if (is.null(categories.tick.angle))
+        categories.tick.angle <- if (vertical) 0 else 90
 
     margins <- setMarginsForAxis(margins, labels, list(tickfont = categories.tick.font,
                      side = if (vertical) "bottom" else "left", tickangle = categories.tick.angle))
+    if (!vertical && margins$l < 80)    # for backwards compatibility
+        margins$l <- 80
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  10, 10)
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,

@@ -86,7 +86,7 @@ Distribution(
   values.tick.font.color = global.font.color,
   values.tick.font.family = global.font.family,
   values.tick.font.size = 10,
-  categories.tick.angle = 0,
+  categories.tick.angle = NULL,
   categories.tick.font.color = global.font.color,
   categories.tick.font.family = global.font.family,
   categories.tick.font.size = 10,
