@@ -95,11 +95,13 @@
 #' @param values.line.color y-axis line color as a named color in character format
 #' (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
 #' @param values.tick.mark.length Length of tick marks in pixels.
+#' @param values.tick.mark.color Color of tick marks.
 #' @param values.bounds.minimum Minimum of range for plotting;
 #' NULL = no manual range set.  Must be less than values.bounds.maximum
 #' @param values.bounds.maximum Maximum of range for
 #' plotting; NULL = no manual range set.  Must be greater than values.bounds.minimum
 #' @param values.tick.distance The distance between the ticks. Requires that \code{values.bounds.minimum} and \code{values.bounds.maximum} have been set.
+#' @param values.zero Logical; whether a line should be shown when at values = 0.
 #' @param values.zero.line.width Width in pixels of zero line; 0 = no zero line
 #' shown
 #' @param values.zero.line.color Color of horizontal zero line as a named
@@ -129,6 +131,11 @@
 #' @param categories.tick.font.size x-axis tick label font size
 #' @param categories.tick.label.wrap Logical; whether to wrap long labels on the x-axis.
 #' @param categories.tick.label.wrap.nchar Integer; number of characters in each line when \code{categories.tick.label.wrap} is \code{TRUE}.
+#' @param categories.tick.angle Angle of the categories tick label.
+#' @param categories.tick.mark.length Distance between tick labels (variable names)
+#'  and axis. Note that this parameter name is chosen to be analgous to
+#'  the same parameter in other charts, but it is not a a true "tick" label
+#'  so categories.tick.mark.color is set as transparent.
 #' @param modebar.show Logical; whether to show the zoom menu buttons or not.
 #' @param zoom.enable Logical; whether to enable zoom on the chart.
 #'  For Bar and Column charts with data labels it may be useful to turn off zoom
@@ -217,10 +224,12 @@ Distribution <-   function(x,
     values.title.font.size = 12,
     values.line.width = 0,
     values.line.color = rgb(0, 0, 0, maxColorValue = 255),
+    values.tick.mark.color = "transparent",
     values.tick.mark.length = 0,
     values.bounds.minimum = NULL,
     values.bounds.maximum = NULL,
     values.tick.distance = NULL,
+    values.zero = FALSE,
     values.zero.line.width = 0,
     values.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
     values.grid.width = 1 * grid.show,
@@ -234,6 +243,8 @@ Distribution <-   function(x,
     values.tick.font.color = global.font.color,
     values.tick.font.family = global.font.family,
     values.tick.font.size = 10,
+    categories.tick.angle = NULL,
+    categories.tick.mark.length = 20,
     categories.tick.font.color = global.font.color,
     categories.tick.font.family = global.font.family,
     categories.tick.font.size = 10,
@@ -335,14 +346,20 @@ Distribution <-   function(x,
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate = FALSE)
 
     # Work out margin spacing
-    labels.nline <- max(sapply(gregexpr("<br>", labels), function(x){Sum(x > -1, remove.missing = FALSE)}), na.rm = TRUE) + 1
     if (vertical)
-        margins <- list(t = 20, b = 40 + categories.tick.font.size * labels.nline, r = 60,
+        margins <- list(t = 20, b = 30, r = 60,
                         l = 60 + values.title.font.size, pad = 0)
     else
         margins <- list(t = 20, b = 30 + values.tick.font.size + values.title.font.size,
-                        r = 60, l = 80, pad = 0)
+                        r = 60, l = 0, pad = 0)
+    if (is.null(categories.tick.angle))
+        categories.tick.angle <- if (vertical) 0 else 270
 
+    if (vertical || categories.tick.angle == 0)
+        margins <- setMarginsForAxis(margins, labels, list(tickfont = categories.tick.font,
+                     side = if (vertical) "bottom" else "left", tickangle = categories.tick.angle))
+    else    # to avoid affecting old charts
+        margins$l <- 80
     margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
                                  10, 10)
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
@@ -400,16 +417,16 @@ Distribution <-   function(x,
         if (length(wgt) != length(values))
             stop("The data and the weights do not have the same number of observations.")
         # Removing missing values
-        # Removing missing values
         not.missing <- !is.na(values)
         values <- values[not.missing]
+        values.names <- if (is.null(rownames(x))) which(not.missing) else rownames(x)[which(not.missing)]
         wgt <- wgt[not.missing]
         wgt <- prop.table(wgt) # Rebasing the weight (Required by the density function)
         from <- if (automatic.lower.density) rng[1] else from
         p <- addDensities(p, values, wgt, labels[v], vertical, show.density, show.mirror.density, density.type, histogram.cumulative, histogram.counts, bins, maximum.bins, box.points, category.axis, value.axis, density.color[v], values.color, bw, adjust, kernel, n, from, to, cut, hover.on)
         p <- addSummaryStatistics(p, values, wgt, vertical, show.density, show.mirror.density, show.mean, show.median, show.quartiles, show.range, show.values,
                                  mean.color, median.color, quartile.color, range.color, values.color,
-                                 category.axis, value.axis)
+                                 category.axis, value.axis, values.names)
 
     }
     # Finalizing the layout
@@ -418,19 +435,26 @@ Distribution <-   function(x,
     values.tick <- setTicks(values.range$min, values.range$max, values.tick.distance, FALSE)
 
     axisFormat <- formatLabels(values, "Area", categories.tick.label.wrap, categories.tick.label.wrap.nchar, "", values.tick.format) #ignored
-    #axisFormat <- NULL
     if (is.null(values.bounds.minimum))
         values.bounds.minimum <- rng[1]
     if (is.null(values.bounds.maximum))
         values.bounds.maximum <- rng[2]
-    values.axis <- setAxis(values.title, if (vertical) "left" else "bottom", 
+    values.axis <- setAxis(values.title, if (vertical) "left" else "bottom",
          axisFormat, values.title.font,
          values.line.color, values.line.width, values.grid.width, values.grid.color,
          values.tick, values.tick.font, values.tick.angle, values.tick.mark.length,
          values.tick.distance, values.tick.format, values.tick.prefix,
-         values.tick.suffix, values.tick.show, FALSE, values.zero.line.width,
-         values.zero.line.color, values.hovertext.format, zoom.enable = zoom.enable)
+         values.tick.suffix, values.tick.show, values.zero, values.zero.line.width,
+         values.zero.line.color, values.hovertext.format,
+         tickcolor = values.tick.mark.color, zoom.enable = zoom.enable)
     hover.mode <- if (tooltip.show) "'closest'" else "FALSE"
+    annotations <- setCategoriesAxesTitles(vertical, labels, categories.tick.font, categories.tick.angle, categories.tick.mark.length)
+    n <- length(annotations)
+    annotations[[n+1]] <- setTitle(title, title.font, margins, title.align)
+    annotations[[n+2]] <- setFooter(footer, footer.font, margins, footer.align)
+    annotations[[n+3]] <- setSubtitle(subtitle, subtitle.font, margins, subtitle.align)
+    annotations <- Filter(Negate(is.null), annotations)
+
     txt <- paste0("p <- layout(p,
         autosize = TRUE,
         font = list(size = 11),
@@ -440,9 +464,7 @@ Distribution <-   function(x,
         if (vertical) "y" else "x", "axis = values.axis,",
         violinCategoriesAxes(vertical, n.variables, gsub("'", "\\\\'", labels)),
         "margin = margins,
-        annotations = list(setSubtitle(subtitle, subtitle.font, margins, subtitle.align),
-                           setTitle(title, title.font, margins, title.align),
-                           setFooter(footer, footer.font, margins, footer.align)),
+        annotations = annotations,
         hoverlabel = list(namelength = -1,
             font = list(size = hovertext.font.size, family = hovertext.font.family)),
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
@@ -586,10 +608,10 @@ createWeights <- function(x, weights)
 
 #' @importFrom stats density weighted.mean quantile
 #' @importFrom Hmisc wtd.quantile
-addSummaryStatistics <- function(p, values, weights, vertical, show.density, show.mirror.density, 
+addSummaryStatistics <- function(p, values, weights, vertical, show.density, show.mirror.density,
                                  show.mean, show.median, show.quartiles, show.range, show.values,
                                  mean.color, median.color, quartile.color, range.color, values.color,
-                                 category.axis, value.axis)
+                                 category.axis, value.axis, value.names)
 {
     # Rug plot of values
     if (show.values)
@@ -602,8 +624,9 @@ addSummaryStatistics <- function(p, values, weights, vertical, show.density, sho
         else if (show.mirror.density)
             rug.pos <- 0.1 * v.max
 
-        v2 <- values
-        v1 <- rep(rug.pos, length(values))
+        v.tmp <- tapply(value.names, values, paste, collapse = ", ")
+        v2 <- as.numeric(names(v.tmp))
+        v1 <- rep(rug.pos, length(v2))
 
         p <- add_trace(p,
               x = if (vertical) v1 else v2,
@@ -613,7 +636,8 @@ addSummaryStatistics <- function(p, values, weights, vertical, show.density, sho
               mode = "markers",
               name = "",
               showlegend = FALSE,
-              text = round_half_up(values, 2),
+              text = autoFormatLongLabels(paste0("<b>", trimws(round_half_up(v2, 2)), "</b>: ", v.tmp),
+                            wordwrap = TRUE, n = 30),
               type = "scatter",
               xaxis = category.axis,
               yaxis = value.axis)
@@ -677,7 +701,7 @@ addSummaryStatistics <- function(p, values, weights, vertical, show.density, sho
 
 
 violinCategoryAxis <- function(i, label, n.variables, vertical, show.values, show.density, show.mirror.density, family,
-                               size, color, values.hovertext.format)
+                               size, color, tickangle, values.hovertext.format)
 {
     if (i > n.variables)
         return(NULL)
@@ -693,8 +717,8 @@ violinCategoryAxis <- function(i, label, n.variables, vertical, show.values, sho
          showgrid = FALSE,
          showticklabels = FALSE,
          ticks = "",
-         title = label,
-         titlefont = list(family = family, size = size, color = color),
+         #title = label,
+         #titlefont = list(family = family, size = size, color = color),
          type = "linear",
          zeroline = FALSE)
 
@@ -703,8 +727,8 @@ violinCategoryAxis <- function(i, label, n.variables, vertical, show.values, sho
 
 violinCategoriesAxes <- function(vertical, n.variables, labels)
 {
-    standard.parameters <- "n.variables, vertical, show.values, show.density, show.mirror.density, categories.tick.font.family, categories.tick.font.size, categories.tick.font.color, values.hovertext.format"
-    axes <- paste0("xaxis = violinCategoryAxis(1, '", labels[1], "',", standard.parameters, "),") 
+    standard.parameters <- "n.variables, vertical, show.values, show.density, show.mirror.density, categories.tick.font.family, categories.tick.font.size, categories.tick.font.color, categories.tick.angle, values.hovertext.format"
+    axes <- paste0("xaxis = violinCategoryAxis(1, '", labels[1], "',", standard.parameters, "),")
     if (n.variables > 1)
     {
         sq <- seq(4, n.variables * 2 , 2)
@@ -715,6 +739,28 @@ violinCategoriesAxes <- function(vertical, n.variables, labels)
         axes <- gsub("xaxis", "yaxis", axes)
     axes
 }
+
+
+setCategoriesAxesTitles <- function(vertical, labels, font, angle, ticklen)
+{
+    if (is.null(angle))
+        angle <- 0
+    n <- length(labels)
+    sq <- seq(1, n * 2 , 2)
+    if (!vertical)
+        axes <- lapply(1:n, function(i)
+            return(list(text = labels[i], showarrow = FALSE, font = font, textangle = angle,
+                xref = "paper", x = -0.01, xanchor = "right", xshift = -ticklen,
+                yref = paste0("y", sq[i], " domain"), y = 0.5)))
+
+    else
+        axes <- lapply(1:n, function(i)
+            return(list(text = labels[i], showarrow = FALSE, font = font, textangle = angle,
+                yref = "paper", y = 0.0, yanchor = "top", yshift = -ticklen,
+                xref = paste0("x", sq[i], " domain"), x = 0.5)))
+    return(axes)
+}
+
 
 distributionArgs <- function(call, chart.function, arguments)
 {
