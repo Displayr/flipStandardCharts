@@ -134,6 +134,8 @@ Pie <- function(x,
         y.values[ind.missing] <- 0 # Needed for missing values in 2d tables
     }
 
+    color.warning <- "Alpha values for colors in Pie charts are ignored."
+    colors <- StripAlphaChannel(colors, color.warning)
     if (is.null(groups)) # 1-d data
     {
         pie.values.colors <- colors
@@ -147,8 +149,9 @@ Pie <- function(x,
         }
     } else              # 2-d data
     {
-        pie.groups.colors <- if (!is.null(colors)) StripAlphaChannel(colors) else NULL
-        pie.values.colors <- if (!is.null(pie.subslice.colors)) StripAlphaChannel(pie.subslice.colors) else NULL
+        pie.groups.colors <- if (!is.null(colors)) colors else NULL
+        pie.values.colors <- if (!is.null(pie.subslice.colors)) StripAlphaChannel(pie.subslice.colors, color.warning)
+                             else NULL
         x.labels[which(nchar(x.labels)==0)] <- " "
 
         # We allow the number of groups to be 1

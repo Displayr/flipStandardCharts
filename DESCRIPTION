@@ -13,7 +13,7 @@ LazyData: TRUE
 Imports:
     d3vennR,
     dygraphs (>= 1.1.1.6-1),
-    flipChartBasics,
+    flipChartBasics (>= 2.3.0),
     flipData,
     flipFormat,
     flipTables (>= 2.6.0),

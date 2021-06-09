@@ -87,6 +87,7 @@ ParallelCoordinates <- function(x,
         label.font.size = round(fsc * label.font.size, 0)
         tick.font.size = round(fsc * tick.font.size, 0)
     }
+    colors <- StripAlphaChannel(colors, "Alpha values for colors in Parallel Coordinates are ignored.")
 
     # Remove columns from x if necessary
     if (ncol(x) > max.nvar)

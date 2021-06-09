@@ -304,6 +304,7 @@ LabeledScatter <- function(x = NULL,
             stop("'scatter.colors' cannot be used with multiple tables")
         legend.show <- FALSE # don't need to worry about order of groups
         groups <- 1:n # what about mult tables?
+        colors <- StripAlphaChannel(colors, "Alpha values in selected colors were not used in the numeric color scale. Adjust 'opacity' for transparent points instead")
         col.fun <- colorRamp(unique(colors)) # undo recycling in PrepareColors
         scatter.colors.scaled <- (scatter.colors - min(scatter.colors, na.rm=T))/diff(range(scatter.colors, na.rm=T))
         #if (length(not.na) != length(scatter.colors))
@@ -333,7 +334,6 @@ LabeledScatter <- function(x = NULL,
         g.list <- unique(groups[not.na])
         colors <- colors[g.list]
     }
-    colors <- StripAlphaChannel(colors)
     if (is.na(data.label.font.autocolor))
         data.label.font.autocolor <- length(unique(groups[not.na])) > 1
 
