@@ -88,6 +88,7 @@ Palm <- function(table,
     if (is.null(legend.font.size))
         legend.font.size = 11
 
+    colors <- StripAlphaChannel(colors, "Alpha values for colors in Palm trees are ignored.")
     palm <- rhtmlPalmTrees::PalmTrees(data = table,
                                       weights = NULL,                               # Numeric vector; length must equal to ncol(data)
                                       row.names = NULL,                             # Default values are rownames(data)

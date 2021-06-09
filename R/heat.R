@@ -234,6 +234,7 @@ Heat <- function(x,
     row.order <- if(is.null(rownames(mat))) seq(nrow(mat)) else str_trim(rownames(mat))
     left.appended <- appendColumns(left.columns, mat, cell.decimals, left.column.headings, row.order)
     right.appended <- appendColumns(right.columns, mat, cell.decimals, right.column.headings, row.order)
+    colors = StripAlphaChannel(colors, "Alpha values for colors in Heatmaps are ignored")
 
     heatmap <- rhtmlHeatmap::Heatmap(mat,
                                      Rowv = rowv,

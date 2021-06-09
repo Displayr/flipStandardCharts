@@ -426,6 +426,7 @@ Scatter <- function(x = NULL,
     if (!is.null(scatter.colors) && !scatter.colors.as.categorical)
     {
         # make colorscalebar
+        colors <- StripAlphaChannel(colors, "Alpha values in selected colors were not used in the numeric color scale. Adjust 'opacity' for transparent points instead")
         col.fun <- colorRamp(unique(colors))  # undo recycling in PrepareColors
         cc.orig <- rgb(col.fun((0:5)/5), maxColorValue = 255) # hex values of opaque colors
         cc.rgb <- col2rgb(cc.orig)
