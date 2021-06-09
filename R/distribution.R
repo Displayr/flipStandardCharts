@@ -624,23 +624,25 @@ addSummaryStatistics <- function(p, values, weights, vertical, show.density, sho
         else if (show.mirror.density)
             rug.pos <- 0.1 * v.max
 
+        vpos <- rep(rug.pos, length(values))
         v.tmp <- tapply(value.names, values, paste, collapse = ", ")
         v2 <- as.numeric(names(v.tmp))
         v1 <- rep(rug.pos, length(v2))
 
-        p <- add_trace(p,
-              x = if (vertical) v1 else v2,
-              y = if (vertical) v2 else v1,
-              hoverinfo = "text",
+        # Trace showing rugs
+        p <- add_trace(p, hoverinfo = "none",
+              x = if (vertical) vpos else values, y = if (vertical) values else vpos,
               marker = list(color = values.color, symbol = if (vertical) "line-ew-open" else "line-ns-open"),
-              mode = "markers",
-              name = "",
-              showlegend = FALSE,
+              type = "scatter", mode = "markers", 
+              xaxis = category.axis, yaxis = value.axis, showlegend = FALSE)
+              
+        # Invisible trace for hovertext only
+        p <- add_trace(p, hoverinfo = "text",
+              x = if (vertical) v1 else v2, y = if (vertical) v2 else v1,
               text = autoFormatLongLabels(paste0("<b>", trimws(round_half_up(v2, 2)), "</b>: ", v.tmp),
                             wordwrap = TRUE, n = 30),
-              type = "scatter",
-              xaxis = category.axis,
-              yaxis = value.axis)
+              type = "scatter", mode = "markers", marker = list(color = values.color, opacity = 0.0),
+              xaxis = category.axis, yaxis = value.axis, showlegend = FALSE)
 
     }
     ### Violin plot
