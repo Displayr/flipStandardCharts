@@ -185,14 +185,16 @@ Pyramid <- function(x,
         x.bounds.maximum <- NULL
     x.bounds.minimum <- if (!is.null(x.bounds.maximum)) -1 * charToNumeric(x.bounds.maximum)
                         else                            NULL
+
+    # Format axis labels  
+    axisFormat <- formatLabels(chart.matrix, type, y.tick.label.wrap, y.tick.label.wrap.nchar,
+                               y.tick.format, x.tick.format)
     x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, chart.matrix, FALSE, is.null(x.tick.distance))
     y.range <- setValRange(y.bounds.minimum, y.bounds.maximum, axisFormat, y.zero, is.null(y.tick.distance), is.bar = TRUE)
     xtick <- setTicks(x.range$min, x.range$max, x.tick.distance, x.data.reversed,
                   data = NULL, type = type,
                   labels = tmp.label, label.font.size = data.label.font.size)
     ytick <- setTicks(y.range$min, y.range$max, y.tick.distance, !y.data.reversed)
-    axisFormat <- formatLabels(chart.matrix, type, y.tick.label.wrap, y.tick.label.wrap.nchar,
-                               y.tick.format, x.tick.format)
 
     yaxis <- setAxis(y.title, "left", axisFormat, y.title.font,
                   y.line.color, y.line.width, y.grid.width, y.grid.color,
