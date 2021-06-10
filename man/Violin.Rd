@@ -62,6 +62,7 @@ Violin(
   values.bounds.minimum = NULL,
   values.bounds.maximum = NULL,
   values.tick.distance = NULL,
+  values.tick.maxnum = NULL,
   values.zero = FALSE,
   values.zero.line.width = 0,
   values.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
@@ -231,7 +232,10 @@ NULL = no manual range set.  Must be less than values.bounds.maximum}
 \item{values.bounds.maximum}{Maximum of range for
 plotting; NULL = no manual range set.  Must be greater than values.bounds.minimum}
 
-\item{values.tick.distance}{The distance between the ticks. Requires that \code{values.bounds.minimum} and \code{values.bounds.maximum} have been set.}
+\item{values.tick.distance}{The distance between the ticks. Requires that \code{values.bounds.minimum}
+and \code{values.bounds.maximum} have been set.}
+
+\item{values.tick.maxnum}{Maximum number of ticks shown on the values axis.}
 
 \item{values.zero}{Logical; whether a line should be shown when at values = 0.}
 

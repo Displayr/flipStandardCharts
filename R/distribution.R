@@ -100,7 +100,9 @@
 #' NULL = no manual range set.  Must be less than values.bounds.maximum
 #' @param values.bounds.maximum Maximum of range for
 #' plotting; NULL = no manual range set.  Must be greater than values.bounds.minimum
-#' @param values.tick.distance The distance between the ticks. Requires that \code{values.bounds.minimum} and \code{values.bounds.maximum} have been set.
+#' @param values.tick.distance The distance between the ticks. Requires that \code{values.bounds.minimum}
+#' and \code{values.bounds.maximum} have been set.
+#' @param values.tick.maxnum Maximum number of ticks shown on the values axis.
 #' @param values.zero Logical; whether a line should be shown when at values = 0.
 #' @param values.zero.line.width Width in pixels of zero line; 0 = no zero line
 #' shown
@@ -229,6 +231,7 @@ Distribution <-   function(x,
     values.bounds.minimum = NULL,
     values.bounds.maximum = NULL,
     values.tick.distance = NULL,
+    values.tick.maxnum = NULL,
     values.zero = FALSE,
     values.zero.line.width = 0,
     values.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
@@ -445,7 +448,7 @@ Distribution <-   function(x,
          values.tick, values.tick.font, values.tick.angle, values.tick.mark.length,
          values.tick.distance, values.tick.format, values.tick.prefix,
          values.tick.suffix, values.tick.show, values.zero, values.zero.line.width,
-         values.zero.line.color, values.hovertext.format,
+         values.zero.line.color, values.hovertext.format, num.maxticks = values.tick.maxnum,
          tickcolor = values.tick.mark.color, zoom.enable = zoom.enable)
     hover.mode <- if (tooltip.show) "'closest'" else "FALSE"
     annotations <- setCategoriesAxesTitles(vertical, labels, categories.tick.font, categories.tick.angle, categories.tick.mark.length)
