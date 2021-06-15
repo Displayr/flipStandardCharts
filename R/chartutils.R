@@ -722,7 +722,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
     rangemode <- "normal"
     if (axis.type == "numeric" && show.zero)
         rangemode <- "tozero"
-    if (gridwith == 0 && zero.line.width == 0)
+    if (gridwidth == 0 && zero.line.width == 0)
         zero.line.color <- "transparent" 
 
     # Specify max number of ticks
