@@ -722,8 +722,8 @@ setAxis <- function(title, side, axisLabels, titlefont,
     rangemode <- "normal"
     if (axis.type == "numeric" && show.zero)
         rangemode <- "tozero"
-    if (gridwidth == 0)
-        zero.line.color <- rgb(1, 1, 1, alpha = 0) # invisible
+    if (zero.line.width == 0)
+        zero.line.color <- "transparent" 
 
     # Specify max number of ticks
     nticks <- NULL
