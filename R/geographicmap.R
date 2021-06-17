@@ -112,6 +112,11 @@ GeographicMap <- function(x,
         hovertext.font.size <- 11
     if (is.null(opacity))
         opacity <- if (mapping.package == "leaflet" && background) 0.5 else 1.0
+    if (mapping.package == "leaflet") 
+        color.warning <- "Alpha values in selected colors were not used in color scale. Adjust 'opacity' instead"
+    else
+        color.warning <- "Alpha values in colors for Geographic Map with plotly are ignored."
+    colors <- StripAlphaChannel(colors) 
 
     # Check for defined formats first, or if country or zip.country are specified.
     map.type <- definedFormatMapTypes(names, zip.country)
@@ -588,7 +593,7 @@ plotlyMap <- function(table, name.map, colors, opacity, min.value, max.range, co
             zmin = min.value,
             zmax = max.range,
             color = df[, 1],
-            colors = rgb(t(col2rgb(colors)),maxColorValue = 255, alpha = opacity*255),
+            colors = rgb(t(col2rgb(colors)),maxColorValue = 255, alpha = opacity), # opacity ignored by plotly
             locations = rownames(df),
             text = format.function(df[, 1], decimals = decimals,
                         comma.for.thousands = commaFromD3(values.hovertext.format)),
