@@ -5,6 +5,14 @@ test_that("Colors of incorrect length",
     expect_error(BarPictograph(1:6, colors=rainbow(5)), NA)
 })
 
+test_that("Custom image",
+{
+    expect_error(BarPictograph(1:6, custom.image = "https://wiki.q-researchsoftware.com/images/7/78/Democrats_donkey_black.png"), NA)
+    expect_error(BarPictograph(1:6, custom.image = "tps://wiki.q-researchsoftware.com/images/7/78/Democrats_donkey_black.png"),
+                 "Custom image should be a url")
+
+})
+
 
 test_that("Large vectors error",
 {

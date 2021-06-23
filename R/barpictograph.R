@@ -281,9 +281,16 @@ BarPictograph <- function(x,
 
     # Icons and color
     image.type <- if (image %in% c("circle", "square")) image else "url"
-    image.url <- if (!is.null(custom.image)) custom.image
-                 else sprintf("https://displayrcors.displayr.com/images/%s_grey.svg",
+    if (!is.null(custom.image))
+    {
+        if (!grepl("^http", custom.image))
+            stop("Custom image should be a url beginning with 'http'")
+        image.url <- custom.image
+    }
+    else
+        image.url <- sprintf("https://displayrcors.displayr.com/images/%s_grey.svg",
                               gsub(" ", "", tolower(image)))
+
     if (!hide.base.image && is.null(custom.image))
         base.image <- image.url
     base.image.str <- ""
