@@ -32,6 +32,7 @@
 #' @param print.config Print configuration string based to \code{rhtmlPictographs::graphic}. This is useful for debugging.
 #' @importFrom rhtmlPictographs graphic
 #' @importFrom flipChartBasics ChartColors
+#' @importFrom httr GET
 #' @importFrom verbs Sum
 #' @export
 #' @examples
@@ -283,9 +284,22 @@ BarPictograph <- function(x,
     image.type <- if (image %in% c("circle", "square")) image else "url"
     if (!is.null(custom.image))
     {
-        if (!grepl("^http", custom.image))
-            stop("Custom image should be a url beginning with 'http'")
         image.url <- custom.image
+
+        # Some tests in case image.url is invalid (rhtmlPictograph gives no warning)
+        response <- try(GET(image.url), silent = TRUE)
+        if (inherits(response, "try-error"))
+            stop("Could not retrieve image from '", image.url, "'. Check that url is correct.")
+        if(response$status_code != 200)
+            stop("Error (status code ", response$status_code, ") retrieving image ", image.url)
+        tmp.type <- response$headers$'content-type'
+        if (any(grepl("text/html", tmp.type, fixed = TRUE)))
+            stop("The url content type is 'text/html'. Ensure the image url is correct and not redirected.")
+        # Give warning because sometimes chrome can fix this, but will show as blank in IE
+        unknown.type <- !any(grepl("image", tmp.type, fixed = TRUE))
+        if (unknown.type)
+            warning("URL content type is '", tmp.type,
+            "'. This may not display properly in all browsers.")
     }
     else
         image.url <- sprintf("https://displayrcors.displayr.com/images/%s_grey.svg",

@@ -25,6 +25,7 @@ Imports:
     hash,
     htmltools,
     htmlwidgets,
+    httr,
     janitor,
     jsonlite,
     leaflet,
