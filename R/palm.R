@@ -88,39 +88,40 @@ Palm <- function(table,
     if (is.null(legend.font.size))
         legend.font.size = 11
 
-    colors <- StripAlphaChannel(colors, "Alpha values for colors in Palm trees are ignored.")
-    palm <- rhtmlPalmTrees::PalmTrees(data = table,
+    alpha.warning <- "Alpha values for colors in Palm trees are ignored."
+    colors <- StripAlphaChannel(colors, alpha.warning) 
+    palm <- CollectWarnings(rhtmlPalmTrees::PalmTrees(data = table,
                                       weights = NULL,                               # Numeric vector; length must equal to ncol(data)
                                       row.names = NULL,                             # Default values are rownames(data)
                                       row.font.size = x.tick.font.size,
                                       row.font.family = x.tick.font.family,
-                                      row.font.color = x.tick.font.color,
                                       row.heading = x.title,
+                                      row.font.color = StripAlphaChannel(x.tick.font.color),
                                       row.heading.font.size = x.title.font.size,
-                                      row.heading.font.color = x.title.font.color,
+                                      row.heading.font.color = StripAlphaChannel(x.title.font.color, alpha.warning),
                                       row.heading.font.family = x.title.font.family,
                                       col.names = NULL,                             # Shown on legend. Default values are colnames(data)
                                       col.font.size = legend.font.size,             # Shown in legend
                                       col.font.family = legend.font.family,         # Shown in legend
-                                      col.font.color = legend.font.color,
+                                      col.font.color = StripAlphaChannel(legend.font.color, alpha.warning),
                                       col.heading = "",                             # Legend heading, defaults to "Columns" if NULL
                                       col.heading.font.size = 0,
                                       col.heading.font.family = legend.font.family,
-                                      col.heading.font.color = legend.font.color,
+                                      col.heading.font.color = StripAlphaChannel(legend.font.color, alpha.warning),
                                       legend.background.color = legend.background.color,
                                       legend.border.color = legend.border.color,
                                       title = title,
+                                      title.font.color = StripAlphaChannel(title.font.color, alpha.warning),
                                       title.font.size = title.font.size,
                                       title.font.family = title.font.family,
-                                      title.font.color = title.font.color,
                                       subtitle = subtitle,
                                       subtitle.font.size = subtitle.font.size,
                                       subtitle.font.family = subtitle.font.family,
-                                      subtitle.font.color = subtitle.font.color,
+                                      subtitle.font.color = StripAlphaChannel(subtitle.font.color, alpha.warning),
                                       footer = footer,
                                       footer.font.size = footer.font.size,
                                       footer.font.family = footer.font.family,
-                                      footer.font.color = footer.font.color,
+                                      footer.font.color = StripAlphaChannel(footer.font.color, alpha.warning),
                                       tooltips = tooltip.show,
                                       tooltips.font.size = hovertext.font.size,
                                       tooltips.font.family = hovertext.font.family,
@@ -130,16 +131,16 @@ Palm <- function(table,
                                       y.digits = y.decimals,
                                       y.font.size = y.tick.font.size,
                                       y.font.family = y.tick.font.family,
-                                      y.font.color = y.tick.font.color,
                                       y.lab = y.title,
+                                      y.font.color = StripAlphaChannel(y.tick.font.color, alpha.warning),
                                       y.lab.font.size = y.title.font.size,
-                                      y.lab.font.color = y.title.font.color,
+                                      y.lab.font.color = StripAlphaChannel(y.title.font.color, alpha.warning),
                                       y.lab.font.family = y.title.font.family,
                                       prefix = y.tick.prefix,                       # prefix of numbers in the tooltips and y axis
                                       suffix = y.tick.suffix,                       # suffix of numbers in the tooltips and y axis
                                       colors = unname(unlist(colors)),              # colors of the leaves
                                       digits = y.decimals,                          # number of decimal places in the tooltips
-                                      order = "original")                           # not exposed since user can change by amending input data
+                                      order = "original"))                          # not exposed since user can change by amending input data
 
     result <- list(htmlwidget = palm)
     class(result) <- "StandardChart"

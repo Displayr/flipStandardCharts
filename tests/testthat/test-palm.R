@@ -81,8 +81,13 @@ test_that("No data",
 {
     expect_error(Palm(matrix(NA, 0, 0)), "There is not enough data to create a plot")
     expect_error(Palm(c()), "The data is not in an appropriate format")
-
 })
 
+test_that("Strip alpha values",
+{
+    expect_warning(Palm(tourist, global.font.color = "#0000FF80"),
+                   "Alpha values for colors in Palm trees are ignored")
+
+})
 
 
