@@ -535,8 +535,8 @@ Column <- function(x,
         is.stacked <- FALSE
     }
     is.hundred.percent.stacked <- grepl("100% Stacked", type, fixed = TRUE)
-    if (any(!is.finite(as.matrix(chart.matrix))))
-        warning("Missing values have been set to zero.")
+    #if (any(!is.finite(as.matrix(chart.matrix))))
+    #    warning("Missing values have been set to zero.")
 
     if (bar.gap < 0.0 || bar.gap >= 1.0)
     {
@@ -877,7 +877,7 @@ Column <- function(x,
                       width = marker.border.width))
 
         # This is the main trace for each data series
-        p <- add_trace(p, x = x, y = y.filled, type = "bar",
+        p <- add_trace(p, x = x, y = y, type = "bar",
                        orientation = "v", marker = marker, name = legend.text[i],
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family)),

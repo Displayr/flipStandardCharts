@@ -179,8 +179,8 @@ Bar <- function(x,
         is.stacked <- FALSE
     }
     is.hundred.percent.stacked <- grepl("100% Stacked", type, fixed=T)
-    if (any(!is.finite(as.matrix(chart.matrix))))
-        warning("Missing values have been set to zero.")
+    #if (any(!is.finite(as.matrix(chart.matrix))))
+    #    warning("Missing values have been set to zero.")
     if (type == "Stacked")
         type <- "Stacked Bar"
     if (type == "100% Stacked")
@@ -360,7 +360,7 @@ Bar <- function(x,
 
         # this is the main trace for each data series
         # need to use y.filled to avoid plotly bug affecting bar-width
-        p <- add_trace(p, x = y.filled, y = x, type = "bar", orientation = "h",
+        p <- add_trace(p, x = y, y = x, type = "bar", orientation = "h",
                        marker = marker, name  =  legend.text[i],
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family)),
