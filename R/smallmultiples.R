@@ -455,6 +455,13 @@ SmallMultiples <- function(x,
                                                      global.font.color = global.font.color,
                                                      margin.autoexpand = margin.autoexpand,
                                                      ...)$htmlwidget}))
+
+        # Remove second axis which is used for positioning data labels/hovertext
+        # on categorical/date axis - naming interferes with subplot
+        axis.name <- if (chart.type == "Bar") "yaxis2" else "xaxis2"
+        for (i in 1:npanels)
+            plot.list[[i]]$x$layoutAttrs[[1]][[axis.name]] <- NULL
+
     } else if (chart.type == "Pyramid")
     {
         color.as.matrix <- NCOL(colors) == npanels && npanels > 1
