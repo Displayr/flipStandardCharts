@@ -871,8 +871,14 @@ Column <- function(x,
         y <- as.numeric(chart.matrix[, i])
         y.filled <- ifelse(is.finite(y), y, 0)
         x <- x.labels
+        tmp.border.color <- marker.border.colors[i]
+        if (any(!is.finite(y)))
+        {
+            tmp.border.color <- vectorize(tmp.border.color, NROW(chart.matrix))
+            tmp.border.color[which(!is.finite(y))] <- "transparent"
+        }
         marker <- list(color = toRGB(colors[i], alpha = opacity),
-                      line = list(color = toRGB(marker.border.colors[i],
+                      line = list(color = toRGB(tmp.border.color,
                       alpha = marker.border.opacity),
                       width = marker.border.width))
 

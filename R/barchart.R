@@ -341,10 +341,14 @@ Bar <- function(x,
         y.filled <- ifelse(is.finite(y), y, 0)
         y.hover.text <- formatByD3(y, x.hovertext.format, x.tick.prefix, x.tick.suffix)
         x.hover.text <- formatByD3(x, y.hovertext.format, y.tick.prefix, y.tick.suffix)
-
-
+        tmp.border.color <- marker.border.colors[i]
+        if (any(!is.finite(y)))
+        {
+            tmp.border.color <- vectorize(tmp.border.color, NROW(chart.matrix))
+            tmp.border.color[which(!is.finite(y))] <- "transparent"
+        }
         marker <- list(color = toRGB(colors[i], alpha = opacity),
-                      line = list(color = toRGB(marker.border.colors[i],
+                  line = list(color = toRGB(tmp.border.color,
                       alpha = marker.border.opacity),
                       width = marker.border.width))
 
