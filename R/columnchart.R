@@ -314,6 +314,7 @@
 Column <- function(x,
                     x2 = NULL,
                     colors = ChartColors(max(1, NCOL(x), na.rm = TRUE)),
+                    multi.colors.within.series = FALSE,
                     opacity = NULL,
                     type = "Column",
                     annotation.list = NULL,
@@ -485,7 +486,7 @@ Column <- function(x,
                     x.tick.label.wrap = TRUE,
                     x.tick.label.wrap.nchar = 21,
                     marker.border.width = 1,
-                    marker.border.colors = colors,
+                    marker.border.colors = NULL,
                     marker.border.opacity = NULL,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
@@ -526,6 +527,11 @@ Column <- function(x,
     chart.matrix <- checkMatrixNames(x)
     if (!is.numeric(chart.matrix))
         stop("Input data should be numeric.")
+    if (multi.colors.within.series && NCOL(chart.matrix) > 1)
+    {
+        warning("Column chart with multi color series can only show a single series. To show multiple series use Small Multiples")
+        chart.matrix <- chart.matrix[,1, drop = FALSE]
+    }
     x.labels.full <- rownames(chart.matrix)
 
     is.stacked <- grepl("Stacked", type, fixed = TRUE)
@@ -578,25 +584,28 @@ Column <- function(x,
         opacity <- if (fit.type == "None") 1 else 0.6
     if (is.null(marker.border.opacity))
         marker.border.opacity <- opacity
-    n <- ncol(chart.matrix)
-    colors <- vectorize(colors, n)
-    if (fit.type != "None" && is.null(fit.line.colors))
-        fit.line.colors <- colors
-    if (fit.CI.show && is.null(fit.CI.colors))
-        fit.CI.colors <- fit.line.colors
-    if (is.null(marker.border.colors))
-        marker.border.colors <- colors
-    marker.border.colors <- vectorize(marker.border.colors, n)
+    colors <- if (multi.colors.within.series) vectorize(colors, nrow(chart.matrix))
+              else                            vectorize(colors, ncol(chart.matrix))
+    data.label.font.color <- if (multi.colors.within.series) vectorize(data.label.font.color, nrow(chart.matrix))
+                             else                            vectorize(data.label.font.color, ncol(chart.matrix)) 
+
+    #if (fit.type != "None" && is.null(fit.line.colors))
+    #    fit.line.colors <- colors
+    #if (fit.CI.show && is.null(fit.CI.colors))
+    #    fit.CI.colors <- fit.line.colors
+    #if (is.null(marker.border.colors))
+    #    marker.border.colors <- colors
+    #marker.border.colors <- vectorize(marker.border.colors, n)
 
 
-    if (is.stacked && data.label.font.autocolor)
-        dlab.color <- autoFontColor(colors)
-    else
-        dlab.color <- vectorize(data.label.font.color, n)
-    data.label.show <- vectorize(data.label.show, n, NROW(chart.matrix))
+    #if (is.stacked && data.label.font.autocolor)
+    #    dlab.color <- autoFontColor(colors)
+    #else
+    #    dlab.color <- vectorize(data.label.font.color, n)
+    data.label.show <- vectorize(data.label.show, NCOL(chart.matrix), NROW(chart.matrix))
 
-    data.label.font = lapply(dlab.color,
-        function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
+    #data.label.font = lapply(dlab.color,
+    #    function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
     subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
     x.title.font = list(family = x.title.font.family, size = x.title.font.size, color = x.title.font.color)
@@ -736,7 +745,7 @@ Column <- function(x,
                         display.threshold = data.label.threshold,
                         dates = axisFormat$ymd,
                         reversed = isReversed(yaxis),
-                        font = data.label.font,
+                        font =  NULL,
                         center.data.labels = data.label.centered)
 
     if (!is.null(overlay.annotation.list))
@@ -753,7 +762,7 @@ Column <- function(x,
                         display.threshold = data.label.threshold,
                         dates = axisFormat$ymd,
                         reversed = isReversed(yaxis),
-                        font = data.label.font,
+                        font =  NULL,
                         center.data.labels = FALSE)
 
 
@@ -871,13 +880,19 @@ Column <- function(x,
         y <- as.numeric(chart.matrix[, i])
         y.filled <- ifelse(is.finite(y), y, 0)
         x <- x.labels
-        tmp.border.color <- marker.border.colors[i]
+
+        tmp.color <- if (multi.colors.within.series) colors else colors[i]
+        tmp.border.color <- if (length(marker.border.colors) >= i) marker.border.colors[i] else tmp.color
+        dlab.color <- if (multi.colors.within.series) data.label.font.color else data.label.font.color[i]
+        if (is.stacked && data.label.font.autocolor)
+            dlab.color <- autoFontColor(tmp.color)
+        tmp.data.label.font = list(family = data.label.font.family, size = data.label.font.size, color = dlab.color)
         if (any(!is.finite(y)))
         {
             tmp.border.color <- vectorize(tmp.border.color, NROW(chart.matrix))
             tmp.border.color[which(!is.finite(y))] <- "transparent"
         }
-        marker <- list(color = toRGB(colors[i], alpha = opacity),
+        marker <- list(color = toRGB(tmp.color, alpha = opacity),
                       line = list(color = toRGB(tmp.border.color,
                       alpha = marker.border.opacity),
                       width = marker.border.width))
@@ -885,9 +900,11 @@ Column <- function(x,
         # This is the main trace for each data series
         p <- add_trace(p, x = x, y = y.filled, type = "bar",
                        orientation = "v", marker = marker, name = legend.text[i],
-                       hoverlabel = list(font = list(color = autoFontColor(colors[i]),
+                       hoverlabel = list(font = list(color = autoFontColor(tmp.color),
                        size = hovertext.font.size, family = hovertext.font.family)),
                        hovertemplate = setHoverTemplate(i, xaxis, chart.matrix),
+                       #hoverinfo = "skip",
+                       hovertemplate = rep(c("%{x}", "%{y}", "<extra></extra>"), length = NROW(chart.matrix)), 
                        legendgroup = if (is.stacked && any(data.label.show)) "all" else i)
 
 
@@ -895,45 +912,40 @@ Column <- function(x,
             warning("Line of best fit not shown for stacked charts.")
         if (fit.type != "None" && !is.stacked)
         {
+            tmp.fit.color <- if (length(fit.line.colors) >= i) fit.line.colors[i] else tmp.color[1] 
             tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type,
                 fit.CI.show, fit.window.size)
             tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                          else sprintf("%s: %s", fit.line.name, y.labels[i])
             p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$y, type = 'scatter', mode = "lines",
                       name = tmp.fname, legendgroup = i, showlegend = FALSE, opacity = fit.line.opacity,
-                      hoverlabel = list(font = list(color = autoFontColor(fit.line.colors[i]),
+                      hoverlabel = list(font = list(color = autoFontColor(tmp.fit.color),
                       size = hovertext.font.size, family = hovertext.font.family)),
                       line = list(dash = fit.line.type, width = fit.line.width,
-                      color = fit.line.colors[i], shape = 'spline'), opacity = fit.line.opacity)
+                      color = tmp.fit.color, shape = 'spline'), opacity = fit.line.opacity)
             if (fit.CI.show && !is.null(tmp.fit$lb))
             {
+                tmp.CI.color <- if (length(fit.CI.colors) >= i) fit.CI.colors[i] else tmp.color[1] 
                 p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$lb, type = 'scatter',
                         mode = 'lines', name = "Lower bound of 95%CI",
-                        hoverlabel = list(font = list(color = autoFontColor(fit.CI.colors[i]),
+                        hoverlabel = list(font = list(color = autoFontColor(tmp.CI.color),
                         size = hovertext.font.size, family = hovertext.font.family)),
                         showlegend = FALSE, legendgroup = i,
-                        line=list(color=fit.CI.colors[i], width=0, shape='spline'))
+                        line=list(color=tmp.CI.color, width=0, shape='spline'))
                 p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$ub, type = 'scatter',
                         mode = 'lines', name = "Upper bound of 95% CI",
-                        hoverlabel = list(font = list(color = autoFontColor(fit.CI.colors[i]),
+                        hoverlabel = list(font = list(color = autoFontColor(tmp.CI.color),
                         size = hovertext.font.size, family = hovertext.font.family)),
-                        fill = "tonexty", fillcolor = toRGB(fit.CI.colors[i], alpha = fit.CI.opacity),
+                        fill = "tonexty", fillcolor = toRGB(tmp.CI.color, alpha = fit.CI.opacity),
                         showlegend = FALSE, legendgroup = i,
-                        line = list(color=fit.CI.colors[i], width=0, shape='spline'))
+                        line = list(color=tmp.CI.color, width=0, shape='spline'))
             }
         }
 
-        # Only used for small multiples
-        if (!is.null(average.series))
-            p <- add_trace(p, x = x, y = average.series, name = "Average",
-                    type = "scatter", mode = "lines", showlegend = FALSE,
-                    hoverlabel = list(font = list(color = autoFontColor(average.color),
-                    size = hovertext.font.size, family = hovertext.font.family)),
-                    line = list(color = average.color))
 
         # Add attribute for PPT exporting
         # Note that even without data labels, overlay annotations can still be present
-        chart.labels$SeriesLabels[[i]] <- list(Font = setFontForPPT(data.label.font[[i]]), ShowValue = FALSE)
+        chart.labels$SeriesLabels[[i]] <- list(Font = setFontForPPT(tmp.data.label.font), ShowValue = FALSE)
         tmp.suffix <- if (percentFromD3(data.label.format)) sub("%", "", data.label.suffix[,i])
                       else                                               data.label.suffix[,i]
 
@@ -975,7 +987,7 @@ Column <- function(x,
                     data.label.sign = getSign(data.annotations$y[,i], yaxis), data.label.nchar,
                     annotation.list, annot.data, i,
                     xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x", yaxis = "y",
-                    data.label.font[[i]], is.stacked, data.label.centered)
+                    tmp.data.label.font, is.stacked, data.label.centered)
         }
 
         # Create annotations separately for each series
@@ -1045,6 +1057,15 @@ Column <- function(x,
                 chart.labels$SeriesLabels[[i]]$CustomPoints <- pt.segs
         }
     }
+
+    # Only used for small multiples
+    if (!is.null(average.series))
+        p <- add_trace(p, x = x, y = average.series, name = "Average",
+                type = "scatter", mode = "lines", showlegend = FALSE,
+                hoverlabel = list(font = list(color = autoFontColor(average.color),
+                size = hovertext.font.size, family = hovertext.font.family)),
+                line = list(color = average.color))
+
 
     if (!any(data.label.show) && length(annotation.list) > 0)
         warning("Annotations are ignored when data labels are not shown. ",
