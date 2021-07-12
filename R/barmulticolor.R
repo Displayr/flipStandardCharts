@@ -246,7 +246,7 @@ BarMultiColor <- function(x,
             type = "scatter", cliponaxis = TRUE,
             hoverinfo = "skip", showlegend = FALSE, opacity = 0)
 
-    p <- add_trace(p, y = x, x = y, type = "bar", orientation = "h",
+    p <- add_trace(p, y = x, x = y.filled, type = "bar", orientation = "h",
                    marker = marker, hoverlabel = list(font = hoverfont),
                    cliponaxis = FALSE,
                    hovertemplate = "%{x}<extra>%{y}</extra>")
@@ -291,12 +291,11 @@ BarMultiColor <- function(x,
     }
 
     # add scatter trace to ensure hover is always shown
-    ind <- which(is.finite(y))
-    p <- add_trace(p, x = y[ind], y = x[ind], type = "scatter",
-                   mode = "markers", marker = list(color = colors[ind], opacity = 0),
-                   hoverlabel = list(font = list(color = autoFontColor(colors[ind]),
+    p <- add_trace(p, x = y, y = x, type = "scatter",
+                   mode = "markers", marker = list(color = colors, opacity = 0),
+                   hoverlabel = list(font = list(color = autoFontColor(colors),
                    size = hovertext.font.size, family = hovertext.font.family),
-                   bgcolor = colors[ind]), hovertemplate = "%{x}<extra>%{y}</extra>")
+                   bgcolor = colors), hovertemplate = "%{x}<extra>%{y}</extra>")
 
     annot <- list(setSubtitle(subtitle, subtitle.font, margins, subtitle.align),
                            setTitle(title, title.font, margins, title.align),

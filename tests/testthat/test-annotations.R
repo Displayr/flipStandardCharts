@@ -240,10 +240,14 @@ a.list <- list(list(type = "Arrow - up", data = "z-Statistic", threstype = "abov
 
 test_that("One-row matrix is transposed",
 {
-    expect_error(Column(aperm(tb, c(2,1,3)), annotation.list = a.list, data.label.show = T), NA)
-    expect_error(Column(tb, annotation.list = a.list, data.label.show = T, type = "Stacked"), NA)
-    expect_error(Bar(aperm(tb, c(2,1,3)), annotation.list = a.list, data.label.show = T), NA)
-    expect_error(Bar(tb, annotation.list = a.list, data.label.show = T), NA)
+    expect_warning(Column(aperm(tb, c(2,1,3)), annotation.list = a.list, data.label.show = T),
+                   "Missing values have been set to zero")
+    expect_warning(Column(tb, annotation.list = a.list, data.label.show = T, type = "Stacked"),
+                   "Missing values have been set to zero")
+    expect_warning(Bar(aperm(tb, c(2,1,3)), annotation.list = a.list, data.label.show = T),
+                   "Missing values have been set to zero")
+    expect_warning(Bar(tb, annotation.list = a.list, data.label.show = T),
+                   "Missing values have been set to zero")
     expect_warning(ColumnMultiColor(tb[,5:7,,drop = FALSE], annotation.list = a.list, data.label.show = T),
                    paste0("Column chart with multi color series can only show a single series. ",
                           "To show multiple series use Small Multiples"))

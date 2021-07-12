@@ -153,9 +153,9 @@ monthly.dat <- structure(c(74.4444444444444, 73.7556561085973, 75.462962962963,
 
 test_that("line-of-best-fit",
 {
-    expect_warning(print(Column(search.share, fit.type = "Friedman")),"Ignoring")
-    expect_warning(print(Column(search.share, fit.type = "LOESS")), "Ignoring")
-    expect_warning(print(Column(search.share, fit.type = "Linear")), "Ignoring")
+    expect_warning(Column(search.share, fit.type = "Friedman"), "Missing values have been set to zero")
+    expect_warning(Column(search.share, fit.type = "LOESS"), "Missing values have been set to zero")
+    expect_warning(Column(search.share, fit.type = "Linear"), "Missing values have been set to zero")
     expect_warning(Scatter(dup.values, fit.type = "Friedman"), "Multiple points at the same x-coordinate ignored for estimating line of best fit.")
 
     expect_error(SmallMultiples(dat, "Column", fit.type = "Moving averages", fit.window.size = 2), NA) # no warnings

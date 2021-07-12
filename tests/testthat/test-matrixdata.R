@@ -41,12 +41,15 @@ for (func in charting.funcs)
             filestem <- paste("matrixdata", tolower(func), dat, names(opts)[ii], sep="-")
             test_that(filestem, {
 
-                cmd <- paste0("print(", func, "(", dat, "," , opts[ii], "))")
+                cmd <- paste0("pp <- ", func, "(", dat, "," , opts[ii], ")")
 
                 if (grepl("missing|gapped-movingavgfit|gapdated-movingavgfit", filestem))
                     expect_warning(eval(parse(text=cmd)))
                 else
                     expect_error(eval(parse(text=cmd)), NA)
+
+                #print(pp)
+                #readline(prompt=paste0(filestem, ": press [enter] to continue: "))
             })
         }
     }
