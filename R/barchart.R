@@ -359,9 +359,11 @@ Bar <- function(x,
         }
 
         # this is the main trace for each data series
-        # need to use y.filled to avoid plotly bug affecting bar-width
+        bar.width <- NULL
+        if (!is.null(y.range))
+            bar.width <- (min(y.range) - min(data.annotations$y)) * 2
         p <- add_trace(p, x = y, y = x, type = "bar", orientation = "h",
-                       marker = marker, name  =  legend.text[i],
+                       marker = marker, name  =  legend.text[i], width = bar.width,
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family)),
                        hovertemplate = setHoverTemplate(i, yaxis, chart.matrix, is.bar = TRUE),

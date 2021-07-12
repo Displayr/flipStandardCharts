@@ -224,12 +224,15 @@ Pyramid <- function(x,
     x <- axisFormat$labels
     y <- as.numeric(chart.matrix[,1])
     y.filled <- ifelse(is.finite(y), y, 0)
+    ind.notna <- which(is.finite(y))
     x.text <- formatByD3(y, x.hovertext.format)
-    marker = list(color = toRGB(colors, alpha = opacity),
-                line = list(color = toRGB(marker.border.colors,
+    marker = list(color = toRGB(colors[ind.notna], alpha = opacity),
+                line = list(color = toRGB(marker.border.colors[ind.notna],
                 alpha = marker.border.opacity), width = marker.border.width))
-    hoverfont <- list(color = autoFontColor(colors), size = hovertext.font.size,
+    hoverfont <- list(color = autoFontColor(colors[ind.notna]), size = hovertext.font.size,
                 family = hovertext.font.family)
+    if (any(!is.finite(y)))
+        warning("Ignoring ", sum(!is.finite(y)), " observations")
 
     # Add invisible trace to force all labels to be shown
     # (including missing)
@@ -245,7 +248,8 @@ Pyramid <- function(x,
     # Main trace
     # Using 'base' is preferrable to plotting two bars because semi-transparency
     # and borders is now handled properly
-    p <- add_trace(p, x = 2 * y, y = x, base = -y, type = "bar", orientation = "h",
+    p <- add_trace(p, x = 2 * y[ind.notna], y = x[ind.notna], base = -y[ind.notna], 
+                   type = "bar", orientation = "h",
                    marker = marker, hoverlabel = list(font = hoverfont), cliponaxis = FALSE,
                    hovertemplate = "%{x}<extra>%{y}</extra>")
 
@@ -260,12 +264,11 @@ Pyramid <- function(x,
     }
 
     # add scatter trace to ensure hover is always shown
-    ind <- which(is.finite(y))
-    p <- add_trace(p, x = y[ind], y = x[ind], type = "scatter",
-                   mode = "markers", marker = list(color = colors[ind], opacity = 0),
-                   hoverlabel = list(font = list(color = autoFontColor(colors[ind]),
+    p <- add_trace(p, x = y[ind.notna], y = x[ind.notna], type = "scatter",
+                   mode = "markers", marker = list(color = colors[ind.notna], opacity = 0),
+                   hoverlabel = list(font = list(color = autoFontColor(colors[ind.notna]),
                    size = hovertext.font.size, family = hovertext.font.family),
-                   bgcolor = colors[ind]), hovertemplate = "%{x}<extra>%{y}</extra>")
+                   bgcolor = colors[ind.notna]), hovertemplate = "%{x}<extra>%{y}</extra>")
 
     annot <- list(setSubtitle(subtitle, subtitle.font, margins, subtitle.align),
                            setTitle(title, title.font, margins, title.align),

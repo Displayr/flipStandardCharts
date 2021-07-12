@@ -222,11 +222,14 @@ ColumnMultiColor <- function(x,
     y <- as.numeric(chart.matrix[,1])
     y.filled <- ifelse(is.finite(y), y, 0)
     x.text <- formatByD3(y, x.hovertext.format)
-    marker = list(color = toRGB(colors, alpha = opacity),
-                line = list(color = toRGB(marker.border.colors,
+    ind.notna <- which(is.finite(y))
+    marker = list(color = toRGB(colors[ind.notna], alpha = opacity),
+                line = list(color = toRGB(marker.border.colors[ind.notna],
                 alpha = marker.border.opacity), width = marker.border.width))
-    hoverfont <- list(color = autoFontColor(colors), size = hovertext.font.size,
+    hoverfont <- list(color = autoFontColor(colors[ind.notna]), size = hovertext.font.size,
                 family = hovertext.font.family)
+    if (any(!is.finite(y)))
+        warning("Ignoring ", sum(!is.finite(y)), " observations")
 
     # Add invisible trace to force all labels to be shown
     # (including missing)
@@ -239,7 +242,7 @@ ColumnMultiColor <- function(x,
             type = "scatter", cliponaxis = TRUE,
             hoverinfo = "skip", showlegend = FALSE, opacity = 0)
 
-    p <- add_trace(p, x = x, y = y, type = "bar", orientation = "v",
+    p <- add_trace(p, x = x[ind.notna], y = y[ind.notna], type = "bar", orientation = "v",
                    marker = marker, hoverlabel = list(font = hoverfont), cliponaxis = FALSE,
                    hovertemplate = "%{y}<extra>%{x}</extra>")
 

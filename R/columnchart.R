@@ -877,7 +877,10 @@ Column <- function(x,
                       width = marker.border.width))
 
         # This is the main trace for each data series
-        p <- add_trace(p, x = x, y = y, type = "bar",
+        bar.width <- NULL
+        if (!is.null(x.range))
+            bar.width <- (min(x.range) - min(data.annotations$x)) * 2
+        p <- add_trace(p, x = x, y = y, type = "bar", width = bar.width,
                        orientation = "v", marker = marker, name = legend.text[i],
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family)),
