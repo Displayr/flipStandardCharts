@@ -252,7 +252,7 @@ test_that("One-row matrix is transposed",
                    paste0("Column chart with multi color series can only show a single series. ",
                           "To show multiple series use Small Multiples"))
     expect_warning(BarMultiColor(tb[,5:7,,drop = FALSE], annotation.list = a.list, data.label.show = T),
-                   paste0("Column chart with multi color series can only show a single series. ",
+                   paste0("Bar chart with multi color series can only show a single series. ",
                           "To show multiple series use Small Multiples"))
     expect_warning(SmallMultiples(tb, "ColumnMultiColor", data.label.show = TRUE, annotation.list = a.list),
                    "Ignoring||Missing")

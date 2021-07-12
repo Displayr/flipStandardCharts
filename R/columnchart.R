@@ -573,7 +573,6 @@ Column <- function(x,
     data.label.prefix <- vectorize(data.label.prefix, ncol(chart.matrix), nrow(chart.matrix), split = NULL)
     data.label.suffix <- vectorize(data.label.suffix, ncol(chart.matrix), nrow(chart.matrix), split = NULL)
 
-
     matrix.labels <- names(dimnames(chart.matrix))
     if (nchar(x.title) == 0 && length(matrix.labels) == 2)
         x.title <- matrix.labels[1]
@@ -584,28 +583,13 @@ Column <- function(x,
         opacity <- if (fit.type == "None") 1 else 0.6
     if (is.null(marker.border.opacity))
         marker.border.opacity <- opacity
+
     colors <- if (multi.colors.within.series) vectorize(colors, nrow(chart.matrix))
               else                            vectorize(colors, ncol(chart.matrix))
     data.label.font.color <- if (multi.colors.within.series) vectorize(data.label.font.color, nrow(chart.matrix))
                              else                            vectorize(data.label.font.color, ncol(chart.matrix)) 
-
-    #if (fit.type != "None" && is.null(fit.line.colors))
-    #    fit.line.colors <- colors
-    #if (fit.CI.show && is.null(fit.CI.colors))
-    #    fit.CI.colors <- fit.line.colors
-    #if (is.null(marker.border.colors))
-    #    marker.border.colors <- colors
-    #marker.border.colors <- vectorize(marker.border.colors, n)
-
-
-    #if (is.stacked && data.label.font.autocolor)
-    #    dlab.color <- autoFontColor(colors)
-    #else
-    #    dlab.color <- vectorize(data.label.font.color, n)
     data.label.show <- vectorize(data.label.show, NCOL(chart.matrix), NROW(chart.matrix))
 
-    #data.label.font = lapply(dlab.color,
-    #    function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
     subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
     x.title.font = list(family = x.title.font.family, size = x.title.font.size, color = x.title.font.color)
@@ -904,7 +888,6 @@ Column <- function(x,
                        size = hovertext.font.size, family = hovertext.font.family)),
                        hovertemplate = setHoverTemplate(i, xaxis, chart.matrix),
                        #hoverinfo = "skip",
-                       hovertemplate = rep(c("%{x}", "%{y}", "<extra></extra>"), length = NROW(chart.matrix)), 
                        legendgroup = if (is.stacked && any(data.label.show)) "all" else i)
 
 
