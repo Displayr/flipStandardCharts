@@ -348,15 +348,25 @@ Bar <- function(x,
         x <- x.labels
         y <- as.numeric(chart.matrix[, i])
         y.filled <- ifelse(is.finite(y), y, 0)
+
+        # hovertemplate is sometimes a little flaky, so %{text} does not always work
+        # we also avoid using %{x} because it is incorrect for stacked bar charts
         y.hover.text <- formatByD3(y, x.hovertext.format, x.tick.prefix, x.tick.suffix)
         x.hover.text <- formatByD3(x, y.hovertext.format, y.tick.prefix, y.tick.suffix)
+        hover.text <- if (yaxis$type == "category") paste0(x.hover.text, ": ", y.hover.text)
+                      else paste0("(", y.hover.text, ", ", x.hover.text, ")")
+        hover.template <- paste0(hover.text, "<extra>", legend.text[i], "</extra>")
 
         tmp.color <- if (multi.colors.within.series) colors else colors[i]
         tmp.border.color <- if (length(marker.border.colors) >= i) marker.border.colors[i] else tmp.color
         dlab.color <- if (multi.colors.within.series) data.label.font.color else data.label.font.color[i]
-        if (is.stacked && data.label.font.autocolor)
+        if (data.label.font.autocolor && (is.stacked || pyramid))
             dlab.color <- autoFontColor(tmp.color)
-        tmp.data.label.font = list(family = data.label.font.family, size = data.label.font.size, color = dlab.color)
+        tmp.data.label.font = list(family = data.label.font.family, 
+            size = data.label.font.size, color = dlab.color)
+        hover.label <- list(bgcolor = tmp.color, font = list(color = autoFontColor(tmp.color),
+                            size = hovertext.font.size, family = hovertext.font.family))
+
         if (any(!is.finite(y)))
         {
             tmp.border.color <- vectorize(tmp.border.color, NROW(chart.matrix))
@@ -378,10 +388,6 @@ Bar <- function(x,
                            type = "scatter", mode = "lines",
                            hoverinfo = "skip", showlegend = FALSE, opacity = 0)
         }
-        hover.template <- if (multi.colors.within.series) "%{x}<extra>%{y}</extra>"
-                          else setHoverTemplate(i, yaxis, chart.matrix, is.bar = TRUE)
-        hover.label <- list(font = list(color = autoFontColor(tmp.color),
-                            size = hovertext.font.size, family = hovertext.font.family))
 
         # this is the main trace for each data series
         # need to use y.filled to avoid plotly bug affecting bar-width
@@ -471,7 +477,7 @@ Bar <- function(x,
                     data.label.sign = getSign(data.annotations$x[,i], xaxis), data.label.nchar,
                     annotation.list, annot.data, i,
                     yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y", xaxis = "x",
-                    tmp.data.label.font, is.stacked, data.label.centered = FALSE)
+                    tmp.data.label.font, is.stacked || pyramid, data.label.centered = FALSE)
 
             if (!is.null(pt.segs))
             {
@@ -489,25 +495,17 @@ Bar <- function(x,
         # The hover in the main trace does not show if bars are too small
         # or if covered by the data labels
         # Changing layout.hovermode will make it more responsive but text is diagonal
-        # Hovertemplate changes when length of text is 1 (plotly expects a vector)
         ypos <- if (NCOL(chart.matrix) > 1) data.annotations$y[,i] else x
         xpos <- if (NCOL(chart.matrix) > 1) data.annotations$x[,i] else y.filled
         if (pyramid)
             xpos <- rep(0, NROW(chart.matrix))
-        hover.text <- if (yaxis$type == "category") paste0(x.hover.text, ": ", y.hover.text)
-                      else paste0("(", y.hover.text, ", ", x.hover.text, ")")
-
-        # hovertemplate is sometimes a little flaky, so %{text} does not always work
-        # we also avoid using %{x} because it is incorrect for stacked bar charts
-        hover.template <- paste0(hover.text, "<extra>", legend.text[i], "</extra>")
-
+        ind.na <- which(!is.finite(y))
+        if (length(ind.na) > 0)
+            hover.template[ind.na] <- ""
         p <- add_trace(p, x = xpos, y = ypos, type = "scatter", name = legend.text[i],
                    mode = "markers", marker = list(color = tmp.color, opacity = 0),
-                   hovertemplate = hover.template, text = hover.text,
-                   hoverlabel = list(font = list(color = autoFontColor(tmp.color),
-                   size = hovertext.font.size, family = hovertext.font.family),
-                   bgcolor = tmp.color), showlegend = FALSE,
-                   yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y")
+                   hovertemplate = hover.template, hoverlabel = hover.label, 
+                   showlegend = FALSE, yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y")
 
     }
 

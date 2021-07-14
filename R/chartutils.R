@@ -45,6 +45,13 @@ setHoverTemplate <- function(i, axis, chart.matrix, is.bar = FALSE, hide.categor
     nameStr <- if (ncol(chart.matrix) == 1 && colnames(chart.matrix)[1] %in% c("Series.1", "Series 1")) ""
                else colnames(chart.matrix)[i]
     formatStr <- paste0(formatStr, "<extra>", nameStr, "</extra>")
+    
+    ind.na <- which(!is.finite(chart.matrix[,i]))
+    if (length(ind.na) > 0)
+    {
+        formatStr <- rep(formatStr, nrow(chart.matrix))
+        formatStr[ind.na] <- ""
+    }
     return(formatStr)
 }
 
