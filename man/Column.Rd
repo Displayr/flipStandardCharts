@@ -8,6 +8,7 @@ Column(
   x,
   x2 = NULL,
   colors = ChartColors(max(1, NCOL(x), na.rm = TRUE)),
+  multi.colors.within.series = FALSE,
   opacity = NULL,
   type = "Column",
   annotation.list = NULL,
@@ -143,7 +144,7 @@ Column(
   y2.tick.suffix = "",
   y2.tick.prefix = "",
   y2.tick.format = "",
-  y2.hovertext.format = y.tick.format,
+  y2.hovertext.format = y2.tick.format,
   y2.tick.angle = NULL,
   y2.tick.font.color = global.font.color,
   y2.tick.font.family = global.font.family,
@@ -179,7 +180,7 @@ Column(
   x.tick.label.wrap = TRUE,
   x.tick.label.wrap.nchar = 21,
   marker.border.width = 1,
-  marker.border.colors = colors,
+  marker.border.colors = NULL,
   marker.border.opacity = NULL,
   tooltip.show = TRUE,
   modebar.show = FALSE,
@@ -209,6 +210,9 @@ will be parsed automatically.}
 a separate axis for these lines will be shown on the right.}
 
 \item{colors}{Character; a vector containing one or more colors specified as hex codes.}
+
+\item{multi.colors.within.series}{A logical indicating that the colors vector should be assigned to 
+each bar within the same series.}
 
 \item{opacity}{Opacity of bars as an alpha value (0 to 1).}
 

@@ -1073,7 +1073,7 @@ setTicks <- function(minimum, maximum, distance, reversed = FALSE,
 
     if (!is.null(data))
     {
-        is.bar <- grepl("Bar", type) && !grepl("Stacked", type)
+        is.bar <- grepl("Bar|Pyramid", type) && !grepl("Stacked", type)
         if (is.null(minimum))
             minimum <- min(0, min(data, na.rm = TRUE))
         if (is.null(maximum))

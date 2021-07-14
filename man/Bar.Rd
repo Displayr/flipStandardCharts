@@ -7,8 +7,10 @@
 Bar(
   x,
   type = "Bar",
+  pyramid = FALSE,
   annotation.list = NULL,
   colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
+  multi.colors.within.series = FALSE,
   opacity = NULL,
   fit.type = "None",
   fit.window.size = 2,
@@ -123,7 +125,7 @@ Bar(
   hovertext.font.family = global.font.family,
   hovertext.font.size = 11,
   marker.border.width = 1,
-  marker.border.colors = colors,
+  marker.border.colors = NULL,
   marker.border.opacity = opacity,
   tooltip.show = TRUE,
   modebar.show = FALSE,
@@ -150,9 +152,14 @@ will be parsed automatically.}
 
 \item{type}{One of "Column", "Stacked Column" or "100\% Stacked Column"}
 
+\item{pyramid}{Logical; show bar chart as a pyramid. Usually called internally}
+
 \item{annotation.list}{Optional list of annotations to modify the data labels.}
 
 \item{colors}{Character; a vector containing one or more colors specified as hex codes.}
+
+\item{multi.colors.within.series}{A logical indicating that the colors vector should be assigned to 
+each bar within the same series.}
 
 \item{opacity}{Opacity of bars as an alpha value (0 to 1).}
 

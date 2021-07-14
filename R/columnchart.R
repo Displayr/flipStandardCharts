@@ -55,6 +55,8 @@
 #' @param grid.show Logical; whether to show grid lines.
 #' @param opacity Opacity of bars as an alpha value (0 to 1).
 #' @param colors Character; a vector containing one or more colors specified as hex codes.
+#' @param multi.colors.within.series A logical indicating that the colors vector should be assigned to 
+#'  each bar within the same series.
 #' @param x2.colors Character; a vector containing one or more colors for \code{x2}
 #'  specified as hex codes.
 #' @param background.fill.color Background color in character format (e.g. "black") or a hex code.

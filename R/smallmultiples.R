@@ -485,6 +485,8 @@ SmallMultiples <- function(x,
                                                      global.font.color = global.font.color,
                                                      margin.autoexpand = margin.autoexpand,
                                                      ...)$htmlwidget}))
+        for (i in 1:npanels)
+            plot.list[[i]]$x$layoutAttrs[[1]][["yaxis2"]] <- NULL
     } else
     {
         # Line or Area chart
