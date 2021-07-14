@@ -85,6 +85,7 @@ Bar <- function(x,
                     y.line.width = 0,
                     y.line.color = rgb(0, 0, 0, maxColorValue = 255),
                     y.tick.mark.length = 3,
+                    y.tick.mark.color = "transparent",
                     y.bounds.minimum = NULL,
                     y.bounds.maximum = NULL,
                     y.tick.distance = NULL,
@@ -112,6 +113,7 @@ Bar <- function(x,
                     x.line.color = rgb(0, 0, 0, maxColorValue = 255),
                     x.tick.marks = "",
                     x.tick.mark.length = 0,
+                    x.tick.mark.color = "transparent",
                     x.bounds.minimum = NULL,
                     x.bounds.maximum = NULL,
                     x.tick.distance = NULL,
@@ -288,13 +290,14 @@ Bar <- function(x,
                   y.tick.format, y.tick.prefix, y.tick.suffix, y.tick.show,
                   y.zero, y.zero.line.width, y.zero.line.color,
                   y.hovertext.format, with.bars = TRUE, num.maxticks = y.tick.maxnum,
-                  zoom.enable = zoom.enable)
+                  tickcolor = y.tick.mark.color, zoom.enable = zoom.enable)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance,
                   x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show,
                   x.zero, x.zero.line.width, x.zero.line.color,
-                  x.hovertext.format, num.maxticks = x.tick.maxnum, zoom.enable = zoom.enable)
+                  x.hovertext.format, num.maxticks = x.tick.maxnum, 
+                  tickcolor = x.tick.mark.color, zoom.enable = zoom.enable)
 
     # Work out margin spacing
     margins <- list(t = 20, b = 20, r = 60, l = 80, pad = 0)

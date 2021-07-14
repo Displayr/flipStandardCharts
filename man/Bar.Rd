@@ -74,6 +74,7 @@ Bar(
   y.line.width = 0,
   y.line.color = rgb(0, 0, 0, maxColorValue = 255),
   y.tick.mark.length = 3,
+  y.tick.mark.color = "transparent",
   y.bounds.minimum = NULL,
   y.bounds.maximum = NULL,
   y.tick.distance = NULL,
@@ -101,6 +102,7 @@ Bar(
   x.line.color = rgb(0, 0, 0, maxColorValue = 255),
   x.tick.marks = "",
   x.tick.mark.length = 0,
+  x.tick.mark.color = "transparent",
   x.bounds.minimum = NULL,
   x.bounds.maximum = NULL,
   x.tick.distance = NULL,
@@ -315,6 +317,8 @@ character format (e.g. "black") or a hex code.}
 
 \item{y.tick.mark.length}{Length of tick marks in pixels. Ticks are only shown when \code{y.line.width > 0}.}
 
+\item{y.tick.mark.color}{Color of tick marks (default transparent).}
+
 \item{y.bounds.minimum}{Minimum of range for plotting; For a date axis this should be supplied as a date string.
 For a categorical axis, the index of the category (0-based) should be used.}
 
@@ -382,6 +386,8 @@ character format (e.g. "black") or an a hex code.}
 x-axis.  Can be "outside", "inside", "none"}
 
 \item{x.tick.mark.length}{Length of tick marks in pixels.}
+
+\item{x.tick.mark.color}{Color of tick marks.}
 
 \item{x.bounds.minimum}{Minimum of range for plotting; For a date axis this should be supplied as a date string.
 For a categorical axis, the index of the category (0-based) should be used.}
