@@ -125,8 +125,6 @@ Pyramid <- function(x,
     if (any(ss * ss[1] < 0))
         stop("'Pyramid' charts cannot show a mixture of positive and negative values.")
 
-    eval(colors)
-    eval(x.tick.show)
     cl <- match.call()
     cl <- c(cl[1], lapply(cl[-1], evalc, env = parent.frame()))
     cl <- as.call(cl)
