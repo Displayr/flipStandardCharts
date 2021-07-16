@@ -94,6 +94,6 @@ test_that("No warnings",
 test_that("ColumnMultiColor + missing endpoints",
 {
     xx <- c(A = 1, B = 2, C = NA)
-    expect_error(ColumnMultiColor(xx, data.label.show = TRUE), NA)
+    expect_warning(ColumnMultiColor(xx, data.label.show = TRUE), "Missing")
 })
 

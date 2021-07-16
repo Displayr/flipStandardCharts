@@ -377,6 +377,7 @@ Line <-   function(x,
                        width = marker.border.width))
         }
         y.label <- y.labels[i]
+        hover.template <- setHoverTemplate(i, xaxis, chart.matrix)
 
 
         # Draw line - main trace
@@ -387,25 +388,25 @@ Line <-   function(x,
                    text = autoFormatLongLabels(x.labels.full, wordwrap=T, truncate=F),
                    hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                    size = hovertext.font.size, family = hovertext.font.family)),
-                   hovertemplate = setHoverTemplate(i, xaxis, chart.matrix))
+                   hovertemplate = hover.template)
 
         # single points (no lines) need to be added separately
         not.na <- is.finite(y)
-        is.single <- not.na & c(TRUE, !not.na[-nrow(chart.matrix)]) & c(!not.na[-1], TRUE)
-        if (any(is.single) && type == "Line")
+        ind.single <- which(not.na & c(TRUE, !not.na[-nrow(chart.matrix)]) & c(!not.na[-1], TRUE))
+        if (length(ind.single) > 0 && type == "Line")
         {
             p <- add_trace(p,
                        type = "scatter",
                        mode = "markers",
-                       x = x[which(is.single)],
-                       y = y[which(is.single)],
+                       x = x[ind.single],
+                       y = y[ind.single],
                        legendgroup = i,
                        name = y.label,
                        marker = list(color = toRGB(colors[i], alpha = marker.opacity), size = marker.size[1]),
-                       text = autoFormatLongLabels(x.labels.full[is.single], wordwrap=T, truncate=F),
+                       text = autoFormatLongLabels(x.labels.full[ind.single], wordwrap=T, truncate=F),
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family)),
-                       hovertemplate = setHoverTemplate(i, xaxis, chart.matrix),
+                       hovertemplate = hover.template[ind.single], 
                        showlegend = FALSE)
         }
         if (fit.type != "None")
@@ -496,7 +497,7 @@ Line <-   function(x,
                    hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                    size = hovertext.font.size, family = hovertext.font.family),
                    bgcolor = toRGB(colors[i], alpha = opacity)),
-                   hovertemplate = setHoverTemplate(i, xaxis, chart.matrix))
+                   hovertemplate = setHoverTemplate(i, xaxis, chart.matrix[ind.show,,drop = FALSE]))
         }
     }
     serieslabels.num.changes <- vapply(chart.labels$SeriesLabels, function(s) isTRUE(s$ShowValue) + length(s$CustomPoints), numeric(1L))

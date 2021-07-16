@@ -157,6 +157,8 @@ SmallMultiples <- function(x,
         data.label.show <- vectorize(data.label.show, NCOL(x), NROW(x))
         data.label.prefix <- vectorize(data.label.prefix, NCOL(x), NROW(x), split = NULL)
         data.label.suffix <- vectorize(data.label.suffix, NCOL(x), NROW(x), split = NULL)
+        fit.line.colors <- vectorize(fit.line.colors, npanels)
+        fit.CI.colors <- vectorize(fit.CI.colors, npanels)
     }
 
     # Data manipulation
@@ -438,6 +440,10 @@ SmallMultiples <- function(x,
                     npanels, " columns")
         plot.list <- CollectWarnings(lapply(1:npanels, function(i){chart(getColumn(x, i),
                                                      colors = if (color.as.matrix) colors[,i] else colors,
+                                                     average.series = average.series,
+                                                     average.color = average.color,
+                                                     fit.line.colors = fit.line.colors[i],
+                                                     fit.CI.colors = fit.CI.colors[i],
                                                      x.title = x.title, x.title.font.size = x.title.font.size,
                                                      y.title = y.title, y.title.font.size = y.title.font.size,
                                                      data.label.show = data.label.show[,i],
@@ -455,6 +461,13 @@ SmallMultiples <- function(x,
                                                      global.font.color = global.font.color,
                                                      margin.autoexpand = margin.autoexpand,
                                                      ...)$htmlwidget}))
+
+        # Remove second axis which is used for positioning data labels/hovertext
+        # on categorical/date axis - naming interferes with subplot
+        axis.name <- if (chart.type == "BarMultiColor") "yaxis2" else "xaxis2"
+        for (i in 1:npanels)
+            plot.list[[i]]$x$layoutAttrs[[1]][[axis.name]] <- NULL
+
     } else if (chart.type == "Pyramid")
     {
         color.as.matrix <- NCOL(colors) == npanels && npanels > 1
@@ -478,6 +491,8 @@ SmallMultiples <- function(x,
                                                      global.font.color = global.font.color,
                                                      margin.autoexpand = margin.autoexpand,
                                                      ...)$htmlwidget}))
+        for (i in 1:npanels)
+            plot.list[[i]]$x$layoutAttrs[[1]][["yaxis2"]] <- NULL
     } else
     {
         # Line or Area chart

@@ -6,9 +6,22 @@
 #' @importFrom plotly plot_ly layout
 #' @export
 ColumnMultiColor <- function(x,
+                    x2 = NULL,
                     annotation.list = NULL,
+                    overlay.annotation.list = NULL,
                     colors = ChartColors(max(1, length(x))),
                     opacity = NULL,
+                    fit.type = "None", # can be "Smooth" or anything else
+                    fit.window.size = 2,
+                    fit.line.colors = colors,
+                    fit.ignore.last = FALSE,
+                    fit.line.type = "dot",
+                    fit.line.width = 1,
+                    fit.line.name = "Fitted",
+                    fit.line.opacity = 1,
+                    fit.CI.show = FALSE,
+                    fit.CI.colors = fit.line.colors,
+                    fit.CI.opacity = 0.4,
                     global.font.family = "Arial",
                     global.font.color = rgb(44, 44, 44, maxColorValue = 255),
                     title = "",
@@ -32,6 +45,21 @@ ColumnMultiColor <- function(x,
                     background.fill.opacity = 1,
                     charting.area.fill.color = background.fill.color,
                     charting.area.fill.opacity = 0,
+                    legend.show = NA,
+                    legend.orientation = "Vertical",
+                    legend.wrap = TRUE,
+                    legend.wrap.nchar = 30,
+                    legend.position.x = NULL,
+                    legend.position.y = NULL,
+                    legend.ascending = NA,
+                    legend.fill.color = background.fill.color,
+                    legend.fill.opacity = 0,
+                    legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
+                    legend.border.line.width = 0,
+                    legend.font.color = global.font.color,
+                    legend.font.family = global.font.family,
+                    legend.font.size = 10,
+
                     margin.top = NULL,
                     margin.bottom = NULL,
                     margin.left = NULL,
@@ -39,6 +67,60 @@ ColumnMultiColor <- function(x,
                     margin.inner.pad = NULL,
                     margin.autoexpand = TRUE,
                     grid.show = TRUE,
+                    average.series = NULL,
+                    average.color = rgb(230, 230, 230, maxColorValue = 255),
+                    x2.colors = ChartColors(max(1, NCOL(x2), na.rm = TRUE)),
+                    x2.data.label.show = FALSE,
+                    x2.data.label.show.at.ends = FALSE,
+                    x2.line.type = "Solid",
+                    x2.line.thickness = 2,
+                    x2.shape = c("linear", "spline")[1],
+                    x2.smoothing = 1,
+                    x2.opacity = 1,
+                    x2.marker.show = FALSE,
+                    x2.marker.show.at.ends = FALSE,
+                    x2.marker.size = 6,
+                    x2.marker.symbols = "circle",
+                    x2.marker.colors = x2.colors,
+                    x2.marker.border.colors = x2.colors,
+                    x2.marker.opacity = x2.opacity,
+                    x2.marker.border.opacity = x2.opacity,
+                    x2.marker.border.width = 1,
+                    x2.data.label.position = "Top",
+                    x2.data.label.font.autocolor = FALSE,
+                    x2.data.label.font.family = global.font.family,
+                    x2.data.label.font.size = 10,
+                    x2.data.label.font.color = global.font.color,
+                    x2.data.label.format = "",
+                    x2.data.label.prefix = "",
+                    x2.data.label.suffix = "",
+                    y2.title = "",
+                    y2.title.font.color = global.font.color,
+                    y2.title.font.family = global.font.family,
+                    y2.title.font.size = 12,
+                    y2.line.width = 0,
+                    y2.line.color = rgb(0, 0, 0, maxColorValue = 255),
+                    y2.tick.mark.length = 0,
+                    y2.tick.mark.color = "tranparent",
+                    y2.bounds.minimum = NULL,
+                    y2.bounds.maximum = NULL,
+                    y2.tick.distance = NULL,
+                    y2.tick.maxnum = NULL,
+                    y2.zero = TRUE,
+                    y2.zero.line.width = 0,
+                    y2.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
+                    y2.data.reversed = FALSE,
+                    y2.grid.width = 0 * grid.show,
+                    y2.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+                    y2.tick.show = TRUE,
+                    y2.tick.suffix = "",
+                    y2.tick.prefix = "",
+                    y2.tick.format = "",
+                    y2.hovertext.format = y2.tick.format,
+                    y2.tick.angle = NULL,
+                    y2.tick.font.color = global.font.color,
+                    y2.tick.font.family = global.font.family,
+                    y2.tick.font.size = 10,
                     y.title = "",
                     y.title.font.color = global.font.color,
                     y.title.font.family = global.font.family,
@@ -115,203 +197,13 @@ ColumnMultiColor <- function(x,
                     zoom.enable = TRUE,
                     bar.gap = 0.15)
 {
-    ErrorIfNotEnoughData(x)
-    if (isPercentData(x))
-    {
-        if (isAutoFormat(y.tick.format))
-            y.tick.format <- paste0(y.tick.format, "%")
-        if (isAutoFormat(y.hovertext.format))
-            y.hovertext.format <- paste0(y.hovertext.format, "%")
-        if (isAutoFormat(data.label.format))
-            data.label.format <- paste0(data.label.format, "%")
-
-        sfx <- checkSuffixForExtraPercent(c(y.tick.suffix, data.label.suffix),
-            c(y.tick.format, data.label.format))
-        y.tick.suffix <- sfx[1]
-        data.label.suffix <- sfx[2]
-    }
-
-    chart.matrix <- checkMatrixNames(x)
-    annot.data <- x
-    if (NCOL(chart.matrix) > 1)
-    {
-        warning("Column chart with multi color series can only show a single series. To show multiple series use Small Multiples")
-        chart.matrix <- chart.matrix[,1, drop = FALSE]
-    }
-    if (bar.gap < 0.0 || bar.gap >= 1.0)
-    {
-        warning("Parameter 'bar gap' must be between 0 and 1. ",
-                "Invalid 'bar gap' set to default value of 0.15.")
-        bar.gap <- 0.15
-    }
-
-
-    matrix.labels <- names(dimnames(chart.matrix))
-    if (nchar(y.title) == 0 && length(matrix.labels) == 2)
-        y.title <- matrix.labels[1]
-
-    # Constants
-    hover.mode <- if (tooltip.show) "closest" else FALSE
-    if (is.null(opacity))
-        opacity <- 1
-    if (is.null(marker.border.opacity) && opacity > 0.85)
-        marker.border.opacity <- opacity
-    else if (is.null(marker.border.opacity)) # trying to hide gap in the middle
-        marker.border.opacity <- opacity/(4 + 3*(opacity < 0.7))
-    colors <- vectorize(colors, NROW(chart.matrix))
-    if (is.null(marker.border.colors))
-        marker.border.colors <- colors
-    marker.border.colors <- vectorize(marker.border.colors, NROW(chart.matrix))
-
-    if (data.label.font.autocolor)
-        dlab.color <- autoFontColor(colors)
-    else
-        dlab.color <- vectorize(data.label.font.color, NROW(chart.matrix))
-
-    data.label.show = vectorize(data.label.show, NROW(chart.matrix))
-    data.label.prefix = vectorize(data.label.prefix, NROW(chart.matrix))
-    data.label.suffix = vectorize(data.label.suffix, NROW(chart.matrix))
-    data.label.font = list(family = data.label.font.family, size = data.label.font.size, color = dlab.color)
-    title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
-    subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
-    x.title.font = list(family = x.title.font.family, size = x.title.font.size, color = x.title.font.color)
-    y.title.font = list(family = y.title.font.family, size = y.title.font.size, color = y.title.font.color)
-    ytick.font = list(family = y.tick.font.family, size = y.tick.font.size, color = y.tick.font.color)
-    xtick.font = list(family = x.tick.font.family, size = x.tick.font.size, color = x.tick.font.color)
-    footer.font = list(family = footer.font.family, size = footer.font.size, color = footer.font.color)
-    footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate = FALSE)
-
-    # Format axis labels
-    type <- "Column"
-    axisFormat <- formatLabels(chart.matrix, type, x.tick.label.wrap, x.tick.label.wrap.nchar,
-                               x.tick.format, y.tick.format)
-
-    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, axisFormat, x.zero, FALSE, is.bar = TRUE)
-    y.range <- setValRange(y.bounds.minimum, y.bounds.maximum, chart.matrix, y.zero, is.null(y.tick.distance))
-    xtick <- setTicks(x.range$min, x.range$max, x.tick.distance, x.data.reversed, is.bar = TRUE)
-    ytick <- setTicks(y.range$min, y.range$max, y.tick.distance, y.data.reversed)
-
-    yaxis <- setAxis(y.title, "left", axisFormat, y.title.font,
-                  y.line.color, y.line.width, y.grid.width * grid.show, y.grid.color,
-                  ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance, 
-                  y.tick.format, y.tick.prefix, y.tick.suffix,
-                  y.tick.show, y.zero, y.zero.line.width, y.zero.line.color,
-                  y.hovertext.format, num.maxticks = y.tick.maxnum, 
-                  tickcolor = y.tick.mark.color, zoom.enable = zoom.enable)
-    xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
-                  x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
-                  xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, 
-                  x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show, 
-                  x.zero, x.zero.line.width, x.zero.line.color,
-                  x.hovertext.format, axisFormat$labels, num.series = NCOL(chart.matrix), 
-                  with.bars = TRUE, num.maxticks = x.tick.maxnum,
-                  tickcolor = x.tick.mark.color, zoom.enable = zoom.enable)
-
-    # Work out margin spacing
-    margins <- list(t = 20, b = 20, r = 60, l = 80, pad = 0)
-    margins <- setMarginsForAxis(margins, axisFormat, yaxis)
-    margins <- setMarginsForAxis(margins, as.character(range(x)), xaxis)
-    margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
-                                 subtitle.font.size, footer.font.size)
-    margins <- setMarginsForLegend(margins, FALSE, NULL, NULL)
-    margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
-                    margin.right, margin.inner.pad)
-    margins$autoexpand <- margin.autoexpand
-
-    x <- axisFormat$labels
-    y <- as.numeric(chart.matrix[,1])
-    y.filled <- ifelse(is.finite(y), y, 0)
-    x.text <- formatByD3(y, x.hovertext.format)
-    marker = list(color = toRGB(colors, alpha = opacity),
-                line = list(color = toRGB(marker.border.colors,
-                alpha = marker.border.opacity), width = marker.border.width))
-    hoverfont <- list(color = autoFontColor(colors), size = hovertext.font.size,
-                family = hovertext.font.family)
-
-    # Add invisible trace to force all labels to be shown
-    # (including missing)
-    tmp.min <- if (any(is.finite(chart.matrix))) min(chart.matrix[is.finite(chart.matrix)])
-               else y.bounds.minimum
-    p <- plot_ly(as.data.frame(chart.matrix))
-    p <- add_trace(p, x = x,
-            y = rep(tmp.min, length(x)),
-            mode = if (notAutoRange(yaxis)) "markers" else "lines",
-            type = "scatter", cliponaxis = TRUE,
-            hoverinfo = "skip", showlegend = FALSE, opacity = 0)
-
-    p <- add_trace(p, x = x, y = y, type = "bar", orientation = "v",
-                   marker = marker, hoverlabel = list(font = hoverfont), cliponaxis = FALSE,
-                   hovertemplate = "%{y}<extra>%{x}</extra>")
-
-    chart.labels <- list(SeriesLabels = list())
-    if (any(data.label.show))
-    {
-        # Initialize attribute for PPT exporting
-        chart.labels$SeriesLabels[[1]] <- list(Font = setFontForPPT(data.label.font), ShowValue = FALSE)
-        pt.segs <- lapply((1:NROW(chart.matrix)),
-            function(ii) return(list(Index = ii-1, Segments = c(
-                if (nzchar(data.label.prefix[ii])) list(list(Text = data.label.prefix[ii])) else NULL,
-                list(list(Field="Value")),
-                if (nzchar(data.label.suffix[ii])) list(list(Text = data.label.suffix[ii])) else NULL))))
-        for (ii in which(!data.label.show))
-            pt.segs[[ii]]$Segments <- NULL
-
-        data.label.text <- formatByD3(y, data.label.format,
-               data.label.prefix, data.label.suffix, decimals = 0)
-        data.label.nchar <- nchar(data.label.text) # get length before adding html tags
-        attr(data.label.text, "customPoints") <- pt.segs
-        data.label.text <- applyAllAnnotationsToDataLabels(data.label.text, annotation.list,
-            annot.data, 1, which(data.label.show), "Bar", clean.pt.segs = TRUE)
-        pt.segs <- attr(data.label.text, "customPoints")
-
-        p <- addTraceForBarTypeDataLabelAnnotations(p, type = "Column", NULL,
-                data.label.xpos = x, data.label.ypos = y.filled, data.label.text = data.label.text,
-                data.label.show = data.label.show, data.label.sign = getSign(y, yaxis), data.label.nchar,
-                annotation.list, annot.data, i = 1,
-                xaxis = "x", yaxis = "y", data.label.font, is.stacked = FALSE, data.label.centered = FALSE)
-
-        if (!is.null(pt.segs))
-        {
-            if (isTRUE(attr(pt.segs, "SeriesShowValue")))
-            {
-                chart.labels$SeriesLabels[[1]]$ShowValue <- TRUE
-                attr(pt.segs, "SeriesShowValue") <- NULL
-            }
-            if (length(pt.segs) > 0)
-                chart.labels$SeriesLabels[[1]]$CustomPoints <- pt.segs
-        }
-    }
-
-    annot <- list(setSubtitle(subtitle, subtitle.font, margins, subtitle.align),
-                           setTitle(title, title.font, margins, title.align),
-                           setFooter(footer, footer.font, margins, footer.align))
-    annot <- Filter(Negate(is.null), annot)
-    
-    serieslabels.num.changes <- vapply(chart.labels$SeriesLabels, function(s) isTRUE(s$ShowValue) + length(s$CustomPoints), numeric(1L))
-    if (sum(serieslabels.num.changes) == 0)
-        chart.labels <- NULL
-
-    p <- config(p, displayModeBar = modebar.show)
-    p$sizingPolicy$browser$padding <- 0
-    p <- layout(p,
-        showlegend = FALSE,
-        yaxis = yaxis,
-        xaxis = xaxis,
-        margin = margins,
-        plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
-        paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
-        annotations = annot,
-        hoverlabel = list(namelength = -1, bordercolor = "transparent",
-            font = list(size = hovertext.font.size, family = hovertext.font.family)),
-        hovermode = if (tooltip.show) "x" else FALSE,
-        bargap = bar.gap,
-        barmode = 'overlay'
-    )
-    attr(p, "can-run-in-root-dom") <- TRUE
-    result <- list(htmlwidget = p)
-    class(result) <- "StandardChart"
-    attr(result, "ChartType") <- "Column Clustered"
-    attr(result, "ChartLabels") <- chart.labels
-    result
+    eval(colors)
+    cl <- match.call()
+    cl <- c(cl[1], lapply(cl[-1], evalc, env = parent.frame()))
+    cl <- as.call(cl)
+    cl <- cl[-1]
+    cl$colors <- colors
+    cl$multi.colors.within.series <- TRUE
+    do.call(Column, as.list(cl))
 }
 

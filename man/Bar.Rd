@@ -7,8 +7,10 @@
 Bar(
   x,
   type = "Bar",
+  pyramid = FALSE,
   annotation.list = NULL,
   colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
+  multi.colors.within.series = FALSE,
   opacity = NULL,
   fit.type = "None",
   fit.window.size = 2,
@@ -72,6 +74,7 @@ Bar(
   y.line.width = 0,
   y.line.color = rgb(0, 0, 0, maxColorValue = 255),
   y.tick.mark.length = 3,
+  y.tick.mark.color = "transparent",
   y.bounds.minimum = NULL,
   y.bounds.maximum = NULL,
   y.tick.distance = NULL,
@@ -99,6 +102,7 @@ Bar(
   x.line.color = rgb(0, 0, 0, maxColorValue = 255),
   x.tick.marks = "",
   x.tick.mark.length = 0,
+  x.tick.mark.color = "transparent",
   x.bounds.minimum = NULL,
   x.bounds.maximum = NULL,
   x.tick.distance = NULL,
@@ -123,7 +127,7 @@ Bar(
   hovertext.font.family = global.font.family,
   hovertext.font.size = 11,
   marker.border.width = 1,
-  marker.border.colors = colors,
+  marker.border.colors = NULL,
   marker.border.opacity = opacity,
   tooltip.show = TRUE,
   modebar.show = FALSE,
@@ -150,9 +154,14 @@ will be parsed automatically.}
 
 \item{type}{One of "Column", "Stacked Column" or "100\% Stacked Column"}
 
+\item{pyramid}{Logical; show bar chart as a pyramid. Usually called internally}
+
 \item{annotation.list}{Optional list of annotations to modify the data labels.}
 
 \item{colors}{Character; a vector containing one or more colors specified as hex codes.}
+
+\item{multi.colors.within.series}{A logical indicating that the colors vector should be assigned to 
+each bar within the same series.}
 
 \item{opacity}{Opacity of bars as an alpha value (0 to 1).}
 
@@ -308,6 +317,8 @@ character format (e.g. "black") or a hex code.}
 
 \item{y.tick.mark.length}{Length of tick marks in pixels. Ticks are only shown when \code{y.line.width > 0}.}
 
+\item{y.tick.mark.color}{Color of tick marks (default transparent).}
+
 \item{y.bounds.minimum}{Minimum of range for plotting; For a date axis this should be supplied as a date string.
 For a categorical axis, the index of the category (0-based) should be used.}
 
@@ -375,6 +386,8 @@ character format (e.g. "black") or an a hex code.}
 x-axis.  Can be "outside", "inside", "none"}
 
 \item{x.tick.mark.length}{Length of tick marks in pixels.}
+
+\item{x.tick.mark.color}{Color of tick marks.}
 
 \item{x.bounds.minimum}{Minimum of range for plotting; For a date axis this should be supplied as a date string.
 For a categorical axis, the index of the category (0-based) should be used.}

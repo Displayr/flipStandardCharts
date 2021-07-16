@@ -19,10 +19,7 @@ for (func in charting.funcs)
     {
         # Create command that will create widget
         cmd <- paste0("pp <- ", func, "(x1, ", opt, ")")
-        if (func %in% c("BarMultiColor", "ColumnMultiColor", "Pyramid"))
-            expect_error(eval(parse(text=cmd)), NA)
-        else
-            expect_warning(eval(parse(text=cmd)), "Missing")
+        expect_warning(eval(parse(text=cmd)), "Missing")
         #print(pp)
         #readline(prompt=paste0(filestem, ": press [enter] to continue: "))
     })
@@ -33,10 +30,7 @@ for (func in charting.funcs)
         # Create command that will create widget
         cmd <- paste0("pp <- SmallMultiples(x2, \"", func, "\", ",
                         opt, ", nrow = 1)")
-        if (func %in% c("BarMultiColor", "ColumnMultiColor", "Pyramid"))
-            expect_warning(eval(parse(text=cmd)), "Ignoring")
-        else
-            expect_warning(eval(parse(text=cmd)), "Missing")
+        expect_warning(eval(parse(text=cmd)), "Missing")
         #print(pp)
         #readline(prompt=paste0(filestem, ": press [enter] to continue: "))
     })

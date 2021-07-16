@@ -9,6 +9,17 @@ BarMultiColor(
   annotation.list = NULL,
   colors = ChartColors(max(1, length(x))),
   opacity = NULL,
+  fit.type = "None",
+  fit.window.size = 2,
+  fit.line.colors = colors,
+  fit.ignore.last = FALSE,
+  fit.line.type = "dot",
+  fit.line.width = 1,
+  fit.line.name = "Fitted",
+  fit.line.opacity = 1,
+  fit.CI.show = FALSE,
+  fit.CI.colors = fit.line.colors,
+  fit.CI.opacity = 0.4,
   global.font.family = "Arial",
   global.font.color = rgb(44, 44, 44, maxColorValue = 255),
   title = "",
@@ -32,6 +43,20 @@ BarMultiColor(
   background.fill.opacity = 1,
   charting.area.fill.color = background.fill.color,
   charting.area.fill.opacity = 0,
+  legend.show = NA,
+  legend.orientation = "Vertical",
+  legend.wrap = TRUE,
+  legend.wrap.nchar = 30,
+  legend.position.x = NULL,
+  legend.position.y = NULL,
+  legend.ascending = NA,
+  legend.fill.color = background.fill.color,
+  legend.fill.opacity = 0,
+  legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
+  legend.border.line.width = 0,
+  legend.font.color = global.font.color,
+  legend.font.family = global.font.family,
+  legend.font.size = 10,
   margin.top = NULL,
   margin.bottom = NULL,
   margin.left = NULL,
@@ -113,7 +138,10 @@ BarMultiColor(
   tooltip.show = TRUE,
   modebar.show = FALSE,
   zoom.enable = TRUE,
-  bar.gap = 0.15
+  bar.gap = 0.15,
+  bar.group.gap = 0,
+  average.series = NULL,
+  average.color = rgb(230, 230, 230, maxColorValue = 255)
 )
 }
 \arguments{
@@ -126,6 +154,30 @@ will be parsed automatically.}
 \item{colors}{Character; a vector containing one or more colors specified as hex codes.}
 
 \item{opacity}{Opacity of bars as an alpha value (0 to 1).}
+
+\item{fit.type}{Character; type of line of best fit. Can be one of "None", "Linear", "LOESS",
+"Friedman's super smoother", "Cubic spline", "Moving average", "Centered moving average".}
+
+\item{fit.window.size}{Integer; Use to determine how the average is computed when \code{fit.type}
+"Moving average" or "Centered moving average".}
+
+\item{fit.line.colors}{Character; a vector containing one or more colors specified as hex codes.}
+
+\item{fit.ignore.last}{Logical; whether to ignore the last data point in the fit.}
+
+\item{fit.line.type}{Character; One of "solid", "dot", "dash, "dotdash", or length of dash "2px", "5px".}
+
+\item{fit.line.width}{Numeric; Line width of line of best fit.}
+
+\item{fit.line.name}{Character; Name of the line of best fit, which will appear in the hovertext.}
+
+\item{fit.line.opacity}{Opacity of trend line as an alpha value (0 to 1).}
+
+\item{fit.CI.show}{Show 95\% confidence interval.}
+
+\item{fit.CI.colors}{Character; a vector containing one or more colors specified as hex codes.}
+
+\item{fit.CI.opacity}{Opacity of confidence interval ribbon as an alpha value (0 to 1).}
 
 \item{global.font.family}{Character; font family for all occurrences of any
 font attribute for the chart unless specified individually.}
@@ -182,6 +234,45 @@ line of the footer when \code{footer.wrap} \code{TRUE}.}
 a named color in character format (e.g. "black") or a hex code.}
 
 \item{charting.area.fill.opacity}{Charting area background opacity as an alpha value (0 to 1).}
+
+\item{legend.show}{Controls whether legend is shown. This can be a logical (\code{TRUE} or \code{FALSE});
+or a string ("Show" or "Hide"). If it is \code{TRUE} or \code{NA} (the default), a legend will be
+shown only if there is more than one data series. To force a legend to be shown even with 1
+data series, use "Show" instead.}
+
+\item{legend.orientation}{Character; One of 'Vertical' or 'Horizontal'}
+
+\item{legend.wrap}{Logical; whether the legend text should be wrapped.}
+
+\item{legend.wrap.nchar}{Number of characters (approximately) in each
+line of the legend when \code{legend.wrap} \code{TRUE}.}
+
+\item{legend.position.x}{A numeric controlling the position of the legend.
+Values range from -0.5 (left) to 1.5 (right).}
+
+\item{legend.position.y}{A numeric controlling the position of the legend.
+Values range from 0 (bottom) to 1 (top).}
+
+\item{legend.ascending}{Logical; TRUE for ascending, FALSE for descending.
+By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.}
+
+\item{legend.fill.color}{Legend fill color as a named color in character format
+(e.g. "black") or a hex code.}
+
+\item{legend.fill.opacity}{Legend fill opacity as an alpha value (0 to 1).}
+
+\item{legend.border.color}{Legend border color as a named color in character
+format (e.g. "black") or a hex code.}
+
+\item{legend.border.line.width}{Width in pixels of the border
+around the legend.  0 = no border.}
+
+\item{legend.font.color}{Legend font color as a named color in character
+format (e.g. "black") or a hex code.}
+
+\item{legend.font.family}{Character; legend font family.}
+
+\item{legend.font.size}{Integer; Legend font size.}
 
 \item{margin.top}{Margin between plot area and the top of the graphic in pixels}
 
@@ -394,6 +485,16 @@ because data labels and annotations can be misplace on zoom.}
 
 \item{bar.gap}{Gap between adjacent bars with different coordinates in
 bar or column charts (in plot fraction).}
+
+\item{bar.group.gap}{Gap between bars at the same location (in plot fraction).
+This is only applicable for grouped bar/column charts.}
+
+\item{average.series}{a vector of values which create an additional data series named "Average".
+This is usually used by \code{SmallMultiples}. For bar/column charts, the average is shown as a line,
+for Line and Area, the average series is shown in the same way as the other data series
+but it is shown without data labels.}
+
+\item{average.color}{Color of the \code{average.series} as a hex code or string}
 }
 \description{
 Bar charts with many colors

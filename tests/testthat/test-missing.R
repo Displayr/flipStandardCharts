@@ -52,6 +52,6 @@ test_that("MissingCasesPlot",
 test_that("Pyramid handles missing values",
 {
     x <- c(1e-04, 2, 3, 4, NA, 0, 5)
-    expect_error(Pyramid(x), NA)
+    expect_warning(Pyramid(x), "Missing")
 })
 

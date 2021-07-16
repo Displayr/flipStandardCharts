@@ -6,9 +6,22 @@
 \usage{
 ColumnMultiColor(
   x,
+  x2 = NULL,
   annotation.list = NULL,
+  overlay.annotation.list = NULL,
   colors = ChartColors(max(1, length(x))),
   opacity = NULL,
+  fit.type = "None",
+  fit.window.size = 2,
+  fit.line.colors = colors,
+  fit.ignore.last = FALSE,
+  fit.line.type = "dot",
+  fit.line.width = 1,
+  fit.line.name = "Fitted",
+  fit.line.opacity = 1,
+  fit.CI.show = FALSE,
+  fit.CI.colors = fit.line.colors,
+  fit.CI.opacity = 0.4,
   global.font.family = "Arial",
   global.font.color = rgb(44, 44, 44, maxColorValue = 255),
   title = "",
@@ -32,6 +45,20 @@ ColumnMultiColor(
   background.fill.opacity = 1,
   charting.area.fill.color = background.fill.color,
   charting.area.fill.opacity = 0,
+  legend.show = NA,
+  legend.orientation = "Vertical",
+  legend.wrap = TRUE,
+  legend.wrap.nchar = 30,
+  legend.position.x = NULL,
+  legend.position.y = NULL,
+  legend.ascending = NA,
+  legend.fill.color = background.fill.color,
+  legend.fill.opacity = 0,
+  legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
+  legend.border.line.width = 0,
+  legend.font.color = global.font.color,
+  legend.font.family = global.font.family,
+  legend.font.size = 10,
   margin.top = NULL,
   margin.bottom = NULL,
   margin.left = NULL,
@@ -39,6 +66,60 @@ ColumnMultiColor(
   margin.inner.pad = NULL,
   margin.autoexpand = TRUE,
   grid.show = TRUE,
+  average.series = NULL,
+  average.color = rgb(230, 230, 230, maxColorValue = 255),
+  x2.colors = ChartColors(max(1, NCOL(x2), na.rm = TRUE)),
+  x2.data.label.show = FALSE,
+  x2.data.label.show.at.ends = FALSE,
+  x2.line.type = "Solid",
+  x2.line.thickness = 2,
+  x2.shape = c("linear", "spline")[1],
+  x2.smoothing = 1,
+  x2.opacity = 1,
+  x2.marker.show = FALSE,
+  x2.marker.show.at.ends = FALSE,
+  x2.marker.size = 6,
+  x2.marker.symbols = "circle",
+  x2.marker.colors = x2.colors,
+  x2.marker.border.colors = x2.colors,
+  x2.marker.opacity = x2.opacity,
+  x2.marker.border.opacity = x2.opacity,
+  x2.marker.border.width = 1,
+  x2.data.label.position = "Top",
+  x2.data.label.font.autocolor = FALSE,
+  x2.data.label.font.family = global.font.family,
+  x2.data.label.font.size = 10,
+  x2.data.label.font.color = global.font.color,
+  x2.data.label.format = "",
+  x2.data.label.prefix = "",
+  x2.data.label.suffix = "",
+  y2.title = "",
+  y2.title.font.color = global.font.color,
+  y2.title.font.family = global.font.family,
+  y2.title.font.size = 12,
+  y2.line.width = 0,
+  y2.line.color = rgb(0, 0, 0, maxColorValue = 255),
+  y2.tick.mark.length = 0,
+  y2.tick.mark.color = "tranparent",
+  y2.bounds.minimum = NULL,
+  y2.bounds.maximum = NULL,
+  y2.tick.distance = NULL,
+  y2.tick.maxnum = NULL,
+  y2.zero = TRUE,
+  y2.zero.line.width = 0,
+  y2.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
+  y2.data.reversed = FALSE,
+  y2.grid.width = 0 * grid.show,
+  y2.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+  y2.tick.show = TRUE,
+  y2.tick.suffix = "",
+  y2.tick.prefix = "",
+  y2.tick.format = "",
+  y2.hovertext.format = y2.tick.format,
+  y2.tick.angle = NULL,
+  y2.tick.font.color = global.font.color,
+  y2.tick.font.family = global.font.family,
+  y2.tick.font.size = 10,
   y.title = "",
   y.title.font.color = global.font.color,
   y.title.font.family = global.font.family,
@@ -121,11 +202,40 @@ ColumnMultiColor(
 to be plotted, with the name/rownames used as the column names of the chart. Numeric and date labels
 will be parsed automatically.}
 
+\item{x2}{Optional input data which is shown as lines on top of the column chart.
+a separate axis for these lines will be shown on the right.}
+
 \item{annotation.list}{Optional list of annotations to modify the data labels.}
+
+\item{overlay.annotation.list}{Optional list of annotations that is overlayed on top of the chart.}
 
 \item{colors}{Character; a vector containing one or more colors specified as hex codes.}
 
 \item{opacity}{Opacity of bars as an alpha value (0 to 1).}
+
+\item{fit.type}{Character; type of line of best fit. Can be one of "None", "Linear", "LOESS",
+"Friedman's super smoother", "Cubic spline", "Moving average", "Centered moving average".}
+
+\item{fit.window.size}{Integer; Use to determine how the average is computed when \code{fit.type}
+"Moving average" or "Centered moving average".}
+
+\item{fit.line.colors}{Character; a vector containing one or more colors specified as hex codes.}
+
+\item{fit.ignore.last}{Logical; whether to ignore the last data point in the fit.}
+
+\item{fit.line.type}{Character; One of "solid", "dot", "dash, "dotdash", or length of dash "2px", "5px".}
+
+\item{fit.line.width}{Numeric; Line width of line of best fit.}
+
+\item{fit.line.name}{Character; Name of the line of best fit, which will appear in the hovertext.}
+
+\item{fit.line.opacity}{Opacity of trend line as an alpha value (0 to 1).}
+
+\item{fit.CI.show}{Show 95\% confidence interval.}
+
+\item{fit.CI.colors}{Character; a vector containing one or more colors specified as hex codes.}
+
+\item{fit.CI.opacity}{Opacity of confidence interval ribbon as an alpha value (0 to 1).}
 
 \item{global.font.family}{Character; font family for all occurrences of any
 font attribute for the chart unless specified individually.}
@@ -183,6 +293,45 @@ a named color in character format (e.g. "black") or a hex code.}
 
 \item{charting.area.fill.opacity}{Charting area background opacity as an alpha value (0 to 1).}
 
+\item{legend.show}{Controls whether legend is shown. This can be a logical (\code{TRUE} or \code{FALSE});
+or a string ("Show" or "Hide"). If it is \code{TRUE} or \code{NA} (the default), a legend will be
+shown only if there is more than one data series. To force a legend to be shown even with 1
+data series, use "Show" instead.}
+
+\item{legend.orientation}{Character; One of 'Vertical' or 'Horizontal'}
+
+\item{legend.wrap}{Logical; whether the legend text should be wrapped.}
+
+\item{legend.wrap.nchar}{Number of characters (approximately) in each
+line of the legend when \code{legend.wrap} \code{TRUE}.}
+
+\item{legend.position.x}{A numeric controlling the position of the legend.
+Values range from -0.5 (left) to 1.5 (right).}
+
+\item{legend.position.y}{A numeric controlling the position of the legend.
+Values range from 0 (bottom) to 1 (top).}
+
+\item{legend.ascending}{Logical; TRUE for ascending, FALSE for descending.
+By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.}
+
+\item{legend.fill.color}{Legend fill color as a named color in character format
+(e.g. "black") or a hex code.}
+
+\item{legend.fill.opacity}{Legend fill opacity as an alpha value (0 to 1).}
+
+\item{legend.border.color}{Legend border color as a named color in character
+format (e.g. "black") or a hex code.}
+
+\item{legend.border.line.width}{Width in pixels of the border
+around the legend.  0 = no border.}
+
+\item{legend.font.color}{Legend font color as a named color in character
+format (e.g. "black") or a hex code.}
+
+\item{legend.font.family}{Character; legend font family.}
+
+\item{legend.font.size}{Integer; Legend font size.}
+
 \item{margin.top}{Margin between plot area and the top of the graphic in pixels}
 
 \item{margin.bottom}{Margin between plot area and the bottom of the graphic in pixels}
@@ -198,6 +347,140 @@ and axis lines}
 to allow space for axis/legend/data labels or other chart elements.}
 
 \item{grid.show}{Logical; whether to show grid lines.}
+
+\item{average.series}{a vector of values which create an additional data series named "Average".
+This is usually used by \code{SmallMultiples}. For bar/column charts, the average is shown as a line,
+for Line and Area, the average series is shown in the same way as the other data series
+but it is shown without data labels.}
+
+\item{average.color}{Color of the \code{average.series} as a hex code or string}
+
+\item{x2.colors}{Character; a vector containing one or more colors for \code{x2}
+specified as hex codes.}
+
+\item{x2.data.label.show}{Logical; whether to show data labels for the secondary axis.}
+
+\item{x2.data.label.show.at.ends}{Logical; show data labels at the beginning and end of each
+line data series. This value will override \code{x2.data.label.show}.}
+
+\item{x2.line.type}{Character; one of 'solid', 'dot', 'dashed'.}
+
+\item{x2.line.thickness}{Thickness, in pixels, of the series line for secondary data.}
+
+\item{x2.shape}{Either "linear" for straight lines between data points or "spline" for curved lines.}
+
+\item{x2.smoothing}{Numeric; smoothing if \code{shape} is "spline".}
+
+\item{x2.opacity}{Opacity of the series line for secondary data.}
+
+\item{x2.marker.show}{Logical; whether to show markers at the data points on the lines for the secondary data.}
+
+\item{x2.marker.show.at.ends}{Logical; show markers at the begining and end of each
+data series. The value will override \code{x2.marker.show}.}
+
+\item{x2.marker.size}{Size in pixels of marker}
+
+\item{x2.marker.symbols}{Character; marker symbols, which are only shown if marker.show = TRUE.
+if a vector is passed, then each element will be applied to a data series in the secondary data set.}
+
+\item{x2.marker.colors}{Character; a vector containing on/mae or more colors specified as hex codes.}
+
+\item{x2.marker.border.colors}{Character; a vector containing one or more colors specified as hex codes.}
+
+\item{x2.marker.opacity}{Opacity for markers as an alpha value (0 to 1).}
+
+\item{x2.marker.border.opacity}{Opacity of border/line around
+markers as an alpha value (0 to 1).}
+
+\item{x2.marker.border.width}{Width in pixels of border/line around markers; 0 is no line}
+
+\item{x2.data.label.position}{Character; one of 'top' or 'bottom'.}
+
+\item{x2.data.label.font.autocolor}{Logical; Whether font color should
+automatically set to the series color.}
+
+\item{x2.data.label.font.family}{Character; font family for data label for the secondary axis.}
+
+\item{x2.data.label.font.size}{Integer; Font size for data label.px for the secondary axis.}
+
+\item{x2.data.label.font.color}{Font color as a named color for the secondary axis
+in character format (e.g. "black") or an a hex code. This can be a single
+color, a vector of colors (1 for each series/column), or a comma separated list
+of colors}
+
+\item{x2.data.label.format}{A string representing a d3 formatting code.
+See https://github.com/mbostock/d3/wiki/Formatting#numbers}
+
+\item{x2.data.label.prefix}{Character; prefix for data values.}
+
+\item{x2.data.label.suffix}{Character; suffix for data values.}
+
+\item{y2.title}{Character, y-axis title; defaults to chart input values;
+to turn off set to "FALSE".}
+
+\item{y2.title.font.color}{y-axis title font color as a named color in
+character format (e.g. "black") or a hex code.}
+
+\item{y2.title.font.family}{Character; y-axis title font family}
+
+\item{y2.title.font.size}{Integer; y-axis title font size}
+
+\item{y2.line.width}{y-axis line width in pixels (0 = no line).}
+
+\item{y2.line.color}{y-axis line color as a named color in character format
+(e.g. "black") or a hex code.}
+
+\item{y2.tick.mark.length}{Length of tick marks in pixels. Ticks are only shown when \code{y.line.width > 0}.}
+
+\item{y2.tick.mark.color}{color of tick marks.}
+
+\item{y2.bounds.minimum}{Minimum of range for plotting; For a date axis this should be supplied as a date string.
+For a categorical axis, the index of the category (0-based) should be used.}
+
+\item{y2.bounds.maximum}{Maximum of range for plotting; NULL = no manual range set.}
+
+\item{y2.tick.distance}{Distance between tick marks. Requires that \code{y.bounds.minimum} and \code{y.bounds.maximum} have been set.}
+
+\item{y2.tick.maxnum}{Maximum number of ticks shown on the axis.
+This setting is ignored if \code{y2.tick.distance} is set or
+if the axis is categorical}
+
+\item{y2.zero}{Whether the y-axis should include zero.}
+
+\item{y2.zero.line.width}{Width in pixels of zero line;}
+
+\item{y2.zero.line.color}{Color of horizontal zero line as a named
+color in character format (e.g. "black") or an rgb value (e.g.
+rgb(0, 0, 0, maxColorValue = 255)).}
+
+\item{y2.data.reversed}{Logical; whether to reverse y-axis or not}
+
+\item{y2.grid.width}{Width of y-grid lines in pixels; 0 = no line}
+
+\item{y2.grid.color}{Color of y-grid lines as a named color in character
+format (e.g. "black") or a hex code.}
+
+\item{y2.tick.show}{Whether to display the y-axis tick labels}
+
+\item{y2.tick.suffix}{y-axis tick label suffix}
+
+\item{y2.tick.prefix}{y-axis tick label prefix}
+
+\item{y2.tick.format}{A string representing a d3 formatting code.
+See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
+
+\item{y2.hovertext.format}{A string representing a d3 formatting code
+See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
+
+\item{y2.tick.angle}{y-axis tick label angle in degrees.
+90 = vertical; 0 = horizontal}
+
+\item{y2.tick.font.color}{y-axis tick label font color as a named color
+in character format (e.g. "black") or an a hex code.}
+
+\item{y2.tick.font.family}{Character; y-axis tick label font family}
+
+\item{y2.tick.font.size}{Integer; y-axis tick label font size}
 
 \item{y.title}{Character, y-axis title; defaults to chart input values;
 to turn off set to "FALSE".}
