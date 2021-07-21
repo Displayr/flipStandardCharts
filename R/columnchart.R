@@ -229,6 +229,9 @@
 #' @param x.tick.label.wrap.nchar Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.
 #' @param hovertext.font.family Font family of hover text.
 #' @param hovertext.font.size Font size of hover text.
+#' @param hovertext.template Specify format of the hovertext. This can be a string or matrix
+#'  which is the same dimensions as \code{chart.matrix}. If no format is specified
+#'  the default is for categorical x-axis "\%{x}: \%{y}" or for a numerical x-axis "(\%{x}, \%{y})".
 #' @param marker.border.width Width in pixels of border/line
 #' around series bars; 0 is no line
 #' @param marker.border.colors Character; a vector containing one or more colors specified as hex codes.
@@ -371,6 +374,7 @@ Column <- function(x,
                     legend.ascending = NA,
                     hovertext.font.family = global.font.family,
                     hovertext.font.size = 11,
+                    hovertext.template = NULL,
                     margin.top = NULL,
                     margin.bottom = NULL,
                     margin.left = NULL,
@@ -888,8 +892,7 @@ Column <- function(x,
                        orientation = "v", marker = marker, name = legend.text[i],
                        hoverlabel = list(font = list(color = autoFontColor(tmp.color),
                        size = hovertext.font.size, family = hovertext.font.family)),
-                       hovertemplate = setHoverTemplate(i, xaxis, chart.matrix),
-                       #hoverinfo = "skip",
+                       hovertemplate = setHoverTemplate(i, xaxis, chart.matrix, hovertext.template),
                        legendgroup = if (is.stacked && any(data.label.show)) "all" else i)
 
 

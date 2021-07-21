@@ -89,6 +89,7 @@ Line <-   function(x,
                     margin.left = NULL,
                     margin.right = NULL,
                     margin.inner.pad = NULL,
+                    hovertext.template = NULL,
                     hovertext.font.family = global.font.family,
                     hovertext.font.size = 11,
                     y.title = "",
@@ -377,8 +378,7 @@ Line <-   function(x,
                        width = marker.border.width))
         }
         y.label <- y.labels[i]
-        hover.template <- setHoverTemplate(i, xaxis, chart.matrix)
-
+        hover.template <- setHoverTemplate(i, xaxis, chart.matrix, hovertext.template)
 
         # Draw line - main trace
         if (any(!is.na(y)))
@@ -497,7 +497,8 @@ Line <-   function(x,
                    hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                    size = hovertext.font.size, family = hovertext.font.family),
                    bgcolor = toRGB(colors[i], alpha = opacity)),
-                   hovertemplate = setHoverTemplate(i, xaxis, chart.matrix[ind.show,,drop = FALSE]))
+                   hovertemplate = setHoverTemplate(i, xaxis, chart.matrix[ind.show,,drop = FALSE]), 
+                        hovertext.template)
         }
     }
     serieslabels.num.changes <- vapply(chart.labels$SeriesLabels, function(s) isTRUE(s$ShowValue) + length(s$CustomPoints), numeric(1L))
