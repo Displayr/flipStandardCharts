@@ -53,6 +53,7 @@ Radar <- function(x,
                     legend.position.x = NULL,
                     hovertext.font.family = global.font.family,
                     hovertext.font.size = 11,
+                    hovertext.template = NULL,
                     margin.autoexpand = TRUE,
                     margin.top = NULL,
                     margin.bottom = NULL,
@@ -198,7 +199,6 @@ Radar <- function(x,
     tick.vals <- seq(from = y.bounds.minimum, to = y.bounds.maximum, by = Sum(y.tick.distance))
     r.max <- abs(y.bounds.maximum - y.bounds.minimum)
 
-    hover.format.function <- ifelse(percentFromD3(y.hovertext.format), FormatAsPercent, FormatAsReal)
     tick.format.function <- ifelse(percentFromD3(y.tick.format), FormatAsPercent, FormatAsReal)
     data.label.format.function <- ifelse(percentFromD3(data.label.format), FormatAsPercent, FormatAsReal)
 
@@ -233,10 +233,17 @@ Radar <- function(x,
         tmp.labels <- sprintf("%s: %s%s%s", rownames(chart.matrix), data.label.prefix,
                 data.label.format.function(unlist(chart.matrix), decimals = data.label.decimals),
                 data.label.suffix)
+
+    if (is.null(hovertext.template))
+        hovertext.template <- "%{x}: %{y}"
+    else
+    {
+        hovertext.template <- matrix(hovertext.template, m, n)
+        hovertext.template <- rbind(hovertext.template, hovertext.template[1,])
+    }
     pos <- cbind(pos,
-            HoverText = sprintf("%s: %s%s%s", pos$Name, y.tick.prefix,
-                hover.format.function(unlist(chart.matrix), decimals = y.hovertext.decimals,
-                                      comma.for.thousands = commaFromD3(y.hovertext.format)), y.tick.suffix),
+            HoverText = evalHoverTemplate(hovertext.template, pos$Name, "", "", "",
+                unlist(chart.matrix), y.hovertext.format, y.tick.prefix, y.tick.suffix), 
             DataLabels = tmp.labels)
 
     # Set margins
@@ -346,11 +353,8 @@ Radar <- function(x,
                     fillcolor = toRGB(average.color, alpha = max(0.2, opacity[1])),
                     hoverinfo = "all", hoveron = "points",
                     line = list(width = 0, color = toRGB(average.color)),
-                    text = sprintf("%s: %s%s%s", rownames(chart.matrix),
-                    y.tick.prefix, hover.format.function(average.series[c(1:m,1)],
-                    decimals = y.hovertext.decimals,
-                    comma.for.thousands = commaFromD3(y.hovertext.format)),
-                    y.tick.suffix),
+                    text = evalHoverTemplate(hovertext.template[1], rownames(chart.matrix), 
+                    "", "", "", average.series[c(1:m,1)], y.hovertext.format, y.tick.prefix, y.tick.suffix),
                     hovertemplate = paste0("%{text}<extra>", "Average", "</extra>"),
                     hoverlabel = list(font = list(color = autoFontColor(average.color),
                     size = hovertext.font.size, family = hovertext.font.family)),

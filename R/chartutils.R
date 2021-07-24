@@ -27,13 +27,13 @@ ErrorIfNotEnoughData <- function(x, require.tidy = TRUE, require.notAllMissing =
 # hovertemplate is preferrable to hoverinfo because it allows better control
 # of formatting. Specifically, we can re-order the x/y and control separators
 # and newlines. But the format is slightly more complex
-setHoverTemplate <- function(i, axis, chart.matrix, template = NULL)
+setHoverTemplate <- function(i, axis, chart.matrix, template = NULL, is.bar = FALSE)
 {
     # if no template is defined, set default base on axis type
     if (all(!nzchar(template)))
     {
         if (axis$type == "category") 
-            template <- "%{x}: %{y}"
+            template <- if (is.bar) "%{y}: %{x}" else "%{x}: %{y}"
         else
             template <- "(%{x}, %{y})"
     }
@@ -52,6 +52,43 @@ setHoverTemplate <- function(i, axis, chart.matrix, template = NULL)
         template[ind.na] <- ""
     }
     return(template)
+}
+
+
+# Used by barcharts and radar chart to because x and y coords do not
+# match values in data
+evalHoverTemplate <- function(template, x, x.hovertext.format, x.tick.prefix, x.tick.suffix,
+    y, y.hovertext.format, y.tick.prefix, y.tick.suffix)
+{
+    x.match <- regexpr("%{x}", template, fixed = TRUE)
+    y.match <- regexpr("%{y}", template, fixed = TRUE)
+    
+    if (all(x.match == -1) && all(y.match == -1))
+        return(template)
+
+    x.txt <- formatByD3(x, x.hovertext.format, x.tick.prefix, x.tick.suffix) 
+    y.txt <- formatByD3(y, y.hovertext.format, y.tick.prefix, y.tick.suffix)
+
+    if (all(y.match == -1))
+    {
+        template <- gsub("{x}", "s", template, fixed = TRUE)
+        return(sprintf(template, x.txt))
+
+    } else if (all(x.match == -1))
+    {
+        template <- gsub("{y}", "s", template, fixed = TRUE)
+        return(sprintf(template, y.txt))
+
+    } else
+    {
+        template <- gsub("{y}", "s", template, fixed = TRUE)
+        template <- gsub("{x}", "s", template, fixed = TRUE)
+
+        if (all(y.match < x.match))
+            return(sprintf(template, y.txt, x.txt))
+        else
+            return(sprintf(template, x.txt, y.txt))
+    }
 }
 
 

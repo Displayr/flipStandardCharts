@@ -126,6 +126,7 @@ Bar(
   y.tick.label.wrap.nchar = 21,
   hovertext.font.family = global.font.family,
   hovertext.font.size = 11,
+  hovertext.template = NULL,
   marker.border.width = 1,
   marker.border.colors = NULL,
   marker.border.opacity = opacity,
@@ -448,6 +449,10 @@ character format (e.g. "black") or an a hex code.}
 \item{hovertext.font.family}{Font family of hover text.}
 
 \item{hovertext.font.size}{Font size of hover text.}
+
+\item{hovertext.template}{Specify format of the hovertext. This can be a string or matrix
+which is the same dimensions as \code{chart.matrix}. If no format is specified
+the default is for categorical x-axis "\%{x}: \%{y}" or for a numerical x-axis "(\%{x}, \%{y})".}
 
 \item{marker.border.width}{Width in pixels of border/line
 around series bars; 0 is no line}
