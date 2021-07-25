@@ -60,6 +60,7 @@ SmallMultiples(
   data.label.prefix = "",
   data.label.suffix = "",
   data.label.font.color = global.font.color,
+  hovertext.template = NULL,
   line.thickness = NULL,
   x.tick.show = TRUE,
   x.tick.angle = NULL,
@@ -217,6 +218,10 @@ to turn off set to "FALSE".}
 in character format (e.g. "black") or an a hex code. This can be a single
 color, a vector of colors (1 for each series/column), or a comma separated list
 of colors}
+
+\item{hovertext.template}{Specify format of the hovertext. This can be a string or matrix
+which is the same dimensions as \code{chart.matrix}. If no format is specified
+the default is for categorical x-axis "\%{x}: \%{y}" or for a numerical x-axis "(\%{x}, \%{y})".}
 
 \item{line.thickness}{Thickness, in pixels, of the series line}
 

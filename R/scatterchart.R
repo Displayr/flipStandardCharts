@@ -642,7 +642,7 @@ Scatter <- function(x = NULL,
     else
         tmp.x <- rep(tmp.x, length = length(tmp.y))
     p <- add_trace(p, x = tmp.x, y = tmp.y, type = "scatter",
-           mode = "lines", hoverinfo = "none", showlegend = F, opacity = 0)
+           mode = "lines", hoverinfo = "skip", showlegend = F, opacity = 0)
 
     chart.labels <- list(SeriesLabels = list())
     for (ggi in 1:num.groups)

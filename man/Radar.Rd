@@ -35,6 +35,7 @@ Radar(
   legend.position.x = NULL,
   hovertext.font.family = global.font.family,
   hovertext.font.size = 11,
+  hovertext.template = NULL,
   margin.autoexpand = TRUE,
   margin.top = NULL,
   margin.bottom = NULL,
@@ -179,6 +180,10 @@ Values range from -0.5 (left) to 1.5 (right).}
 \item{hovertext.font.family}{Font family of hover text.}
 
 \item{hovertext.font.size}{Font size of hover text.}
+
+\item{hovertext.template}{Specify format of the hovertext. This can be a string or matrix
+which is the same dimensions as \code{chart.matrix}. If no format is specified
+the default is for categorical x-axis "\%{x}: \%{y}" or for a numerical x-axis "(\%{x}, \%{y})".}
 
 \item{margin.autoexpand}{Logical; Whether extra space can be added to the margins
 to allow space for axis/legend/data labels or other chart elements.}

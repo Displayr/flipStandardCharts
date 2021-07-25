@@ -70,6 +70,7 @@ Line(
   margin.left = NULL,
   margin.right = NULL,
   margin.inner.pad = NULL,
+  hovertext.template = NULL,
   hovertext.font.family = global.font.family,
   hovertext.font.size = 11,
   y.title = "",
@@ -314,6 +315,10 @@ to allow space for axis/legend/data labels or other chart elements.}
 
 \item{margin.inner.pad}{Padding in pixels between plot proper
 and axis lines}
+
+\item{hovertext.template}{Specify format of the hovertext. This can be a string or matrix
+which is the same dimensions as \code{chart.matrix}. If no format is specified
+the default is for categorical x-axis "\%{x}: \%{y}" or for a numerical x-axis "(\%{x}, \%{y})".}
 
 \item{hovertext.font.family}{Font family of hover text.}
 

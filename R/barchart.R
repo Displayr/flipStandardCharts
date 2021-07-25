@@ -137,6 +137,7 @@ Bar <- function(x,
                     y.tick.label.wrap.nchar = 21,
                     hovertext.font.family = global.font.family,
                     hovertext.font.size = 11,
+                    hovertext.template = NULL,
                     marker.border.width = 1,
                     marker.border.colors = NULL,
                     marker.border.opacity = opacity,
@@ -351,13 +352,11 @@ Bar <- function(x,
         y <- as.numeric(chart.matrix[, i])
         y.filled <- ifelse(is.finite(y), y, 0)
 
-        # hovertemplate is sometimes a little flaky, so %{text} does not always work
-        # we also avoid using %{x} because it is incorrect for stacked bar charts
-        y.hover.text <- formatByD3(y, x.hovertext.format, x.tick.prefix, x.tick.suffix)
-        x.hover.text <- formatByD3(x, y.hovertext.format, y.tick.prefix, y.tick.suffix)
-        hover.text <- if (yaxis$type == "category") paste0(x.hover.text, ": ", y.hover.text)
-                      else paste0("(", y.hover.text, ", ", x.hover.text, ")")
-        hover.template <- paste0(hover.text, "<extra>", legend.text[i], "</extra>")
+        # Evaluate hover template because otherwise scatterplot hover added at end will
+        # show incorrect values (note stacking is not an issue)
+        hover.template <- setHoverTemplate(i, yaxis, chart.matrix, hovertext.template, is.bar = TRUE)
+        hover.template <- evalHoverTemplate(hover.template, y, x.hovertext.format, 
+            x.tick.prefix, x.tick.suffix, x, y.hovertext.format, y.tick.prefix, y.tick.suffix)
 
         tmp.color <- if (multi.colors.within.series) colors else colors[i]
         tmp.border.color <- if (length(marker.border.colors) >= i) marker.border.colors[i] else tmp.color

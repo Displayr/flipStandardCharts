@@ -27,45 +27,68 @@ ErrorIfNotEnoughData <- function(x, require.tidy = TRUE, require.notAllMissing =
 # hovertemplate is preferrable to hoverinfo because it allows better control
 # of formatting. Specifically, we can re-order the x/y and control separators
 # and newlines. But the format is slightly more complex
-setHoverTemplate <- function(i, axis, chart.matrix, is.bar = FALSE, hide.category = FALSE)
+setHoverTemplate <- function(i, axis, chart.matrix, template = NULL, is.bar = FALSE)
 {
-    if (hide.category)
+    # if no template is defined, set default base on axis type
+    if (all(!nzchar(template)))
     {
-        # This is typically because the category info cannot be accurately repeated
-        formatStr <- if (is.bar) "%{x}" else "%{y}"
-
-    } else
-    {
-        formatStr <- if (axis$type == "category") "%{x}: %{y}"
-                     else                         "(%{x}, %{y})"
-        if (is.bar && axis$type == "category")
-            formatStr <- "%{y}: %{x}"
+        if (axis$type == "category") 
+            template <- if (is.bar) "%{y}: %{x}" else "%{x}: %{y}"
+        else
+            template <- "(%{x}, %{y})"
     }
+    if (length(template) > 1)
+        template <- matrix(template, nrow(chart.matrix), ncol(chart.matrix))[,i]
 
-    nameStr <- if (ncol(chart.matrix) == 1 && colnames(chart.matrix)[1] %in% c("Series.1", "Series 1")) ""
-               else colnames(chart.matrix)[i]
-    formatStr <- paste0(formatStr, "<extra>", nameStr, "</extra>")
+    # Set label shown in secondary box with series name if defined
+    label <- if (ncol(chart.matrix) == 1 && colnames(chart.matrix)[1] %in% c("Series.1", "Series 1")) ""
+             else colnames(chart.matrix)[i]
+    template <- paste0(template, "<extra>", label, "</extra>")
     
     ind.na <- which(!is.finite(chart.matrix[,i]))
     if (length(ind.na) > 0)
     {
-        formatStr <- rep(formatStr, nrow(chart.matrix))
-        formatStr[ind.na] <- ""
+        template <- rep(template, length = nrow(chart.matrix))
+        template[ind.na] <- ""
     }
-    return(formatStr)
+    return(template)
 }
 
-setHoverText <- function(axis, chart.matrix, is.bar = FALSE)
+
+# Used by barcharts and radar chart to because x and y coords do not
+# match values in data
+evalHoverTemplate <- function(template, x, x.hovertext.format, x.tick.prefix, x.tick.suffix,
+    y, y.hovertext.format, y.tick.prefix, y.tick.suffix)
 {
-    formatStr <- if (axis$type == "category") "text+y"
-                 else                         "x+y"
-    if (is.bar && axis$type == "category")
-        formatStr <- "text+x"
+    x.match <- regexpr("%{x}", template, fixed = TRUE)
+    y.match <- regexpr("%{y}", template, fixed = TRUE)
+    
+    if (all(x.match == -1) && all(y.match == -1))
+        return(template)
 
-    if (ncol(chart.matrix) > 1)
-        formatStr <- paste0("name+", formatStr)
+    x.txt <- formatByD3(x, x.hovertext.format, x.tick.prefix, x.tick.suffix) 
+    y.txt <- formatByD3(y, y.hovertext.format, y.tick.prefix, y.tick.suffix)
 
-    return(formatStr)
+    if (all(y.match == -1))
+    {
+        template <- gsub("{x}", "s", template, fixed = TRUE)
+        return(sprintf(template, x.txt))
+
+    } else if (all(x.match == -1))
+    {
+        template <- gsub("{y}", "s", template, fixed = TRUE)
+        return(sprintf(template, y.txt))
+
+    } else
+    {
+        template <- gsub("{y}", "s", template, fixed = TRUE)
+        template <- gsub("{x}", "s", template, fixed = TRUE)
+
+        if (all(y.match < x.match))
+            return(sprintf(template, y.txt, x.txt))
+        else
+            return(sprintf(template, x.txt, y.txt))
+    }
 }
 
 
