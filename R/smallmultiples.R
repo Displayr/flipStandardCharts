@@ -117,6 +117,8 @@ SmallMultiples <- function(x,
     eval(colors)
     if (is.null(fit.line.colors))
         fit.line.colors <- colors
+    if (is.null(fit.CI.colors))
+        fit.CI.colors <- fit.line.colors
     if (is.null(footer.font.family))
         footer.font.family <- global.font.family
     if (is.null(footer.font.color))
