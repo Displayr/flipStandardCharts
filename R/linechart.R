@@ -92,6 +92,7 @@ Line <-   function(x,
                     hovertext.template = NULL,
                     hovertext.font.family = global.font.family,
                     hovertext.font.size = 11,
+                    hovertext.align = "left",
                     y.title = "",
                     y.title.font.color = global.font.color,
                     y.title.font.family = global.font.family,
@@ -488,6 +489,7 @@ Line <-   function(x,
             data.label.offset <- rep(line.thickness[i]/2, length(ind.show))
             if (any(marker.show[,i]))
                 data.label.offset[which(marker.show[ind.show,i])] <- pmax(marker.size[ind.show,i], data.label.offset)
+            hover.template <- setHoverTemplate(i, xaxis, chart.matrix, hovertext.template)
             p <- add_trace(p, x = x, y = y, type = "scatter", name = y.label,
                    cliponaxis = FALSE, mode = "markers+text",
                    marker = list(size = data.label.offset, color=colors[i], opacity = 0),
@@ -497,8 +499,7 @@ Line <-   function(x,
                    hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                    size = hovertext.font.size, family = hovertext.font.family),
                    bgcolor = toRGB(colors[i], alpha = opacity)),
-                   hovertemplate = setHoverTemplate(i, xaxis, chart.matrix[ind.show,,drop = FALSE]), 
-                        hovertext.template)
+                   hovertemplate = hovertext.template[ind.show])
         }
     }
     serieslabels.num.changes <- vapply(chart.labels$SeriesLabels, function(s) isTRUE(s$ShowValue) + length(s$CustomPoints), numeric(1L))
@@ -523,7 +524,7 @@ Line <-   function(x,
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
         annotations = annot,
         hovermode = if (tooltip.show) "closest" else FALSE,
-        hoverlabel = list(namelength = -1, bordercolor = "transparent",
+        hoverlabel = list(namelength = -1, bordercolor = "transparent", align = hovertext.align,
             font = list(size = hovertext.font.size, family = hovertext.font.family))
     )
     attr(p, "can-run-in-root-dom") <- TRUE

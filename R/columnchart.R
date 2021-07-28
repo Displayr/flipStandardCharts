@@ -232,6 +232,8 @@
 #' @param hovertext.template Specify format of the hovertext. This can be a string or matrix
 #'  which is the same dimensions as \code{chart.matrix}. If no format is specified
 #'  the default is for categorical x-axis "\%{x}: \%{y}" or for a numerical x-axis "(\%{x}, \%{y})".
+#' @param hovertext.align Horizontal alignment of hover text. 
+#'  Only observable when hover contain multiple lines.
 #' @param marker.border.width Width in pixels of border/line
 #' around series bars; 0 is no line
 #' @param marker.border.colors Character; a vector containing one or more colors specified as hex codes.
@@ -375,6 +377,7 @@ Column <- function(x,
                     hovertext.font.family = global.font.family,
                     hovertext.font.size = 11,
                     hovertext.template = NULL,
+                    hovertext.align = "left",
                     margin.top = NULL,
                     margin.bottom = NULL,
                     margin.left = NULL,
@@ -1128,7 +1131,7 @@ Column <- function(x,
         annotations =  annotations,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
-        hoverlabel = list(namelength = -1, bordercolor = "transparent",
+        hoverlabel = list(namelength = -1, bordercolor = "transparent", align = hovertext.align,
             font = list(size = hovertext.font.size, family = hovertext.font.family)),
         hovermode = if (tooltip.show) "x" else FALSE,
         bargap = bar.gap,

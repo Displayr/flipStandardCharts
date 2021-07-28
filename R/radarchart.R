@@ -54,6 +54,7 @@ Radar <- function(x,
                     hovertext.font.family = global.font.family,
                     hovertext.font.size = 11,
                     hovertext.template = NULL,
+                    hovertext.align = "left",
                     margin.autoexpand = TRUE,
                     margin.top = NULL,
                     margin.bottom = NULL,
@@ -347,15 +348,15 @@ Radar <- function(x,
     if (!is.null(average.series))
     {
         avg.pos <- calcPolarCoord(average.series, r0 = y.bounds.minimum)
+        hover.tmp <- evalHoverTemplate(hovertext.template[1], rownames(chart.matrix), 
+                    "", "", "", average.series[c(1:m,1)], y.hovertext.format, y.tick.prefix, y.tick.suffix)
         p <- add_trace(p, x = avg.pos[,1], y = avg.pos[,2], name = "Average",
                     type = "scatter", mode = series.mode, fill = "toself",
                     marker = series.marker, showlegend = FALSE,
                     fillcolor = toRGB(average.color, alpha = max(0.2, opacity[1])),
                     hoverinfo = "all", hoveron = "points",
                     line = list(width = 0, color = toRGB(average.color)),
-                    text = evalHoverTemplate(hovertext.template[1], rownames(chart.matrix), 
-                    "", "", "", average.series[c(1:m,1)], y.hovertext.format, y.tick.prefix, y.tick.suffix),
-                    hovertemplate = paste0("%{text}<extra>", "Average", "</extra>"),
+                    hovertemplate = paste0(hover.tmp, "<extra>", "Average", "</extra>"),
                     hoverlabel = list(font = list(color = autoFontColor(average.color),
                     size = hovertext.font.size, family = hovertext.font.family)),
                     marker = list(size = 5, color = toRGB(average.color)))
@@ -370,11 +371,10 @@ Radar <- function(x,
         ind <- ind[-length(ind)] # remove last duplicated point
         p <- add_trace(p, x = pos$x[ind], y = pos$y[ind], type = "scatter", mode = "markers",
                     name = g.list[ggi], legendgroup = g.list[ggi], opacity = 0,
-                    showlegend = FALSE, text = pos$HoverText[ind],
-                    hovertemplate = paste0("%{text}<extra>", pos$Group[ind], "</extra>"),
+                    hovertemplate = paste0(pos$HoverText[ind], "<extra>", pos$Group[ind], "</extra>"),
                     hoverlabel = list(font = list(color = autoFontColor(colors[ggi]),
                     size = hovertext.font.size, family = hovertext.font.family)),
-                    marker = list(size = 5, color = toRGB(colors[ggi])))
+                    marker = list(size = 5, color = toRGB(colors[ggi])), showlegend = FALSE)
 
         # Add attribute for PPT exporting
         # Note that even without data labels, overlay annotations can still be present
@@ -473,6 +473,13 @@ Radar <- function(x,
         }
         if (length(pt.segs) > 0)
             chart.labels$SeriesLabels[[ggi]]$CustomPoints <- pt.segs
+        
+        p <- add_trace(p, x = pos$x[ind], y = pos$y[ind], type = "scatter", mode = "markers",
+                    name = g.list[ggi], legendgroup = g.list[ggi], opacity = 0,
+                    hovertemplate = paste0(pos$HoverText[ind], "<extra>", pos$Group[ind], "</extra>"),
+                    hoverlabel = list(font = list(color = autoFontColor(colors[ggi]),
+                    size = hovertext.font.size, family = hovertext.font.family)),
+                    marker = list(size = 5, color = toRGB(colors[ggi]), opacity = 0), showlegend = FALSE)
     }
     serieslabels.num.changes <- vapply(chart.labels$SeriesLabels, function(s) isTRUE(s$ShowValue) + length(s$CustomPoints), numeric(1L))
     if (sum(serieslabels.num.changes) == 0)
@@ -514,6 +521,7 @@ Radar <- function(x,
             paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
             hovermode = if (tooltip.show) "closest" else FALSE,
             hoverlabel = list(namelength = -1, bordercolor = "transparent",
+                align = hovertext.align,
                 font = list(size = hovertext.font.size, family = hovertext.font.family)),
             xaxis = xaxis, yaxis = yaxis, shapes = grid,
             legend = legend, showlegend = legend.show)

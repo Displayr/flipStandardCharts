@@ -64,6 +64,7 @@ Column(
   hovertext.font.family = global.font.family,
   hovertext.font.size = 11,
   hovertext.template = NULL,
+  hovertext.align = "left",
   margin.top = NULL,
   margin.bottom = NULL,
   margin.left = NULL,
@@ -349,6 +350,9 @@ By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.}
 \item{hovertext.template}{Specify format of the hovertext. This can be a string or matrix
 which is the same dimensions as \code{chart.matrix}. If no format is specified
 the default is for categorical x-axis "\%{x}: \%{y}" or for a numerical x-axis "(\%{x}, \%{y})".}
+
+\item{hovertext.align}{Horizontal alignment of hover text. 
+Only observable when hover contain multiple lines.}
 
 \item{margin.top}{Margin between plot area and the top of the graphic in pixels}
 

@@ -73,6 +73,7 @@ Line(
   hovertext.template = NULL,
   hovertext.font.family = global.font.family,
   hovertext.font.size = 11,
+  hovertext.align = "left",
   y.title = "",
   y.title.font.color = global.font.color,
   y.title.font.family = global.font.family,
@@ -323,6 +324,9 @@ the default is for categorical x-axis "\%{x}: \%{y}" or for a numerical x-axis "
 \item{hovertext.font.family}{Font family of hover text.}
 
 \item{hovertext.font.size}{Font size of hover text.}
+
+\item{hovertext.align}{Horizontal alignment of hover text. 
+Only observable when hover contain multiple lines.}
 
 \item{y.title}{Character, y-axis title; defaults to chart input values;
 to turn off set to "FALSE".}

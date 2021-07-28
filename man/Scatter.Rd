@@ -151,6 +151,7 @@ Scatter(
   x.tick.label.wrap.nchar = 21,
   hovertext.font.family = global.font.family,
   hovertext.font.size = 11,
+  hovertext.align = "left",
   line.thickness = 0,
   line.colors = colors,
   marker.border.width = 1,
@@ -525,6 +526,9 @@ character format (e.g. "black") or an a hex code.}
 \item{hovertext.font.family}{Font family of hover text.}
 
 \item{hovertext.font.size}{Font size of hover text.}
+
+\item{hovertext.align}{Horizontal alignment of hover text. 
+Only observable when hover contain multiple lines.}
 
 \item{line.thickness}{Thickness, in pixels, of the series line}
 

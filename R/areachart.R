@@ -145,6 +145,7 @@ Area <- function(x,
                     hovertext.font.family = global.font.family,
                     hovertext.font.size = 11,
                     hovertext.template = NULL,
+                    hovertext.align = "left",
                     line.thickness = NULL,
                     line.colors = colors,
                     line.opacity = 1,
@@ -552,7 +553,7 @@ Area <- function(x,
         annotations = annot,
         font = data.label.font[[1]],
         hovermode = if (tooltip.show) "x" else FALSE,
-        hoverlabel = list(namelength = -1, bordercolor = "transparent",
+        hoverlabel = list(namelength = -1, bordercolor = "transparent", align = hovertext.align,
             font = list(size = hovertext.font.size, family = hovertext.font.family))
     )
     attr(p, "can-run-in-root-dom") <- TRUE

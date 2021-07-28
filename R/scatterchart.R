@@ -183,6 +183,7 @@ Scatter <- function(x = NULL,
                          x.tick.label.wrap.nchar = 21,
                          hovertext.font.family = global.font.family,
                          hovertext.font.size = 11,
+                         hovertext.align = "left",
                          line.thickness = 0,
                          line.colors = colors,
                          marker.border.width = 1,
@@ -834,7 +835,7 @@ Scatter <- function(x = NULL,
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
         annotations = annot,
         hovermode = if (tooltip.show) "closest" else FALSE,
-        hoverlabel = list(namelength = -1, bordercolor = "transparent",
+        hoverlabel = list(namelength = -1, bordercolor = "transparent", align = hovertext.align,
             font = list(size = hovertext.font.size, family = hovertext.font.family))
     )
     attr(p, "can-run-in-root-dom") <- TRUE
