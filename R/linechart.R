@@ -346,7 +346,7 @@ Line <-   function(x,
                else y.bounds.minimum
     p <- add_trace(p, x = x.labels, y = rep(tmp.min, length(x.labels)),
                    type = "scatter", mode = "lines",
-                   hoverinfo = "none", showlegend = FALSE, opacity = 0)
+                   hoverinfo = "skip", showlegend = FALSE, opacity = 0)
 
     line.thickness <- readLineThickness(line.thickness, ncol(chart.matrix))
     opacity <- opacity * rep(1, ncol(chart.matrix))
@@ -489,12 +489,18 @@ Line <-   function(x,
             data.label.offset <- rep(line.thickness[i]/2, length(ind.show))
             if (any(marker.show[,i]))
                 data.label.offset[which(marker.show[ind.show,i])] <- pmax(marker.size[ind.show,i], data.label.offset)
-            hover.template <- setHoverTemplate(i, xaxis, chart.matrix, hovertext.template)
             p <- add_trace(p, x = x, y = y, type = "scatter", name = y.label,
                    cliponaxis = FALSE, mode = "markers+text",
                    marker = list(size = data.label.offset, color=colors[i], opacity = 0),
                    text = source.text[ind.show],
                    textfont = data.label.font[[i]], textposition = dlab.pos[i],
+                   showlegend = FALSE, legendgroup = i, hoverinfo = "skip")
+            
+            # Add hover as a separate trace to avoid conflict between data labels and hover    
+            hover.template <- setHoverTemplate(i, xaxis, chart.matrix, hovertext.template)
+            p <- add_trace(p, x = x, y = y, type = "scatter", name = y.label,
+                   cliponaxis = FALSE, mode = "markers",
+                   marker = list(size = data.label.offset, color=colors[i], opacity = 0),
                    showlegend = FALSE, legendgroup = i,
                    hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                    size = hovertext.font.size, family = hovertext.font.family),
