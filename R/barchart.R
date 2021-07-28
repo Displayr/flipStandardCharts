@@ -294,7 +294,7 @@ Bar <- function(x,
                   y.zero, y.zero.line.width, y.zero.line.color,
                   y.hovertext.format, with.bars = TRUE, num.maxticks = y.tick.maxnum,
                   tickcolor = y.tick.mark.color, zoom.enable = zoom.enable)
-    if (pyramid)
+    if (yaxis$type == "category")
         yaxis$nticks = NROW(chart.matrix)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,

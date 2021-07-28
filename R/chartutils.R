@@ -81,8 +81,10 @@ evalHoverTemplate <- function(template, x, x.hovertext.format, x.tick.prefix, x.
 
     } else
     {
+        template <- gsub("%", "%%", template, fixed = TRUE) # comment out other '%' signs
         template <- gsub("{y}", "s", template, fixed = TRUE)
         template <- gsub("{x}", "s", template, fixed = TRUE)
+        template <- gsub("%%s", "%s", template, fixed = TRUE)
 
         if (all(y.match < x.match))
             return(sprintf(template, y.txt, x.txt))

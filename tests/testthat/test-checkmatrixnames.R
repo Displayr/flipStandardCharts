@@ -164,3 +164,15 @@ test_that("isPercentData",
     expect_equal(isPercentData(tab1d.with.stats), TRUE)
     expect_equal(isPercentData(tab2d.with.stats), TRUE)
 })
+
+dat <- structure(c(8.25688073394496, 9.54063604240283, 16.3265306122449,
+25.2293577981651, 30.7420494699647, 37.7551020408163, 33.256880733945,
+35.6890459363958, 28.2312925170068, 24.7706422018349, 18.3745583038869,
+11.2244897959184, 8.48623853211009, 5.65371024734982, 6.46258503401361
+), .Dim = c(3L, 5L), .Dimnames = list(c("Q4 20", "Q1 21", "Q2 21"
+), c("Increased more than 25%", "Increased 5% to 25%", "Stayed about the same",
+"Decreased 5% to 25%", "Decreased more than 25%")))
+test_that("evalHoverTemplate",
+{
+    expect_error(Bar(dat), NA)
+})
