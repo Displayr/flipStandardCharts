@@ -410,7 +410,7 @@ Scatter <- function(x = NULL,
     if (is.null(opacity))
         opacity <- if (fit.type == "None") 1 else 0.4
     if (is.null(marker.border.opacity))
-        marker.border.opacity <- opacity
+        marker.border.opacity <- if (opacity == 1) 1 else 0.0
     if (data.label.font.autocolor)
         data.label.font.color <- colors
 
