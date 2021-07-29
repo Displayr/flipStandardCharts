@@ -410,7 +410,7 @@ Scatter <- function(x = NULL,
     if (is.null(opacity))
         opacity <- if (fit.type == "None") 1 else 0.4
     if (is.null(marker.border.opacity))
-        marker.border.opacity <- if (opacity == 1) 1 else 0.0
+        marker.border.opacity <- opacity 
     if (data.label.font.autocolor)
         data.label.font.color <- colors
 
@@ -654,19 +654,24 @@ Scatter <- function(x = NULL,
         tmp.size <- if (!is.null(scatter.sizes)) scatter.sizes.scaled[ind]
                     else rep(marker.size, length(ind))
 
-        # initialise marker/line settings
+        # Initialise marker/line settings
+        # There are some problems with the border opacity when using marker.opacity
+        # instead of marker.colors.alpha but the second setting needs hovertext
+        # font colors to be fixed
         line.obj <- if (is.null(line.thickness) || line.thickness == 0) NULL
                     else list(width = line.thickness, color = line.colors[ggi])
         if (ggi == 1 && scatter.colors.as.numeric)
             marker.obj <- list(size = tmp.size, sizemode = "diameter", symbol = marker.symbols,
-                            color = toRGB(colors, alpha = opacity), opacity = 1.0,
+                            color = colors, opacity = opacity,
+                            #color = toRGB(colors, alpha = opacity), opacity = 1.0,
                             line = list(width = marker.border.width,
                             color = toRGB(marker.border.colors, alpha = marker.border.opacity)),
                             colorscale = col.scale, cmin = col.min, cmax = col.max,
                             showscale = colorbar.show, colorbar = colorbar)
         else
             marker.obj <- list(size = tmp.size, sizemode = "diameter",  symbol = marker.symbols[ggi],
-                            color = toRGB(colors[ggi], alpha = opacity), opacity = 1.0,
+                            #color = toRGB(colors[ggi], alpha = opacity), opacity = 1.0,
+                            color = colors[ggi], opacity = opacity,
                             line = list(width = marker.border.width,
                             color = toRGB(marker.border.colors[ggi], alpha = marker.border.opacity)))
 
