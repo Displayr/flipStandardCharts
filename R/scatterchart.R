@@ -593,7 +593,7 @@ Scatter <- function(x = NULL,
                   ytick, ytick.font, y.tick.angle, y.tick.mark.length,
                   y.tick.distance, y.tick.format, y.tick.prefix, y.tick.suffix,
                   y.tick.show, y.zero, y.zero.line.width, y.zero.line.color,
-                  y.hovertext.format, num.maxticks = y.tick.maxnum, 
+                  y.hovertext.format, num.maxticks = y.tick.maxnum,
                   tickcolor = y.tick.mark.color, zoom.enable = zoom.enable)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
@@ -659,14 +659,14 @@ Scatter <- function(x = NULL,
                     else list(width = line.thickness, color = line.colors[ggi])
         if (ggi == 1 && scatter.colors.as.numeric)
             marker.obj <- list(size = tmp.size, sizemode = "diameter", symbol = marker.symbols,
-                            color = toRGB(colors, alpha = opacity),
+                            color = toRGB(colors, alpha = opacity), opacity = 1.0,
                             line = list(width = marker.border.width,
                             color = toRGB(marker.border.colors, alpha = marker.border.opacity)),
                             colorscale = col.scale, cmin = col.min, cmax = col.max,
                             showscale = colorbar.show, colorbar = colorbar)
         else
             marker.obj <- list(size = tmp.size, sizemode = "diameter",  symbol = marker.symbols[ggi],
-                            color = toRGB(colors[ggi], alpha = opacity),
+                            color = toRGB(colors[ggi], alpha = opacity), opacity = 1.0,
                             line = list(width = marker.border.width,
                             color = toRGB(marker.border.colors[ggi], alpha = marker.border.opacity)))
 
