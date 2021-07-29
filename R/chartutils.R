@@ -68,20 +68,22 @@ evalHoverTemplate <- function(template, x, x.hovertext.format, x.tick.prefix, x.
 
     x.txt <- formatByD3(x, x.hovertext.format, x.tick.prefix, x.tick.suffix) 
     y.txt <- formatByD3(y, y.hovertext.format, y.tick.prefix, y.tick.suffix)
+    template <- gsub("%", "%%", template, fixed = TRUE) # comment out other '%' signs
 
     if (all(y.match == -1))
     {
         template <- gsub("{x}", "s", template, fixed = TRUE)
+        template <- gsub("%%s", "%s", template, fixed = TRUE)
         return(sprintf(template, x.txt))
 
     } else if (all(x.match == -1))
     {
         template <- gsub("{y}", "s", template, fixed = TRUE)
+        template <- gsub("%%s", "%s", template, fixed = TRUE)
         return(sprintf(template, y.txt))
 
     } else
     {
-        template <- gsub("%", "%%", template, fixed = TRUE) # comment out other '%' signs
         template <- gsub("{y}", "s", template, fixed = TRUE)
         template <- gsub("{x}", "s", template, fixed = TRUE)
         template <- gsub("%%s", "%s", template, fixed = TRUE)

@@ -175,4 +175,5 @@ dat <- structure(c(8.25688073394496, 9.54063604240283, 16.3265306122449,
 test_that("evalHoverTemplate",
 {
     expect_error(Bar(dat), NA)
+    expect_error(Bar(dat, hovertext.template = "%{x}"), NA)
 })

@@ -658,16 +658,15 @@ Scatter <- function(x = NULL,
         line.obj <- if (is.null(line.thickness) || line.thickness == 0) NULL
                     else list(width = line.thickness, color = line.colors[ggi])
         if (ggi == 1 && scatter.colors.as.numeric)
-            marker.obj <- list(size = tmp.size, sizemode = "diameter", opacity = opacity,
-                            symbol = marker.symbols,
-                            color = colors, line = list(width = marker.border.width,
+            marker.obj <- list(size = tmp.size, sizemode = "diameter", symbol = marker.symbols,
+                            color = toRGB(colors, alpha = opacity),
+                            line = list(width = marker.border.width,
                             color = toRGB(marker.border.colors, alpha = marker.border.opacity)),
                             colorscale = col.scale, cmin = col.min, cmax = col.max,
                             showscale = colorbar.show, colorbar = colorbar)
         else
-            marker.obj <- list(size = tmp.size, sizemode = "diameter", opacity = opacity,
-                            symbol = marker.symbols[ggi],
-                            color = colors[ggi],
+            marker.obj <- list(size = tmp.size, sizemode = "diameter",  symbol = marker.symbols[ggi],
+                            color = toRGB(colors[ggi], alpha = opacity),
                             line = list(width = marker.border.width,
                             color = toRGB(marker.border.colors[ggi], alpha = marker.border.opacity)))
 

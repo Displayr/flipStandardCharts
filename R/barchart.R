@@ -246,6 +246,8 @@ Bar <- function(x,
         opacity <- if (fit.type == "None") 1 else 0.6
     if (is.null(marker.border.opacity))
         marker.border.opacity <- opacity
+    if (!is.null(marker.border.colors))
+        marker.border.colors <- vectorize(marker.border.colors, ncol(chart.matrix))
 
     colors <- if (multi.colors.within.series) vectorize(colors, nrow(chart.matrix))
               else                            vectorize(colors, ncol(chart.matrix))
