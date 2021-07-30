@@ -112,11 +112,11 @@ GeographicMap <- function(x,
         hovertext.font.size <- 11
     if (is.null(opacity))
         opacity <- if (mapping.package == "leaflet" && background) 0.5 else 1.0
-    if (mapping.package == "leaflet") 
+    if (mapping.package == "leaflet")
         color.warning <- "Alpha values in selected colors were not used in color scale. Adjust 'opacity' instead"
     else
         color.warning <- "Alpha values in colors for Geographic Map with plotly are ignored."
-    colors <- StripAlphaChannel(colors) 
+    colors <- StripAlphaChannel(colors)
 
     # Check for defined formats first, or if country or zip.country are specified.
     map.type <- definedFormatMapTypes(names, zip.country)
@@ -405,7 +405,7 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
                          title = legend.title,
                          # reverse label ordering so high values are at top
                          labFormat = labelFormat(transform = function(x) sort(x * mult, decreasing = TRUE),
-                                                 digits = decimals,
+                                                 digits = 3, # seems to work like an upper bound
                                                  suffix = suffix,
                                                  big.mark = ifelse(commaFromD3(values.hovertext.format), ",", "")),
                          opacity = opacity,
