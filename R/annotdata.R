@@ -1,6 +1,6 @@
 #' This function adds traces for data labels and annotations to bar/column charts
-#' Because these type of charts show bars that up space surrounding the 
-#' position of the data point, it is necessary to be more careful about 
+#' Because these type of charts show bars that up space surrounding the
+#' position of the data point, it is necessary to be more careful about
 #' the offset of the data labels (from the data point). Also, circle
 #' annotations can be added to the plot. These are added as separate traces
 #' to allow for more flexible positioning
@@ -8,7 +8,7 @@
 #' @param type the type of the chart (i.e. Bar or Column)
 #' @param name the name to be given to the data label trace. This is visible in the hover text
 #' @param data.label.xpos The position of the data label trace on the xaxis.
-#'  This is usually a component of the output from \code{dataLabelPositions}. 
+#'  This is usually a component of the output from \code{dataLabelPositions}.
 #' @param data.label.ypos The position of the data label trace on the yaxis.
 #'  This is usually a component of the output from \code{dataLabelPositions}.
 #' @param data.label.show A logical vector of the same length as data.label.xpos
@@ -25,15 +25,15 @@
 #' @param yaxis The neme of the yaxis
 #' @param data.label.font A list specifying the font to use.
 #' @param is.stacked A logical indicating if the chart is stackeed.
-#' @param data.label.centered A logical indicating if data label is placed at the center of bar. 
+#' @param data.label.centered A logical indicating if data label is placed at the center of bar.
 #'  Only used in Stacked Column charts.
 #' @param data.label.horizontal.align Text to control the horizontal alignment
 #'  of labels on the column chart annotations
 
- 
+
 #' @importFrom verbs Sum
 #' @keywords internal
-addTraceForBarTypeDataLabelAnnotations <- function(p, type, name, 
+addTraceForBarTypeDataLabelAnnotations <- function(p, type, name,
         data.label.xpos, data.label.ypos,
         data.label.show, data.label.text, data.label.sign, data.label.nchar,
         annotation.list, annot.data, i,
@@ -153,8 +153,16 @@ getAnnotData <- function(data, name, series, as.numeric = TRUE)
     }
     ind <- match(paste0("", name), d.names)
     if (is.na(ind))
-        stop("Annotation data does not contain a statistic named '", name, "'. ",
+    {
+        # Check that statistic name has not been changed in PrepareData
+        name2 <- gsub("%", "Percent", name)
+        ind <- match(paste0("", name2), d.names)
+        if (is.na(ind))
+          stop("Annotation data does not contain a statistic named '", name, "'. ",
                 "Allowable names are: '", paste(d.names, collapse = "', '"), "'. ")
+        else
+          name <- name2
+    }
 
     match.single.stat <- isTRUE(attr(data, "statistic") == name)
     if (match.single.stat && d.len == 2)
@@ -350,11 +358,11 @@ getColCmpArrowHtml <- function(cell.text, arrow.size, sep = " ", arrow.code = "&
 # is defined in terms of a list of segments. This makes it easier to iteratively apply
 # annotations. When it is called for the last time, \code{clean.pt.segs} should be set to TRUE
 # to indicate that pt.segs can be summarised to only describe differences from
-# the default data labels for the whole series (typically a data label containing 
+# the default data labels for the whole series (typically a data label containing
 # only the value of the data point).
 
 # applyAllAnnotationsToDataLabels applies all annotations in \code{annotation.list}
-# to all points in the data series indicated by \code{series.index}. 
+# to all points in the data series indicated by \code{series.index}.
 # That is it takes a slice of the annot.data[,series.index,annot$data] and
 # compares this against \code{annot$threshold} to identify the data points to which
 # each annotation should be applied. Data points which are not included in \code{rows.to.show}
