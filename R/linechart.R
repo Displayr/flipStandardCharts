@@ -497,7 +497,8 @@ Line <-   function(x,
                    showlegend = FALSE, legendgroup = i, hoverinfo = "skip")
             
             # Add hover as a separate trace to avoid conflict between data labels and hover    
-            hover.template <- setHoverTemplate(i, xaxis, chart.matrix, hovertext.template)
+            hover.template <- rep(setHoverTemplate(i, xaxis, chart.matrix, hovertext.template), 
+                length = nrow(chart.matrix))
             p <- add_trace(p, x = x, y = y, type = "scatter", name = y.label,
                    cliponaxis = FALSE, mode = "markers",
                    marker = list(size = data.label.offset, color=colors[i], opacity = 0),
@@ -505,7 +506,7 @@ Line <-   function(x,
                    hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                    size = hovertext.font.size, family = hovertext.font.family),
                    bgcolor = toRGB(colors[i], alpha = opacity)),
-                   hovertemplate = hovertext.template[ind.show])
+                   hovertemplate = hover.template[ind.show])
         }
     }
     serieslabels.num.changes <- vapply(chart.labels$SeriesLabels, function(s) isTRUE(s$ShowValue) + length(s$CustomPoints), numeric(1L))
