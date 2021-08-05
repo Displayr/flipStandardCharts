@@ -3,8 +3,8 @@
 \name{addTraceForBarTypeDataLabelAnnotations}
 \alias{addTraceForBarTypeDataLabelAnnotations}
 \title{This function adds traces for data labels and annotations to bar/column charts
-Because these type of charts show bars that up space surrounding the 
-position of the data point, it is necessary to be more careful about 
+Because these type of charts show bars that up space surrounding the
+position of the data point, it is necessary to be more careful about
 the offset of the data labels (from the data point). Also, circle
 annotations can be added to the plot. These are added as separate traces
 to allow for more flexible positioning}
@@ -68,7 +68,7 @@ This is used to position the circle annotations.}
 
 \item{is.stacked}{A logical indicating if the chart is stackeed.}
 
-\item{data.label.centered}{A logical indicating if data label is placed at the center of bar. 
+\item{data.label.centered}{A logical indicating if data label is placed at the center of bar.
 Only used in Stacked Column charts.}
 
 \item{data.label.horizontal.align}{Text to control the horizontal alignment
@@ -76,8 +76,8 @@ of labels on the column chart annotations}
 }
 \description{
 This function adds traces for data labels and annotations to bar/column charts
-Because these type of charts show bars that up space surrounding the 
-position of the data point, it is necessary to be more careful about 
+Because these type of charts show bars that up space surrounding the
+position of the data point, it is necessary to be more careful about
 the offset of the data labels (from the data point). Also, circle
 annotations can be added to the plot. These are added as separate traces
 to allow for more flexible positioning
