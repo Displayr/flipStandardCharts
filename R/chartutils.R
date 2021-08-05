@@ -49,7 +49,9 @@ setHoverTemplate <- function(i, axis, chart.matrix, template = NULL, is.bar = FA
     if (length(ind.na) > 0)
     {
         template <- rep(template, length = nrow(chart.matrix))
-        template[ind.na] <- ""
+        val.pattern <- if (is.bar) "%{x}" else "%{y}"
+        na.template <- gsub(val.pattern, "NA", template[ind.na], fixed = TRUE)
+        template[ind.na] <- na.template
     }
     return(template)
 }
