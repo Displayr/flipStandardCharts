@@ -703,7 +703,8 @@ Scatter <- function(x = NULL,
             ind.sel <- if (is.null(a.tmp$threstype) || is.null(a.tmp$threshold))    1:length(tmp.dat)
                        else if (is.factor(tmp.dat) && !is.ordered(tmp.dat))         selectFactor(a.tmp$threshold, 1:length(tmp.dat), a.tmp$data, ggi)
                        else if (a.tmp$threstype == "above threshold")               which(tmp.dat > a.tmp$threshold)
-                       else                                                         which(tmp.dat < a.tmp$threshold)
+                       else if (a.tmp$threstype == "below threshold")               which(tmp.dat < a.tmp$threshold)
+                       else                                                         which(is.na(tmp.dat))
             if (length(ind.sel) > 0)
             {
                 if (a.tmp$type == "Marker border")

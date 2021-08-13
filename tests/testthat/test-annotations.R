@@ -71,6 +71,20 @@ a5 <- list(list(type = "Arrow - up", data = "p", threstype = "below threshold",
     size = 20, width = 1, offset = 0, font.family = "Arial",
     font.weight = "normal", font.style = "normal"))
 
+a6 <- list(list(type = "Arrow - up", data = "", threstype = "below threshold",
+    threshold = "2", color = "red", size = 20, width = 1,
+    offset = 0, font.family = "Arial", font.weight = "normal",
+    font.style = "normal"), list(type = "Arrow - down", data = "",
+    threstype = "above threshold", threshold = "8", color = "blue",
+    size = 20, width = 1, offset = 0, font.family = "Arial",
+    font.weight = "normal", font.style = "normal"))
+
+test_that("Annotations using chart data",
+{
+    xx <- 1:10
+    expect_error(Column(xx, annotation.list = a6, data.label.show = T), NA)
+})
+
 test_that("Annotations",
 {
     expect_error(Column(data.with.stats, data.label.show = TRUE, annotation.list=list(list(data="p", type = "Arrow - up", threstype = "above threshold", threshold = 0.05, color = "#FF0000", size = 15))), NA)
