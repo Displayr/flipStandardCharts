@@ -79,10 +79,17 @@ a6 <- list(list(type = "Arrow - up", data = "", threstype = "below threshold",
     size = 20, width = 1, offset = 0, font.family = "Arial",
     font.weight = "normal", font.style = "normal"))
 
+a7 <- list(list(type = "Hide", data = "", threstype = "that are missing", threshold = 2))
+
 test_that("Annotations using chart data",
 {
     xx <- 1:10
     expect_error(Column(xx, annotation.list = a6, data.label.show = T), NA)
+
+    x2 <- structure(c(2, 3, NA, 6, 6, 5, 2, NA), .Dim = c(4L, 2L), .Dimnames = list(
+    c("Cat", "Dog", "Bear", "Rat"), c("One", "Two")))
+    expect_warning(Column(x2, annotation.list = a7, data.label.show = TRUE),
+                   "Missing values have been set to zero")
 })
 
 test_that("Annotations",

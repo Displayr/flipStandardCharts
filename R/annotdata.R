@@ -169,7 +169,9 @@ getAnnotData <- function(data, name, series, as.numeric = TRUE)
         ind <- match(paste0("", name2), d.names)
         if (is.na(ind))
           stop("Annotation data does not contain a statistic named '", name, "'. ",
-                "Allowable names are: '", paste(d.names, collapse = "', '"), "'. ")
+                "Allowable names are: '", paste(d.names, collapse = "', '"), 
+                "'. Check that DATA MANIPULATIONS > Automatically tidy the data ",
+                "is not selected.")
         else
           name <- name2
     }
