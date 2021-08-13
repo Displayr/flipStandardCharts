@@ -136,6 +136,16 @@ addTraceForBarTypeDataLabelAnnotations <- function(p, type, name,
 
 getAnnotData <- function(data, name, series, as.numeric = TRUE)
 {
+    # If no annotation data is specified use chart data
+    if (all(!nzchar(name)))
+    {
+        new.dat <- checkMatrixNames(data)
+        if (length(dim(new.dat)) >= 2)
+            return(new.dat[,series])
+        else
+            return(new.dat)
+    }
+
     if (is.null(data))
         stop("No data has been provided for annotations")
     if (is.null(dim(data)))
@@ -159,7 +169,9 @@ getAnnotData <- function(data, name, series, as.numeric = TRUE)
         ind <- match(paste0("", name2), d.names)
         if (is.na(ind))
           stop("Annotation data does not contain a statistic named '", name, "'. ",
-                "Allowable names are: '", paste(d.names, collapse = "', '"), "'. ")
+                "Allowable names are: '", paste(d.names, collapse = "', '"), 
+                "'. Check that DATA MANIPULATIONS > Automatically tidy the data ",
+                "is not selected.")
         else
           name <- name2
     }
@@ -185,8 +197,10 @@ extractSelectedAnnot <- function(data, threshold, threstype)
         return(1:n)
     else if (threstype == "above threshold")
         return(which(data > threshold))
-    else
+    else if (threstype == "below threshold")
         return(which(data < threshold))
+    else
+        return(which(is.na(data)))
 }
 
 
