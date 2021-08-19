@@ -1076,7 +1076,7 @@ setValRange <- function(min, max, values, show.zero = FALSE, use.defaults = TRUE
         min <- min(unlist(values), if (show.zero) 0 else NULL, na.rm = TRUE)
     if  (length(max) == 0 || is.na(max))
         max <- max(unlist(values), na.rm = TRUE)
-    if (length(values) > 1)
+    if (is.bar && length(values) > 1)
     {
         diff <- if (length(values) > 1) min(abs(diff(values)), na.rm = TRUE)/2
                 else                    0.5
