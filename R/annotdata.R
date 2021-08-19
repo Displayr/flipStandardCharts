@@ -292,13 +292,13 @@ parseThreshold <- function(x)
     if (is.null(x))
         return(x)
 
-    # Convert string to numeric where possible
-    tmp <- suppressWarnings(as.numeric(x))
-    if (!is.na(tmp))
-        return(tmp)
+    # Tries to convert string to numeric where possible
+    # Attaches statistic if a percent sign is observed
+    res <- ParseText(x)
+    if (is.numeric(res) && isTRUE(grepl("%", attr(res, "statistic"))))
+        res <- as.numeric(res)/100
 
-    # If not possible, return original for string comparison
-    return(x)
+    return(res)
 }
 
 checkAnnotType <- function(annot.type, chart.type)
