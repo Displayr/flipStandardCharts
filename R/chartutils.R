@@ -1076,10 +1076,9 @@ setValRange <- function(min, max, values, show.zero = FALSE, use.defaults = TRUE
         min <- min(unlist(values), if (show.zero) 0 else NULL, na.rm = TRUE)
     if  (length(max) == 0 || is.na(max))
         max <- max(unlist(values), na.rm = TRUE)
-
-    if (is.bar && length(values) > 1)
+    if (length(values) > 1)
     {
-        diff <- if (length(values) > 1) min(diff(values))/2
+        diff <- if (length(values) > 1) min(abs(diff(values)))/2
                 else                    0.5
         min <- min - diff
         max <- max + diff
@@ -1465,7 +1464,8 @@ checkD3Format <- function(format, axis.type, warning.type = "Axis label", conver
 
 notAutoRange <- function(axis)
 {
-    return(!isTRUE(axis$autorange) && length(axis$range) > 0 && min(abs(axis$range)) > 0)
+    return(!isTRUE(axis$autorange) && length(axis$range) > 0 && 
+            all(!is.na(axis$range)) && min(abs(axis$range)) > 0)
 }
 
 getSign <- function(values, axis)
@@ -1473,7 +1473,7 @@ getSign <- function(values, axis)
     res <- sign(values)
     if (any(is.na(res)))
         res[which(is.na(res))] <- 0
-    if (length(axis$range) >= 2 && axis$range[2] < axis$range[1])
+    if (length(axis$range) >= 2 && isTRUE(axis$range[2] < axis$range[1]))
         res <- -res
     else if (axis$autorange == "reversed")
         res <- -res
