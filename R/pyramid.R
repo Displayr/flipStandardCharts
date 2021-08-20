@@ -7,6 +7,7 @@
 #' @importFrom plotly plot_ly layout
 #' @export
 Pyramid <- function(x,
+                    annotation.list = NULL,
                     colors = ChartColors(max(1, length(x))),
                     opacity = NULL,
                     global.font.family = "Arial",

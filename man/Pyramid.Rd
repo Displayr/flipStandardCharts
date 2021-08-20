@@ -6,6 +6,7 @@
 \usage{
 Pyramid(
   x,
+  annotation.list = NULL,
   colors = ChartColors(max(1, length(x))),
   opacity = NULL,
   global.font.family = "Arial",
@@ -117,6 +118,8 @@ Pyramid(
 \item{x}{Input data may be a matrix or a vector, containing the height of the columns
 to be plotted, with the name/rownames used as the column names of the chart. Numeric and date labels
 will be parsed automatically.}
+
+\item{annotation.list}{Optional list of annotations to modify the data labels.}
 
 \item{colors}{Character; a vector containing one or more colors specified as hex codes.}
 
