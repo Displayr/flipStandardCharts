@@ -28,3 +28,11 @@ test_that("JSON config contains no newlines",
         data.label.show = TRUE, data.label.position = "Next to bar",
         print.config = TRUE))), 1)
 })
+
+test_that("JSON config escapes quotes",
+{
+    x2 <- structure(1:10, .Names = c("a", "b", "\"C\"", "d's", "e", "f",
+        "g", "h", "i", "j"))
+    expect_error(BarPictograph(x2), NA)
+    expect_error(BarPictograph(x2, data.label.position = "Above row label"), NA)
+})

@@ -389,5 +389,6 @@ cleanPictographLabels <- function(x)
     # probably not what the user wants to see
     x <- gsub("<br>", "\\\\n", x)
     x <- gsub("&nbsp;", " ", x)
+    x <- gsub('"', '\\"', x, fixed = TRUE)
     return(x)
 }
