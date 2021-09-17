@@ -725,8 +725,8 @@ Column <- function(x,
         x.range <- getRange(x.labels, xaxis, axisFormat)
 
     # Set up second x-axis for data labels
-    xaxis2 <- list(overlaying = "x", fixedrange = TRUE, range = x.range,
-        visible = FALSE)
+    xaxis2 <- list(overlaying = "x", range = x.range,
+        visible = FALSE, matches = "x", rangemode = "match")
     data.annotations <- dataLabelPositions(chart.matrix = chart.matrix,
                         axis.type = xaxis$type,
                         annotations = NULL,
