@@ -110,11 +110,9 @@ Stream <- function(x,
         diffs <- as.numeric(diff(columns))
         med.diff <- median(abs(diffs), na.rm = TRUE)
         max.diff <- max(abs(diffs), na.rm = TRUE)
-        if (any(diffs < 0) && any(diffs > 0))   
-            stop("Dates for Stream cannot be unordered")
         if (max.diff > 1.1 * med.diff)
             warning("Dates are not spaced at regular intervals. Most of the dates have a difference of ",
-            med.diff, " but the maximum interval is ", max.diff, ".") 
+            med.diff, " but the maximum interval is ", max.diff, ".")
         r <- range(columns)
         day.range <- r[2] - r[1]
         if (x.tick.units == "Automatic")
