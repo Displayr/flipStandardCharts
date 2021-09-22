@@ -123,6 +123,18 @@ BarPictograph <- function(x,
     icon.nrow <- NA # only icon.ncol is used for bar charts
     if (!is.na(icon.ncol) && any(icon.ncol > total.icons))
         icon.ncol <- max(total.icons)
+    if (length(icon.ncol) != 1 || !is.na(icon.ncol))
+    {
+        if (length(icon.ncol) != 1)
+            icon.ncol <- NA
+        else if (icon.ncol < 1)
+        {
+            warning("'Maximum icons per row' should be a positive integer. The current value is ignored.")
+            icon.ncol <- NA
+        }
+        else if (icon.ncol != floor(icon.ncol))
+            warning("'Maximum icons per row' should be an integer. The floor of the current value is used")
+    }
     layout.str <- if (is.na(icon.ncol)) "\"numRows\": 1"
                   else paste("\"numCols\":", icon.ncol)
 

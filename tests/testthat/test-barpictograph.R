@@ -5,6 +5,14 @@ test_that("Colors of incorrect length",
     expect_error(BarPictograph(1:6, colors=rainbow(5)), NA)
 })
 
+test_that("Warnings for invalid parameters",
+{
+    expect_warning(BarPictograph(1:6, icon.ncol = 0.5),
+        "'Maximum icons per row' should be a positive integer", fixed = TRUE)
+    expect_warning(BarPictograph(1:6, icon.ncol = 2.5),
+        "'Maximum icons per row' should be an integer", fixed = TRUE)
+})
+
 test_that("Custom image",
 {
     expect_error(BarPictograph(1:6, custom.image = "https://wiki.q-researchsoftware.com/images/7/78/Democrats_donkey_black.png"), NA)
