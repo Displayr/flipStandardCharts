@@ -65,7 +65,7 @@ Remotes:
     Displayr/dygraphs,
     Displayr/verbs,
     hrbrmstr/streamgraph,
-    timelyportfolio/parcoords@324d00b
+    Displayr/parcoords
 Suggests:
     dplyr,
     flipExampleData,
