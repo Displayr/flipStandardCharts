@@ -141,8 +141,8 @@ BarPictograph <- function(x,
     icon.nrow <- rep(1, n)
     if (!fix.icon.nrow && hide.base.image && !is.na(icon.ncol))
     {
-        icon.nrow <- ceiling(x/icon.ncol)
-        total.icons <- ceiling(x/icon.ncol) * icon.ncol
+        icon.nrow <- pmax(ceiling(x/icon.ncol), 1)
+        total.icons <- icon.nrow * icon.ncol
 
     } else if (!is.na(icon.ncol))
         icon.nrow <- rep(ceiling(total.icons/icon.ncol), n)
