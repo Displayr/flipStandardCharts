@@ -32,7 +32,6 @@
 #' @importFrom plotly subplot
 #' @importFrom abind abind
 #' @importFrom flipU CollectWarnings
-#' @importFrom verbs Sum
 #' @examples
 #' x <- matrix(1:21, 7, 3, dimnames = list(letters[1:7], LETTERS[1:3]))
 #' SmallMultiples(x, "Column", colors=c("red","green","blue"))
@@ -134,10 +133,10 @@ SmallMultiples <- function(x,
 
     if (chart.type == "Scatter")
     {
-        if (Sum(scatter.groups.column) <= 0)
+        if (sum(scatter.groups.column, na.rm = TRUE) <= 0)
             scatter.groups.column <- NCOL(x)
 
-        if (Sum(scatter.groups.column) <= 0 || NCOL(x) < scatter.groups.column)
+        if (sum(scatter.groups.column, na.rm = TRUE) <= 0 || NCOL(x) < scatter.groups.column)
             scatter.groups.column <- NCOL(x)
         if (isTRUE(unname(scatter.colors.column == scatter.groups.column)))
             scatter.colors.column <- 0
@@ -295,11 +294,11 @@ SmallMultiples <- function(x,
             scatter.sizes.column > 0 && scatter.sizes.column <= NCOL(x))
         {
             notNA.ind <- 1:nrow(x)
-            if (Sum(scatter.x.column) > 0)
+            if (sum(scatter.x.column, na.rm = TRUE) > 0)
                 notNA.ind <- intersect(notNA.ind, which(!is.na(x[,scatter.x.column])))
-            if (Sum(scatter.y.column) > 0)
+            if (sum(scatter.y.column, na.rm = TRUE) > 0)
                 notNA.ind <- intersect(notNA.ind, which(!is.na(x[,scatter.y.column])))
-            if (Sum(scatter.colors.column) > 0)
+            if (sum(scatter.colors.column, na.rm = TRUE) > 0)
                 notNA.ind <- intersect(notNA.ind, which(!is.na(x[,scatter.colors.column])))
             sc.tmp <- abs(AsNumeric(x[notNA.ind, scatter.sizes.column], binary = FALSE))
             sz.min <- min(sc.tmp, na.rm = TRUE)
@@ -590,4 +589,3 @@ SmallMultiples <- function(x,
         chart.type) # e.g. Area, Line, Radar
     result
 }
-

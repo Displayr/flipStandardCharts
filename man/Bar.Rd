@@ -162,7 +162,7 @@ will be parsed automatically.}
 
 \item{colors}{Character; a vector containing one or more colors specified as hex codes.}
 
-\item{multi.colors.within.series}{A logical indicating that the colors vector should be assigned to 
+\item{multi.colors.within.series}{A logical indicating that the colors vector should be assigned to
 each bar within the same series.}
 
 \item{opacity}{Opacity of bars as an alpha value (0 to 1).}
@@ -455,7 +455,7 @@ character format (e.g. "black") or an a hex code.}
 which is the same dimensions as \code{chart.matrix}. If no format is specified
 the default is for categorical x-axis "\%{x}: \%{y}" or for a numerical x-axis "(\%{x}, \%{y})".}
 
-\item{hovertext.align}{Horizontal alignment of hover text. 
+\item{hovertext.align}{Horizontal alignment of hover text.
 Only observable when hover contain multiple lines.}
 
 \item{marker.border.width}{Width in pixels of border/line

@@ -31,7 +31,6 @@
 #'  of labels on the column chart annotations
 
 
-#' @importFrom verbs Sum
 #' @keywords internal
 addTraceForBarTypeDataLabelAnnotations <- function(p, type, name,
         data.label.xpos, data.label.ypos,
@@ -88,8 +87,8 @@ addTraceForBarTypeDataLabelAnnotations <- function(p, type, name,
             tmp.dat <- getAnnotData(annot.data, a.tmp$data, i)
             ind.sel <- extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype)
             tmp.text <- rep("", n)
-            left.pad <- paste(rep(" ", Sum(a.tmp$shiftright)), collapse = "")
-            right.pad <- paste(rep(" ", Sum(a.tmp$shiftleft)), collapse = "")
+            left.pad <- paste(rep(" ", sum(a.tmp$shiftright, na.rm = TRUE)), collapse = "")
+            right.pad <- paste(rep(" ", sum(a.tmp$shiftleft, na.rm = TRUE)), collapse = "")
             tmp.text[ind.sel] <- paste0(left.pad, switch(a.tmp$type,
                 "Circle - thick outline" = "<b>&#11096;</b>",
                 "Circle - thin outline" = "&#11096;",
@@ -169,7 +168,7 @@ getAnnotData <- function(data, name, series, as.numeric = TRUE)
         ind <- match(paste0("", name2), d.names)
         if (is.na(ind))
           stop("Annotation data does not contain a statistic named '", name, "'. ",
-                "Allowable names are: '", paste(d.names, collapse = "', '"), 
+                "Allowable names are: '", paste(d.names, collapse = "', '"),
                 "'. Check that DATA MANIPULATIONS > Automatically tidy the data ",
                 "is not selected.")
         else
@@ -217,13 +216,12 @@ extractSelectedAnnot <- function(data, threshold, threstype)
 #' It is used when \code{annotation$type} is "Text".
 #' @param prepend Logical; when true, the annotation will be added to the
 #  beginning of data.label.text instead of the end.
-#' @importFrom verbs Sum
 #' @keywords internal
 addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat, prepend = FALSE)
 {
     # Fix font size so that the units do not change in size when the font size increases
     left.pad <- ""
-    if ((n.shift.right <- Sum(annotation$shiftright)) > 0)
+    if ((n.shift.right <- sum(annotation$shiftright, na.rm = TRUE)) > 0)
         left.pad <- paste0("<span style='font-size: 2px'>",
                     paste(rep(" ", n.shift.right), collapse = ""),
                     "</span>")
@@ -593,5 +591,3 @@ setTextForPPT <- function(annot)
 unescape_html <- function(str){
   xml2::xml_text(xml2::read_html(paste0("<x>", str, "</x>")))
 }
-
-

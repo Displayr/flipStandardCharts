@@ -33,7 +33,6 @@
 #' @importFrom rhtmlPictographs graphic
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom httr GET
-#' @importFrom verbs Sum
 #' @export
 #' @examples
 #' BarPictograph(1:5, image = "Sick person")
@@ -334,7 +333,7 @@ BarPictograph <- function(x,
     # Exact dimensions should not matter as long as aspect ratio is correct
     # But rounding errors can happen if graphic.resolution is not chosen well
     dim.str <- ""
-    row.height <- paste0("\"proportion:", floor(icon.nrow/Sum(icon.nrow, remove.missing = FALSE)*1000)/1000, "\"")
+    row.height <- paste0("\"proportion:", floor(icon.nrow/sum(icon.nrow)*1000)/1000, "\"")
     column.width <- "\"flexible:graphic\""
 
     # Setting up graphic cells (bars of icons)
@@ -376,7 +375,7 @@ BarPictograph <- function(x,
 
     # Check that the number of icons is not too big
     if (hide.base.image)
-        num.icons <- Sum(prop * total.icons, remove.missing = FALSE)
+        num.icons <- sum(prop * total.icons)
     else
         num.icons <- length(prop) * total.icons
     if (num.icons > maximum.number.icons)

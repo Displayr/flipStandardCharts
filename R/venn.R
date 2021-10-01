@@ -30,7 +30,6 @@
 #' @importFrom flipFormat Labels
 #' @importFrom flipChartBasics StripAlphaChannel
 #' @importFrom d3vennR d3vennR
-#' @importFrom verbs Sum
 #' @export
 Venn <- function(x = NULL,
                  weights = NULL,
@@ -68,7 +67,7 @@ Venn <- function(x = NULL,
         data.label.decimals <- decimalsFromD3(values.hovertext.format, 0)
 
         if (as.percentages) {
-            weights <- weights / Sum(weights, remove.missing = FALSE) * 100
+            weights <- weights / sum(weights) * 100
             suffix <- "%"
         }
         if (!is.logical(x[,1]))
@@ -195,10 +194,9 @@ function(){
 #' @param weights Vector of weights
 #' @param data.label.decimals number of decimal places.
 #' @importFrom janitor round_half_up
-#' @importFrom verbs Sum
 convertDataFrameIntoJSON <- function(x, nms, weights, data.label.decimals)
 {
-    .sum <- function(cols)  {round_half_up(Sum(weights[apply(x[,cols + 1, drop = FALSE], 1, all)], remove.missing = FALSE), data.label.decimals)}
+    .sum <- function(cols)  {round_half_up(sum(weights[apply(x[,cols + 1, drop = FALSE], 1, all)]), data.label.decimals)}
     .nm <- function(col) {nms[col + 1]}
     nms <- as.character(nms)
     k <- ncol(x)

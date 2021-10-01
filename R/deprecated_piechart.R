@@ -1,6 +1,5 @@
 #' @importFrom utils stack
 #' @importFrom flipChartBasics ChartColors
-#' @importFrom verbs Sum
 pieChart <- function(chart.matrix,
                      type,
                      values.color,
@@ -52,7 +51,7 @@ pieChart <- function(chart.matrix,
         pie.data.threshold <- 0.003
 
     # If the statistic contains percentages but the total does not sum to 100, show warning
-    if (length(grep("%", table.statistic)) > 0 && round(Sum(chart.matrix, remove.missing = FALSE)) != 100)
+    if (length(grep("%", table.statistic)) > 0 && round(sum(chart.matrix)) != 100)
         warning(paste("The percentage values in the table do not sum to 100%.",
                       "Consider choosing a different statistic for the table."))
 

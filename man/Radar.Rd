@@ -186,7 +186,7 @@ Values range from -0.5 (left) to 1.5 (right).}
 which is the same dimensions as \code{chart.matrix}. If no format is specified
 the default is for categorical x-axis "\%{x}: \%{y}" or for a numerical x-axis "(\%{x}, \%{y})".}
 
-\item{hovertext.align}{Horizontal alignment of hover text. 
+\item{hovertext.align}{Horizontal alignment of hover text.
 Only observable when hover contain multiple lines.}
 
 \item{margin.autoexpand}{Logical; Whether extra space can be added to the margins

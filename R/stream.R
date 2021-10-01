@@ -25,7 +25,6 @@
 #' @param margin.left Left margin (default should be fine, this allows for fine-tuning plot space)
 #' @importFrom streamgraph streamgraph sg_fill_manual sg_axis_x sg_axis_y sg_colors
 #' @importFrom flipTime AsDateTime
-#' @importFrom verbs SumColumns
 #' @importFrom janitor round_half_up
 #' @export
 Stream <- function(x,
@@ -137,7 +136,7 @@ Stream <- function(x,
     }
 
     # Rounding off data to make hovertext legible, but should not affect y-values on the graph
-    data.magnitude <- floor(log10(min(SumColumns(x, remove.rows = NULL))))
+    data.magnitude <- floor(log10(min(colSums(x))))
     x.round <- round(as.numeric(t(x)), max(0, 4 - data.magnitude))
     df <- data.frame(value = x.round, date = columns, key = rep(rownames(x), rep(ncol(x), nrow(x))))
 

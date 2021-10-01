@@ -305,7 +305,6 @@
 #' @importFrom flipData GetTidyTwoDimensionalArray
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
-#' @importFrom verbs Sum SumRows
 #' @examples
 #' z <- c(5, 6, 2, 1.5, 9, 2.2)
 #' Chart(y = z, type = "Area")
@@ -1069,7 +1068,7 @@ Chart <-   function(y = NULL,
                  "or a data frame consisting entirely of numerics is required.")
     if (is.data.frame(chart.matrix))
     {
-        if (Sum(sapply(chart.matrix, is.numeric), remove.missing = FALSE) == ncol(chart.matrix))
+        if (sum(sapply(chart.matrix, is.numeric)) == ncol(chart.matrix))
             chart.matrix <- as.matrix(chart.matrix)
         else
             stop(msg)
@@ -1156,7 +1155,7 @@ Chart <-   function(y = NULL,
         }
         if (is.stacked && (any(is.na(chart.matrix)) || any(chart.matrix < 0)))
             stop("Stacked charts cannot be produced with missing or negative values.")
-        if (is.hundred.percent.stacked && any(SumRows(chart.matrix, remove.columns = NULL, remove.missing = FALSE) == 0))
+        if (is.hundred.percent.stacked && any(rowSums(chart.matrix) == 0))
             stop("100% stacked charts cannot be produced with rows that do not contain positive values.")
 
         nms <- row.names(chart.matrix)
@@ -1929,7 +1928,7 @@ Chart <-   function(y = NULL,
             x.tick.decimals <- if (x.has.bounds)
                 decimalsToDisplay(c(x.bounds.minimum, x.bounds.maximum))
             else if (is.stacked && !is.hundred.percent.stacked)
-                decimalsToDisplay(SumRows(chart.matrix, remove.columns = NULL))
+                decimalsToDisplay(rowSums(chart.matrix, na.rm = TRUE))
             else
                 decimalsToDisplay(chart.matrix)
     }
@@ -1938,7 +1937,7 @@ Chart <-   function(y = NULL,
         y.tick.decimals <- if (y.has.bounds)
             decimalsToDisplay(c(y.bounds.minimum, y.bounds.maximum))
         else if (is.stacked && !is.hundred.percent.stacked)
-            decimalsToDisplay(SumRows(chart.matrix, remove.columns = NULL))
+            decimalsToDisplay(rowSums(chart.matrix, na.rm = TRUE))
         else
             decimalsToDisplay(chart.matrix)
     }
@@ -2680,4 +2679,3 @@ Chart <-   function(y = NULL,
     class(result) <- "StandardChart"
     result
 }
-

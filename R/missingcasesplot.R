@@ -25,7 +25,6 @@
 #' @param tooltip.show Logical, indicating whether or not to show a tooltip on hover. The default is off, because
 #'  turning on tooltips with large data sets can make the chart slow to render.
 #' @param enable.zoom Logical, indicating whether of not to allow the chart to be zoomable.
-#' @importFrom verbs SumColumns
 #' @export
 MissingCasesPlot <- function(raw.data,
     fill.color = "#5C9AD3",
@@ -121,11 +120,11 @@ MissingCasesPlot <- function(raw.data,
     {
         x.labels <- paste0(x.labels, if (x.tick.label.wrap) "<br>(" else " (")
         if (show.counts.missing)
-            x.labels <- paste0(x.labels, SumColumns(dat, remove.rows = NULL, remove.missing = FALSE), " cases ")
+            x.labels <- paste0(x.labels, colSums(dat), " cases ")
         if (show.counts.missing && show.percentages.missing)
             x.labels <- paste(x.labels, "or ")
         if (show.percentages.missing)
-            x.labels <- paste0(x.labels, round_half_up(SumColumns(dat, remove.rows = NULL, remove.missing = FALSE)/nrow(dat)*100), "%")
+            x.labels <- paste0(x.labels, round_half_up(colSums(dat)/nrow(dat)*100), "%")
         x.labels <- paste0(x.labels, " missing)")
     }
     x.labels <- autoFormatLongLabels(x.labels, x.tick.label.wrap, x.tick.label.wrap.nchar, truncate = FALSE)
@@ -174,9 +173,9 @@ MissingCasesPlot <- function(raw.data,
 
     if (is.null(fill.opacity) || is.na(fill.opacity))
     {
-        if (max(SumColumns(dat, remove.rows = NULL, remove.missing = FALSE)) > 1000)
+        if (max(colSums(dat)) > 1000)
             fill.opacity <- 0.2
-        else if (max(SumColumns(dat, remove.rows = NULL, remove.missing = FALSE)) > 200)
+        else if (max(colSums(dat)) > 200)
             fill.opacity <- 0.5
         else
             fill.opacity <- 1.0

@@ -325,7 +325,7 @@ the default is for categorical x-axis "\%{x}: \%{y}" or for a numerical x-axis "
 
 \item{hovertext.font.size}{Font size of hover text.}
 
-\item{hovertext.align}{Horizontal alignment of hover text. 
+\item{hovertext.align}{Horizontal alignment of hover text.
 Only observable when hover contain multiple lines.}
 
 \item{y.title}{Character, y-axis title; defaults to chart input values;

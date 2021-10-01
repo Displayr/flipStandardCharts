@@ -634,7 +634,7 @@ character format (e.g. "black") or an a hex code.}
 which is the same dimensions as \code{chart.matrix}. If no format is specified
 the default is for categorical x-axis "\%{x}: \%{y}" or for a numerical x-axis "(\%{x}, \%{y})".}
 
-\item{hovertext.align}{Horizontal alignment of hover text. 
+\item{hovertext.align}{Horizontal alignment of hover text.
 Only observable when hover contain multiple lines.}
 
 \item{marker.border.width}{Width in pixels of border/line

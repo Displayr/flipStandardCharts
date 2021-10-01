@@ -87,7 +87,6 @@
 #' @importFrom flipTables AsTidyTabularData RemoveRowsAndOrColumns ConvertQTableToArray
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats qnorm
-#' @importFrom verbs Sum
 #' @export
 StackedColumnWithStatisticalSignificance <- function(x,
                     num.categories.below.axis = 0,
@@ -292,7 +291,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
         if (!is.null(col.totals.annot.data))
             col.totals.annot.data <- aperm(col.totals.annot.data, c(2,1,3))
     }
-    if (!is.null(col.totals.annot.data) && Sum(nchar(rownames(x)), remove.missing = FALSE) > 0)
+    if (!is.null(col.totals.annot.data) && sum(nchar(rownames(x))) > 0)
         col.totals.annot.data <- col.totals.annot.data[rownames(x),,,drop = FALSE]
 
     if (bar.gap < 0.0 || bar.gap >= 1.0)
@@ -492,7 +491,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance,
                   x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show,
                   x.zero, x.zero.line.width, x.zero.line.color,
-                  x.hovertext.format, axisFormat$labels, 
+                  x.hovertext.format, axisFormat$labels,
                   num.series = NCOL(chart.matrix), tickcolor = x.tick.mark.color,
                   with.bars = TRUE, zoom.enable = zoom.enable)
 
@@ -942,4 +941,3 @@ rmFontSize <- function(x)
 {
     return(gsub("font-size.*?;", "", x))
 }
-
