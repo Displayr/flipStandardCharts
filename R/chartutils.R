@@ -880,7 +880,7 @@ setMarginsForText <- function(margins, title, subtitle, footer,
     }
     if (nchar(footer) > 0 && footer != " ")
     {
-        footer.nline <- sum(gregexpr("<br>", footer)[[1]] > -1) + 4
+        footer.nline <- sum(gregexpr("<br>", footer)[[1]] > -1, na.rm = TRUE) + 4
         margins$b <- margins$b + (footer.font.size * footer.nline * 1.25)
     }
     margins
