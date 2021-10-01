@@ -437,16 +437,14 @@ Bar <- function(x,
                         line = list(color=tmp.CI.color, width=0, shape='spline'))
             }
         }
+        
 
-        # Plotly text marker positions are not spaced properly when placed to
-        # the left of the bar (i.e. negative values or reversed axis).
-        # Adjusted by controlling the size of the marker
+        # Initialise attribute for PPT exporting - SeriesLabels cannot be NULL
+        chart.labels$SeriesLabels[[i]] <- list(
+            Font = setFontForPPT(tmp.data.label.font), ShowValue = any(data.label.show[,i]))
+
         if (any(data.label.show[,i]))
         {
-            # Add attribute for PPT exporting
-            chart.labels$SeriesLabels[[i]] <- list(
-                Font = setFontForPPT(tmp.data.label.font), ShowValue = TRUE)
-
             # Initialise custom points if annotations are used
             pt.segs <- NULL
             ind.show <- which(data.label.show[,i])

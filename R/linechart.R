@@ -238,8 +238,11 @@ Line <-   function(x,
         for (i in 1:ncol(chart.matrix))
         {
             ind <- which(is.finite(chart.matrix[,i])) # ignore NAs
-            ends.show[min(ind),i] <- TRUE
-            ends.show[max(ind),i] <- TRUE
+            if (length(ind) > 0)
+            {
+                ends.show[min(ind),i] <- TRUE
+                ends.show[max(ind),i] <- TRUE
+            }
         }
     }
     data.label.show <- if (data.label.show.at.ends) ends.show
@@ -446,18 +449,18 @@ Line <-   function(x,
     chart.labels <- list(SeriesLabels = list())
     for (i in 1:n) # does not include average.series
     {
-        if (any(data.label.show[,i]))
+        ind.show <- which(data.label.show[,i] & is.finite(chart.matrix[,i]))
+        y <- as.numeric(chart.matrix[ind.show, i])
+        x <- x.labels[ind.show]
+        source.text <- formatByD3(chart.matrix[,i], data.label.format, 
+            dlab.prefix[,i], dlab.suffix[,i], decimals = 0)
+
+        # Add attribute for PPT exporting
+        chart.labels$SeriesLabels[[i]] <- list(Position = "Top",
+            Font = setFontForPPT(data.label.font[[i]]), ShowValue = length(ind.show) > 0)
+
+        if (length(ind.show > 0))
         {
-            ind.show <- which(data.label.show[,i] & is.finite(chart.matrix[,i]))
-            y <- as.numeric(chart.matrix[ind.show, i])
-            x <- x.labels[ind.show]
-            source.text <- formatByD3(chart.matrix[,i], data.label.format, 
-                dlab.prefix[,i], dlab.suffix[,i], decimals = 0)
-
-            # Add attribute for PPT exporting
-            chart.labels$SeriesLabels[[i]] <- list(Position = "Top",
-                Font = setFontForPPT(data.label.font[[i]]), ShowValue = TRUE)
-
             # Initialise custom points if annotations are used
             pt.segs <- NULL
             if (!is.null(annotation.list) || length(ind.show) < nrow(chart.matrix) ||
