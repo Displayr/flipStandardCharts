@@ -66,6 +66,7 @@ ScatterplotMatrix(
   margin.autoexpand = TRUE,
   modebar.show = FALSE,
   tooltip.show = TRUE,
+  axis.drag.enable = FALSE,
   zoom.enable = FALSE
 )
 }
@@ -207,6 +208,13 @@ to allow space for axis labels or other chart elements.}
 \item{modebar.show}{Logical; whether to show the zoom menu buttons or not.}
 
 \item{tooltip.show}{Logical; whether to show a tooltip on hover.}
+
+\item{axis.drag.enable}{Logical; whether to enable the user to drag along axes.
+This interaction is available when the cursor shows up as a double-headed arrow
+when hovering over an axis. It is turned off by default because it can sometimes
+cause problems with data labels and annotations. Also, is only used when
+\code{zoom.enable = TRUE}. Note that in similar functionality is already available
+using zoom.}
 
 \item{zoom.enable}{Logical; whether to enable zoom on the chart.}
 }

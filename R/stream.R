@@ -27,6 +27,7 @@
 #' @importFrom flipTime AsDateTime
 #' @importFrom verbs SumColumns
 #' @importFrom janitor round_half_up
+#' @importFrom stats median
 #' @export
 Stream <- function(x,
                    colors = c("#5C9AD3", "#ED7D31", "#A5A5A5", "#FFC000",

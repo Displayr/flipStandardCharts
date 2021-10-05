@@ -140,6 +140,7 @@ Area(
   tooltip.show = TRUE,
   modebar.show = FALSE,
   zoom.enable = TRUE,
+  axis.drag.enable = FALSE,
   data.label.show = FALSE,
   data.label.font.autocolor = FALSE,
   data.label.font.family = global.font.family,
@@ -488,6 +489,13 @@ markers as an alpha value (0 to 1).}
 \item{zoom.enable}{Logical; whether to enable zoom on the chart.
 For Bar and Column charts with data labels it may be useful to turn off zoom
 because data labels and annotations can be misplace on zoom.}
+
+\item{axis.drag.enable}{Logical; whether to enable the user to drag along axes.
+This interaction is available when the cursor shows up as a double-headed arrow
+when hovering over an axis. It is turned off by default because it can sometimes
+cause problems with data labels and annotations. Also, is only used when
+\code{zoom.enable = TRUE}. Note that in similar functionality is already available
+using zoom.}
 
 \item{data.label.show}{Logical; whether to show data labels.}
 

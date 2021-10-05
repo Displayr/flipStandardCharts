@@ -79,6 +79,13 @@
 #' @param tooltip.show Logical; whether to show a tooltip on hover.
 #' @param modebar.show Logical; whether to show the zoom menu buttons or not.
 #' @param zoom.enable Logical; whether to enable zoom on the chart.
+#' @param axis.drag.enable Logical; whether to enable the user to drag along axes.
+#'  This interaction is available when the cursor shows up as a double-headed arrow
+#'  when hovering over an axis. It is turned off by default because it can sometimes
+#'  cause problems with data labels and annotations. Also, is only used when
+#'  \code{zoom.enable = TRUE}. Note that in similar functionality is already available
+#'  using zoom.
+
 #' @importFrom plotly plot_ly add_trace layout subplot toRGB config
 #' @importFrom stats lm loess rnorm
 #' @importFrom hash hash has.key values
