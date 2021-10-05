@@ -496,8 +496,6 @@ StackedColumnWithStatisticalSignificance <- function(x,
                   num.series = NCOL(chart.matrix), tickcolor = x.tick.mark.color,
                   with.bars = TRUE, zoom.enable = zoom.enable)
 
-    yaxis2 <- NULL
-
 
     x.labels <- axisFormat$labels
     y.labels <- colnames(chart.matrix)
@@ -508,7 +506,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
     # Even when data.label.show is false, data.annotations
     # is used to position arrow annotations etc
     xaxis2 <- list(overlaying = "x", visible = FALSE, range = x.range,
-        fixedrange = TRUE)
+        fixedrange = !zoom.enable)
     data.annotations <- dataLabelPositions(chart.matrix = chart.matrix,
                         axis.type = xaxis$type,
                         annotations = NULL,
@@ -825,7 +823,6 @@ StackedColumnWithStatisticalSignificance <- function(x,
     p <- layout(p,
         showlegend = legend.show,
         legend = legend,
-        yaxis2 = yaxis2,
         yaxis = yaxis,
         xaxis2 = xaxis2,
         xaxis = xaxis,
