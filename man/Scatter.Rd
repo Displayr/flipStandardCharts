@@ -21,6 +21,7 @@ Scatter(
   scatter.colors.as.categorical = TRUE,
   scatter.labels.as.hovertext = TRUE,
   scatter.max.labels = 50,
+  scatter.max.groups = 50,
   annotation.list = NULL,
   colors = ChartColors(12),
   trend.lines = FALSE,
@@ -153,6 +154,7 @@ Scatter(
   hovertext.font.family = global.font.family,
   hovertext.font.size = 11,
   hovertext.align = "left",
+  hovertext.template = NULL,
   line.thickness = 0,
   line.colors = colors,
   marker.border.width = 1,
@@ -203,6 +205,10 @@ Scatter(
 \item{scatter.labels.as.hovertext}{Logical; if TRUE, labels are shown has hovers; otherwise, as a labeled scatterplot.}
 
 \item{scatter.max.labels}{Integer; the maximum number of labels to show on a Labeled Scatterplot.}
+
+\item{scatter.max.groups}{Maximum number of different color categories in data. The is
+equivalent to the number of enteries in the legend. Increasing this too high may cause
+performance issues.}
 
 \item{annotation.list}{Optional list of annotations to modify the data labels.}
 
@@ -537,6 +543,10 @@ character format (e.g. "black") or an a hex code.}
 
 \item{hovertext.align}{Horizontal alignment of hover text. 
 Only observable when hover contain multiple lines.}
+
+\item{hovertext.template}{Specify format of the hovertext. This can be a string or matrix
+which is the same dimensions as \code{chart.matrix}. If no format is specified
+the default is for categorical x-axis "\%{x}: \%{y}" or for a numerical x-axis "(\%{x}, \%{y})".}
 
 \item{line.thickness}{Thickness, in pixels, of the series line}
 

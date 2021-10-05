@@ -17,6 +17,9 @@
 #' @param data.label.position Character; where to place the source data value in relation
 #' to the marker icon. Can be "top left", "top center", "top right", "middle left", "middle center",
 #' "middle right", "bottom left", "bottom center", "bottom right".
+#' @param scatter.max.groups Maximum number of different color categories in data. The is
+#'  equivalent to the number of enteries in the legend. Increasing this too high may cause
+#'  performance issues.
 #' @param marker.border.width Width in pixels of border/line around markers; 0 is no line.
 #' @param marker.border.colors Character; a vector containing one or more colors specified as hex codes.
 #' @param marker.border.opacity Opacity of border/line around markers as an alpha value (0 to 1).
@@ -53,6 +56,7 @@ Scatter <- function(x = NULL,
                          scatter.colors.as.categorical = TRUE,
                          scatter.labels.as.hovertext = TRUE,
                          scatter.max.labels = 50,
+                         scatter.max.groups = 50,
                          annotation.list = NULL,
                          colors = ChartColors(12),
                          trend.lines = FALSE,
@@ -185,6 +189,7 @@ Scatter <- function(x = NULL,
                          hovertext.font.family = global.font.family,
                          hovertext.font.size = 11,
                          hovertext.align = "left",
+                         hovertext.template = NULL,
                          line.thickness = 0,
                          line.colors = colors,
                          marker.border.width = 1,
@@ -418,10 +423,10 @@ Scatter <- function(x = NULL,
     scatter.colors.as.numeric <- 0
     colorbar <- NULL
 
-    if (scatter.colors.as.categorical && length(unique(scatter.colors)) > 50)
+    if (scatter.colors.as.categorical && length(unique(scatter.colors)) > scatter.max.groups)
     {
         warning("The colors variable has been treated as a numeric scale because there ",
-            "are more than 50 categories and would be slow to render")
+            "are more than ", scatter.max.groups, " categories and would be slow to render")
         scatter.colors.as.categorical <- FALSE
     }
 
@@ -737,6 +742,15 @@ Scatter <- function(x = NULL,
                    line = list(width = 0)), legendgroup = if (num.series > 1) ggi else 1,
                    text = annot.text, textposition = "middle right", symbols = marker.symbols)
 
+        # Customise hovertext format if hovertext.template is set; otherwise use default source.text
+        hover.tmp <- NULL
+        if (!is.null(hovertext.template))
+        {
+            hovertext.template <- vectorize(hovertext.template, length(x))
+            hover.tmp <- evalHoverTemplate(hovertext.template[ind], x[ind], 
+                x.hovertext.format, x.tick.prefix, x.tick.suffix, y[ind],
+                y.hovertext.format, y.tick.prefix, y.tick.suffix)
+        }
 
         # Main trace
         p <- add_trace(p, x = x[ind], y = y[ind],
@@ -747,6 +761,7 @@ Scatter <- function(x = NULL,
                 textfont = if (data.label.show) data.label.font[[ggi]] else NULL,
                 marker = marker.obj, line = line.obj, text = source.text[ind],
                 hoverinfo = if (num.series == 1) "text" else "name+text",
+                hovertemplate = hover.tmp,
                 hoverlabel = list(font = list(color = autoFontColor(colors[ggi]),
                 size = hovertext.font.size, family = hovertext.font.family)),
                 type = "scatter", mode = series.mode, symbols = marker.symbols)
