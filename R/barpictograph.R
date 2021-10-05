@@ -37,8 +37,6 @@
 #' @export
 #' @examples
 #' BarPictograph(1:5, image = "Sick person")
-#' BarPictograph(1:5,
-#'     custom.image = "https://upload.wikimedia.org/wikipedia/commons/a/a8/Nuvola_apps_kmoon.png")
 BarPictograph <- function(x,
                        image = "Stickman",
                        custom.image = NULL,
