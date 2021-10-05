@@ -112,6 +112,7 @@ Pyramid <- function(x,
                     x.hovertext.format = data.label.format,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
+                    axis.drag.enable = FALSE,
                     bar.gap = 0.15)
 {
     ErrorIfNotEnoughData(x)

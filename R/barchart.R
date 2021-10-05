@@ -145,6 +145,7 @@ Bar <- function(x,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
                     zoom.enable = TRUE,
+                    axis.drag.enable = FALSE,
                     bar.gap = 0.15,
                     bar.group.gap = 0.0,
                     data.label.show = FALSE,
@@ -531,7 +532,7 @@ Bar <- function(x,
     if (sum(serieslabels.num.changes) == 0)
         chart.labels <- NULL
 
-    p <- config(p, displayModeBar = modebar.show)
+    p <- config(p, displayModeBar = modebar.show, showAxisDragHandles = axis.drag.enable)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
         showlegend = legend.show,

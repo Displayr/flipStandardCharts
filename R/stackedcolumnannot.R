@@ -232,6 +232,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
                     zoom.enable = TRUE,
+                    axis.drag.enable = FALSE,
                     bar.gap = 0.5,
                     data.label.show = FALSE,
                     data.label.centered = TRUE,
@@ -818,7 +819,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
             xref = "paper", x0 = 0, x1 = 1,
             line = list(color = y.zero.line.color, width = y.zero.line.width))
 
-    p <- config(p, displayModeBar = modebar.show)
+    p <- config(p, displayModeBar = modebar.show, showAxisDragHandles = axis.drag.enable)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
         showlegend = legend.show,

@@ -163,6 +163,7 @@ Line <-   function(x,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
                     zoom.enable = TRUE,
+                    axis.drag.enable = FALSE,
                     data.label.show = FALSE,
                     data.label.show.at.ends = FALSE,
                     data.label.position = "Top",
@@ -520,7 +521,7 @@ Line <-   function(x,
                            setFooter(footer, footer.font, margins, footer.align))
     annot <- Filter(Negate(is.null), annot)
 
-    p <- config(p, displayModeBar = modebar.show)
+    p <- config(p, displayModeBar = modebar.show, showAxisDragHandles = axis.drag.enable)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
         showlegend = legend.show,

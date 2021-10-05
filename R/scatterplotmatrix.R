@@ -143,6 +143,7 @@ ScatterplotMatrix <- function(x, weights = 1:NROW(x), seed = 123,
                               margin.autoexpand = TRUE,
                               modebar.show = FALSE,
                               tooltip.show = TRUE,
+                              axis.drag.enable = FALSE,
                               zoom.enable = FALSE)
 
 {
@@ -237,7 +238,7 @@ ScatterplotMatrix <- function(x, weights = 1:NROW(x), seed = 123,
     if (nzchar(footer))
         annotations[[length(annotations)+1]] <- setFooter(footer, footer.font, margins) 
 
-    res <- config(res, displayModeBar = modebar.show)
+    res <- config(res, displayModeBar = modebar.show, showAxisDragHandles = axis.drag.enable)
     res$sizingPolicy$browser$padding <- 0
     res <- layout(res, showlegend = FALSE, margin = margins, annotations = annotations,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
