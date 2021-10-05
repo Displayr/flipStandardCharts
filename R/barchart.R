@@ -287,7 +287,7 @@ Bar <- function(x,
     tmp.label <- sprintf(paste0("%s%.", data.label.decimals, "f%s"),
                 data.label.prefix, max(chart.matrix), data.label.suffix)
     xtick <- setTicks(x.range$min, x.range$max, x.tick.distance, x.data.reversed, type = type,
-                  data = if (any(data.label.show) && !is.stacked && !pyramid) chart.matrix else NULL, 
+                  #data = if (any(data.label.show) && !is.stacked && !pyramid) chart.matrix else NULL, 
                   labels = tmp.label, label.font.size = data.label.font.size)
     ytick <- setTicks(y.range$min, y.range$max, y.tick.distance, !y.data.reversed, is.bar = TRUE)
 
