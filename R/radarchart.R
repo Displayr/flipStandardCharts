@@ -66,6 +66,8 @@ Radar <- function(x,
                     line.thickness = 3,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
+                    zoom.enable = TRUE,
+                    axis.drag.enable = FALSE,
                     global.font.family = "Arial",
                     global.font.color = rgb(44, 44, 44, maxColorValue = 255),
                     grid.show = TRUE,
@@ -257,9 +259,9 @@ Radar <- function(x,
                                  subtitle.font.size, footer.font.size)
     xaxis = list(title = "", showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE,
                categoryorder = "array", categoryarray = g.list,
-               constrain = "domain", scaleanchor = "y", scaleratio = 1)
+               constrain = "domain", scaleanchor = "y", scaleratio = 1, fixedrange = !zoom.enable)
     yaxis = list(title = "", showgrid = FALSE, zeroline = FALSE, showticklabels = FALSE,
-               constrain = "domain", scaleanchor = "x", scaleratio = 1)
+               constrain = "domain", scaleanchor = "x", scaleratio = 1, fixedrange = !zoom.enable)
 
     legend.text <- autoFormatLongLabels(colnames(chart.matrix), legend.wrap, legend.wrap.nchar)
     margins <- setMarginsForLegend(margins, legend.show, legend, legend.text, type = "radar")
@@ -534,7 +536,7 @@ Radar <- function(x,
                 axisTitleText = FALSE, titleText = FALSE, legendText = FALSE))
 
 
-    p <- config(p, displayModeBar = modebar.show)
+    p <- config(p, displayModeBar = modebar.show, showAxisDragHandles = axis.drag.enable)
     p$sizingPolicy$browser$padding <- 0
     attr(p, "can-run-in-root-dom") <- TRUE
     result <- list(htmlwidget = p)
