@@ -196,6 +196,7 @@ ColumnMultiColor <- function(x,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
                     zoom.enable = TRUE,
+                    axis.drag.enable = FALSE,
                     bar.gap = 0.15)
 {
     eval(colors)

@@ -79,6 +79,13 @@
 #' @param tooltip.show Logical; whether to show a tooltip on hover.
 #' @param modebar.show Logical; whether to show the zoom menu buttons or not.
 #' @param zoom.enable Logical; whether to enable zoom on the chart.
+#' @param axis.drag.enable Logical; whether to enable the user to drag along axes.
+#'  This interaction is available when the cursor shows up as a double-headed arrow
+#'  when hovering over an axis. It is turned off by default because it can sometimes
+#'  cause problems with data labels and annotations. Also, is only used when
+#'  \code{zoom.enable = TRUE}. Note that in similar functionality is already available
+#'  using zoom.
+
 #' @importFrom plotly plot_ly add_trace layout subplot toRGB config
 #' @importFrom stats lm loess rnorm
 #' @importFrom hash hash has.key values
@@ -143,6 +150,7 @@ ScatterplotMatrix <- function(x, weights = 1:NROW(x), seed = 123,
                               margin.autoexpand = TRUE,
                               modebar.show = FALSE,
                               tooltip.show = TRUE,
+                              axis.drag.enable = FALSE,
                               zoom.enable = FALSE)
 
 {
@@ -237,7 +245,7 @@ ScatterplotMatrix <- function(x, weights = 1:NROW(x), seed = 123,
     if (nzchar(footer))
         annotations[[length(annotations)+1]] <- setFooter(footer, footer.font, margins) 
 
-    res <- config(res, displayModeBar = modebar.show)
+    res <- config(res, displayModeBar = modebar.show, showAxisDragHandles = axis.drag.enable)
     res$sizingPolicy$browser$padding <- 0
     res <- layout(res, showlegend = FALSE, margin = margins, annotations = annotations,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),

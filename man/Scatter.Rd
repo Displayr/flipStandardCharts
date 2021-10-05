@@ -44,6 +44,7 @@ Scatter(
   tooltip.show = TRUE,
   modebar.show = FALSE,
   zoom.enable = TRUE,
+  axis.drag.enable = FALSE,
   global.font.family = "Arial",
   global.font.color = rgb(44, 44, 44, maxColorValue = 255),
   title = "",
@@ -257,6 +258,13 @@ line of the legend when \code{legend.wrap} \code{TRUE}.}
 \item{zoom.enable}{Logical; whether to enable zoom on the chart.
 For Bar and Column charts with data labels it may be useful to turn off zoom
 because data labels and annotations can be misplace on zoom.}
+
+\item{axis.drag.enable}{Logical; whether to enable the user to drag along axes.
+This interaction is available when the cursor shows up as a double-headed arrow
+when hovering over an axis. It is turned off by default because it can sometimes
+cause problems with data labels and annotations. Also, is only used when
+\code{zoom.enable = TRUE}. Note that in similar functionality is already available
+using zoom.}
 
 \item{global.font.family}{Character; font family for all occurrences of any
 font attribute for the chart unless specified individually.}

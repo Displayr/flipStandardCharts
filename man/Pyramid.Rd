@@ -111,6 +111,7 @@ Pyramid(
   x.hovertext.format = data.label.format,
   tooltip.show = TRUE,
   modebar.show = FALSE,
+  axis.drag.enable = FALSE,
   bar.gap = 0.15
 )
 }
@@ -384,6 +385,13 @@ See https://github.com/mbostock/d3/wiki/Formatting#numbers}
 \item{tooltip.show}{Logical; whether to show a tooltip on hover.}
 
 \item{modebar.show}{Logical; whether to show the zoom menu buttons or not.}
+
+\item{axis.drag.enable}{Logical; whether to enable the user to drag along axes.
+This interaction is available when the cursor shows up as a double-headed arrow
+when hovering over an axis. It is turned off by default because it can sometimes
+cause problems with data labels and annotations. Also, is only used when
+\code{zoom.enable = TRUE}. Note that in similar functionality is already available
+using zoom.}
 
 \item{bar.gap}{Gap between adjacent bars with different coordinates in
 bar or column charts (in plot fraction).}

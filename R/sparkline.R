@@ -286,7 +286,7 @@ Sparkline <- function(x,
     }
 
 
-    p <- config(p, displayModeBar = FALSE)
+    p <- config(p, displayModeBar = FALSE, showAxisDragHandles = FALSE)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
         xaxis = xaxis, yaxis = yaxis,

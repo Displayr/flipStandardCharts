@@ -76,6 +76,7 @@ Scatter <- function(x = NULL,
                          tooltip.show = TRUE,
                          modebar.show = FALSE,
                          zoom.enable = TRUE,
+                         axis.drag.enable = FALSE,
                          global.font.family = "Arial",
                          global.font.color = rgb(44, 44, 44, maxColorValue = 255),
                          title = "",
@@ -827,7 +828,7 @@ Scatter <- function(x = NULL,
                   if (is.null(small.mult.index)) setFooter(footer, footer.font, margins, footer.align) else NULL)
     annot <- Filter(Negate(is.null), annot)
 
-    p <- config(p, displayModeBar = modebar.show)
+    p <- config(p, displayModeBar = modebar.show, showAxisDragHandles = axis.drag.enable)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
         margin = margins,

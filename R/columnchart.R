@@ -243,6 +243,12 @@
 #' @param zoom.enable Logical; whether to enable zoom on the chart.
 #'  For Bar and Column charts with data labels it may be useful to turn off zoom
 #'  because data labels and annotations can be misplace on zoom.
+#' @param axis.drag.enable Logical; whether to enable the user to drag along axes.
+#'  This interaction is available when the cursor shows up as a double-headed arrow
+#'  when hovering over an axis. It is turned off by default because it can sometimes
+#'  cause problems with data labels and annotations. Also, is only used when
+#'  \code{zoom.enable = TRUE}. Note that in similar functionality is already available
+#'  using zoom.
 #' @param global.font.family Character; font family for all occurrences of any
 #' font attribute for the chart unless specified individually.
 #' @param global.font.color Global font color as a named color in character format
@@ -500,6 +506,7 @@ Column <- function(x,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
                     zoom.enable = TRUE,
+                    axis.drag.enable = FALSE,
                     bar.gap = 0.15,
                     bar.group.gap = 0.0,
                     data.label.show = FALSE,
@@ -725,8 +732,8 @@ Column <- function(x,
         x.range <- getRange(x.labels, xaxis, axisFormat)
 
     # Set up second x-axis for data labels
-    xaxis2 <- list(overlaying = "x", range = x.range,
-        visible = FALSE, matches = "x", rangemode = "match")
+    xaxis2 <- list(overlaying = "x", range = x.range, anchor = "x",
+        visible = FALSE, matches = "x", rangemode = "match", fixedrange = !zoom.enable)
     data.annotations <- dataLabelPositions(chart.matrix = chart.matrix,
                         axis.type = xaxis$type,
                         annotations = NULL,
@@ -772,7 +779,7 @@ Column <- function(x,
                           y2.tick.format, y2.tick.prefix, y2.tick.suffix,
                           y2.tick.show, y2.zero, y2.zero.line.width, y2.zero.line.color,
                           y2.hovertext.format, num.maxticks = y2.tick.maxnum, 
-                          tickcolor = y2.tick.mark.color)
+                          tickcolor = y2.tick.mark.color, zoom.enable = zoom.enable)
         yaxis2$overlaying <- "y"
 
         n2 <- ncol(x2)
@@ -1120,7 +1127,7 @@ Column <- function(x,
     if (sum(serieslabels.num.changes) == 0)
         chart.labels <- NULL
 
-    p <- config(p, displayModeBar = modebar.show)
+    p <- config(p, displayModeBar = modebar.show, showAxisDragHandles = axis.drag.enable)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
         showlegend = legend.show,
