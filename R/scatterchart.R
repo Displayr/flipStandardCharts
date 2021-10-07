@@ -684,7 +684,7 @@ Scatter <- function(x = NULL,
         # Add attribute for PPT exporting
         # Note that even without data labels, overlay annotations can still be present
         chart.labels$SeriesLabels[[ggi]] <- list(Font = setFontForPPT(data.label.font[[ggi]]), ShowValue = FALSE)
-        pt.segs <- lapply(1:length(ind),
+        pt.segs <- lapply(ind,
             function(ii)
             {
                 pt <- list(Index = ii-1)
@@ -726,7 +726,7 @@ Scatter <- function(x = NULL,
         }
 
         # Clean up PPT chart labels
-        pt.segs <- tidyPointSegments(pt.segs, length(ind))
+        pt.segs <- tidyPointSegments(pt.segs, length(ind), index.map = ind)
         if (isTRUE(attr(pt.segs, "SeriesShowValue")))
         {
             chart.labels$SeriesLabels[[ggi]]$ShowValue <- TRUE
