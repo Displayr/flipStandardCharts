@@ -1233,12 +1233,12 @@ Chart <-   function(y = NULL,
     {
         margin.top <- 20
         title.nline <- 0
-        if (nchar(title) > 0)
+        if (nzchar(title))
         {
             title.nline <- Sum(gregexpr("<br>", title)[[1]] > -1, remove.missing = FALSE) + 1
             margin.top <- margin.top + (title.font.size * title.nline * 1.25)
         }
-        if (nchar(subtitle) > 0)
+        if (nzchar(subtitle))
         {
             subtitle.nline <- Sum(gregexpr("<br>", subtitle)[[1]] > -1, remove.missing = FALSE) + 1.5
             margin.top <- margin.top + (subtitle.font.size * subtitle.nline * 1.25)
@@ -1250,12 +1250,12 @@ Chart <-   function(y = NULL,
     {
         margin.bottom <- if (type != "Radar") 50
                          else 20
-        if (nchar(x.title) > 0 && type != "Radar")
+        if (nzchar(x.title) && type != "Radar")
         {
             x.title.nline <- Sum(gregexpr("<br>", x.title)[[1]] > -1, remove.missing = FALSE) + 1
             margin.bottom <- margin.bottom + (x.title.font.size * x.title.nline * 1.25)
         }
-        if (nchar(footer) > 0)
+        if (nzchar(footer))
         {
             footer <- autoFormatLongLabels(footer, wordwrap=footer.wordwrap, n=footer.wordwrap.nchar, truncate=FALSE)
             footer.nline <- Sum(gregexpr("<br>", footer)[[1]] > -1, remove.missing = FALSE) + 2 + (type == "Radar")
@@ -1633,7 +1633,7 @@ Chart <-   function(y = NULL,
                               0.54)
         lab.len <- if (is.bar.chart) font.asp * y.tick.font.size * lab.nchar
                    else font.asp * x.tick.font.size * lab.nchar
-        lab.nline <- if (is.character(x.labels)) max(sapply(gregexpr("<br>", x.labels),
+        lab.nline <- if (is.character(x.labels) && any(nzchar(x.labels))) max(sapply(gregexpr("<br>", x.labels),
                          function(x){Sum(x > -1, remove.missing = FALSE)}))
                      else 0
 
@@ -1672,7 +1672,7 @@ Chart <-   function(y = NULL,
     # This should be done before radarchart is called
     footer.axis <- NULL
     subtitle.axis <- NULL
-    if (nchar(footer) > 0)
+    if (nzchar(footer))
     {
         footer.nline <- Sum(gregexpr("<br>", footer)[[1]] > -1, remove.missing = FALSE) + 1
         footer.npad <- max(0, ceiling(margin.bottom/footer.font.size/1.25) - footer.nline - 2)
@@ -1682,7 +1682,7 @@ Chart <-   function(y = NULL,
              tickfont=list(family=footer.font.family, size=footer.font.size, color=footer.font.color),
              range=c(0,1), tickvals=c(0.5), ticktext=c(footer), tickangle=0)
     }
-    if (nchar(subtitle) > 0)
+    if (nzchar(subtitle))
     {
         subtitle.axis <- list(overlaying="x", side="top", anchor="free", position=1,
              showline=F, zeroline=F, showgrid=F, showticklabels=F, title=subtitle,
