@@ -416,7 +416,7 @@ Scatter <- function(x = NULL,
     if (is.null(opacity))
         opacity <- if (fit.type == "None") 1 else 0.4
     if (is.null(marker.border.opacity))
-        marker.border.opacity <- opacity 
+        marker.border.opacity <- opacity
     if (data.label.font.autocolor)
         data.label.font.color <- colors
 
@@ -516,7 +516,7 @@ Scatter <- function(x = NULL,
 
 
     # hovertext
-    .isEmptyName <- function(x) { Sum(nchar(trimws(x))) == 0 }
+    .isEmptyName <- function(x) !any(nzchar(trimws(x)))
     source.text <- paste0(scatter.labels, " (", formatByD3(x, x.hovertext.format, x.tick.prefix, x.tick.suffix), ", ",
                           formatByD3(y, y.hovertext.format, y.tick.prefix, y.tick.suffix), ")")
     source.text <- trimws(source.text)

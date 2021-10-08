@@ -31,7 +31,7 @@
 #'  of labels on the column chart annotations
 
 
-#' @importFrom verbs Sum
+#' @importFrom verbs SumEmptyHandling
 #' @keywords internal
 addTraceForBarTypeDataLabelAnnotations <- function(p, type, name,
         data.label.xpos, data.label.ypos,
@@ -84,12 +84,12 @@ addTraceForBarTypeDataLabelAnnotations <- function(p, type, name,
     {
         a.tmp <- annotation.list[[j]]
         if (grepl("Circle", a.tmp$type))
-        {
+        { # shiftleft and shiftright elements could be NULL or NA and should have zero padding then.
             tmp.dat <- getAnnotData(annot.data, a.tmp$data, i)
             ind.sel <- extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype)
             tmp.text <- rep("", n)
-            left.pad <- paste(rep(" ", Sum(a.tmp$shiftright)), collapse = "")
-            right.pad <- paste(rep(" ", Sum(a.tmp$shiftleft)), collapse = "")
+            left.pad <- paste(rep(" ", SumEmptyHandling(a.tmp$shiftright)), collapse = "")
+            right.pad <- paste(rep(" ", SumEmptyHandling(a.tmp$shiftleft)), collapse = "")
             tmp.text[ind.sel] <- paste0(left.pad, switch(a.tmp$type,
                 "Circle - thick outline" = "<b>&#11096;</b>",
                 "Circle - thin outline" = "&#11096;",
@@ -169,7 +169,7 @@ getAnnotData <- function(data, name, series, as.numeric = TRUE)
         ind <- match(paste0("", name2), d.names)
         if (is.na(ind))
           stop("Annotation data does not contain a statistic named '", name, "'. ",
-                "Allowable names are: '", paste(d.names, collapse = "', '"), 
+                "Allowable names are: '", paste(d.names, collapse = "', '"),
                 "'. Check that DATA MANIPULATIONS > Automatically tidy the data ",
                 "is not selected.")
         else
@@ -223,7 +223,10 @@ addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat, prepend = 
 {
     # Fix font size so that the units do not change in size when the font size increases
     left.pad <- ""
-    if ((n.shift.right <- Sum(annotation$shiftright)) > 0)
+    n.shift.right <- annotation$shiftright
+    if (is.null(n.shift.right) || is.na(n.shift.right))
+        n.shift.right <- 0
+    if (n.shift.right > 0)
         left.pad <- paste0("<span style='font-size: 2px'>",
                     paste(rep(" ", n.shift.right), collapse = ""),
                     "</span>")
