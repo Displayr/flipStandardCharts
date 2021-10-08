@@ -604,7 +604,7 @@ createWeights <- function(x, weights)
     rep(list(weights), length(x))
     # group.sizes <- sapply(x, length)
     # if (is.null(weights))
-    #     weights <- rep(1, Sum(group.sizes))
+    #     weights <- rep(1, sum(group.sizes))
     # groups <- rep(1:length(x), group.sizes)
     # tapply(weights, groups, c)
 }
@@ -636,9 +636,9 @@ addSummaryStatistics <- function(p, values, weights, vertical, show.density, sho
         p <- add_trace(p, hoverinfo = "none",
               x = if (vertical) vpos else values, y = if (vertical) values else vpos,
               marker = list(color = values.color, symbol = if (vertical) "line-ew-open" else "line-ns-open"),
-              type = "scatter", mode = "markers", 
+              type = "scatter", mode = "markers",
               xaxis = category.axis, yaxis = value.axis, showlegend = FALSE)
-              
+
         # Invisible trace for hovertext only
         p <- add_trace(p, hoverinfo = "text",
               x = if (vertical) v1 else v2, y = if (vertical) v2 else v1,
