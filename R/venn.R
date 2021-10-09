@@ -195,11 +195,11 @@ function(){
 #' @param weights Vector of weights
 #' @param data.label.decimals number of decimal places.
 #' @importFrom janitor round_half_up
-#' @importFrom verbs Sum
+#' @importFrom verbs SumEmptyHandling
 convertDataFrameIntoJSON <- function(x, nms, weights, data.label.decimals)
 {
-    .sum <- function(cols)  {round_half_up(Sum(weights[apply(x[,cols + 1, drop = FALSE], 1, all)], remove.missing = FALSE), data.label.decimals)}
-    .nm <- function(col) {nms[col + 1]}
+    # The filtered data might have length zero, so use SumEmptyHandling to ensure result isn't NA
+    .sum <- function(cols)  round_half_up(SumEmptyHandling(weights[apply(x[, cols + 1, drop = FALSE], 1, all)], remove.missing = FALSE), data.label.decimals)
     nms <- as.character(nms)
     k <- ncol(x)
 
