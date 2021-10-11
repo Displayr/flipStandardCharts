@@ -1069,7 +1069,7 @@ Chart <-   function(y = NULL,
                  "or a data frame consisting entirely of numerics is required.")
     if (is.data.frame(chart.matrix))
     {
-        if (Sum(sapply(chart.matrix, is.numeric), remove.missing = FALSE) == ncol(chart.matrix))
+        if (all(vapply(chart.matrix, is.numeric, logical(1L))))
             chart.matrix <- as.matrix(chart.matrix)
         else
             stop(msg)
@@ -1634,7 +1634,7 @@ Chart <-   function(y = NULL,
         lab.len <- if (is.bar.chart) font.asp * y.tick.font.size * lab.nchar
                    else font.asp * x.tick.font.size * lab.nchar
         lab.nline <- if (is.character(x.labels) && any(nzchar(x.labels))) max(sapply(gregexpr("<br>", x.labels),
-                         function(x){Sum(x > -1, remove.missing = FALSE)}))
+                         function(x) Sum(x > -1, remove.missing = FALSE)))
                      else 0
 
         if (is.null(x.tick.angle))
@@ -2680,4 +2680,3 @@ Chart <-   function(y = NULL,
     class(result) <- "StandardChart"
     result
 }
-

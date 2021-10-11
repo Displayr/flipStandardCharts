@@ -834,7 +834,7 @@ setMarginsForAxis <- function(margins, labels, axis)
     font.asp <- fontAspectRatio(axis$tickfont$family)
     lab.len <- font.asp * axis$tickfont$size * lab.nchar * 1.25
     lab.nline <- if (is.character(labels) && any(nzchar(labels))) max(0, sapply(gregexpr("<br>", labels),
-                     function(x){Sum(x > -1, remove.missing = FALSE)}), na.rm = TRUE)
+                     function(x) Sum(x > -1, remove.missing = FALSE)), na.rm = TRUE)
                  else 0
 
     new.margin <- 0
@@ -869,19 +869,19 @@ setMarginsForText <- function(margins, title, subtitle, footer,
                         title.font.size, subtitle.font.size, footer.font.size)
 {
     title.nline <- 0
-    if (nzchar(title))
+    if (any(nzchar(title)))
     {
         title.nline <- Sum(gregexpr("<br>", title)[[1]] > -1, remove.missing = FALSE) + 1
         margins$t <- margins$t + (title.font.size * title.nline * 1.25)
     }
-    if (nzchar(subtitle))
+    if (any(nzchar(subtitle)))
     {
         # We leave twice the space for subtitles, because titles are always
         # positioned halfway down the top margin
         subtitle.nline <- Sum(gregexpr("<br>", subtitle)[[1]] > -1, remove.missing = FALSE) + 1.5
         margins$t <- margins$t + (subtitle.font.size * subtitle.nline) * 0.8 * 2
     }
-    if (nzchar(footer) && footer != " ")
+    if (any(nzchar(footer)) && footer != " ")
     {
         footer.nline <- Sum(gregexpr("<br>", footer)[[1]] > -1) + 4
         margins$b <- margins$b + (footer.font.size * footer.nline * 1.25)
@@ -897,7 +897,7 @@ setMarginsForLegend <- function(margins, showlegend, legend, text,
         # Needed to preserve subtitle alignment
         if (is.factor(text))
             text <- levels(text)
-        len <- max(c(0,nchar(unlist(strsplit(split = "<br>", text)))), na.rm = TRUE)
+        len <- max(c(0, nchar(unlist(strsplit(split = "<br>", text)))), na.rm = TRUE)
         margins$r <- min(300, 70 + (legend$font$size * max(0, len) * 0.7))
     } else if (type != "radar" && !right.axis)
         margins$r <- 20

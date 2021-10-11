@@ -747,7 +747,7 @@ Scatter <- function(x = NULL,
         if (!is.null(hovertext.template))
         {
             hovertext.template <- vectorize(hovertext.template, length(x))
-            hover.tmp <- evalHoverTemplate(hovertext.template[ind], x[ind], 
+            hover.tmp <- evalHoverTemplate(hovertext.template[ind], x[ind],
                 x.hovertext.format, x.tick.prefix, x.tick.suffix, y[ind],
                 y.hovertext.format, y.tick.prefix, y.tick.suffix)
         }
@@ -821,10 +821,16 @@ Scatter <- function(x = NULL,
                     line = list(color=fit.CI.colors[1], width=0, shape='spline'))
         }
     }
-
-    serieslabels.num.changes <- vapply(chart.labels$SeriesLabels, function(s) isTRUE(s$ShowValue) + length(s$CustomPoints), numeric(1L))
-    if (sum(serieslabels.num.changes) == 0)
+    if (is.null(chart.labels[["SeriesLabels"]]))
         chart.labels <- NULL
+    else
+    {
+        serieslabels.num.changes <- vapply(chart.labels$SeriesLabels,
+                                           function(s) isTRUE(s$ShowValue) + length(s$CustomPoints),
+                                           integer(1L))
+        if (all(serieslabels.num.changes == 0))
+           chart.labels <- NULL
+    }
 
     # Chart title is added in flipChart but axis names from the variable names
     # need to be assigned here

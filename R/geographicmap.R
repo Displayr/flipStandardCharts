@@ -250,9 +250,9 @@ GeographicMap <- function(x,
 
     coords.names <- tolower(coords[[structure]])
     incorrect.names <- !tolower(rownames(table)) %in% coords.names
-
-    if (Sum(incorrect.names, remove.missing = FALSE) > 0.75 * nrow(table))
-        warning(paste0(Sum(incorrect.names, remove.missing = FALSE), " rows of the input data were not matched with",
+    n.unmatched.names <- Sum(incorrect.names)
+    if (n.unmatched.names > 0.75 * nrow(table))
+        warning(paste0(n.unmatched.names, " rows of the input data were not matched with",
                        " geographic entity names. Please check that the data you are plotting is one of:",
                        " countries; states of a country; continents; US regions; or US, UK or Australian zip codes."))
     if (any(incorrect.names))
@@ -624,4 +624,3 @@ plotlyMap <- function(table, name.map, colors, opacity, min.value, max.range, co
         )
     p
 }
-
