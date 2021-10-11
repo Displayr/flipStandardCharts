@@ -220,10 +220,20 @@ SmallMultiples <- function(x,
         }
         else if (chart.type %in% c("Bar", "Pyramid", "BarMultiColor"))
         {
-            if (is.null(x.bounds.maximum))
-                x.bounds.maximum <- values.max
-            if (is.null(x.bounds.minimum))
-                x.bounds.minimum <- values.min
+            if (is.null(x.bounds.minimum) || is.null(x.bounds.maximum))
+            {
+                tmp.labels <- ""
+                # Guess how long data labels will be
+                if (any(data.label.show) && chart.type %in% c("Bar", "BarMultiColor"))
+                    tmp.labels <- sprintf(paste0("%s%.", 0, "f%s"),
+                        data.label.prefix, max(all.values), data.label.suffix)
+                tmp.range <- setTicks(x.bounds.minimum, x.bounds.maximum, NULL, data = all.values, 
+                        type = "Bar", labels = tmp.labels, label.font.size = 10)$range
+                if (is.null(x.bounds.minimum))
+                    x.bounds.minimum <- tmp.range[1]
+                if (is.null(x.bounds.maximum))
+                    x.bounds.maximum <- tmp.range[2]
+            }
         }
         else
         {
