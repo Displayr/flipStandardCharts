@@ -59,6 +59,8 @@ SmallMultiples(
   data.label.show = FALSE,
   data.label.prefix = "",
   data.label.suffix = "",
+  data.label.format = "",
+  data.label.font.size = 10,
   data.label.font.color = global.font.color,
   hovertext.template = NULL,
   line.thickness = NULL,
@@ -213,6 +215,11 @@ to turn off set to "FALSE".}
 \item{data.label.prefix}{Character; prefix for data values.}
 
 \item{data.label.suffix}{Character; suffix for data values.}
+
+\item{data.label.format}{A string representing a d3 formatting code.
+See https://github.com/mbostock/d3/wiki/Formatting#numbers}
+
+\item{data.label.font.size}{Integer; Font size for data label.px.}
 
 \item{data.label.font.color}{Font color as a named color
 in character format (e.g. "black") or an a hex code. This can be a single
