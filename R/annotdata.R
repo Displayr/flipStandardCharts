@@ -468,11 +468,16 @@ getPointSegmentsForPPT <- function(points, index, annot, dat)
 }
 
 # Tidy up empty segments and points where possible
-tidyPointSegments <- function(points, num.points, show.categoryname = FALSE)
+tidyPointSegments <- function(points, num.points, show.categoryname = FALSE, index.map = NULL)
 {
     if (length(points) == 0)
         return(points)
     pt.info <- integer(num.points)  # 0 = no label; 1 = value-only label; 2 = has modification
+
+    # Use index.map for scatterplots where CustomPoint$Index uses global position
+    .posFromIndex <- if (is.null(index.map)) function(x) return(x+1)
+                     else                    function(x) return(which.max(index.map == x+1))
+
     for (i in length(points):1)     # traverse backwards so smaller indexes still valid
     {
         # Simplify value-only segments to enable toggling in powerpoint
@@ -484,12 +489,12 @@ tidyPointSegments <- function(points, num.points, show.categoryname = FALSE)
                 points[[i]]$ShowCategoryName <- TRUE
 
             if (is.null(points[[i]]$OutlineColor) && is.null(points[[i]]$BackgroundColor))
-                pt.info[points[[i]]$Index + 1] <- 1L # value-only label
+                pt.info[.posFromIndex(points[[i]]$Index)] <- 1L # value-only label
             else
-                pt.info[points[[i]]$Index + 1] <- 2L
+                pt.info[.posFromIndex(points[[i]]$Index)] <- 2L
 
         } else if (length(points[[i]]$Segments) > 0)
-            pt.info[points[[i]]$Index + 1] <- 2L
+            pt.info[.posFromIndex(points[[i]]$Index)] <- 2L
 
         if (show.categoryname && length(points[[i]]$Segments) > 0)
             points[[i]]$Segments <- c(list(list(Field="CategoryName")), points[[i]]$Segments)
@@ -497,7 +502,7 @@ tidyPointSegments <- function(points, num.points, show.categoryname = FALSE)
         # Remove empty points - empty label cannnot have outline anyway
         if (length(points[[i]]$Segments) == 0 && !isTRUE(points[[i]]$ShowValue))
         {
-            pt.info[points[[i]]$Index + 1] <- 0L
+            pt.info[.posFromIndex(points[[i]]$Index)] <- 0L
             points[[i]] <- NULL
         }
     }
@@ -512,10 +517,13 @@ tidyPointSegments <- function(points, num.points, show.categoryname = FALSE)
         for (j in 1:length(pt.info))
         {
             if (pt.info[j] == 0L)
+            {
+                new.index <- if (is.null(index.map)) j-1 else index.map[j]-1
                 new.points <- c(new.points, list(
-                    if (show.categoryname) list(Index = j-1, ShowValue = FALSE, ShowCategoryName = FALSE)
-                    else                   list(Index = j-1, ShowValue = FALSE)
+                    if (show.categoryname) list(Index = new.index, ShowValue = FALSE, ShowCategoryName = FALSE)
+                    else                   list(Index = new.index, ShowValue = FALSE)
                 ))
+            }
             else if (pt.info[j] == 1L)
                 jj <- jj + 1 # no new point to add because this is represented by SeriesLabels
             else
