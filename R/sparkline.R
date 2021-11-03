@@ -210,7 +210,7 @@ Sparkline <- function(x,
             background.fill.opacity = background.fill.opacity, vertical = FALSE,
             margin.bottom = margin.bottom, margin.top = margin.top,
             margin.left = margin.left, margin.right = margin.right)
-        class(res) <- c(class(res), "Box")
+        class(res) <- c(class(res), "visualization-selector")
         return(res)
     }
 
