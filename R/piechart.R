@@ -30,7 +30,7 @@
 #'      groups=rep(LETTERS[1:3], 3), stringsAsFactors = FALSE)
 #' Pie(dat)
 #' Pie(dat, pie.subslice.colors=rainbow(9), pie.subslice.colors.repeat = FALSE)
-#' @importFrom flipChartBasics ChartColors StripAlphaChannel
+#' @importFrom flipChartBasics ChartColors
 #' @importFrom rhtmlDonut Donut
 #' @export
 Pie <- function(x,
@@ -134,8 +134,6 @@ Pie <- function(x,
         y.values[ind.missing] <- 0 # Needed for missing values in 2d tables
     }
 
-    color.warning <- "Alpha values for colors in Pie charts are ignored."
-    colors <- StripAlphaChannel(colors, color.warning)
     if (is.null(groups)) # 1-d data
     {
         pie.values.colors <- colors
@@ -150,8 +148,7 @@ Pie <- function(x,
     } else              # 2-d data
     {
         pie.groups.colors <- if (!is.null(colors)) colors else NULL
-        pie.values.colors <- if (!is.null(pie.subslice.colors)) StripAlphaChannel(pie.subslice.colors, color.warning)
-                             else NULL
+        pie.values.colors <- if (!is.null(pie.subslice.colors)) pie.subslice.colors else NULL
         x.labels[which(nchar(x.labels)==0)] <- " "
 
         # We allow the number of groups to be 1
@@ -213,40 +210,40 @@ Pie <- function(x,
                   labels = x.labels,
                   values.color = pie.values.colors,
                   values.order = pie.values.order,
-                  values.font.family = StripAlphaChannel(data.label.font.family, color.warning),
+                  values.font.family = data.label.font.family,
                   values.font.size = data.label.font.size,
                   values.decimal.places = data.label.decimals,
                   values.display.as = "original",
                   values.display.thres = pie.data.threshold,
                   labels.font.family = data.label.font.family,
-                  labels.font.color = StripAlphaChannel(data.label.font.color, color.warning),
+                  labels.font.color = data.label.font.color,
                   labels.font.size = data.label.font.size,
                   groups = groups,
                   groups.color = pie.groups.colors,
                   groups.order = pie.groups.order,
                   groups.font.family = pie.groups.font.family,
-                  groups.font.color = StripAlphaChannel(pie.groups.font.color, color.warning),
+                  groups.font.color = pie.groups.font.color,
                   groups.font.size = pie.groups.font.size,
                   title = title,
                   title.font.family = title.font.family,
                   title.font.size = title.font.size,
-                  title.font.color = StripAlphaChannel(title.font.color, color.warning),
+                  title.font.color = title.font.color,
                   subtitle = subtitle,
                   subtitle.font.family = subtitle.font.family,
                   subtitle.font.size = subtitle.font.size,
-                  subtitle.font.color = StripAlphaChannel(subtitle.font.color, color.warning),
+                  subtitle.font.color = subtitle.font.color,
                   footer = autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE),
                   footer.font.family = footer.font.family,
                   footer.font.size = footer.font.size,
-                  footer.font.color = StripAlphaChannel(footer.font.color, color.warning),
+                  footer.font.color = footer.font.color,
                   tooltips.font.family = hovertext.font.family,
                   tooltips.font.size = hovertext.font.size,
-                  tooltips.font.color = StripAlphaChannel(hovertext.font.color, color.warning),
+                  tooltips.font.color = hovertext.font.color,
                   tooltips.bg.color = hovertext.bg.color,
                   tooltips.bg.opacity = hovertext.bg.opacity,
                   prefix = data.label.prefix,
                   suffix = data.label.suffix,
-                  border.color = StripAlphaChannel(pie.border.color, color.warning),
+                  border.color = pie.border.color,
                   inner.radius = inner.radius))
 
     result <- list(htmlwidget = donut)

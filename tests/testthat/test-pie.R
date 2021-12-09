@@ -146,10 +146,3 @@ test_that("Warning messages for missing values",
     # Short warning if missing values are scattered
     expect_warning(Pie(datNA[,-9]), "Missing and non-positive values have been omitted.$")
 })
-
-test_that("Strip alpha values",
-{
-    expect_warning(Pie(dat3, global.font.color = "#0000FF80"),
-                   "Alpha values for colors in Pie charts are ignored")
-
-})
