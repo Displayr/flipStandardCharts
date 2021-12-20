@@ -1383,8 +1383,10 @@ percentFromD3 <- function(format)
 formatByD3 <- function(x, format, prefix = "", suffix = "", percent = FALSE, decimals = 2)
 {
     n <- length(x)
+    is.vectorized <- FALSE
     if (n > 1 && length(format) > 1)
     {
+        is.vectorized <- TRUE
         format <- vectorize(format, n)
         prefix <- vectorize(prefix, n)
         suffix <- vectorize(suffix, n)
@@ -1417,6 +1419,10 @@ formatByD3 <- function(x, format, prefix = "", suffix = "", percent = FALSE, dec
     if (inherits(x, "Date") || inherits(x, "POSIXct") || inherits(x, "POSIXt"))
         x.str <- format(x, format)
     x.str <- paste0(prefix, x.str, suffix)
+
+    x.missing <- !is.finite(x)
+    if (is.vectorized && any(x.missing))
+        x.str[x.missing] <- "!"
     return(x.str)
 }
 
