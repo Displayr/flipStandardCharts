@@ -50,7 +50,7 @@ setHoverTemplate <- function(i, axis, chart.matrix, template = NULL, is.bar = FA
     {
         template <- rep(template, length = nrow(chart.matrix))
         val.pattern <- if (is.bar) "%{x}" else "%{y}"
-        na.template <- gsub(val.pattern, "NA", template[ind.na], fixed = TRUE)
+        na.template <- gsub(val.pattern, "", template[ind.na], fixed = TRUE)
         template[ind.na] <- na.template
     }
     return(template)
@@ -1422,7 +1422,7 @@ formatByD3 <- function(x, format, prefix = "", suffix = "", percent = FALSE, dec
 
     x.missing <- !is.finite(x)
     if (is.vectorized && any(x.missing))
-        x.str[x.missing] <- "!"
+        x.str[x.missing] <- ""
     return(x.str)
 }
 

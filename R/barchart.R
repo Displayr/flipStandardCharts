@@ -505,9 +505,10 @@ Bar <- function(x,
         ind.na <- which(!is.finite(y))
         if (length(ind.na) > 0)
             hover.template[ind.na] <- ""
-        p <- add_trace(p, x = xpos, y = ypos, type = "scatter", name = legend.text[i],
+        if (length(ind.na) != NROW(chart.matrix))
+            p <- add_trace(p, x = xpos, y = ypos, type = "scatter", name = legend.text[i],
                    mode = "markers", marker = list(color = tmp.color, opacity = 0),
-                   hovertemplate = hover.template, hoverlabel = hover.label, 
+                   hovertemplate = hover.template, hoverlabel = hover.label,
                    showlegend = FALSE, yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y")
 
     }
