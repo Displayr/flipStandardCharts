@@ -186,7 +186,9 @@ character format (e.g. "black") or an a hex code.}
 \item{footer.wrap.nchar}{Number of characters (approximately) in each
 line of the footer when \code{footer.wrap} \code{TRUE}.}
 
-\item{scatter.max.labels}{Integer; the maximum number of labels to show on a Labeled Scatterplot.}
+\item{scatter.max.labels}{Integer; the maximum number of labels to show on a Labeled Scatterplot.
+If the number of labels is greater than this parameter, extra labels will be hidden by default but
+can be toggled on by clicking on the marker.}
 
 \item{data.label.font.family}{Character; font family for data label.}
 

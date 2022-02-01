@@ -21,6 +21,8 @@
 #' according to the series color.
 #' @param opacity of scatter point colors as an alpha value (0 to 1).
 #' @param scatter.max.labels Integer; the maximum number of labels to show on a Labeled Scatterplot.
+#' If the number of labels is greater than this parameter, extra labels will be hidden by default but
+#' can be toggled on by clicking on the marker.
 #' @param trend.lines Boolean indicating whether to plot trend lines for multiple tables.
 #' @param logos Optional list of images to be used to label scatterplot instead of the row names.
 #' This should be input as a comma-seperated list of URLs.
@@ -294,8 +296,8 @@ LabeledScatter <- function(x = NULL,
     if (all(!not.na))
         stop("No non-NA points to plot.")
     not.na <- which(not.na) # indexing makes re-ordering easier later
-    if (is.finite(scatter.max.labels) && scatter.max.labels < 0)
-            scatter.max.labels <- NA
+    if (!any(is.finite(scatter.max.labels)) || scatter.max.labels < 0)
+            scatter.max.labels <- NULL
 
     # Determine color for each observation
     if (!is.null(scatter.colors) && !scatter.colors.as.categorical)
@@ -358,13 +360,13 @@ LabeledScatter <- function(x = NULL,
     logo.size <- rep(logo.size, n)
 
     lab.tidy <- scatter.labels
-    if (!is.na(scatter.max.labels) && length(scatter.labels) > scatter.max.labels)
+    if (any(is.finite(scatter.max.labels)) && length(scatter.labels) > scatter.max.labels)
     {
         if (scatter.max.labels == 50)
             warning("By default, only the first 50 labels are shown to avoid long running times. Adjust 'Maximum data labels to plot' to show more labels. Alternatively, to show a large number of points, show as 'Hovertext' instead.")
         else
-            warning("Some labels have been hidden. Adjust 'Maximum data labels to plot' to show more labels.")
-        lab.tidy[(scatter.max.labels+1):(length(scatter.labels))] <- ""
+            warning("Some labels have been hidden. Adjust 'Maximum data labels to plot' to show more labels by default. ",
+                "Labels can also be toggled on and off by clicking on the markers.")
     }
     if (!is.null(logo.urls))
         lab.tidy <- logo.urls
@@ -417,6 +419,7 @@ LabeledScatter <- function(x = NULL,
                        origin = FALSE,
                        origin.align = FALSE,
                        labels.show = TRUE,
+                       labels.max.shown = scatter.max.labels,
                        label.placement.numSweeps = if (label.auto.placement) 500 else 0,
                        legend.show = legend.show,
                        legend.bubbles.show = !is.null(scatter.sizes) && isTRUE(legend.bubbles.show),
