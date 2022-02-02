@@ -118,3 +118,13 @@ mat <- structure(c(2031, 2032, 2121, 2037, 2, 3, 4, 5),
 test_that ("Warning using first column as rownames", {
     expect_warning(GeographicMap(mat), "The first column of the input data has been used as the geographic entitites.")
 })
+
+test_that("DS-3647: Can recognize new counties of Norway",
+{
+    tbl <- as.matrix(c(Oslo = 9, Rogaland = 10, "M\u00F8re og Romsdal" = 7.5,
+                       Nordland = 9, Viken = 9.5, Innlandet = 9,
+                       `Vestfold og Telemark` = 10,
+                       Agder = 7, Vestland = 11.5, "Tr\u00F8ndelag" = 8.5,
+                       `Troms og Finnmark` = 9))
+    expect_silent(GeographicMap(tbl, mapping.package = "leaflet"))
+})
