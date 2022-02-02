@@ -125,6 +125,6 @@ test_that("DS-3647: Can recognize new counties of Norway",
                        Nordland = 9, Viken = 9.5, Innlandet = 9,
                        `Vestfold og Telemark` = 10,
                        Agder = 7, Vestland = 11.5, "Tr\u00F8ndelag" = 8.5,
-                       `Troms og Finnmark` = 9, NET = 100))
+                       `Troms og Finnmark` = 9))
     expect_silent(GeographicMap(tbl, mapping.package = "leaflet"))
 })
