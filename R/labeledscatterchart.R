@@ -365,9 +365,19 @@ LabeledScatter <- function(x = NULL,
         if (scatter.max.labels == 50)
             warning("By default, only the first 50 labels are shown to avoid long running times. Adjust 'Maximum data labels to plot' to show more labels. Alternatively, to show a large number of points, show as 'Hovertext' instead.")
         else
-            warning("Some labels have been hidden. Adjust 'Maximum data labels to plot' to show more labels by default. ",
-                "Labels can also be toggled on and off by clicking on the markers.")
+            warning("Some labels have been hidden. Adjust 'Maximum data labels to plot' to show more labels.")
+        lab.tidy[(scatter.max.labels+1):(length(scatter.labels))] <- ""
     }
+
+    #if (any(is.finite(scatter.max.labels)) && length(scatter.labels) > scatter.max.labels)
+    #{
+    #    if (scatter.max.labels == 50)
+    #        warning("By default, only the first 50 labels are shown to avoid long running times. Adjust 'Maximum data labels to plot' to show more labels. Alternatively, to show a large number of points, show as 'Hovertext' instead.")
+    #    else
+    #        warning("Some labels have been hidden. Adjust 'Maximum data labels to plot' to show more labels by default. ",
+    #            "Labels can also be toggled on and off by clicking on the markers.")
+    #}
+
     if (!is.null(logo.urls))
         lab.tidy <- logo.urls
     .isEmptyName <- function(x) !any(nzchar(trimws(x)))
@@ -419,7 +429,7 @@ LabeledScatter <- function(x = NULL,
                        origin = FALSE,
                        origin.align = FALSE,
                        labels.show = TRUE,
-                       labels.max.shown = scatter.max.labels,
+                       #labels.max.shown = scatter.max.labels,
                        label.placement.numSweeps = if (label.auto.placement) 500 else 0,
                        legend.show = legend.show,
                        legend.bubbles.show = !is.null(scatter.sizes) && isTRUE(legend.bubbles.show),
