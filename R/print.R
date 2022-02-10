@@ -10,5 +10,7 @@ print.StandardChart <- function(x, ...)
 {
     if (is.null(x$htmlwidget))
         stop("StandardChart object does not contain htmlwidget")
+    if (inherits(x$htmlwidget, "streamgraph"))
+        return(suppressWarnings(print(x$htmlwidget)))
     return(print(x$htmlwidget))
 }
