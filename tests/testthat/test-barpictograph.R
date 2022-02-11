@@ -11,6 +11,8 @@ test_that("Warnings for invalid parameters",
         "'Maximum icons per row' should be a positive integer", fixed = TRUE)
     expect_warning(BarPictograph(1:6, icon.ncol = 2.5),
         "'Maximum icons per row' should be an integer", fixed = TRUE)
+    expect_warning(BarPictograph(c(1:5, NA, NaN, 8), data.label.position = "Next to bar"),
+        "Non-numeric values set to zero")
 })
 
 test_that("Custom image",
