@@ -103,7 +103,9 @@ BarPictograph <- function(x,
         stop("Input data containing ", n, " rows is too large to show (maximum 100 rows).")
 
     # Set default values
-    if (is.na(scale))
+    if (is.na(scale) && all(is.na(x)))
+        scale <- 1
+    else if (is.na(scale))
     {
         scale <- 10^(floor(log10(min(x[which(x != 0)]))))
         # ensure we don't get so many icons that we crash
@@ -111,7 +113,12 @@ BarPictograph <- function(x,
             scale <- scale * 10
     }
     if (is.na(total.icons))
-        total.icons <- ceiling(max(x, na.rm = TRUE)/scale)
+    {
+        if (all(is.na(x)))
+            total.icons <- 1
+        else
+            total.icons <- ceiling(max(x, na.rm = TRUE)/scale)
+    }
     raw.x <- x
     x <- x/scale
 
