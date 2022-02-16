@@ -38,7 +38,7 @@ addTraceForBarTypeDataLabelAnnotations <- function(p, type, name,
         data.label.show, data.label.text, data.label.sign, data.label.nchar,
         annotation.list, annot.data, i,
         xaxis, yaxis, data.label.font, is.stacked, data.label.centered,
-        data.label.horizontal.align = "center")
+        data.label.horizontal.align = "center", stackgroupname = "datalabel")
 {
     if (type == "Column")
     {
@@ -51,7 +51,7 @@ addTraceForBarTypeDataLabelAnnotations <- function(p, type, name,
         data.label.pos <- ifelse(data.label.sign < 0, 3, 0 + (is.stacked & !data.label.centered))
     } else
     {
-        textalign <- if (is.stacked) "middle center"
+        textalign <- if (is.stacked || data.label.centered) "middle center"
                      else            ifelse(data.label.sign >= 0, "middle right", "middle left")
         data.label.pos <- if (is.stacked) 0
                           else            ifelse(data.label.xpos < 0, 7, 3)
@@ -84,7 +84,8 @@ addTraceForBarTypeDataLabelAnnotations <- function(p, type, name,
     {
         a.tmp <- annotation.list[[j]]
         if (grepl("Circle", a.tmp$type))
-        { # shiftleft and shiftright elements could be NULL or NA and should have zero padding then.
+        { 
+            # shiftleft and shiftright elements could be NULL or NA and should have zero padding then.
             tmp.dat <- getAnnotData(annot.data, a.tmp$data, i)
             ind.sel <- extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype)
             tmp.text <- rep("", n)
@@ -105,14 +106,12 @@ addTraceForBarTypeDataLabelAnnotations <- function(p, type, name,
             if (type == "Column" && !is.stacked)
                 tmp.pos <- tmp.pos + (data.label.sign < 0) * 5
 
-            p <- add_trace(p, x = data.label.xpos, y = data.label.ypos, cliponaxis = FALSE,
-                  type = "scatter", mode = "markers+text",
-                  text = tmp.text, textfont = tmp.font,
+            p <- addAnnotScatterTrace(p, x = data.label.xpos, y = data.label.ypos,
+                  text = tmp.text, textfont = tmp.font, textposition = textalign,
                   marker = list(opacity = 0.0, color = "red", size = tmp.pos),
-                  xaxis = xaxis, yaxis = yaxis,
-                  textposition = textalign,
-                  showlegend = FALSE, hoverinfo = "skip",
-                  legendgroup = if (is.stacked) "all" else i)
+                  xaxis = xaxis, yaxis = yaxis, hoverinfo = "skip", 
+                  stackgroup = if (is.stacked) "circle" else "",
+                  orientation = if (type == "Bar") "h" else "v", legendgroup = i)
         }
     }
 
@@ -120,16 +119,91 @@ addTraceForBarTypeDataLabelAnnotations <- function(p, type, name,
     tmp.offset <- if (!is.stacked) max(0, (max.diam - data.label.font$size))
                   else             0.01
     data.label.pos <- data.label.pos + tmp.offset
-    p <- add_trace(p, name = name,
-              x = data.label.xpos[data.label.show], y = data.label.ypos[data.label.show],
-              cliponaxis = FALSE, type = "scatter", mode = "markers+text",
+    data.label.text[!data.label.show] <- ""
+
+    # Add data labels for positive or non-stacked values
+    p <- addAnnotScatterTrace(p, name = name,
+              x = data.label.xpos, y = data.label.ypos, text = data.label.text,
               marker = list(opacity = 0.0, size = data.label.pos),
-              xaxis = xaxis, yaxis = yaxis,
-              text = data.label.text[data.label.show], textfont = data.label.font,
-              textposition = textalign, showlegend = FALSE, hoverinfo = "skip",
-              legendgroup = if (is.stacked) "all" else i)
+              xaxis = xaxis, yaxis = yaxis, textfont = data.label.font,
+              textposition = textalign, hoverinfo = "skip",
+              stackgroup = if (is.stacked) stackgroupname else "",
+              orientation = if (type == "Bar") "h" else "v", legendgroup = i)
+
+    # Add other half of the trace to center the data labels
+    if (is.stacked && (data.label.centered || type == "Bar"))
+        p <- addAnnotScatterTrace(p, x = data.label.xpos, y = data.label.ypos, text = "",
+                yaxis = yaxis, xaxis = xaxis, stackgroup = stackgroupname,
+                hoverinfo = "skip", marker = list(opacity = 0.0), 
+                orientation = if (type == "Bar") "h" else "v", legendgroup = i)
+
     return(p)
 }
+
+addAnnotScatterTrace <- function(p, orientation, xpos, ypos, text, stackgroup, ...)
+{
+    # If no stacking is performed, then just create scatter trace as usual
+    tmp.fill <- "none"
+    if (any(nzchar(stackgroup)))
+    { 
+        tmp.fill <- if (orientation == "h") "tonextx" else "tonexty"
+
+        # Separate out positive and negative values into separate traces
+        # So that datalabels can be added in the same way as barmode = relative
+        ind.neg <- NULL
+        neg.text <- NULL
+        if (orientation == "v")
+        {
+            ind.neg <- which(ypos < 0)
+            if (length(ind.neg) > 0)
+            {
+                neg.ypos <- ifelse(ypos < 0, ypos, 0)
+                neg.xpos <- xpos
+                if (any(nzchar(text)))
+                {
+                    neg.text <- ifelse(ypos < 0, text, "")
+                    text[ind.neg] <- ""
+                }
+                ypos[ind.neg] <- 0
+            }
+        } else
+        {
+            ind.neg <- which(xpos < 0)
+            if (length(ind.neg) > 0)
+            {
+                neg.xpos <- ifelse(xpos < 0, xpos, 0)
+                neg.ypos <- ypos
+                if (any(nzchar(text)))
+                {
+                    neg.text <- ifelse(xpos < 0, text, "")
+                    text[ind.neg] <- " "
+                }
+                xpos[ind.neg] <- 0
+            }
+        }
+
+        if (length(ind.neg) > 0)
+            p <- add_trace(p, x = neg.xpos, y = neg.ypos, cliponaxis = FALSE,
+                    text = neg.text, mode = if (is.null(neg.text)) "markers+text" else "markers+text",
+                    type = "scatter", fillcolor = "transparent", fill = tmp.fill,
+                    orientation = orientation, showlegend = FALSE, 
+                    stackgroup = paste0("neg", stackgroup), ...)
+    }
+
+    # Normal scatter trace
+    if (length(xpos) == 1)
+    {
+        # Trying to avoid plotly bug with adding a single point
+        xpos <- rep(xpos, 2)
+        ypos <- rep(ypos, 2)
+        text <- rep(text, 2)
+    }
+    p <- add_trace(p, x = xpos, y = ypos, cliponaxis = FALSE,
+            text = text, mode = if (!is.null(text)) "markers+text" else "markers",
+            type = "scatter", fillcolor = "transparent", fill = tmp.fill,
+            orientation = orientation, showlegend = FALSE, stackgroup = stackgroup, ...)
+    p
+} 
 
 
 

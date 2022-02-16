@@ -1164,22 +1164,6 @@ cum.data <- function(x, output = "cumulative.percentage")
     t(result)
 }
 
-cum.signed.data <- function(x)
-{
-    result <- matrix(0, NROW(x), NCOL(x))
-    for (i in 1:nrow(x))
-    {
-        ind <- which(x[i,] >= 0)
-        if (length(ind) > 0)
-            result[i,ind] <- cumsum(x[i,ind])
-
-        ind <- which(x[i,] < 0)
-        if (length(ind) > 0)
-            result[i,ind] <- cumsum(x[i,ind])
-    }
-    return(result)
-}
-
 # Takes a single string and puts <br> in place of the closest space
 # preceding the word at the max.nchar position.
 # E.g. if n = 20 then count 20 characters.  The space preceding character 20
