@@ -480,7 +480,7 @@ Bar <- function(x,
                     data.label.sign = getSign(data.annotations$x[,i], xaxis), data.label.nchar,
                     annotation.list, annot.data, i,
                     yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y", xaxis = "x",
-                    tmp.data.label.font, is.stacked, data.label.centered = FALSE)
+                    tmp.data.label.font, is.stacked, data.label.centered = pyramid)
             
             if (!is.null(pt.segs))
             {

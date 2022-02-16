@@ -51,7 +51,7 @@ addTraceForBarTypeDataLabelAnnotations <- function(p, type, name,
         data.label.pos <- ifelse(data.label.sign < 0, 3, 0 + (is.stacked & !data.label.centered))
     } else
     {
-        textalign <- if (is.stacked) "middle center"
+        textalign <- if (is.stacked || data.label.centered) "middle center"
                      else            ifelse(data.label.sign >= 0, "middle right", "middle left")
         data.label.pos <- if (is.stacked) 0
                           else            ifelse(data.label.xpos < 0, 7, 3)
