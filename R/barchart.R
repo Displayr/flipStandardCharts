@@ -480,7 +480,7 @@ Bar <- function(x,
                     data.label.sign = getSign(data.annotations$x[,i], xaxis), data.label.nchar,
                     annotation.list, annot.data, i,
                     yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y", xaxis = "x",
-                    tmp.data.label.font, is.stacked || pyramid, data.label.centered = FALSE)
+                    tmp.data.label.font, is.stacked, data.label.centered = FALSE)
             
             if (!is.null(pt.segs))
             {
@@ -505,9 +505,9 @@ Bar <- function(x,
         ind.na <- which(!is.finite(y))
         if (length(ind.na) > 0)
             hover.template[ind.na] <- ""
-        if (length(ind.na) != NROW(chart.matrix) && FALSE)
-            p <- addAnnotScatterTrace(p, xpos = xpos + 1, ypos = ypos, name = legend.text[i],
-                   text = "!", marker = list(color = tmp.color, opacity = 1.0),
+        if (length(ind.na) != NROW(chart.matrix) && any(data.label.show))
+            p <- addAnnotScatterTrace(p, xpos = xpos, ypos = ypos, name = legend.text[i],
+                   text = "", marker = list(color = tmp.color, opacity = 0.0),
                    hovertemplate = hover.template, hoverlabel = hover.label, xaxis = "x",
                    yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y",
                    stackgroup = if (is.stacked) "hover" else "",

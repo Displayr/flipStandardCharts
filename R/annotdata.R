@@ -119,6 +119,7 @@ addTraceForBarTypeDataLabelAnnotations <- function(p, type, name,
     tmp.offset <- if (!is.stacked) max(0, (max.diam - data.label.font$size))
                   else             0.01
     data.label.pos <- data.label.pos + tmp.offset
+    data.label.text[!data.label.show] <- ""
 
     # Add data labels for positive or non-stacked values
     p <- addAnnotScatterTrace(p, name = name,
@@ -190,6 +191,13 @@ addAnnotScatterTrace <- function(p, orientation, xpos, ypos, text, stackgroup, .
     }
 
     # Normal scatter trace
+    if (length(xpos) == 1)
+    {
+        # Trying to avoid plotly bug with adding a single point
+        xpos <- rep(xpos, 2)
+        ypos <- rep(ypos, 2)
+        text <- rep(text, 2)
+    }
     p <- add_trace(p, x = xpos, y = ypos, cliponaxis = FALSE,
             text = text, mode = if (!is.null(text)) "markers+text" else "markers",
             type = "scatter", fillcolor = "transparent", fill = tmp.fill,
