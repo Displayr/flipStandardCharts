@@ -505,9 +505,9 @@ Bar <- function(x,
         ind.na <- which(!is.finite(y))
         if (length(ind.na) > 0)
             hover.template[ind.na] <- ""
-        if (length(ind.na) != NROW(chart.matrix))
-            p <- addAnnotScatterTrace(p, xpos = xpos, ypos = ypos, name = legend.text[i],
-                   text = NULL, marker = list(color = tmp.color, opacity = 0.0),
+        if (length(ind.na) != NROW(chart.matrix) && FALSE)
+            p <- addAnnotScatterTrace(p, xpos = xpos + 1, ypos = ypos, name = legend.text[i],
+                   text = "!", marker = list(color = tmp.color, opacity = 1.0),
                    hovertemplate = hover.template, hoverlabel = hover.label, xaxis = "x",
                    yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y",
                    stackgroup = if (is.stacked) "hover" else "",

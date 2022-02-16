@@ -142,8 +142,11 @@ addTraceForBarTypeDataLabelAnnotations <- function(p, type, name,
 addAnnotScatterTrace <- function(p, orientation, xpos, ypos, text, stackgroup, ...)
 {
     # If no stacking is performed, then just create scatter trace as usual
+    tmp.fill <- "none"
     if (any(nzchar(stackgroup)))
-    {
+    { 
+        tmp.fill <- if (orientation == "h") "tonextx" else "tonexty"
+
         # Separate out positive and negative values into separate traces
         # So that datalabels can be added in the same way as barmode = relative
         ind.neg <- NULL
@@ -181,16 +184,15 @@ addAnnotScatterTrace <- function(p, orientation, xpos, ypos, text, stackgroup, .
         if (length(ind.neg) > 0)
             p <- add_trace(p, x = neg.xpos, y = neg.ypos, cliponaxis = FALSE,
                     text = neg.text, mode = if (is.null(neg.text)) "markers+text" else "markers+text",
-                    type = "scatter", fillcolor = "transparent",
-                    orientation = orientation, fill = if (orientation == "h") "tonextx" else "tonexty",
-                    showlegend = FALSE, stackgroup = paste0("neg", stackgroup), ...)
+                    type = "scatter", fillcolor = "transparent", fill = tmp.fill,
+                    orientation = orientation, showlegend = FALSE, 
+                    stackgroup = paste0("neg", stackgroup), ...)
     }
 
     # Normal scatter trace
     p <- add_trace(p, x = xpos, y = ypos, cliponaxis = FALSE,
             text = text, mode = if (!is.null(text)) "markers+text" else "markers",
-            type = "scatter", fillcolor = "transparent",
-            fill = if (orientation == "h") "tonextx" else "tonexty",
+            type = "scatter", fillcolor = "transparent", fill = tmp.fill,
             orientation = orientation, showlegend = FALSE, stackgroup = stackgroup, ...)
     p
 } 
