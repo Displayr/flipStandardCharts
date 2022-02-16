@@ -403,7 +403,7 @@ Bar <- function(x,
             p <- add_trace(p, x = y.filled, y = x, type = "bar", orientation = "h",
                        marker = marker, name = legend.text[i],
                        hoverlabel = hover.label, hovertemplate = hover.template,
-                       legendgroup = if (is.stacked && any(data.label.show)) "all" else i)
+                       legendgroup = i)
 
         if (fit.type != "None" && is.stacked && i == 1)
             warning("Line of best fit not shown for stacked charts.")
@@ -481,7 +481,7 @@ Bar <- function(x,
                     annotation.list, annot.data, i,
                     yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y", xaxis = "x",
                     tmp.data.label.font, is.stacked || pyramid, data.label.centered = FALSE)
-
+            
             if (!is.null(pt.segs))
             {
                 if (isTRUE(attr(pt.segs, "SeriesShowValue")))
@@ -499,18 +499,19 @@ Bar <- function(x,
         # or if covered by the data labels
         # Changing layout.hovermode will make it more responsive but text is diagonal
         ypos <- if (NCOL(chart.matrix) > 1) data.annotations$y[,i] else x
-        xpos <- if (NCOL(chart.matrix) > 1) data.annotations$x[,i] else y.filled
+        xpos <- chart.matrix[,i]
         if (pyramid)
             xpos <- rep(0, NROW(chart.matrix))
         ind.na <- which(!is.finite(y))
         if (length(ind.na) > 0)
             hover.template[ind.na] <- ""
         if (length(ind.na) != NROW(chart.matrix))
-            p <- add_trace(p, x = xpos, y = ypos, type = "scatter", name = legend.text[i],
-                   mode = "markers", marker = list(color = tmp.color, opacity = 0),
-                   hovertemplate = hover.template, hoverlabel = hover.label,
-                   showlegend = FALSE, yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y")
-
+            p <- addAnnotScatterTrace(p, xpos = xpos, ypos = ypos, name = legend.text[i],
+                   text = NULL, marker = list(color = tmp.color, opacity = 0.0),
+                   hovertemplate = hover.template, hoverlabel = hover.label, xaxis = "x",
+                   yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y",
+                   stackgroup = if (is.stacked) "hover" else "",
+                   orientation = "h", legendgroup = i)
     }
 
     # Only used for small multiples
