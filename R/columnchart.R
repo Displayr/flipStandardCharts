@@ -968,7 +968,7 @@ Column <- function(x,
         # the below the bar (i.e. negative values or reversed axis).
         # Adjusted by controlling the size of the marker
         # Hover must be included because this trace hides existing hover items
-        if (any(data.label.show[,i]))
+        if (any(data.label.show))
         {
             # Apply annotations to data label
             # Circle annotations are added to pt.segs but not to the data labels

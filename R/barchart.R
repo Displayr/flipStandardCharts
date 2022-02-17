@@ -444,34 +444,38 @@ Bar <- function(x,
         chart.labels$SeriesLabels[[i]] <- list(
             Font = setFontForPPT(tmp.data.label.font), ShowValue = any(data.label.show[,i]))
 
-        if (any(data.label.show[,i]))
+        if (any(data.label.show))
         {
             # Initialise custom points if annotations are used
             pt.segs <- NULL
             ind.show <- which(data.label.show[,i])
-            tmp.suffix <- if (percentFromD3(data.label.format)) sub("%", "", data.label.suffix[,i])
-                          else                                               data.label.suffix[,i]
-            if (!is.null(annotation.list) || length(ind.show) < nrow(chart.matrix) ||
-                any(nzchar(data.label.prefix[,i])) || any(nzchar(data.label.suffix[,i])))
+            data.label.text <- NULL
+            if (length(ind.show) > 0)
             {
-                chart.labels$SeriesLabels[[i]]$ShowValue <- FALSE
-                pt.segs <- lapply((1:nrow(chart.matrix)),
-                    function(ii) list(Index = ii-1, Segments = c(
-                        if (nzchar(data.label.prefix[ii,i])) list(list(Text = data.label.prefix[ii,i])) else NULL,
-                        list(list(Field="Value")),
-                        if (nzchar(tmp.suffix[ii])) list(list(Text = tmp.suffix[ii])) else NULL)))
-                for (ii in setdiff(1:nrow(chart.matrix), ind.show))
-                    pt.segs[[ii]]$Segments <- NULL
-            }
+                tmp.suffix <- if (percentFromD3(data.label.format)) sub("%", "", data.label.suffix[,i])
+                              else                                               data.label.suffix[,i]
+                if (!is.null(annotation.list) || length(ind.show) < nrow(chart.matrix) ||
+                    any(nzchar(data.label.prefix[,i])) || any(nzchar(data.label.suffix[,i])))
+                {
+                    chart.labels$SeriesLabels[[i]]$ShowValue <- FALSE
+                    pt.segs <- lapply((1:nrow(chart.matrix)),
+                        function(ii) list(Index = ii-1, Segments = c(
+                            if (nzchar(data.label.prefix[ii,i])) list(list(Text = data.label.prefix[ii,i])) else NULL,
+                            list(list(Field="Value")),
+                            if (nzchar(tmp.suffix[ii])) list(list(Text = tmp.suffix[ii])) else NULL)))
+                    for (ii in setdiff(1:nrow(chart.matrix), ind.show))
+                        pt.segs[[ii]]$Segments <- NULL
+                }
 
-            # Apply annotations
-            # Circle annotations are added to pt.segs but not to the data labels
-            data.label.text <- data.annotations$text[,i]
-            data.label.nchar <- nchar(data.label.text) # get length before adding html tags
-            attr(data.label.text, "customPoints") <- pt.segs
-            data.label.text <- applyAllAnnotationsToDataLabels(data.label.text, annotation.list,
-            annot.data, i, ind.show, "Bar", clean.pt.segs = TRUE)
-            pt.segs <- attr(data.label.text, "customPoints")
+                # Apply annotations
+                # Circle annotations are added to pt.segs but not to the data labels
+                data.label.text <- data.annotations$text[,i]
+                data.label.nchar <- nchar(data.label.text) # get length before adding html tags
+                attr(data.label.text, "customPoints") <- pt.segs
+                data.label.text <- applyAllAnnotationsToDataLabels(data.label.text, annotation.list,
+                annot.data, i, ind.show, "Bar", clean.pt.segs = TRUE)
+                pt.segs <- attr(data.label.text, "customPoints")
+            }
             p <- addTraceForBarTypeDataLabelAnnotations(p, type = "Bar", legend.text[i],
                     data.label.xpos = if (pyramid) rep(0, NROW(chart.matrix)) else data.annotations$x[,i],
                     data.label.ypos = if (NCOL(chart.matrix) > 1) data.annotations$y[,i] else x,
