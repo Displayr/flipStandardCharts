@@ -24,7 +24,7 @@ Imports:
     mgcv,
     hash,
     htmltools,
-    htmlwidgets,
+    htmlwidgets (>= 1.5.4),
     httr,
     janitor,
     jsonlite,
