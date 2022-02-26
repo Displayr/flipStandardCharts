@@ -25,6 +25,8 @@
 #' @param yaxis The neme of the yaxis
 #' @param data.label.font A list specifying the font to use.
 #' @param is.stacked A logical indicating if the chart is stackeed.
+#' @param stackgroupname For stacked charts, the current trace will be added on top of
+#'  the previous trace with the same stackgroupname
 #' @param data.label.centered A logical indicating if data label is placed at the center of bar.
 #'  Only used in Stacked Column charts.
 #' @param data.label.horizontal.align Text to control the horizontal alignment
@@ -103,7 +105,7 @@ addTraceForBarTypeDataLabelAnnotations <- function(p, type, name,
             if (type == "Column" && !is.stacked)
                 tmp.pos <- tmp.pos + (data.label.sign < 0) * 5
 
-            p <- addAnnotScatterTrace(p, x = data.label.xpos, y = data.label.ypos,
+            p <- addAnnotScatterTrace(p, xpos = data.label.xpos, ypos = data.label.ypos,
                   text = tmp.text, textfont = tmp.font, textposition = textalign,
                   marker = list(opacity = 0.0, color = "red", size = tmp.pos),
                   xaxis = xaxis, yaxis = yaxis, hoverinfo = "skip", 
@@ -120,7 +122,7 @@ addTraceForBarTypeDataLabelAnnotations <- function(p, type, name,
 
     # Add data labels for positive or non-stacked values
     p <- addAnnotScatterTrace(p, name = name,
-              x = data.label.xpos, y = data.label.ypos, text = data.label.text,
+              xpos = data.label.xpos, ypos = data.label.ypos, text = data.label.text,
               marker = list(opacity = 0.0, size = data.label.pos),
               xaxis = xaxis, yaxis = yaxis, textfont = data.label.font,
               textposition = textalign, hoverinfo = "skip",
@@ -129,7 +131,7 @@ addTraceForBarTypeDataLabelAnnotations <- function(p, type, name,
 
     # Add other half of the trace to center the data labels
     if (is.stacked && (data.label.centered || type == "Bar"))
-        p <- addAnnotScatterTrace(p, x = data.label.xpos, y = data.label.ypos, text = "",
+        p <- addAnnotScatterTrace(p, xpos = data.label.xpos, ypos = data.label.ypos, text = "",
                 yaxis = yaxis, xaxis = xaxis, stackgroup = stackgroupname,
                 hoverinfo = "skip", marker = list(opacity = 0.0), 
                 orientation = if (type == "Bar") "h" else "v", legendgroup = i)

@@ -24,7 +24,7 @@ tdat <- dat
 rownames(tdat) <- sprintf("%02d/01/2001", 1:20)
 test_that("Object structure of TimeSeries",
 {
-    expect_silent(pp <- TimeSeries(tdat))
+    expect_error(pp <- TimeSeries(tdat), NA)
     expect_true(!is.null(pp$htmlwidget))
 })
 

@@ -1041,7 +1041,7 @@ Column <- function(x,
                         else x.labels[ind.sel]
             }
 
-            p <- addAnnotScatterTrace(p, x = xpos, y = curr.annot.ypos,
+            p <- addAnnotScatterTrace(p, xpos = xpos, ypos = curr.annot.ypos,
                 xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x",
                 yaxis = "y", hoverinfo = "skip",
                 marker = list(opacity = 0.0, size = Sum(curr.annot$offset, remove.missing = FALSE)),

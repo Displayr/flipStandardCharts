@@ -27,7 +27,8 @@ addTraceForBarTypeDataLabelAnnotations(
   data.label.font,
   is.stacked,
   data.label.centered,
-  data.label.horizontal.align = "center"
+  data.label.horizontal.align = "center",
+  stackgroupname = "datalabel"
 )
 }
 \arguments{
@@ -73,6 +74,9 @@ Only used in Stacked Column charts.}
 
 \item{data.label.horizontal.align}{Text to control the horizontal alignment
 of labels on the column chart annotations}
+
+\item{stackgroupname}{For stacked charts, the current trace will be added on top of
+the previous trace with the same stackgroupname}
 }
 \description{
 This function adds traces for data labels and annotations to bar/column charts
