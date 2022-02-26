@@ -56,9 +56,6 @@ addTraceForBarTypeDataLabelAnnotations <- function(p, type, name,
         data.label.pos <- if (is.stacked) 0
                           else            ifelse(data.label.xpos < 0, 7, 3)
     }
-    if (length(textalign) > 1 && any(data.label.show))
-        textalign <- textalign[data.label.show]
-
     n <- length(data.label.xpos)
 
     # Find space to leave for circles
