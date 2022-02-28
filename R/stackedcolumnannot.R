@@ -600,7 +600,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family)),
                        hoverinfo = "text+name", text = tmp.hover.text,
-                       legendgroup =  "all")
+                       legendgroup = i)
 
         # Add attribute for PPT exporting
         # Note that even without data labels, overlay annotations can still be present
@@ -627,24 +627,31 @@ StackedColumnWithStatisticalSignificance <- function(x,
         # the below the bar (i.e. negative values or reversed axis).
         # Adjusted by controlling the size of the marker
         # Hover must be included because this trace hides existing hover items
-        if (any(data.label.show[,i]))
+        # Always show data label trace - firstly to ensure stacking covers all series
+        # and secondly because it is used for column totals
+        if (TRUE)
         {
             # Apply annotations to data label
             ind.show <- which(data.label.show[,i])
             data.label.text <- data.annotations$text[,i]
             data.label.nchar <- nchar(data.label.text) # get length before adding html tags
             attr(data.label.text, "customPoints") <- pt.segs
-            data.label.text <- applyAllAnnotationsToDataLabels(data.label.text, NULL,
-            annot.data, i, ind.show, "Bar", clean.pt.segs = FALSE)
-            pt.segs <- attr(data.label.text, "customPoints")
+            if (length(ind.show) > 0)
+            {
+                data.label.text[!data.label.show[,i]] <- ""
+                data.label.text <- applyAllAnnotationsToDataLabels(data.label.text, NULL,
+                    annot.data, i, ind.show, "Bar", clean.pt.segs = FALSE)
+                pt.segs <- attr(data.label.text, "customPoints")
+            } else
+                data.label.text <- rep("", n)
             p <- addTraceForBarTypeDataLabelAnnotations(p, type = "Column", legend.text[i],
-                    data.label.xpos = if (NCOL(chart.matrix) > 1) data.annotations$x[,i] else x,
+                    data.label.xpos = data.annotations$x[,i],
                     data.label.ypos = data.annotations$y[,i],
                     data.label.show = data.label.show[,i],
                     data.label.text = data.label.text,
                     data.label.sign = getSign(data.annotations$y[,i], yaxis), data.label.nchar,
                     NULL, annot.data, i,
-                    xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x", yaxis = "y",
+                    xaxis = "x2", yaxis = "y",
                     data.label.font[[i]], TRUE, data.label.centered)
         }
 
@@ -706,16 +713,17 @@ StackedColumnWithStatisticalSignificance <- function(x,
             warning("Some significant values were not shown because the bars were too small.")
         annot.text[ind] <- ""
     }
-    p <- addTraceForBarTypeDataLabelAnnotations(p, type = "Column", "Annotations",
-                data.label.xpos = as.vector(data.annotations$x) + xdiff,
-                data.label.ypos = as.vector(data.annotations$y),
-                data.label.show = rep(TRUE, n*m),
-                data.label.text = as.vector(annot.text),
-                data.label.sign = getSign(as.vector(data.annotations$y), yaxis),
-                0, NULL, annot.data, 1,
+    for (i in 1:ncol(chart.matrix))
+        p <- addTraceForBarTypeDataLabelAnnotations(p, type = "Column", "Annotations",
+                data.label.xpos = data.annotations$x[,i] + xdiff,
+                data.label.ypos = data.annotations$y[,i],
+                data.label.show = rep(TRUE, n),
+                data.label.text = annot.text[,i],
+                data.label.sign = getSign(data.annotations$y[,i], yaxis),
+                0, NULL, annot.data, i,
                 xaxis = "x2", yaxis = "y",
                 data.label.font = data.label.font[[1]],
-                TRUE, data.label.centered, "right")
+                TRUE, data.label.centered, "right", stackgroupname = "rightannot")
 
     if (!is.null(diff.annot.text) && !append.annot.differences.to.datalabel)
     {
@@ -728,77 +736,53 @@ StackedColumnWithStatisticalSignificance <- function(x,
             annot.differences.offset
         if (annot.hide.small.bar)
             diff.annot.text[which(nchar(data.annotations$text) == 0)] <- ""
-        p <- addTraceForBarTypeDataLabelAnnotations(p, type = "Column", "Differences",
-                data.label.xpos = as.vector(data.annotations$x) + xdiff,
-                data.label.ypos = as.vector(data.annotations$y),
-                data.label.show = rep(TRUE, n*m),
-                data.label.text = diff.annot.text,
-                data.label.sign = getSign(as.vector(data.annotations$y), yaxis), 0,
-                NULL, annot.data, 1,
+        for (i in 1:ncol(chart.matrix))
+            p <- addTraceForBarTypeDataLabelAnnotations(p, type = "Column", "Differences",
+                data.label.xpos = data.annotations$x[,i] + xdiff,
+                data.label.ypos = data.annotations$y[,i],
+                data.label.show = rep(TRUE, n),
+                data.label.text = diff.annot.text[,i],
+                data.label.sign = getSign(data.annotations$y[,i], yaxis), 0,
+                NULL, annot.data, i,
                 xaxis = "x2", yaxis = "y",
                 data.label.font = list(family = annot.differences.font.family,
                 color = annot.differences.font.color, size = annot.differences.font.size),
-                TRUE, data.label.centered, "right")
+                TRUE, data.label.centered, "right", stackgroupname = "differences")
     }
 
     # Column totals
     # These two sets of data labels are not added to ChartLabels because powerpoint has no way
     # of adding labels associated with the whole column
-
-    if (column.totals.above.show || column.totals.below.show)
-        totals.annotations <- dataLabelPositions(chart.matrix = chart.matrix,
-                    axis.type = xaxis$type,
-                    annotations = NULL,
-                    data.label.mult = data.label.mult,
-                    bar.decimals = data.label.decimals,
-                    bar.prefix = data.label.prefix,
-                    bar.suffix = data.label.suffix.2,
-                    barmode = barmode,
-                    swap.axes.and.data = FALSE,
-                    bar.gap = bar.gap,
-                    display.threshold = data.label.threshold,
-                    dates = axisFormat$ymd,
-                    reversed = isReversed(yaxis),
-                    font = data.label.font,
-                    hide.sign = TRUE,
-                    center.data.labels = FALSE)
-
     if (column.totals.above.show)
     {
         # Add invisible string to center the column totals
         pre.annot <- gsub("color:.*?;", "color:transparent;", totals.annot.text)
-        p <- addTraceForBarTypeDataLabelAnnotations(p, name = "Column totals - above",
-                type = "Column",
-                data.label.xpos = totals.annotations$x[,1],
-                data.label.ypos = apply(totals.annotations$y, 1, max, na.rm = TRUE),
-                data.label.show = rep(TRUE, n),
-                data.label.text = paste0(pre.annot,
-                    formatByD3(totals.annotations$y[,m],
+        totals.above <- apply(chart.matrix, 1, function(xx) sum(xx[which(xx > 0)]))
+        p <- addAnnotScatterTrace(p, orientation = "v", name = "Column totals - above",
+                xpos = data.annotations$x[,1], ypos = rep(0, n),
+                text = paste0(pre.annot,
+                    formatByD3(totals.above,
                     data.label.format, data.label.prefix[,m], data.label.suffix[,m]),
                     totals.annot.text),
-                data.label.sign = rep(1, n), 0,
-                annotation.list = NULL, annot.data, 1,
-                xaxis = "x2", yaxis = "y",
-                data.label.font = list(family = column.totals.above.font.family,
+                textposition = "top center", marker = list(opacity = 0.0, size = 1),
+                xaxis = "x2", yaxis = "y", hoverinfo = "skip",
+                textfont = list(family = column.totals.above.font.family,
                 color = column.totals.above.font.color,
-                size = column.totals.above.font.size),
-                is.stacked = FALSE, data.label.centered = FALSE)
+                size = column.totals.above.font.size), stackgroup = "datalabel")
     }
     if (column.totals.below.show)
-        p <- addTraceForBarTypeDataLabelAnnotations(p, name = "Column totals - below",
-                type = "Column",
-                data.label.xpos = totals.annotations$x[,1],
-                data.label.ypos = totals.annotations$y[,num.categories.below.axis],
-                data.label.show = rep(TRUE, n),
-                data.label.text = formatByD3(abs(totals.annotations$y[,num.categories.below.axis]),
+    {
+        totals.below <- apply(chart.matrix, 1, function(xx) sum(xx[which(xx < 0)]))
+        p <- addAnnotScatterTrace(p, name = "Column totals - below", orientation = "v",
+                xpos = data.annotations$x[,1], ypos = rep(-.Machine$double.eps, n),
+                text = formatByD3(abs(totals.below),
                     data.label.format, data.label.prefix[,m], data.label.suffix[,m]),
-                data.label.sign = rep(-1, n), 0,
-                annotation.list = NULL, annot.data, 1,
-                xaxis = "x2", yaxis = "y",
-                data.label.font = list(family = column.totals.below.font.family,
+                textposition = "bottom center", marker = list(opacity = 0.0),
+                xaxis = "x2", yaxis = "y", hoverinfo = "skip",
+                textfont = list(family = column.totals.below.font.family,
                 color = column.totals.below.font.color,
-                size = column.totals.below.font.size),
-                is.stacked = FALSE, data.label.centered = FALSE)
+                size = column.totals.below.font.size), stackgroup = "datalabel")
+    }
 
 
     # Add text elements surrounding chart

@@ -33,10 +33,12 @@ dataLabelPositions <- function(chart.matrix,
     if (barmode == "stack")
     {
         series.pos <- rep(0, series.count)
-        y.pos <- if (swap.axes.and.data || center.data.labels)
-            cum.signed.data(chart.matrix) - 0.5 * chart.matrix
+        if (swap.axes.and.data || center.data.labels)
+        {
+            y.pos <- 0.5 * chart.matrix
+        }
         else
-            cum.signed.data(chart.matrix)
+            y.pos <- chart.matrix
 
         largest.bar <- max(SumEachRow(abs(chart.matrix), remove.columns = NULL, remove.missing = FALSE))
         if (is.null(display.threshold))

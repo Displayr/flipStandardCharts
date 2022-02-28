@@ -905,7 +905,7 @@ Column <- function(x,
                        hoverlabel = list(font = list(color = autoFontColor(tmp.color),
                        size = hovertext.font.size, family = hovertext.font.family)),
                        hovertemplate = setHoverTemplate(i, xaxis, chart.matrix, hovertext.template),
-                       legendgroup = if (is.stacked && any(data.label.show)) "all" else i)
+                       legendgroup = i)
 
 
         if (fit.type != "None" && is.stacked && i == 1)
@@ -968,7 +968,7 @@ Column <- function(x,
         # the below the bar (i.e. negative values or reversed axis).
         # Adjusted by controlling the size of the marker
         # Hover must be included because this trace hides existing hover items
-        if (any(data.label.show[,i]))
+        if (any(data.label.show))
         {
             # Apply annotations to data label
             # Circle annotations are added to pt.segs but not to the data labels
@@ -1000,48 +1000,72 @@ Column <- function(x,
                 as.numeric = !grepl("Text", curr.annot$type) &&
                 curr.annot$data != "Column Comparisons")
             ind.sel <- extractSelectedAnnot(curr.dat, curr.annot$threshold, curr.annot$threstype)
-            if (length(ind.sel) == 0)
+            if (length(ind.sel) == 0 && is.stacked)
+            {
+                curr.annot.text <- rep(" ", NROW(chart.matrix))
+                xpos = data.overlay.annot$x[,i]
+                curr.annot.ypos <- chart.matrix[,i]
+
+            } else if (length(ind.sel) == 0)
+            {
                 next
 
-            curr.annot.ypos <- if (is.stacked) data.overlay.annot$y[ind.sel,i] -
-                            (chart.matrix[ind.sel,i] * (1 - curr.annot$relative.pos))
-                        else data.overlay.annot$y[ind.sel,i] * curr.annot$relative.pos
-            curr.annot.align <- paste(if (is.null(curr.annot$valign)) "middle" else tolower(curr.annot$valign),
-                            if (is.null(curr.annot$halign)) "center" else tolower(curr.annot$halign))
+            } else
+            {
+                curr.annot.ypos <- if (is.stacked) chart.matrix[ind.sel,i] * curr.annot$relative.pos
+                                   else data.overlay.annot$y[ind.sel,i] * curr.annot$relative.pos
+                curr.annot.align <- paste(if (is.null(curr.annot$valign)) "middle" else tolower(curr.annot$valign),
+                                if (is.null(curr.annot$halign)) "center" else tolower(curr.annot$halign))
 
-            if (curr.annot$data == "Column Comparisons" && grepl("Arrow", curr.annot$type))
-                curr.annot.text <- getColCmpArrowHtml(curr.dat[ind.sel], curr.annot$size, "<br>")
-            else if (curr.annot$type == "Text")
-                curr.annot.text <- formatByD3(curr.dat[ind.sel], curr.annot$format, curr.annot$prefix, curr.annot$suffix)
-            else if (curr.annot$type == "Arrow - up")
-                curr.annot.text <- "&#8593;"
-            else if (curr.annot$type == "Arrow - down")
-                curr.annot.text <- "&#8595;"
-            else if (curr.annot$type == "Caret - up")
-                curr.annot.text <- "&#9650;"
-            else if (curr.annot$type == "Caret - down")
-                curr.annot.text <- "&#9660;"
-            else
-                curr.annot.text <- curr.annot$custom.symbol
-            curr.annot.text <- rep(curr.annot.text, length = length(ind.sel))
+                if (curr.annot$data == "Column Comparisons" && grepl("Arrow", curr.annot$type))
+                    curr.annot.text <- getColCmpArrowHtml(curr.dat[ind.sel], curr.annot$size, "<br>")
+                else if (curr.annot$type == "Text")
+                    curr.annot.text <- formatByD3(curr.dat[ind.sel], curr.annot$format, curr.annot$prefix, curr.annot$suffix)
+                else if (curr.annot$type == "Arrow - up")
+                    curr.annot.text <- "&#8593;"
+                else if (curr.annot$type == "Arrow - down")
+                    curr.annot.text <- "&#8595;"
+                else if (curr.annot$type == "Caret - up")
+                    curr.annot.text <- "&#9650;"
+                else if (curr.annot$type == "Caret - down")
+                    curr.annot.text <- "&#9660;"
+                else
+                    curr.annot.text <- curr.annot$custom.symbol
+                curr.annot.text <- rep(curr.annot.text, length = length(ind.sel))
 
-            # For clustered column charts we use numeric "x2" axis
-            # But for single series directly map back to "x" axis (possibly categoric)
-            # This is necessary because small multiples do not work with
-            # multiple x/y axis
-            xpos <- if (NCOL(chart.matrix) > 1) data.overlay.annot$x[ind.sel,i]
-                    else x.labels[ind.sel]
-            p <- add_trace(p, x = xpos, y = curr.annot.ypos,
-                type = "scatter", mode = "markers+text", hoverinfo = "skip",
+                # For clustered column charts we use numeric "x2" axis
+                # But for single series directly map back to "x" axis (possibly categoric)
+                # This is necessary because small multiples do not work with
+                # multiple x/y axis
+                xpos <- if (NCOL(chart.matrix) > 1) data.overlay.annot$x[ind.sel,i]
+                        else x.labels[ind.sel]
+            }
+
+            p <- addAnnotScatterTrace(p, xpos = xpos, ypos = curr.annot.ypos,
                 xaxis = if (NCOL(chart.matrix) > 1) "x2" else "x",
-                yaxis = "y", showlegend = FALSE,
+                yaxis = "y", hoverinfo = "skip",
                 marker = list(opacity = 0.0, size = Sum(curr.annot$offset, remove.missing = FALSE)),
                 text = curr.annot.text, textposition = curr.annot.align,
                 textfont = list(family = curr.annot$font.family, size = curr.annot$size,
                     color = curr.annot$color),
-                legendgroup = if (is.stacked) "all" else i,
-                cliponaxis = FALSE)
-            pt.segs <- getPointSegmentsForPPT(pt.segs, ind.sel, curr.annot, curr.dat[ind.sel])
+                legendgroup = i, orientation = "v", 
+                stackgroup = if (is.stacked) paste0("overlayannot", curr.annot.ind) else "")
+            
+            # Add other bit of stacked column chart so that annotations on the next
+            # series gets added to the correct height
+            if (is.stacked && length(ind.sel) > 0)
+            {
+                ypos.remainder <- chart.matrix[,i]
+                ypos.remainder[ind.sel] <- ypos.remainder[ind.sel] - curr.annot.ypos
+                p <- addAnnotScatterTrace(p, xpos = data.overlay.annot$x[,i], 
+                    ypos = ypos.remainder, text = NULL, mode = "markers",
+                    xaxis = "x2", yaxis = "y", marker = list(opacity = 0.0),
+                    hoverinfo = "skip", legendgroup = i, orientation = "v", 
+                    stackgroup = paste0("overlayannot", curr.annot.ind))
+            }
+
+            if (length(ind.sel) > 0)
+                pt.segs <- getPointSegmentsForPPT(pt.segs, ind.sel, curr.annot, curr.dat[ind.sel])
         }
 
         # Clean up PPT chart labels

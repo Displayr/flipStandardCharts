@@ -490,6 +490,18 @@ LabeledScatter <- function(x = NULL,
     class(result) <- "StandardChart"
     attr(result, "ChartType") <- if (!is.null(scatter.sizes)) "Bubble"
                                  else                         "X Y Scatter"
+
+    chart.labels <- NULL
+    if (any(nzchar(x.title)) || any(nzchar(y.title)))
+    {
+        if (is.null(chart.labels))
+            chart.labels <- list()
+        if (any(nzchar(x.title)))
+            chart.labels$PrimaryAxisTitle <- x.title
+        if (any(nzchar(y.title)))
+            chart.labels$ValueAxisTitle <- y.title
+        attr(result, "ChartLabels") <- chart.labels
+    }
     result
 }
 

@@ -403,7 +403,7 @@ Bar <- function(x,
             p <- add_trace(p, x = y.filled, y = x, type = "bar", orientation = "h",
                        marker = marker, name = legend.text[i],
                        hoverlabel = hover.label, hovertemplate = hover.template,
-                       legendgroup = if (is.stacked && any(data.label.show)) "all" else i)
+                       legendgroup = i)
 
         if (fit.type != "None" && is.stacked && i == 1)
             warning("Line of best fit not shown for stacked charts.")
@@ -444,34 +444,38 @@ Bar <- function(x,
         chart.labels$SeriesLabels[[i]] <- list(
             Font = setFontForPPT(tmp.data.label.font), ShowValue = any(data.label.show[,i]))
 
-        if (any(data.label.show[,i]))
+        if (any(data.label.show))
         {
             # Initialise custom points if annotations are used
             pt.segs <- NULL
             ind.show <- which(data.label.show[,i])
-            tmp.suffix <- if (percentFromD3(data.label.format)) sub("%", "", data.label.suffix[,i])
-                          else                                               data.label.suffix[,i]
-            if (!is.null(annotation.list) || length(ind.show) < nrow(chart.matrix) ||
-                any(nzchar(data.label.prefix[,i])) || any(nzchar(data.label.suffix[,i])))
+            data.label.text <- NULL
+            if (length(ind.show) > 0)
             {
-                chart.labels$SeriesLabels[[i]]$ShowValue <- FALSE
-                pt.segs <- lapply((1:nrow(chart.matrix)),
-                    function(ii) list(Index = ii-1, Segments = c(
-                        if (nzchar(data.label.prefix[ii,i])) list(list(Text = data.label.prefix[ii,i])) else NULL,
-                        list(list(Field="Value")),
-                        if (nzchar(tmp.suffix[ii])) list(list(Text = tmp.suffix[ii])) else NULL)))
-                for (ii in setdiff(1:nrow(chart.matrix), ind.show))
-                    pt.segs[[ii]]$Segments <- NULL
-            }
+                tmp.suffix <- if (percentFromD3(data.label.format)) sub("%", "", data.label.suffix[,i])
+                              else                                               data.label.suffix[,i]
+                if (!is.null(annotation.list) || length(ind.show) < nrow(chart.matrix) ||
+                    any(nzchar(data.label.prefix[,i])) || any(nzchar(data.label.suffix[,i])))
+                {
+                    chart.labels$SeriesLabels[[i]]$ShowValue <- FALSE
+                    pt.segs <- lapply((1:nrow(chart.matrix)),
+                        function(ii) list(Index = ii-1, Segments = c(
+                            if (nzchar(data.label.prefix[ii,i])) list(list(Text = data.label.prefix[ii,i])) else NULL,
+                            list(list(Field="Value")),
+                            if (nzchar(tmp.suffix[ii])) list(list(Text = tmp.suffix[ii])) else NULL)))
+                    for (ii in setdiff(1:nrow(chart.matrix), ind.show))
+                        pt.segs[[ii]]$Segments <- NULL
+                }
 
-            # Apply annotations
-            # Circle annotations are added to pt.segs but not to the data labels
-            data.label.text <- data.annotations$text[,i]
-            data.label.nchar <- nchar(data.label.text) # get length before adding html tags
-            attr(data.label.text, "customPoints") <- pt.segs
-            data.label.text <- applyAllAnnotationsToDataLabels(data.label.text, annotation.list,
-            annot.data, i, ind.show, "Bar", clean.pt.segs = TRUE)
-            pt.segs <- attr(data.label.text, "customPoints")
+                # Apply annotations
+                # Circle annotations are added to pt.segs but not to the data labels
+                data.label.text <- data.annotations$text[,i]
+                data.label.nchar <- nchar(data.label.text) # get length before adding html tags
+                attr(data.label.text, "customPoints") <- pt.segs
+                data.label.text <- applyAllAnnotationsToDataLabels(data.label.text, annotation.list,
+                annot.data, i, ind.show, "Bar", clean.pt.segs = TRUE)
+                pt.segs <- attr(data.label.text, "customPoints")
+            }
             p <- addTraceForBarTypeDataLabelAnnotations(p, type = "Bar", legend.text[i],
                     data.label.xpos = if (pyramid) rep(0, NROW(chart.matrix)) else data.annotations$x[,i],
                     data.label.ypos = if (NCOL(chart.matrix) > 1) data.annotations$y[,i] else x,
@@ -480,8 +484,8 @@ Bar <- function(x,
                     data.label.sign = getSign(data.annotations$x[,i], xaxis), data.label.nchar,
                     annotation.list, annot.data, i,
                     yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y", xaxis = "x",
-                    tmp.data.label.font, is.stacked || pyramid, data.label.centered = FALSE)
-
+                    tmp.data.label.font, is.stacked, data.label.centered = pyramid)
+            
             if (!is.null(pt.segs))
             {
                 if (isTRUE(attr(pt.segs, "SeriesShowValue")))
@@ -499,18 +503,19 @@ Bar <- function(x,
         # or if covered by the data labels
         # Changing layout.hovermode will make it more responsive but text is diagonal
         ypos <- if (NCOL(chart.matrix) > 1) data.annotations$y[,i] else x
-        xpos <- if (NCOL(chart.matrix) > 1) data.annotations$x[,i] else y.filled
+        xpos <- chart.matrix[,i]
         if (pyramid)
             xpos <- rep(0, NROW(chart.matrix))
         ind.na <- which(!is.finite(y))
         if (length(ind.na) > 0)
             hover.template[ind.na] <- ""
         if (length(ind.na) != NROW(chart.matrix))
-            p <- add_trace(p, x = xpos, y = ypos, type = "scatter", name = legend.text[i],
-                   mode = "markers", marker = list(color = tmp.color, opacity = 0),
-                   hovertemplate = hover.template, hoverlabel = hover.label,
-                   showlegend = FALSE, yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y")
-
+            p <- addAnnotScatterTrace(p, xpos = xpos, ypos = ypos, name = legend.text[i],
+                   text = "", marker = list(color = tmp.color, opacity = 0.0),
+                   hovertemplate = hover.template, hoverlabel = hover.label, xaxis = "x",
+                   yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y",
+                   stackgroup = if (is.stacked) "hover" else "",
+                   orientation = "h", legendgroup = i)
     }
 
     # Only used for small multiples

@@ -1,14 +1,14 @@
 Package: flipStandardCharts
 Type: Package
 Title: Standard R interactive charts
-Version: 1.28.3
+Version: 1.29.3
 Author: Displayr <opensource@displayr.com>
 Maintainer: Displayr <opensource@displayr.com>
 Description: Wrapper for other charting packages. The goal is to provide a
     relatively standard API across multiple packages, so that a user can create
     just about any 'standard' chart easily.
 License: GPL-3
-Depends: R (>= 2.10)
+Depends: R (>= 3.5.0)
 LazyData: TRUE
 Imports:
     d3vennR,
@@ -24,7 +24,7 @@ Imports:
     mgcv,
     hash,
     htmltools,
-    htmlwidgets,
+    htmlwidgets (>= 1.5.4),
     httr,
     janitor,
     jsonlite,
