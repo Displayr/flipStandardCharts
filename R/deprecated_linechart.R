@@ -1,10 +1,10 @@
-#' @importFrom verbs SumColumns
+#' @importFrom verbs SumEachColumn
 lineChart <- function(chart.matrix,
                       series.line.width,
                       series.marker.show)
 {
     ErrorIfNotEnoughData(chart.matrix)
-    no.data.in.series <- SumColumns(is.na(chart.matrix), remove.rows = NULL, remove.missing = FALSE) >= length(chart.matrix[, 1])
+    no.data.in.series <- SumEachColumn(is.na(chart.matrix), remove.rows = NULL, remove.missing = FALSE) >= length(chart.matrix[, 1])
     if (any(no.data.in.series))
         chart.matrix <- chart.matrix[, !no.data.in.series]
 

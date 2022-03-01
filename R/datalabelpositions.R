@@ -1,5 +1,5 @@
 #' @importFrom flipFormat FormatAsReal
-#' @importFrom verbs SumRows
+#' @importFrom verbs SumEachRow
 dataLabelPositions <- function(chart.matrix,
                                 axis.type,
                                 annotations = NULL,
@@ -40,7 +40,7 @@ dataLabelPositions <- function(chart.matrix,
         else
             y.pos <- chart.matrix
 
-        largest.bar <- max(SumRows(abs(chart.matrix), remove.columns = NULL, remove.missing = FALSE))
+        largest.bar <- max(SumEachRow(abs(chart.matrix), remove.columns = NULL, remove.missing = FALSE))
         if (is.null(display.threshold))
             display.threshold <- 0.05
         text[abs(chart.matrix) < largest.bar * display.threshold] <- ""
