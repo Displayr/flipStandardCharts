@@ -109,8 +109,15 @@ addTraceForBarTypeDataLabelAnnotations <- function(p, type, name,
                   text = tmp.text, textfont = tmp.font, textposition = textalign,
                   marker = list(opacity = 0.0, color = "red", size = tmp.pos),
                   xaxis = xaxis, yaxis = yaxis, hoverinfo = "skip", 
-                  stackgroup = if (is.stacked) "circle" else "",
+                  stackgroup = if (is.stacked) paste0("circle", j) else "",
                   orientation = if (type == "Bar") "h" else "v", legendgroup = i)
+
+            # Add other half of the trace to center the data labels
+            if (is.stacked && (data.label.centered || type == "Bar"))
+            p <- addAnnotScatterTrace(p, xpos = data.label.xpos, ypos = data.label.ypos, text = "",
+                    yaxis = yaxis, xaxis = xaxis, stackgroup = paste0("circle", j),
+                    hoverinfo = "skip", marker = list(opacity = 0.0), 
+                    orientation = if (type == "Bar") "h" else "v", legendgroup = i)
         }
     }
 
