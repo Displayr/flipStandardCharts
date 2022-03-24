@@ -83,7 +83,7 @@ addTraceForBarTypeDataLabelAnnotations <- function(p, type, name,
     {
         a.tmp <- annotation.list[[j]]
         if (grepl("Circle", a.tmp$type))
-        { 
+        {
             # shiftleft and shiftright elements could be NULL or NA and should have zero padding then.
             tmp.dat <- getAnnotData(annot.data, a.tmp$data, i)
             ind.sel <- extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype)
@@ -108,7 +108,7 @@ addTraceForBarTypeDataLabelAnnotations <- function(p, type, name,
             p <- addAnnotScatterTrace(p, xpos = data.label.xpos, ypos = data.label.ypos,
                   text = tmp.text, textfont = tmp.font, textposition = textalign,
                   marker = list(opacity = 0.0, color = "red", size = tmp.pos),
-                  xaxis = xaxis, yaxis = yaxis, hoverinfo = "skip", 
+                  xaxis = xaxis, yaxis = yaxis, hoverinfo = "skip",
                   stackgroup = if (is.stacked) paste0("circle", j) else "",
                   orientation = if (type == "Bar") "h" else "v", legendgroup = i)
 
@@ -116,7 +116,7 @@ addTraceForBarTypeDataLabelAnnotations <- function(p, type, name,
             if (is.stacked && (data.label.centered || type == "Bar"))
             p <- addAnnotScatterTrace(p, xpos = data.label.xpos, ypos = data.label.ypos, text = "",
                     yaxis = yaxis, xaxis = xaxis, stackgroup = paste0("circle", j),
-                    hoverinfo = "skip", marker = list(opacity = 0.0), 
+                    hoverinfo = "skip", marker = list(opacity = 0.0),
                     orientation = if (type == "Bar") "h" else "v", legendgroup = i)
         }
     }
@@ -140,7 +140,7 @@ addTraceForBarTypeDataLabelAnnotations <- function(p, type, name,
     if (is.stacked && (data.label.centered || type == "Bar"))
         p <- addAnnotScatterTrace(p, xpos = data.label.xpos, ypos = data.label.ypos, text = "",
                 yaxis = yaxis, xaxis = xaxis, stackgroup = stackgroupname,
-                hoverinfo = "skip", marker = list(opacity = 0.0), 
+                hoverinfo = "skip", marker = list(opacity = 0.0),
                 orientation = if (type == "Bar") "h" else "v", legendgroup = i)
 
     return(p)
@@ -151,7 +151,7 @@ addAnnotScatterTrace <- function(p, orientation, xpos, ypos, text, stackgroup, .
     # If no stacking is performed, then just create scatter trace as usual
     tmp.fill <- "none"
     if (any(nzchar(stackgroup)))
-    { 
+    {
         tmp.fill <- if (orientation == "h") "tonextx" else "tonexty"
 
         # Separate out positive and negative values into separate traces
@@ -192,7 +192,7 @@ addAnnotScatterTrace <- function(p, orientation, xpos, ypos, text, stackgroup, .
             p <- add_trace(p, x = neg.xpos, y = neg.ypos, cliponaxis = FALSE,
                     text = neg.text, mode = if (is.null(neg.text)) "markers+text" else "markers+text",
                     type = "scatter", fillcolor = "transparent", fill = tmp.fill,
-                    orientation = orientation, showlegend = FALSE, 
+                    orientation = orientation, showlegend = FALSE,
                     stackgroup = paste0("neg", stackgroup), ...)
     }
 
@@ -209,7 +209,7 @@ addAnnotScatterTrace <- function(p, orientation, xpos, ypos, text, stackgroup, .
             type = "scatter", fillcolor = "transparent", fill = tmp.fill,
             orientation = orientation, showlegend = FALSE, stackgroup = stackgroup, ...)
     p
-} 
+}
 
 
 
@@ -233,8 +233,8 @@ getAnnotData <- function(data, name, series, as.numeric = TRUE)
 
     d.dim <- dim(data)
     d.len <- length(d.dim)
-    if (!is.null(attr(data, "statistic")))
-        d.names <- attr(data, "statistic")
+    if (!is.null(attr(data, "statistic", exact = TRUE)))
+        d.names <- attr(data, "statistic", exact = TRUE)
     else
     {
         d.names <- dimnames(data)[[d.len]]
@@ -256,7 +256,7 @@ getAnnotData <- function(data, name, series, as.numeric = TRUE)
           name <- name2
     }
 
-    match.single.stat <- isTRUE(attr(data, "statistic") == name)
+    match.single.stat <- isTRUE(attr(data, "statistic", exact = TRUE) == name)
     if (match.single.stat && d.len == 2)
         new.dat <- data[,series]
     else if (match.single.stat)
@@ -378,7 +378,7 @@ parseThreshold <- function(x)
     # Tries to convert string to numeric where possible
     # Attaches statistic if a percent sign is observed
     res <- ParseText(x)
-    if (is.numeric(res) && isTRUE(grepl("%", attr(res, "statistic"))))
+    if (is.numeric(res) && isTRUE(grepl("%", attr(res, "statistic", exact = TRUE))))
         res <- as.numeric(res)/100
 
     return(res)
@@ -475,7 +475,7 @@ applyAllAnnotationsToDataLabels <- function(data.label.text, annotation.list,
     annot.data, series.index, rows.to.show,
     chart.type, clean.pt.segs = FALSE)
 {
-    pt.segs <- attr(data.label.text, "customPoints")
+    pt.segs <- attr(data.label.text, "customPoints", exact = TRUE)
     for (j in seq_along(annotation.list))
     {
         if (!checkAnnotType(annotation.list[[j]]$type, chart.type))

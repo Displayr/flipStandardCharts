@@ -113,7 +113,7 @@ evalHoverTemplate <- function(template, x, x.hovertext.format, x.tick.prefix, x.
 checkMatrixNames <- function(x, assign.col.names = TRUE)
 {
     # Check for special case where x is a time-series object
-    tInfo <- attr(x, "tsp")
+    tInfo <- attr(x, "tsp", exact = TRUE)
     if (length(tInfo) == 3)
     {
         t.seq <- seq(from = tInfo[1], to = tInfo[2], by = 1/tInfo[3])
@@ -124,7 +124,7 @@ checkMatrixNames <- function(x, assign.col.names = TRUE)
 
     # Convert into a matrix format and extract primary statistic
     old.names <- c(dimnames(x), NA, NA) # ensure there are at least 2 elements
-    new.x <- if (length(dim(x)) == 3) matrix(x, nrow(x), ncol(x), dimnames = old.names[1:2]) # explicitly specify dimensions
+    new.x <- if (length(dim(x)) == 3) matrix(x[,,1], nrow(x), ncol(x), dimnames = old.names[1:2]) # explicitly specify dimensions
              else as.matrix(suppressWarnings(AsTidyTabularData(x))) # handles 1d data + statistic properly
 
     # Try to convert character matrix to numeric
@@ -162,12 +162,12 @@ checkTableList <- function(y, trend.lines)
     used.names <- c()
     for (i in 1:num.tables)
     {
-        if (is.null(attr(y[[i]], "name")))
+        if (is.null(attr(y[[i]], "name", exact = TRUE)))
         {
             attr(y[[i]], "name") <- as.character(i)
             used.names <- c(used.names, i)
         }
-        y.names[i] <- attr(y[[i]], "name")[1]
+        y.names[i] <- attr(y[[i]], "name", exact = TRUE)[1]
     }
     if (!trend.lines && length(used.names) > 0)
         warning(sprintf("Tables have been automatically assigned names '%s'. You can name tables using R code: 'attr(table.name, \"name\") <- \"Description\"'", paste(used.names, collapse="', '")))
@@ -1515,7 +1515,7 @@ getColumn <- function(x, i)
         res <- x[,i,drop = FALSE]
     if (length(dim(x)) == 3)
         res <- x[,i, , drop = FALSE]
-    if (!is.null(attr(x, "statistic")))
+    if (!is.null(attr(x, "statistic", exact = TRUE)))
         attr(res, "statistic") <- attr(x, "statistic")
     return(res)
 }
@@ -1553,7 +1553,7 @@ isAutoFormat <- function(x)
 
 isPercentData <- function(data)
 {
-    stat <- attr(data, "statistic")
+    stat <- attr(data, "statistic", exact = TRUE)
     if (isTRUE(grepl("%", stat)))
         return(TRUE)
     ndim <- length(dim(data))
