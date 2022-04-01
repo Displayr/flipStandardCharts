@@ -173,8 +173,10 @@ SmallMultiples <- function(x,
         {
             if (chart.type == "Scatter")
                 indexes <- indexes[x.order]
-            else
+            else if (length(dim(x)) == 2)
                 x <- CopyAttributes(x[, x.order, drop = FALSE], x)
+            else if (length(dim(x)) == 3)
+                x <- CopyAttributes(x[, x.order, , drop = FALSE], x)
             npanels <- length(x.order)
         }
     }
