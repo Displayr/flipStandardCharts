@@ -25,6 +25,7 @@
 #' @param margin.left Left margin (default should be fine, this allows for fine-tuning plot space)
 #' @importFrom streamgraph streamgraph sg_fill_manual sg_axis_x sg_axis_y sg_colors
 #' @importFrom flipTime AsDateTime
+#' @importFrom flipU MakeUniqueNames
 #' @importFrom verbs SumEachColumn
 #' @importFrom janitor round_half_up
 #' @importFrom stats median
@@ -63,6 +64,7 @@ Stream <- function(x,
 
     # streamgraph requires dates along the columns but for consistency with Time Series, Line, Google Trends etc
     # CChart produces dates along the rows, hence we transpose
+    colnames(x) <- MakeUniqueNames(colnames(x))
     x <- t(x)
 
     colors = StripAlphaChannel(colors, "Alpha values for colors in Streamgraphs are ignored.")
