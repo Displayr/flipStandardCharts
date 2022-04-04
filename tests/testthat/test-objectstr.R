@@ -49,7 +49,7 @@ vdat <- list(structure(list(sets = list(0), label = "Like", size = 100), .Names 
     "size")))
 test_that("Object structure of Venn",
 {
-    expect_silent(pp <- Venn(vdat))
+    expect_warning(pp <- Venn(vdat))
     expect_true(!is.null(pp$htmlwidget))
 })
 

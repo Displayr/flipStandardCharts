@@ -12,7 +12,7 @@ test_that("Venn",
                     list("sets"= list(0, 1), "size"= 50),
                     list("sets"= list(0, 2), "size"= 0),
                     list("sets"= list(2, 3), "size"= 50))
-                Venn(r.output)
+                expect_warning(Venn(r.output))
                 # More complicated example
                 r.output <- list(
                         list("sets"= list(0), "label"= "Radiohead", "size"= 77348),
@@ -117,9 +117,9 @@ test_that("Venn",
                         list("sets"= list(0, 7, 11), "size"= 118),
                         list("sets"= list(0, 9, 10), "size" =13),
                         list("sets"= list(2, 7, 8), "size"= 72))
-                Venn(r.output)
+                expect_warning(Venn(r.output), "approximately")
                 # Setting font size
-                Venn(r.output, data.label.font.size = 6)
+                expect_warning(Venn(r.output, data.label.font.size = 6), "approximately")
                 # Numeric inptuts
                 data("cola", package = "flipExampleData")
                 x <- cola[,c("Q6_A", "Q6_B", "Q6_C", "Q6_D", "Q6_E", "Q6_F")]
@@ -136,19 +136,19 @@ test_that("Venn",
                 # Numeric input - 3D
                 Venn(x[,1:3])
                 # Numeric input - 4D
-                Venn(x[,1:4])
+                expect_warning(Venn(x[,1:4]))
                 # Numeric input - 5D
-                Venn(x[,1:5])
+                expect_warning(Venn(x[,1:5]))
                 # Numeric input - 6D
-                Venn(x[,1:6])
+                expect_warning(Venn(x[,1:6]))
                 # Numeric input - 1D
                 expect_error(Venn(x[,1]))
                 # Factor inpul
                 expect_error(Venn(data.frame(lapply(x, as.factor))))
-                expect_error(Venn(r.output, colors = c("red", "green", "blue"), data.label.font.autocolor = TRUE,
-                    data.label.font.family = "Impact"), NA)
-                expect_error(Venn(r.output, colors = rainbow(9, start = 0, end =2/3), opacity = 0.8,
+                expect_warning(Venn(r.output, colors = c("red", "green", "blue"), data.label.font.autocolor = TRUE,
+                    data.label.font.family = "Impact"), "approximately")
+                expect_warning(Venn(r.output, colors = rainbow(9, start = 0, end =2/3), opacity = 0.8,
                     data.label.font.autocolor = FALSE, data.label.font.color = "#FFFFFF",
-                    data.label.font.family = "Impact"), NA)
+                    data.label.font.family = "Impact"), "approximately")
           })
 

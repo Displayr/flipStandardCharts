@@ -83,6 +83,8 @@ Venn <- function(x = NULL,
 
     # Tidying up parameters
     n.sets <- length(unique(unlist(sapply(x, function(s) return(unlist(s$sets))))))
+    if (n.sets > 3)
+        warning("In Venn diagrams with more than 3 variables, areas are only approximately proportional to set sizes.")
     if (is.null(colors))
     {
          # d3.schemeCategory10
