@@ -525,7 +525,14 @@ calcUnitsForMaxNum <- function(tick.maxnum, bounds.max, bounds.min, values)
         tmp.min <- min(values, na.rm = TRUE)
     tmp.diff <- (tmp.max - tmp.min)/tick.maxnum
     if (tmp.diff > 0)
-        return(10^(ceiling(log10(tmp.diff))))
-    else
+    {
+        delta <- 10^(ceiling(log10(tmp.diff)))
+        if (delta * 0.2 > tmp.diff)
+            return(delta * 0.2)
+        else if (delta * 0.5 > tmp.diff)
+            return(delta * 0.5)
+        else
+            return(delta)
+    } else
         return(NULL)
 }
