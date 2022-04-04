@@ -97,6 +97,7 @@ LabeledScatter <- function(x = NULL,
                                 y.bounds.minimum = NULL,
                                 y.bounds.maximum = NULL,
                                 y.tick.distance = NULL,
+                                y.tick.maxnum = NULL,
                                 #y.data.reversed = FALSE,
                                 y.grid.width = 1,
                                 y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
@@ -116,6 +117,7 @@ LabeledScatter <- function(x = NULL,
                                 x.bounds.minimum = NULL,
                                 x.bounds.maximum = NULL,
                                 x.tick.distance = NULL,
+                                x.tick.maxnum = NULL,
                                 #x.data.reversed = FALSE,
                                 x.grid.width = 1,
                                 x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
@@ -394,6 +396,12 @@ LabeledScatter <- function(x = NULL,
     y.axis.type <- getAxisType(y[not.na], y.tick.format)
     y.tick.format <- checkD3Format(y.tick.format, y.axis.type, "Y axis", convert = TRUE)
     y <- convertAxis(y, y.axis.type)
+    x.bounds.units.major = charToNumeric(x.tick.distance)
+    if (is.null(x.bounds.units.major) && !is.null(x.tick.maxnum))
+        x.bounds.units.major <- calcUnitsForMaxNum(x.tick.maxnum, x.bounds.maximum, x.bounds.minimum, x)
+    y.bounds.units.major = charToNumeric(y.tick.distance)
+    if (is.null(y.bounds.units.major) && !is.null(y.tick.maxnum))
+        y.bounds.units.major <- calcUnitsForMaxNum(y.tick.maxnum, y.bounds.maximum, y.bounds.minimum, y)
 
     tooltips.text <- sprintf("%s (%s, %s)", scatter.labels[not.na],
         formatByD3(x[not.na], x.tick.format, x.tick.prefix, x.tick.suffix),
@@ -471,10 +479,10 @@ LabeledScatter <- function(x = NULL,
                        point.radius = 0.5 * marker.size,
                        y.bounds.maximum = charToNumeric(y.bounds.maximum),
                        y.bounds.minimum = charToNumeric(y.bounds.minimum),
-                       y.bounds.units.major = charToNumeric(y.tick.distance),
+                       y.bounds.units.major = y.bounds.units.major,
                        x.bounds.maximum = charToNumeric(x.bounds.maximum),
                        x.bounds.minimum = charToNumeric(x.bounds.minimum),
-                       x.bounds.units.major = charToNumeric(x.tick.distance),
+                       x.bounds.units.major = x.bounds.units.major,
                        y.axis.show = y.tick.show,
                        x.axis.show = x.tick.show,
                        tooltip.font.family = hovertext.font.family,
@@ -506,3 +514,18 @@ LabeledScatter <- function(x = NULL,
 }
 
 
+calcUnitsForMaxNum <- function(tick.maxnum, bounds.max, bounds.min, values)
+{
+    tick.maxnum <- charToNumeric(tick.maxnum)
+    tmp.max <- charToNumeric(bounds.max)
+    if (is.null(tmp.max))
+        tmp.max <- max(values, na.rm = TRUE)
+    tmp.min <- charToNumeric(bounds.min)
+    if (is.null(tmp.min))
+        tmp.min <- min(values, na.rm = TRUE)
+    tmp.diff <- (tmp.max - tmp.min)/tick.maxnum
+    if (tmp.diff > 0)
+        return(10^(ceiling(log10(tmp.diff))))
+    else
+        return(NULL)
+}
