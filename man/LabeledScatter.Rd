@@ -63,6 +63,7 @@ LabeledScatter(
   y.bounds.minimum = NULL,
   y.bounds.maximum = NULL,
   y.tick.distance = NULL,
+  y.tick.maxnum = NULL,
   y.grid.width = 1,
   y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
   y.tick.show = TRUE,
@@ -81,6 +82,7 @@ LabeledScatter(
   x.bounds.minimum = NULL,
   x.bounds.maximum = NULL,
   x.tick.distance = NULL,
+  x.tick.maxnum = NULL,
   x.grid.width = 1,
   x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
   x.tick.show = TRUE,
@@ -240,6 +242,10 @@ For a categorical axis, the index of the category (0-based) should be used.}
 
 \item{y.tick.distance}{Distance between tick marks. Requires that \code{y.bounds.minimum} and \code{y.bounds.maximum} have been set.}
 
+\item{y.tick.maxnum}{Maximum number of ticks shown on the axis.
+This setting is ignored if \code{y.tick.distance} is set or
+if the axis is categorical}
+
 \item{y.grid.width}{Width of y-grid lines in pixels; 0 = no line}
 
 \item{y.grid.color}{Color of y-grid lines as a named color in character
@@ -285,6 +291,11 @@ plotting; NULL = no manual range set.  Must be greater than x.bounds.minimum}
 \item{x.tick.distance}{Tick mark distance in
 x-axis units between minimum and maximum for plotting; NULL = no manual
 range set.}
+
+\item{x.tick.maxnum}{Maximum number of ticks shown on the axis.
+It defaults to 11 which gives the same output from plotly as NULL.
+This setting is ignored if \code{x.tick.distance} is set or
+if the axis is categorical}
 
 \item{x.grid.width}{Width of y-grid lines in pixels; 0 = no line}
 
