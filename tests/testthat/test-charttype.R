@@ -32,7 +32,7 @@ test_that("ChartType attribute",
         list("sets"= list(0, 1), "size"= 50),
         list("sets"= list(0, 2), "size"= 0),
         list("sets"= list(2, 3), "size"= 50))
-    pp <- Venn(r.output)
+    expect_warning(pp <- Venn(r.output))
     expect_true(!is.null(attr(pp, "ChartType")))
 })
 

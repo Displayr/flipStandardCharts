@@ -404,8 +404,8 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE,
              else seq(from = min(x0, na.rm = TRUE), to = max(x0, na.rm = TRUE), length = 100)
     if (!tmp.is.factor && max(x.fit) < max(tmp.dat$x))
         x.fit <- c(x.fit, max(tmp.dat$x))
-    y.fit <- if ("gam" %in% class(tmp.fit)) suppressWarnings(try(predict(tmp.fit, data.frame(x = x.fit), se = CI.show, type = "response")))
-             else                           suppressWarnings(try(predict(tmp.fit, data.frame(x = x.fit), se = CI.show)))
+    y.fit <- if (inherits(tmp.fit, "gam")) suppressWarnings(try(predict(tmp.fit, data.frame(x = x.fit), se = CI.show, type = "response")))
+             else                          suppressWarnings(try(predict(tmp.fit, data.frame(x = x.fit), se = CI.show)))
     if (inherits(y.fit, "try-error"))
     {
         warning("Could not fit trend line to data. Check that you expect to map a single x-value to a single y-value.")
@@ -1284,7 +1284,7 @@ autoFormatLongLabels <- function(x, wordwrap = FALSE, n = 21, truncate = FALSE, 
 
 stripClassAndCallFromXtabs <- function(chart.matrix)
 {
-    if (class(chart.matrix) == "xtabs" || class(chart.matrix) == "table")
+    if (inherits(chart.matrix, "xtabs") || inherits(chart.matrix, "table"))
     {
         attr(chart.matrix, "class") <- NULL
         attr(chart.matrix, "call") <- NULL
@@ -1542,11 +1542,11 @@ readLineThickness <- function(line.thickness, n)
 # of PrepareNumbers when the user has set Number Type to "Automatic"
 isAutoFormat <- function(x)
 {
-    if (nchar(x) == 0)
+    if (isTRUE(nchar(x) == 0))
         return(TRUE)
-    if (x == "")
+    if (isTRUE(x == ""))
         return(TRUE)
-    if (grepl("\\d$", x))
+    if (isTRUE(grepl("\\d$", x)))
         return(TRUE)
     return(FALSE)
 }

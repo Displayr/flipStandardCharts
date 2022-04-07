@@ -1,5 +1,6 @@
 context("Data label matrix")
 
+test_that("Check datalabels set to matrix inputs", {
 set.seed(12345)
 dat2d <- matrix(rnorm(35, 5, 4), 7, 5, dimnames = list(letters[1:7], LETTERS[1:5]))
 dat2dpos <- matrix(abs(rnorm(35, 5, 4)), 7, 5, dimnames = list(letters[1:7], LETTERS[1:5]))
@@ -89,3 +90,4 @@ expect_error(Column(dat2dpos, x2 = dat2d, opacity = 0.2, x2.data.label.show.at.e
     x2.marker.show.at.ends = TRUE), NA)
 expect_error(Column(dat2dpos, x2 = dat2d, opacity = 0.2, x2.data.label.show.at.ends = TRUE,
     x2.marker.show.at.ends = TRUE, type = "Stacked"), NA)
+})
