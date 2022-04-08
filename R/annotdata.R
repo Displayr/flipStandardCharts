@@ -85,7 +85,8 @@ addTraceForBarTypeDataLabelAnnotations <- function(p, type, name,
         if (grepl("Circle", a.tmp$type))
         {
             # shiftleft and shiftright elements could be NULL or NA and should have zero padding then.
-            tmp.dat <- getAnnotData(annot.data, a.tmp$data, i)
+            tmp.dat <- getAnnotData(annot.data, a.tmp$data, i,
+                as.numeric = !grepl("Text", a.tmp$type) && a.tmp$data != "Column Comparisons")
             ind.sel <- extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype)
             tmp.text <- rep("", n)
             left.pad <- paste(rep(" ", SumEmptyHandling(a.tmp$shiftright)), collapse = "")
