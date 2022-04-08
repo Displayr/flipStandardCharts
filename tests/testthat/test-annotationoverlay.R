@@ -189,3 +189,44 @@ test_that("Annotations for tables with only one statistic",
 {
     expect_error(Column(tb1d.with.single.stat, overlay.annotation.list = aa.txt), NA)
 })
+
+
+test_that("Annotations on stacked charts",
+{
+    xx <- structure(c(8.83, 9.99, 8.16, 10.19, 8.73, 9.23, 21.24, 27.96,
+        31.18, 23.95, 25.79, 28.59, 17.54, 18.14, 17.69, 23.57, 21.43,
+        22.09, 20.76, 16.2, 15.42, 18.6, 20.9, 17.7, 17.06, 18.14, 18.03,
+        15.03, 14.15, 16.19, 14.32, 9.4, 9.52, 8.66, 8.86, 5.9, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, -3), .Dim = c(6L, 6L, 4L), .Dimnames = list(c("W2 '20 (Jul)",
+        "W3 '20 (Oct)", "W1 '21 (Mar)", "W2 '21 (Jul)", "W3 '21 (Oct)",
+        "W1 '22 (Mar)"), c("Marriage", "Committed Relationship", "Casual Dating",
+        "Flings/HU/FWB", "Friendship with romantic potential", "Nothing"
+        ), c("Column %", "Significance", "", "Last.Diff")), assigned.rownames = TRUE)
+
+    overlay.annot <- list(list(type = "Arrow - up", data = "Significance", custom.symbol = NULL,
+        threstype = "above threshold", threshold = "0", relative.pos = 0.5,
+        halign = "Right", valign = "Middle", offset = 28, color = "#00BF00",
+        size = 30, format = NULL, prefix = NULL, suffix = NULL, font.family = "Arial"),
+        list(type = "Arrow - down", data = "Significance", custom.symbol = NULL,
+            threstype = "below threshold", threshold = "0", relative.pos = 0.5,
+            halign = "Right", valign = "Middle", offset = 28, color = "#CD343C",
+            size = 30, format = NULL, prefix = NULL, suffix = NULL,
+            font.family = "Arial"), list(type = "Text", data = "Last.Diff",
+            custom.symbol = NULL, threstype = "above threshold",
+            threshold = " 0", relative.pos = 0.5, halign = "Right",
+            valign = "Middle", offset = 55, color = "#000000", size = 12,
+            format = ".", prefix = "+", suffix = "pp", font.family = "Arial"),
+        list(type = "Text", data = "Last.Diff", custom.symbol = NULL,
+            threstype = "below threshold", threshold = " 0", relative.pos = 0.5,
+            halign = "Right", valign = "Middle", offset = 55, color = "#000000",
+            size = 12, format = ".", prefix = "", suffix = "pp",
+            font.family = "Arial"))
+
+        expect_error(Column(xx, type = "Stacked", data.label.show = TRUE,
+                overlay.annotation.list = overlay.annot), NA)
+})

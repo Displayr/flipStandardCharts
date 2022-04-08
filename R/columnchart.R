@@ -1000,6 +1000,7 @@ Column <- function(x,
                 as.numeric = !grepl("Text", curr.annot$type) &&
                 curr.annot$data != "Column Comparisons")
             ind.sel <- extractSelectedAnnot(curr.dat, curr.annot$threshold, curr.annot$threstype)
+            curr.annot.align <- "middle"
             if (length(ind.sel) == 0 && is.stacked)
             {
                 curr.annot.text <- rep(" ", NROW(chart.matrix))
