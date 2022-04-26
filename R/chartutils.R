@@ -842,7 +842,7 @@ setMarginsForAxis <- function(margins, labels, axis)
         new.margin <- lab.len
 
     title.nline <- 0
-    if (any(nzchar(axis$title)) && axis$title != " ")
+    if (any(nzchar(axis$title)) && !isTRUE(axis$title == " "))
         title.nline <- Sum(gregexpr("<br>", axis$title)[[1]] > -1, remove.missing = FALSE) + 1
     title.pad <- max(0, axis$title$font$size) * title.nline * 1.25
 
@@ -881,7 +881,7 @@ setMarginsForText <- function(margins, title, subtitle, footer,
         subtitle.nline <- Sum(gregexpr("<br>", subtitle)[[1]] > -1, remove.missing = FALSE) + 1.5
         margins$t <- margins$t + (subtitle.font.size * subtitle.nline) * 0.8 * 2
     }
-    if (any(nzchar(footer)) && footer != " ")
+    if (any(nzchar(footer)) && !isTRUE(footer == " "))
     {
         footer.nline <- Sum(gregexpr("<br>", footer)[[1]] > -1) + 4
         margins$b <- margins$b + (footer.font.size * footer.nline * 1.25)

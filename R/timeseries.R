@@ -166,7 +166,7 @@ TimeSeries <- function(x = NULL,
         y.hovertext.format <- y.tick.format
     else
         y.hovertext.format <- checkD3Format(y.hovertext.format, "numeric", warning.type = "Hover text")
-    medium.values <- all(as.numeric(x) > 1 && as.numeric(x) < 1e5)
+    medium.values <- all(as.numeric(x) > 1) && all(as.numeric(x) < 1e5)
     dg <- dyAxis(dg, "y",
         valueRange = c(charToNumeric(y.bounds.minimum), charToNumeric(y.bounds.maximum)),
         valueFormatter = tickFormat(y.hovertext.format, y.hovertext.prefix, y.hovertext.suffix, medium.values),

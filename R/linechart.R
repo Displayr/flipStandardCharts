@@ -210,7 +210,7 @@ Line <-   function(x,
         shape <- "spline"
     if (grepl("^straight", tolower(shape)))
         shape <- "linear"
-    if (is.null(marker.show) || marker.show == "none") # included for backwards compatibility
+    if (is.null(marker.show) || isTRUE(marker.show == "none")) # included for backwards compatibility
         marker.show <- FALSE
     if (is.null(opacity))
         opacity <- if (fit.type == "None") 1 else 0.6

@@ -243,7 +243,7 @@ Pie <- function(x,
                   tooltips.bg.opacity = hovertext.bg.opacity,
                   prefix = data.label.prefix,
                   suffix = data.label.suffix,
-                  border.color = pie.border.color,
+                  border.color = StripAlphaChannel(pie.border.color, "Alpha values for pie chart borders are ignored"),
                   inner.radius = inner.radius))
 
     result <- list(htmlwidget = donut)
