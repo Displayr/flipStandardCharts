@@ -4,6 +4,7 @@ r:
 dist: bionic
 cache: packages
 warnings_are_errors: false
+latex: false
 
 # install debian libraries to match R-servers
 # update pre-installed packages to latest versions
@@ -18,6 +19,7 @@ before_install:
   - mkdir -p ~/.R/
   - echo "CXXFLAGS = `R CMD config CXXFLAGS` -g0 -flto -w" >> ~/.R/Makevars
   - echo "CXX14FLAGS = -w -O3" >> ~/.R/Makevars
+  - sudo apt-get install -y r-cran-rcppeigen
   - rcode="options('testthat.progress.max_fails' = Inf); "
   - rcode+="tfile <- tempfile(); capture.output(res<-devtools::test(), file = tfile); out <- readLines(tfile); cat(out, sep = '\n'); "
   - rcode+="line.fail <- max(grep('FAIL', out)); "
