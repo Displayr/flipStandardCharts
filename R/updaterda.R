@@ -92,28 +92,28 @@
 # for (i in seq_len(nrow(map.coordinates)))
 # {
 #     country.name <- as.character(map.coordinates[["admin"]][i])
-
+#
 #     columns <- c("admin", "adm0_a3", "geounit", "gu_a3", "subunit", "su_a3",
 #                  "name", "name_long", "brk_a3", "brk_name", "abbrev", "postal",
 #                  "formal_en", "formal_fr", "name_sort", "name_alt",
 #                  "iso_a2", "iso_a3", "wb_a2", "wb_a3", "adm0_a3_is", "adm0_a3_us")
-
+#
 #     all.names <- as.character(unlist(map.coordinates[i, columns]))
 #     all.names[all.names == "-99"] <- NA
 #     all.names <- all.names[!is.na(all.names)]
 #     all.names <- unique(all.names)
 #     all.names <- all.names[all.names != country.name]
-
+#
 #     iso.match <- match(country.name, ISO_3166_1$Name)
 #     if (is.na(iso.match))
 #     {
 #         iso.match <- match(all.names, ISO_3166_1$Name)
 #         if (any(!is.na(iso.match)))
 #             iso.match <- iso.match[!is.na(iso.match)]
-
+#
 #         iso.match <- iso.match[1]
 #     }
-
+#
 #     if (!is.na(iso.match))
 #     {
 #         columns <- c("Alpha_2", "Alpha_3", "Name", "Official_name", "Common_name")
@@ -121,12 +121,12 @@
 #         iso.names <- iso.names[!is.na(iso.names)]
 #         all.names <- unique(c(all.names, iso.names))
 #     }
-
+#
 #     all.names <- all.names[all.names != country.name]
-
+#
 #     if (length(all.names) == 0)
 #         next
-
+#
 #     admin0.name.map.by.admin[[country.name]] <- all.names
 # }
 
@@ -192,45 +192,46 @@
 
 # iso.3166$Code <- substring(iso.3166$Code, 4)
 # iso.3166$Code[!grepl("^[[:alpha:]]+$", iso.3166$Code)] <- NA
-
+#
 # admin1.name.map <- list()
 # for (i in seq_len(nrow(admin1.df)))
 # {
 #     state <- as.character(admin1.df$name[i])
 #     if (is.na(state))
 #         next
-
+#
 #     country <- as.character(admin1.df$admin[i])
 #     country.name.map <- admin1.name.map[[country]]
 #     if (is.null(country.name.map))
 #         country.name.map <- list()
-
+#
 #     columns <- c("abbrev", "postal", "woe_name", "gn_name")
 #     all.names <- as.character(unlist(admin1.df[i, columns]))
 #     all.names[all.names == "-99"] <- NA
-
+#
 #     name.alt <- as.character(admin1.df$name_alt[i])
 #     all.names <- c(all.names, strsplit(name.alt, "|", fixed = TRUE)[[1]])
 #     name.local <- as.character(admin1.df$name_local[i])
 #     all.names <- c(all.names, strsplit(name.local, "|", fixed = TRUE)[[1]])
-
+#
 #     iso.code <- iso.3166$Code[iso.3166$Country == country & iso.3166$Name == state]
 #     all.names <- c(all.names, iso.code)
-
+#
 #     all.names <- all.names[!is.na(all.names)]
 #     all.names <- unique(all.names)
 #     all.names <- all.names[all.names != state]
-
+#
 #     if (length(all.names) == 0)
 #         next
-
+#
 #     country.name.map[[state]] <- all.names
 #     admin1.name.map[[country]] <- country.name.map
 # }
 
-# # Manual amendments to state aletrnative names
+# # Manual amendments to state alternative names
 # admin1.name.map[["Australia"]]$`Jervis Bay Territory` <- admin1.name.map[["Australia"]]$`Lord Howe Island` <- NULL
-
+# Zendesk #93689: Fix ISO code for Brandenburg so it doesn't match Berlin's
+# admin1.name.map[["Germany"]][["Brandenburg"]][1] <- "BP"
 
 # # The file at 1:110m is missing a few small countries compared to the 1:50m data,
 # # notably Singapore and Hong Kong
@@ -329,7 +330,7 @@
 # ## Buskerud, Akershus and Ostfold have combined to become Viken
 # ## Finnmark and Troms have combined to form Troms og Finnmark
 # ## Hordaland and Sogn og Fjordane have combined to form Vestland
-# ## Nord-Trond Sor-Trondelag merged into Trøndelag
+# ## Nord-Trond Sor-Trondelag merged into Trondelag
 # ## Oppland and Hedmark joined to become Innlandet
 # ## Telemark og Vestfold combined to become Vestfold og Telemark
 # ## names(admin1.name.map[["Norway"]])
