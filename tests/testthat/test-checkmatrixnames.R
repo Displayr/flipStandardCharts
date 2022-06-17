@@ -189,13 +189,13 @@ pd <- structure(c(43.7988826815642, 40.5586592178771, 34.1899441340782,
 ), c("Row %", "Count", "p")), label = "table.Customer.effort[, 1, ]", assigned.rownames = TRUE)
 test_that("check colnames for cell statistics",
 {
-    expect_equal(checkMatrixNames(pd), structure(c(0.437988826815642,
-        0.405586592178771, 0.341899441340782, 0.335195530726257, 0.281564245810056,
-        0.383240223463687), dim = c(6L, 1L), dimnames = list(c("Understand your bill",
+    expect_equal(checkMatrixNames(pd), structure(c(43.7988826815642,
+        40.5586592178771, 34.1899441340782, 33.5195530726257, 28.1564245810056,
+        38.3240223463687), dim = c(6L, 1L), dimnames = list(c("Understand your bill",
         "Understand the pricing plans", "Get help from customer or technical support",
         "Upgrade/downgrade plans", "Cancel your subscription/plan", "Check your internet usage"),
         "Series 1")))
     expect_error(Bar(pd, data.label.show = T, annotation.list = list(list(type="Text - after data label",
-        data = "p", format = ".1e"))), NA)
+        data = "p", format = ".1e", prefix = ", p=", size = 6))), NA)
 
 })

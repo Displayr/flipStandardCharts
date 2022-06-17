@@ -125,6 +125,7 @@ checkMatrixNames <- function(x, assign.col.names = TRUE)
     # If x is a 1-d slice from a multi-stat crosstab
     # Then label matrix as Q-table so that secondary statistics are not plotted
     # But can still be used for annotations
+    is.slice <- FALSE
     q.cell.statnames <- c("Average", "Standard Deviation", "Minimum", "5th Percentile", "25th Percentile",
        "Median", "75th Percentile", "95th Percentile", "Maximum", "Mode",
        "Trimmed Average", "Interquartile Range", "Sum", "% Share", "Column Sample Size",
@@ -139,6 +140,9 @@ checkMatrixNames <- function(x, assign.col.names = TRUE)
     {
         attr(x, "name") <- " "
         attr(x, "questions") <- " "
+        is.slice <- TRUE
+        #if (grepl("%", colnames(x)[1]))
+        #    attr(x, "statistic") <- "%"
     }
 
     # Convert into a matrix format and extract primary statistic
@@ -158,7 +162,7 @@ checkMatrixNames <- function(x, assign.col.names = TRUE)
     }
 
     # Convert percentage data to decimal form
-    if (isPercentData(x))
+    if (isPercentData(x) && !is.slice)
     {
         new.x <- new.x/100
         attr(new.x, "statistic") <- NULL
