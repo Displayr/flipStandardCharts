@@ -122,6 +122,25 @@ checkMatrixNames <- function(x, assign.col.names = TRUE)
         return(x)
     }
 
+    # If x is a 1-d slice from a multi-stat crosstab
+    # Then label matrix as Q-table so that secondary statistics are not plotted
+    # But can still be used for annotations
+    q.cell.statnames <- c("Average", "Standard Deviation", "Minimum", "5th Percentile", "25th Percentile",
+       "Median", "75th Percentile", "95th Percentile", "Maximum", "Mode",
+       "Trimmed Average", "Interquartile Range", "Sum", "% Share", "Column Sample Size",
+       "%", "% Excluding NaN", "Row %", "Column %", "Cumulative %", "Expected %", "Residual %", 
+       "Sample Size", "Missing Count", "Effective Sample Size", "Count",
+       "Weighted Column Sample Size", "Weighted Sample Size", "Weighted Count", "t-Statistic",
+       "d.f.", "z-Statistic", "Standard Error", "p", "Corrected p", "Index",
+       "Multiple Comparison Adjustment", "Not Duplicate", "Column Names",
+       "Columns Compared", "Column Comparisons")
+    if (inherits(x, "matrix") && length(attributes(x)) == 2 && !is.null(colnames(x)) &&
+        all(colnames(x) %in% q.cell.statnames))
+    {
+        attr(x, "name") <- " "
+        attr(x, "questions") <- " "
+    }
+
     # Convert into a matrix format and extract primary statistic
     old.names <- c(dimnames(x), NA, NA) # ensure there are at least 2 elements
     new.x <- if (length(dim(x)) == 3) matrix(x[,,1], nrow(x), ncol(x), dimnames = old.names[1:2]) # explicitly specify dimensions
