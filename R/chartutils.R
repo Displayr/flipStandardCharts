@@ -134,7 +134,7 @@ checkMatrixNames <- function(x, assign.col.names = TRUE)
        "d.f.", "z-Statistic", "Standard Error", "p", "Corrected p", "Index",
        "Multiple Comparison Adjustment", "Not Duplicate", "Column Names",
        "Columns Compared", "Column Comparisons")
-    if (inherits(x, "matrix") && length(attributes(x)) == 2 && !is.null(colnames(x)) &&
+    if (inherits(x, "matrix") && !is.null(colnames(x)) && is.null(attr(x, "name")) && is.null(attr(x, "questions")) &&
         all(colnames(x) %in% q.cell.statnames))
     {
         attr(x, "name") <- " "
