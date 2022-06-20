@@ -252,7 +252,7 @@ Line <-   function(x,
                    else  vectorize(marker.show, ncol(chart.matrix), nrow(chart.matrix))
 
     line.type <- vectorize(tolower(line.type), ncol(chart.matrix))
-    marker.symbols <- vectorize(marker.symbols, ncol(chart.matrix), nrow(chart.matrix))
+    marker.symbols <- vectorize(marker.symbols, ncol(chart.matrix))
     marker.size <- vectorize(marker.size, ncol(chart.matrix), nrow(chart.matrix))
     dlab.color <- if (data.label.font.autocolor) colors
                   else vectorize(data.label.font.color, ncol(chart.matrix))
@@ -286,7 +286,7 @@ Line <-   function(x,
         line.type <- line.type[c(1:n,1)]
         marker.show <- cbind(marker.show, FALSE)
         marker.size <- marker.size[,c(1:n,1)] # doesn't matter - marker is not shown
-        marker.symbols <- marker.symbols[,c(1:n,1)]
+        marker.symbols <- marker.symbols[c(1:n,1)]
     }
 
     # Format axis labels
@@ -406,7 +406,7 @@ Line <-   function(x,
                        y = y[ind.single],
                        legendgroup = i,
                        name = y.label,
-                       marker = list(color = toRGB(colors[i], alpha = marker.opacity), size = marker.size[1]),
+                       marker = list(color = toRGB(colors[i], alpha = marker.opacity), size = marker.size[1], symbol = marker.symbols[i]),
                        text = autoFormatLongLabels(x.labels.full[ind.single], wordwrap=T, truncate=F),
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family)),
