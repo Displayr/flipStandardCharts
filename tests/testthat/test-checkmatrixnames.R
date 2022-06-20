@@ -177,3 +177,25 @@ test_that("evalHoverTemplate",
     expect_error(Bar(dat), NA)
     expect_error(Bar(dat, hovertext.template = "%{x}"), NA)
 })
+
+# Data source is a slice off a crosstab with multiple statistics
+pd <- structure(c(43.7988826815642, 40.5586592178771, 34.1899441340782,
+33.5195530726257, 28.1564245810056, 38.3240223463687, 392, 363,
+306, 300, 252, 343, 0.00000455107586216918, 0.0101672137704076,
+0.1647604620363, 0.0709169193677982, 0.000000274475803801506,
+0.237661483248857), dim = c(6L, 3L), dimnames = list(c("Understand your bill",
+"Understand the pricing plans", "Get help from customer or technical support",
+"Upgrade/downgrade plans", "Cancel your subscription/plan", "Check your internet usage"
+), c("Row %", "Count", "p")), label = "table.Customer.effort[, 1, ]", assigned.rownames = TRUE)
+test_that("check colnames for cell statistics",
+{
+    expect_equal(checkMatrixNames(pd), structure(c(43.7988826815642,
+        40.5586592178771, 34.1899441340782, 33.5195530726257, 28.1564245810056,
+        38.3240223463687), dim = c(6L, 1L), dimnames = list(c("Understand your bill",
+        "Understand the pricing plans", "Get help from customer or technical support",
+        "Upgrade/downgrade plans", "Cancel your subscription/plan", "Check your internet usage"),
+        "Series 1")))
+    expect_error(Bar(pd, data.label.show = T, annotation.list = list(list(type="Text - after data label",
+        data = "p", format = ".1e", prefix = ", p=", size = 6))), NA)
+
+})
