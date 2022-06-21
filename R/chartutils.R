@@ -125,6 +125,7 @@ checkMatrixNames <- function(x, assign.col.names = TRUE)
     # If x is a 1-d slice from a multi-stat crosstab
     # Then label matrix as Q-table so that secondary statistics are not plotted
     # But can still be used for annotations
+    # We assume its a 1-d slice if at least 2 colnames match something in the list of cell statistics
     is.slice <- FALSE
     q.cell.statnames <- c("Average", "Standard Deviation", "Minimum", "5th Percentile", "25th Percentile",
        "Median", "75th Percentile", "95th Percentile", "Maximum", "Mode",
@@ -136,13 +137,11 @@ checkMatrixNames <- function(x, assign.col.names = TRUE)
        "Multiple Comparison Adjustment", "Not Duplicate", "Column Names",
        "Columns Compared", "Column Comparisons")
     if (inherits(x, "matrix") && !is.null(colnames(x)) && is.null(attr(x, "name")) && is.null(attr(x, "questions")) &&
-        all(colnames(x) %in% q.cell.statnames))
+        ncol(x) > 1 && all(colnames(x) %in% q.cell.statnames))
     {
         attr(x, "name") <- " "
         attr(x, "questions") <- " "
         is.slice <- TRUE
-        #if (grepl("%", colnames(x)[1]))
-        #    attr(x, "statistic") <- "%"
     }
 
     # Convert into a matrix format and extract primary statistic
