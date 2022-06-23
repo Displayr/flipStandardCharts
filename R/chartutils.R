@@ -1470,6 +1470,8 @@ checkD3Format <- function(format, axis.type, warning.type = "Axis label", conver
                 "' incompatible with axis type '", axis.type, "'")
         mismatch <- TRUE
     }
+    if (format == "%")
+        return ("0%")
     if (convert && axis.type == "date" && d3FormatType(format) != axis.type)
         return("%b %d %Y")
     if (mismatch)
