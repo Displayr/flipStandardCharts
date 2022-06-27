@@ -391,6 +391,8 @@ Distribution <-   function(x,
     if (is.null(maximum.bins) || is.na(maximum.bins))
         maximum.bins <- min(length(x.sorted), 50)
     bin.min.size <- min(diff(x.sorted))
+    cat("bin.min.size:", bin.min.size, "\n")
+    cat("eps:", .Machine$double.eps, "\n")
     if (density.type == "Histogram")
         rng <- rng  + c(-1, 1) * bin.min.size/2 # expand range if values are integers
     bin.size = (rng[2] - rng[1])/maximum.bins
@@ -408,6 +410,8 @@ Distribution <-   function(x,
 
     bins <- list(start = rng[1], end = rng[2],
                  size = if (!default.bins) bin.size else NULL)
+    cat("maximum.bins:", maximum.bins, "\n")
+    print(bins)
 
     # Creating the violin plot
     for (v in 1:n.variables)
