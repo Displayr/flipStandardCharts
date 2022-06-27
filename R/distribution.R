@@ -393,6 +393,10 @@ Distribution <-   function(x,
     bin.min.size <- min(diff(x.sorted))
     cat("bin.min.size:", bin.min.size, "\n")
     cat("eps:", .Machine$double.eps, "\n")
+    if (bin.min.size < sqrt(.Machine$double.eps)) {
+        bin.min.size <- sqrt(.Machine$double.eps)
+        cat("bin.min.size set to ", bin.min.size, "\n")
+    }
     if (density.type == "Histogram")
         rng <- rng  + c(-1, 1) * bin.min.size/2 # expand range if values are integers
     bin.size = (rng[2] - rng[1])/maximum.bins
