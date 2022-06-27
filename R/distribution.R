@@ -385,7 +385,8 @@ Distribution <-   function(x,
     # 'maximum.bins' is not always respected so use 'size' instead when
     # bin size is small or the number of bins is small
     # but otherwise use 'maximum.bins' because it tends to find more rounded breakpoints
-    x.sorted <- sort(unique(unlist(x)))
+    .tidyfloat <- function(x) round(x, digits = ceiling(abs(log10(.Machine$double.eps))/2))
+    x.sorted <- sort(unique(.tidyfloat(unlist(x))))
     rng <- x.sorted[c(1, length(x.sorted))]
     default.bins <- is.null(maximum.bins) || is.na(maximum.bins)
     if (is.null(maximum.bins) || is.na(maximum.bins))
@@ -575,14 +576,13 @@ addDensities <- function(p,
         }
     } else if (density.type == "Histogram")
     {
-        .tidyfloat <- function(x) round(x, digits = ceiling(abs(log10(.Machine$double.eps))/2))
         p <- add_trace(p,
                       xbins = if (!vertical) bins else NULL,
                       ybins = if (vertical) bins else NULL,
                       nbinsx = maximum.bins,
                       nbinsy = maximum.bins,
-                      x = if (vertical) NULL else .tidyfloat(values),
-                      y = if (vertical) .tidyfloat(values) else NULL ,
+                      x = if (vertical) NULL else values,
+                      y = if (vertical) values else NULL ,
                       marker = list(color = density.color[1]),
                       histnorm = if(histogram.counts) "" else "probability",
                       hoverinfo = if (vertical) "x" else "y",
