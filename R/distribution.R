@@ -415,7 +415,8 @@ Distribution <-   function(x,
     bins <- list(start = rng[1], end = rng[2],
                  size = if (!default.bins) bin.size else NULL)
     cat("maximum.bins:", maximum.bins, "\n")
-    print(bins)
+    print(dput(bins))
+    cat("maximum val:", sprintf("%.10f", max(x, na.rm = TRUE)), "\n")
 
     # Creating the violin plot
     for (v in 1:n.variables)
@@ -574,13 +575,14 @@ addDensities <- function(p,
         }
     } else if (density.type == "Histogram")
     {
+        .tidyfloat <- function(x) round(x, digits = ceiling(abs(log10(.Machine$double.eps))/2))
         p <- add_trace(p,
                       xbins = if (!vertical) bins else NULL,
                       ybins = if (vertical) bins else NULL,
                       nbinsx = maximum.bins,
                       nbinsy = maximum.bins,
-                      x = if (vertical) NULL else values,
-                      y = if (vertical) values else NULL ,
+                      x = if (vertical) NULL else .tidyfloat(values),
+                      y = if (vertical) .tidyfloat(values) else NULL ,
                       marker = list(color = density.color[1]),
                       histnorm = if(histogram.counts) "" else "probability",
                       hoverinfo = if (vertical) "x" else "y",
