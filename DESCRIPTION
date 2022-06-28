@@ -47,7 +47,7 @@ Imports:
     abind
 Remotes:
     cran/rgdal@1.5-12,
-    plotly/plotly,
+    Displayr/plotly,
     Displayr/flipU,
     Displayr/flipChartBasics,
     Displayr/flipData,
