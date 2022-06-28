@@ -399,8 +399,10 @@ Distribution <-   function(x,
         cat("bin.min.size set to ", bin.min.size, "\n")
     }
     h <- (rng[2] - rng[1]) * 0.01
+    cat("h:", h, "\n")
     if (density.type == "Histogram")
-        rng <- rng  + c(-1, 1) * h/2 # expand range if values are integers
+        rng <- rng  + c(-1, 1) * bin.min.size/2 # expand range if values are integers
+
     bin.size = (rng[2] - rng[1])/maximum.bins
 
     # Override default bin sizes in certain cases which plotly does not handle well
