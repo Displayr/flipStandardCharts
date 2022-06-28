@@ -395,7 +395,7 @@ Distribution <-   function(x,
     cat("bin.min.size:", bin.min.size, "\n")
     cat("eps:", .Machine$double.eps, "\n")
     if (bin.min.size < sqrt(.Machine$double.eps)) {
-        bin.min.size <- (rgn[2] - rng[1]) * 1e-6
+        bin.min.size <- (rng[2] - rng[1]) * 1e-6
         cat("bin.min.size set to ", bin.min.size, "\n")
     }
     if (density.type == "Histogram")
