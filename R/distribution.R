@@ -385,22 +385,18 @@ Distribution <-   function(x,
     # 'maximum.bins' is not always respected so use 'size' instead when
     # bin size is small or the number of bins is small
     # but otherwise use 'maximum.bins' because it tends to find more rounded breakpoints
-    .tidyfloat <- function(x) round(x, digits = ceiling(abs(log10(.Machine$double.eps))/2))
     x.sorted <- sort(unique(unlist(x)))
     rng <- x.sorted[c(1, length(x.sorted))]
     default.bins <- is.null(maximum.bins) || is.na(maximum.bins)
     if (is.null(maximum.bins) || is.na(maximum.bins))
         maximum.bins <- min(length(x.sorted), 50)
     bin.min.size <- min(diff(x.sorted))
-    cat("bin.min.size:", bin.min.size, "\n")
-    cat("eps:", .Machine$double.eps, "\n")
-    if (bin.min.size < sqrt(.Machine$double.eps)) {
-        bin.min.size <- (rng[2] - rng[1]) * 1e-6
-        cat("bin.min.size set to ", bin.min.size, "\n")
-    }
     if (density.type == "Histogram")
+    {
+        if (bin.min.size < sqrt(.Machine$double.eps))
+            bin.min.size <- (rng[2] - rng[1]) * 1e-6
         rng <- rng  + c(-1, 1) * bin.min.size/2 # expand range if values are integers
-
+    }
     bin.size = (rng[2] - rng[1])/maximum.bins
 
     # Override default bin sizes in certain cases which plotly does not handle well
@@ -416,9 +412,6 @@ Distribution <-   function(x,
 
     bins <- list(start = rng[1], end = rng[2],
                  size = if (!default.bins) bin.size else NULL)
-    cat("maximum.bins:", maximum.bins, "\n")
-    print(dput(bins))
-    cat("maximum val:", sprintf("%.10f", max(unlist(x), na.rm = TRUE)), "\n")
 
     # Creating the violin plot
     for (v in 1:n.variables)
