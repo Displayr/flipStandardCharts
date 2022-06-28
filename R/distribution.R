@@ -395,11 +395,9 @@ Distribution <-   function(x,
     cat("bin.min.size:", bin.min.size, "\n")
     cat("eps:", .Machine$double.eps, "\n")
     if (bin.min.size < sqrt(.Machine$double.eps)) {
-        bin.min.size <- sqrt(.Machine$double.eps)
+        bin.min.size <- (rgn[2] - rng[1]) * 1e-6
         cat("bin.min.size set to ", bin.min.size, "\n")
     }
-    h <- (rng[2] - rng[1]) * 0.01
-    cat("h:", h, "\n")
     if (density.type == "Histogram")
         rng <- rng  + c(-1, 1) * bin.min.size/2 # expand range if values are integers
 
@@ -420,7 +418,7 @@ Distribution <-   function(x,
                  size = if (!default.bins) bin.size else NULL)
     cat("maximum.bins:", maximum.bins, "\n")
     print(dput(bins))
-    cat("maximum val:", sprintf("%.10f", max(x, na.rm = TRUE)), "\n")
+    cat("maximum val:", sprintf("%.10f", max(unlist(x), na.rm = TRUE)), "\n")
 
     # Creating the violin plot
     for (v in 1:n.variables)
