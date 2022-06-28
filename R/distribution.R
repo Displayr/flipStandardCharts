@@ -392,7 +392,11 @@ Distribution <-   function(x,
         maximum.bins <- min(length(x.sorted), 50)
     bin.min.size <- min(diff(x.sorted))
     if (density.type == "Histogram")
+    {
+        if (bin.min.size < sqrt(.Machine$double.eps))
+            bin.min.size <- (rng[2] - rng[1]) * 1e-6
         rng <- rng  + c(-1, 1) * bin.min.size/2 # expand range if values are integers
+    }
     bin.size = (rng[2] - rng[1])/maximum.bins
 
     # Override default bin sizes in certain cases which plotly does not handle well
