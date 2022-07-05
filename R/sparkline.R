@@ -186,6 +186,13 @@ Sparkline <- function(x,
 		y.tick.format <- if (data.is.percent) paste0(y.tick.format, "%") else paste0(y.tick.format, "f")
 	if (!any(nzchar(hover.format)) || grepl("[0-9]$", hover.format))
 		hover.format <- if (data.is.percent) paste0(hover.format, "%") else paste0(hover.format, "f")
+    if (x.tick.format == "%")
+        x.tick.format <- ""
+    if (y.tick.format == "%")
+        y.tick.format <- ""
+    if (hover.format == "%")
+        hover.format <- ""
+
 
     if (tolower(font.unit) %in% c("pt", "point", "points"))
     {
@@ -228,7 +235,7 @@ Sparkline <- function(x,
     # MIN_REDUCED_HEIGHT = 64 in plotly.js/src/plots/plot.js
     # below which automargin does not work
     if (x.tick.show)
-        margin.bottom <- max(margin.bottom, sum(x.tick.length, x.tick.font.size, 2))  
+        margin.bottom <- max(margin.bottom, sum(x.tick.length, x.tick.font.size, 5))
 
     xaxis <- list(side = "bottom", type = axisFormat$x.axis.type, categoryorder = "trace",
                 showgrid = FALSE, showline = x.axis.show, zeroline = FALSE, automargin = type != "Box",
