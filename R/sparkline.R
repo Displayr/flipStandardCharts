@@ -222,13 +222,21 @@ Sparkline <- function(x,
                         x.format = x.tick.format, y.format = y.tick.format)
     x.labels <- axisFormat$labels
     x <- as.numeric(x)
+
+    # Allow for some extra space to fit x-axis
+    # This is only needed for sparkline because there is a hardcoded limit of
+    # MIN_REDUCED_HEIGHT = 64 in plotly.js/src/plots/plot.js
+    # below which automargin does not work
+    if (x.tick.show)
+        margin.bottom <- margin.bottom + sum(x.tick.length, x.tick.font.size)  
+
     xaxis <- list(side = "bottom", type = axisFormat$x.axis.type, categoryorder = "trace",
                 showgrid = FALSE, showline = x.axis.show, zeroline = FALSE, automargin = type != "Box",
-                showticklabels = x.axis.show, ticklabelposition = "outside",
+                showticklabels = x.axis.show, ticklabelposition = "outside", tickangle = 0,
                 tickfont = list(size = if (x.tick.show) x.tick.font.size else 1,
 						   		color = if (x.tick.show) x.tick.font.color else "transparent",
 				family = x.tick.font.family), tickformat = x.tick.format,
-                ticklen = if (x.tick.show) x.tick.length else 0,
+                ticklen = if (x.tick.show) x.tick.length else 0, ticklabeloverflow = "allow",
                 linewidth = x.axis.width, linecolor = x.axis.color, tickcolor = x.tick.color)
     yaxis <- list(side = "left", showgrid = FALSE, showline = y.axis.show, zeroline = FALSE,
                 automargin = type != "Box",
