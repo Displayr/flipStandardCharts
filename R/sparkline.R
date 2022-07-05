@@ -228,11 +228,11 @@ Sparkline <- function(x,
     # MIN_REDUCED_HEIGHT = 64 in plotly.js/src/plots/plot.js
     # below which automargin does not work
     if (x.tick.show)
-        margin.bottom <- margin.bottom + sum(x.tick.length, x.tick.font.size)  
+        margin.bottom <- max(margin.bottom, sum(x.tick.length, x.tick.font.size, 2))  
 
     xaxis <- list(side = "bottom", type = axisFormat$x.axis.type, categoryorder = "trace",
                 showgrid = FALSE, showline = x.axis.show, zeroline = FALSE, automargin = type != "Box",
-                showticklabels = x.axis.show, ticklabelposition = "outside", tickangle = 0,
+                showticklabels = x.axis.show, ticklabelposition = "outside",
                 tickfont = list(size = if (x.tick.show) x.tick.font.size else 1,
 						   		color = if (x.tick.show) x.tick.font.color else "transparent",
 				family = x.tick.font.family), tickformat = x.tick.format,
