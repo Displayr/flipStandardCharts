@@ -187,11 +187,11 @@ Sparkline <- function(x,
 	if (!any(nzchar(hover.format)) || grepl("[0-9]$", hover.format))
 		hover.format <- if (data.is.percent) paste0(hover.format, "%") else paste0(hover.format, "f")
     if (x.tick.format == "%")
-        x.tick.format <- ""
+        x.tick.format <- ".0%"
     if (y.tick.format == "%")
-        y.tick.format <- ""
+        y.tick.format <- ".0%"
     if (hover.format == "%")
-        hover.format <- ""
+        hover.format <- ".0%"
 
 
     if (tolower(font.unit) %in% c("pt", "point", "points"))
