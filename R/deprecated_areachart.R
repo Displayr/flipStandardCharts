@@ -54,7 +54,7 @@ areaChart <- function(chart.matrix,
     ## If it's a 100% Stacked Area chart, and no options have been specified for y.tick.format, then set to %
     y.tickformat <- ""
     if (type == "100% Stacked Area" && y.tick.format.manual == "" && y.tick.suffix == "")
-        y.tickformat <- "%"
+        y.tickformat <- ".0%"
 
     ## Showing markers and lines
     series.mode = "lines+markers"  #default = line and marker

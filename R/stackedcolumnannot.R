@@ -599,7 +599,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                        orientation = "v", marker = marker, name = legend.text[i],
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family)),
-                       hoverinfo = "text+name", text = tmp.hover.text,
+                       hoverinfo = "text+name", text = tmp.hover.text, textposition = "none",
                        legendgroup = i)
 
         # Add attribute for PPT exporting

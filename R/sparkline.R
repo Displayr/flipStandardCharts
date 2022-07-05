@@ -186,6 +186,13 @@ Sparkline <- function(x,
 		y.tick.format <- if (data.is.percent) paste0(y.tick.format, "%") else paste0(y.tick.format, "f")
 	if (!any(nzchar(hover.format)) || grepl("[0-9]$", hover.format))
 		hover.format <- if (data.is.percent) paste0(hover.format, "%") else paste0(hover.format, "f")
+    if (x.tick.format == "%")
+        x.tick.format <- ".0%"
+    if (y.tick.format == "%")
+        y.tick.format <- ".0%"
+    if (hover.format == "%")
+        hover.format <- ".0%"
+
 
     if (tolower(font.unit) %in% c("pt", "point", "points"))
     {
@@ -222,13 +229,21 @@ Sparkline <- function(x,
                         x.format = x.tick.format, y.format = y.tick.format)
     x.labels <- axisFormat$labels
     x <- as.numeric(x)
+
+    # Allow for some extra space to fit x-axis
+    # This is only needed for sparkline because there is a hardcoded limit of
+    # MIN_REDUCED_HEIGHT = 64 in plotly.js/src/plots/plot.js
+    # below which automargin does not work
+    if (x.tick.show)
+        margin.bottom <- max(margin.bottom, sum(x.tick.length, x.tick.font.size, 5))
+
     xaxis <- list(side = "bottom", type = axisFormat$x.axis.type, categoryorder = "trace",
                 showgrid = FALSE, showline = x.axis.show, zeroline = FALSE, automargin = type != "Box",
                 showticklabels = x.axis.show, ticklabelposition = "outside",
                 tickfont = list(size = if (x.tick.show) x.tick.font.size else 1,
 						   		color = if (x.tick.show) x.tick.font.color else "transparent",
 				family = x.tick.font.family), tickformat = x.tick.format,
-                ticklen = if (x.tick.show) x.tick.length else 0,
+                ticklen = if (x.tick.show) x.tick.length else 0, ticklabeloverflow = "allow",
                 linewidth = x.axis.width, linecolor = x.axis.color, tickcolor = x.tick.color)
     yaxis <- list(side = "left", showgrid = FALSE, showline = y.axis.show, zeroline = FALSE,
                 automargin = type != "Box",
