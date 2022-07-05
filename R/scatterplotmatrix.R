@@ -288,7 +288,7 @@ panel_hist <- function(x, weights, label, label.font, color, opacity, hover.styl
 
     pp <- plot_ly()
     pp <- add_trace(pp, x = x0, y = y, type = "bar", showlegend = FALSE,
-        marker = list(color = toRGB(color, alpha = opacity)),
+        marker = list(color = toRGB(color, alpha = opacity)), textposition = "none",
         name = label, hoverinfo = "name+text", text = hover.text, hoverlabel = hover.style)
     pp <- layout(pp, xaxis = xaxis, yaxis = yaxis,
         annotations = list(text = label, showarrow = FALSE, font = label.font,
