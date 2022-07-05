@@ -96,6 +96,8 @@ GeographicMap <- function(x,
     values.bounds.maximum <- charToNumeric(values.bounds.maximum)
     if (isPercentData(x) && isAutoFormat(values.hovertext.format))
         values.hovertext.format <- paste0(values.hovertext.format, "%")
+    if (values.hovertext.format == "%")
+        values.hovertext.format <- ".0%"
     table <- cleanMapInput(checkMatrixNames(x))
 
     # Find map.type from rownames
