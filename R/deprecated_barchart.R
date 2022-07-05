@@ -12,7 +12,7 @@ barChart <- function(chart.matrix,
     {
         chart.matrix <- cum.data(chart.matrix, "column.percentage")
         if (x.tick.format.manual != "%")
-            x.tick.format.manual <- "%"
+            x.tick.format.manual <- ".0%"
     }
 
     # Should we stack or should we not?

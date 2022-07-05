@@ -12,7 +12,7 @@ columnChart <- function(chart.matrix,
     {
         chart.matrix <- cum.data(chart.matrix, "column.percentage")
         if (y.tick.format.manual != "%")
-            y.tick.format.manual <- "%"
+            y.tick.format.manual <- ".0%"
     }
 
     if (type == "100% Stacked Column")
