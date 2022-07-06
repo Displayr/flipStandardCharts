@@ -131,7 +131,7 @@ MissingCasesPlot <- function(raw.data,
     x.labels <- autoFormatLongLabels(x.labels, x.tick.label.wrap, x.tick.label.wrap.nchar, truncate = FALSE)
     footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate = FALSE)
     xaxis <- list(side = "bottom", ticklen = 3, tickangle = x.tick.angle, tickfont = x.tick.font,
-                  tickvals = 0:(ncol(dat)-1), ticktext = x.labels,
+                  tickvals = 0:(ncol(dat)-1), ticktext = x.labels, tickcolor = "transparent",
                   showgrid = FALSE, zeroline = FALSE, fixedrange = !enable.zoom)
     yaxis <- list(side = "left", ticklen = 0, tickfont = y.tick.font, range = rev(range(index)),
                   tickmode = "auto", nticks = min(nrow(dat) + 1, 11),
