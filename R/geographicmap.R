@@ -96,6 +96,8 @@ GeographicMap <- function(x,
     values.bounds.maximum <- charToNumeric(values.bounds.maximum)
     if (isPercentData(x) && isAutoFormat(values.hovertext.format))
         values.hovertext.format <- paste0(values.hovertext.format, "%")
+    if (values.hovertext.format == ".0")
+        values.hovertext.format <- "~.0f"
 	if (grepl("[0-9]$", values.hovertext.format))
 		values.hovertext.format <- paste0(values.hovertext.format, "f")
     if (values.hovertext.format == "%")
