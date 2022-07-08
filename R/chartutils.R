@@ -130,7 +130,7 @@ checkMatrixNames <- function(x, assign.col.names = TRUE)
     q.cell.statnames <- c("Average", "Standard Deviation", "Minimum", "5th Percentile", "25th Percentile",
        "Median", "75th Percentile", "95th Percentile", "Maximum", "Mode",
        "Trimmed Average", "Interquartile Range", "Sum", "% Share", "Column Sample Size",
-       "%", "% Excluding NaN", "Row %", "Column %", "Cumulative %", "Expected %", "Residual %", 
+       "%", "% Excluding NaN", "Row %", "Column %", "Cumulative %", "Expected %", "Residual %",
        "Sample Size", "Missing Count", "Effective Sample Size", "Count",
        "Weighted Column Sample Size", "Weighted Sample Size", "Weighted Count", "t-Statistic",
        "d.f.", "z-Statistic", "Standard Error", "p", "Corrected p", "Index",
@@ -1476,6 +1476,8 @@ checkD3Format <- function(format, axis.type, warning.type = "Axis label", conver
         return("%b %d %Y")
     if (mismatch)
         return ("")
+    if (convert)
+        format <- sub("^~", "", "e")
     return(format)
 }
 
