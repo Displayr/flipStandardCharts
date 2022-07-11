@@ -1477,7 +1477,7 @@ checkD3Format <- function(format, axis.type, warning.type = "Axis label", conver
     if (mismatch)
         return ("")
     if (convert)
-        format <- sub("^~", "", "e")
+        format <- sub("^~", "", format)
     return(format)
 }
 
