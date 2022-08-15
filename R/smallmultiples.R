@@ -171,12 +171,15 @@ SmallMultiples <- function(x,
             stop("'Order' should be a comma separated list of indices (between 1 and ", npanels, ")")
         if (is.numeric(x.order) && length(x.order) > 0)
         {
+            n.dim <- length(dim(x))
             if (chart.type == "Scatter")
                 indexes <- indexes[x.order]
-            else if (length(dim(x)) == 2)
-                x <- CopyAttributes(x[, x.order, drop = FALSE], x)
-            else if (length(dim(x)) == 3)
-                x <- CopyAttributes(x[, x.order, , drop = FALSE], x)
+            else if (n.dim %in% c(2, 3)) {
+                args <- c(list(x), rep(alist(, )[1L], n.dim), drop = FALSE)
+                args[[n.dim + 1L]] <- x.order
+                y <- do.call(`[`, args)
+                x <- if (inherits(y, "QTable")) y else CopyAttributes(y, x)
+            }
             npanels <- length(x.order)
         }
     }
@@ -229,9 +232,9 @@ SmallMultiples <- function(x,
                 tmp.labels <- ""
                 # Guess how long data labels will be
                 if (any(data.label.show) && chart.type %in% c("Bar", "BarMultiColor"))
-                    tmp.labels <- formatByD3(max(all.values), data.label.format, 
+                    tmp.labels <- formatByD3(max(all.values), data.label.format,
                         data.label.prefix, data.label.suffix, percent = isPercentData(x))
-                tmp.range <- setTicks(x.bounds.minimum, x.bounds.maximum, NULL, data = all.values, 
+                tmp.range <- setTicks(x.bounds.minimum, x.bounds.maximum, NULL, data = all.values,
                         type = "Bar", labels = tmp.labels, label.font.size = data.label.font.size)$range
                 if (is.null(x.bounds.minimum))
                     x.bounds.minimum <- tmp.range[1]
@@ -611,4 +614,3 @@ SmallMultiples <- function(x,
         chart.type) # e.g. Area, Line, Radar
     result
 }
-
