@@ -205,7 +205,7 @@ Area <- function(x,
     has.gap <- FALSE
     for (i in 1:ncol(chart.matrix))
     {
-        na.seq <- rle(!is.finite(chart.matrix[,i]))
+        na.seq <- rle(!is.finite(as.numeric(chart.matrix[,i])))
         n <- length(na.seq$values)
         if (any(na.seq$values[-c(1,n)]))
             has.gap <- TRUE
