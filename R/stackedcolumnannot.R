@@ -272,18 +272,11 @@ StackedColumnWithStatisticalSignificance <- function(x,
     # Save data for annotating column totals before
     # rows/columns are removed
     col.totals.annot.data <- NULL
-    if (!transpose)
-    {
-        ind <- grep("NET|SUM|Total", dimnames(x)[[2]])[1]
-        if (length(ind) > 0 && column.totals.above.show)
-            col.totals.annot.data <- x[,ind,,drop = FALSE]
-    } else
-    {
-        ind <- grep("NET|SUM|Total", dimnames(x)[[1]])[1]
-        if (length(ind) > 0 && column.totals.above.show)
-            col.totals.annot.data <- x[ind,,,drop = FALSE]
+    ind <- grep("NET|SUM|Total", dimnames(x)[[1L + !transpose]])
+    if (length(ind) > 0 && column.totals.above.show) {
+        ind <- ind[1L]
+        col.totals.annot.data <- if (transpose) x[ind, , , drop = FALSE] else x[, ind, , drop = FALSE]
     }
-
     x <- RemoveRowsAndOrColumns(x,
             row.names.to.remove = row.names.to.remove,
             column.names.to.remove = column.names.to.remove)
@@ -925,4 +918,3 @@ rmFontSize <- function(x)
 {
     return(gsub("font-size.*?;", "", x))
 }
-
