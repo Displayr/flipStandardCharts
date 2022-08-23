@@ -81,6 +81,21 @@ a6 <- list(list(type = "Arrow - up", data = "", threstype = "below threshold",
 
 a7 <- list(list(type = "Hide", data = "", threstype = "that are missing", threshold = 2))
 
+a8 <- list(list(type = "Text - before data label", data = "",
+    threstype = "below threshold", threshold = "2", color = "#000000",
+    font.family = "Impact", size = 10, text = "Prefix", format = ""),
+    list(type = "Caret - up", data = "", threstype = "below threshold",
+    threshold = "2", color = "red", size = 20, width = 1,
+    offset = 0, font.family = "Arial", font.weight = "normal",
+    font.style = "normal"), list(type = "Recolor text", data = "",
+    threstype = "below threshold", threshold = 2, color = "#00FF00"),
+    list(type = "Recolor text", data = "", threstype = "above threshold",
+    threshold = "8", color = "blue"),
+    list(type = "Caret - down", data = "",
+    threstype = "above threshold", threshold = "8", color = "blue",
+    size = 20, width = 1, offset = 0, font.family = "Arial",
+    font.weight = "normal", font.style = "normal"))
+
 test_that("Annotations using chart data",
 {
     xx <- 1:10
@@ -328,5 +343,12 @@ test_that("More scatter annotations",
 {
     expect_warning(Scatter(dat2, annotation.list = a2),
                    "Chart contains overlapping points in the same position.")
+})
+
+test_that("Recolor text annotations",
+{
+    txt <- "<span style='color:#00FF00'><span style='color:#000000;font-size:10;font-family:Impact;'>1.00</span>1<span style='color:red;font-size:20;font-family:Arial;font-weight:normal;font-style:normal;'>&#9650;</span></span>"
+    txt.rmcolor <- "                            <span style='font-size:10;font-family:Impact;'>1.00</span>1<span style='font-size:20;font-family:Arial;font-weight:normal;font-style:normal;'>&#9650;</span>       "
+    expect_equal(removeColorTags(txt), txt.rmcolor)
 })
 

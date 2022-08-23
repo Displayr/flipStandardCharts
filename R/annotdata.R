@@ -319,6 +319,9 @@ addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat, prepend = 
     else if (annotation$type == "Border")
         data.label.text <- paste0(left.pad, "<span style='outline: ", annotation$width, "px solid ",
             annotation$color, "; outline-offset: ", annotation$offset, "px;'>", data.label.text, "</span>")
+    else if (annotation$type == "Recolor text")
+        data.label.text <- paste0("<span style='color:", annotation$color, "'>", 
+            removeColorTags(data.label.text), "</span>") 
     else
     {
         new.style <- ""
@@ -396,7 +399,7 @@ checkAnnotType <- function(annot.type, chart.type)
     # These annotation types are implemented for all charts
     # which support annotations e.g. Line
     allowed.types <- c('Arrow - up', 'Arrow - down', 'Border',
-       'Caret - up', 'Caret - down', "Custom text",
+       'Caret - up', 'Caret - down', "Custom text", "Recolor text",
        'Hide', 'Shadow', 'Text - after data label', 'Text - before data label')
 
     # Additional annotation types only implemented on some chart types
@@ -540,6 +543,8 @@ getPointSegmentsForPPT <- function(points, index, annot, dat)
             points[[ii]]$Segments <- list()
         else if (grepl("Circle|Border|Shadow", annot$type))
             points[[ii]] <- setShapeForPPT(points[[ii]], annot) # overrides previous shapes
+        else if (annot$type == "Recolor text")
+            points[[ii]] <- recolorForPPT(points[[ii]], annot)
         else if (annot$type == "Text - before data label")
             points[[ii]]$Segments <- c(tmp.seg, points[[ii]]$Segments)
         else
@@ -562,7 +567,8 @@ tidyPointSegments <- function(points, num.points, show.categoryname = FALSE, ind
     for (i in length(points):1)     # traverse backwards so smaller indexes still valid
     {
         # Simplify value-only segments to enable toggling in powerpoint
-        if (length(points[[i]]$Segments) == 1 && isTRUE(points[[i]]$Segments[[1]]$Field == "Value"))
+        if (length(points[[i]]$Segments) == 1 && isTRUE(points[[i]]$Segments[[1]]$Field == "Value") &&
+            is.null(points[[i]]$Font) && is.null(points[[i]]$Segments[[1]]$Font))
         {
             points[[i]]$ShowValue <- TRUE
             points[[i]]$Segments <- NULL
@@ -578,7 +584,13 @@ tidyPointSegments <- function(points, num.points, show.categoryname = FALSE, ind
             pt.info[.posFromIndex(points[[i]]$Index)] <- 2L
 
         if (show.categoryname && length(points[[i]]$Segments) > 0)
-            points[[i]]$Segments <- c(list(list(Field="CategoryName")), points[[i]]$Segments)
+        {
+            if (length(points[[i]]$Segments[[1]]$Font) == 1)
+                points[[i]]$Segments <- c(list(list(Field="CategoryName", Font=points[[i]]$Segments[[1]]$Font)),
+                     points[[i]]$Segments)
+            else
+                points[[i]]$Segments <- c(list(list(Field="CategoryName")), points[[i]]$Segments)
+        }
 
         # Remove empty points - empty label cannnot have outline anyway
         if (length(points[[i]]$Segments) == 0 && !isTRUE(points[[i]]$ShowValue))
@@ -680,10 +692,66 @@ setTextForPPT <- function(annot)
     return(unescape_html(symbol))
 }
 
+recolorForPPT <- function(pt, annotation)
+{
+    n <- length(pt$Segments)
+    if (n == 0)
+    {
+        pt$Font$color <- annotation$color[1]
+        return(pt)
+    }
+    for (i in 1:n)
+        pt$Segments[[i]]$Font$color <- annotation$color[1]
+    return(pt)
+}
 
 # From https://stackoverflow.com/questions/5060076/convert-html-character-entity-encoding-in-r
 unescape_html <- function(str){
   xml2::xml_text(xml2::read_html(paste0("<x>", str, "</x>")))
 }
 
+# Annotations of type "Recolor text" will override the color
+# of text/arrow/caret elements already added to the data label
+# (but not border, shadow or circle)
+# If there are multiple recolor text annotations applied to one data label
+# then the last tag will override the others
+removeColorTags <- function(text)
+{
+    # if there is an exact match then remove entire tag
+    exact.match <- gregexpr("<span style='color:[A-Za-z0-9#]+'>", text)[[1]]
+    if (!isTRUE(exact.match == -1))
+    {
+        closetags.match <- gregexpr("</span>", text)[[1]]
+        opentags.match <- gregexpr("<span", text)[[1]]
+        j <- 1; k <- 1;
+        rm.start <- c()
+        rm.end <- c()
 
+        for (i in 1:length(exact.match))
+        {
+            rm.start <- c(rm.start, exact.match[i])
+            rm.end <- c(rm.end, exact.match[i] + attr(exact.match, "match.length")[i] - 1)
+
+            while(closetags.match[j] < exact.match[i])
+                j <- j + 1
+            while(opentags.match[k] < exact.match[i])
+                k <- k + 1
+            num.skiptags <- 0
+            while (k <= length(opentags.match) && opentags.match[k] < closetags.match[j])
+            {
+                k <- k + 1
+                num.skiptags <- num.skiptags + 1
+            }
+            j <- j + num.skiptags
+            if (j <= length(closetags.match))
+            {
+                rm.start <- c(rm.start, closetags.match[j])
+                rm.end <- c(rm.end, closetags.match[j] + attr(closetags.match, "match.length")[j] - 1)
+            }
+        }
+        for (i in length(rm.start):1)
+            substr(text, rm.start[i], rm.end[i]) <- paste(rep(" ", rm.end[i] - rm.start[i] + 1), collapse = "")
+    }
+    text <- gsub("color:[A-Za-z0-9#]+;", "", text)
+    return(text)
+}
