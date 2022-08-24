@@ -107,6 +107,23 @@ for (charting.func in c("Column", "Bar", "Line", "Radar"))
             tmp.seg <- c(list(list(Field = "CategoryName")), tmp.seg)
         expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[3]],
             list(Index = 6, Segments = tmp.seg))
+
+        pp <- cfunc(data.with.stats[-10,-3,], data.label.show = TRUE,
+            annotation.list = list(list(type = "Recolor text", data = "p",
+            threstype = "below threshold", threshold = "0.05", color = "#FF0000")))
+        expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[2]]$CustomPoints[[4]]$Index, 7)
+        expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[2]]$CustomPoints[[4]]$Segments[[1]]$Font$color, "#FF0000")
+
+
+        pp <- Line(data.with.stats[-10, 1, , drop = FALSE], data.label.show = TRUE,
+            annotation.list = list(list(type = "Custom text", data = "p",
+            threstype = "below threshold", threshold = "0.05", custom.symbol = "*",
+            color = "#ff0000", size = 21, offset = 1), list(type = "Recolor text", data = "p",
+            threstype = "below threshold", threshold = "0.05", color = "#FF0000")))
+        expect_equal(length(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints), 4)
+        expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[3]]$Index, 6)
+        expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[3]]$Segments[[1]]$Font,
+            list(color = "#FF0000"))
     })
 }
 
