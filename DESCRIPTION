@@ -1,7 +1,7 @@
 Package: flipStandardCharts
 Type: Package
 Title: Standard R interactive charts
-Version: 1.30.0
+Version: 1.30.1
 Author: Displayr <opensource@displayr.com>
 Maintainer: Displayr <opensource@displayr.com>
 Description: Wrapper for other charting packages. The goal is to provide a
@@ -72,4 +72,4 @@ Suggests:
     ggplot2movies,
     testthat,
 Encoding: UTF-8
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
