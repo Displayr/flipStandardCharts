@@ -6,8 +6,8 @@
 \usage{
 Stream(
   x,
-  colors = c("#5C9AD3", "#ED7D31", "#A5A5A5", "#FFC000", "#4473C5", "#70AD46",
-    "#255F91", "#9E480D", "#636365", "#987300", "#26408B", "#42682B"),
+  colors = c("#5C9AD3", "#ED7D31", "#A5A5A5", "#FFC000", "#4473C5", "#70AD46", "#255F91",
+    "#9E480D", "#636365", "#987300", "#26408B", "#42682B"),
   global.font.family = "Arial",
   global.font.color = rgb(44, 44, 44, maxColorValue = 255),
   global.font.size = 10,
