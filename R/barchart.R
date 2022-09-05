@@ -175,7 +175,7 @@ Bar <- function(x,
         x.tick.suffix <- sfx[1]
         data.label.suffix <- sfx[2]
     }
-    
+
     # Store data for chart annotations
     annot.data <- x
     chart.matrix <- checkMatrixNames(x)
@@ -239,7 +239,7 @@ Bar <- function(x,
 
     # Constants
     barmode <- "group"
-    if (is.stacked) 
+    if (is.stacked)
         barmode <- "relative"
     else if (pyramid)
         barmode <- "overlay"
@@ -253,7 +253,7 @@ Bar <- function(x,
     colors <- if (multi.colors.within.series) vectorize(colors, nrow(chart.matrix))
               else                            vectorize(colors, ncol(chart.matrix))
     data.label.font.color <- if (multi.colors.within.series) vectorize(data.label.font.color, nrow(chart.matrix))
-                             else                            vectorize(data.label.font.color, ncol(chart.matrix)) 
+                             else                            vectorize(data.label.font.color, ncol(chart.matrix))
     data.label.show <- vectorize(data.label.show, NCOL(chart.matrix), NROW(chart.matrix))
 
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
@@ -287,7 +287,7 @@ Bar <- function(x,
     tmp.label <- sprintf(paste0("%s%.", data.label.decimals, "f%s"),
                 data.label.prefix, max(chart.matrix), data.label.suffix)
     xtick <- setTicks(x.range$min, x.range$max, x.tick.distance, x.data.reversed, type = type,
-                  data = if (any(data.label.show) && !is.stacked && !pyramid && is.null(x.range$max)) chart.matrix else NULL, 
+                  data = if (any(data.label.show) && !is.stacked && !pyramid && is.null(x.range$max)) chart.matrix else NULL,
                   labels = tmp.label, label.font.size = data.label.font.size)
     ytick <- setTicks(y.range$min, y.range$max, y.tick.distance, !y.data.reversed, is.bar = TRUE)
 
@@ -305,7 +305,7 @@ Bar <- function(x,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance,
                   x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show,
                   x.zero, x.zero.line.width, x.zero.line.color,
-                  x.hovertext.format, num.maxticks = x.tick.maxnum, 
+                  x.hovertext.format, num.maxticks = x.tick.maxnum,
                   tickcolor = x.tick.mark.color, zoom.enable = zoom.enable)
 
     # Work out margin spacing
@@ -348,7 +348,7 @@ Bar <- function(x,
     x.labels <- axisFormat$labels
     y.labels <- colnames(chart.matrix)
     chart.labels <- list(SeriesLabels = list())
-    
+
     ## Add a trace for each col of data in the matrix
     for (i in 1:ncol(chart.matrix))
     {
@@ -359,7 +359,7 @@ Bar <- function(x,
         # Evaluate hover template because otherwise scatterplot hover added at end will
         # show incorrect values (note stacking is not an issue)
         hover.template <- setHoverTemplate(i, yaxis, chart.matrix, hovertext.template, is.bar = TRUE)
-        hover.template <- evalHoverTemplate(hover.template, y, x.hovertext.format, 
+        hover.template <- evalHoverTemplate(hover.template, y, x.hovertext.format,
             x.tick.prefix, x.tick.suffix, x, y.hovertext.format, y.tick.prefix, y.tick.suffix)
 
         tmp.color <- if (multi.colors.within.series) colors else colors[i]
@@ -367,7 +367,7 @@ Bar <- function(x,
         dlab.color <- if (multi.colors.within.series) data.label.font.color else data.label.font.color[i]
         if (data.label.font.autocolor && (is.stacked || pyramid))
             dlab.color <- autoFontColor(tmp.color)
-        tmp.data.label.font = list(family = data.label.font.family, 
+        tmp.data.label.font = list(family = data.label.font.family,
             size = data.label.font.size, color = dlab.color)
         hover.label <- list(bgcolor = tmp.color, font = list(color = autoFontColor(tmp.color),
                             size = hovertext.font.size, family = hovertext.font.family))
@@ -396,7 +396,7 @@ Bar <- function(x,
 
         # this is the main trace for each data series
         # need to use y.filled to avoid plotly bug affecting bar-width
-        if (pyramid)  
+        if (pyramid)
             p <- add_trace(p, x = 2 * y.filled, y = x, base = -y, type = "bar", orientation = "h",
                    marker = marker, hoverlabel = hover.label, hovertemplate = hover.template)
         else
@@ -409,7 +409,7 @@ Bar <- function(x,
             warning("Line of best fit not shown for stacked charts.")
         if (fit.type != "None" && !is.stacked)
         {
-            tmp.fit.color <- if (length(fit.line.colors) >= i) fit.line.colors[i] else tmp.color[1] 
+            tmp.fit.color <- if (length(fit.line.colors) >= i) fit.line.colors[i] else tmp.color[1]
             tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, yaxis$type, fit.CI.show, fit.window.size)
             tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
                          else sprintf("%s: %s", fit.line.name, y.labels[i])
@@ -421,7 +421,7 @@ Bar <- function(x,
                       color = tmp.fit.color, shape = 'spline'), opacity = fit.line.opacity)
             if (fit.CI.show && !is.null(tmp.fit$lb))
             {
-                tmp.CI.color <- if (length(fit.CI.colors) >= i) fit.CI.colors[i] else tmp.color[1] 
+                tmp.CI.color <- if (length(fit.CI.colors) >= i) fit.CI.colors[i] else tmp.color[1]
                 p <- add_trace(p, y = tmp.fit$x, x = tmp.fit$lb, type = 'scatter',
                         mode = 'lines', name = "Lower bound of 95%CI",
                         hoverlabel = list(font = list(color = autoFontColor(tmp.CI.color),
@@ -438,7 +438,7 @@ Bar <- function(x,
                         line = list(color=tmp.CI.color, width=0, shape='spline'))
             }
         }
-        
+
 
         # Initialise attribute for PPT exporting - SeriesLabels cannot be NULL
         chart.labels$SeriesLabels[[i]] <- list(
@@ -485,7 +485,7 @@ Bar <- function(x,
                     annotation.list, annot.data, i,
                     yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y", xaxis = "x",
                     tmp.data.label.font, is.stacked, data.label.centered = pyramid)
-            
+
             if (!is.null(pt.segs))
             {
                 if (isTRUE(attr(pt.segs, "SeriesShowValue")))
@@ -506,13 +506,11 @@ Bar <- function(x,
         xpos <- chart.matrix[,i]
         if (pyramid)
             xpos <- rep(0, NROW(chart.matrix))
-        ind.na <- which(!is.finite(y))
-        if (length(ind.na) > 0)
-            hover.template[ind.na] <- ""
-        if (length(ind.na) != NROW(chart.matrix))
-            p <- addAnnotScatterTrace(p, xpos = xpos, ypos = ypos, name = legend.text[i],
+        ind.finite <- which(is.finite(y))
+        if (length(ind.finite) > 0)
+            p <- addAnnotScatterTrace(p, xpos = xpos[ind.finite], ypos = ypos[ind.finite], name = legend.text[i],
                    text = "", marker = list(color = tmp.color, opacity = 0.0),
-                   hovertemplate = hover.template, hoverlabel = hover.label, xaxis = "x",
+                   hovertemplate = hover.template[ind.finite], hoverlabel = hover.label, xaxis = "x",
                    yaxis = if (NCOL(chart.matrix) > 1) "y2" else "y",
                    stackgroup = if (is.stacked) "hover" else "",
                    orientation = "h", legendgroup = i)
@@ -533,7 +531,7 @@ Bar <- function(x,
     annotations[[n+2]] <- setSubtitle(subtitle, subtitle.font, margins, subtitle.align)
     annotations[[n+3]] <- setTitle(title, title.font, margins, title.align)
     annotations <- Filter(Negate(is.null), annotations)
-    
+
     serieslabels.num.changes <- vapply(chart.labels$SeriesLabels, function(s) isTRUE(s$ShowValue) + length(s$CustomPoints), numeric(1L))
     if (sum(serieslabels.num.changes) == 0)
         chart.labels <- NULL
