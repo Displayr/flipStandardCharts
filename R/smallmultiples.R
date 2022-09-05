@@ -176,7 +176,7 @@ SmallMultiples <- function(x,
                 indexes <- indexes[x.order]
             else if (n.dim %in% c(2, 3)) {
                 args <- c(list(x), rep(alist(, )[1L], n.dim), drop = FALSE)
-                args[[n.dim + 1L]] <- x.order
+                args[[3L]] <- x.order
                 y <- do.call(`[`, args)
                 x <- if (inherits(y, "qTable")) y else CopyAttributes(y, x)
             }
