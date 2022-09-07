@@ -518,8 +518,8 @@ getAxisType <- function(labels, format)
     {
         if (inherits(labels, "Date") || inherits(labels, "POSIXt") || inherits(labels, "POSIXct"))
             return("date")
-        ymd <- suppressWarnings(AsDateTime(as.character(labels), on.parse.failure = "silent"))
-        if (!any(is.na(ymd)))
+        ymd <- try(suppressWarnings(AsDateTime(as.character(labels), on.parse.failure = "silent")), silent = TRUE)
+        if (!inherits(ymd, "try-error") && !any(is.na(ymd)))
             return("date")
     }
     if (d3.type == "numeric")
@@ -531,8 +531,8 @@ getAxisType <- function(labels, format)
     # Try to find default format based only on labels
     if (!any(is.na(suppressWarnings(as.numeric(gsub(",", "", labels))))))
         return("numeric")
-    ymd <- suppressWarnings(AsDateTime(labels, on.parse.failure = "silent"))
-    if (all(!is.na(ymd)) && length(ymd) > 1)
+    ymd <- try(suppressWarnings(AsDateTime(labels, on.parse.failure = "silent")), silent = TRUE)
+    if (!inherits(ymd, "try-error") && all(!is.na(ymd)) && length(ymd) > 1)
         return("date")
     else
         return("category")
