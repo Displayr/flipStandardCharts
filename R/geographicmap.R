@@ -432,12 +432,19 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
                             data = country.coords)
     }
 
+    ## DS-4143: When plotting U.S.A. regions, override hover text so that
+    ##   it displays U.S. region names instead of state names
+    if (map.type == "regions" && !anyNA(idx <- match(coords$name, us.regions[["State"]])))
+        location.label <- as.character(us.regions[["Region"]][idx])
+    else
+        location.label <- coords$name
+
     if (n.categories == 1)
     {
         map <- addPolygons(map, stroke = FALSE, smoothFactor = 0.2,
                            fillOpacity = opacity, fillColor = ~.pal(coords$table1),
                            highlightOptions = highlight.options,
-                           label = paste0(coords$name, ": ", format.function(coords$table1,
+                           label = paste0(location.label, ": ", format.function(coords$table1,
                                                                              decimals = decimals,
                                                                              comma.for.thousands = commaFromD3(values.hovertext.format))))
         categoryControls <- ""
@@ -450,7 +457,7 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
             map <- addPolygons(map, stroke = FALSE, smoothFactor = 0.2,
                                fillOpacity = opacity, color = cl, group = categories[i],
                                highlightOptions = highlight.options,
-                               label = paste0(coords$name, ": ",
+                               label = paste0(location.label, ": ",
                                               format.function(coords[[paste("table", i, sep = "")]],
                                                               decimals = decimals,
                                                               comma.for.thousands = commaFromD3(values.hovertext.format))))
