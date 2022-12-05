@@ -594,15 +594,26 @@ plotlyMap <- function(table, name.map, colors, opacity, min.value, max.range, co
         bgcolor = ocean.color)
 
     p <- plot_geo(df, locationmode = locationmode)
-    p <- add_trace(p, hoverinfo = "location+text",
+    ## DS-4143: When plotting U.S.A. regions, plotly recognizes state names,
+    ##  but hovertext should use region names if that's what the user has supplied
+    hover.text <- format.function(df[, 1], decimals = decimals,
+                                  comma.for.thousands = commaFromD3(values.hovertext.format))
+    hover.info <- "location+text"
+    if (map.type == "regions" && scope == "usa")
+    {
+        regions <- us.regions[["Region"]][match(rownames(df), us.regions[["Code"]])]
+        hover.text <- paste0(regions, " - ", hover.text)
+        hover.info <- "text"
+    }
+
+    p <- add_trace(p, hoverinfo = hover.info,
             z = df[, 1],
             zmin = min.value,
             zmax = max.range,
             color = df[, 1],
             colors = rgb(t(col2rgb(colors)),maxColorValue = 255, alpha = opacity), # opacity ignored by plotly
             locations = rownames(df),
-            text = format.function(df[, 1], decimals = decimals,
-                        comma.for.thousands = commaFromD3(values.hovertext.format)),
+            text = hover.text,
             marker = list(line = bdry)
         )
     if (legend.show)
@@ -625,7 +636,8 @@ plotlyMap <- function(table, name.map, colors, opacity, min.value, max.range, co
                                setTitle(title, title.font, margins),
                                setFooter(footer, footer.font, margins)),
             hoverlabel = list(namelength = -1, bordercolor = "transparent",
-            font = list(family = hovertext.font.family, color = "white", size = hovertext.font.size)),
+                              font = list(family = hovertext.font.family, color = "white",
+                                          size = hovertext.font.size)),
             paper_bgcolor = 'transparent'
         )
     p
