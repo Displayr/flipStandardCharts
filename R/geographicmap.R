@@ -432,12 +432,19 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
                             data = country.coords)
     }
 
+    ## DS-4143: When plotting U.S.A. regions, override hover text so that
+    ##   it displays U.S. region names instead of state names
+    if (map.type == "regions" && !anyNA(idx <- match(coords$name, us.regions[["State"]])))
+        location.label <- as.character(us.regions[["Region"]][idx])
+    else
+        location.label <- coords$name
+
     if (n.categories == 1)
     {
         map <- addPolygons(map, stroke = FALSE, smoothFactor = 0.2,
                            fillOpacity = opacity, fillColor = ~.pal(coords$table1),
                            highlightOptions = highlight.options,
-                           label = paste0(coords$name, ": ", format.function(coords$table1,
+                           label = paste0(location.label, ": ", format.function(coords$table1,
                                                                              decimals = decimals,
                                                                              comma.for.thousands = commaFromD3(values.hovertext.format))))
         categoryControls <- ""
@@ -450,7 +457,7 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
             map <- addPolygons(map, stroke = FALSE, smoothFactor = 0.2,
                                fillOpacity = opacity, color = cl, group = categories[i],
                                highlightOptions = highlight.options,
-                               label = paste0(coords$name, ": ",
+                               label = paste0(location.label, ": ",
                                               format.function(coords[[paste("table", i, sep = "")]],
                                                               decimals = decimals,
                                                               comma.for.thousands = commaFromD3(values.hovertext.format))))
@@ -594,15 +601,26 @@ plotlyMap <- function(table, name.map, colors, opacity, min.value, max.range, co
         bgcolor = ocean.color)
 
     p <- plot_geo(df, locationmode = locationmode)
-    p <- add_trace(p, hoverinfo = "location+text",
+    ## DS-4143: When plotting U.S.A. regions, plotly recognizes state names,
+    ##  but hovertext should use region names if that's what the user has supplied
+    hover.text <- format.function(df[, 1], decimals = decimals,
+                                  comma.for.thousands = commaFromD3(values.hovertext.format))
+    hover.info <- "location+text"
+    if (map.type == "regions" && scope == "usa")
+    {
+        regions <- us.regions[["Region"]][match(rownames(df), us.regions[["Code"]])]
+        hover.text <- paste0(regions, " - ", hover.text)
+        hover.info <- "text"
+    }
+
+    p <- add_trace(p, hoverinfo = hover.info,
             z = df[, 1],
             zmin = min.value,
             zmax = max.range,
             color = df[, 1],
             colors = rgb(t(col2rgb(colors)),maxColorValue = 255, alpha = opacity), # opacity ignored by plotly
             locations = rownames(df),
-            text = format.function(df[, 1], decimals = decimals,
-                        comma.for.thousands = commaFromD3(values.hovertext.format)),
+            text = hover.text,
             marker = list(line = bdry)
         )
     if (legend.show)
@@ -625,7 +643,8 @@ plotlyMap <- function(table, name.map, colors, opacity, min.value, max.range, co
                                setTitle(title, title.font, margins),
                                setFooter(footer, footer.font, margins)),
             hoverlabel = list(namelength = -1, bordercolor = "transparent",
-            font = list(family = hovertext.font.family, color = "white", size = hovertext.font.size)),
+                              font = list(family = hovertext.font.family, color = "white",
+                                          size = hovertext.font.size)),
             paper_bgcolor = 'transparent'
         )
     p

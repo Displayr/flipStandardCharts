@@ -266,9 +266,9 @@
 #                                             "Michigan", "Minnesota", "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico",
 #                                             "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina",
 #                                             "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"), class = "factor"),
-#                             Code = structure(c(7L, 21L, 19L, 30L, 39L, 46L, 31L, 34L, 38L, 21L, 15L, 22L, 35L, 48L, 13L, 16L, 23L, 24L, 29L, 28L, 41L, 9L, 10L,
-#                                             11L, 20L, 27L, 40L, 45L, 8L, 49L, 2L, 17L, 25L, 42L, 3L, 18L, 36L, 43L, 4L, 6L, 14L, 26L, 33L, 32L, 44L, 50L, 1L, 5L, 12L, 37L, 47L),
-#                                             .Label = c("AK","AL", "AR", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA", "HI", "IA", "ID", "IN", "KS", "KY", "LA", "MA", "MD", "ME",
+#                             Code = structure(c(7L, 22L, 20L, 31L, 40L, 47L, 32L, 35L, 39L, 15L, 16L, 23L, 36L, 49L, 13L, 17L, 24L, 25L, 30L, 29L, 42L, 9L, 10L,
+#                                             11L, 21L, 28L, 41L, 46L, 8L, 50L, 2L, 18L, 26L, 43L, 3L, 19L, 37L, 44L, 4L, 6L, 14L, 27L, 34L, 33L, 45L, 51L, 1L, 5L, 12L, 38L, 48L),
+#                                             .Label = c("AK","AL", "AR", "AZ", "CA", "CO", "CT", "DC", "DE", "FL", "GA", "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MA", "MD", "ME",
 #                                             "MI", "MN", "MO", "MS", "MT", "NC", "ND", "NE", "NH", "NJ", "NM", "NV", "NY", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VA", "VT", "WA", "WI", "WV", "WY"), class = "factor")),
 #                         .Names = c("RegionNumber", "DivisionNumber", "Region", "Division", "State", "Code"), row.names = c(NA, 51L), class = "data.frame")
 
@@ -378,7 +378,7 @@
 # # unnecessarily large (I'm guessing R stores a very large
 # # environment with one of the SpatialPolygonsDataFrame objects)
 # # which was making sysdata.rda >100MB
-# save(missing110,
+## save(missing110,
 #      admin1.name.map,
 #      admin0.name.map.by.admin,
 #      admin1.coordinates,
