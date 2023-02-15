@@ -55,7 +55,7 @@
 #' @param grid.show Logical; whether to show grid lines.
 #' @param opacity Opacity of bars as an alpha value (0 to 1).
 #' @param colors Character; a vector containing one or more colors specified as hex codes.
-#' @param multi.colors.within.series A logical indicating that the colors vector should be assigned to 
+#' @param multi.colors.within.series A logical indicating that the colors vector should be assigned to
 #'  each bar within the same series.
 #' @param x2.colors Character; a vector containing one or more colors for \code{x2}
 #'  specified as hex codes.
@@ -232,7 +232,7 @@
 #' @param hovertext.template Specify format of the hovertext. This can be a string or matrix
 #'  which is the same dimensions as \code{chart.matrix}. If no format is specified
 #'  the default is for categorical x-axis "\%{x}: \%{y}" or for a numerical x-axis "(\%{x}, \%{y})".
-#' @param hovertext.align Horizontal alignment of hover text. 
+#' @param hovertext.align Horizontal alignment of hover text.
 #'  Only observable when hover contain multiple lines.
 #' @param marker.border.width Width in pixels of border/line
 #' around series bars; 0 is no line
@@ -256,7 +256,7 @@
 #' @param bar.gap Gap between adjacent bars with different coordinates in
 #' bar or column charts (in plot fraction).
 #' @param bar.group.gap Gap between bars at the same location (in plot fraction).
-#'  This is only applicable for grouped bar/column charts. 
+#'  This is only applicable for grouped bar/column charts.
 #' @param data.label.show Logical; whether to show data labels.
 #' @param data.label.centered Logical; whether data labels in Stacked Column
 #' charts should have the data labels vertically centered.
@@ -553,7 +553,7 @@ Column <- function(x,
     is.stacked <- grepl("Stacked", type, fixed = TRUE)
     if (is.stacked && ncol(chart.matrix) < 2)
     {
-        warning("No stacking performed for only one series.")
+        warning("No stacking performed for only one series. Try using DATA MANIPULATION > Swap rows and columns to modify your input data.")
         is.stacked <- FALSE
     }
     is.hundred.percent.stacked <- grepl("100% Stacked", type, fixed = TRUE)
@@ -605,7 +605,7 @@ Column <- function(x,
     colors <- if (multi.colors.within.series) vectorize(colors, nrow(chart.matrix))
               else                            vectorize(colors, ncol(chart.matrix))
     data.label.font.color <- if (multi.colors.within.series) vectorize(data.label.font.color, nrow(chart.matrix))
-                             else                            vectorize(data.label.font.color, ncol(chart.matrix)) 
+                             else                            vectorize(data.label.font.color, ncol(chart.matrix))
     data.label.show <- vectorize(data.label.show, NCOL(chart.matrix), NROW(chart.matrix))
 
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
@@ -651,8 +651,8 @@ Column <- function(x,
                   x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, x.tick.format,
                   x.tick.prefix, x.tick.suffix, x.tick.show, x.zero, x.zero.line.width, x.zero.line.color,
-                  x.hovertext.format, axisFormat$labels, num.series = NCOL(chart.matrix), 
-                  with.bars = TRUE, tickcolor = x.tick.mark.color, num.maxticks = x.tick.maxnum, 
+                  x.hovertext.format, axisFormat$labels, num.series = NCOL(chart.matrix),
+                  with.bars = TRUE, tickcolor = x.tick.mark.color, num.maxticks = x.tick.maxnum,
                   zoom.enable = zoom.enable)
 
     yaxis2 <- NULL
@@ -778,7 +778,7 @@ Column <- function(x,
                           y2.tick, y2.tick.font, y2.tick.angle, y2.tick.mark.length, y2.tick.distance,
                           y2.tick.format, y2.tick.prefix, y2.tick.suffix,
                           y2.tick.show, y2.zero, y2.zero.line.width, y2.zero.line.color,
-                          y2.hovertext.format, num.maxticks = y2.tick.maxnum, 
+                          y2.hovertext.format, num.maxticks = y2.tick.maxnum,
                           tickcolor = y2.tick.mark.color, zoom.enable = zoom.enable)
         yaxis2$overlaying <- "y"
 
@@ -912,7 +912,7 @@ Column <- function(x,
             warning("Line of best fit not shown for stacked charts.")
         if (fit.type != "None" && !is.stacked)
         {
-            tmp.fit.color <- if (length(fit.line.colors) >= i) fit.line.colors[i] else tmp.color[1] 
+            tmp.fit.color <- if (length(fit.line.colors) >= i) fit.line.colors[i] else tmp.color[1]
             tmp.fit <- fitSeries(x, y, fit.type, fit.ignore.last, xaxis$type,
                 fit.CI.show, fit.window.size)
             tmp.fname <- if (ncol(chart.matrix) == 1)  fit.line.name
@@ -925,7 +925,7 @@ Column <- function(x,
                       color = tmp.fit.color, shape = 'spline'), opacity = fit.line.opacity)
             if (fit.CI.show && !is.null(tmp.fit$lb))
             {
-                tmp.CI.color <- if (length(fit.CI.colors) >= i) fit.CI.colors[i] else tmp.color[1] 
+                tmp.CI.color <- if (length(fit.CI.colors) >= i) fit.CI.colors[i] else tmp.color[1]
                 p <- add_trace(p, x = tmp.fit$x, y = tmp.fit$lb, type = 'scatter',
                         mode = 'lines', name = "Lower bound of 95%CI",
                         hoverlabel = list(font = list(color = autoFontColor(tmp.CI.color),
@@ -1049,19 +1049,19 @@ Column <- function(x,
                 text = curr.annot.text, textposition = curr.annot.align,
                 textfont = list(family = curr.annot$font.family, size = curr.annot$size,
                     color = curr.annot$color),
-                legendgroup = i, orientation = "v", 
+                legendgroup = i, orientation = "v",
                 stackgroup = if (is.stacked) paste0("overlayannot", curr.annot.ind) else "")
-            
+
             # Add other bit of stacked column chart so that annotations on the next
             # series gets added to the correct height
             if (is.stacked && length(ind.sel) > 0)
             {
                 ypos.remainder <- chart.matrix[,i]
                 ypos.remainder[ind.sel] <- ypos.remainder[ind.sel] - curr.annot.ypos
-                p <- addAnnotScatterTrace(p, xpos = data.overlay.annot$x[,i], 
+                p <- addAnnotScatterTrace(p, xpos = data.overlay.annot$x[,i],
                     ypos = ypos.remainder, text = NULL, mode = "markers",
                     xaxis = "x2", yaxis = "y", marker = list(opacity = 0.0),
-                    hoverinfo = "skip", legendgroup = i, orientation = "v", 
+                    hoverinfo = "skip", legendgroup = i, orientation = "v",
                     stackgroup = paste0("overlayannot", curr.annot.ind))
             }
 
