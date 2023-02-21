@@ -191,7 +191,7 @@ Bar <- function(x,
     is.stacked <- grepl("Stacked", type, fixed=T)
     if (is.stacked && ncol(chart.matrix) < 2)
     {
-        warning("No stacking performed for only one series.")
+        warning("No stacking performed for only one series. Try using DATA MANIPULATION > Swap rows and columns to modify your input data.")
         is.stacked <- FALSE
     }
     is.hundred.percent.stacked <- grepl("100% Stacked", type, fixed=T)
