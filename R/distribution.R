@@ -409,6 +409,8 @@ Distribution <-   function(x,
     }
     if (bin.size < 0.5)
         default.bins <- FALSE
+    if (bin.size > 1e4)
+        default.bins <- FALSE
 
     bins <- list(start = rng[1], end = rng[2],
                  size = if (!default.bins) bin.size else NULL)
