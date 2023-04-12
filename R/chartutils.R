@@ -174,6 +174,7 @@ checkMatrixNames <- function(x, assign.col.names = TRUE)
         colnames(new.x) <- sprintf("Series %d", 1:NCOL(new.x))
     if (any(duplicated(rownames(new.x))))
         stop("Row names of the input table must be unique.")
+    attr(new.x, "sorted.rows") <- attr(x, "sorted.rows")
     return(new.x)
 }
 
