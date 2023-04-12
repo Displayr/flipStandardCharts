@@ -20,3 +20,15 @@ for (n in c(5, 10, 11, 15))
         #readline(prompt=paste0(filestem, ": press [enter] to continue: "))
     }
 }
+
+test_that("Warn about sorted data",
+{
+    date.sorted <- structure(c(10L, 8L, 6L, 4L, 2L), dim = c(5L, 1L), dimnames = list(
+        c("Apr 22 2023", "Apr 20 2023", "Apr 18 2023", "Apr 16 2023",
+        "Apr 14 2023"), "Every second day"), sorted.rows = TRUE)
+    expect_warning(Column(date.sorted), "Sorting has been applied")
+    expect_warning(Bar(date.sorted), "Sorting has been applied")
+    expect_error(Scatter(date.sorted), NA)
+    expect_error(Column(date.sorted, x.tick.format = "Category"), NA)
+    expect_error(Bar(date.sorted, y.tick.format = "Category"), NA)
+})
