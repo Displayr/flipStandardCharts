@@ -174,6 +174,7 @@ checkMatrixNames <- function(x, assign.col.names = TRUE)
         colnames(new.x) <- sprintf("Series %d", 1:NCOL(new.x))
     if (any(duplicated(rownames(new.x))))
         stop("Row names of the input table must be unique.")
+    attr(new.x, "sorted.rows") <- attr(x, "sorted.rows")
     return(new.x)
 }
 
@@ -594,6 +595,12 @@ formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, x.format, y.fo
         x.axis.type <- getAxisType(x.labels, x.format)
         y.axis.type <- getAxisType(y.labels, y.format)
     }
+
+    categorical.axis.type <- if (is.bar) y.axis.type else x.axis.type
+    if (isTRUE(attr(dat, "sorted.rows")) && categorical.axis.type != "category")
+        warning("Sorting has been applied to the rows of the input table but the positioning of ",
+            "elements in a numeric or date axis is not affected by the order in the table. ",
+            " To use the order in the table rows, set the axis number type to 'Category'.")
 
     # labels are only processed for independent x-axis (or y-axis in bar charts)
     # the other axis is always numeric
