@@ -97,7 +97,7 @@ BarPictograph <- function(x,
         warning("Only the first series will be shown.")
         x <- x[,1, drop = FALSE]
     }
-    x <- x[,1]
+    x <- x[,1, drop = FALSE]
     n <- NROW(x)
     if (n > 100)
         stop("Input data containing ", n, " rows is too large to show (maximum 100 rows).")
@@ -272,7 +272,8 @@ BarPictograph <- function(x,
         if (categories.tick.align.horizontal == "Default")
             categories.tick.align.horizontal <- label.opp.pos
 
-        label.str <- paste0("\"text\": \"", cleanPictographLabels(names(x)),
+        row.labels <- if (is.null(rownames(x))) names(x) else rownames(x)
+        label.str <- paste0("\"text\": \"", cleanPictographLabels(row.labels),
             "\" ,\"horizontal-align\": \"", tolower(categories.tick.align.horizontal),
             "\" ,\"font-weight\":\"normal",
             "\" ,\"font-family\": \"", categories.tick.font.family,
