@@ -600,7 +600,8 @@ formatLabels <- function(dat, type, label.wrap, label.wrap.nchar, x.format, y.fo
     if (isTRUE(attr(dat, "sorted.rows")) && categorical.axis.type != "category")
         warning("Sorting has been applied to the rows of the input table but the positioning of ",
             "elements in a numeric or date axis is not affected by the order in the table. ",
-            " To use the order in the table rows, set the axis number type to 'Category'.")
+            "To use the order of the table rows, set the axis number type to 'Category' in ",
+            "Chart > CATEGORIES AXIS > Axis number type")
 
     # labels are only processed for independent x-axis (or y-axis in bar charts)
     # the other axis is always numeric
