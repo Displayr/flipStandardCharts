@@ -388,6 +388,20 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
     max.values <- unique(coords$table.max[!is.na(coords$table.max)])
     if (length(max.values) == 1)
         max.values <- c(max.values, max.values * 1.1)
+    
+    # If we are close to the antimeridian, wrap coords and polygons
+    if ("longitude" %in% colnames(coords@data)) {
+        lng <- coords@data$longitude
+        if (any(lng > 170)) {
+            .wrapAntiMeridian <- function(x) ifelse(x < 0, 360 + x, x)
+            coords@data$longitude <- .wrapAntiMeridian(lng)
+            for (i in 1:length(coords@polygons)) {
+                coords@polygons[[i]]@Polygons[[1]]@coords[,1] <- .wrapAntiMeridian(coords@polygons[[i]]@Polygons[[1]]@coords[,1])
+                coords@polygons[[i]]@Polygons[[1]]@labpt[1] <- .wrapAntiMeridian(coords@polygons[[i]]@Polygons[[1]]@labpt[1])
+                coords@polygons[[i]]@labpt[1] <- .wrapAntiMeridian(coords@polygons[[i]]@labpt[1])
+            }
+        }
+    }
 
     # Creating the map
     map <- leaflet(coords)
@@ -475,12 +489,15 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
         map <- setView(map, -96, 37.8, zoom = 4)
     } else if ("longitude" %in% colnames(coords@data)) {
 
-        # Manually set zoom level if we cross the longitude = 180 line
+        # Manually set zoom if map we are close to the antimeridian
         lng <- coords@data$longitude
         ltd <- coords@data$latitude
-        if (any(lng < 0) && any(lng > 170))
-            map <- fitBounds(map, min(abs(lng)), min(ltd), max(abs(lng)), max(ltd))
-    }
+        if (any(lng > 170)) {
+            lng.rng <- range(lng, na.rm = TRUE)
+            ltd.rng <- range(ltd, na.rm = TRUE)
+            map <- fitBounds(map, lng.rng[1], ltd.rng[1], lng.rng[2], ltd.rng[2])
+        }
+     }
 
     # Make legend semi-opaque if background is used to make it easier to read
     panel.bg <- if (background) 'rgba(220,220,220,0.4)' else 'transparent'
