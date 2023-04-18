@@ -214,7 +214,7 @@ a separate axis for these lines will be shown on the right.}
 
 \item{colors}{Character; a vector containing one or more colors specified as hex codes.}
 
-\item{multi.colors.within.series}{A logical indicating that the colors vector should be assigned to 
+\item{multi.colors.within.series}{A logical indicating that the colors vector should be assigned to
 each bar within the same series.}
 
 \item{opacity}{Opacity of bars as an alpha value (0 to 1).}
@@ -352,7 +352,7 @@ By default, we set it to to FALSE if the chart is stacked and TRUE otherwise.}
 which is the same dimensions as \code{chart.matrix}. If no format is specified
 the default is for categorical x-axis "\%{x}: \%{y}" or for a numerical x-axis "(\%{x}, \%{y})".}
 
-\item{hovertext.align}{Horizontal alignment of hover text. 
+\item{hovertext.align}{Horizontal alignment of hover text.
 Only observable when hover contain multiple lines.}
 
 \item{margin.top}{Margin between plot area and the top of the graphic in pixels}

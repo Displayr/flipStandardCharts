@@ -42,7 +42,7 @@
 # # Code source: http://stackoverflow.com/questions/29118059/display-spatialpolygonsdataframe-on-leaflet-map-with-r
 
 # # Higher resolution country data
-# download.file(file.path('http://www.naturalearthdata.com/http/',
+# download.file(file.path('https://www.naturalearthdata.com/http/',
 #                         'www.naturalearthdata.com/download/50m/cultural',
 #                         'ne_50m_admin_0_countries.zip'), f <- tempfile())
 # unzip(f, exdir=tempdir())
@@ -56,7 +56,7 @@
 # names(map.coordinates.50) <- tolower(names(map.coordinates.50))
 
 # # Lower resolution country data
-# download.file(file.path('http://www.naturalearthdata.com/http/',
+# download.file(file.path('https://www.naturalearthdata.com/http/',
 #                         'www.naturalearthdata.com/download/110m/cultural',
 #                         'ne_110m_admin_0_countries.zip'), f <- tempfile())
 # unzip(f, exdir=tempdir())
@@ -71,7 +71,7 @@
 
 # # State data
 # f <- tempfile()
-# download.file(file.path('http://www.naturalearthdata.com/http/',
+# download.file(file.path('https://www.naturalearthdata.com/http/',
 #                         'www.naturalearthdata.com/download/10m/cultural',
 #                         'ne_10m_admin_1_states_provinces.zip'), f)
 # d <- tempdir()
@@ -96,7 +96,7 @@
 #     columns <- c("admin", "adm0_a3", "geounit", "gu_a3", "subunit", "su_a3",
 #                  "name", "name_long", "brk_a3", "brk_name", "abbrev", "postal",
 #                  "formal_en", "formal_fr", "name_sort", "name_alt",
-#                  "iso_a2", "iso_a3", "wb_a2", "wb_a3", "adm0_a3_is", "adm0_a3_us")
+#                  "iso_a2", "iso_a3", "wb_a2", "wb_a3", "adm0_a3_us")
 #
 #     all.names <- as.character(unlist(map.coordinates[i, columns]))
 #     all.names[all.names == "-99"] <- NA
@@ -290,7 +290,7 @@
 # download.file(file.path('http://www.opendoorlogistics.com/wp-content/uploads/Data/UK-postcode-boundaries-Jan-2015.zip'),
 #               f <- tempfile())
 # unzip(f, exdir = tempdir())
-# uk.postcodes <- readOGR(paste0(tempdir(), "\\Distribution"), "Districts")
+# uk.postcodes <- readOGR(file.path(tempdir(), "Distribution"), "Districts")
 # # Simplify polygons to reduce size - error if this is done in one go so 3 chunks
 # uk.compress <- ms_simplify(uk.postcodes[1:700, ], keep_shapes = TRUE)
 # uk.compress2 <- ms_simplify(uk.postcodes[701:750, ], keep_shapes = TRUE)
@@ -378,7 +378,7 @@
 # # unnecessarily large (I'm guessing R stores a very large
 # # environment with one of the SpatialPolygonsDataFrame objects)
 # # which was making sysdata.rda >100MB
-## save(missing110,
+# #save(missing110,
 #      admin1.name.map,
 #      admin0.name.map.by.admin,
 #      admin1.coordinates,

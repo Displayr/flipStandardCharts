@@ -543,7 +543,7 @@ character format (e.g. "black") or an a hex code.}
 
 \item{hovertext.font.size}{Font size of hover text.}
 
-\item{hovertext.align}{Horizontal alignment of hover text. 
+\item{hovertext.align}{Horizontal alignment of hover text.
 Only observable when hover contain multiple lines.}
 
 \item{hovertext.template}{Specify format of the hovertext. This can be a string or matrix
