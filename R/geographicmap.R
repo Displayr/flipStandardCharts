@@ -374,7 +374,7 @@ GeographicMap <- function(x,
 
 # Helper function to plot the leaflet map
 #' @importFrom leaflet leaflet colorNumeric addLegend labelFormat highlightOptions addPolygons
-#' @importFrom leaflet addLayersControl layersControlOptions setView addTiles tileOptions
+#' @importFrom leaflet addLayersControl layersControlOptions setView fitBounds addTiles tileOptions
 #' @importFrom sp proj4string spTransform
 #' @importFrom stats as.formula
 #' @importFrom htmltools browsable tagList tags htmlDependency
@@ -471,8 +471,16 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
     }
 
     # Centre on the contiguous states
-    if (map.type == "United States of America" || map.type == "regions")
+    if (map.type == "United States of America" || map.type == "regions") {
         map <- setView(map, -96, 37.8, zoom = 4)
+    } else if ("longitude" %in% colnames(coords@data)) {
+
+        # Manually set zoom level if we cross the longitude = 180 line
+        lng <- coords@data$longitude
+        ltd <- coords@data$latitude
+        if (any(lng < 0) && any(lng > 170))
+            map <- fitBounds(map, min(abs(lng)), min(ltd), max(abs(lng)), max(ltd))
+    }
 
     # Make legend semi-opaque if background is used to make it easier to read
     panel.bg <- if (background) 'rgba(220,220,220,0.4)' else 'transparent'
