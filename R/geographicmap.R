@@ -388,8 +388,8 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
     max.values <- unique(coords$table.max[!is.na(coords$table.max)])
     if (length(max.values) == 1)
         max.values <- c(max.values, max.values * 1.1)
-    
-    # If we are close to the antimeridian, wrap coords and polygons
+
+    # If we are close to the anti meridian, wrap coords and polygons
     if ("longitude" %in% colnames(coords@data)) {
         lng <- coords@data$longitude
         if (any(lng > 170)) {
@@ -489,7 +489,7 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
         map <- setView(map, -96, 37.8, zoom = 4)
     } else if ("longitude" %in% colnames(coords@data)) {
 
-        # Manually set zoom if map we are close to the antimeridian
+        # Manually set zoom level if we are close to the anti meridian
         lng <- coords@data$longitude
         ltd <- coords@data$latitude
         if (any(lng > 170)) {
