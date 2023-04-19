@@ -390,7 +390,8 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
         max.values <- c(max.values, max.values * 1.1)
 
     # If we are close to the anti meridian, wrap coords and polygons
-    if ("longitude" %in% colnames(coords@data)) {
+    if ("longitude" %in% colnames(coords@data) && map.type != "United States of America" &&
+        map.type != "regions") {
         lng <- coords@data$longitude
         if (any(lng > 170)) {
             .wrapAntiMeridian <- function(x) ifelse(x < 0, 360 + x, x)
