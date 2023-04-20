@@ -418,8 +418,8 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
     #opacity <- 1
     .pal <- colorNumeric(palette = colors, domain = c(min.value, max.range),
                          na.color = color.NA)
-    .rev.pal <- colorNumeric(palette = rev(colors), domain = c(min.value, max.range),
-                             na.color = color.NA)
+    .rev.pal <- colorNumeric(palette = colors, domain = c(min.value, max.range),
+                             na.color = color.NA, reverse = TRUE)
 
     if (legend.show)
     {
