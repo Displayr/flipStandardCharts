@@ -68,7 +68,12 @@ for (dat in dat.list)
             cmd <- paste0("pp <- GeographicMap(", dat, ",", opts[ii], ")")
 
             # Run command and check outputs
-            expect_error(suppressWarnings(eval(parse(text=cmd))), NA)
+            if (grepl("world.multi.series.table-plotly", filestem, fixed = TRUE))
+                expect_warning(eval(parse(text=cmd)), "Only the first series")
+            else if (grepl("tb.with.spaces-plotly", filestem, fixed = TRUE))
+                expect_warning(eval(parse(text=cmd)), "Only the first series")
+            else
+                expect_error(eval(parse(text=cmd)), NA)
 
             #print(pp)
             #readline(prompt=paste0(filestem, ": press [enter] to continue: "))
