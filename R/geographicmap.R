@@ -385,7 +385,8 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
                        treat.NA.as.0, n.categories, categories, format.function, map.type,
                        background, ocean.color, hovertext.font.family, hovertext.font.size)
 {
-    max.values <- unique(coords$table.max[!is.na(coords$table.max)])
+    coords.with.values <- which(!is.na(coords$table.max))
+    max.values <- unique(coords$table.max[coords.with.values])
     if (length(max.values) == 1)
         max.values <- c(max.values, max.values * 1.1)
 
@@ -422,7 +423,7 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
 
     if (legend.show)
     {
-        map <- addLegend(map, "bottomright", pal = .rev.pal, values = c(min.value, max.values),
+        map <- addLegend(map, "bottomright", pal = .rev.pal, values = c(max.values, min.value),
                          title = legend.title,
                          # reverse label ordering so high values are at top
                          labFormat = labelFormat(transform = function(x) sort(x * mult, decreasing = TRUE),
@@ -490,14 +491,12 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
         map <- setView(map, -96, 37.8, zoom = 4)
     } else if ("longitude" %in% colnames(coords@data)) {
 
-        # Manually set zoom level if we are close to the anti meridian
+        # Manually set zoom level to fit to selected data
         lng <- coords@data$longitude
         ltd <- coords@data$latitude
-        if (any(lng > 170)) {
-            lng.rng <- range(lng, na.rm = TRUE)
-            ltd.rng <- range(ltd, na.rm = TRUE)
-            map <- fitBounds(map, lng.rng[1], ltd.rng[1], lng.rng[2], ltd.rng[2])
-        }
+        lng.rng <- range(lng[coords.with.values], na.rm = TRUE)
+        ltd.rng <- range(ltd[coords.with.values], na.rm = TRUE)
+        map <- fitBounds(map, lng.rng[1], ltd.rng[1], lng.rng[2], ltd.rng[2])
      }
 
     # Make legend semi-opaque if background is used to make it easier to read
