@@ -1,11 +1,9 @@
-## tic Circle CI template: linux-deploy
-## revision date: 2022-08-28
 version: 2.1
 jobs:
   r-release:
     machine:
         image: ubuntu-2204:current
-    resource_class: large
+    resource_class: small
 
     steps:
       - checkout
