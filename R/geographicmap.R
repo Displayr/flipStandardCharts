@@ -398,8 +398,11 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
             .wrapAntiMeridian <- function(x) ifelse(x < 0, 360 + x, x)
             coords@data$longitude <- .wrapAntiMeridian(lng)
             for (i in 1:length(coords@polygons)) {
-                coords@polygons[[i]]@Polygons[[1]]@coords[,1] <- .wrapAntiMeridian(coords@polygons[[i]]@Polygons[[1]]@coords[,1])
-                coords@polygons[[i]]@Polygons[[1]]@labpt[1] <- .wrapAntiMeridian(coords@polygons[[i]]@Polygons[[1]]@labpt[1])
+                n.poly <- length(coords@polygons[[i]]@Polygons)
+                for (j in 1:n.poly) {
+                    coords@polygons[[i]]@Polygons[[j]]@coords[,1] <- .wrapAntiMeridian(coords@polygons[[i]]@Polygons[[j]]@coords[,1])
+                    coords@polygons[[i]]@Polygons[[j]]@labpt[1] <- .wrapAntiMeridian(coords@polygons[[i]]@Polygons[[j]]@labpt[1])
+                }
                 coords@polygons[[i]]@labpt[1] <- .wrapAntiMeridian(coords@polygons[[i]]@labpt[1])
             }
         }
