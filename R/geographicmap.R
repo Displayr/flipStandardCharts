@@ -391,10 +391,12 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
         max.values <- c(max.values, max.values * 1.1)
 
     # If we are close to the anti meridian, wrap coords and polygons
+    wrap.antimeridian <- FALSE
     if ("longitude" %in% colnames(coords@data) && map.type != "United States of America" &&
         map.type != "regions") {
         lng <- coords@data$longitude
         if (any(lng > 170)) {
+            wrap.antimeridian <- TRUE
             .wrapAntiMeridian <- function(x) ifelse(x < 0, 360 + x, x)
             coords@data$longitude <- .wrapAntiMeridian(lng)
             for (i in 1:length(coords@polygons)) {
@@ -492,13 +494,12 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
     # Centre on the contiguous states
     if (map.type == "United States of America" || map.type == "regions") {
         map <- setView(map, -96, 37.8, zoom = 4)
-    } else if ("longitude" %in% colnames(coords@data)) {
-
-        # Manually set zoom level to fit to selected data
+    } else if (wrap.antimeridian) {
+        # Manually set zoom level to fit to modified coords
         lng <- coords@data$longitude
         ltd <- coords@data$latitude
-        lng.rng <- range(lng[coords.with.values], na.rm = TRUE)
-        ltd.rng <- range(ltd[coords.with.values], na.rm = TRUE)
+        lng.rng <- range(lng, na.rm = TRUE)
+        ltd.rng <- range(ltd, na.rm = TRUE)
         map <- fitBounds(map, lng.rng[1], ltd.rng[1], lng.rng[2], ltd.rng[2])
      }
 
