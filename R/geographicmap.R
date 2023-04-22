@@ -347,7 +347,7 @@ GeographicMap <- function(x,
                    legend.font.color, legend.font.size, mult, decimals, suffix,
                    values.hovertext.format, treat.NA.as.0, n.categories, categories,
                    format.function, map.type, background, ocean.color,
-                   hovertext.font.family, hovertext.font.size)
+                   hovertext.font.family, hovertext.font.size, show.missing.regions)
 
     } else
     {
@@ -383,7 +383,8 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
                        legend.font.color, legend.font.size,
                        mult, decimals, suffix, values.hovertext.format,
                        treat.NA.as.0, n.categories, categories, format.function, map.type,
-                       background, ocean.color, hovertext.font.family, hovertext.font.size)
+                       background, ocean.color, hovertext.font.family, hovertext.font.size,
+                       show.missing.regions)
 {
     coords.with.values <- which(!is.na(coords$table.max))
     max.values <- unique(coords$table.max[coords.with.values])
@@ -443,10 +444,12 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
                                           bringToFront = TRUE)
 
     # Add an outline of USA to fill gaps in zip code areas
-    if (map.type == "us_postcodes")
+    if (map.type == "us_postcodes" && show.missing.regions)
     {
         country <- "United States of America"
-        country.coords <- spTransform(map.coordinates.50[map.coordinates.50$name == country, ], proj4string(coords))
+        # suppress warnings caused by sp update from PROJ4 to PROJ6
+        suppressWarnings(country.coords <- spTransform(map.coordinates.50[map.coordinates.50$name == country, ],
+            proj4string(coords)))
         country.coords$color <- ifelse(treat.NA.as.0, 0, NA)
         map <- addPolygons(map, stroke = FALSE, smoothFactor = 0.2,
                             fillOpacity = opacity, fillColor = ~.pal(country.coords$color),
@@ -491,8 +494,8 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
                                 options = layersControlOptions(collapsed = FALSE))
     }
 
-    # Centre on the contiguous states
-    if (map.type == "United States of America" || map.type == "regions") {
+    # Centre on the contiguous states, avoiding Alaska
+    if (map.type == "United States of America" &&  map.type == "regions") {
         map <- setView(map, -96, 37.8, zoom = 4)
     } else if (wrap.antimeridian) {
         # Manually set zoom level to fit to modified coords
