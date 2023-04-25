@@ -347,7 +347,7 @@ GeographicMap <- function(x,
                    legend.font.color, legend.font.size, mult, decimals, suffix,
                    values.hovertext.format, treat.NA.as.0, n.categories, categories,
                    format.function, map.type, background, ocean.color,
-                   hovertext.font.family, hovertext.font.size)
+                   hovertext.font.family, hovertext.font.size, show.missing.regions)
 
     } else
     {
@@ -383,22 +383,29 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
                        legend.font.color, legend.font.size,
                        mult, decimals, suffix, values.hovertext.format,
                        treat.NA.as.0, n.categories, categories, format.function, map.type,
-                       background, ocean.color, hovertext.font.family, hovertext.font.size)
+                       background, ocean.color, hovertext.font.family, hovertext.font.size,
+                       show.missing.regions)
 {
-    max.values <- unique(coords$table.max[!is.na(coords$table.max)])
+    coords.with.values <- which(!is.na(coords$table.max))
+    max.values <- unique(coords$table.max[coords.with.values])
     if (length(max.values) == 1)
         max.values <- c(max.values, max.values * 1.1)
 
     # If we are close to the anti meridian, wrap coords and polygons
+    wrap.antimeridian <- FALSE
     if ("longitude" %in% colnames(coords@data) && map.type != "United States of America" &&
         map.type != "regions") {
         lng <- coords@data$longitude
         if (any(lng > 170)) {
+            wrap.antimeridian <- TRUE
             .wrapAntiMeridian <- function(x) ifelse(x < 0, 360 + x, x)
             coords@data$longitude <- .wrapAntiMeridian(lng)
             for (i in 1:length(coords@polygons)) {
-                coords@polygons[[i]]@Polygons[[1]]@coords[,1] <- .wrapAntiMeridian(coords@polygons[[i]]@Polygons[[1]]@coords[,1])
-                coords@polygons[[i]]@Polygons[[1]]@labpt[1] <- .wrapAntiMeridian(coords@polygons[[i]]@Polygons[[1]]@labpt[1])
+                n.poly <- length(coords@polygons[[i]]@Polygons)
+                for (j in 1:n.poly) {
+                    coords@polygons[[i]]@Polygons[[j]]@coords[,1] <- .wrapAntiMeridian(coords@polygons[[i]]@Polygons[[j]]@coords[,1])
+                    coords@polygons[[i]]@Polygons[[j]]@labpt[1] <- .wrapAntiMeridian(coords@polygons[[i]]@Polygons[[j]]@labpt[1])
+                }
                 coords@polygons[[i]]@labpt[1] <- .wrapAntiMeridian(coords@polygons[[i]]@labpt[1])
             }
         }
@@ -417,12 +424,12 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
     #opacity <- 1
     .pal <- colorNumeric(palette = colors, domain = c(min.value, max.range),
                          na.color = color.NA)
-    .rev.pal <- colorNumeric(palette = rev(colors), domain = c(min.value, max.range),
-                             na.color = color.NA)
+    .rev.pal <- colorNumeric(palette = colors, domain = c(min.value, max.range),
+                             na.color = color.NA, reverse = TRUE)
 
     if (legend.show)
     {
-        map <- addLegend(map, "bottomright", pal = .rev.pal, values = c(min.value, max.values),
+        map <- addLegend(map, "bottomright", pal = .rev.pal, values = c(max.values, min.value),
                          title = legend.title,
                          # reverse label ordering so high values are at top
                          labFormat = labelFormat(transform = function(x) sort(x * mult, decreasing = TRUE),
@@ -437,10 +444,12 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
                                           bringToFront = TRUE)
 
     # Add an outline of USA to fill gaps in zip code areas
-    if (map.type == "us_postcodes")
+    if (map.type == "us_postcodes" && show.missing.regions)
     {
         country <- "United States of America"
-        country.coords <- spTransform(map.coordinates.50[map.coordinates.50$name == country, ], proj4string(coords))
+        # suppress warnings caused by sp update from PROJ4 to PROJ6
+        suppressWarnings(country.coords <- spTransform(map.coordinates.50[map.coordinates.50$name == country, ],
+            proj4string(coords)))
         country.coords$color <- ifelse(treat.NA.as.0, 0, NA)
         map <- addPolygons(map, stroke = FALSE, smoothFactor = 0.2,
                             fillOpacity = opacity, fillColor = ~.pal(country.coords$color),
@@ -485,19 +494,16 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
                                 options = layersControlOptions(collapsed = FALSE))
     }
 
-    # Centre on the contiguous states
-    if (map.type == "United States of America" || map.type == "regions") {
+    # Centre on the contiguous states, avoiding Alaska
+    if (map.type == "United States of America" &&  map.type == "regions") {
         map <- setView(map, -96, 37.8, zoom = 4)
-    } else if ("longitude" %in% colnames(coords@data)) {
-
-        # Manually set zoom level if we are close to the anti meridian
+    } else if (wrap.antimeridian) {
+        # Manually set zoom level to fit to modified coords
         lng <- coords@data$longitude
         ltd <- coords@data$latitude
-        if (any(lng > 170)) {
-            lng.rng <- range(lng, na.rm = TRUE)
-            ltd.rng <- range(ltd, na.rm = TRUE)
-            map <- fitBounds(map, lng.rng[1], ltd.rng[1], lng.rng[2], ltd.rng[2])
-        }
+        lng.rng <- range(lng, na.rm = TRUE)
+        ltd.rng <- range(ltd, na.rm = TRUE)
+        map <- fitBounds(map, lng.rng[1], ltd.rng[1], lng.rng[2], ltd.rng[2])
      }
 
     # Make legend semi-opaque if background is used to make it easier to read
