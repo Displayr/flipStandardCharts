@@ -419,6 +419,6 @@ totalIconsAreIntegers <- function(total.icons) {
 }
 totalIconsArePositive <- function (total.icons) {
     all(vapply(total.icons,
-               FUN = function(x) { is.na(x) || x <= 0},
+               FUN = function(x) { is.na(x) || x > 0},
                FUN.VALUE = logical(1)))
 }
