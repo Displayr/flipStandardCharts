@@ -494,8 +494,9 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
                                 options = layersControlOptions(collapsed = FALSE))
     }
 
-    # Centre on the contiguous states, avoiding Alaska
-    if (map.type == "United States of America" &&  map.type == "regions") {
+    # Centre on the contiguous states, avoiding Alaska and Hawaii
+    # This is for state and regional maps, not postcodes
+    if (map.type == "United States of America" || map.type == "regions") {
         map <- setView(map, -96, 37.8, zoom = 4)
     } else if (wrap.antimeridian) {
         # Manually set zoom level to fit to modified coords
