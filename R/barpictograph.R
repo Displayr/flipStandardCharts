@@ -414,11 +414,11 @@ cleanPictographLabels <- function(x)
 
 totalIconsAreIntegers <- function(total.icons) {
     all(vapply(total.icons, 
-               FUN = function(x) { return is.na(x) || x == ceiling(x)},
+               FUN = function(x) { is.na(x) || x == ceiling(x)},
                FUN.VALUE = logical(1)))
 }
 totalIconsArePositive <- function (total.icons) {
     all(vapply(total.icons,
-               FUN = function(x) { return is.na(x) || x <= 0},
+               FUN = function(x) { is.na(x) || x <= 0},
                FUN.VALUE = logical(1)))
 }
