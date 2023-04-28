@@ -48,3 +48,7 @@ test_that("JSON config escapes quotes",
     expect_error(BarPictograph(x2), NA)
     expect_error(BarPictograph(x2, data.label.position = "Above row label"), NA)
 })
+
+test_that("untracked_fix_vector_in_if: Bar Pictograph does not error in R 4.3", {
+    expect_error(BarPictograph(1:6, icon.ncol = 3,fix.icon.nrow = FALSE), NA)
+})
