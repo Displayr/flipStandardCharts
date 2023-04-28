@@ -169,9 +169,9 @@ BarPictograph <- function(x,
         stop("Input data is too large. Try increasing the scale or total icons\n")
 
     # Check parameters
-    if (!is.na(total.icons) && total.icons != ceiling(total.icons))
+    if (!totalIconsAreIntegers(total.icons))
         stop("Total icons must be a whole number\n")
-    if (!is.na(total.icons) && total.icons <= 0)
+    if (!totalIconsArePositive(total.icons))
         stop("Total icons must be greater than zero\n")
     if (!is.na(scale) && scale <= 0)
         stop("Scale must be greater than zero\n")
@@ -410,4 +410,15 @@ cleanPictographLabels <- function(x)
     x <- gsub("&nbsp;", " ", x)
     x <- gsub('"', '\\"', x, fixed = TRUE)
     return(x)
+}
+
+totalIconsAreIntegers <- function(total.icons) {
+    all(vapply(total.icons, 
+               FUN = function(x) { return is.na(x) || x == ceiling(x)},
+               FUN.VALUE = logical(1)))
+}
+totalIconsArePositive <- function (total.icons) {
+    all(vapply(total.icons,
+               FUN = function(x) { return is.na(x) || x <= 0},
+               FUN.VALUE = logical(1)))
 }
