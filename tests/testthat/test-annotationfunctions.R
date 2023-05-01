@@ -48,12 +48,16 @@ tb.as.char <- structure(c("11.1111111111111", "33.3333333333333", "37.0370370370
     "-2.52224393244656", "0.287717892938221", NA, NA, NA, NA, NA,
     NA, NA, NA, NA, NA, "B c", "b c", NA, NA, NA, NA, "-", "a", NA,
     NA, NA, NA, "c", NA, "-", "A b", NA, NA, NA, NA, NA, NA, "-",
-    "-", "-", "-", "-", "-", "-", "-", "-"), .Dim = c(8L, 4L, 3L), .Dimnames = list(
+    "-", "-", "-", "-", "-", "-", "-", "-", "FALSE", "FALSE", "FALSE",
+    "FALSE", "FALSE", "FALSE", "FALSE", "FALSE", "FALSE", "FALSE", "FALSE",
+    "FALSE", "FALSE", "TRUE", "FALSE", "FALSE", "FALSE", "FALSE",
+    "FALSE", "FALSE", "FALSE", "FALSE", "FALSE", "FALSE", "FALSE",
+    "FALSE", "FALSE", "FALSE", "FALSE", "FALSE", "FALSE", "FALSE"), .Dim = c(8L, 4L, 4L), .Dimnames = list(
         c("Coca-Cola", "Diet Coke", "Coke Zero", "Pepsi ", "Diet Pepsi",
         "Pepsi Max", "Dislike all cola", "NET"), c("I am on a diet, so I tend to watch what I eat and drink",
         "I tend watch what I eat and drink, but don’t consider myself",
         "I typically eat and drink whatever I feel like", "NET"),
-        c("Column %", "z-Statistic", "Column Comparisons")), basedescriptiontext = "sample size = 327", basedescription = list(
+        c("Column %", "z-Statistic", "Column Comparisons", "Signif")), basedescriptiontext = "sample size = 327", basedescription = list(
         Minimum = 327L, Maximum = 327L, Range = FALSE, Total = 327L,
         Missing = 0L, EffectiveSampleSize = 327L, EffectiveSampleSizeProportion = 100,
         FilteredProportion = 0), questiontypes = c("PickOne", "PickOne"
@@ -91,6 +95,9 @@ test_that("getAnnotData",
         c(`Coca-Cola` = "a", `Diet Coke` = NA, `Coke Zero` = NA, `Pepsi ` = NA,
         `Diet Pepsi` = NA, `Pepsi Max` = "c", `Dislike all cola` = NA,
         NET = "-"))
+    expect_equal(getAnnotData(tb.as.char, "Signif", 2, as.numeric = T),
+        c(`Coca-Cola` = 0, `Diet Coke` = 0, `Coke Zero` = 0, `Pepsi ` = 0,
+          `Diet Pepsi` = 0, `Pepsi Max` = 1, `Dislike all cola` = 0, NET = 0))
 })
 
 test_that("extractSelectedAnnot",

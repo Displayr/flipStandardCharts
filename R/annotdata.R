@@ -266,8 +266,15 @@ getAnnotData <- function(data, name, series, as.numeric = TRUE)
         new.dat <- data[,series, ind]
     else
         new.dat <- data[,ind]
-    if (as.numeric)
+    if (as.numeric) {
+        if (is.character(new.dat) && all(new.dat %in% c("TRUE", "FALSE", "NA"))) {
+            ind.missing <- which(is.na(new.dat) | new.dat == "NA")
+            new.dat <- ifelse (new.dat == "TRUE", 1, 0)
+            new.dat[ind.missing] <- NA
+            return(new.dat)
+        }
         new.dat <- suppressWarnings(as.numeric(new.dat))
+    }
     return(new.dat)
 }
 
