@@ -347,8 +347,9 @@ Line <-   function(x,
     # Add invisible line to force all categorical labels to be shown
     tmp.min <- if (any(is.finite(chart.matrix))) min(chart.matrix[is.finite(chart.matrix)])
                else y.bounds.minimum
+    tmp.mode <- if (any(marker.show) || any(data.label.show)) "lines+markers" else "lines"
     p <- add_trace(p, x = x.labels, y = rep(tmp.min, length(x.labels)),
-                   type = "scatter", mode = "lines",
+                   type = "scatter", mode = tmp.mode,
                    hoverinfo = "skip", showlegend = FALSE, opacity = 0)
 
     line.thickness <- readLineThickness(line.thickness, ncol(chart.matrix))
