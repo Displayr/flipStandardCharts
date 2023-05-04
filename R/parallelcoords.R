@@ -98,10 +98,6 @@ ParallelCoordinates <- function(x,
         x <- x[,1:max.nvar]
     }
 
-    # Clean up column names
-    colnames(x) <- gsub("[\'\"]", "", colnames(x))
-
-
     # Reduce the number of ticks for date variables
 	tasks <- NULL
     dimlist <- list()
@@ -279,9 +275,9 @@ orderCategoricalTicks <- function(varname, varlevels, reverse.axes)
 
 	return(paste0("
 function(){
-	this.parcoords.dimensions()['", varname, "']
+	this.parcoords.dimensions()", toJSON(varname), "
 	.yscale = d3.scale.ordinal()
-	.domain(['", paste(varlevels, collapse = "','"), "'])
+	.domain(", toJSON(varlevels), ")
 	.rangePoints([", rng, "]);
 
 	this.parcoords.removeAxes();
@@ -312,7 +308,7 @@ orderContinuousTicks <- function(varname, varrange, reverse.axes)
 
 	return(paste0("
 function(){
-	this.parcoords.dimensions()['", varname, "']
+	this.parcoords.dimensions()", toJSON(varname), "
 	.yscale = d3.scale.linear()
 	.domain([", varrange[1], ", ", varrange[2], "])
 	.range([", rng, "]);
