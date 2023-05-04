@@ -279,9 +279,9 @@ orderCategoricalTicks <- function(varname, varlevels, reverse.axes)
 
 	return(paste0("
 function(){
-	this.parcoords.dimensions()['", varname, "']
+	this.parcoords.dimensions()", toJSON(varname), "
 	.yscale = d3.scale.ordinal()
-	.domain(['", paste(varlevels, collapse = "','"), "'])
+	.domain(", toJSON(varlevels), ")
 	.rangePoints([", rng, "]);
 
 	this.parcoords.removeAxes();
@@ -312,7 +312,7 @@ orderContinuousTicks <- function(varname, varrange, reverse.axes)
 
 	return(paste0("
 function(){
-	this.parcoords.dimensions()['", varname, "']
+	this.parcoords.dimensions()", toJSON(varname), "
 	.yscale = d3.scale.linear()
 	.domain([", varrange[1], ", ", varrange[2], "])
 	.range([", rng, "]);
