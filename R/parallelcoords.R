@@ -98,10 +98,6 @@ ParallelCoordinates <- function(x,
         x <- x[,1:max.nvar]
     }
 
-    # Clean up column names
-    colnames(x) <- gsub("[\'\"]", "", colnames(x))
-
-
     # Reduce the number of ticks for date variables
 	tasks <- NULL
     dimlist <- list()
