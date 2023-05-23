@@ -403,7 +403,7 @@ Bar <- function(x,
             p <- add_trace(p, x = y.filled, y = x, type = "bar", orientation = "h",
                        marker = marker, name = legend.text[i],
                        hoverlabel = hover.label, hovertemplate = hover.template,
-                       legendgroup = i)
+                       legendgroup = i, offsetgroup = i)
 
         if (fit.type != "None" && is.stacked && i == 1)
             warning("Line of best fit not shown for stacked charts.")

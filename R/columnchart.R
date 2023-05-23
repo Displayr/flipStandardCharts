@@ -905,7 +905,7 @@ Column <- function(x,
                        hoverlabel = list(font = list(color = autoFontColor(tmp.color),
                        size = hovertext.font.size, family = hovertext.font.family)),
                        hovertemplate = setHoverTemplate(i, xaxis, chart.matrix, hovertext.template),
-                       legendgroup = i)
+                       legendgroup = i, offsetgroup = i)
 
 
         if (fit.type != "None" && is.stacked && i == 1)
