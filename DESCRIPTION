@@ -1,7 +1,7 @@
 Package: flipStandardCharts
 Type: Package
 Title: Standard R interactive charts
-Version: 1.30.10
+Version: 1.30.11
 Author: Displayr <opensource@displayr.com>
 Maintainer: Displayr <opensource@displayr.com>
 Description: Wrapper for other charting packages. The goal is to provide a
@@ -12,7 +12,7 @@ Depends: R (>= 3.5.0)
 LazyData: TRUE
 Imports:
     d3vennR,
-    dygraphs (>= 1.1.1.6-1),
+    dygraphs (>= 1.1.1.6),
     flipChartBasics (>= 2.3.0),
     flipData,
     flipFormat,
