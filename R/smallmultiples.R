@@ -178,7 +178,7 @@ SmallMultiples <- function(x,
                 args <- c(list(x), rep(alist(, )[1L], n.dim), drop = FALSE)
                 args[[3L]] <- x.order
                 y <- do.call(`[`, args)
-                x <- if (inherits(y, "qTable")) y else CopyAttributes(y, x)
+                x <- if (inherits(y, "QTable")) y else CopyAttributes(y, x)
             }
             npanels <- length(x.order)
         }
