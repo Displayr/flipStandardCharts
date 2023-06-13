@@ -142,6 +142,15 @@ test_that("data frame iputs are accepted",
     expect_error(Line(df), NA)
 })
 
+test_that("DS-4185 Zero time stamps in labels handled correctly for R4.3.0", {
+    input.data = matrix(1:5, nrow = 5)
+    rownames(input.data) = c("Jan 12 2007 00:00",
+                             "Jan 12 2007 12:00",
+                             "Jan 13 2007 00:00",
+                             "Jan 13 2007 12:00",
+                             "Jan 14 2007 00:00")
+    expect_error(TimeSeries(input.data), NA)
+})
 
 
 
