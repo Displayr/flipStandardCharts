@@ -82,8 +82,8 @@ TimeSeries <- function(x = NULL,
     if (is.null(colors))
         colors <- ChartColors(ncol(x))
 
-    row.names <- AsDateTime(rownames(x), on.parse.failure = "silent")
-    if (all(is.na(row.names)))
+    row.names.date <- AsDateTime(rownames(x), on.parse.failure = "silent")
+    if (all(is.na(row.names.date)))
     {
         if (IsRServer())
             stop("Time series charts require dates to be supplied as the row names ",
@@ -92,13 +92,13 @@ TimeSeries <- function(x = NULL,
         else
             stop("Row names of input data could not be interpreted as dates.")
     }
-    is.time <- !all(format(row.names, format = "%H:%M:%S") == "00:00:00")
-    rownames(x) <- as.character(row.names)
+    is.time <- !all(format(row.names.date, format = "%H:%M:%S") == "00:00:00")
+    rownames(x) <- as.character(row.names.date)
 
     # Make sure input data is ordered - this is required for dygraphs
-    ord <- order(row.names)
+    ord <- order(row.names.date)
     x <- x[ord,,drop = FALSE]
-    row.names <- row.names
+    row.names.date <- row.names.date[ord]
 
     if (range.bars)
     {
@@ -111,16 +111,16 @@ TimeSeries <- function(x = NULL,
 
     names(colors) <- NULL # Remove names because named chr is (oddly!) ignored by dygraph
 
-    range.end <- as.POSIXct(row.names[length(row.names)])
+    range.end <- as.POSIXct(row.names.date[length(row.names.date)])
     if (is.null(window.start))
-        range.start <- as.POSIXct(row.names[1])
+        range.start <- as.POSIXct(row.names.date[1])
     else
-        range.start <- max(range.end - 60 * 60 * 24 * window.start, as.POSIXct(row.names[1]))
+        range.start <- max(range.end - 60 * 60 * 24 * window.start, as.POSIXct(row.names.date[1]))
 
     # Convert to an xts object with UTC timezone, or else this is done within dygraph which takes the
     # system timezone, which causes a difference between the data times and the x-axis times.
     if (is.time)
-        x <- xts(x, order.by = row.names, tzone = "UTC")
+        x <- xts(x, order.by = row.names.date, tzone = "UTC")
 
     # Controlling the formatting of the dygraphs via the CSS
     css <- paste0(".dygraph-title {
