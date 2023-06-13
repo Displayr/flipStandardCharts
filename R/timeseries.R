@@ -93,7 +93,7 @@ TimeSeries <- function(x = NULL,
             stop("Row names of input data could not be interpreted as dates.")
     }
     is.time <- !all(format(row.names.date, format = "%H:%M:%S") == "00:00:00")
-    rownames(x) <- as.character(row.names.date)
+    rownames(x) <- format(row.names.date)
 
     # Make sure input data is ordered - this is required for dygraphs
     ord <- order(row.names.date)
