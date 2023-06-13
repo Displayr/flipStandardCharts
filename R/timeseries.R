@@ -98,6 +98,7 @@ TimeSeries <- function(x = NULL,
     # Make sure input data is ordered - this is required for dygraphs
     ord <- order(row.names)
     x <- x[ord,,drop = FALSE]
+    row.names <- row.names
 
     if (range.bars)
     {
@@ -110,16 +111,16 @@ TimeSeries <- function(x = NULL,
 
     names(colors) <- NULL # Remove names because named chr is (oddly!) ignored by dygraph
 
-    range.end <- as.POSIXct(rownames(x)[length(rownames(x))])
+    range.end <- as.POSIXct(row.names[length(row.names)])
     if (is.null(window.start))
-        range.start <- as.POSIXct(rownames(x)[1])
+        range.start <- as.POSIXct(row.names[1])
     else
-        range.start <- max(range.end - 60 * 60 * 24 * window.start, as.POSIXct(rownames(x)[1]))
+        range.start <- max(range.end - 60 * 60 * 24 * window.start, as.POSIXct(row.names[1]))
 
     # Convert to an xts object with UTC timezone, or else this is done within dygraph which takes the
     # system timezone, which causes a difference between the data times and the x-axis times.
     if (is.time)
-        x <- xts(x, order.by = AsDateTime(rownames(x)), tzone = "UTC")
+        x <- xts(x, order.by = row.names, tzone = "UTC")
 
     # Controlling the formatting of the dygraphs via the CSS
     css <- paste0(".dygraph-title {
