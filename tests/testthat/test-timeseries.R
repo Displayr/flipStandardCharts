@@ -135,6 +135,12 @@ df <- structure(list(Homeland = c(2, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2,
 "2018-04-01", "2018-04-08", "2018-04-15", "2018-04-22", "2018-04-29",
 "2018-05-06"), class = "data.frame")
 
+test_that("Missing values are handled",
+{
+    google.trends[2] <- NA
+    expect_error(TimeSeries(google.trends), NA)
+})
+
 test_that("data frame iputs are accepted",
 {
     expect_error(TimeSeries(df), NA)
