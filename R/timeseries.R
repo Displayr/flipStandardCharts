@@ -99,7 +99,6 @@ TimeSeries <- function(x = NULL,
     ord <- order(row.names.date)
     x <- x[ord,,drop = FALSE]
     row.names.date <- row.names.date[ord]
-
     if (range.bars)
     {
         if (ncol(x) != 3)
