@@ -99,7 +99,6 @@ TimeSeries <- function(x = NULL,
     ord <- order(row.names.date)
     x <- x[ord,,drop = FALSE]
     row.names.date <- row.names.date[ord]
- 
     if (range.bars)
     {
         if (ncol(x) != 3)
@@ -167,13 +166,12 @@ TimeSeries <- function(x = NULL,
         y.hovertext.format <- y.tick.format
     else
         y.hovertext.format <- checkD3Format(y.hovertext.format, "numeric", warning.type = "Hover text")
-    numeric.values <- as.numeric(x)
-    ind.not.missing <- which(!is.na(numeric.values))
-    medium.values <- all(numeric.values[!ind.not.missing] > 1) && all(numeric.values[!ind.not.missing] < 1e5)
+    values.range <- range(as.numeric(x), na.rm = TRUE, finite = TRUE)
+    is.medium.values <- values.range[1] > 1 && values.range[2] < 1e5
     dg <- dyAxis(dg, "y",
         valueRange = c(charToNumeric(y.bounds.minimum), charToNumeric(y.bounds.maximum)),
-        valueFormatter = tickFormat(y.hovertext.format, y.hovertext.prefix, y.hovertext.suffix, medium.values),
-        axisLabelFormatter =  tickFormat(y.tick.format, y.tick.prefix, y.tick.suffix, medium.values)
+        valueFormatter = tickFormat(y.hovertext.format, y.hovertext.prefix, y.hovertext.suffix, is.medium.values),
+        axisLabelFormatter =  tickFormat(y.tick.format, y.tick.prefix, y.tick.suffix, is.medium.values)
     )
 
     if (range.bars)
