@@ -166,8 +166,13 @@ TimeSeries <- function(x = NULL,
         y.hovertext.format <- y.tick.format
     else
         y.hovertext.format <- checkD3Format(y.hovertext.format, "numeric", warning.type = "Hover text")
+
+    # Determine format for tick labels
+    # For values in a medium range y this is usually just in decimal notation
+    # For very small (many values in 0-1 range) or
+    # very large values use scientific notation
     values.range <- range(as.numeric(x), na.rm = TRUE, finite = TRUE)
-    is.medium.values <- values.range[1] > 1 && values.range[2] < 1e5
+    is.medium.values <- values.range[1] > 0 && values.range[2] > 1 && values.range[2] < 1e5
     dg <- dyAxis(dg, "y",
         valueRange = c(charToNumeric(y.bounds.minimum), charToNumeric(y.bounds.maximum)),
         valueFormatter = tickFormat(y.hovertext.format, y.hovertext.prefix, y.hovertext.suffix, is.medium.values),
