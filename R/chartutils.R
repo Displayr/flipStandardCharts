@@ -653,15 +653,31 @@ setDateTickDistance <- function(date.labels, num.maxticks)
     n <- length(date.labels)
     if (n < 2 || n > 10)
         return(NULL)
-    tmp.dist <- difftime(date.labels[n], date.labels[1], units = "secs")/(n-1)
+    tmp.dist <- as.numeric(difftime(date.labels[n], date.labels[1], units = "secs"))/(n-1)
 
     # Use plotly defaults if the data is monthly or yearly
     use.auto.ticks <- TRUE
     if (tmp.dist <= 86400) # time scale is less than a day
         use.auto.ticks <- FALSE
-    else if (tmp.dist <= 0.9 * 31536000) # on the scale of a year
-        use.auto.ticks <- all(as.numeric(format(date.labels, "%d")) == 1)
-    else # whether to show month/day
+    else if (tmp.dist <= 0.9 * 31536000) { # on the scale of a year
+        # Check for monthly intervals which accounts for different number of days per month
+        seconds.in.day <- 86400
+        nmonth <- round(tmp.dist/(seconds.in.day * 30))
+        if (!is.null(num.maxticks) && n > num.maxticks) 
+            nmonth <- (floor(n/num.maxticks) + 1) * nmonth
+        day.of.month <- as.numeric(format(date.labels, "%d"))
+        if (length(unique(day.of.month)) == 1)
+            return(paste0("M", nmonth))
+        # Check for monthly intervals which are fixed relative to the end of the month
+        offset <- 31 - as.numeric(min(day.of.month))
+        if (inherits(date.labels, "Date") && 
+            length(unique(format(date.labels + offset, "%d"))) == 1)
+                return(paste0("M", nmonth))
+        if (inherits(date.labels, "POSIXct") && 
+            length(unique(format(date.labels + (offset * seconds.in.day), "%d"))) == 1)
+                return(paste0("M", nmonth))
+        use.auto.ticks <- FALSE
+    } else # whether to show month/day
         use.auto.ticks <- all(as.numeric(format(date.labels, "%j")) == 1)
 
     # If axis range is considerable larger than the intervals between ticks
