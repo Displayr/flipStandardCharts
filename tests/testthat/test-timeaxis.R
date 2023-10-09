@@ -67,3 +67,22 @@ test_that("Warn about sorted data",
         threshold = 0, color = "#FF0000", size = 12)), sorted.rows = TRUE)
     expect_warning(Line(numeric.sorted), "Sorting has been applied")
 })
+
+test_that("Date intervals",
+{
+    quarterly_dates <- as.Date(c("2021-03-31", "2021-06-30", "2021-09-30",
+        "2021-12-31", "2022-03-31", "2022-06-30", "2022-09-30", "2022-12-31",
+        "2023-03-31", "2023-06-30"))
+    expect_equal(setDateTickDistance(quarterly_dates, 10), "M3")
+
+    quarterly_posixct <- structure(c(1617148800, 1625011200, 1632960000,
+        1640908800, 1648684800, 1656547200, 1664496000, 1672444800, 1680220800,
+        1688083200), class = c("POSIXct", "POSIXt"), tzone = "UTC")
+    expect_equal(setDateTickDistance(quarterly_posixct, 10), "M3")
+    expect_equal(setDateTickDistance(quarterly_posixct, 4), "M9")
+
+    weekly_dates <- as.Date(c("2023-10-16", "2023-10-23", "2023-10-30",
+        "2023-11-06", "2023-11-13"))
+    expect_equal(setDateTickDistance(weekly_dates, 5), 604800000)
+})
+
