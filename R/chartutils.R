@@ -639,45 +639,56 @@ getDateAxisRange <- function(label.dates, new.range = NULL)
     return(as.character(range))
 }
 
-# In most cases the plotly defaults
-# (tickmode = "auto" and tickdistance not set)
-# works fine, but when there is a short series of daily
-# (i.e. not montly or yearly) data, plotly will place ticks
-# on every Sunday which does not align with the data points.
-# This is especially ugly in bar and column charts but also
-# makes line and area charts harder to read
-# In these cases, we manually specify the tick distance
-# for a date axis (which means that tickmode = "linear")
+# This function is used to override the default plotly settings for
+# a date/time axis. The return value is used to set the 'dtick' parameter.
+# It can be one of:
+#       - time between ticks in units of milliseconds
+#       - intervals in months, e.g. 'M3' for 3 months, allows for different number of days per month
+#       - NULL, i.e revert back to plotly defaults
+# Where date intervals are reasonably regular we prefer to use plotly defaults
+# because it will do try to simplify labels depending on the timescale
+# e.g. only show years at the beginning of each year instead of each month
+# or hide day of month.
 setDateTickDistance <- function(date.labels, num.maxticks)
 {
+    # For a reasonably long series of dates, plotly does reasonably well
+    # But for a short series, plotly will place ticks on every Sunday,
+    # which usually does not align with the data points
     n <- length(date.labels)
     if (n < 2 || n > 10)
         return(NULL)
     tmp.dist <- as.numeric(difftime(date.labels[n], date.labels[1], units = "secs"))/(n-1)
 
-    # Use plotly defaults if the data is monthly or yearly
+    # We check if the date labels are on the first or each month
+    # or the first day of each year, because these are likely
+    # internally generated. They occur when the user does not give
+    # a fully specified date, e.g. "Jan 2017", or "2019".
     use.auto.ticks <- TRUE
+
     if (tmp.dist <= 86400) # time scale is less than a day
         use.auto.ticks <- FALSE
     else if (tmp.dist <= 0.9 * 31536000) { # on the scale of a year
         # Check for monthly intervals which accounts for different number of days per month
         seconds.in.day <- 86400
         nmonth <- round(tmp.dist/(seconds.in.day * 30))
-        if (!is.null(num.maxticks) && n > num.maxticks) 
+        if (!is.null(num.maxticks) && n > num.maxticks)
             nmonth <- (floor(n/num.maxticks) + 1) * nmonth
         day.of.month <- as.numeric(format(date.labels, "%d"))
+        # use auto generated ticks to default to not showing the day of month
+        if (all(day.of.month == 1))
+            return (NULL)
         if (length(unique(day.of.month)) == 1)
             return(paste0("M", nmonth))
         # Check for monthly intervals which are fixed relative to the end of the month
         offset <- 31 - as.numeric(min(day.of.month))
-        if (inherits(date.labels, "Date") && 
+        if (inherits(date.labels, "Date") &&
             length(unique(format(date.labels + offset, "%d"))) == 1)
                 return(paste0("M", nmonth))
-        if (inherits(date.labels, "POSIXct") && 
+        if (inherits(date.labels, "POSIXct") &&
             length(unique(format(date.labels + (offset * seconds.in.day), "%d"))) == 1)
                 return(paste0("M", nmonth))
         use.auto.ticks <- FALSE
-    } else # whether to show month/day
+    } else # use auto generated tick to default to not showing month or day
         use.auto.ticks <- all(as.numeric(format(date.labels, "%j")) == 1)
 
     # If axis range is considerable larger than the intervals between ticks
