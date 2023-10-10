@@ -663,21 +663,24 @@ setDateTickDistance <- function(date.labels, num.maxticks)
         # Check for monthly intervals which accounts for different number of days per month
         seconds.in.day <- 86400
         nmonth <- round(tmp.dist/(seconds.in.day * 30))
-        if (!is.null(num.maxticks) && n > num.maxticks) 
+        if (!is.null(num.maxticks) && n > num.maxticks)
             nmonth <- (floor(n/num.maxticks) + 1) * nmonth
         day.of.month <- as.numeric(format(date.labels, "%d"))
+        # use auto generated ticks to default to not showing the day of month
+        if (all(day.of.month == 1))
+            return (NULL)
         if (length(unique(day.of.month)) == 1)
             return(paste0("M", nmonth))
         # Check for monthly intervals which are fixed relative to the end of the month
         offset <- 31 - as.numeric(min(day.of.month))
-        if (inherits(date.labels, "Date") && 
+        if (inherits(date.labels, "Date") &&
             length(unique(format(date.labels + offset, "%d"))) == 1)
                 return(paste0("M", nmonth))
-        if (inherits(date.labels, "POSIXct") && 
+        if (inherits(date.labels, "POSIXct") &&
             length(unique(format(date.labels + (offset * seconds.in.day), "%d"))) == 1)
                 return(paste0("M", nmonth))
         use.auto.ticks <- FALSE
-    } else # whether to show month/day
+    } else # use auto generated tick to default to not showing month or day
         use.auto.ticks <- all(as.numeric(format(date.labels, "%j")) == 1)
 
     # If axis range is considerable larger than the intervals between ticks

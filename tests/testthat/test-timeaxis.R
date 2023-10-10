@@ -84,5 +84,15 @@ test_that("Date intervals",
     weekly_dates <- as.Date(c("2023-10-16", "2023-10-23", "2023-10-30",
         "2023-11-06", "2023-11-13"))
     expect_equal(setDateTickDistance(weekly_dates, 5), 604800000)
+
+    # Dates were supplied without day of month, i.e. Nov 2016, Dec 2016, Jan 2017, ...
+    monthly_dates <- structure(c(1477958400, 1480550400, 1483228800, 1485907200,
+        1488326400), class = c("POSIXct", "POSIXt"), tzone = "UTC")
+    expect_equal(setDateTickDistance(monthly_dates, 5), NULL)
+
+    # Dates were supplied without month or day, i.e. 2016, 2017, ...
+    yearly_dates <- structure(c(1451606400, 1483228800, 1514764800, 1546300800,
+        1577836800), class = c("POSIXct", "POSIXt"), tzone = "UTC")
+    expect_equal(setDateTickDistance(yearly_dates, 5), NULL)
 })
 
