@@ -539,10 +539,13 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
     #      attachment = basename(tf),
          all_files = FALSE
     )
-    ## for some reason with v0.3.6 htmltools, attachDependencies(map, dep) doesn't work
-    ## An alternative, less robust way to do this is:
-    ##   htmlwidgets::prependContent(map, tags$style(paste0(css, collapse = "")))
-    map$dependencies <- list(dep)
+    # As of leaflet version 2.2.0, HTML dependencies for leaflet() are included
+    # in the dependencies item of the htmlwidget
+    ndeps <- length(map$dependencies)
+    if (ndeps == 0)
+        map$dependencies <- list(dep)
+    else
+        map$dependencies[[ndeps + 1]] <- dep
 
     return(map)
 }
