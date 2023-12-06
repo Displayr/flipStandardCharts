@@ -533,6 +533,8 @@ Line <-   function(x,
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
         annotations = annot,
+        shapes = zerolines(x.zero, x.zero.line.width, x.zero.line.color,
+            y.zero, y.zero.line.width, y.zero.line.color),
         hovermode = if (tooltip.show) "closest" else FALSE,
         hoverlabel = list(namelength = -1, bordercolor = "transparent", align = hovertext.align,
             font = list(size = hovertext.font.size, family = hovertext.font.family))

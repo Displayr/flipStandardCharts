@@ -463,6 +463,8 @@ Distribution <-   function(x,
     annotations[[n+2]] <- setFooter(footer, footer.font, margins, footer.align)
     annotations[[n+3]] <- setSubtitle(subtitle, subtitle.font, margins, subtitle.align)
     annotations <- Filter(Negate(is.null), annotations)
+    value.zeroline <- if (vertical) zerolines(FALSE, 0, "", values.zero, values.zero.line.width, values.zero.line.color)
+        else zerolines(values.zero, values.zero.line.width, values.zero.line.color, FALSE, 0, "")
 
     txt <- paste0("p <- layout(p,
         autosize = TRUE,
@@ -474,6 +476,7 @@ Distribution <-   function(x,
         violinCategoriesAxes(vertical, n.variables, gsub("'", "\\\\'", labels)),
         "margin = margins,
         annotations = annotations,
+        shapes = value.zeroline,
         hoverlabel = list(namelength = -1,
             font = list(size = hovertext.font.size, family = hovertext.font.family)),
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
