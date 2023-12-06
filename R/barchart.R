@@ -551,6 +551,8 @@ Bar <- function(x,
             font = list(size = hovertext.font.size, family = hovertext.font.family)),
         hovermode = if (tooltip.show) "closest" else FALSE,
         annotations =  annotations,
+        shapes = zerolines(x.zero, x.zero.line.width, x.zero.line.color,
+            y.zero, y.zero.line.width, y.zero.line.color),
         bargap = bar.gap, bargroupgap = bar.group.gap,
         barmode = barmode
     )

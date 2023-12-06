@@ -846,15 +846,35 @@ setAxis <- function(title, side, axisLabels, titlefont,
                  tickvals = ticks$tickvals, ticktext = ticks$ticktext,
                  ticklabelposition = "outside", tickangle = tickangle,
                  ticklen = ticklen, tickfont = tickfont,
-                 tickcolor = tickcolor, #if (has.line) linecolor else "transparent",
+                 tickcolor = tickcolor, 
                  dtick = tickdistance, tickformat = tickformat, tick0 = tick0,
                  tickprefix = tickprefix, ticksuffix = ticksuffix,
                  hoverformat = hoverformat, layer = "below traces",
                  autorange = autorange, range = range, rangemode = rangemode,
-                 zeroline = show.zero, zerolinewidth = zero.line.width,
-                 zerolinecolor = zero.line.color,
+                 zeroline = show.zero, zerolinewidth = 0, 
+                 zerolinecolor = "transparent", # draw zero line separately so it is on top
                  showexponent="all", showtickprefix=TRUE, showticksuffix=TRUE,
                  showticklabels=tickshow))
+}
+
+zerolines <- function(x.zero, x.zero.line.width, x.zero.line.color, y.zero, y.zero.line.width, y.zero.line.color)
+{
+    result <- NULL
+    if (isTRUE(x.zero))
+        result <- list(type = "line", layer = "above",
+            x0 = 0, x1 = 0, xref = "x", y0 = 0, y1 = 1, yref = "paper",
+            line = list(color = x.zero.line.color, width = x.zero.line.width))
+    if (isTRUE(y.zero))
+    {
+        y.zeroline <- list(type = "line", layer = "above",
+            y0 = 0, y1 = 0, yref = "y", x0 = 0, x1 = 1, xref = "paper",
+            line = list(color = y.zero.line.color, width = y.zero.line.width))
+        if (is.null(result))
+            return (y.zeroline)
+        else
+            result <- list(result, y.zeroline)
+    }
+    return (result)
 }
 
 

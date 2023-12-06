@@ -790,13 +790,6 @@ StackedColumnWithStatisticalSignificance <- function(x,
     if (SumEmptyHandling(serieslabels.num.changes) == 0)
         chart.labels <- NULL
 
-    shapes <- NULL
-    if (isTRUE(y.zero)) # default plotly zero line is shown below bars
-        shapes <- list(type = "line", layer = "above",
-            yref = "y", y0 = 0, y1 = 0,
-            xref = "paper", x0 = 0, x1 = 1,
-            line = list(color = y.zero.line.color, width = y.zero.line.width))
-
     p <- config(p, displayModeBar = modebar.show, showAxisDragHandles = axis.drag.enable)
     p$sizingPolicy$browser$padding <- 0
     p <- layout(p,
@@ -807,7 +800,8 @@ StackedColumnWithStatisticalSignificance <- function(x,
         xaxis = xaxis,
         margin = margins,
         annotations =  annotations,
-        shapes = shapes,
+        shapes = zerolines(x.zero, x.zero.line.width, x.zero.line.color,
+            y.zero, y.zero.line.width, y.zero.line.color),
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
         hoverlabel = list(namelength = -1, bordercolor = "transparent",
