@@ -815,8 +815,14 @@ setAxis <- function(title, side, axisLabels, titlefont,
     rangemode <- "normal"
     if (axis.type == "numeric" && show.zero)
         rangemode <- "tozero"
-    if (gridwidth == 0 && zero.line.width == 0)
-        zero.line.color <- "transparent"
+    if (zero.line.width == 0) 
+    {
+        if (gridwidth == 0)
+            zero.line.color <- "transparent"
+        else
+            zero.line.color <- gridcolor # if no zero line, draw a normal grid line at zero
+    } else
+        zero.line.color <- "transparent" # hide plotly zero line so we can draw one on top of the traces
 
     # Specify max number of ticks
     nticks <- NULL
@@ -851,8 +857,8 @@ setAxis <- function(title, side, axisLabels, titlefont,
                  tickprefix = tickprefix, ticksuffix = ticksuffix,
                  hoverformat = hoverformat, layer = "below traces",
                  autorange = autorange, range = range, rangemode = rangemode,
-                 zeroline = show.zero, zerolinewidth = 0, 
-                 zerolinecolor = "transparent", # draw zero line separately so it is on top
+                 zeroline = show.zero, zerolinewidth = gridwidth, 
+                 zerolinecolor = zero.line.color,
                  showexponent="all", showtickprefix=TRUE, showticksuffix=TRUE,
                  showticklabels=tickshow))
 }
