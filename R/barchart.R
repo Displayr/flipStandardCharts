@@ -450,11 +450,12 @@ Bar <- function(x,
             pt.segs <- NULL
             ind.show <- which(data.label.show[,i])
             data.label.text <- NULL
+            multi.color.labels <- multi.colors.within.series && length(unique(dlab.color)) > 1
             if (length(ind.show) > 0)
             {
                 tmp.suffix <- if (percentFromD3(data.label.format)) sub("%", "", data.label.suffix[,i])
                               else                                               data.label.suffix[,i]
-                if (!is.null(annotation.list) || length(ind.show) < nrow(chart.matrix) ||
+                if (!is.null(annotation.list) || length(ind.show) < nrow(chart.matrix) || multi.color.labels ||
                     any(nzchar(data.label.prefix[,i])) || any(nzchar(data.label.suffix[,i])))
                 {
                     chart.labels$SeriesLabels[[i]]$ShowValue <- FALSE
@@ -463,6 +464,16 @@ Bar <- function(x,
                             if (nzchar(data.label.prefix[ii,i])) list(list(Text = data.label.prefix[ii,i])) else NULL,
                             list(list(Field="Value")),
                             if (nzchar(tmp.suffix[ii])) list(list(Text = tmp.suffix[ii])) else NULL)))
+
+                    if (multi.color.labels)
+                    {
+                        for (ii in 1:nrow(chart.matrix)) 
+                        {
+                            for (j in 1:length(pt.segs[[ii]]$Segments))
+                                pt.segs[[ii]]$Segments[[j]]$Font$color <- dlab.color[ii]
+                        }
+                    }
+
                     for (ii in setdiff(1:nrow(chart.matrix), ind.show))
                         pt.segs[[ii]]$Segments <- NULL
                 }
