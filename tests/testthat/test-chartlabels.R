@@ -127,6 +127,47 @@ for (charting.func in c("Column", "Bar", "Line", "Radar"))
     })
 }
 
+test_that("Multi color labels", {
+    xx <- c(A = 1, B = 2, C = 3)
+    pp <- BarMultiColor(xx, data.label.show = TRUE,
+        data.label.font.color = "#FF0000,#00FF00,#0000FF")
+    expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints, list(
+        list(Index = 0, Segments = list(list(Field = "Value", Font = list(color = "#FF0000")))),
+        list(Index = 1, Segments = list(list(Field = "Value", Font = list(color = "#00FF00")))),
+        list(Index = 2, Segments = list(list(Field = "Value", Font = list(color = "#0000FF"))))))
+
+    pp <- ColumnMultiColor(xx, data.label.show = TRUE, data.label.prefix = "<",
+        data.label.suffix = ">", data.label.font.color = "#FF0000,#00FF00,#0000FF")
+    expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints, list(
+        list(Index = 0, Segments = list(list(Text = "<", Font = list(color = "#FF0000")),
+            list(Field = "Value", Font = list(color = "#FF0000")),
+            list(Text = ">", Font = list(color = "#FF0000")))),
+        list(Index = 1, Segments = list(list(Text = "<", Font = list(color = "#00FF00")),
+            list(Field = "Value", Font = list(color = "#00FF00")),
+            list(Text = ">", Font = list(color = "#00FF00")))),
+        list(Index = 2, Segments = list(list(Text = "<", Font = list(color = "#0000FF")),
+            list(Field = "Value", Font = list(color = "#0000FF")),
+            list(Text = ">", Font = list(color = "#0000FF"))))))
+
+    annot.list <- list(list(type = "Recolor text", data = "",
+        threstype = "below threshold",threshold = 2, color = "#CCCCCC"),
+        list(type = "Arrow - down", data = "", threstype = "above threshold",
+        threshold = 1, color = "#FF0000", size = 12),
+        list(type = "Hide", data = "", threstype = "above threshold",
+        threshold = 2))
+    pp <- BarMultiColor(xx, annotation.list = annot.list,
+        data.label.show = TRUE, data.label.prefix = "<", data.label.suffix = ">",
+        data.label.font.color = "#FF0000,#00FF00,#0000FF")
+    expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoint, list(
+        list(Index = 0, Segments = list(list(Text = "<", Font = list(color = "#CCCCCC")),
+        list(Field = "Value", Font = list(color = "#CCCCCC")),
+        list(Text = ">", Font = list(color = "#CCCCCC")))),
+        list(Index = 1, Segments = list(list(Text = "<", Font = list(color = "#00FF00")),
+        list(Field = "Value", Font = list(color = "#00FF00")),
+        list(Text = ">", Font = list(color = "#00FF00")),
+        list(Font = list(color = "#FF0000", size = 9.00225056264066), Text = "↓")))))
+})
+
 set.seed(12345)
 dat <- data.frame('Score' = rnorm(20),
                   'Cost' = abs(rnorm(20)), # check plotly is handling '$' properly

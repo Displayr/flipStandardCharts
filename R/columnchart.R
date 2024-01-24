@@ -964,6 +964,15 @@ Column <- function(x,
             }
         )
 
+        if (multi.colors.within.series && length(unique(dlab.color)) > 1)
+            for (ii in 1:nrow(chart.matrix))
+            {
+                if (is.null(pt.segs[[ii]]$Segments))
+                    next
+                for (j in 1:length(pt.segs[[ii]]$Segments))
+                    pt.segs[[ii]]$Segments[[j]]$Font$color <- dlab.color[ii]
+            }
+
         # Plotly text marker positions are not spaced properly when placed to
         # the below the bar (i.e. negative values or reversed axis).
         # Adjusted by controlling the size of the marker
