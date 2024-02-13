@@ -385,6 +385,7 @@ Distribution <-   function(x,
     # Note however, that in plotly, 'maximum.bins' is ignored when 'bin.size'
     # is provided, and is sometimes still ignored if it is not
     x.vals <- unlist(x)
+    x.vals <- x.vals[!is.na(x.vals)]
     x.sorted <- sort(unique(x.vals))
     rng <- x.sorted[c(1, length(x.sorted))]
     if (density.type == "Histogram")
