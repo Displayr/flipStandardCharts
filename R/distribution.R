@@ -380,7 +380,6 @@ Distribution <-   function(x,
         density.color <- rep(density.color, n.variables)
     if (length(density.color) != n.variables)
         warning("The number of colors provided for shading the densities is not consistent with the number of variables.")
-    
     # Histograms can be specified using 'maximum.bins' or 'size' (which overrides the former)
     # 'maximum.bins' is not always respected so use 'size' instead when
     # bin size is small or the number of bins is small
@@ -396,10 +395,8 @@ Distribution <-   function(x,
 
         default.bins <- is.null(maximum.bins) || is.na(maximum.bins)
         if (default.bins) {
-            # Trying to guess what plotly tries to do
-            bin.size <- bin.min.size
+            bin.size <- NULL
             maximum.bins = (rng[2] - rng[1])/bin.min.size
-            
             # Override default bin sizes in certain cases which plotly does not handle well
             if (maximum.bins > 10000) {
                 # Force a ceiling on the number of bins used to avoid browser freesing
@@ -416,7 +413,7 @@ Distribution <-   function(x,
             }
         }
         else
-            bin.size = if (default.bins) NULL else (rng[2] - rng[1])/maximum.bins
+            bin.size = (rng[2] - rng[1])/maximum.bins
         bins <- list(start = rng[1], end = rng[2], size = bin.size)
     }
 
