@@ -380,10 +380,10 @@ Distribution <-   function(x,
         density.color <- rep(density.color, n.variables)
     if (length(density.color) != n.variables)
         warning("The number of colors provided for shading the densities is not consistent with the number of variables.")
-    # Histograms can be specified using 'maximum.bins' or 'size' (which overrides the former)
-    # 'maximum.bins' is not always respected so use 'size' instead when
-    # bin size is small or the number of bins is small
-    # but otherwise use 'maximum.bins' because it tends to find more rounded breakpoints
+    # Histograms can be specified using 'maximum.bins' or 'bin.size' in plotly.
+    # The user, however, only has access to 'maximum.bins'
+    # Note however, that in plotly, 'maximum.bins' is ignored when 'bin.size'
+    # is provided, and is sometimes still ignored if it is not
     x.sorted <- sort(unique(unlist(x)))
     rng <- x.sorted[c(1, length(x.sorted))]
     if (density.type == "Histogram")
@@ -398,9 +398,10 @@ Distribution <-   function(x,
             bin.size <- NULL
             maximum.bins = (rng[2] - rng[1])/bin.min.size
             # Override default bin sizes in certain cases which plotly does not handle well
-            if (maximum.bins > 10000) {
+            if (maximum.bins > 1000) 
+            {
                 # Force a ceiling on the number of bins used to avoid browser freesing
-                bin.size <- bin.min.size * 10^round(log10(maximum.bins/10000))
+                bin.size <- bin.min.size * 10^round(log10(maximum.bins/1000))
                 default.bins <- FALSE
             }
             else if (length(x.sorted) < 10)
@@ -410,6 +411,7 @@ Distribution <-   function(x,
                 bin.size <- bin.min.size
                 default.bins <- FALSE
             }
+            # else leave bin.size = NULL, which will be determined by plotly
         }
         else
             bin.size = (rng[2] - rng[1])/maximum.bins
