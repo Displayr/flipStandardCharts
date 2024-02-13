@@ -380,40 +380,45 @@ Distribution <-   function(x,
         density.color <- rep(density.color, n.variables)
     if (length(density.color) != n.variables)
         warning("The number of colors provided for shading the densities is not consistent with the number of variables.")
-
+    
     # Histograms can be specified using 'maximum.bins' or 'size' (which overrides the former)
     # 'maximum.bins' is not always respected so use 'size' instead when
     # bin size is small or the number of bins is small
     # but otherwise use 'maximum.bins' because it tends to find more rounded breakpoints
     x.sorted <- sort(unique(unlist(x)))
     rng <- x.sorted[c(1, length(x.sorted))]
-    default.bins <- is.null(maximum.bins) || is.na(maximum.bins)
-    if (is.null(maximum.bins) || is.na(maximum.bins))
-        maximum.bins <- min(length(x.sorted), 50)
-    bin.min.size <- min(diff(x.sorted))
     if (density.type == "Histogram")
     {
+        bin.min.size <- min(diff(x.sorted))
         if (bin.min.size < sqrt(.Machine$double.eps))
             bin.min.size <- (rng[2] - rng[1]) * 1e-6
         rng <- rng  + c(-1, 1) * bin.min.size/2 # expand range if values are integers
-    }
-    bin.size = (rng[2] - rng[1])/maximum.bins
 
-    # Override default bin sizes in certain cases which plotly does not handle well
-    if (length(x.sorted) < 10 && default.bins)
-    {
-        # Use smaller bins when there are only a few values. This avoids grouping
-        # values together if they are unevenly spaced inside larger range.
-        bin.size <- bin.min.size
-        default.bins <- FALSE
+        default.bins <- is.null(maximum.bins) || is.na(maximum.bins)
+        if (default.bins) {
+            # Trying to guess what plotly tries to do
+            bin.size <- bin.min.size
+            maximum.bins = (rng[2] - rng[1])/bin.min.size
+            
+            # Override default bin sizes in certain cases which plotly does not handle well
+            if (maximum.bins > 10000) {
+                # Force a ceiling on the number of bins used to avoid browser freesing
+                maximum.bins <- 10000
+                bin.size <- (rng[2] - rng[1])/maximum.bins
+                default.bins <- FALSE
+            }
+            else if (length(x.sorted) < 10)
+            {
+                # Use smaller bins when there are only a few values. This avoids grouping
+                # values together if they are unevenly spaced inside larger range.
+                bin.size <- bin.min.size
+                default.bins <- FALSE
+            }
+        }
+        else
+            bin.size = if (default.bins) NULL else (rng[2] - rng[1])/maximum.bins
+        bins <- list(start = rng[1], end = rng[2], size = bin.size)
     }
-    if (bin.size < 0.5)
-        default.bins <- FALSE
-    if (bin.size > 1e4)
-        default.bins <- FALSE
-
-    bins <- list(start = rng[1], end = rng[2],
-                 size = if (!default.bins) bin.size else NULL)
 
     # Creating the violin plot
     for (v in 1:n.variables)
