@@ -385,11 +385,10 @@ Distribution <-   function(x,
     # Note however, that in plotly, 'maximum.bins' is ignored when 'bin.size'
     # is provided, and is sometimes still ignored if it is not
     x.vals <- unlist(x)
-    x.vals <- x.vals[!is.na(x.vals)]
-    rng <- range(x.vals)
+    x.sorted <- sort(unique(x.vals))
+    rng <- x.sorted[c(1, length(x.sorted))]
     if (density.type == "Histogram")
     {
-        x.sorted <- sort(unique(x.vals))
         bin.min.size <- min(diff(x.sorted))
         if (bin.min.size < sqrt(.Machine$double.eps))
             bin.min.size <- (rng[2] - rng[1]) * 1e-6
@@ -400,10 +399,24 @@ Distribution <-   function(x,
             bin.size <- NULL
             maximum.bins = (rng[2] - rng[1])/bin.min.size
             # Override default bin sizes in certain cases which plotly does not handle well
-            if (maximum.bins > 1000000 || rng[2] <= 2 || length(x.sorted) < 2) 
+            if (maximum.bins > 1000) 
             {
-                num.bins <- nclass.FD(x.vals)
-                bin.size <- (rng[2] - rng[1])/num.bins
+                # Force a ceiling on the number of bins used to avoid browser freesing
+                num.bins <- min(1000, nclass.FD(x.vals))
+                bin.size = (rng[2] - rng[1])/num.bins
+                default.bins <- FALSE
+            }
+            else if (length(x.sorted) < 10)
+            {
+                # Use smaller bins when there are only a few values. This avoids grouping
+                # values together if they are unevenly spaced inside larger range.
+                bin.size <- bin.min.size
+                default.bins <- FALSE
+            }
+            else if (rng[2] <= 2.0)
+            {
+                # Address a bug in plotly when dealing with small numbers
+                bin.size <- bin.min.size
                 default.bins <- FALSE
             }
             # else leave bin.size = NULL, which will be determined by plotly
