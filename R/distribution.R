@@ -397,9 +397,10 @@ Distribution <-   function(x,
 
         default.bins <- is.null(maximum.bins) || is.na(maximum.bins)
         if (default.bins) {
-            bin.size <- NULL
+            # Use a lower estimate of the bin size to identify when
+            # the default plotly algorithm runs into trouble
             maximum.bins = (rng[2] - rng[1])/bin.min.size
-            # Override default bin sizes in certain cases which plotly does not handle well
+            bin.size <- NULL
             if (maximum.bins > 1000) 
             {
                 # Force a ceiling on the number of bins used to avoid browser freesing
