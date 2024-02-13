@@ -400,8 +400,7 @@ Distribution <-   function(x,
             # Override default bin sizes in certain cases which plotly does not handle well
             if (maximum.bins > 10000) {
                 # Force a ceiling on the number of bins used to avoid browser freesing
-                maximum.bins <- 10000
-                bin.size <- (rng[2] - rng[1])/maximum.bins
+                bin.size <- bin.min.size * 10^round(log10(maximum.bins/10000))
                 default.bins <- FALSE
             }
             else if (length(x.sorted) < 10)
