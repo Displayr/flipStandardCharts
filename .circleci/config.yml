@@ -18,7 +18,6 @@ parameters:
     type: enum
     enum: [nightly, rocker, machine,rocker-geo]
     default: nightly
-
 workflows:
   build-and-check-R-package:
     jobs:
