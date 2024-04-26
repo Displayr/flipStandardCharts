@@ -157,7 +157,7 @@
 #' @examples
 #' Distribution(rnorm(100))
 #' Distribution(list(rnorm(100), rexp(100)))
-#' @importFrom grDevices rgb
+#' @importFrom grDevices rgb nclass.FD
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict sd
 #' @importFrom flipTransformations AsNumeric
@@ -401,7 +401,7 @@ Distribution <-   function(x,
             # the default plotly algorithm runs into trouble
             maximum.bins = (rng[2] - rng[1])/bin.min.size
             bin.size <- NULL
-            if (maximum.bins > 1000) 
+            if (maximum.bins > 1000)
             {
                 # Force a ceiling on the number of bins used to avoid browser freesing
                 num.bins <- min(1000, nclass.FD(x.vals))

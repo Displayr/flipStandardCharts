@@ -173,7 +173,10 @@ checkMatrixNames <- function(x, assign.col.names = TRUE)
     if (is.null(colnames(new.x)) && assign.col.names)
         colnames(new.x) <- sprintf("Series %d", 1:NCOL(new.x))
     if (any(duplicated(rownames(new.x))))
-        stop("Row names of the input table must be unique.")
+    {
+        rownames(new.x) <- MakeUniqueNames(rownames(new.x), suffix = "&nbsp;")
+        warning("Row names of the input table are not unique.")
+    }
     attr(new.x, "sorted.rows") <- attr(x, "sorted.rows")
     return(new.x)
 }
@@ -201,7 +204,7 @@ checkTableList <- function(y, trend.lines)
     r.names <- rownames(y[[1]])
     c.names <- colnames(y[[1]])
     if (!is.null(r.names) && any(duplicated(r.names)) && length(y) > 1)
-        stop("Row names of tables must be unique or NULL for multiple tables to be plotted but are duplicated.")
+        warning("Row names of tables must be unique or NULL for multiple tables to be plotted but are duplicated.")
 
     if (num.tables > 1) {
         for (i in 2:num.tables)
@@ -815,7 +818,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
     rangemode <- "normal"
     if (axis.type == "numeric" && show.zero)
         rangemode <- "tozero"
-    if (zero.line.width == 0) 
+    if (zero.line.width == 0)
     {
         if (gridwidth == 0)
             zero.line.color <- "transparent"
@@ -852,12 +855,12 @@ setAxis <- function(title, side, axisLabels, titlefont,
                  tickvals = ticks$tickvals, ticktext = ticks$ticktext,
                  ticklabelposition = "outside", tickangle = tickangle,
                  ticklen = ticklen, tickfont = tickfont,
-                 tickcolor = tickcolor, 
+                 tickcolor = tickcolor,
                  dtick = tickdistance, tickformat = tickformat, tick0 = tick0,
                  tickprefix = tickprefix, ticksuffix = ticksuffix,
                  hoverformat = hoverformat, layer = "below traces",
                  autorange = autorange, range = range, rangemode = rangemode,
-                 zeroline = show.zero, zerolinewidth = gridwidth, 
+                 zeroline = show.zero, zerolinewidth = gridwidth,
                  zerolinecolor = zero.line.color,
                  showexponent="all", showtickprefix=TRUE, showticksuffix=TRUE,
                  showticklabels=tickshow))
