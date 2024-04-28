@@ -172,10 +172,12 @@ checkMatrixNames <- function(x, assign.col.names = TRUE)
         rownames(new.x) <- 1:NROW(new.x)
     if (is.null(colnames(new.x)) && assign.col.names)
         colnames(new.x) <- sprintf("Series %d", 1:NCOL(new.x))
-    if (any(duplicated(rownames(new.x))))
+    ind.dup <- which(duplicated(rownames(new.x)))
+    if (length(ind.dup) > 0)
     {
+        warning("Row names of the input table are not unique:",
+                unique(rownames(new.x)[ind.dup]))
         rownames(new.x) <- MakeUniqueNames(rownames(new.x), suffix = "&nbsp;")
-        warning("Row names of the input table are not unique.")
     }
     attr(new.x, "sorted.rows") <- attr(x, "sorted.rows")
     return(new.x)
