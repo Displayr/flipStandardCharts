@@ -175,8 +175,10 @@ checkMatrixNames <- function(x, assign.col.names = TRUE)
     ind.dup <- which(duplicated(rownames(new.x)))
     if (length(ind.dup) > 0)
     {
-        warning("Row names of the input table are not unique:",
-                unique(rownames(new.x)[ind.dup]))
+        warning("Row names of the input table are not unique: ",
+                paste(unique(rownames(new.x)[ind.dup]), collapse = ", "), " at rows ", 
+                paste(ind.dup, collapse = ", "))
+        # Non-space suffix is needed to stop plotly merging the duplicated rows
         rownames(new.x) <- MakeUniqueNames(rownames(new.x), suffix = "&nbsp;")
     }
     attr(new.x, "sorted.rows") <- attr(x, "sorted.rows")
