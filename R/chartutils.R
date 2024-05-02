@@ -176,7 +176,7 @@ checkMatrixNames <- function(x, assign.col.names = TRUE)
     if (length(ind.dup) > 0)
     {
         warning("Row names of the input table are not unique: ",
-                paste(unique(rownames(new.x)[ind.dup]), collapse = ", "), " at rows ", 
+                paste(unique(rownames(new.x)[ind.dup]), collapse = ", "), " at rows ",
                 paste(ind.dup, collapse = ", "))
         # Non-space suffix is needed to stop plotly merging the duplicated rows
         rownames(new.x) <- MakeUniqueNames(rownames(new.x), suffix = "&nbsp;")
@@ -1258,6 +1258,7 @@ cum.data <- function(x, output = "cumulative.percentage")
 # preceding the word at the max.nchar position.
 # E.g. if n = 20 then count 20 characters.  The space preceding character 20
 # is replaced by "<br>".
+#' @importFrom flipU TrimWhitespace
 lineBreakEveryN <- function(x, max.nchar = 21, remove.empty = TRUE)
 {
     if (max.nchar <= 0)
@@ -1580,6 +1581,7 @@ autoFontColor <- function (colors)
 
 # By default vectorize will convert x into a vector of length n
 # However, if nrow is specified, it will convert to a matrix of nrow x n columns
+#' @importFrom flipTransformations TextAsVector
 vectorize <- function(x, n, nrow = NULL, split = ",")
 {
     input.is.matrix <- length(dim(x)) >= 2
