@@ -113,6 +113,7 @@ CombinedScatter <- function(x = NULL,
         output <- unlistX(x, trend.lines)
         x <- output$x
         groups <- output$groups
+        num.tables <- output$num.tables
     }
 
     x <- convertPercentToProportion(x)
@@ -191,57 +192,18 @@ CombinedScatter <- function(x = NULL,
 
     opacity <- getOpacity(opacity, scatter.sizes)
 
-    scatter.colors.raw <- scatter.colors
-    if (!is.null(scatter.colors))
-    {
-        if (!scatter.colors.as.categorical)
-            scatter.colors <- AsNumeric(scatter.colors, binary = FALSE)
-        if (length(scatter.colors) != n)
-            stop("'scatter.colors' should be a vector with the same number of observations as 'x'.")
-        if (any(is.na(scatter.colors)))
-        {
-            warning("Some points omitted due to missing values in 'scatter.colors'")
-            not.na <- intersect(not.na, which(is.finite(scatter.colors)))
-        }
-    }
+    output <- getColors(scatter.colors, n, not.na,
+                        scatter.colors.as.categorical, num.tables, legend.show,
+                        groups)
+    colors <- output$colors
+    scatter.colors <- output$scatter.colors
+    groups <- output$groups
+    legend.show <- output$legend.show
+    not.na <- output$not.na
 
-    # Determine color for each observation
-    if (!is.null(scatter.colors) && !scatter.colors.as.categorical)
-    {
-        if (num.tables > 1)
-            stop("'scatter.colors' cannot be used with multiple tables")
-        legend.show <- FALSE # don't need to worry about order of groups
-        groups <- 1:n # what about mult tables?
-        colors <- StripAlphaChannel(colors, "Alpha values in selected colors were not used in the numeric color scale. Adjust 'opacity' for transparent points instead")
-        col.fun <- colorRamp(unique(colors)) # undo recycling in PrepareColors
-        scatter.colors.scaled <- (scatter.colors - min(scatter.colors, na.rm=T))/diff(range(scatter.colors, na.rm=T))
-        #if (length(not.na) != length(scatter.colors))
-        #    scatter.colors.scaled[-not.na] <- 0 # removed later
-        colors <- rgb(col.fun(scatter.colors.scaled[not.na]), maxColorValue=255)
-    } else {
-        if (is.null(groups))
-            groups <- scatter.colors.raw
-        if (length(groups) != n)
-            groups <- rep(" ", n)
-
-        # Get list of all series names - including if those with all NAs
-        groups.ord <- order(suppressWarnings(AsNumeric(groups, binary = FALSE)))
-        g.list.all <- if (is.factor(groups)) levels(groups)
-        else unique(groups[groups.ord])
-        colors <- paste0(rep("", length(g.list.all)), colors)
-        names(colors) <- g.list.all
-        legend.show <- setShowLegend(legend.show, length(g.list.all))
-
-        # Extract only non-NA points and order based on series name
-        groups.ord <- order(suppressWarnings(AsNumeric(groups[not.na], binary = FALSE)))
-        not.na <- not.na[groups.ord]
-        groups <- as.character(groups)
-        g.list <- unique(groups[not.na])
-        colors <- colors[g.list]
-    }
-
-    if (is.na(data.label.font.autocolor))
+    if (is.na(data.label.font.autocolor)) {
         data.label.font.autocolor <- length(unique(groups[not.na])) > 1
+    }
 
     if (trend.lines) {
         legend.show <- FALSE
@@ -289,11 +251,7 @@ CombinedScatter <- function(x = NULL,
                          color.transparency = opacity,
                          label = labels.or.logos[not.na],
                          label.alt = scatter.labels[not.na],
-                         fixed.aspect = FALSE,
                          grid = grid.show,
-                         origin = FALSE,
-                         origin.align = FALSE,
-                         labels.show = TRUE,
                          labels.max.shown = scatter.max.labels,
                          label.placement.numSweeps = if (label.auto.placement) 500 else 0,
                          legend.show = legend.show,
@@ -354,7 +312,6 @@ CombinedScatter <- function(x = NULL,
                          tooltip.font.family = hovertext.font.family,
                          tooltip.font.size = hovertext.font.size,
                          tooltip.text = tooltips.text,
-                         plot.border.show = FALSE,
                          title = title,
                          trend.lines.show = trend.lines,
                          labels.logo.scale = logo.size,
@@ -401,7 +358,7 @@ unlistX <- function(x, trend.lines) {
     if (!trend.lines)
         rownames(x) <- sprintf("%s: %s",
                                rep(table.names, each = n.tmp), groups)
-    list(x = x, groups = groups)
+    list(x = x, groups = groups, num.tables = num.tables)
 }
 
 unpackColumnsFromX <- function(x, y, scatter.labels, scatter.x.column,
@@ -475,6 +432,61 @@ getOpacity <- function(opacity, scatter.sizes) {
         }
     }
     opacity
+}
+
+getColors <- function(scatter.colors, n, not.na, scatter.colors.as.categorical,
+                      num.tables, legend.show, groups) {
+    scatter.colors.raw <- scatter.colors
+    if (!is.null(scatter.colors))
+    {
+        if (!scatter.colors.as.categorical)
+            scatter.colors <- AsNumeric(scatter.colors, binary = FALSE)
+        if (length(scatter.colors) != n)
+            stop("'scatter.colors' should be a vector with the same number of observations as 'x'.")
+        if (any(is.na(scatter.colors)))
+        {
+            warning("Some points omitted due to missing values in 'scatter.colors'")
+            not.na <- intersect(not.na, which(is.finite(scatter.colors)))
+        }
+    }
+
+    # Determine color for each observation
+    if (!is.null(scatter.colors) && !scatter.colors.as.categorical)
+    {
+        if (num.tables > 1)
+            stop("'scatter.colors' cannot be used with multiple tables")
+        legend.show <- FALSE # don't need to worry about order of groups
+        groups <- 1:n # what about mult tables?
+        colors <- StripAlphaChannel(colors, "Alpha values in selected colors were not used in the numeric color scale. Adjust 'opacity' for transparent points instead")
+        col.fun <- colorRamp(unique(colors)) # undo recycling in PrepareColors
+        scatter.colors.scaled <- (scatter.colors - min(scatter.colors, na.rm=T))/diff(range(scatter.colors, na.rm=T))
+        #if (length(not.na) != length(scatter.colors))
+        #    scatter.colors.scaled[-not.na] <- 0 # removed later
+        colors <- rgb(col.fun(scatter.colors.scaled[not.na]), maxColorValue=255)
+    } else {
+        if (is.null(groups))
+            groups <- scatter.colors.raw
+        if (length(groups) != n)
+            groups <- rep(" ", n)
+
+        # Get list of all series names - including if those with all NAs
+        groups.ord <- order(suppressWarnings(AsNumeric(groups, binary = FALSE)))
+        g.list.all <- if (is.factor(groups)) levels(groups)
+        else unique(groups[groups.ord])
+        colors <- paste0(rep("", length(g.list.all)), colors)
+        names(colors) <- g.list.all
+        legend.show <- setShowLegend(legend.show, length(g.list.all))
+
+        # Extract only non-NA points and order based on series name
+        groups.ord <- order(suppressWarnings(AsNumeric(groups[not.na], binary = FALSE)))
+        not.na <- not.na[groups.ord]
+        groups <- as.character(groups)
+        g.list <- unique(groups[not.na])
+        colors <- colors[g.list]
+    }
+
+    list(colors = colors, scatter.colors = scatter.colors, groups = groups,
+         legend.show = legend.show, not.na = not.na)
 }
 
 processScatterLabels <- function(scatter.labels, x, data.label.format,
