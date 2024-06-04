@@ -115,5 +115,3 @@ test_that("Scatter with trend line that cannot be predicted",
     expect_warning(Scatter(dat.no.xvariation, fit.type = "Loess", fit.CI.show = FALSE),
                    "Could not fit trend line to data. Check that you expect to map a single x-value to a single y-value.")
 })
-
-
