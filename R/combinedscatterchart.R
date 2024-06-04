@@ -277,46 +277,12 @@ CombinedScatter <- function(x = NULL,
     if (length(not.na) < n)
         warning("Data points with missing values have been omitted.")
 
+    fit <- list()
     if (fit.type != "None") {
-        if (is.factor(groups))
-            g.list <- levels(groups) # fix legend order
-        else if (any(class(groups) %in% c("Date", "POSIXct", "POSIXt", "integer", "numeric")))
-            g.list <- sort(unique(groups[!is.na(groups)]))
-        else
-            g.list <- unique(groups[!is.na(groups)])
-
-        num.groups <- length(g.list)
-
-        fit.x <- vector("list", num.groups)
-        fit.y <- vector("list", num.groups)
-        fit.group <- character(num.groups)
-        fit.panel <- integer(num.groups)
-        fit.lower.bound <- vector("list", num.groups)
-        fit.upper.bound <- vector("list", num.groups)
-        fit.line.names <- character(num.groups)
-        fit.ci.fill.colors <- character(num.groups)
-        fit.ci.label.colors <- character(num.groups)
-
-        if (is.null(fit.line.colors))
-            fit.line.colors <- colors
-        if (is.null(fit.CI.colors))
-            fit.CI.colors <- fit.line.colors
-
-        for (ggi in 1:num.groups)
-        {
-            ind <- intersect(which(groups == g.list[ggi]), not.na)
-            fit <- fitSeries(x[ind], y[ind], fit.type, fit.ignore.last, xaxis$type,
-                             fit.CI.show, fit.window.size, warning.prefix)
-            fit.x[[ggi]] <- fit$x
-            fit.y[[ggi]] <- fit$y
-            fit.group[ggi] <- g.list[ggi]
-            fit.panel[ggi] <- ggi
-            fit.lower.bound[[ggi]] <- fit$lb
-            fit.upper.bound[[ggi]] <- fit$ub
-            fit.line.names[ggi] <- paste0("Fitted: ", g.list[ggi])
-            fit.ci.fill.colors[ggi] <- toRGB(fit.CI.colors[ggi], alpha = fit.CI.opacity)
-            fit.ci.label.colors[ggi] <- fit.CI.colors[ggi]
-        }
+        x.axis.type <- getAxisType(unique(x[not.na]), x.tick.format)
+        fit <- fitLines(groups, x, y, not.na, fit.type, fit.ignore.last,
+                        fit.CI.show, fit.window.size, colors, fit.line.colors,
+                        fit.CI.colors, fit.CI.opacity, x.axis.type)
     }
 
     p <- CombinedScatter(X = x[not.na],
@@ -417,19 +383,19 @@ CombinedScatter <- function(x = NULL,
                          tooltip.text = tooltips.text,
                          title = title,
                          trend.lines.show = trend.lines,
-                         fit.x = fit.x,
-                         fit.y = fit.y,
-                         fit.group = fit.group,
-                         fit.panel = fit.panel,
-                         fit.lower.bound = fit.lower.bound,
-                         fit.upper.bound = fit.upper.bound,
-                         fit.line.names = fit.line.names,
+                         fit.x = fit$fit.x,
+                         fit.y = fit$fit.y,
+                         fit.group = fit$fit.group,
+                         fit.panel = fit$fit.panel,
+                         fit.lower.bound = fit$fit.lower.bound,
+                         fit.upper.bound = fit$fit.upper.bound,
+                         fit.line.names = fit$fit.line.names,
                          fit.line.type = fit.line.type,
                          fit.line.width = fit.line.width,
                          fit.line.opacity = fit.line.opacity,
-                         fit.line.colors = fit.line.colors,
-                         fit.ci.colors = fit.ci.fill.colors,
-                         fit.ci.label.colors = fit.ci.label.colors,
+                         fit.line.colors = fit$fit.line.colors,
+                         fit.ci.colors = fit$fit.ci.fill.colors,
+                         fit.ci.label.colors = fit$fit.ci.label.colors,
                          labels.logo.scale = logo.size,
                          background.color = background.fill.color,
                          plot.background.color = charting.area.fill.color,
@@ -727,4 +693,54 @@ chartLabels <- function(x.title, y.title) {
         chart.labels$ValueAxisTitle <- y.title
     }
     chart.labels
+}
+
+fitLines <- function(groups, x, y, not.na, fit.type, fit.ignore.last,
+                     fit.CI.show, fit.window.size, colors, fit.line.colors,
+                     fit.CI.colors, fit.CI.opacity, x.axis.type) {
+    if (is.factor(groups))
+        g.list <- levels(groups) # fix legend order
+    else if (any(class(groups) %in% c("Date", "POSIXct", "POSIXt", "integer", "numeric")))
+        g.list <- sort(unique(groups[!is.na(groups)]))
+    else
+        g.list <- unique(groups[!is.na(groups)])
+
+    num.groups <- length(g.list)
+
+    fit.x <- vector("list", num.groups)
+    fit.y <- vector("list", num.groups)
+    fit.group <- character(num.groups)
+    fit.panel <- integer(num.groups)
+    fit.lower.bound <- vector("list", num.groups)
+    fit.upper.bound <- vector("list", num.groups)
+    fit.line.names <- character(num.groups)
+    fit.ci.fill.colors <- character(num.groups)
+    fit.ci.label.colors <- character(num.groups)
+
+    if (is.null(fit.line.colors))
+        fit.line.colors <- colors
+    if (is.null(fit.CI.colors))
+        fit.CI.colors <- fit.line.colors
+
+    for (ggi in 1:num.groups)
+    {
+        ind <- intersect(which(groups == g.list[ggi]), not.na)
+        fit <- fitSeries(x[ind], y[ind], fit.type, fit.ignore.last, x.axis.type,
+                         fit.CI.show, fit.window.size)
+        fit.x[[ggi]] <- fit$x
+        fit.y[[ggi]] <- fit$y
+        fit.group[ggi] <- g.list[ggi]
+        fit.panel[ggi] <- ggi
+        fit.lower.bound[[ggi]] <- fit$lb
+        fit.upper.bound[[ggi]] <- fit$ub
+        fit.line.names[ggi] <- paste0("Fitted: ", g.list[ggi])
+        fit.ci.fill.colors[ggi] <- toRGB(fit.CI.colors[ggi], alpha = fit.CI.opacity)
+        fit.ci.label.colors[ggi] <- fit.CI.colors[ggi]
+    }
+    list(fit.x = fit.x, fit.y = fit.y, fit.group = fit.group,
+         fit.panel = fit.panel, fit.lower.bound = fit.lower.bound,
+         fit.upper.bound = fit.upper.bound, fit.line.names = fit.line.names,
+         fit.line.colors = fit.line.colors,
+         fit.ci.fill.colors = fit.ci.fill.colors,
+         fit.ci.label.colors = fit.ci.label.colors)
 }
