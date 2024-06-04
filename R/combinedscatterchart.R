@@ -16,7 +16,7 @@ CombinedScatter <- function(x = NULL,
                             scatter.colors.as.categorical = TRUE,
                             scatter.labels.as.hovertext = TRUE,
                             scatter.max.labels = 50,
-                            annotation.list = NULL, # TODO
+                            annotation.list = NULL,
                             colors = ChartColors(12),
                             trend.lines = FALSE,
                             logos = NULL,
@@ -153,6 +153,7 @@ CombinedScatter <- function(x = NULL,
     }
 
     x <- convertPercentToProportion(x)
+    annot.data <- x
 
     if (is.matrix(x) || is.data.frame(x))
     {
@@ -285,6 +286,9 @@ CombinedScatter <- function(x = NULL,
                         fit.CI.colors, fit.CI.opacity, x.axis.type)
     }
 
+    annotations <- processAnnotations(annotation.list, n, annot.data,
+                                      labels.or.logos)
+
     p <- CombinedScatter(X = x[not.na],
                          Y = y[not.na],
                          Z = if (is.null(scatter.sizes)) NULL else abs(scatter.sizes[not.na]),
@@ -293,7 +297,7 @@ CombinedScatter <- function(x = NULL,
                          group = groups[not.na],
                          colors = colors,
                          color.transparency = opacity,
-                         label = labels.or.logos[not.na],
+                         label = annotations$labels.or.logos[not.na],
                          label.alt = scatter.labels[not.na],
                          grid = grid.show,
                          labels.show = !scatter.labels.as.hovertext,
@@ -396,6 +400,11 @@ CombinedScatter <- function(x = NULL,
                          fit.line.colors = fit$fit.line.colors,
                          fit.ci.colors = fit$fit.ci.fill.colors,
                          fit.ci.label.colors = fit$fit.ci.label.colors,
+                         marker.annotations = annotations$marker.annotations,
+                         pre.label.annotations = annotations$pre.label.annotations,
+                         post.label.annotations = annotations$post.label.annotations,
+                         point.border.color = annotations$point.border.color,
+                         point.border.width = annotations$point.border.width,
                          labels.logo.scale = logo.size,
                          background.color = background.fill.color,
                          plot.background.color = charting.area.fill.color,
@@ -744,3 +753,57 @@ fitLines <- function(groups, x, y, not.na, fit.type, fit.ignore.last,
          fit.ci.fill.colors = fit.ci.fill.colors,
          fit.ci.label.colors = fit.ci.label.colors)
 }
+
+processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos) {
+    marker.annotations <- character(n)
+    pre.label.annotations <- character(n)
+    post.label.annotations <- character(n)
+    point.border.color <- character(n)
+    point.border.width <- numeric(n)
+
+    for (i in seq_along(annotation.list))
+    {
+        if (!checkAnnotType(annotation.list[[j]]$type, "Scatter"))
+            next
+        a.tmp <- annotation.list[[j]]
+        tmp.dat <- getAnnotScatterData(annot.data, a.tmp$data, ind)
+        a.tmp$threshold <- ParseText(a.tmp$threshold, tmp.dat)
+        ind.sel <- if (is.null(a.tmp$threstype) || is.null(a.tmp$threshold))    1:length(tmp.dat)
+        else if (is.factor(tmp.dat) && !is.ordered(tmp.dat))         selectFactor(a.tmp$threshold, 1:length(tmp.dat), a.tmp$data, ggi)
+        else if (a.tmp$threstype == "above threshold")               which(tmp.dat > a.tmp$threshold)
+        else if (a.tmp$threstype == "below threshold")               which(tmp.dat < a.tmp$threshold)
+        else                                                         which(is.na(tmp.dat))
+
+        if (length(ind.sel) == 0)
+            next
+
+        if (a.tmp$type == "Marker border") {
+            point.border.color[ind.sel] <- a.tmp$color
+            point.border.width[ind.sel] <- a.tmp$width
+        } else {
+            annot.text <- addAnnotToDataLabel("", a.tmp, tmp.dat[ind.sel])
+            if (annotation$type == "Shadow" || annotation$type == "Border") {
+                # Remove </span> (7 characters)
+                annot.text.prefix <- substr(annot.text, 1, nchar(annot.text) - 7)
+                pre.label.annotations[ind.sel] <- paste0(pre.label.annotations[ind.sel], annot.text.prefix)
+                post.label.annotations[ind.sel] <- paste0(post.label.annotations[ind.sel], "</span>")
+            } else if (annotation$type == "Text - before data label") {
+                pre.label.annotations[ind.sel] <- paste0(pre.label.annotations[ind.sel], annot.text.prefix)
+            } else if (annotation$type == "Hide") {
+                pre.label.annotations[ind.sel] <- ""
+                post.label.annotations[ind.sel] <- ""
+                labels.or.logos[ind.sel] <- ""
+            } else {
+                post.label.annotations[ind.sel] <- paste0(post.label.annotations[ind.sel], annot.text)
+            }
+        }
+    }
+
+    list(marker.annotations = marker.annotations,
+         pre.label.annotations = pre.label.annotations,
+         post.label.annotations = post.label.annotations,
+         point.border.color = point.border.color,
+         point.border.width = point.border.width,
+         labels.or.logos = labels.or.logos)
+}
+
