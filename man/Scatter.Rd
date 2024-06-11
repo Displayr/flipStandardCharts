@@ -176,17 +176,59 @@ Scatter(
 \arguments{
 \item{x}{A numeric vector for the x-axis coordinates (which may be named); or a matrix or datarame; or a list of matrices where each matrix share the same row and column names.}
 
+\item{y}{Optional numeric vector for the y-axis coordinates. Should contain the same number of observations as x. If not provided, will use x instead.}
+
+\item{scatter.x.column}{When \code{x} is a dataframe or matrix, the index of the column (1-based) which contains the x-coordinate data.}
+
+\item{scatter.y.column}{When \code{x} is a dataframe or matrix, the index of the column (1-based) which contains the y-coordinate data.}
+
+\item{scatter.labels}{Optional vector for labelling scatter points. This should be the same length as the number of observations in x and y.}
+
+\item{scatter.labels.name}{Character; Used for labelling subtitles and footers.}
+
+\item{scatter.sizes}{Numeric vector determining of the size of each observation. These can alternatively be provided as a column in \code{x}.}
+
+\item{scatter.sizes.name}{Character; Used for labelling footers and legends.}
+
+\item{scatter.sizes.column}{When \code{x} is a dataframe or matrix, the index of the column (1-based) which contains \code{scatter.sizes} data.}
+
 \item{scatter.sizes.as.diameter}{Whether to show the points with diameter (instead of area, which is the default) proportional to the sizes variable.}
 
+\item{scatter.colors}{Numeric, character, or categorical vector determining the color of each observation. These can alternatively be provided as a column in \code{x}.}
+
+\item{scatter.colors.name}{Character; Used for labelling footers.}
+
+\item{scatter.colors.column}{When \code{x} is a dataframe or matrix, the index of the column (1-based) which contains \code{scatter.colors} data.}
+
+\item{scatter.colors.as.categorical}{Boolean; Whether to treat colors as a categorical groups, or a numeric scale.}
+
 \item{scatter.labels.as.hovertext}{Logical; if TRUE, labels are shown has hovers; otherwise, as a labeled scatterplot.}
+
+\item{scatter.max.labels}{Integer; the maximum number of labels to show on a Labeled Scatterplot.
+If the number of labels is greater than this parameter, extra labels will be hidden by default but
+can be toggled on by clicking on the marker.}
 
 \item{scatter.max.groups}{Maximum number of different color categories in data. The is
 equivalent to the number of enteries in the legend. Increasing this too high may cause
 performance issues.}
 
+\item{colors}{A vector of colors to use in the chart. When \code{scatter.colors.as.categorical}, the vector of colors should have the length as the number of categories in \code{scatter.colors}. If \code{scatter.colors} is used as numeric vector, then a color ramp is constructed from the colors listed.}
+
+\item{trend.lines}{Boolean indicating whether to plot trend lines for multiple tables.}
+
+\item{logos}{Optional list of images to be used to label scatterplot instead of the row names.
+This should be input as a comma-seperated list of URLs.}
+
+\item{logo.size}{Numeric controlling the size of the logos.}
+
+\item{data.label.font.autocolor}{Boolean; If true, \code{data.label.font.color} is ignored and labels are colored
+according to the series color.}
+
 \item{data.label.position}{Character; where to place the source data value in relation
 to the marker icon. Can be "top left", "top center", "top right", "middle left", "middle center",
 "middle right", "bottom left", "bottom center", "bottom right".}
+
+\item{opacity}{of scatter point colors as an alpha value (0 to 1).}
 
 \item{y.tick.on.label}{Logical; Set to FALSE to move grid lines between categories.}
 
@@ -213,6 +255,11 @@ Note there is no corresponding parameter for LabeledScatter.}
 \item{swap.x.and.y}{Swap the x and y axis around on the chart.}
 
 \item{small.mult.index}{Used by Small Multiples to add prefixes to warnings.}
+
+\item{legend.bubbles.show}{Logical; show legend for bubble sizes.}
+
+\item{label.auto.placement}{Logical; whether the scatter plot labels are positioned automatically
+to reduce overlap.}
 
 \item{sz.min}{Parameter to control scaling of scatter.sizes, used by SmallMultiples}
 
