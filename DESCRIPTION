@@ -32,6 +32,7 @@ Imports:
     parcoords,
     plotly,
     pryr,
+    rhtmlCombinedScatter
     rhtmlDonut,
     rhtmlHeatmap,
     rhtmlLabeledScatter,
@@ -59,6 +60,7 @@ Remotes:
     Displayr/rhtmlPictographs,
     Displayr/rhtmlDonut,
     Displayr/rhtmlHeatmap,
+    Displayr/rhtmlCombinedScatter,
     Displayr/rhtmlLabeledScatter,
     Displayr/rhtmlPalmTrees,
     Displayr/d3vennR,
