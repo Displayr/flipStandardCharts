@@ -116,3 +116,4 @@ test_that("Scatter with trend line that cannot be predicted",
                    "Could not fit trend line to data. Check that you expect to map a single x-value to a single y-value.")
 })
 
+
