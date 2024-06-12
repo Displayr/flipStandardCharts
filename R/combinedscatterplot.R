@@ -76,8 +76,6 @@ CombinedScatter <- function(x = NULL,
                             y.title.font.color = global.font.color,
                             y.title.font.family = global.font.family,
                             y.title.font.size = 12,
-                            y.line.width = 0,
-                            y.line.color = rgb(0, 0, 0, maxColorValue = 255),
                             y.tick.mark.length = 0,
                             y.tick.mark.color = "transparent",
                             y.bounds.minimum = NULL,
@@ -107,7 +105,7 @@ CombinedScatter <- function(x = NULL,
                             x.bounds.minimum = NULL,
                             x.bounds.maximum = NULL,
                             x.tick.distance = NULL,
-                            x.tick.maxnum = 11,
+                            x.tick.maxnum = NULL,
                             x.zero.line.width = 0,
                             x.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
                             x.grid.width = 1 * grid.show,
@@ -292,10 +290,11 @@ CombinedScatter <- function(x = NULL,
                                       labels.or.logos)
 
     Z <- if (is.null(scatter.sizes)) NULL else abs(scatter.sizes[not.na])
-    label.placement.numSweeps <- if (label.auto.placement) 500 else 0
     x.axis.font.color <- if (!is.null(x.tick.font.color)) x.tick.font.color else "#2C2C2C"
     y.axis.font.color <- if (!is.null(y.tick.font.color)) y.tick.font.color else "#2C2C2C"
     labels.font.color <- if (data.label.font.autocolor) NULL else data.label.font.color
+
+
 
     p <- rhtmlCombinedScatter::CombinedScatter(X = x[not.na],
         Y = y[not.na],
@@ -310,7 +309,7 @@ CombinedScatter <- function(x = NULL,
         grid = grid.show,
         labels.show = !scatter.labels.as.hovertext,
         labels.max.shown = scatter.max.labels,
-        label.placement.numSweeps = label.placement.numSweeps,
+        label.auto.placement = label.auto.placement,
         legend.show = legend.show,
         legend.bubbles.show = !is.null(scatter.sizes) && isTRUE(legend.bubbles.show),
         legend.font.color = legend.font.color,
@@ -349,9 +348,11 @@ CombinedScatter <- function(x = NULL,
         x.axis.font.size = x.tick.font.size,
         x.axis.tick.length = x.tick.mark.length,
         x.axis.tick.color = x.tick.mark.color,
+        x.axis.tick.angle = x.tick.angle,
         x.axis.zero.line.width = x.zero.line.width,
         x.axis.zero.line.color = x.zero.line.color,
         x.axis.grid.width = x.grid.width,
+        x.axis.grid.color = x.grid.color,
         x.axis.label.wrap = x.tick.label.wrap,
         x.axis.label.wrap.n.char = x.tick.label.wrap.nchar,
         y.axis.font.family = y.tick.font.family,
@@ -362,6 +363,7 @@ CombinedScatter <- function(x = NULL,
         y.axis.zero.line.width = y.zero.line.width,
         y.axis.zero.line.color = y.zero.line.color,
         y.axis.grid.width = y.grid.width,
+        y.axis.grid.color = y.grid.color,
         x.title = x.title,
         x.title.font.family = x.title.font.family,
         x.title.font.color = x.title.font.color,
@@ -390,6 +392,7 @@ CombinedScatter <- function(x = NULL,
         x.bounds.units.major = x.bounds.units.major,
         y.axis.show = y.tick.show,
         x.axis.show = x.tick.show,
+        origin = TRUE,
         tooltip.font.family = hovertext.font.family,
         tooltip.font.size = hovertext.font.size,
         tooltip.text = tooltips.text,
@@ -592,6 +595,7 @@ getColors <- function(colors, scatter.colors, n, not.na, scatter.colors.as.categ
          legend.show = legend.show, not.na = not.na)
 }
 
+#' @importFrom flipFormat FormatAsReal FormatAsPercent
 processScatterLabels <- function(scatter.labels, x, data.label.format,
                                  data.label.prefix, data.label.suffix,
                                  scatter.max.labels) {
