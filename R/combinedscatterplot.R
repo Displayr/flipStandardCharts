@@ -1,3 +1,7 @@
+#' CombinedScatter
+#'
+#' Scatter plot (uses rhtmlCombinedScatter)
+#' @inherit Scatter
 #' @importFrom rhtmlCombinedScatter CombinedScatter
 #' @export
 CombinedScatter <- function(x = NULL,
