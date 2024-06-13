@@ -169,6 +169,8 @@ CombinedScatter(
 If the number of labels is greater than this parameter, extra labels will be hidden by default but
 can be toggled on by clicking on the marker.}
 
+\item{annotation.list}{Optional list of annotations to modify the data labels.}
+
 \item{colors}{A vector of colors to use in the chart. When \code{scatter.colors.as.categorical}, the vector of colors should have the length as the number of categories in \code{scatter.colors}. If \code{scatter.colors} is used as numeric vector, then a color ramp is constructed from the colors listed.}
 
 \item{trend.lines}{Boolean indicating whether to plot trend lines for multiple tables.}
@@ -178,10 +180,255 @@ This should be input as a comma-seperated list of URLs.}
 
 \item{logo.size}{Numeric controlling the size of the logos.}
 
+\item{fit.type}{Character; type of line of best fit. Can be one of "None", "Linear", "LOESS",
+"Friedman's super smoother", "Cubic spline", "Moving average", "Centered moving average".}
+
+\item{fit.window.size}{Integer; Use to determine how the average is computed when \code{fit.type}
+"Moving average" or "Centered moving average".}
+
+\item{fit.ignore.last}{Logical; whether to ignore the last data point in the fit.}
+
+\item{fit.line.type}{Character; One of "solid", "dot", "dash, "dotdash", or length of dash "2px", "5px".}
+
+\item{fit.line.width}{Numeric; Line width of line of best fit.}
+
+\item{fit.line.colors}{Character; a vector containing one or more colors specified as hex codes.}
+
+\item{fit.line.opacity}{Opacity of trend line as an alpha value (0 to 1).}
+
+\item{fit.CI.show}{Show 95\% confidence interval.}
+
+\item{fit.CI.colors}{Character; a vector containing one or more colors specified as hex codes.}
+
+\item{fit.CI.opacity}{Opacity of confidence interval ribbon as an alpha value (0 to 1).}
+
+\item{legend.show}{Controls whether legend is shown. This can be a logical (\code{TRUE} or \code{FALSE});
+or a string ("Show" or "Hide"). If it is \code{TRUE} or \code{NA} (the default), a legend will be
+shown only if there is more than one data series. To force a legend to be shown even with 1
+data series, use "Show" instead.}
+
+\item{legend.orientation}{Character; One of 'Vertical' or 'Horizontal'}
+
+\item{legend.wrap}{Logical; whether the legend text should be wrapped.}
+
+\item{legend.wrap.nchar}{Number of characters (approximately) in each
+line of the legend when \code{legend.wrap} \code{TRUE}.}
+
+\item{global.font.family}{Character; font family for all occurrences of any
+font attribute for the chart unless specified individually.}
+
+\item{global.font.color}{Global font color as a named color in character format
+(e.g. "black") or an a hex code.}
+
+\item{title}{Character; chart title.}
+
+\item{title.font.family}{Character; title font family. Can be "Arial Black",
+"Arial", "Comic Sans MS", "Courier New", "Georgia", "Impact",
+"Lucida Console", "Lucida Sans Unicode", "Marlett", "Symbol", "Tahoma",
+"Times New Roman", "Trebuchet MS", "Verdana", "Webdings"}
+
+\item{title.font.color}{Title font color as a named color in character
+format (e.g. "black") or a hex code.}
+
+\item{title.font.size}{Integer; Title font size; default = 10.}
+
+\item{subtitle}{Character}
+
+\item{subtitle.font.family}{Character; subtitle font family}
+
+\item{subtitle.font.color}{subtitle font color as a named color in
+character format (e.g. "black") or an a hex code.}
+
+\item{subtitle.font.size}{Integer; subtitle font size}
+
+\item{footer}{Character}
+
+\item{footer.font.family}{Character; footer font family}
+
+\item{footer.font.color}{footer font color as a named color in
+character format (e.g. "black") or an a hex code.}
+
+\item{footer.font.size}{Integer; footer font size}
+
+\item{footer.wrap}{Logical; whether the footer text should be wrapped.}
+
+\item{footer.wrap.nchar}{Number of characters (approximately) in each
+line of the footer when \code{footer.wrap} \code{TRUE}.}
+
+\item{data.label.font.family}{Character; font family for data label.}
+
+\item{data.label.font.color}{Font color as a named color
+in character format (e.g. "black") or an a hex code. This can be a single
+color, a vector of colors (1 for each series/column), or a comma separated list
+of colors}
+
 \item{data.label.font.autocolor}{Boolean; If true, \code{data.label.font.color} is ignored and labels are colored
 according to the series color.}
 
+\item{data.label.font.size}{Integer; Font size for data label.px.}
+
 \item{opacity}{of scatter point colors as an alpha value (0 to 1).}
+
+\item{background.fill.color}{Background color in character format (e.g. "black") or a hex code.}
+
+\item{charting.area.fill.color}{Charting area background color as
+a named color in character format (e.g. "black") or a hex code.}
+
+\item{legend.font.color}{Legend font color as a named color in character
+format (e.g. "black") or a hex code.}
+
+\item{legend.font.family}{Character; legend font family.}
+
+\item{legend.font.size}{Integer; Legend font size.}
+
+\item{legend.position.y}{A numeric controlling the position of the legend.
+Values range from 0 (bottom) to 1 (top).}
+
+\item{legend.position.x}{A numeric controlling the position of the legend.
+Values range from -0.5 (left) to 1.5 (right).}
+
+\item{margin.autoexpand}{Logical; Whether extra space can be added to the margins
+to allow space for axis/legend/data labels or other chart elements.}
+
+\item{margin.top}{Margin between plot area and the top of the graphic in pixels}
+
+\item{margin.bottom}{Margin between plot area and the bottom of the graphic in pixels}
+
+\item{margin.left}{Margin between plot area and the left of the graphic in pixels}
+
+\item{margin.right}{Margin between plot area and the right of the graphic in pixels}
+
+\item{grid.show}{Logical; whether to show grid lines.}
+
+\item{y.title}{Character, y-axis title; defaults to chart input values;
+to turn off set to "FALSE".}
+
+\item{y.title.font.color}{y-axis title font color as a named color in
+character format (e.g. "black") or a hex code.}
+
+\item{y.title.font.family}{Character; y-axis title font family}
+
+\item{y.title.font.size}{Integer; y-axis title font size}
+
+\item{y.tick.mark.length}{Length of tick marks in pixels. Ticks are only shown when \code{y.line.width > 0}.}
+
+\item{y.tick.mark.color}{Color of tick marks (default transparent).}
+
+\item{y.bounds.minimum}{Minimum of range for plotting; For a date axis this should be supplied as a date string.
+For a categorical axis, the index of the category (0-based) should be used.}
+
+\item{y.bounds.maximum}{Maximum of range for plotting; NULL = no manual range set.}
+
+\item{y.tick.distance}{Distance between tick marks. Requires that \code{y.bounds.minimum} and \code{y.bounds.maximum} have been set.}
+
+\item{y.tick.maxnum}{Maximum number of ticks shown on the axis.
+This setting is ignored if \code{y.tick.distance} is set or
+if the axis is categorical}
+
+\item{y.zero.line.width}{Width in pixels of zero line;}
+
+\item{y.zero.line.color}{Color of horizontal zero line as a named
+color in character format (e.g. "black") or an rgb value (e.g.
+rgb(0, 0, 0, maxColorValue = 255)).}
+
+\item{y.grid.width}{Width of y-grid lines in pixels; 0 = no line}
+
+\item{y.grid.color}{Color of y-grid lines as a named color in character
+format (e.g. "black") or a hex code.}
+
+\item{y.tick.show}{Whether to display the y-axis tick labels}
+
+\item{y.tick.suffix}{y-axis tick label suffix}
+
+\item{y.tick.prefix}{y-axis tick label prefix}
+
+\item{y.tick.format}{A string representing a d3 formatting code.
+See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
+
+\item{y.hovertext.format}{A string representing a d3 formatting code
+See https://github.com/d3/d3/blob/master/API.md#number-formats-d3-format}
+
+\item{y.tick.font.color}{y-axis tick label font color as a named color
+in character format (e.g. "black") or an a hex code.}
+
+\item{y.tick.font.family}{Character; y-axis tick label font family}
+
+\item{y.tick.font.size}{Integer; y-axis tick label font size}
+
+\item{x.title}{Character, x-axis title; defaults to chart input values;
+to turn off set to "FALSE".}
+
+\item{x.title.font.color}{x-axis title font color as a named color in
+character format (e.g. "black") or an a hex code.}
+
+\item{x.title.font.family}{Character; x-axis title font family}
+
+\item{x.title.font.size}{Integer; x-axis title font size}
+
+\item{x.line.width}{x-axis line in pixels, 0 = no line}
+
+\item{x.line.color}{x-axis line color as a named color in character format
+(e.g. "black") or a hex code.}
+
+\item{x.tick.mark.length}{Length of tick marks in pixels.}
+
+\item{x.tick.mark.color}{Color of tick marks.}
+
+\item{x.bounds.minimum}{Minimum of range for plotting; For a date axis this should be supplied as a date string.
+For a categorical axis, the index of the category (0-based) should be used.}
+
+\item{x.bounds.maximum}{Maximum of range for
+plotting; NULL = no manual range set.  Must be greater than x.bounds.minimum}
+
+\item{x.tick.distance}{Tick mark distance in
+x-axis units between minimum and maximum for plotting; NULL = no manual
+range set.}
+
+\item{x.tick.maxnum}{Maximum number of ticks shown on the axis.
+It defaults to 11 which gives the same output from plotly as NULL.
+This setting is ignored if \code{x.tick.distance} is set or
+if the axis is categorical}
+
+\item{x.zero.line.width}{Width in pixels of zero line.}
+
+\item{x.zero.line.color}{Color of horizontal zero (origin) line as a named
+color in character format (e.g. "black") or an rgb value (e.g.
+rgb(0, 0, 0, maxColorValue = 255)).}
+
+\item{x.grid.width}{Width of y-grid lines in pixels; 0 = no line}
+
+\item{x.grid.color}{Color of y-grid lines as a named color in character
+format (e.g. "black") or a hex code.}
+
+\item{x.tick.show}{Whether to display the x-axis tick labels}
+
+\item{x.tick.suffix}{x-axis tick label suffix}
+
+\item{x.tick.prefix}{x-axis tick label prefix}
+
+\item{x.tick.format}{A string representing a d3 formatting code.
+See https://github.com/mbostock/d3/wiki/Formatting#numbers}
+
+\item{x.hovertext.format}{A string representing a d3 formatting code.
+See https://github.com/mbostock/d3/wiki/Formatting#numbers}
+
+\item{x.tick.angle}{x-axis tick label angle in degrees.
+90 = vertical; 0 = horizontal}
+
+\item{x.tick.font.color}{X-axis tick label font color as a named color in
+character format (e.g. "black") or an a hex code.}
+
+\item{x.tick.font.family}{Character; x-axis tick label font family}
+
+\item{x.tick.font.size}{Integer; x-axis tick label font size}
+
+\item{x.tick.label.wrap}{Logical; whether to wrap long labels on the x-axis.}
+
+\item{x.tick.label.wrap.nchar}{Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.}
+
+\item{hovertext.font.family}{Font family of hover text.}
+
+\item{hovertext.font.size}{Font size of hover text.}
 
 \item{marker.size}{Size in pixels of marker. This is overriden
 if \code{scatter.sizes} is provided, but used for the legend
@@ -196,4 +443,9 @@ to reduce overlap.}
 }
 \description{
 Scatter plot (uses rhtmlCombinedScatter)
+}
+\examples{
+z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L),
+      .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
+Column(z, type="Stacked Column")
 }
