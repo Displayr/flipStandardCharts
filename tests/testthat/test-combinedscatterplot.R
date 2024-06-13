@@ -363,7 +363,7 @@ test_that("marker size",
 
 test_that("swap x and y",
 {
-    expect_error(CombinedScatter(1:10, -5:5,
+    expect_error(CombinedScatter(0:10, -5:5,
                                  x.title = "x title", y.title = "y title",
                                  swap.x.and.y = TRUE), NA)
 })
