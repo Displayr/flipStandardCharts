@@ -341,7 +341,7 @@ character format (e.g. "black") or an a hex code.}
 
 \item{hovertext.template}{Specify format of the hovertext. This can be a string or matrix
 which is the same dimensions as \code{chart.matrix}. If no format is specified
-the default is for categorical x-axis "\%{x}: \%{y}" or for a numerical x-axis "(\%{x}, \%{y})".}
+the default is for categorical x-axis "\%x: \%y" or for a numerical x-axis "(\%x, \%y)".}
 
 \item{marker.border.width}{Width in pixels of border/line
 around series bars; 0 is no line}

@@ -231,7 +231,7 @@
 #' @param hovertext.font.size Font size of hover text.
 #' @param hovertext.template Specify format of the hovertext. This can be a string or matrix
 #'  which is the same dimensions as \code{chart.matrix}. If no format is specified
-#'  the default is for categorical x-axis "\%{x}: \%{y}" or for a numerical x-axis "(\%{x}, \%{y})".
+#'  the default is for categorical x-axis "\%x: \%y" or for a numerical x-axis "(\%x, \%y)".
 #' @param hovertext.align Horizontal alignment of hover text.
 #'  Only observable when hover contain multiple lines.
 #' @param marker.border.width Width in pixels of border/line

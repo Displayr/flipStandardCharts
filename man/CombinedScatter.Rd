@@ -267,6 +267,13 @@ according to the series color.}
 
 \item{data.label.font.size}{Integer; Font size for data label.px.}
 
+\item{data.label.format}{A string representing a d3 formatting code.
+See https://github.com/mbostock/d3/wiki/Formatting#numbers}
+
+\item{data.label.prefix}{Character; prefix for data values.}
+
+\item{data.label.suffix}{Character; suffix for data values.}
+
 \item{opacity}{of scatter point colors as an alpha value (0 to 1).}
 
 \item{background.fill.color}{Background color in character format (e.g. "black") or a hex code.}
