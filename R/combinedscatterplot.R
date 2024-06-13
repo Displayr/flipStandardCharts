@@ -1,7 +1,7 @@
 #' CombinedScatter
 #'
 #' Scatter plot (uses rhtmlCombinedScatter)
-#' @inherit Scatter
+#' @inherit Scatter LabeledScatter
 #' @importFrom rhtmlCombinedScatter CombinedScatter
 #' @export
 CombinedScatter <- function(x = NULL,
@@ -182,18 +182,10 @@ CombinedScatter <- function(x = NULL,
     if (is.null(x))
     {
         x <- rep(0, length(y))
-        if (!any(nzchar(x.bounds.minimum)))
-            x.bounds.minimum = -0.25
-        if (!any(nzchar(x.bounds.maximum)))
-            x.bounds.maximum = 0.25
     }
     if (is.null(y))
     {
         y <- rep(0, length(x))
-        if (!any(nzchar(y.bounds.minimum)))
-            y.bounds.minimum = -0.25
-        if (!any(nzchar(y.bounds.maximum)))
-            y.bounds.maximum = 0.25
     }
     n <- length(x)
 
