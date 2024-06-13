@@ -293,16 +293,14 @@ CombinedScatter <- function(x = NULL,
     annotations <- processAnnotations(annotation.list, n, annot.data,
                                       labels.or.logos)
 
-    Z <- if (is.null(scatter.sizes)) NULL else abs(scatter.sizes[not.na])
+    scatter.sizes <- if (is.null(scatter.sizes)) NULL else abs(scatter.sizes[not.na])
     x.axis.font.color <- if (!is.null(x.tick.font.color)) x.tick.font.color else "#2C2C2C"
     y.axis.font.color <- if (!is.null(y.tick.font.color)) y.tick.font.color else "#2C2C2C"
     labels.font.color <- if (data.label.font.autocolor) NULL else data.label.font.color
 
-
-
     p <- rhtmlCombinedScatter::CombinedScatter(X = x[not.na],
         Y = y[not.na],
-        Z = Z,
+        Z = scatter.sizes,
         x.levels = levels(x),
         y.levels = rev(levels(y)),
         group = groups[not.na],
