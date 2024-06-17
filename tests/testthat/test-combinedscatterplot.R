@@ -367,3 +367,9 @@ test_that("swap x and y",
                                  x.title = "x title", y.title = "y title",
                                  swap.x.and.y = TRUE), NA)
 })
+
+test_that("small multiples",
+{
+    expect_error(CombinedScatter(iris, scatter.groups.column = 5,
+                                 scatter.colors.as.categorical = FALSE), NA)
+})

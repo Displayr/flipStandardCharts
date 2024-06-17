@@ -19,6 +19,8 @@ CombinedScatter(
   scatter.colors.name = NULL,
   scatter.colors.column = 4,
   scatter.colors.as.categorical = TRUE,
+  scatter.groups = NULL,
+  scatter.groups.column = NULL,
   scatter.labels.as.hovertext = TRUE,
   scatter.max.labels = 50,
   annotation.list = NULL,
@@ -162,6 +164,12 @@ CombinedScatter(
 \item{scatter.colors.column}{When \code{x} is a dataframe or matrix, the index of the column (1-based) which contains \code{scatter.colors} data.}
 
 \item{scatter.colors.as.categorical}{Boolean; Whether to treat colors as a categorical groups, or a numeric scale.}
+
+\item{scatter.groups}{A factor of the same length as \code{x} which is
+used to aggregate the data for small multiples.}
+
+\item{scatter.groups.column}{The column of \code{x} which is used to aggregate
+the data for small multiples (ignored when \code{scatter.groups} is provided)}
 
 \item{scatter.labels.as.hovertext}{Logical; if TRUE, labels are shown has hovers; otherwise, as a labeled scatterplot.}
 

@@ -3,6 +3,10 @@
 #' Scatter plot (uses rhtmlCombinedScatter)
 #' @inherit Scatter
 #' @inherit LabeledScatter
+#' @param scatter.groups A factor of the same length as \code{x} which is
+#'  used to aggregate the data for small multiples.
+#' @param scatter.groups.column The column of \code{x} which is used to aggregate
+#'  the data for small multiples (ignored when \code{scatter.groups} is provided)
 #' @importFrom rhtmlCombinedScatter CombinedScatter
 #' @export
 CombinedScatter <- function(x = NULL,
@@ -19,6 +23,8 @@ CombinedScatter <- function(x = NULL,
                             scatter.colors.name = NULL,
                             scatter.colors.column = 4,
                             scatter.colors.as.categorical = TRUE,
+                            scatter.groups = NULL,
+                            scatter.groups.column = NULL,
                             scatter.labels.as.hovertext = TRUE,
                             scatter.max.labels = 50,
                             annotation.list = NULL,
@@ -165,7 +171,8 @@ CombinedScatter <- function(x = NULL,
                                      x.title, y.title, scatter.sizes,
                                      scatter.sizes.column, scatter.sizes.name,
                                      scatter.colors, scatter.colors.column,
-                                     scatter.colors.name)
+                                     scatter.colors.name, scatter.groups,
+                                     scatter.groups.column)
         x <- output$x
         y <- output$y
         scatter.labels <- output$scatter.labels
@@ -175,6 +182,7 @@ CombinedScatter <- function(x = NULL,
         scatter.sizes.name <- output$scatter.sizes.name
         scatter.colors <- output$scatter.colors
         scatter.colors.name <- output$scatter.colors.name
+        scatter.groups <- output$scatter.groups
     }
 
     if (is.null(x) && is.null(y))
@@ -298,6 +306,7 @@ CombinedScatter <- function(x = NULL,
         y.levels = rev(levels(y)),
         group = groups[not.na],
         colors = colors,
+        panels = scatter.groups,
         color.transparency = opacity,
         label = annotations$labels.or.logos[not.na],
         label.alt = scatter.labels[not.na],
@@ -465,7 +474,8 @@ unpackColumnsFromX <- function(x, y, scatter.labels, scatter.x.column,
                                scatter.y.column, scatter.mult.yvals, x.title,
                                y.title, scatter.sizes, scatter.sizes.column,
                                scatter.sizes.name, scatter.colors,
-                               scatter.colors.column, scatter.colors.name) {
+                               scatter.colors.column, scatter.colors.name,
+                               scatter.groups, scatter.groups.column) {
     .isValidColumnIndex <- function(n) {return (!is.null(n) && !is.na(n) && n > 0 && n <= ncol(x))}
     if (is.null(scatter.labels) && !is.null(rownames(x)))
         scatter.labels <- rownames(x)
@@ -489,6 +499,10 @@ unpackColumnsFromX <- function(x, y, scatter.labels, scatter.x.column,
         scatter.colors.name <- trimws(scatter.colors.name)
         scatter.colors <- x[,scatter.colors.column]
     }
+    if (is.null(scatter.groups) && .isValidColumnIndex(scatter.groups.column))
+    {
+        scatter.groups <- x[,scatter.groups.column]
+    }
     if (!any(nzchar(x.title)) && (!is.null(colnames(x))) &&
         .isValidColumnIndex(scatter.x.column) && !scatter.mult.yvals)
         x.title <- colnames(x)[scatter.x.column]
@@ -501,7 +515,9 @@ unpackColumnsFromX <- function(x, y, scatter.labels, scatter.x.column,
          y.title = y.title, scatter.sizes = scatter.sizes,
          scatter.sizes.name = scatter.sizes.name,
          scatter.colors = scatter.colors,
-         scatter.colors.name = scatter.colors.name)
+         scatter.colors.name = scatter.colors.name,
+         scatter.groups = scatter.groups
+    )
 }
 
 nonMissing <- function(x, y) {
