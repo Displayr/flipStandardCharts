@@ -1,7 +1,7 @@
 Package: flipStandardCharts
 Type: Package
 Title: Standard R interactive charts
-Version: 1.30.21
+Version: 1.31.0
 Author: Displayr <opensource@displayr.com>
 Maintainer: Displayr <opensource@displayr.com>
 Description: Wrapper for other charting packages. The goal is to provide a
@@ -32,12 +32,12 @@ Imports:
     parcoords,
     plotly,
     pryr,
+    rhtmlCombinedScatter (>= 1.0.0),
     rhtmlDonut,
     rhtmlHeatmap,
     rhtmlLabeledScatter,
     rhtmlPalmTrees,
     rhtmlPictographs,
-    sf,
     sp,
     streamgraph,
     stringr,
@@ -59,6 +59,7 @@ Remotes:
     Displayr/rhtmlPictographs,
     Displayr/rhtmlDonut,
     Displayr/rhtmlHeatmap,
+    Displayr/rhtmlCombinedScatter,
     Displayr/rhtmlLabeledScatter,
     Displayr/rhtmlPalmTrees,
     Displayr/d3vennR,

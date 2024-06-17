@@ -1,0 +1,818 @@
+#' CombinedScatter
+#'
+#' Scatter plot (uses rhtmlCombinedScatter)
+#' @inherit Scatter
+#' @inherit LabeledScatter
+#' @importFrom rhtmlCombinedScatter CombinedScatter
+#' @export
+CombinedScatter <- function(x = NULL,
+                            y = NULL,
+                            scatter.x.column = 1,
+                            scatter.y.column = 2,
+                            scatter.labels = NULL,
+                            scatter.labels.name = NULL,
+                            scatter.sizes = NULL,
+                            scatter.sizes.name = NULL,
+                            scatter.sizes.column = 3,
+                            scatter.sizes.as.diameter = FALSE,
+                            scatter.colors = NULL,
+                            scatter.colors.name = NULL,
+                            scatter.colors.column = 4,
+                            scatter.colors.as.categorical = TRUE,
+                            scatter.labels.as.hovertext = TRUE,
+                            scatter.max.labels = 50,
+                            annotation.list = NULL,
+                            colors = ChartColors(12),
+                            trend.lines = FALSE,
+                            logos = NULL,
+                            logo.size = 0.5,
+                            fit.type = "None",
+                            fit.window.size = 3,
+                            fit.ignore.last = FALSE,
+                            fit.line.type = "dot",
+                            fit.line.width = 1,
+                            fit.line.colors = colors,
+                            fit.line.opacity = 1,
+                            fit.CI.show = FALSE,
+                            fit.CI.colors = fit.line.colors,
+                            fit.CI.opacity = 0.4,
+                            legend.show = TRUE,
+                            legend.orientation = "Vertical",
+                            legend.wrap = TRUE,
+                            legend.wrap.nchar = 30,
+                            global.font.family = "Arial",
+                            global.font.color = rgb(44, 44, 44, maxColorValue = 255),
+                            title = "",
+                            title.font.family = global.font.family,
+                            title.font.color = global.font.color,
+                            title.font.size = 16,
+                            subtitle = "",
+                            subtitle.font.family = global.font.family,
+                            subtitle.font.color = global.font.color,
+                            subtitle.font.size = 12,
+                            footer = "",
+                            footer.font.family = global.font.family,
+                            footer.font.color = global.font.color,
+                            footer.font.size = 8,
+                            footer.wrap = TRUE,
+                            footer.wrap.nchar = 100,
+                            data.label.font.family = global.font.family,
+                            data.label.font.color = global.font.color,
+                            data.label.font.autocolor = FALSE,
+                            data.label.font.size = 10,
+                            data.label.format = "",
+                            data.label.prefix = "",
+                            data.label.suffix = "",
+                            opacity = NULL,
+                            background.fill.color =  "transparent",
+                            charting.area.fill.color =  background.fill.color,
+                            legend.font.color = global.font.color,
+                            legend.font.family = global.font.family,
+                            legend.font.size = 10,
+                            legend.position.y = 1,
+                            legend.position.x = 1.02,
+                            margin.autoexpand = TRUE,
+                            margin.top = NULL,
+                            margin.bottom = NULL,
+                            margin.left = NULL,
+                            margin.right = NULL,
+                            grid.show = TRUE,
+                            y.title = "",
+                            y.title.font.color = global.font.color,
+                            y.title.font.family = global.font.family,
+                            y.title.font.size = 12,
+                            y.tick.mark.length = 0,
+                            y.tick.mark.color = "transparent",
+                            y.bounds.minimum = NULL,
+                            y.bounds.maximum = NULL,
+                            y.tick.distance = NULL,
+                            y.tick.maxnum = NULL,
+                            y.zero.line.width = 0,
+                            y.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
+                            y.grid.width = 1 * grid.show,
+                            y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+                            y.tick.show = TRUE,
+                            y.tick.suffix = "",
+                            y.tick.prefix = "",
+                            y.tick.format = "",
+                            y.hovertext.format = "",
+                            y.tick.font.color = global.font.color,
+                            y.tick.font.family = global.font.family,
+                            y.tick.font.size = 10,
+                            x.title = "",
+                            x.title.font.color = global.font.color,
+                            x.title.font.family = global.font.family,
+                            x.title.font.size = 12,
+                            x.line.width = 0,
+                            x.line.color = rgb(0, 0, 0, maxColorValue = 255),
+                            x.tick.mark.length = 3,
+                            x.tick.mark.color = "transparent",
+                            x.bounds.minimum = NULL,
+                            x.bounds.maximum = NULL,
+                            x.tick.distance = NULL,
+                            x.tick.maxnum = NULL,
+                            x.zero.line.width = 0,
+                            x.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
+                            x.grid.width = 1 * grid.show,
+                            x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+                            x.tick.show = TRUE,
+                            x.tick.suffix = "",
+                            x.tick.prefix = "",
+                            x.tick.format = "",
+                            x.hovertext.format = "",
+                            x.tick.angle = NULL,
+                            x.tick.font.color = global.font.color,
+                            x.tick.font.family = global.font.family,
+                            x.tick.font.size = 10,
+                            x.tick.label.wrap = TRUE,
+                            x.tick.label.wrap.nchar = 21,
+                            hovertext.font.family = global.font.family,
+                            hovertext.font.size = 11,
+                            marker.size = 6,
+                            swap.x.and.y = FALSE,
+                            legend.bubbles.show = TRUE,
+                            label.auto.placement = TRUE)
+{
+    orig.x <- x
+    checkDataIsEnough(x, y)
+
+    # Try to store name of variables
+    scatter.mult.yvals <- isTRUE(attr(x, "scatter.mult.yvals"))
+    if (!is.null(scatter.sizes) && is.null(scatter.sizes.name))
+        scatter.sizes.name <- deparse(substitute(scatter.sizes))
+    if (!is.null(scatter.labels) && is.null(scatter.labels.name))
+        scatter.labels.name <- deparse(substitute(scatter.labels))
+    if (!is.null(scatter.colors) && is.null(scatter.colors.name))
+        scatter.colors.name <- deparse(substitute(scatter.colors))
+
+    num.tables <- 1
+    groups <- NULL
+    if (is.list(x) && !is.null(ncol(x[[1]])))
+    {
+        output <- unlistX(x, trend.lines)
+        x <- output$x
+        groups <- output$groups
+        num.tables <- output$num.tables
+    }
+
+    x <- convertPercentToProportion(x)
+    annot.data <- x
+
+    if (is.matrix(x) || is.data.frame(x))
+    {
+        output <- unpackColumnsFromX(x, y, scatter.labels, scatter.x.column,
+                                     scatter.y.column, scatter.mult.yvals,
+                                     x.title, y.title, scatter.sizes,
+                                     scatter.sizes.column, scatter.sizes.name,
+                                     scatter.colors, scatter.colors.column,
+                                     scatter.colors.name)
+        x <- output$x
+        y <- output$y
+        scatter.labels <- output$scatter.labels
+        x.title <- output$x.title
+        y.title <- output$y.title
+        scatter.sizes <- output$scatter.sizes
+        scatter.sizes.name <- output$scatter.sizes.name
+        scatter.colors <- output$scatter.colors
+        scatter.colors.name <- output$scatter.colors.name
+    }
+
+    if (is.null(x) && is.null(y))
+        stop("At least one of x or y must be supplied.")
+
+    if (is.null(x))
+    {
+        x <- rep(0, length(y))
+    }
+    if (is.null(y))
+    {
+        y <- rep(0, length(x))
+    }
+    n <- length(x)
+
+    if (!any(is.finite(scatter.max.labels)) || scatter.max.labels < 0)
+        scatter.max.labels <- NULL
+
+    scatter.labels <- processScatterLabels(scatter.labels, x, data.label.format,
+                                           data.label.prefix, data.label.suffix,
+                                           scatter.max.labels)
+
+    if (swap.x.and.y)
+    {
+        tmp <- x
+        x <- y
+        y <- tmp
+        tmp <- x.title
+        x.title <- y.title
+        y.title <- tmp
+    }
+
+    if (any(duplicated(cbind(x, y))))
+        warning("Chart contains overlapping points in the same position.")
+
+    if (is.null(marker.size) || is.na(marker.size))
+        marker.size <- 6
+
+    not.na <- nonMissing(x, y)
+
+    scatter.sizes <- processScatterSizes(scatter.sizes, n)
+
+    if (!is.null(scatter.sizes) && any(!is.finite(scatter.sizes)))
+    {
+        warning("Some points omitted due to missing values in 'scatter.sizes'.")
+        not.na <- intersect(not.na, which(is.finite(scatter.sizes)))
+    }
+
+    opacity <- getOpacity(opacity, scatter.sizes)
+
+    output <- getColors(colors, scatter.colors, n, not.na,
+                        scatter.colors.as.categorical, num.tables, legend.show,
+                        groups)
+    colors <- output$colors
+    scatter.colors <- output$scatter.colors
+    groups <- output$groups
+    legend.show <- output$legend.show
+    not.na <- output$not.na
+
+    if (is.na(data.label.font.autocolor)) {
+        data.label.font.autocolor <- length(unique(groups[not.na])) > 1
+    }
+
+    if (trend.lines) {
+        legend.show <- FALSE
+    }
+
+    logo.urls <- getLogoUrls(logos, orig.x, scatter.labels, n)
+    labels.or.logos <- if (!is.null(logo.urls)) logo.urls else scatter.labels
+
+    footer <- processFooter(footer, scatter.labels.name, scatter.colors.name,
+                            scatter.sizes.name, scatter.mult.yvals, footer.wrap,
+                            footer.wrap.nchar)
+
+    # Convert axis to the appropriate type based on axis values and tick format
+    # Give warning where possible
+    x.axis.type <- getAxisType(x[not.na], x.tick.format)
+    x.tick.format <- checkD3Format(x.tick.format, x.axis.type, "X axis", convert = TRUE)
+    x <- convertAxis(x, x.axis.type)
+    y.axis.type <- getAxisType(y[not.na], y.tick.format)
+    y.tick.format <- checkD3Format(y.tick.format, y.axis.type, "Y axis", convert = TRUE)
+    y <- convertAxis(y, y.axis.type)
+    x.bounds.units.major <- getAxisBoundsUnitsMajor(x.tick.distance,
+                                                    x.tick.maxnum,
+                                                    x.bounds.maximum,
+                                                    x.bounds.minimum, x)
+    y.bounds.units.major <- getAxisBoundsUnitsMajor(y.tick.distance,
+                                                    y.tick.maxnum,
+                                                    y.bounds.maximum,
+                                                    y.bounds.minimum, y)
+
+    tooltips.text <- getTooltipsText(scatter.labels, not.na, x, y, x.tick.format,
+                                     x.tick.prefix, x.tick.suffix, y.tick.format,
+                                     y.tick.prefix, y.tick.suffix, scatter.sizes,
+                                     scatter.sizes.name, scatter.colors,
+                                     scatter.colors.name)
+
+    if (length(not.na) < n)
+        warning("Data points with missing values have been omitted.")
+
+    fit <- list()
+    if (fit.type != "None") {
+        x.axis.type <- getAxisType(unique(x[not.na]), x.tick.format)
+        fit <- fitLines(groups, x, y, not.na, fit.type, fit.ignore.last,
+                        fit.CI.show, fit.window.size, colors, fit.line.colors,
+                        fit.CI.colors, fit.CI.opacity, x.axis.type)
+    }
+
+    annotations <- processAnnotations(annotation.list, n, annot.data,
+                                      labels.or.logos)
+
+    scatter.sizes <- if (is.null(scatter.sizes)) NULL else abs(scatter.sizes[not.na])
+    x.axis.font.color <- if (!is.null(x.tick.font.color)) x.tick.font.color else "#2C2C2C"
+    y.axis.font.color <- if (!is.null(y.tick.font.color)) y.tick.font.color else "#2C2C2C"
+    labels.font.color <- if (data.label.font.autocolor) NULL else data.label.font.color
+
+    p <- rhtmlCombinedScatter::CombinedScatter(X = x[not.na],
+        Y = y[not.na],
+        Z = scatter.sizes,
+        x.levels = levels(x),
+        y.levels = rev(levels(y)),
+        group = groups[not.na],
+        colors = colors,
+        color.transparency = opacity,
+        label = annotations$labels.or.logos[not.na],
+        label.alt = scatter.labels[not.na],
+        grid = grid.show,
+        labels.show = !scatter.labels.as.hovertext,
+        labels.max.shown = scatter.max.labels,
+        label.auto.placement = label.auto.placement,
+        legend.show = legend.show,
+        legend.bubbles.show = !is.null(scatter.sizes) && isTRUE(legend.bubbles.show),
+        legend.font.color = legend.font.color,
+        legend.font.family = legend.font.family,
+        legend.font.size = legend.font.size,
+        legend.bubble.font.color = legend.font.color,
+        legend.bubble.font.family = legend.font.family,
+        legend.bubble.font.size = legend.font.size,
+        legend.bubble.title.font.color = legend.font.color,
+        legend.bubble.title.font.family = legend.font.family,
+        legend.bubble.title.font.size = legend.font.size,
+        legend.x = legend.position.x,
+        legend.y = legend.position.y,
+        legend.wrap = legend.wrap,
+        legend.wrap.n.char = legend.wrap.nchar,
+        legend.orientation = legend.orientation,
+        margin.autoexpand = margin.autoexpand,
+        margin.top = margin.top,
+        margin.bottom = margin.bottom,
+        margin.left = margin.left,
+        margin.right = margin.right,
+        y.title = y.title,
+        y.title.font.family = y.title.font.family,
+        y.title.font.color = y.title.font.color,
+        y.title.font.size = y.title.font.size,
+        subtitle = subtitle,
+        subtitle.font.family = subtitle.font.family,
+        subtitle.font.color = subtitle.font.color,
+        subtitle.font.size = subtitle.font.size,
+        footer = footer,
+        footer.font.family = footer.font.family,
+        footer.font.color = footer.font.color,
+        footer.font.size = footer.font.size,
+        x.axis.font.family = x.tick.font.family,
+        x.axis.font.color = x.axis.font.color,
+        x.axis.font.size = x.tick.font.size,
+        x.axis.tick.length = x.tick.mark.length,
+        x.axis.tick.color = x.tick.mark.color,
+        x.axis.tick.angle = x.tick.angle,
+        x.axis.zero.line.width = x.zero.line.width,
+        x.axis.zero.line.color = x.zero.line.color,
+        x.axis.grid.width = x.grid.width,
+        x.axis.grid.color = x.grid.color,
+        x.axis.label.wrap = x.tick.label.wrap,
+        x.axis.label.wrap.n.char = x.tick.label.wrap.nchar,
+        y.axis.font.family = y.tick.font.family,
+        y.axis.font.color = y.axis.font.color,
+        y.axis.font.size = y.tick.font.size,
+        y.axis.tick.length = y.tick.mark.length,
+        y.axis.tick.color = y.tick.mark.color,
+        y.axis.zero.line.width = y.zero.line.width,
+        y.axis.zero.line.color = y.zero.line.color,
+        y.axis.grid.width = y.grid.width,
+        y.axis.grid.color = y.grid.color,
+        x.title = x.title,
+        x.title.font.family = x.title.font.family,
+        x.title.font.color = x.title.font.color,
+        x.title.font.size = x.title.font.size,
+        z.title = scatter.sizes.name,
+        x.format = x.tick.format,
+        y.format = y.tick.format,
+        x.hover.format = x.hovertext.format,
+        y.hover.format = x.hovertext.format,
+        x.prefix = x.tick.prefix,
+        y.prefix = y.tick.prefix,
+        x.suffix = x.tick.suffix,
+        y.suffix = y.tick.suffix,
+        title.font.family = title.font.family,
+        title.font.color = title.font.color,
+        title.font.size = title.font.size,
+        labels.font.family = data.label.font.family,
+        labels.font.color = labels.font.color,
+        labels.font.size = data.label.font.size,
+        point.radius = 0.5 * marker.size,
+        y.bounds.maximum = charToNumeric(y.bounds.maximum),
+        y.bounds.minimum = charToNumeric(y.bounds.minimum),
+        y.bounds.units.major = y.bounds.units.major,
+        x.bounds.maximum = charToNumeric(x.bounds.maximum),
+        x.bounds.minimum = charToNumeric(x.bounds.minimum),
+        x.bounds.units.major = x.bounds.units.major,
+        y.axis.show = y.tick.show,
+        x.axis.show = x.tick.show,
+        origin = TRUE,
+        tooltip.font.family = hovertext.font.family,
+        tooltip.font.size = hovertext.font.size,
+        tooltip.text = tooltips.text,
+        title = title,
+        trend.lines.show = trend.lines,
+        fit.x = fit$fit.x,
+        fit.y = fit$fit.y,
+        fit.group = fit$fit.group,
+        fit.panel = fit$fit.panel,
+        fit.lower.bound = fit$fit.lower.bound,
+        fit.upper.bound = fit$fit.upper.bound,
+        fit.line.names = fit$fit.line.names,
+        fit.line.type = fit.line.type,
+        fit.line.width = fit.line.width,
+        fit.line.opacity = fit.line.opacity,
+        fit.line.colors = fit$fit.line.colors,
+        fit.ci.colors = fit$fit.ci.fill.colors,
+        fit.ci.label.colors = fit$fit.ci.label.colors,
+        marker.annotations = annotations$marker.annotations,
+        pre.label.annotations = annotations$pre.label.annotations,
+        post.label.annotations = annotations$post.label.annotations,
+        point.border.color = annotations$point.border.color,
+        point.border.width = annotations$point.border.width,
+        labels.logo.scale = logo.size,
+        background.color = background.fill.color,
+        plot.background.color = charting.area.fill.color,
+        bubble.sizes.as.diameter = scatter.sizes.as.diameter,
+        debug.mode = grepl("DEBUG_MODE_ON", title))
+
+    result <- list(htmlwidget = p)
+    class(result) <- "StandardChart"
+    attr(result, "ChartType") <- chartType(scatter.sizes)
+    attr(result, "ChartLabels") <- chartLabels(x.title, y.title)
+    result
+}
+
+checkDataIsEnough <- function(x, y) {
+    if (!is.null(y))
+        ErrorIfNotEnoughData(cbind(x, y))
+    else
+        ErrorIfNotEnoughData(x, require.tidy = FALSE)
+}
+
+checkNotNa <- function(not.na) {
+    if (length(not.na) == 0)
+        stop("No non-NA points to plot.")
+}
+
+convertPercentToProportion <- function(x) {
+    tmp.stat <- attr(x, "statistic")
+    if ((is.array(x) || is.numeric(x)) && isTRUE(grepl("%", tmp.stat)))
+    {
+        x <- x/100
+        attr(x, "statistic") <- NULL
+    }
+    x
+}
+
+unlistX <- function(x, trend.lines) {
+    num.tables <- length(x)
+    n.tmp <- nrow(x[[1]])
+    table.names <- unlist(lapply(1:num.tables,
+                                 function(ii){res <- attr(x[[ii]], "name"); if (is.null(res)) res <- ii;
+                                 return(as.character(res))}))
+    x <- checkTableList(x, trend.lines)
+    groups <- rep(rownames(x[[1]]), num.tables)
+    x <- do.call(rbind, x)
+    if (!trend.lines)
+        rownames(x) <- sprintf("%s: %s",
+                               rep(table.names, each = n.tmp), groups)
+    list(x = x, groups = groups, num.tables = num.tables)
+}
+
+unpackColumnsFromX <- function(x, y, scatter.labels, scatter.x.column,
+                               scatter.y.column, scatter.mult.yvals, x.title,
+                               y.title, scatter.sizes, scatter.sizes.column,
+                               scatter.sizes.name, scatter.colors,
+                               scatter.colors.column, scatter.colors.name) {
+    .isValidColumnIndex <- function(n) {return (!is.null(n) && !is.na(n) && n > 0 && n <= ncol(x))}
+    if (is.null(scatter.labels) && !is.null(rownames(x)))
+        scatter.labels <- rownames(x)
+    if (is.null(y) && .isValidColumnIndex(scatter.y.column))
+    {
+        if (!any(nzchar(y.title)) && !is.null(colnames(x)) && !scatter.mult.yvals)
+            y.title <- colnames(x)[scatter.y.column]
+        y <- x[,scatter.y.column]
+    }
+    if (is.null(scatter.sizes) && .isValidColumnIndex(scatter.sizes.column))
+    {
+        if (is.null(scatter.sizes.name) && !is.null(colnames(x)))
+            scatter.sizes.name <- colnames(x)[scatter.sizes.column]
+        scatter.sizes.name <- trimws(scatter.sizes.name)
+        scatter.sizes <- x[,scatter.sizes.column]
+    }
+    if (is.null(scatter.colors) && .isValidColumnIndex(scatter.colors.column))
+    {
+        if (is.null(scatter.colors.name) || nchar(scatter.colors.name) == 0)
+            scatter.colors.name <- colnames(x)[scatter.colors.column]
+        scatter.colors.name <- trimws(scatter.colors.name)
+        scatter.colors <- x[,scatter.colors.column]
+    }
+    if (!any(nzchar(x.title)) && (!is.null(colnames(x))) &&
+        .isValidColumnIndex(scatter.x.column) && !scatter.mult.yvals)
+        x.title <- colnames(x)[scatter.x.column]
+    if (!.isValidColumnIndex(scatter.x.column))
+        x <- NULL
+    else
+        x <- x[,scatter.x.column]
+
+    list(x = x, y = y, scatter.labels = scatter.labels, x.title = x.title,
+         y.title = y.title, scatter.sizes = scatter.sizes,
+         scatter.sizes.name = scatter.sizes.name,
+         scatter.colors = scatter.colors,
+         scatter.colors.name = scatter.colors.name)
+}
+
+nonMissing <- function(x, y) {
+    x.not.na <- if (is.numeric(x)) is.finite(x) else !is.na(x)
+    y.not.na <- if (is.numeric(y)) is.finite(y) else !is.na(y)
+    which(x.not.na & y.not.na)
+}
+
+processScatterSizes <- function(scatter.sizes, n) {
+    if (is.null(scatter.sizes)) {
+        return(scatter.sizes)
+    }
+    if (length(scatter.sizes) != n)
+        stop("'scatter.sizes' should be a numeric vector with the same number of observations as 'x'.")
+    sz.tmp <- AsNumeric(scatter.sizes, binary = FALSE)
+    if (any(class(scatter.sizes) %in% c("Date", "POSIXct", "POSIXt"))) {
+        sz.tmp <- sz.tmp - min(sz.tmp, na.rm = TRUE)
+    }
+    sz.tmp
+}
+
+getOpacity <- function(opacity, scatter.sizes) {
+    if (is.null(opacity)) {
+        if (!is.null(scatter.sizes)) {
+            opacity <- 0.4
+        } else {
+            opacity <- 1
+        }
+    }
+    opacity
+}
+
+#' @importFrom flipChartBasics StripAlphaChannel
+getColors <- function(colors, scatter.colors, n, not.na, scatter.colors.as.categorical,
+                      num.tables, legend.show, groups) {
+    scatter.colors.raw <- scatter.colors
+    if (!is.null(scatter.colors))
+    {
+        if (!scatter.colors.as.categorical)
+            scatter.colors <- AsNumeric(scatter.colors, binary = FALSE)
+        if (length(scatter.colors) != n)
+            stop("'scatter.colors' should be a vector with the same number of observations as 'x'.")
+        if (any(is.na(scatter.colors)))
+        {
+            warning("Some points omitted due to missing values in 'scatter.colors'")
+            not.na <- intersect(not.na, which(is.finite(scatter.colors)))
+        }
+    }
+
+    # Determine color for each observation
+    if (!is.null(scatter.colors) && !scatter.colors.as.categorical)
+    {
+        if (num.tables > 1)
+            stop("'scatter.colors' cannot be used with multiple tables")
+        legend.show <- FALSE # don't need to worry about order of groups
+        groups <- 1:n # what about mult tables?
+        colors <- StripAlphaChannel(colors, "Alpha values in selected colors were not used in the numeric color scale. Adjust 'opacity' for transparent points instead")
+        col.fun <- colorRamp(unique(colors)) # undo recycling in PrepareColors
+        scatter.colors.scaled <- (scatter.colors - min(scatter.colors, na.rm=T))/diff(range(scatter.colors, na.rm=T))
+        #if (length(not.na) != length(scatter.colors))
+        #    scatter.colors.scaled[-not.na] <- 0 # removed later
+        colors <- rgb(col.fun(scatter.colors.scaled[not.na]), maxColorValue=255)
+    } else {
+        if (is.null(groups))
+            groups <- scatter.colors.raw
+        if (length(groups) != n)
+            groups <- rep(" ", n)
+
+        # Get list of all series names - including if those with all NAs
+        groups.ord <- order(suppressWarnings(AsNumeric(groups, binary = FALSE)))
+        g.list.all <- if (is.factor(groups)) levels(groups)
+        else unique(groups[groups.ord])
+        colors <- paste0(rep("", length(g.list.all)), colors)
+        names(colors) <- g.list.all
+        legend.show <- setShowLegend(legend.show, length(g.list.all))
+
+        # Extract only non-NA points and order based on series name
+        groups.ord <- order(suppressWarnings(AsNumeric(groups[not.na], binary = FALSE)))
+        not.na <- not.na[groups.ord]
+        groups <- as.character(groups)
+        g.list <- unique(groups[not.na])
+        colors <- colors[g.list]
+    }
+
+    list(colors = colors, scatter.colors = scatter.colors, groups = groups,
+         legend.show = legend.show, not.na = not.na)
+}
+
+#' @importFrom flipFormat FormatAsReal FormatAsPercent
+processScatterLabels <- function(scatter.labels, x, data.label.format,
+                                 data.label.prefix, data.label.suffix,
+                                 scatter.max.labels) {
+    if (is.null(scatter.labels) && !is.null(names(x)))
+        scatter.labels <- names(x)
+
+    if (is.null(scatter.labels))
+        scatter.labels <- rep("", length(x))
+    if (is.numeric(scatter.labels)) {
+        if (percentFromD3(data.label.format))
+            scatter.labels <- FormatAsPercent(scatter.labels, decimals = decimalsFromD3(data.label.format))
+        else
+            scatter.labels <- FormatAsReal(scatter.labels, decimals = decimalsFromD3(data.label.format))
+    }
+    scatter.labels <- paste0(data.label.prefix, scatter.labels, data.label.suffix)
+
+    if (any(is.finite(scatter.max.labels)) && length(scatter.labels) > scatter.max.labels)
+    {
+        if (scatter.max.labels == 50)
+            warning("By default, only the first 50 labels are shown to avoid long running times. Adjust 'Maximum data labels to plot' to show more labels. Alternatively, to show a large number of points, show as 'Hovertext' instead.")
+        else
+            warning("Some labels have been hidden. Adjust 'Maximum data labels to plot' to show more labels by default. ",
+                    "Labels can also be toggled on and off by clicking on the markers.")
+    }
+    scatter.labels
+}
+
+getLogoUrls <- function(logos, x, scatter.labels, n) {
+    logo.urls <- NULL
+    if (!is.null(logos) && any(nzchar(logos) != 0))
+    {
+        logo.urls <- try(TextAsVector(logos))
+        if (inherits(logo.urls, "try-error"))
+            logo.urls <- NULL
+    }
+    if (is.list(x) && !is.null(ncol(x[[1]])))
+    {
+        num.tables <- length(x)
+        if (!is.null(logo.urls))
+            logo.urls <- rep(logo.urls, num.tables)
+    }
+    empty.logo <- which(nchar(logo.urls) == 0)
+    if (length(empty.logo) > 0)
+        logo.urls[empty.logo] <- scatter.labels[empty.logo]
+    if (!is.null(logo.urls) && length(logo.urls) < n)
+        logo.urls <- c(logo.urls, scatter.labels[(length(logo.urls)+1):n])
+
+    logo.urls
+}
+
+isEmptyName <- function(x) {
+    !any(nzchar(trimws(x)))
+}
+
+processFooter <- function(footer, scatter.labels.name, scatter.colors.name,
+                          scatter.sizes.name, scatter.mult.yvals, footer.wrap,
+                          footer.wrap.nchar) {
+    if (length(footer) == 0 || nchar(footer) == 0)
+    {
+        footer <- ""
+        if (!isEmptyName(scatter.labels.name))
+            footer <- sprintf("%sPoints labeled by '%s'; ", footer, scatter.labels.name)
+        if (!isEmptyName(scatter.colors.name) && !scatter.mult.yvals)
+            footer <- sprintf("%sPoints colored according to '%s'; ", footer, scatter.colors.name)
+        if (!isEmptyName(scatter.sizes.name) && !scatter.mult.yvals)
+            footer <- sprintf("%sArea of points are proportional to absolute value of '%s'; ",
+                              footer, scatter.sizes.name)
+    }
+    if (any(nzchar(footer)) && footer != " ") {
+        footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
+    }
+    footer
+}
+
+getAxisBoundsUnitsMajor <- function(tick.distance, tick.maxnum, bounds.maximum,
+                                    bounds.minimum, values) {
+    result <- charToNumeric(tick.distance)
+    if (is.null(result) && !is.null(tick.maxnum))
+        result <- calcUnitsForMaxNum(tick.maxnum, bounds.maximum,
+                                     bounds.minimum, values)
+    result
+}
+
+
+getTooltipsText <- function(scatter.labels, not.na, x, y, x.tick.format,
+                            x.tick.prefix, x.tick.suffix, y.tick.format,
+                            y.tick.prefix, y.tick.suffix, scatter.sizes,
+                            scatter.sizes.name, scatter.colors,
+                            scatter.colors.name) {
+    tooltips.text <- sprintf("%s (%s, %s)", scatter.labels[not.na],
+                             formatByD3(x[not.na], x.tick.format, x.tick.prefix, x.tick.suffix),
+                             formatByD3(y[not.na], y.tick.format, y.tick.prefix, y.tick.suffix))
+    if (!isEmptyName(scatter.sizes.name))
+        tooltips.text <- sprintf("%s\n%s: %s", tooltips.text, scatter.sizes.name,
+                                 formatByD3(scatter.sizes[not.na], ""))
+    if (!isEmptyName(scatter.colors.name))
+        tooltips.text <- sprintf("%s\n%s: %s", tooltips.text, scatter.colors.name,
+                                 formatByD3(scatter.colors[not.na], ""))
+    tooltips.text
+}
+
+chartType <- function(scatter.sizes) {
+    if (!is.null(scatter.sizes))
+        "Bubble"
+    else
+        "X Y Scatter"
+}
+
+chartLabels <- function(x.title, y.title) {
+    if (!any(nzchar(x.title)) && !any(nzchar(y.title))) {
+        return(NULL)
+    }
+    chart.labels <- list()
+    if (any(nzchar(x.title))) {
+        chart.labels$PrimaryAxisTitle <- x.title
+    }
+    if (any(nzchar(y.title))) {
+        chart.labels$ValueAxisTitle <- y.title
+    }
+    chart.labels
+}
+
+fitLines <- function(groups, x, y, not.na, fit.type, fit.ignore.last,
+                     fit.CI.show, fit.window.size, colors, fit.line.colors,
+                     fit.CI.colors, fit.CI.opacity, x.axis.type) {
+    if (is.factor(groups))
+        g.list <- levels(groups) # fix legend order
+    else if (any(class(groups) %in% c("Date", "POSIXct", "POSIXt", "integer", "numeric")))
+        g.list <- sort(unique(groups[!is.na(groups)]))
+    else
+        g.list <- unique(groups[!is.na(groups)])
+
+    num.groups <- length(g.list)
+
+    fit.x <- vector("list", num.groups)
+    fit.y <- vector("list", num.groups)
+    fit.group <- character(num.groups)
+    fit.panel <- integer(num.groups)
+    fit.lower.bound <- vector("list", num.groups)
+    fit.upper.bound <- vector("list", num.groups)
+    fit.line.names <- character(num.groups)
+    fit.ci.fill.colors <- character(num.groups)
+    fit.ci.label.colors <- character(num.groups)
+
+    if (is.null(fit.line.colors))
+        fit.line.colors <- colors
+    if (is.null(fit.CI.colors))
+        fit.CI.colors <- fit.line.colors
+
+    for (ggi in 1:num.groups)
+    {
+        ind <- intersect(which(groups == g.list[ggi]), not.na)
+        fit <- fitSeries(x[ind], y[ind], fit.type, fit.ignore.last, x.axis.type,
+                         fit.CI.show, fit.window.size)
+        fit.x[[ggi]] <- fit$x
+        fit.y[[ggi]] <- fit$y
+        fit.group[ggi] <- g.list[ggi]
+        fit.panel[ggi] <- ggi
+        fit.lower.bound[[ggi]] <- fit$lb
+        fit.upper.bound[[ggi]] <- fit$ub
+        fit.line.names[ggi] <- paste0("Fitted: ", g.list[ggi])
+        fit.ci.fill.colors[ggi] <- toRGB(fit.CI.colors[ggi], alpha = fit.CI.opacity)
+        fit.ci.label.colors[ggi] <- fit.CI.colors[ggi]
+    }
+    list(fit.x = fit.x, fit.y = fit.y, fit.group = fit.group,
+         fit.panel = fit.panel, fit.lower.bound = fit.lower.bound,
+         fit.upper.bound = fit.upper.bound, fit.line.names = fit.line.names,
+         fit.line.colors = fit.line.colors,
+         fit.ci.fill.colors = fit.ci.fill.colors,
+         fit.ci.label.colors = fit.ci.label.colors)
+}
+
+processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos) {
+    marker.annotations <- character(n)
+    pre.label.annotations <- character(n)
+    post.label.annotations <- character(n)
+    point.border.color <- character(n)
+    point.border.width <- numeric(n)
+
+    for (j in seq_along(annotation.list))
+    {
+        if (!checkAnnotType(annotation.list[[j]]$type, "Scatter"))
+            next
+        a.tmp <- annotation.list[[j]]
+        tmp.dat <- getAnnotScatterData(annot.data, a.tmp$data, ind)
+        a.tmp$threshold <- ParseText(a.tmp$threshold, tmp.dat)
+        ind.sel <- if (is.null(a.tmp$threstype) || is.null(a.tmp$threshold))    1:length(tmp.dat)
+        else if (is.factor(tmp.dat) && !is.ordered(tmp.dat))         selectFactor(a.tmp$threshold, 1:length(tmp.dat), a.tmp$data, ggi)
+        else if (a.tmp$threstype == "above threshold")               which(tmp.dat > a.tmp$threshold)
+        else if (a.tmp$threstype == "below threshold")               which(tmp.dat < a.tmp$threshold)
+        else                                                         which(is.na(tmp.dat))
+
+        if (length(ind.sel) == 0)
+            next
+
+        if (a.tmp$type == "Marker border") {
+            point.border.color[ind.sel] <- a.tmp$color
+            point.border.width[ind.sel] <- a.tmp$width
+        } else {
+            annot.text <- addAnnotToDataLabel("", a.tmp, tmp.dat[ind.sel])
+            if (a.tmp$type == "Shadow" || a.tmp$type == "Border") {
+                # Remove </span> (7 characters)
+                annot.text.prefix <- substr(annot.text, 1, nchar(annot.text) - 7)
+                pre.label.annotations[ind.sel] <- paste0(pre.label.annotations[ind.sel], annot.text.prefix)
+                post.label.annotations[ind.sel] <- paste0(post.label.annotations[ind.sel], "</span>")
+            } else if (a.tmp$type == "Text - before data label") {
+                pre.label.annotations[ind.sel] <- paste0(pre.label.annotations[ind.sel], annot.text.prefix)
+            } else if (a.tmp$type == "Hide") {
+                pre.label.annotations[ind.sel] <- ""
+                post.label.annotations[ind.sel] <- ""
+                labels.or.logos[ind.sel] <- ""
+            } else {
+                post.label.annotations[ind.sel] <- paste0(post.label.annotations[ind.sel], annot.text)
+            }
+        }
+    }
+
+    list(marker.annotations = marker.annotations,
+         pre.label.annotations = pre.label.annotations,
+         post.label.annotations = post.label.annotations,
+         point.border.color = point.border.color,
+         point.border.width = point.border.width,
+         labels.or.logos = labels.or.logos)
+}
+
