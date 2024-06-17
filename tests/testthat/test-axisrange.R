@@ -14,5 +14,5 @@ test_that("Range as a string",
 test_that("Format of axis labels",
 {
     xx <- c("1-25%", "26-50%", "51-75%", "76-100%", "NET")
-    getAxisType(xx, "")
+    expect_equal(getAxisType(xx, ""), "category")
 })

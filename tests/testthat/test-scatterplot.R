@@ -112,8 +112,10 @@ test_that("Scatter with trend line that cannot be predicted",
         1297L, 1298L, 1299L, 1362L, 1363L, 1366L, 1369L, 1372L, 1375L,
         1378L, 1381L, 1384L, 1387L, 1426L, 1465L), class = "data.frame")
 
-    expect_warning(Scatter(dat.no.xvariation, fit.type = "Loess", fit.CI.show = FALSE),
-                   "Could not fit trend line to data. Check that you expect to map a single x-value to a single y-value.")
+    expect_warning(Scatter(dat.no.xvariation, fit.type = "Friedman", fit.CI.show = FALSE),
+                   "Multiple points at the same x-coordinate ignored for estimating line of best fit.")
+    #expect_warning(Scatter(dat.no.xvariation fit.type = "Loess", fit.CI.show = FALSE),
+    #               "Could not fit trend line to data. Check that you expect to map a single x-value to a single y-value.")
 })
 
 
