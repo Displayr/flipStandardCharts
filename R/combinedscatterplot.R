@@ -785,7 +785,7 @@ fitLines <- function(groups, x, y, not.na, fit.type, fit.ignore.last,
         fit.x[[ggi]] <- fit$x
         fit.y[[ggi]] <- fit$y
         fit.group[ggi] <- g.list[ggi]
-        fit.panel[ggi] <- ggi
+        fit.panel[ggi] <- ggi - 1
         fit.lower.bound[[ggi]] <- fit$lb
         fit.upper.bound[[ggi]] <- fit$ub
         fit.line.names[ggi] <- paste0("Fitted: ", g.list[ggi])
