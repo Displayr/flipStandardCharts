@@ -567,6 +567,19 @@ getOpacity <- function(opacity, scatter.sizes) {
 getColors <- function(colors, scatter.colors, n, not.na, scatter.colors.as.categorical,
                       num.tables, legend.show, groups, scatter.groups) {
     scatter.colors.raw <- scatter.colors
+
+    # Don't show legend if there is only one series in each panel
+    if (!is.null(scatter.groups) && !is.null(scatter.colors) && scatter.colors.as.categorical) {
+        r.groups <- rle(as.numeric(as.factor(scatter.groups)))$lengths
+        r.colors <- rle(as.numeric(as.factor(scatter.colors)))$lengths
+        if (length(r.groups) == length(r.colors) && all(r.groups == r.colors))
+            legend.show <- FALSE
+    } else if (is.null(scatter.colors) && !is.null(scatter.groups) && scatter.colors.as.categorical) {
+        scatter.colors <- scatter.groups
+        scatter.colors.raw <- scatter.groups
+        legend.show <- FALSE
+    }
+
     if (!is.null(scatter.colors))
     {
         if (!scatter.colors.as.categorical)
@@ -578,14 +591,6 @@ getColors <- function(colors, scatter.colors, n, not.na, scatter.colors.as.categ
             warning("Some points omitted due to missing values in 'scatter.colors'")
             not.na <- intersect(not.na, which(is.finite(scatter.colors)))
         }
-    }
-
-    # Don't show legend if there is only one series in each panel
-    if (!is.null(scatter.groups) && !is.null(scatter.colors) && scatter.colors.as.categorical) {
-        r.groups <- rle(AsNumeric(scatter.groups, binary = FALSE))$lengths
-        r.colors <- rle(AsNumeric(scatter.colors, binary = FALSE))$lengths
-        if (length(r.groups) == length(r.colors) && all(r.groups == r.colors))
-            legend.show <- FALSE
     }
 
     # Determine color for each observation
