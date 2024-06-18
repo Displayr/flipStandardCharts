@@ -157,7 +157,7 @@ CombinedScatter <- function(x = NULL,
     {
         output <- unlistX(x, trend.lines)
         x <- output$x
-        groups <- output$groups
+        groups <- output$scatter.colors
         num.tables <- output$num.tables
     }
 
@@ -203,7 +203,7 @@ CombinedScatter <- function(x = NULL,
 
     scatter.labels <- processScatterLabels(scatter.labels, x, data.label.format,
                                            data.label.prefix, data.label.suffix,
-                                           scatter.max.labels)
+                                           scatter.max.labels, scatter.labels.as.hovertext)
 
     if (swap.x.and.y)
     {
@@ -298,6 +298,11 @@ CombinedScatter <- function(x = NULL,
     x.axis.font.color <- if (!is.null(x.tick.font.color)) x.tick.font.color else "#2C2C2C"
     y.axis.font.color <- if (!is.null(y.tick.font.color)) y.tick.font.color else "#2C2C2C"
     labels.font.color <- if (data.label.font.autocolor) NULL else data.label.font.color
+    color.scale <- NULL
+    if (!scatter.colors.as.categorical) {
+        color.scale <- colors
+        groups <- scatter.colors
+    }
 
     p <- rhtmlCombinedScatter::CombinedScatter(X = x[not.na],
         Y = y[not.na],
@@ -306,6 +311,7 @@ CombinedScatter <- function(x = NULL,
         y.levels = rev(levels(y)),
         group = groups[not.na],
         colors = colors,
+        color.scale = color.scale,
         panels = scatter.groups,
         color.transparency = opacity,
         label = annotations$labels.or.logos[not.na],
@@ -575,11 +581,6 @@ getColors <- function(colors, scatter.colors, n, not.na, scatter.colors.as.categ
         legend.show <- FALSE # don't need to worry about order of groups
         groups <- 1:n # what about mult tables?
         colors <- StripAlphaChannel(colors, "Alpha values in selected colors were not used in the numeric color scale. Adjust 'opacity' for transparent points instead")
-        col.fun <- colorRamp(unique(colors)) # undo recycling in PrepareColors
-        scatter.colors.scaled <- (scatter.colors - min(scatter.colors, na.rm=T))/diff(range(scatter.colors, na.rm=T))
-        #if (length(not.na) != length(scatter.colors))
-        #    scatter.colors.scaled[-not.na] <- 0 # removed later
-        colors <- rgb(col.fun(scatter.colors.scaled[not.na]), maxColorValue=255)
     } else {
         if (is.null(groups))
             groups <- scatter.colors.raw
@@ -609,7 +610,7 @@ getColors <- function(colors, scatter.colors, n, not.na, scatter.colors.as.categ
 #' @importFrom flipFormat FormatAsReal FormatAsPercent
 processScatterLabels <- function(scatter.labels, x, data.label.format,
                                  data.label.prefix, data.label.suffix,
-                                 scatter.max.labels) {
+                                 scatter.max.labels, scatter.labels.as.hovertext) {
     if (is.null(scatter.labels) && !is.null(names(x)))
         scatter.labels <- names(x)
 
@@ -623,7 +624,7 @@ processScatterLabels <- function(scatter.labels, x, data.label.format,
     }
     scatter.labels <- paste0(data.label.prefix, scatter.labels, data.label.suffix)
 
-    if (any(is.finite(scatter.max.labels)) && length(scatter.labels) > scatter.max.labels)
+    if (!scatter.labels.as.hovertext && any(is.finite(scatter.max.labels)) && length(scatter.labels) > scatter.max.labels)
     {
         if (scatter.max.labels == 50)
             warning("By default, only the first 50 labels are shown to avoid long running times. Adjust 'Maximum data labels to plot' to show more labels. Alternatively, to show a large number of points, show as 'Hovertext' instead.")
