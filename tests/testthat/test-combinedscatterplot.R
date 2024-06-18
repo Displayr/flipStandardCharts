@@ -370,6 +370,12 @@ test_that("swap x and y",
 
 test_that("small multiples",
 {
-    expect_error(CombinedScatter(iris, scatter.groups.column = 5,
+    expect_error(CombinedScatter(iris, scatter.groups.column = 6,
+                                 scatter.colors.column = 1,
+                                 colors = c("#FF0000", "#FFFFFF", "#0000FF"),
                                  scatter.colors.as.categorical = FALSE), NA)
+    expect_error(CombinedScatter(iris, scatter.groups.column = 5,
+                                 scatter.colors.column = 5,
+                                 scatter.colors.as.categorical = TRUE,
+                                 panel.title.font.color="#FF0000"), NA)
 })

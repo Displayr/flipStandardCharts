@@ -52,6 +52,9 @@ CombinedScatter(
   subtitle.font.family = global.font.family,
   subtitle.font.color = global.font.color,
   subtitle.font.size = 12,
+  panel.title.font.family = global.font.family,
+  panel.title.font.color = global.font.color,
+  panel.title.font.size = 14,
   footer = "",
   footer.font.family = global.font.family,
   footer.font.color = global.font.color,
@@ -248,6 +251,12 @@ format (e.g. "black") or a hex code.}
 character format (e.g. "black") or an a hex code.}
 
 \item{subtitle.font.size}{Integer; subtitle font size}
+
+\item{panel.title.font.family}{Font family of panel titles.}
+
+\item{panel.title.font.color}{Font color of panel titles.}
+
+\item{panel.title.font.size}{Font size of panel titles.}
 
 \item{footer}{Character}
 
@@ -455,6 +464,9 @@ if \code{scatter.colors.as.categorical}.}
 
 \item{label.auto.placement}{Logical; whether the scatter plot labels are positioned automatically
 to reduce overlap.}
+}
+\value{
+an HTML widget for \code{"leaflet"} or a \code{"plotly"} object.
 }
 \description{
 Scatter plot (uses rhtmlCombinedScatter)

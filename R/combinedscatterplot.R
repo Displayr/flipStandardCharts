@@ -3,6 +3,7 @@
 #' Scatter plot (uses rhtmlCombinedScatter)
 #' @inherit Scatter
 #' @inherit LabeledScatter
+#' @inherit SmallMultiples
 #' @param scatter.groups A factor of the same length as \code{x} which is
 #'  used to aggregate the data for small multiples.
 #' @param scatter.groups.column The column of \code{x} which is used to aggregate
@@ -56,6 +57,9 @@ CombinedScatter <- function(x = NULL,
                             subtitle.font.family = global.font.family,
                             subtitle.font.color = global.font.color,
                             subtitle.font.size = 12,
+                            panel.title.font.family = global.font.family,
+                            panel.title.font.color = global.font.color,
+                            panel.title.font.size = 14,
                             footer = "",
                             footer.font.family = global.font.family,
                             footer.font.color = global.font.color,
@@ -235,7 +239,7 @@ CombinedScatter <- function(x = NULL,
 
     output <- getColors(colors, scatter.colors, n, not.na,
                         scatter.colors.as.categorical, num.tables, legend.show,
-                        groups)
+                        groups, scatter.groups)
     colors <- output$colors
     scatter.colors <- output$scatter.colors
     groups <- output$groups
@@ -393,6 +397,9 @@ CombinedScatter <- function(x = NULL,
         labels.font.family = data.label.font.family,
         labels.font.color = labels.font.color,
         labels.font.size = data.label.font.size,
+        panel.title.font.family = panel.title.font.family,
+        panel.title.font.color = panel.title.font.color,
+        panel.title.font.size = panel.title.font.size,
         point.radius = 0.5 * marker.size,
         y.bounds.maximum = charToNumeric(y.bounds.maximum),
         y.bounds.minimum = charToNumeric(y.bounds.minimum),
@@ -558,7 +565,7 @@ getOpacity <- function(opacity, scatter.sizes) {
 
 #' @importFrom flipChartBasics StripAlphaChannel
 getColors <- function(colors, scatter.colors, n, not.na, scatter.colors.as.categorical,
-                      num.tables, legend.show, groups) {
+                      num.tables, legend.show, groups, scatter.groups) {
     scatter.colors.raw <- scatter.colors
     if (!is.null(scatter.colors))
     {
@@ -571,6 +578,14 @@ getColors <- function(colors, scatter.colors, n, not.na, scatter.colors.as.categ
             warning("Some points omitted due to missing values in 'scatter.colors'")
             not.na <- intersect(not.na, which(is.finite(scatter.colors)))
         }
+    }
+
+    # Don't show legend if there is only one series in each panel
+    if (!is.null(scatter.groups) && !is.null(scatter.colors) && scatter.colors.as.categorical) {
+        r.groups <- rle(AsNumeric(scatter.groups, binary = FALSE))$lengths
+        r.colors <- rle(AsNumeric(scatter.colors, binary = FALSE))$lengths
+        if (length(r.groups) == length(r.colors) && all(r.groups == r.colors))
+            legend.show <- FALSE
     }
 
     # Determine color for each observation
