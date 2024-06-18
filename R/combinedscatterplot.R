@@ -290,7 +290,8 @@ CombinedScatter <- function(x = NULL,
     fit <- list()
     if (fit.type != "None") {
         x.axis.type <- getAxisType(unique(x[not.na]), x.tick.format)
-        fit <- fitLines(groups, x, y, not.na, fit.type, fit.ignore.last,
+        fit <- fitLines(groups, scatter.colors.as.categorical, scatter.groups,
+                        x, y, not.na, fit.type, fit.ignore.last,
                         fit.CI.show, fit.window.size, colors, fit.line.colors,
                         fit.CI.colors, fit.CI.opacity, x.axis.type)
     }
@@ -750,9 +751,13 @@ chartLabels <- function(x.title, y.title) {
     chart.labels
 }
 
-fitLines <- function(groups, x, y, not.na, fit.type, fit.ignore.last,
+fitLines <- function(groups, scatter.colors.as.categorical, scatter.groups,
+                     x, y, not.na, fit.type, fit.ignore.last,
                      fit.CI.show, fit.window.size, colors, fit.line.colors,
                      fit.CI.colors, fit.CI.opacity, x.axis.type) {
+    n <- length(x)
+    if (!is.null(groups) && !scatter.colors.as.categorical)
+        groups <- rep(" ", n)
     if (is.factor(groups))
         g.list <- levels(groups) # fix legend order
     else if (any(class(groups) %in% c("Date", "POSIXct", "POSIXt", "integer", "numeric")))
@@ -761,36 +766,53 @@ fitLines <- function(groups, x, y, not.na, fit.type, fit.ignore.last,
         g.list <- unique(groups[!is.na(groups)])
 
     num.groups <- length(g.list)
+    num.panels <- if (is.null(scatter.groups)) 1
+                  else length(unique(scatter.groups))
+    num.lines <- num.groups * num.panels
 
-    fit.x <- vector("list", num.groups)
-    fit.y <- vector("list", num.groups)
-    fit.group <- character(num.groups)
-    fit.panel <- integer(num.groups)
-    fit.lower.bound <- vector("list", num.groups)
-    fit.upper.bound <- vector("list", num.groups)
-    fit.line.names <- character(num.groups)
-    fit.ci.fill.colors <- character(num.groups)
-    fit.ci.label.colors <- character(num.groups)
+    fit.x <- vector("list", num.lines)
+    fit.y <- vector("list", num.lines)
+    fit.group <- character(num.lines)
+    fit.panel <- integer(num.lines)
+    fit.lower.bound <- vector("list", num.lines)
+    fit.upper.bound <- vector("list", num.lines)
+    fit.line.names <- character(num.lines)
+    fit.ci.fill.colors <- character(num.lines)
+    fit.ci.label.colors <- character(num.lines)
 
     if (is.null(fit.line.colors))
         fit.line.colors <- colors
     if (is.null(fit.CI.colors))
         fit.CI.colors <- fit.line.colors
+    if (is.null(fit.CI.opacity))
+        fit.CI.opacity <- 0.5
 
-    for (ggi in 1:num.groups)
+    j <- 1
+    p.list <- unique(scatter.groups)
+    for (p in 1:num.panels)
     {
-        ind <- intersect(which(groups == g.list[ggi]), not.na)
-        fit <- fitSeries(x[ind], y[ind], fit.type, fit.ignore.last, x.axis.type,
-                         fit.CI.show, fit.window.size)
-        fit.x[[ggi]] <- fit$x
-        fit.y[[ggi]] <- fit$y
-        fit.group[ggi] <- g.list[ggi]
-        fit.panel[ggi] <- ggi - 1
-        fit.lower.bound[[ggi]] <- fit$lb
-        fit.upper.bound[[ggi]] <- fit$ub
-        fit.line.names[ggi] <- paste0("Fitted: ", g.list[ggi])
-        fit.ci.fill.colors[ggi] <- toRGB(fit.CI.colors[ggi], alpha = fit.CI.opacity)
-        fit.ci.label.colors[ggi] <- fit.CI.colors[ggi]
+        p.index <- if (is.null(scatter.groups)) 1:n
+                   else which(scatter.groups == p.list[p])
+        p.index <- intersect(p.index, not.na) 
+        for (ggi in 1:num.groups)
+        {
+            ind <- intersect(which(groups == g.list[ggi]), p.index)
+            if (length(ind) == 0)
+                next
+            fit <- fitSeries(x[ind], y[ind], fit.type, fit.ignore.last, x.axis.type,
+                             fit.CI.show, fit.window.size)
+            fit.x[[j]] <- fit$x
+            fit.y[[j]] <- fit$y
+            fit.group[j] <- g.list[ggi]
+            fit.panel[j] <- p - 1
+            fit.lower.bound[[j]] <- fit$lb
+            fit.upper.bound[[j]] <- fit$ub
+            fit.line.names[j] <- paste0("Fitted: ", g.list[ggi])
+            fit.ci.fill.colors[j] <- toRGB(fit.CI.colors[ggi], alpha = fit.CI.opacity)
+            fit.ci.label.colors[j] <- fit.CI.colors[ggi]
+            j <- j + 1
+    
+        }
     }
     list(fit.x = fit.x, fit.y = fit.y, fit.group = fit.group,
          fit.panel = fit.panel, fit.lower.bound = fit.lower.bound,

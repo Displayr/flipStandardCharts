@@ -370,12 +370,20 @@ test_that("swap x and y",
 
 test_that("small multiples",
 {
-    expect_error(CombinedScatter(iris, scatter.groups.column = 6,
+    expect_warning(CombinedScatter(iris, scatter.groups.column = 6,
                                  scatter.colors.column = 1,
                                  colors = c("#FF0000", "#FFFFFF", "#0000FF"),
-                                 scatter.colors.as.categorical = FALSE), NA)
-    expect_error(CombinedScatter(iris, scatter.groups.column = 5,
+                                 scatter.colors.as.categorical = FALSE), "overlapping points")
+    expect_warning(CombinedScatter(iris, scatter.groups.column = 5,
                                  scatter.colors.column = 5,
                                  scatter.colors.as.categorical = TRUE,
-                                 panel.title.font.color="#FF0000"), NA)
+                                 panel.title.font.color="#FF0000"), "overlapping points")
+    expect_warning(CombinedScatter(x=iris$Petal.Length, y = iris$Petal.Width,
+                    scatter.sizes = iris$Sepal.Length, scatter.colors = iris$Sepal.Width,
+                    scatter.groups = iris$Species, colors = c("#FF0000", "#0000FF"),
+                    scatter.colors.as.categorical = FALSE), "overlapping points")
+    expect_warning(CombinedScatter(x = iris[,3], y=iris[,4], scatter.groups = iris$Species,
+                    fit.type = "Loess", fit.CI.show = T,
+                    scatter.colors=rep(1:5, each=30),
+                    scatter.colors.as.categorical = T), "overlapping points")
 })
