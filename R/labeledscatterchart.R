@@ -220,7 +220,6 @@ LabeledScatter <- function(x = NULL,
     if (is.null(scatter.labels) && !is.null(names(x)))
         scatter.labels <- names(x)
 
-
     # Basic data checking
     if (is.null(x) && is.null(y))
         stop("At least one of x or y must be supplied.")
