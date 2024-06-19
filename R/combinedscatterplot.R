@@ -727,12 +727,13 @@ chartLabels <- function(x.title, y.title) {
     chart.labels
 }
 
-fitLines <- function(groups, scatter.colors.as.categorical, scatter.groups,
+fitLines <- function(scatter.colors, scatter.colors.as.categorical, scatter.groups,
                      x, y, not.na, fit.type, fit.ignore.last,
                      fit.CI.show, fit.window.size, colors, fit.line.colors,
                      fit.CI.colors, fit.CI.opacity, x.axis.type) {
     n <- length(x)
-    if (!is.null(groups) && !scatter.colors.as.categorical)
+    groups <- scatter.colors
+    if (is.null(groups) || !scatter.colors.as.categorical)
         groups <- rep(" ", n)
     if (is.factor(groups))
         g.list <- levels(groups) # fix legend order
@@ -769,7 +770,7 @@ fitLines <- function(groups, scatter.colors.as.categorical, scatter.groups,
     {
         p.index <- if (is.null(scatter.groups)) 1:n
                    else which(scatter.groups == p.list[p])
-        p.index <- intersect(p.index, not.na) 
+        p.index <- intersect(p.index, not.na)
         for (ggi in 1:num.groups)
         {
             ind <- intersect(which(groups == g.list[ggi]), p.index)
