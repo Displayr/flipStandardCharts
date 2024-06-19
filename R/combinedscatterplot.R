@@ -156,12 +156,11 @@ CombinedScatter <- function(x = NULL,
         scatter.colors.name <- deparse(substitute(scatter.colors))
 
     num.tables <- 1
-    groups <- NULL
     if (is.list(x) && !is.null(ncol(x[[1]])))
     {
         output <- unlistX(x, trend.lines)
         x <- output$x
-        groups <- output$scatter.colors
+        scatter.colors <- output$groups
         num.tables <- output$num.tables
     }
 
@@ -237,17 +236,15 @@ CombinedScatter <- function(x = NULL,
 
     opacity <- getOpacity(opacity, scatter.sizes)
 
-    output <- getColors(colors, scatter.colors, n, not.na,
-                        scatter.colors.as.categorical, num.tables, legend.show,
-                        groups, scatter.groups)
+    output <- getColors(scatter.groups, scatter.colors, colors, n, not.na,
+                        scatter.colors.as.categorical, num.tables, legend.show)
     colors <- output$colors
     scatter.colors <- output$scatter.colors
-    groups <- output$groups
     legend.show <- output$legend.show
     not.na <- output$not.na
 
     if (is.na(data.label.font.autocolor)) {
-        data.label.font.autocolor <- length(unique(groups[not.na])) > 1
+        data.label.font.autocolor <- length(unique(scatter.colors[not.na])) > 1
     }
 
     if (trend.lines) {
@@ -290,7 +287,7 @@ CombinedScatter <- function(x = NULL,
     fit <- list()
     if (fit.type != "None") {
         x.axis.type <- getAxisType(unique(x[not.na]), x.tick.format)
-        fit <- fitLines(groups, scatter.colors.as.categorical, scatter.groups,
+        fit <- fitLines(scatter.colors, scatter.colors.as.categorical, scatter.groups,
                         x, y, not.na, fit.type, fit.ignore.last,
                         fit.CI.show, fit.window.size, colors, fit.line.colors,
                         fit.CI.colors, fit.CI.opacity, x.axis.type)
@@ -304,20 +301,18 @@ CombinedScatter <- function(x = NULL,
     y.axis.font.color <- if (!is.null(y.tick.font.color)) y.tick.font.color else "#2C2C2C"
     labels.font.color <- if (data.label.font.autocolor) NULL else data.label.font.color
     color.scale <- NULL
-    if (!scatter.colors.as.categorical) {
+    if (!scatter.colors.as.categorical)
         color.scale <- colors
-        groups <- scatter.colors
-    }
 
     p <- rhtmlCombinedScatter::CombinedScatter(X = x[not.na],
         Y = y[not.na],
-        Z = scatter.sizes,
+        Z = scatter.sizes[not.na],
+        group = scatter.colors[not.na],
+        panels = scatter.groups[not.na],
         x.levels = levels(x),
         y.levels = rev(levels(y)),
-        group = groups[not.na],
         colors = colors,
         color.scale = color.scale,
-        panels = scatter.groups,
         color.transparency = opacity,
         label = annotations$labels.or.logos[not.na],
         label.alt = scatter.labels[not.na],
@@ -469,6 +464,7 @@ convertPercentToProportion <- function(x) {
     x
 }
 
+# Assume X is a list of tables, where each table has the same rownames
 unlistX <- function(x, trend.lines) {
     num.tables <- length(x)
     n.tmp <- nrow(x[[1]])
@@ -565,8 +561,9 @@ getOpacity <- function(opacity, scatter.sizes) {
 }
 
 #' @importFrom flipChartBasics StripAlphaChannel
-getColors <- function(colors, scatter.colors, n, not.na, scatter.colors.as.categorical,
-                      num.tables, legend.show, groups, scatter.groups) {
+getColors <- function(scatter.groups, scatter.colors, colors, n, not.na,
+                      scatter.colors.as.categorical, num.tables, legend.show)
+{
     scatter.colors.raw <- scatter.colors
 
     # Don't show legend if there is only one series in each panel
@@ -602,29 +599,8 @@ getColors <- function(colors, scatter.colors, n, not.na, scatter.colors.as.categ
         legend.show <- FALSE # don't need to worry about order of groups
         groups <- 1:n # what about mult tables?
         colors <- StripAlphaChannel(colors, "Alpha values in selected colors were not used in the numeric color scale. Adjust 'opacity' for transparent points instead")
-    } else {
-        if (is.null(groups))
-            groups <- scatter.colors.raw
-        if (length(groups) != n)
-            groups <- rep(" ", n)
-
-        # Get list of all series names - including if those with all NAs
-        groups.ord <- order(suppressWarnings(AsNumeric(groups, binary = FALSE)))
-        g.list.all <- if (is.factor(groups)) levels(groups)
-        else unique(groups[groups.ord])
-        colors <- paste0(rep("", length(g.list.all)), colors)
-        names(colors) <- g.list.all
-        legend.show <- setShowLegend(legend.show, length(g.list.all))
-
-        # Extract only non-NA points and order based on series name
-        groups.ord <- order(suppressWarnings(AsNumeric(groups[not.na], binary = FALSE)))
-        not.na <- not.na[groups.ord]
-        groups <- as.character(groups)
-        g.list <- unique(groups[not.na])
-        colors <- colors[g.list]
     }
-
-    list(colors = colors, scatter.colors = scatter.colors, groups = groups,
+    list(colors = colors, scatter.colors = scatter.colors,
          legend.show = legend.show, not.na = not.na)
 }
 

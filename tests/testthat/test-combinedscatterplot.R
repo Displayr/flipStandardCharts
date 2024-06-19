@@ -386,4 +386,8 @@ test_that("small multiples",
                     fit.type = "Loess", fit.CI.show = T,
                     scatter.colors=rep(1:5, each=30),
                     scatter.colors.as.categorical = T), "overlapping points")
+    expect_error(CombinedScatter(x = 1:10, y = 1:10,
+                    scatter.groups = rep(LETTERS[1:2], each=5),
+                    scatter.colors=rep(1:2, 5), scatter.labels=letters[1:10],
+                    scatter.labels.as.hovertext = F), NA)
 })
