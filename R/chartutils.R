@@ -176,7 +176,7 @@ checkMatrixNames <- function(x, assign.col.names = TRUE)
     if (length(ind.dup) > 0)
     {
         warning("Row names of the input table are not unique: ",
-                paste(unique(rownames(new.x)[ind.dup]), collapse = ", "), " at rows ", 
+                paste(unique(rownames(new.x)[ind.dup]), collapse = ", "), " at rows ",
                 paste(ind.dup, collapse = ", "))
         # Non-space suffix is needed to stop plotly merging the duplicated rows
         rownames(new.x) <- MakeUniqueNames(rownames(new.x), suffix = "&nbsp;")
@@ -532,6 +532,8 @@ getAxisType <- function(labels, format)
     }
     if (d3.type == "numeric")
     {
+        # gsub acts on the labels of a factor (instead of the factor values),
+        # which means that as.numeric applies to the labels too
         if (!any(is.na(suppressWarnings(as.numeric(gsub(",", "", labels))))))
             return("numeric")
     }
@@ -559,9 +561,13 @@ convertAxis <- function(values, axis.type)
         return(factor(values, levels = unique(as.character(values))))
     }
     if (axis.type == "numeric")
+    {
+        # gsub acts on the labels of a factor (instead of the factor values),
+        # which means that as.numeric applies to the labels too
         return(as.numeric(gsub(",", "", values)))
+    }
     # not sure what type this is?
-        return(as.vector(values))
+    return(as.vector(values))
 }
 
 d3FormatType <- function(format)
