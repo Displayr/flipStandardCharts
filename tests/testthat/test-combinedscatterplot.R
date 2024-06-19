@@ -7,6 +7,9 @@ test_that("scatter sizes",
 {
     expect_error(CombinedScatter(1:10, 1:10, scatter.sizes = 1:10,
                                  scatter.sizes.name = "sizes"), NA)
+    expect_warning(CombinedScatter(x=1:10, y=1:10,
+                                 scatter.sizes=c(NA, 2:10)),
+                   "Some points omitted")
 })
 
 test_that("scatter sizes as diameter",
