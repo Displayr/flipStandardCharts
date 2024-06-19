@@ -234,7 +234,7 @@ CombinedScatter <- function(x = NULL,
         not.na <- intersect(not.na, which(is.finite(scatter.sizes)))
     }
 
-    opacity <- getOpacity(opacity, scatter.sizes)
+    opacity <- getOpacity(opacity, scatter.sizes, fit.type)
 
     output <- getColors(scatter.groups, scatter.colors, colors, n, not.na,
                         scatter.colors.as.categorical, num.tables, legend.show)
@@ -311,7 +311,7 @@ CombinedScatter <- function(x = NULL,
         group = scatter.colors[not.na],
         panels = scatter.groups[not.na],
         x.levels = levels(x),
-        y.levels = rev(levels(y)),
+        y.levels = levels(y),
         colors = colors,
         color.scale = color.scale,
         color.transparency = opacity,
@@ -416,8 +416,8 @@ CombinedScatter <- function(x = NULL,
         fit.y = fit$fit.y,
         fit.group = fit$fit.group,
         fit.panel = fit$fit.panel,
-        fit.lower.bound = fit$fit.lower.bound,
-        fit.upper.bound = fit$fit.upper.bound,
+        fit.lower.bound = if (fit.CI.show) fit$fit.lower.bound else NULL,
+        fit.upper.bound = if (fit.CI.show) fit$fit.upper.bound else NULL,
         fit.line.names = fit$fit.line.names,
         fit.line.type = fit.line.type,
         fit.line.width = fit.line.width,
@@ -550,9 +550,9 @@ processScatterSizes <- function(scatter.sizes, n) {
     sz.tmp
 }
 
-getOpacity <- function(opacity, scatter.sizes) {
+getOpacity <- function(opacity, scatter.sizes, fit.type) {
     if (is.null(opacity)) {
-        if (!is.null(scatter.sizes)) {
+        if (!is.null(scatter.sizes) || fit.type != "None") {
             opacity <- 0.4
         } else {
             opacity <- 1
