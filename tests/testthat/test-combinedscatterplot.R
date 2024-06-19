@@ -23,6 +23,8 @@ test_that("scatter colors",
     expect_error(CombinedScatter(1:4, 1:4, colors = c("red", "green"),
                                  scatter.colors = c(1,1,2,2),
                                  scatter.colors.name = "red and green"), NA)
+    expect_error(CombinedScatter(1:4, 1:4, scatter.colors = factor(c('B', 'B', 'A', 'C'),
+                                levels=LETTERS[1:3])), NA)
 })
 
 test_that("scatter colors as numeric",
@@ -392,5 +394,9 @@ test_that("small multiples",
     expect_error(CombinedScatter(x = 1:10, y = 1:10,
                     scatter.groups = rep(LETTERS[1:2], each=5),
                     scatter.colors=rep(1:2, 5), scatter.labels=letters[1:10],
-                    scatter.labels.as.hovertext = F), NA)
+                    scatter.labels.as.hovertext = FALSE), NA)
+    expect_error(CombinedScatter(1:4, 1:4, scatter.labels = letters[1:4],
+                    scatter.labels.as.hovertext = FALSE,
+                    scatter.groups = factor(c('B', 'B', 'A', 'C'),
+                    levels=LETTERS[1:3])), NA)
 })

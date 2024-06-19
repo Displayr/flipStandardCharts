@@ -565,8 +565,6 @@ getOpacity <- function(opacity, scatter.sizes) {
 getColors <- function(scatter.groups, scatter.colors, colors, n, not.na,
                       scatter.colors.as.categorical, num.tables, legend.show)
 {
-    scatter.colors.raw <- scatter.colors
-
     # Don't show legend if there is only one series in each panel
     if (!is.null(scatter.groups) && !is.null(scatter.colors) && scatter.colors.as.categorical) {
         r.groups <- rle(as.numeric(as.factor(scatter.groups)))$lengths
@@ -575,14 +573,11 @@ getColors <- function(scatter.groups, scatter.colors, colors, n, not.na,
             legend.show <- FALSE
     } else if (is.null(scatter.colors) && !is.null(scatter.groups) && scatter.colors.as.categorical) {
         scatter.colors <- scatter.groups
-        scatter.colors.raw <- scatter.groups
         legend.show <- FALSE
     }
 
     if (!is.null(scatter.colors))
     {
-        if (!scatter.colors.as.categorical)
-            scatter.colors <- AsNumeric(scatter.colors, binary = FALSE)
         if (length(scatter.colors) != n)
             stop("'scatter.colors' should be a vector with the same number of observations as 'x'.")
         if (any(is.na(scatter.colors)))
@@ -598,9 +593,15 @@ getColors <- function(scatter.groups, scatter.colors, colors, n, not.na,
         if (num.tables > 1)
             stop("'scatter.colors' cannot be used with multiple tables")
         legend.show <- FALSE # don't need to worry about order of groups
-        groups <- 1:n # what about mult tables?
         colors <- StripAlphaChannel(colors, "Alpha values in selected colors were not used in the numeric color scale. Adjust 'opacity' for transparent points instead")
     }
+    # Reorder data to make sure legend is ordered correctly
+    if (!is.null(scatter.colors) && scatter.colors.as.categorical)
+    {
+        groups.ord <- order(suppressWarnings(AsNumeric(scatter.colors[not.na], binary = FALSE)))
+        not.na <- not.na[groups.ord]
+    }
+
     list(colors = colors, scatter.colors = scatter.colors,
          legend.show = legend.show, not.na = not.na)
 }
