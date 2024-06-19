@@ -16,3 +16,10 @@ test_that("Format of axis labels",
     xx <- c("1-25%", "26-50%", "51-75%", "76-100%", "NET")
     expect_equal(getAxisType(xx, ""), "category")
 })
+
+test_that("Conversion of factor with numeric levels to numeric",
+{
+    xx <- factor(3:1, labels = c("4", "5", "7"))
+    expect_equal(convertAxis(xx, "numeric"), c(7, 5, 4))
+})
+
