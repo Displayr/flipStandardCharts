@@ -559,7 +559,7 @@ convertAxis <- function(values, axis.type)
         return(factor(values, levels = unique(as.character(values))))
     }
     if (axis.type == "numeric")
-        return(as.numeric(values))
+        return(as.numeric(gsub(",", "", values)))
     # not sure what type this is?
         return(as.vector(values))
 }
