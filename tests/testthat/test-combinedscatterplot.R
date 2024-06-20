@@ -7,6 +7,9 @@ test_that("scatter sizes",
 {
     expect_error(CombinedScatter(1:10, 1:10, scatter.sizes = 1:10,
                                  scatter.sizes.name = "sizes"), NA)
+    expect_warning(CombinedScatter(x=1:10, y=1:10,
+                                 scatter.sizes=c(NA, 2:10)),
+                   "Some points omitted")
 })
 
 test_that("scatter sizes as diameter",
@@ -20,6 +23,8 @@ test_that("scatter colors",
     expect_error(CombinedScatter(1:4, 1:4, colors = c("red", "green"),
                                  scatter.colors = c(1,1,2,2),
                                  scatter.colors.name = "red and green"), NA)
+    expect_error(CombinedScatter(1:4, 1:4, scatter.colors = factor(c('B', 'B', 'A', 'C'),
+                                levels=LETTERS[1:3])), NA)
 })
 
 test_that("scatter colors as numeric",
@@ -52,6 +57,14 @@ test_that("scatter label autoplacement off",
                                  scatter.labels.name = "letters",
                                  scatter.labels.as.hovertext = FALSE,
                                  label.auto.placement = FALSE), NA)
+})
+
+test_that("lines of best fit",
+{
+    expect_error(CombinedScatter(1:10, rnorm(10), fit.type = "Friedman",
+                                 fit.CI.show = FALSE), NA)
+    expect_error(CombinedScatter(1:10, rnorm(10), fit.type = "Linear",
+                                 fit.CI.show = TRUE), NA)
 })
 
 test_that("trend lines",
@@ -366,4 +379,32 @@ test_that("swap x and y",
     expect_error(CombinedScatter(0:10, -5:5,
                                  x.title = "x title", y.title = "y title",
                                  swap.x.and.y = TRUE), NA)
+})
+
+test_that("small multiples",
+{
+    expect_warning(CombinedScatter(iris, scatter.groups.column = 6,
+                                 scatter.colors.column = 1,
+                                 colors = c("#FF0000", "#FFFFFF", "#0000FF"),
+                                 scatter.colors.as.categorical = FALSE), "overlapping points")
+    expect_warning(CombinedScatter(iris, scatter.groups.column = 5,
+                                 scatter.colors.column = 5,
+                                 scatter.colors.as.categorical = TRUE,
+                                 panel.title.font.color="#FF0000"), "overlapping points")
+    expect_warning(CombinedScatter(x=iris$Petal.Length, y = iris$Petal.Width,
+                    scatter.sizes = iris$Sepal.Length, scatter.colors = iris$Sepal.Width,
+                    scatter.groups = iris$Species, colors = c("#FF0000", "#0000FF"),
+                    scatter.colors.as.categorical = FALSE), "overlapping points")
+    expect_warning(CombinedScatter(x = iris[,3], y=iris[,4], scatter.groups = iris$Species,
+                    fit.type = "Loess", fit.CI.show = T,
+                    scatter.colors=rep(1:5, each=30),
+                    scatter.colors.as.categorical = T), "overlapping points")
+    expect_error(CombinedScatter(x = 1:10, y = 1:10,
+                    scatter.groups = rep(LETTERS[1:2], each=5),
+                    scatter.colors=rep(1:2, 5), scatter.labels=letters[1:10],
+                    scatter.labels.as.hovertext = FALSE), NA)
+    expect_error(CombinedScatter(1:4, 1:4, scatter.labels = letters[1:4],
+                    scatter.labels.as.hovertext = FALSE,
+                    scatter.groups = factor(c('B', 'B', 'A', 'C'),
+                    levels=LETTERS[1:3])), NA)
 })

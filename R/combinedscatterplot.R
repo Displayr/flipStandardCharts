@@ -3,6 +3,11 @@
 #' Scatter plot (uses rhtmlCombinedScatter)
 #' @inherit Scatter
 #' @inherit LabeledScatter
+#' @inherit SmallMultiples
+#' @param scatter.groups A factor of the same length as \code{x} which is
+#'  used to aggregate the data for small multiples.
+#' @param scatter.groups.column The column of \code{x} which is used to aggregate
+#'  the data for small multiples (ignored when \code{scatter.groups} is provided)
 #' @importFrom rhtmlCombinedScatter CombinedScatter
 #' @export
 CombinedScatter <- function(x = NULL,
@@ -19,6 +24,8 @@ CombinedScatter <- function(x = NULL,
                             scatter.colors.name = NULL,
                             scatter.colors.column = 4,
                             scatter.colors.as.categorical = TRUE,
+                            scatter.groups = NULL,
+                            scatter.groups.column = NULL,
                             scatter.labels.as.hovertext = TRUE,
                             scatter.max.labels = 50,
                             annotation.list = NULL,
@@ -50,6 +57,9 @@ CombinedScatter <- function(x = NULL,
                             subtitle.font.family = global.font.family,
                             subtitle.font.color = global.font.color,
                             subtitle.font.size = 12,
+                            panel.title.font.family = global.font.family,
+                            panel.title.font.color = global.font.color,
+                            panel.title.font.size = 14,
                             footer = "",
                             footer.font.family = global.font.family,
                             footer.font.color = global.font.color,
@@ -146,12 +156,11 @@ CombinedScatter <- function(x = NULL,
         scatter.colors.name <- deparse(substitute(scatter.colors))
 
     num.tables <- 1
-    groups <- NULL
     if (is.list(x) && !is.null(ncol(x[[1]])))
     {
         output <- unlistX(x, trend.lines)
         x <- output$x
-        groups <- output$groups
+        scatter.colors <- output$groups
         num.tables <- output$num.tables
     }
 
@@ -165,7 +174,8 @@ CombinedScatter <- function(x = NULL,
                                      x.title, y.title, scatter.sizes,
                                      scatter.sizes.column, scatter.sizes.name,
                                      scatter.colors, scatter.colors.column,
-                                     scatter.colors.name)
+                                     scatter.colors.name, scatter.groups,
+                                     scatter.groups.column)
         x <- output$x
         y <- output$y
         scatter.labels <- output$scatter.labels
@@ -175,6 +185,7 @@ CombinedScatter <- function(x = NULL,
         scatter.sizes.name <- output$scatter.sizes.name
         scatter.colors <- output$scatter.colors
         scatter.colors.name <- output$scatter.colors.name
+        scatter.groups <- output$scatter.groups
     }
 
     if (is.null(x) && is.null(y))
@@ -195,7 +206,7 @@ CombinedScatter <- function(x = NULL,
 
     scatter.labels <- processScatterLabels(scatter.labels, x, data.label.format,
                                            data.label.prefix, data.label.suffix,
-                                           scatter.max.labels)
+                                           scatter.max.labels, scatter.labels.as.hovertext)
 
     if (swap.x.and.y)
     {
@@ -223,19 +234,17 @@ CombinedScatter <- function(x = NULL,
         not.na <- intersect(not.na, which(is.finite(scatter.sizes)))
     }
 
-    opacity <- getOpacity(opacity, scatter.sizes)
+    opacity <- getOpacity(opacity, scatter.sizes, fit.type)
 
-    output <- getColors(colors, scatter.colors, n, not.na,
-                        scatter.colors.as.categorical, num.tables, legend.show,
-                        groups)
+    output <- getColors(scatter.groups, scatter.colors, colors, n, not.na,
+                        scatter.colors.as.categorical, num.tables, legend.show)
     colors <- output$colors
     scatter.colors <- output$scatter.colors
-    groups <- output$groups
     legend.show <- output$legend.show
     not.na <- output$not.na
 
     if (is.na(data.label.font.autocolor)) {
-        data.label.font.autocolor <- length(unique(groups[not.na])) > 1
+        data.label.font.autocolor <- length(unique(scatter.colors[not.na])) > 1
     }
 
     if (trend.lines) {
@@ -278,7 +287,8 @@ CombinedScatter <- function(x = NULL,
     fit <- list()
     if (fit.type != "None") {
         x.axis.type <- getAxisType(unique(x[not.na]), x.tick.format)
-        fit <- fitLines(groups, x, y, not.na, fit.type, fit.ignore.last,
+        fit <- fitLines(scatter.colors, scatter.colors.as.categorical, scatter.groups,
+                        x, y, not.na, fit.type, fit.ignore.last,
                         fit.CI.show, fit.window.size, colors, fit.line.colors,
                         fit.CI.colors, fit.CI.opacity, x.axis.type)
     }
@@ -286,18 +296,24 @@ CombinedScatter <- function(x = NULL,
     annotations <- processAnnotations(annotation.list, n, annot.data,
                                       labels.or.logos)
 
-    scatter.sizes <- if (is.null(scatter.sizes)) NULL else abs(scatter.sizes[not.na])
+    scatter.sizes <- if (is.null(scatter.sizes)) NULL else abs(scatter.sizes)
     x.axis.font.color <- if (!is.null(x.tick.font.color)) x.tick.font.color else "#2C2C2C"
     y.axis.font.color <- if (!is.null(y.tick.font.color)) y.tick.font.color else "#2C2C2C"
     labels.font.color <- if (data.label.font.autocolor) NULL else data.label.font.color
+    color.scale <- NULL
+    if (!scatter.colors.as.categorical)
+        color.scale <- colors
 
-    p <- rhtmlCombinedScatter::CombinedScatter(X = x[not.na],
+    p <- rhtmlCombinedScatter::CombinedScatter(
+        X = x[not.na],
         Y = y[not.na],
-        Z = scatter.sizes,
+        Z = scatter.sizes[not.na],
+        group = scatter.colors[not.na],
+        panels = scatter.groups[not.na],
         x.levels = levels(x),
-        y.levels = rev(levels(y)),
-        group = groups[not.na],
+        y.levels = levels(y),
         colors = colors,
+        color.scale = color.scale,
         color.transparency = opacity,
         label = annotations$labels.or.logos[not.na],
         label.alt = scatter.labels[not.na],
@@ -378,6 +394,9 @@ CombinedScatter <- function(x = NULL,
         labels.font.family = data.label.font.family,
         labels.font.color = labels.font.color,
         labels.font.size = data.label.font.size,
+        panel.title.font.family = panel.title.font.family,
+        panel.title.font.color = panel.title.font.color,
+        panel.title.font.size = panel.title.font.size,
         point.radius = 0.5 * marker.size,
         y.bounds.maximum = charToNumeric(y.bounds.maximum),
         y.bounds.minimum = charToNumeric(y.bounds.minimum),
@@ -397,8 +416,8 @@ CombinedScatter <- function(x = NULL,
         fit.y = fit$fit.y,
         fit.group = fit$fit.group,
         fit.panel = fit$fit.panel,
-        fit.lower.bound = fit$fit.lower.bound,
-        fit.upper.bound = fit$fit.upper.bound,
+        fit.lower.bound = if (fit.CI.show) fit$fit.lower.bound else NULL,
+        fit.upper.bound = if (fit.CI.show) fit$fit.upper.bound else NULL,
         fit.line.names = fit$fit.line.names,
         fit.line.type = fit.line.type,
         fit.line.width = fit.line.width,
@@ -446,6 +465,7 @@ convertPercentToProportion <- function(x) {
     x
 }
 
+# Assume X is a list of tables, where each table has the same rownames
 unlistX <- function(x, trend.lines) {
     num.tables <- length(x)
     n.tmp <- nrow(x[[1]])
@@ -465,7 +485,8 @@ unpackColumnsFromX <- function(x, y, scatter.labels, scatter.x.column,
                                scatter.y.column, scatter.mult.yvals, x.title,
                                y.title, scatter.sizes, scatter.sizes.column,
                                scatter.sizes.name, scatter.colors,
-                               scatter.colors.column, scatter.colors.name) {
+                               scatter.colors.column, scatter.colors.name,
+                               scatter.groups, scatter.groups.column) {
     .isValidColumnIndex <- function(n) {return (!is.null(n) && !is.na(n) && n > 0 && n <= ncol(x))}
     if (is.null(scatter.labels) && !is.null(rownames(x)))
         scatter.labels <- rownames(x)
@@ -489,6 +510,10 @@ unpackColumnsFromX <- function(x, y, scatter.labels, scatter.x.column,
         scatter.colors.name <- trimws(scatter.colors.name)
         scatter.colors <- x[,scatter.colors.column]
     }
+    if (is.null(scatter.groups) && .isValidColumnIndex(scatter.groups.column))
+    {
+        scatter.groups <- x[,scatter.groups.column]
+    }
     if (!any(nzchar(x.title)) && (!is.null(colnames(x))) &&
         .isValidColumnIndex(scatter.x.column) && !scatter.mult.yvals)
         x.title <- colnames(x)[scatter.x.column]
@@ -501,7 +526,9 @@ unpackColumnsFromX <- function(x, y, scatter.labels, scatter.x.column,
          y.title = y.title, scatter.sizes = scatter.sizes,
          scatter.sizes.name = scatter.sizes.name,
          scatter.colors = scatter.colors,
-         scatter.colors.name = scatter.colors.name)
+         scatter.colors.name = scatter.colors.name,
+         scatter.groups = scatter.groups
+    )
 }
 
 nonMissing <- function(x, y) {
@@ -523,9 +550,9 @@ processScatterSizes <- function(scatter.sizes, n) {
     sz.tmp
 }
 
-getOpacity <- function(opacity, scatter.sizes) {
+getOpacity <- function(opacity, scatter.sizes, fit.type) {
     if (is.null(opacity)) {
-        if (!is.null(scatter.sizes)) {
+        if (!is.null(scatter.sizes) || fit.type != "None") {
             opacity <- 0.4
         } else {
             opacity <- 1
@@ -535,13 +562,22 @@ getOpacity <- function(opacity, scatter.sizes) {
 }
 
 #' @importFrom flipChartBasics StripAlphaChannel
-getColors <- function(colors, scatter.colors, n, not.na, scatter.colors.as.categorical,
-                      num.tables, legend.show, groups) {
-    scatter.colors.raw <- scatter.colors
+getColors <- function(scatter.groups, scatter.colors, colors, n, not.na,
+                      scatter.colors.as.categorical, num.tables, legend.show)
+{
+    # Don't show legend if there is only one series in each panel
+    if (!is.null(scatter.groups) && !is.null(scatter.colors) && scatter.colors.as.categorical) {
+        r.groups <- rle(as.numeric(as.factor(scatter.groups)))$lengths
+        r.colors <- rle(as.numeric(as.factor(scatter.colors)))$lengths
+        if (length(r.groups) == length(r.colors) && all(r.groups == r.colors))
+            legend.show <- FALSE
+    } else if (is.null(scatter.colors) && !is.null(scatter.groups) && scatter.colors.as.categorical) {
+        scatter.colors <- scatter.groups
+        legend.show <- FALSE
+    }
+
     if (!is.null(scatter.colors))
     {
-        if (!scatter.colors.as.categorical)
-            scatter.colors <- AsNumeric(scatter.colors, binary = FALSE)
         if (length(scatter.colors) != n)
             stop("'scatter.colors' should be a vector with the same number of observations as 'x'.")
         if (any(is.na(scatter.colors)))
@@ -557,43 +593,23 @@ getColors <- function(colors, scatter.colors, n, not.na, scatter.colors.as.categ
         if (num.tables > 1)
             stop("'scatter.colors' cannot be used with multiple tables")
         legend.show <- FALSE # don't need to worry about order of groups
-        groups <- 1:n # what about mult tables?
         colors <- StripAlphaChannel(colors, "Alpha values in selected colors were not used in the numeric color scale. Adjust 'opacity' for transparent points instead")
-        col.fun <- colorRamp(unique(colors)) # undo recycling in PrepareColors
-        scatter.colors.scaled <- (scatter.colors - min(scatter.colors, na.rm=T))/diff(range(scatter.colors, na.rm=T))
-        #if (length(not.na) != length(scatter.colors))
-        #    scatter.colors.scaled[-not.na] <- 0 # removed later
-        colors <- rgb(col.fun(scatter.colors.scaled[not.na]), maxColorValue=255)
-    } else {
-        if (is.null(groups))
-            groups <- scatter.colors.raw
-        if (length(groups) != n)
-            groups <- rep(" ", n)
-
-        # Get list of all series names - including if those with all NAs
-        groups.ord <- order(suppressWarnings(AsNumeric(groups, binary = FALSE)))
-        g.list.all <- if (is.factor(groups)) levels(groups)
-        else unique(groups[groups.ord])
-        colors <- paste0(rep("", length(g.list.all)), colors)
-        names(colors) <- g.list.all
-        legend.show <- setShowLegend(legend.show, length(g.list.all))
-
-        # Extract only non-NA points and order based on series name
-        groups.ord <- order(suppressWarnings(AsNumeric(groups[not.na], binary = FALSE)))
+    }
+    # Reorder data to make sure legend is ordered correctly
+    if (!is.null(scatter.colors) && scatter.colors.as.categorical)
+    {
+        groups.ord <- order(suppressWarnings(AsNumeric(scatter.colors[not.na], binary = FALSE)))
         not.na <- not.na[groups.ord]
-        groups <- as.character(groups)
-        g.list <- unique(groups[not.na])
-        colors <- colors[g.list]
     }
 
-    list(colors = colors, scatter.colors = scatter.colors, groups = groups,
+    list(colors = colors, scatter.colors = scatter.colors,
          legend.show = legend.show, not.na = not.na)
 }
 
 #' @importFrom flipFormat FormatAsReal FormatAsPercent
 processScatterLabels <- function(scatter.labels, x, data.label.format,
                                  data.label.prefix, data.label.suffix,
-                                 scatter.max.labels) {
+                                 scatter.max.labels, scatter.labels.as.hovertext) {
     if (is.null(scatter.labels) && !is.null(names(x)))
         scatter.labels <- names(x)
 
@@ -607,7 +623,7 @@ processScatterLabels <- function(scatter.labels, x, data.label.format,
     }
     scatter.labels <- paste0(data.label.prefix, scatter.labels, data.label.suffix)
 
-    if (any(is.finite(scatter.max.labels)) && length(scatter.labels) > scatter.max.labels)
+    if (!scatter.labels.as.hovertext && any(is.finite(scatter.max.labels)) && length(scatter.labels) > scatter.max.labels)
     {
         if (scatter.max.labels == 50)
             warning("By default, only the first 50 labels are shown to avoid long running times. Adjust 'Maximum data labels to plot' to show more labels. Alternatively, to show a large number of points, show as 'Hovertext' instead.")
@@ -713,9 +729,14 @@ chartLabels <- function(x.title, y.title) {
     chart.labels
 }
 
-fitLines <- function(groups, x, y, not.na, fit.type, fit.ignore.last,
+fitLines <- function(scatter.colors, scatter.colors.as.categorical, scatter.groups,
+                     x, y, not.na, fit.type, fit.ignore.last,
                      fit.CI.show, fit.window.size, colors, fit.line.colors,
                      fit.CI.colors, fit.CI.opacity, x.axis.type) {
+    n <- length(x)
+    groups <- scatter.colors
+    if (is.null(groups) || !scatter.colors.as.categorical)
+        groups <- rep(" ", n)
     if (is.factor(groups))
         g.list <- levels(groups) # fix legend order
     else if (any(class(groups) %in% c("Date", "POSIXct", "POSIXt", "integer", "numeric")))
@@ -724,36 +745,53 @@ fitLines <- function(groups, x, y, not.na, fit.type, fit.ignore.last,
         g.list <- unique(groups[!is.na(groups)])
 
     num.groups <- length(g.list)
+    num.panels <- if (is.null(scatter.groups)) 1
+                  else length(unique(scatter.groups))
+    num.lines <- num.groups * num.panels
 
-    fit.x <- vector("list", num.groups)
-    fit.y <- vector("list", num.groups)
-    fit.group <- character(num.groups)
-    fit.panel <- integer(num.groups)
-    fit.lower.bound <- vector("list", num.groups)
-    fit.upper.bound <- vector("list", num.groups)
-    fit.line.names <- character(num.groups)
-    fit.ci.fill.colors <- character(num.groups)
-    fit.ci.label.colors <- character(num.groups)
+    fit.x <- vector("list", num.lines)
+    fit.y <- vector("list", num.lines)
+    fit.group <- character(num.lines)
+    fit.panel <- integer(num.lines)
+    fit.lower.bound <- vector("list", num.lines)
+    fit.upper.bound <- vector("list", num.lines)
+    fit.line.names <- character(num.lines)
+    fit.ci.fill.colors <- character(num.lines)
+    fit.ci.label.colors <- character(num.lines)
 
     if (is.null(fit.line.colors))
         fit.line.colors <- colors
     if (is.null(fit.CI.colors))
         fit.CI.colors <- fit.line.colors
+    if (is.null(fit.CI.opacity))
+        fit.CI.opacity <- 0.5
 
-    for (ggi in 1:num.groups)
+    j <- 1
+    p.list <- unique(scatter.groups)
+    for (p in 1:num.panels)
     {
-        ind <- intersect(which(groups == g.list[ggi]), not.na)
-        fit <- fitSeries(x[ind], y[ind], fit.type, fit.ignore.last, x.axis.type,
-                         fit.CI.show, fit.window.size)
-        fit.x[[ggi]] <- fit$x
-        fit.y[[ggi]] <- fit$y
-        fit.group[ggi] <- g.list[ggi]
-        fit.panel[ggi] <- ggi
-        fit.lower.bound[[ggi]] <- fit$lb
-        fit.upper.bound[[ggi]] <- fit$ub
-        fit.line.names[ggi] <- paste0("Fitted: ", g.list[ggi])
-        fit.ci.fill.colors[ggi] <- toRGB(fit.CI.colors[ggi], alpha = fit.CI.opacity)
-        fit.ci.label.colors[ggi] <- fit.CI.colors[ggi]
+        p.index <- if (is.null(scatter.groups)) 1:n
+                   else which(scatter.groups == p.list[p])
+        p.index <- intersect(p.index, not.na)
+        for (ggi in 1:num.groups)
+        {
+            ind <- intersect(which(groups == g.list[ggi]), p.index)
+            if (length(ind) == 0)
+                next
+            fit <- fitSeries(x[ind], y[ind], fit.type, fit.ignore.last, x.axis.type,
+                             fit.CI.show, fit.window.size)
+            fit.x[[j]] <- fit$x
+            fit.y[[j]] <- fit$y
+            fit.group[j] <- g.list[ggi]
+            fit.panel[j] <- p - 1
+            fit.lower.bound[[j]] <- fit$lb
+            fit.upper.bound[[j]] <- fit$ub
+            fit.line.names[j] <- paste0("Fitted: ", g.list[ggi])
+            fit.ci.fill.colors[j] <- toRGB(fit.CI.colors[ggi], alpha = fit.CI.opacity)
+            fit.ci.label.colors[j] <- fit.CI.colors[ggi]
+            j <- j + 1
+    
+        }
     }
     list(fit.x = fit.x, fit.y = fit.y, fit.group = fit.group,
          fit.panel = fit.panel, fit.lower.bound = fit.lower.bound,
