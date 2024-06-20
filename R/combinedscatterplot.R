@@ -818,7 +818,7 @@ processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
         tmp.dat <- getAnnotScatterData(annot.data, a.tmp$data, seq_len(nrow(annot.data)))
         a.tmp$threshold <- ParseText(a.tmp$threshold, tmp.dat)
         ind.sel <- if (is.null(a.tmp$threstype) || is.null(a.tmp$threshold))    1:length(tmp.dat)
-        else if (is.factor(tmp.dat) && !is.ordered(tmp.dat))         selectFactor(a.tmp$threshold, 1:length(tmp.dat), a.tmp$data, ggi)
+        else if (is.factor(tmp.dat) && !is.ordered(tmp.dat))         selectFactor(a.tmp$threshold, 1:length(tmp.dat), a.tmp$data, 1)
         else if (a.tmp$threstype == "above threshold")               which(tmp.dat > a.tmp$threshold)
         else if (a.tmp$threstype == "below threshold")               which(tmp.dat < a.tmp$threshold)
         else                                                         which(is.na(tmp.dat))

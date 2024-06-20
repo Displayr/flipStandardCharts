@@ -19,7 +19,10 @@ because these are implemented as additional traces.}
 \item{tmp.dat}{A slice of \code{annot.dat} which matches data.label.text
 It is used when \code{annotation$type} is "Text".}
 
-\item{prepend}{Logical; when true, the annotation will be added to the}
+\item{prepend}{Logical; when true, the annotation will be added to the
+beginning of data.label.text instead of the end.}
+
+\item{tspan}{Whether to use tspan instead of span.}
 }
 \value{
 The modified character vector \code{data.label.text}.
