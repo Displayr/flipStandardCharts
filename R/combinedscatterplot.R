@@ -810,7 +810,7 @@ processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
     point.border.color <- character(n)
     point.border.width <- numeric(n)
 
-    for (j in seq_along(annotation.list))
+    for (i in seq_along(annotation.list))
     {
         if (!checkAnnotType(annotation.list[[i]]$type, "Scatter"))
             next
