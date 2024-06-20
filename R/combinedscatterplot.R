@@ -845,10 +845,10 @@ processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
         } else {
             annot.text <- addAnnotToDataLabel("", a.tmp, tmp.dat[ind.sel], tspan = TRUE)
             if (a.tmp$type == "Shadow" || a.tmp$type == "Border") {
-                # Remove </span> (7 characters)
-                annot.text.prefix <- substr(annot.text, 1, nchar(annot.text) - 7)
+                # Remove </tspan> (8 characters)
+                annot.text.prefix <- substr(annot.text, 1, nchar(annot.text) - 8)
                 pre.label.annotations[ind.sel] <- paste0(pre.label.annotations[ind.sel], annot.text.prefix)
-                post.label.annotations[ind.sel] <- paste0(post.label.annotations[ind.sel], "</span>")
+                post.label.annotations[ind.sel] <- paste0(post.label.annotations[ind.sel], "</tspan>")
             } else if (a.tmp$type == "Text - before data label") {
                 pre.label.annotations[ind.sel] <- paste0(pre.label.annotations[ind.sel], annot.text.prefix)
             } else if (a.tmp$type == "Hide") {
