@@ -370,11 +370,25 @@ test_that("swap x and y",
 
 test_that("annotations",
 {
+    dat <- data.frame(x = 1:10, y=1:10)
+
     annotation.list <- list(list(type = "Arrow - up", data = "x", threstype = "above threshold",
                     threshold = "-Inf", color = "red", size = 12, width = 1,
                     offset = 0, font.family = "Arial", font.weight = "normal",
                     font.style = "normal"))
-    dat <- data.frame(x = 1:10, y=1:10)
     expect_error(CombinedScatter(dat, annotation.list = annotation.list), NA)
     expect_error(CombinedScatter(dat, scatter.labels = letters[1:10], scatter.labels.as.hovertext = FALSE, annotation.list = annotation.list), NA)
+
+    annotation.list <- list(list(type = "Shadow", data = "x", threstype = "above threshold",
+                                 threshold = "-Inf", color = "red", size = 12, width = 1,
+                                 offset = 0, font.family = "Arial", font.weight = "normal",
+                                 font.style = "normal"))
+    expect_error(CombinedScatter(dat, annotation.list = annotation.list), NA)
+    expect_error(CombinedScatter(dat, scatter.labels = letters[1:10], scatter.labels.as.hovertext = FALSE, annotation.list = annotation.list), NA)
+
+    annotation.list <- list(list(type = "Marker border", data = "x", threstype = "above threshold",
+         threshold = "-Inf", width = 1, color = "red"))
+    expect_error(CombinedScatter(dat, annotation.list = annotation.list), NA)
+    expect_error(CombinedScatter(dat, scatter.labels = letters[1:10], scatter.labels.as.hovertext = FALSE, annotation.list = annotation.list), NA)
+
 })
