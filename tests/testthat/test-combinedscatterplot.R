@@ -59,6 +59,14 @@ test_that("scatter label autoplacement off",
                                  label.auto.placement = FALSE), NA)
 })
 
+test_that("lines of best fit",
+{
+    expect_error(CombinedScatter(1:10, rnorm(10), fit.type = "Friedman",
+                                 fit.CI.show = FALSE), NA)
+    expect_error(CombinedScatter(1:10, rnorm(10), fit.type = "Linear",
+                                 fit.CI.show = TRUE), NA)
+})
+
 test_that("trend lines",
 {
     expect_error(CombinedScatter(1:4, 1:4, colors = c("red", "green"),
