@@ -295,7 +295,8 @@ CombinedScatter <- function(x = NULL,
 
     annotations <- processAnnotations(annotation.list, n, annot.data,
                                       labels.or.logos,
-                                      scatter.labels.as.hovertext)
+                                      scatter.labels.as.hovertext,
+                                      !is.null(scatter.groups))
 
     scatter.sizes <- if (is.null(scatter.sizes)) NULL else abs(scatter.sizes)
     x.axis.font.color <- if (!is.null(x.tick.font.color)) x.tick.font.color else "#2C2C2C"
@@ -803,7 +804,7 @@ fitLines <- function(scatter.colors, scatter.colors.as.categorical, scatter.grou
 }
 
 processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
-                               annotate.markers) {
+                               annotate.markers, is.small.multiples) {
     marker.annotations <- character(n)
     pre.label.annotations <- character(n)
     post.label.annotations <- character(n)
@@ -843,12 +844,12 @@ processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
                 marker.annotations[ind.sel] <- paste0(marker.annotations[ind.sel], annot.text)
             }
         } else {
-            annot.text <- addAnnotToDataLabel("", a.tmp, tmp.dat[ind.sel], tspan = TRUE)
+            annot.text <- addAnnotToDataLabel("", a.tmp, tmp.dat[ind.sel], tspan = !is.small.multiples)
             if (a.tmp$type == "Shadow" || a.tmp$type == "Border") {
-                # Remove </tspan> (8 characters)
-                annot.text.prefix <- substr(annot.text, 1, nchar(annot.text) - 8)
+                close.span = if (is.small.multiples) "</span>" else "</tspan>"
+                annot.text.prefix <- substr(annot.text, 1, nchar(annot.text) - nchar(close.span))
                 pre.label.annotations[ind.sel] <- paste0(pre.label.annotations[ind.sel], annot.text.prefix)
-                post.label.annotations[ind.sel] <- paste0(post.label.annotations[ind.sel], "</tspan>")
+                post.label.annotations[ind.sel] <- paste0(post.label.annotations[ind.sel], close.span)
             } else if (a.tmp$type == "Text - before data label") {
                 pre.label.annotations[ind.sel] <- paste0(pre.label.annotations[ind.sel], annot.text.prefix)
             } else if (a.tmp$type == "Hide") {

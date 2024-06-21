@@ -22,7 +22,9 @@ It is used when \code{annotation$type} is "Text".}
 \item{prepend}{Logical; when true, the annotation will be added to the
 beginning of data.label.text instead of the end.}
 
-\item{tspan}{Whether to use tspan instead of span.}
+\item{tspan}{Whether to use tspan instead of span. tspan is used when the
+annotation is directly inserted into an svg text element, whereas span is
+used with Plotly-drawn labels (Plotly automatically converts it to tspan).}
 }
 \value{
 The modified character vector \code{data.label.text}.

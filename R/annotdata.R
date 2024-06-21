@@ -305,7 +305,9 @@ extractSelectedAnnot <- function(data, threshold, threstype)
 #' It is used when \code{annotation$type} is "Text".
 #' @param prepend Logical; when true, the annotation will be added to the
 #' beginning of data.label.text instead of the end.
-#' @param tspan Whether to use tspan instead of span.
+#' @param tspan Whether to use tspan instead of span. tspan is used when the
+#' annotation is directly inserted into an svg text element, whereas span is
+#' used with Plotly-drawn labels (Plotly automatically converts it to tspan).
 #' @importFrom verbs Sum
 #' @keywords internal
 addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat,
