@@ -368,6 +368,42 @@ test_that("swap x and y",
                                  swap.x.and.y = TRUE), NA)
 })
 
+test_that("small multiples",
+{
+    expect_warning(CombinedScatter(iris, scatter.groups.column = 6,
+                                 scatter.colors.column = 1,
+                                 colors = c("#FF0000", "#FFFFFF", "#0000FF"),
+                                 scatter.colors.as.categorical = FALSE), "overlapping points")
+    expect_warning(CombinedScatter(iris, scatter.groups.column = 5,
+                                 scatter.colors.column = 5,
+                                 scatter.colors.as.categorical = TRUE,
+                                 panel.title.font.color="#FF0000"), "overlapping points")
+    expect_warning(CombinedScatter(x=iris$Petal.Length, y = iris$Petal.Width,
+                    scatter.sizes = iris$Sepal.Length, scatter.colors = iris$Sepal.Width,
+                    scatter.groups = iris$Species, colors = c("#FF0000", "#0000FF"),
+                    scatter.colors.as.categorical = FALSE), "overlapping points")
+    expect_warning(CombinedScatter(x = iris[,3], y=iris[,4], scatter.groups = iris$Species,
+                    fit.type = "Loess", fit.CI.show = T,
+                    scatter.colors=rep(1:5, each=30),
+                    scatter.colors.as.categorical = T), "overlapping points")
+    expect_error(CombinedScatter(x = 1:10, y = 1:10,
+                    scatter.groups = rep(LETTERS[1:2], each=5),
+                    scatter.colors=rep(1:2, 5), scatter.labels=letters[1:10],
+                    scatter.labels.as.hovertext = FALSE), NA)
+    expect_error(CombinedScatter(1:4, 1:4, scatter.labels = letters[1:4],
+                    scatter.labels.as.hovertext = FALSE,
+                    scatter.groups = factor(c('B', 'B', 'A', 'C'),
+                    levels=LETTERS[1:3])), NA)
+})
+
+test_that("small multiples rows",
+{
+    CombinedScatter(iris, scatter.groups.column = 6,
+                    scatter.colors.column = 1,
+                    colors = c("#FF0000", "#FFFFFF", "#0000FF"),
+                    scatter.colors.as.categorical = FALSE)
+})
+
 test_that("annotations",
 {
     dat <- data.frame(x = 1:10, y=1:10)
@@ -392,3 +428,6 @@ test_that("annotations",
     expect_error(CombinedScatter(dat, scatter.labels = letters[1:10], scatter.labels.as.hovertext = FALSE, annotation.list = annotation.list), NA)
 
 })
+
+
+

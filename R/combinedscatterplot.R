@@ -2,6 +2,13 @@
 #'
 #' Scatter plot (uses rhtmlCombinedScatter)
 #' @inherit Scatter
+#' @inherit LabeledScatter
+#' @inherit SmallMultiples
+#' @param scatter.groups A factor of the same length as \code{x} which is
+#'  used to aggregate the data for small multiples.
+#' @param scatter.groups.column The column of \code{x} which is used to aggregate
+#'  the data for small multiples (ignored when \code{scatter.groups} is provided)
+#' @param nrows Integer; Number of rows to arrange the small multiple panels.
 #' @importFrom rhtmlCombinedScatter CombinedScatter
 #' @export
 CombinedScatter <- function(x = NULL,
@@ -49,6 +56,10 @@ CombinedScatter <- function(x = NULL,
                             subtitle.font.family = global.font.family,
                             subtitle.font.color = global.font.color,
                             subtitle.font.size = 12,
+                            panel.title.font.family = global.font.family,
+                            panel.title.font.color = global.font.color,
+                            panel.title.font.size = 14,
+                            nrows = 2,
                             footer = "",
                             footer.font.family = global.font.family,
                             footer.font.color = global.font.color,
@@ -389,6 +400,10 @@ CombinedScatter <- function(x = NULL,
         labels.font.family = data.label.font.family,
         labels.font.color = labels.font.color,
         labels.font.size = data.label.font.size,
+        panel.title.font.family = panel.title.font.family,
+        panel.title.font.color = panel.title.font.color,
+        panel.title.font.size = panel.title.font.size,
+        panel.num.rows = nrows,
         point.radius = 0.5 * marker.size,
         y.bounds.maximum = charToNumeric(y.bounds.maximum),
         y.bounds.minimum = charToNumeric(y.bounds.minimum),
