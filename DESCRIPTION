@@ -72,6 +72,5 @@ Suggests:
     flipExampleData,
     ggplot2movies,
     testthat,
-    rgdal
 Encoding: UTF-8
 RoxygenNote: 7.3.1
