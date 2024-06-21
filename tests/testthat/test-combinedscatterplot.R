@@ -79,7 +79,7 @@ test_that("logos",
     # url <- "https://www.qresearchsoftware.com/wp-content/themes/q/assets/images/Q-Instagram.svg"
     url <- "https://displayrcors.displayr.com/images/apple_grey.svg"
     expect_error(CombinedScatter(1:2, 1:2, logos = c(url, url),
-                                 logo.size = c(0.5, 2),
+                                 logo.size = 2,
                                  scatter.labels.as.hovertext = FALSE), NA)
 })
 
