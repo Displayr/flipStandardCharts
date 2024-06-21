@@ -375,7 +375,6 @@ GeographicMap <- function(x,
 # Helper function to plot the leaflet map
 #' @importFrom leaflet leaflet colorNumeric addLegend labelFormat highlightOptions addPolygons
 #' @importFrom leaflet addLayersControl layersControlOptions setView fitBounds addTiles tileOptions
-#' @importFrom sp proj4string spTransform
 #' @importFrom stats as.formula
 #' @importFrom htmltools browsable tagList tags htmlDependency
 leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
@@ -448,8 +447,9 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
     {
         country <- "United States of America"
         # suppress warnings caused by sp update from PROJ4 to PROJ6
-        suppressWarnings(country.coords <- spTransform(map.coordinates.50[map.coordinates.50$name == country, ],
-            proj4string(coords)))
+        #suppressWarnings(country.coords <- spTransform(map.coordinates.50[map.coordinates.50$name == country, ],
+        #    proj4string(coords)))
+        country.coords <- map.coordinates.50[map.coordinates.50$name == country,]
         country.coords$color <- ifelse(treat.NA.as.0, 0, NA)
         map <- addPolygons(map, stroke = FALSE, smoothFactor = 0.2,
                             fillOpacity = opacity, fillColor = ~.pal(country.coords$color),
