@@ -409,6 +409,18 @@ test_that("small multiples",
                     levels=LETTERS[1:3])), NA)
 })
 
+test_that("small multiples rows",
+{
+    expect_warning(CombinedScatter(x=iris$Petal.Length,
+                                   y = iris$Petal.Width,
+                                   scatter.sizes = iris$Sepal.Length,
+                                   scatter.colors = iris$Sepal.Width,
+                                   scatter.groups = iris$Species,
+                                   colors = c("#FF0000", "#0000FF"),
+                                   scatter.colors.as.categorical = FALSE,
+                                   nrows = 3), "overlapping points")
+})
+
 test_that("annotations",
 {
     dat <- data.frame(x = 1:10, y=1:10)
