@@ -251,6 +251,7 @@ CombinedScatter <- function(x = NULL,
 
     logo.urls <- getLogoUrls(logos, orig.x, scatter.labels, n)
     labels.or.logos <- if (!is.null(logo.urls)) logo.urls else scatter.labels
+    logo.size <- rep(logo.size, n)
 
     footer <- processFooter(footer, scatter.labels.name, scatter.colors.name,
                             scatter.sizes.name, scatter.mult.yvals, footer.wrap,
