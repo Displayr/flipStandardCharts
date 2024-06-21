@@ -4,7 +4,7 @@
 \alias{addAnnotToDataLabel}
 \title{Adds html code to the data labels include the annotation}
 \usage{
-addAnnotToDataLabel(data.label.text, annotation, tmp.dat, prepend = FALSE)
+addAnnotToDataLabel(data.label.text, annotation, tmp.dat, prepend = FALSE, tspan = FALSE)
 }
 \arguments{
 \item{data.label.text}{A character vector containing the original data labels
@@ -19,7 +19,12 @@ because these are implemented as additional traces.}
 \item{tmp.dat}{A slice of \code{annot.dat} which matches data.label.text
 It is used when \code{annotation$type} is "Text".}
 
-\item{prepend}{Logical; when true, the annotation will be added to the}
+\item{prepend}{Logical; when true, the annotation will be added to the
+beginning of data.label.text instead of the end.}
+
+\item{tspan}{Whether to use tspan instead of span. tspan is used when the
+annotation is directly inserted into an svg text element, whereas span is
+used with Plotly-drawn labels (Plotly automatically converts it to tspan).}
 }
 \value{
 The modified character vector \code{data.label.text}.

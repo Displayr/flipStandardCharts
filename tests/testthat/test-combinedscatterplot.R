@@ -360,9 +360,9 @@ test_that("x tick label angle",
 
 test_that("hovertext font",
 {
-  expect_error(CombinedScatter(1:10, 1:10,
-                               hovertext.font.family = "Courier New",
-                               hovertext.font.size = 20), NA)
+    expect_error(CombinedScatter(1:10, 1:10,
+                                 hovertext.font.family = "Courier New",
+                                 hovertext.font.size = 20), NA)
 })
 
 test_that("marker size",
@@ -407,4 +407,28 @@ test_that("small multiples",
                     scatter.labels.as.hovertext = FALSE,
                     scatter.groups = factor(c('B', 'B', 'A', 'C'),
                     levels=LETTERS[1:3])), NA)
+})
+
+test_that("annotations",
+{
+    dat <- data.frame(x = 1:10, y=1:10)
+
+    annotation.list <- list(list(type = "Arrow - up", data = "x", threstype = "above threshold",
+                    threshold = "-Inf", color = "red", size = 12, width = 1,
+                    offset = 0, font.family = "Arial", font.weight = "normal",
+                    font.style = "normal"))
+    expect_error(CombinedScatter(dat, annotation.list = annotation.list), NA)
+    expect_error(CombinedScatter(dat, scatter.labels = letters[1:10], scatter.labels.as.hovertext = FALSE, annotation.list = annotation.list), NA)
+
+    annotation.list <- list(list(type = "Shadow", data = "x", threstype = "above threshold",
+                                 threshold = "-Inf", color = "red", size = 12, width = 1,
+                                 offset = 0, font.family = "Arial", font.weight = "normal",
+                                 font.style = "normal"))
+    expect_error(CombinedScatter(dat, annotation.list = annotation.list), NA)
+    expect_error(CombinedScatter(dat, scatter.labels = letters[1:10], scatter.labels.as.hovertext = FALSE, annotation.list = annotation.list), NA)
+
+    annotation.list <- list(list(type = "Marker border", data = "x", threstype = "above threshold",
+                                 threshold = "-Inf", width = 1, color = "red"))
+    expect_error(CombinedScatter(dat, annotation.list = annotation.list), NA)
+    expect_error(CombinedScatter(dat, scatter.labels = letters[1:10], scatter.labels.as.hovertext = FALSE, annotation.list = annotation.list), NA)
 })

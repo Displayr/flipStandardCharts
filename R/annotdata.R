@@ -304,36 +304,44 @@ extractSelectedAnnot <- function(data, threshold, threstype)
 #' @param tmp.dat A slice of \code{annot.dat} which matches data.label.text
 #' It is used when \code{annotation$type} is "Text".
 #' @param prepend Logical; when true, the annotation will be added to the
-#  beginning of data.label.text instead of the end.
+#' beginning of data.label.text instead of the end.
+#' @param tspan Whether to use tspan instead of span. tspan is used when the
+#' annotation is directly inserted into an svg text element, whereas span is
+#' used with Plotly-drawn labels (Plotly automatically converts it to tspan).
 #' @importFrom verbs Sum
 #' @keywords internal
-addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat, prepend = FALSE)
+addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat,
+                                prepend = FALSE, tspan = FALSE)
 {
+    open.span <- if (tspan) "<tspan" else "<span"
+    close.span <- if (tspan) "</tspan>" else "</span>"
+    color.style <- if (tspan) "fill:" else "color:"
+
     # Fix font size so that the units do not change in size when the font size increases
     left.pad <- ""
     n.shift.right <- annotation$shiftright
     if (is.null(n.shift.right) || is.na(n.shift.right))
         n.shift.right <- 0
     if (n.shift.right > 0)
-        left.pad <- paste0("<span style='font-size: 2px'>",
+        left.pad <- paste0(open.span, " style='font-size: 2px'>",
                     paste(rep(" ", n.shift.right), collapse = ""),
-                    "</span>")
+                    close.span)
 
     if (annotation$type == "Shadow")
-        data.label.text <- paste0(left.pad, "<span style='text-shadow: 1px 1px ",
+        data.label.text <- paste0(left.pad, open.span, " style='text-shadow: 1px 1px ",
             annotation$size, "px ", annotation$color, ", -1px -1px ",
-            annotation$size, "px ", annotation$color, ";'>", data.label.text, "</span>")
+            annotation$size, "px ", annotation$color, ";'>", data.label.text, close.span)
     else if (annotation$type == "Border")
-        data.label.text <- paste0(left.pad, "<span style='outline: ", annotation$width, "px solid ",
-            annotation$color, "; outline-offset: ", annotation$offset, "px;'>", data.label.text, "</span>")
+        data.label.text <- paste0(left.pad, open.span, " style='outline: ", annotation$width, "px solid ",
+            annotation$color, "; outline-offset: ", annotation$offset, "px;'>", data.label.text, close.span)
     else if (annotation$type == "Recolor text")
-        data.label.text <- paste0("<span style='color:", annotation$color, "'>", 
-            removeColorTags(data.label.text), "</span>") 
+        data.label.text <- paste0(open.span, " style='", color.style, annotation$color, "'>",
+            removeColorTags(data.label.text), close.span)
     else
     {
         new.style <- ""
         if (!is.null(annotation$color))
-            new.style <- paste0(new.style, "color:", annotation$color, ";")
+            new.style <- paste0(new.style, color.style, annotation$color, ";")
         if (!is.null(annotation$size))
             new.style <- paste0(new.style, "font-size:", annotation$size, ";")
         if (!is.null(annotation$font.family))
@@ -345,9 +353,9 @@ addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat, prepend = 
 
         new.text <- ""
         if (annotation$data == "Column Comparisons" && grepl("Arrow", annotation$type))
-            new.text <- paste0(" ", getColCmpArrowHtml(tmp.dat, annotation$size, " ", "&#8593;"), " ")
+            new.text <- paste0(" ", getColCmpArrowHtml(tmp.dat, annotation$size, " ", "&#8593;", open.span, close.span), " ")
         else if (annotation$data == "Column Comparisons" && grepl("Caret", annotation$type))
-            new.text <- paste0(" ", getColCmpArrowHtml(tmp.dat, annotation$size, " ", "&#9650;"), " ")
+            new.text <- paste0(" ", getColCmpArrowHtml(tmp.dat, annotation$size, " ", "&#9650;", open.span, close.span), " ")
         else if (annotation$type == "Arrow - up")
             new.text <- "&#8593;"
         else if (annotation$type == "Arrow - down")
@@ -363,7 +371,7 @@ addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat, prepend = 
         else if (annotation$type == "Hide")
             new.text <- ""
         if (any(nzchar(new.style)))
-            new.text <- paste0("<span style='", new.style, "'>", new.text, "</span>")
+            new.text <- paste0(open.span, " style='", new.style, "'>", new.text, close.span)
 
         if (annotation$type == "Hide")
             data.label.text <- ""
@@ -426,7 +434,9 @@ checkAnnotType <- function(annot.type, chart.type)
         return(TRUE)
 }
 
-getColCmpArrowHtml <- function(cell.text, arrow.size, sep = " ", arrow.code = "&#8593;")
+getColCmpArrowHtml <- function(cell.text, arrow.size, sep = " ",
+                               arrow.code = "&#8593;", open.span = "<span",
+                               close.span = "</span>")
 {
     res <- rep("", length(cell.text))
 
@@ -436,8 +446,8 @@ getColCmpArrowHtml <- function(cell.text, arrow.size, sep = " ", arrow.code = "&
         suffix <- arrow.code
     } else
     {
-        prefix <- paste0("<span style='font-size:", arrow.size - 3, "px'>")
-        suffix <- paste0("</span>", arrow.code)
+        prefix <- paste0(open.span, " style='font-size:", arrow.size - 3, "px'>")
+        suffix <- paste0(close.span, arrow.code)
     }
 
     for (i in 1:length(cell.text))

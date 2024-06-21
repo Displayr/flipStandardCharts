@@ -294,7 +294,9 @@ CombinedScatter <- function(x = NULL,
     }
 
     annotations <- processAnnotations(annotation.list, n, annot.data,
-                                      labels.or.logos)
+                                      labels.or.logos,
+                                      scatter.labels.as.hovertext,
+                                      !is.null(scatter.groups))
 
     scatter.sizes <- if (is.null(scatter.sizes)) NULL else abs(scatter.sizes)
     x.axis.font.color <- if (!is.null(x.tick.font.color)) x.tick.font.color else "#2C2C2C"
@@ -790,7 +792,7 @@ fitLines <- function(scatter.colors, scatter.colors.as.categorical, scatter.grou
             fit.ci.fill.colors[j] <- toRGB(fit.CI.colors[ggi], alpha = fit.CI.opacity)
             fit.ci.label.colors[j] <- fit.CI.colors[ggi]
             j <- j + 1
-    
+
         }
     }
     list(fit.x = fit.x, fit.y = fit.y, fit.group = fit.group,
@@ -801,22 +803,23 @@ fitLines <- function(scatter.colors, scatter.colors.as.categorical, scatter.grou
          fit.ci.label.colors = fit.ci.label.colors)
 }
 
-processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos) {
+processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
+                               annotate.markers, is.small.multiples) {
     marker.annotations <- character(n)
     pre.label.annotations <- character(n)
     post.label.annotations <- character(n)
     point.border.color <- character(n)
     point.border.width <- numeric(n)
 
-    for (j in seq_along(annotation.list))
+    for (i in seq_along(annotation.list))
     {
-        if (!checkAnnotType(annotation.list[[j]]$type, "Scatter"))
+        if (!checkAnnotType(annotation.list[[i]]$type, "Scatter"))
             next
-        a.tmp <- annotation.list[[j]]
-        tmp.dat <- getAnnotScatterData(annot.data, a.tmp$data, ind)
+        a.tmp <- annotation.list[[i]]
+        tmp.dat <- getAnnotScatterData(annot.data, a.tmp$data, seq_len(nrow(annot.data)))
         a.tmp$threshold <- ParseText(a.tmp$threshold, tmp.dat)
         ind.sel <- if (is.null(a.tmp$threstype) || is.null(a.tmp$threshold))    1:length(tmp.dat)
-        else if (is.factor(tmp.dat) && !is.ordered(tmp.dat))         selectFactor(a.tmp$threshold, 1:length(tmp.dat), a.tmp$data, ggi)
+        else if (is.factor(tmp.dat) && !is.ordered(tmp.dat))         selectFactor(a.tmp$threshold, 1:length(tmp.dat), a.tmp$data, 1)
         else if (a.tmp$threstype == "above threshold")               which(tmp.dat > a.tmp$threshold)
         else if (a.tmp$threstype == "below threshold")               which(tmp.dat < a.tmp$threshold)
         else                                                         which(is.na(tmp.dat))
@@ -827,13 +830,26 @@ processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos) 
         if (a.tmp$type == "Marker border") {
             point.border.color[ind.sel] <- a.tmp$color
             point.border.width[ind.sel] <- a.tmp$width
-        } else {
-            annot.text <- addAnnotToDataLabel("", a.tmp, tmp.dat[ind.sel])
+        } else if (annotate.markers) {
+            annot.text <- addAnnotToDataLabel("", a.tmp, tmp.dat[ind.sel], tspan = FALSE)
             if (a.tmp$type == "Shadow" || a.tmp$type == "Border") {
                 # Remove </span> (7 characters)
                 annot.text.prefix <- substr(annot.text, 1, nchar(annot.text) - 7)
+                marker.annotations[ind.sel] <- paste0(annot.text.prefix, marker.annotations[ind.sel], "</span>")
+            } else if (a.tmp$type == "Text - before data label") {
+                marker.annotations[ind.sel] <- paste0(annot.text.prefix, marker.annotations[ind.sel])
+            } else if (a.tmp$type == "Hide") {
+                marker.annotations[ind.sel] <- ""
+            } else {
+                marker.annotations[ind.sel] <- paste0(marker.annotations[ind.sel], annot.text)
+            }
+        } else {
+            annot.text <- addAnnotToDataLabel("", a.tmp, tmp.dat[ind.sel], tspan = !is.small.multiples)
+            if (a.tmp$type == "Shadow" || a.tmp$type == "Border") {
+                close.span = if (is.small.multiples) "</span>" else "</tspan>"
+                annot.text.prefix <- substr(annot.text, 1, nchar(annot.text) - nchar(close.span))
                 pre.label.annotations[ind.sel] <- paste0(pre.label.annotations[ind.sel], annot.text.prefix)
-                post.label.annotations[ind.sel] <- paste0(post.label.annotations[ind.sel], "</span>")
+                post.label.annotations[ind.sel] <- paste0(post.label.annotations[ind.sel], close.span)
             } else if (a.tmp$type == "Text - before data label") {
                 pre.label.annotations[ind.sel] <- paste0(pre.label.annotations[ind.sel], annot.text.prefix)
             } else if (a.tmp$type == "Hide") {
