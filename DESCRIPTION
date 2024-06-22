@@ -38,6 +38,7 @@ Imports:
     rhtmlLabeledScatter,
     rhtmlPalmTrees,
     rhtmlPictographs,
+    sp,
     streamgraph,
     stringr,
     verbs,
