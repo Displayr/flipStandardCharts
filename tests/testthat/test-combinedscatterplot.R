@@ -421,6 +421,30 @@ test_that("small multiples rows",
                                    nrows = 3), "overlapping points")
 })
 
+test_that("small multiples share axes",
+{
+    expect_warning(CombinedScatter(x=iris$Petal.Length,
+                                   y = iris$Petal.Width,
+                                   scatter.sizes = iris$Sepal.Length,
+                                   scatter.colors = iris$Sepal.Width,
+                                   scatter.groups = iris$Species,
+                                   colors = c("#FF0000", "#0000FF"),
+                                   scatter.colors.as.categorical = FALSE,
+                                   share.axes = TRUE), "overlapping points")
+})
+
+test_that("small multiples reorder",
+{
+    expect_warning(CombinedScatter(x=iris$Petal.Length,
+                                   y = iris$Petal.Width,
+                                   scatter.sizes = iris$Sepal.Length,
+                                   scatter.colors = iris$Sepal.Width,
+                                   scatter.groups = iris$Species,
+                                   colors = c("#FF0000", "#0000FF"),
+                                   scatter.colors.as.categorical = FALSE,
+                                   x.order = "2,3,1"), "overlapping points")
+})
+
 test_that("annotations",
 {
     dat <- data.frame(x = 1:10, y=1:10)
