@@ -55,6 +55,11 @@ CombinedScatter(
   panel.title.font.family = global.font.family,
   panel.title.font.color = global.font.color,
   panel.title.font.size = 14,
+  nrows = 2,
+  share.axes = TRUE,
+  x.order = NULL,
+  panel.x.gap = 0.2,
+  panel.y.gap = 0.3,
   footer = "",
   footer.font.family = global.font.family,
   footer.font.color = global.font.color,
@@ -257,6 +262,17 @@ character format (e.g. "black") or an a hex code.}
 \item{panel.title.font.color}{Font color of panel titles.}
 
 \item{panel.title.font.size}{Font size of panel titles.}
+
+\item{nrows}{Integer; Number of rows to arrange the small multiple panels.}
+
+\item{share.axes}{Force range of the plot to be the same across all panels.}
+
+\item{x.order}{A vector containing the list index of the columns in the order
+which they are to be shown, or a string with comma separated indices.}
+
+\item{panel.x.gap}{A number between 0 and 1. Controls the horizontal space between panels.}
+
+\item{panel.y.gap}{A number between 0 and 1. Controls the vertical space between panels.}
 
 \item{footer}{Character}
 

@@ -409,6 +409,55 @@ test_that("small multiples",
                     levels=LETTERS[1:3])), NA)
 })
 
+test_that("small multiples rows",
+{
+    expect_warning(CombinedScatter(x=iris$Petal.Length,
+                                   y = iris$Petal.Width,
+                                   scatter.sizes = iris$Sepal.Length,
+                                   scatter.colors = iris$Sepal.Width,
+                                   scatter.groups = iris$Species,
+                                   colors = c("#FF0000", "#0000FF"),
+                                   scatter.colors.as.categorical = FALSE,
+                                   nrows = 3), "overlapping points")
+})
+
+test_that("small multiples share axes",
+{
+    expect_warning(CombinedScatter(x=iris$Petal.Length,
+                                   y = iris$Petal.Width,
+                                   scatter.sizes = iris$Sepal.Length,
+                                   scatter.colors = iris$Sepal.Width,
+                                   scatter.groups = iris$Species,
+                                   colors = c("#FF0000", "#0000FF"),
+                                   scatter.colors.as.categorical = FALSE,
+                                   share.axes = TRUE), "overlapping points")
+})
+
+test_that("small multiples reorder",
+{
+    expect_warning(CombinedScatter(x=iris$Petal.Length,
+                                   y = iris$Petal.Width,
+                                   scatter.sizes = iris$Sepal.Length,
+                                   scatter.colors = iris$Sepal.Width,
+                                   scatter.groups = iris$Species,
+                                   colors = c("#FF0000", "#0000FF"),
+                                   scatter.colors.as.categorical = FALSE,
+                                   x.order = "2,3,1"), "overlapping points")
+})
+
+test_that("small multiples panel gap",
+{
+    expect_warning(CombinedScatter(x=iris$Petal.Length,
+                                   y = iris$Petal.Width,
+                                   scatter.sizes = iris$Sepal.Length,
+                                   scatter.colors = iris$Sepal.Width,
+                                   scatter.groups = iris$Species,
+                                   colors = c("#FF0000", "#0000FF"),
+                                   scatter.colors.as.categorical = FALSE,
+                                   panel.x.gap = 0.5,
+                                   panel.y.gap = 0.5), "overlapping points")
+})
+
 test_that("annotations",
 {
     dat <- data.frame(x = 1:10, y=1:10)
