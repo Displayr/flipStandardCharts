@@ -9,6 +9,9 @@
 #' @param scatter.groups.column The column of \code{x} which is used to aggregate
 #'  the data for small multiples (ignored when \code{scatter.groups} is provided)
 #' @param nrows Integer; Number of rows to arrange the small multiple panels.
+#' @param share.axes Force range of the plot to be the same across all panels.
+#' @param x.order A vector containing the list index of the columns in the order
+#'  which they are to be shown, or a string with comma separated indices.
 #' @importFrom rhtmlCombinedScatter CombinedScatter
 #' @export
 CombinedScatter <- function(x = NULL,
@@ -62,6 +65,8 @@ CombinedScatter <- function(x = NULL,
                             panel.title.font.color = global.font.color,
                             panel.title.font.size = 14,
                             nrows = 2,
+                            share.axes = TRUE,
+                            x.order = NULL,
                             footer = "",
                             footer.font.family = global.font.family,
                             footer.font.color = global.font.color,
@@ -189,6 +194,8 @@ CombinedScatter <- function(x = NULL,
         scatter.colors.name <- output$scatter.colors.name
         scatter.groups <- output$scatter.groups
     }
+
+    scatter.groups <- reorderPanels(scatter.groups, x.order)
 
     if (is.null(x) && is.null(y))
         stop("At least one of x or y must be supplied.")
@@ -403,6 +410,7 @@ CombinedScatter <- function(x = NULL,
         panel.title.font.color = panel.title.font.color,
         panel.title.font.size = panel.title.font.size,
         panel.num.rows = nrows,
+        panel.share.axes = share.axes,
         point.radius = 0.5 * marker.size,
         y.bounds.maximum = charToNumeric(y.bounds.maximum),
         y.bounds.minimum = charToNumeric(y.bounds.minimum),
@@ -874,3 +882,20 @@ processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
          labels.or.logos = labels.or.logos)
 }
 
+#' @importFrom flipTransformations TextAsVector
+reorderPanels <- function(scatter.groups, x.order) {
+    if (is.null(scatter.groups) || is.null(x.order)) {
+        return(scatter.groups)
+    }
+    n.panels <- length(levels(scatter.groups))
+    if (!is.numeric(x.order)) {
+        x.order <- suppressWarnings(as.numeric(TextAsVector(x.order)))
+    }
+    if (any(is.na(x.order)) || length(x.order) != n.panels || !all(sort(x.order) == seq_len(n.panels))) {
+        stop("'Order of panels' should be a comma separated list of indices (between 1 and ", n.panels, ")")
+    }
+    scatter.groups <- factor(scatter.groups)
+    indices <- order(x.order)[as.numeric(scatter.groups)]
+    lvls <- levels(scatter.groups)[x.order]
+    factor(indices, labels = lvls)
+}
