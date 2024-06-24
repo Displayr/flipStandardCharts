@@ -4,7 +4,13 @@
 \alias{addAnnotToDataLabel}
 \title{Adds html code to the data labels include the annotation}
 \usage{
-addAnnotToDataLabel(data.label.text, annotation, tmp.dat, prepend = FALSE, tspan = FALSE)
+addAnnotToDataLabel(
+  data.label.text,
+  annotation,
+  tmp.dat,
+  prepend = FALSE,
+  tspan = FALSE
+)
 }
 \arguments{
 \item{data.label.text}{A character vector containing the original data labels
