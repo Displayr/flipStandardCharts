@@ -12,6 +12,8 @@
 #' @param share.axes Force range of the plot to be the same across all panels.
 #' @param x.order A vector containing the list index of the columns in the order
 #'  which they are to be shown, or a string with comma separated indices.
+#' @param panel.x.gap A number between 0 and 1. Controls the horizontal space between panels.
+#' @param panel.y.gap A number between 0 and 1. Controls the vertical space between panels.
 #' @importFrom rhtmlCombinedScatter CombinedScatter
 #' @export
 CombinedScatter <- function(x = NULL,
@@ -67,6 +69,8 @@ CombinedScatter <- function(x = NULL,
                             nrows = 2,
                             share.axes = TRUE,
                             x.order = NULL,
+                            panel.x.gap = 0.2,
+                            panel.y.gap = 0.3,
                             footer = "",
                             footer.font.family = global.font.family,
                             footer.font.color = global.font.color,
@@ -411,6 +415,8 @@ CombinedScatter <- function(x = NULL,
         panel.title.font.size = panel.title.font.size,
         panel.num.rows = nrows,
         panel.share.axes = share.axes,
+        panel.x.gap = panel.x.gap,
+        panel.y.gap = panel.y.gap,
         point.radius = 0.5 * marker.size,
         y.bounds.maximum = charToNumeric(y.bounds.maximum),
         y.bounds.minimum = charToNumeric(y.bounds.minimum),
