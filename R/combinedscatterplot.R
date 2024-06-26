@@ -890,7 +890,7 @@ processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
 
 #' @importFrom flipTransformations TextAsVector
 reorderPanels <- function(scatter.groups, x.order) {
-    if (is.null(scatter.groups) || is.null(x.order)) {
+    if (is.null(scatter.groups) || is.null(x.order) || trimws(x.order) == "") {
         return(scatter.groups)
     }
     n.panels <- length(levels(scatter.groups))
