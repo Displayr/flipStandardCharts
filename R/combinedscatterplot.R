@@ -890,14 +890,14 @@ processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
 
 #' @importFrom flipTransformations TextAsVector
 reorderPanels <- function(scatter.groups, x.order) {
-    if (is.null(scatter.groups) || is.null(x.order)) {
+    if (is.null(scatter.groups) || is.null(x.order) || trimws(x.order) == "") {
         return(scatter.groups)
     }
     n.panels <- length(levels(scatter.groups))
     if (!is.numeric(x.order)) {
         x.order <- suppressWarnings(as.numeric(TextAsVector(x.order)))
     }
-    if (any(is.na(x.order)) || length(x.order) != n.panels || !all(sort(x.order) == seq_len(n.panels))) {
+    if (!all(x.order %in% seq_len(n.panels))) {
         stop("'Order of panels' should be a comma separated list of indices (between 1 and ", n.panels, ")")
     }
     scatter.groups <- factor(scatter.groups)
