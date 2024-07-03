@@ -14,6 +14,10 @@
 #'  which they are to be shown, or a string with comma separated indices.
 #' @param panel.x.gap A number between 0 and 1. Controls the horizontal space between panels.
 #' @param panel.y.gap A number between 0 and 1. Controls the vertical space between panels.
+#' @param legend.title Title to show above the legend
+#' @param legend.title.font.color Font color of the legend title
+#' @param legend.title.font.family Font family of the legend title
+#' @param legend.title.font.size Font size of the legend title
 #' @importFrom rhtmlCombinedScatter CombinedScatter
 #' @export
 CombinedScatter <- function(x = NULL,
@@ -92,6 +96,10 @@ CombinedScatter <- function(x = NULL,
                             legend.font.size = 10,
                             legend.position.y = 1,
                             legend.position.x = 1.02,
+                            legend.title = "",
+                            legend.title.font.color = global.font.color,
+                            legend.title.font.family = global.font.family,
+                            legend.title.font.size = 12,
                             margin.autoexpand = TRUE,
                             margin.top = NULL,
                             margin.bottom = NULL,
