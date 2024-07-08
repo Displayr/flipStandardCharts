@@ -318,7 +318,8 @@ CombinedScatter <- function(x = NULL,
     annotations <- processAnnotations(annotation.list, n, annot.data,
                                       labels.or.logos,
                                       scatter.labels.as.hovertext,
-                                      !is.null(scatter.groups))
+                                      !is.null(scatter.groups),
+                                      if (!scatter.colors.as.categorical) NULL else scatter.colors)
 
     scatter.sizes <- if (is.null(scatter.sizes)) NULL else abs(scatter.sizes)
     x.axis.font.color <- if (!is.null(x.tick.font.color)) x.tick.font.color else "#2C2C2C"
@@ -471,7 +472,8 @@ CombinedScatter <- function(x = NULL,
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     attr(result, "ChartType") <- chartType(scatter.sizes)
-    attr(result, "ChartLabels") <- chartLabels(x.title, y.title)
+    attr(result, "ChartLabels") <- chartLabels(annotations$ppt.chart.labels, x.title, y.title)
+    attr(result, "CustomPoints") <- annotations$ppt.custom.points
     result
 }
 
@@ -747,11 +749,10 @@ chartType <- function(scatter.sizes) {
         "X Y Scatter"
 }
 
-chartLabels <- function(x.title, y.title) {
+chartLabels <- function(chart.labels, x.title, y.title) {
     if (!any(nzchar(x.title)) && !any(nzchar(y.title))) {
-        return(NULL)
+        return(chart.labels)
     }
-    chart.labels <- list()
     if (any(nzchar(x.title))) {
         chart.labels$PrimaryAxisTitle <- x.title
     }
@@ -833,71 +834,129 @@ fitLines <- function(scatter.colors, scatter.colors.as.categorical, scatter.grou
          fit.ci.label.colors = fit.ci.label.colors)
 }
 
+
 processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
-                               annotate.markers, is.small.multiples) {
+                               annotate.markers, is.small.multiples, groups) {
+
+    # Annotations need to be separated out by series (i.e. groups) for PPT exporting
+    if (is.null(groups))
+        g.list <- ""
+    else if (is.factor(groups))
+        g.list <- levels(groups) # fix legend order
+    else if (any(class(groups) %in% c("Date", "POSIXct", "POSIXt", "integer", "numeric")))
+        g.list <- sort(unique(groups[!is.na(groups)]))
+    else
+        g.list <- unique(groups[!is.na(groups)])
+    num.groups <- length(g.list)
+    data.label.show <- !is.null(annotate.markers)
+
+    # Initialise settings to return
     marker.annotations <- character(n)
     pre.label.annotations <- character(n)
     post.label.annotations <- character(n)
     point.border.color <- character(n)
     point.border.width <- numeric(n)
+    ppt.custom.points <- vector(mode = "list", length = num.groups)
+    ppt.chart.labels <- list(SeriesLabels = vector(mode = "list", length = num.groups))
 
-    for (i in seq_along(annotation.list))
+    for (ggi in 1:num.groups)
     {
-        if (!checkAnnotType(annotation.list[[i]]$type, "Scatter"))
-            next
-        a.tmp <- annotation.list[[i]]
-        tmp.dat <- getAnnotScatterData(annot.data, a.tmp$data, seq_len(nrow(annot.data)))
-        a.tmp$threshold <- ParseText(a.tmp$threshold, tmp.dat)
-        ind.sel <- if (is.null(a.tmp$threstype) || is.null(a.tmp$threshold))    1:length(tmp.dat)
-        else if (is.factor(tmp.dat) && !is.ordered(tmp.dat))         selectFactor(a.tmp$threshold, 1:length(tmp.dat), a.tmp$data, 1)
-        else if (a.tmp$threstype == "above threshold")               which(tmp.dat > a.tmp$threshold)
-        else if (a.tmp$threstype == "below threshold")               which(tmp.dat < a.tmp$threshold)
-        else                                                         which(is.na(tmp.dat))
-
-        if (length(ind.sel) == 0)
+        ind.group <- which(groups == g.list[ggi])
+        if (length(ind.group) == 0)
             next
 
-        if (a.tmp$type == "Marker border") {
-            point.border.color[ind.sel] <- a.tmp$color
-            point.border.width[ind.sel] <- a.tmp$width
-        } else if (annotate.markers) {
-            annot.text <- addAnnotToDataLabel("", a.tmp, tmp.dat[ind.sel], tspan = FALSE)
-            if (a.tmp$type == "Shadow" || a.tmp$type == "Border") {
-                # Remove </span> (7 characters)
-                annot.text.prefix <- substr(annot.text, 1, nchar(annot.text) - 7)
-                marker.annotations[ind.sel] <- paste0(annot.text.prefix, marker.annotations[ind.sel], "</span>")
-            } else if (a.tmp$type == "Text - before data label") {
-                marker.annotations[ind.sel] <- paste0(annot.text.prefix, marker.annotations[ind.sel])
-            } else if (a.tmp$type == "Hide") {
-                marker.annotations[ind.sel] <- ""
-            } else {
-                marker.annotations[ind.sel] <- paste0(marker.annotations[ind.sel], annot.text)
+        ppt.chart.labels$SeriesLabels[[ggi]] <- list(ShowValue = FALSE)
+        pt.segs <- lapply(ind.group,
+            function(ii)
+            {
+                pt <- list(Index = ii-1)
+                if (data.label.show)
+                    pt$Segments <-  list(list(Field="Value"))
+                else
+                    pt$Segments <- list()
+                return(pt)
             }
-        } else {
-            annot.text <- addAnnotToDataLabel("", a.tmp, tmp.dat[ind.sel], tspan = !is.small.multiples)
-            if (a.tmp$type == "Shadow" || a.tmp$type == "Border") {
-                close.span = if (is.small.multiples) "</span>" else "</tspan>"
-                annot.text.prefix <- substr(annot.text, 1, nchar(annot.text) - nchar(close.span))
-                pre.label.annotations[ind.sel] <- paste0(pre.label.annotations[ind.sel], annot.text.prefix)
-                post.label.annotations[ind.sel] <- paste0(post.label.annotations[ind.sel], close.span)
-            } else if (a.tmp$type == "Text - before data label") {
-                pre.label.annotations[ind.sel] <- paste0(pre.label.annotations[ind.sel], annot.text.prefix)
-            } else if (a.tmp$type == "Hide") {
-                pre.label.annotations[ind.sel] <- ""
-                post.label.annotations[ind.sel] <- ""
-                labels.or.logos[ind.sel] <- ""
+        )
+        custom.pts <- list()
+
+        # Traces for annotation need to occur before main trace to avoid hiding hover info
+        annot.text <- rep("", length(ind.group))
+        for (j in seq_along(annotation.list))
+        {
+            if (!checkAnnotType(annotation.list[[j]]$type, "Scatter"))
+                next
+            a.tmp <- annotation.list[[j]]
+            tmp.dat <- getAnnotScatterData(annot.data, a.tmp$data, ind.group)
+            a.tmp$threshold <- ParseText(a.tmp$threshold, tmp.dat)
+            ind.sel <- if (is.null(a.tmp$threstype) || is.null(a.tmp$threshold))    1:length(tmp.dat)
+                       else if (is.factor(tmp.dat) && !is.ordered(tmp.dat))         selectFactor(a.tmp$threshold, 1:length(tmp.dat), a.tmp$data, ggi)
+                       else if (a.tmp$threstype == "above threshold")               which(tmp.dat > a.tmp$threshold)
+                       else if (a.tmp$threstype == "below threshold")               which(tmp.dat < a.tmp$threshold)
+                       else                                                         which(is.na(tmp.dat))
+
+            if (length(ind.sel) == 0)
+                next
+            ind.sel.global <- ind.group[ind.sel] # get index wrt full data set
+
+            if (a.tmp$type == "Marker border") {
+                point.border.color[ind.sel.global] <- a.tmp$color
+                point.border.width[ind.sel.global] <- a.tmp$width
+                custom.pts <- c(custom.pts, list(Index = ii, OutlineColor = a.tmp$color, OutlineWidth = a.tmp$width))
+            } else if (annotate.markers) {
+                annot.text <- addAnnotToDataLabel("", a.tmp, tmp.dat[ind.sel], tspan = FALSE)
+                if (a.tmp$type == "Shadow" || a.tmp$type == "Border") {
+                    # Remove </span> (7 characters)
+                    annot.text.prefix <- substr(annot.text, 1, nchar(annot.text) - 7)
+                    marker.annotations[ind.sel.global] <- paste0(annot.text.prefix, marker.annotations[ind.sel.global], "</span>")
+                } else if (a.tmp$type == "Text - before data label") {
+                    marker.annotations[ind.sel.global] <- paste0(annot.text.prefix, marker.annotations[ind.sel.global])
+                } else if (a.tmp$type == "Hide") {
+                    marker.annotations[ind.sel.global] <- ""
+                } else {
+                    marker.annotations[ind.sel.global] <- paste0(marker.annotations[ind.sel.global], annot.text)
+                }
             } else {
-                post.label.annotations[ind.sel] <- paste0(post.label.annotations[ind.sel], annot.text)
+                annot.text <- addAnnotToDataLabel("", a.tmp, tmp.dat[ind.sel], tspan = !is.small.multiples)
+                if (a.tmp$type == "Shadow" || a.tmp$type == "Border") {
+                    close.span = if (is.small.multiples) "</span>" else "</tspan>"
+                    annot.text.prefix <- substr(annot.text, 1, nchar(annot.text) - nchar(close.span))
+                    pre.label.annotations[ind.sel.global] <- paste0(pre.label.annotations[ind.sel.global], annot.text.prefix)
+                    post.label.annotations[ind.sel.global] <- paste0(post.label.annotations[ind.sel.global], close.span)
+                } else if (a.tmp$type == "Text - before data label") {
+                    pre.label.annotations[ind.sel.global] <- paste0(pre.label.annotations[ind.sel.global], annot.text.prefix)
+                } else if (a.tmp$type == "Hide") {
+                    pre.label.annotations[ind.sel.global] <- ""
+                    post.label.annotations[ind.sel.global] <- ""
+                    labels.or.logos[ind.sel.global] <- ""
+                } else {
+                    post.label.annotations[ind.sel.global] <- paste0(post.label.annotations[ind.sel.global], annot.text)
+                }
             }
+            pt.segs <- getPointSegmentsForPPT(pt.segs, ind.sel, a.tmp, tmp.dat[ind.sel])
         }
-    }
 
+        # Clean up PPT chart labels
+        pt.segs <- tidyPointSegments(pt.segs, length(ind.group), index.map = ind.group)
+        if (isTRUE(attr(pt.segs, "SeriesShowValue")))
+        {
+            ppt.chart.labels$SeriesLabels[[ggi]]$ShowValue <- TRUE
+            attr(pt.segs, "SeriesShowValue") <- NULL
+        }
+        if (length(pt.segs) > 0)
+            ppt.chart.labels$SeriesLabels[[ggi]]$CustomPoints <- pt.segs
+        if (length(custom.pts) > 0)
+            ppt.custom.points[[gg]] <- custom.pts
+
+    }
     list(marker.annotations = marker.annotations,
          pre.label.annotations = pre.label.annotations,
          post.label.annotations = post.label.annotations,
          point.border.color = point.border.color,
          point.border.width = point.border.width,
-         labels.or.logos = labels.or.logos)
+         labels.or.logos = labels.or.logos,
+         ppt.chart.labels = ppt.chart.labels,
+         ppt.custom.points = ppt.custom.points
+    )
 }
 
 #' @importFrom flipTransformations TextAsVector
