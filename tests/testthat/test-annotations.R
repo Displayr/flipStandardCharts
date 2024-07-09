@@ -227,6 +227,32 @@ test_that("Scatter plot annotations",
         list(type = "Border", data = "Cost", threstype = "above threshold", threshold = "2.0",
         color = "grey", width = 2))), NA)
 
+    expect_error(viz.annot.only <- CombinedScatter(dat, scatter.labels.as.hovertext = TRUE,
+        annotation.list = list(list(type = "Text - after data label",
+        data = "Cost", threstype = "above threshold", threshold = "1.0",
+        color = "red", size = 8, width = 1, font.family = "Arial",
+        font.weight = "normal", font.style = "normal", format = ".2f", prefix = "$"),
+        list(type = "Border", data = "Cost", threstype = "above threshold", threshold = "2.0",
+        color = "grey", width = 2))), NA)
+    expect_equal(attr(viz.annot.only, "ChartLabels")[[1]][[1]],
+        list(ShowValue = FALSE, CustomPoints = list(list(Index = 16,
+        Segments = list(list(Font = list(color = "red", size = 6.00150037509377,
+        family = "Arial", bold = FALSE, italic = FALSE), Text = "$2.18")),
+        OutlineStyle = "Solid", OutlineColor = "grey", OutlineWidth = 1.50003750093752))))
+
+    expect_error(viz.annot.and.labels <- CombinedScatter(dat, scatter.labels.as.hovertext = FALSE,
+        annotation.list = list(list(type = "Text - after data label",
+        data = "Cost", threstype = "above threshold", threshold = "1.0",
+        color = "red", size = 8, width = 1, font.family = "Impact",
+        font.weight = "normal", font.style = "normal", format = ".2f", prefix = "$"),
+        list(type = "Border", data = "Cost", threstype = "above threshold", threshold = "2.0",
+        color = "grey", width = 2))), NA)
+    expect_equal(attr(viz.annot.and.labels, "ChartLabels")[[1]][[1]],
+        list(ShowValue = TRUE, CustomPoints = list(list(Index = 16,
+        Segments = list(list(Field = "Value"), list(Font = list(color = "red", size = 6.00150037509377,
+        family = "Impact", bold = FALSE, italic = FALSE), Text = "$2.18")),
+        OutlineStyle = "Solid", OutlineColor = "grey", OutlineWidth = 1.50003750093752))))
+
     expect_error(Scatter(dat, annotation.list = list(list(type = "Text - after data label",
         data = "Class", threstype = "above threshold", threshold = "",
         color = "red", size = 8, width = 1, font.family = "Arial",
