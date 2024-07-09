@@ -458,11 +458,11 @@ CombinedScatter <- function(x = NULL,
         fit.line.colors = fit$fit.line.colors,
         fit.ci.colors = fit$fit.ci.fill.colors,
         fit.ci.label.colors = fit$fit.ci.label.colors,
-        marker.annotations = annotations$marker.annotations,
-        pre.label.annotations = annotations$pre.label.annotations,
-        post.label.annotations = annotations$post.label.annotations,
-        point.border.color = annotations$point.border.color,
-        point.border.width = annotations$point.border.width,
+        marker.annotations = annotations$marker.annotations[not.na],
+        pre.label.annotations = annotations$pre.label.annotations[not.na],
+        post.label.annotations = annotations$post.label.annotations[not.na],
+        point.border.color = annotations$point.border.color[not.na],
+        point.border.width = annotations$point.border.width[not.na],
         labels.logo.scale = logo.size,
         background.color = background.fill.color,
         plot.background.color = charting.area.fill.color,
@@ -840,8 +840,8 @@ processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
 
     # Annotations need to be separated out by series (i.e. groups) for PPT exporting
     if (is.null(groups))
-        g.list <- ""
-    else if (is.factor(groups))
+        groups <- rep(" ", n)
+    if (is.factor(groups))
         g.list <- levels(groups) # fix legend order
     else if (any(class(groups) %in% c("Date", "POSIXct", "POSIXt", "integer", "numeric")))
         g.list <- sort(unique(groups[!is.na(groups)]))
@@ -878,7 +878,7 @@ processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
             }
         )
         custom.pts <- list()
-
+    
         # Traces for annotation need to occur before main trace to avoid hiding hover info
         annot.text <- rep("", length(ind.group))
         for (j in seq_along(annotation.list))
@@ -901,12 +901,13 @@ processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
             if (a.tmp$type == "Marker border") {
                 point.border.color[ind.sel.global] <- a.tmp$color
                 point.border.width[ind.sel.global] <- a.tmp$width
-                custom.pts <- c(custom.pts, list(Index = ii, OutlineColor = a.tmp$color, OutlineWidth = a.tmp$width))
+                custom.pts <- c(custom.pts, lapply(ind.sel,
+                    function(ii) { list(Index = ii, OutlineColor = a.tmp$color, OutlineWidth = a.tmp$width) }))
             } else if (annotate.markers) {
                 annot.text <- addAnnotToDataLabel("", a.tmp, tmp.dat[ind.sel], tspan = FALSE)
+                # Remove </span> (7 characters)
+                annot.text.prefix <- substr(annot.text, 1, nchar(annot.text) - 7)
                 if (a.tmp$type == "Shadow" || a.tmp$type == "Border") {
-                    # Remove </span> (7 characters)
-                    annot.text.prefix <- substr(annot.text, 1, nchar(annot.text) - 7)
                     marker.annotations[ind.sel.global] <- paste0(annot.text.prefix, marker.annotations[ind.sel.global], "</span>")
                 } else if (a.tmp$type == "Text - before data label") {
                     marker.annotations[ind.sel.global] <- paste0(annot.text.prefix, marker.annotations[ind.sel.global])
@@ -917,9 +918,9 @@ processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
                 }
             } else {
                 annot.text <- addAnnotToDataLabel("", a.tmp, tmp.dat[ind.sel], tspan = !is.small.multiples)
+                close.span = if (is.small.multiples) "</span>" else "</tspan>"
+                annot.text.prefix <- substr(annot.text, 1, nchar(annot.text) - nchar(close.span))
                 if (a.tmp$type == "Shadow" || a.tmp$type == "Border") {
-                    close.span = if (is.small.multiples) "</span>" else "</tspan>"
-                    annot.text.prefix <- substr(annot.text, 1, nchar(annot.text) - nchar(close.span))
                     pre.label.annotations[ind.sel.global] <- paste0(pre.label.annotations[ind.sel.global], annot.text.prefix)
                     post.label.annotations[ind.sel.global] <- paste0(post.label.annotations[ind.sel.global], close.span)
                 } else if (a.tmp$type == "Text - before data label") {
@@ -945,7 +946,7 @@ processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
         if (length(pt.segs) > 0)
             ppt.chart.labels$SeriesLabels[[ggi]]$CustomPoints <- pt.segs
         if (length(custom.pts) > 0)
-            ppt.custom.points[[gg]] <- custom.pts
+            ppt.custom.points[[ggi]] <- custom.pts
 
     }
     list(marker.annotations = marker.annotations,
