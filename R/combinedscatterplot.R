@@ -876,7 +876,7 @@ processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
                 return(pt)
             }
         )
-        custom.pts <- list()
+        custom.pts <- vector(mode = "list", length= length(ind.group))
     
         # Traces for annotation need to occur before main trace to avoid hiding hover info
         annot.text <- rep("", length(ind.group))
@@ -900,8 +900,8 @@ processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
             if (a.tmp$type == "Marker border") {
                 point.border.color[ind.sel.global] <- a.tmp$color
                 point.border.width[ind.sel.global] <- a.tmp$width
-                custom.pts <- c(custom.pts, lapply(ind.sel,
-                    function(ii) { list(Index = ii, OutlineColor = a.tmp$color, OutlineWidth = a.tmp$width) }))
+                for (ii in ind.sel)
+                    custom.pts[[ii]] <- list(Index = ind.group[ii] - 1, OutlineColor = a.tmp$color, OutlineWidth = a.tmp$width)
             } else if (!data.label.show) {
                 annot.text <- addAnnotToDataLabel("", a.tmp, tmp.dat[ind.sel], tspan = FALSE)
                 # Remove </span> (7 characters)
@@ -915,6 +915,7 @@ processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
                 } else {
                     marker.annotations[ind.sel.global] <- paste0(marker.annotations[ind.sel.global], annot.text)
                 }
+                pt.segs <- getPointSegmentsForPPT(pt.segs, ind.sel, a.tmp, tmp.dat[ind.sel])
             } else {
                 annot.text <- addAnnotToDataLabel("", a.tmp, tmp.dat[ind.sel], tspan = !is.small.multiples)
                 close.span = if (is.small.multiples) "</span>" else "</tspan>"
@@ -931,8 +932,8 @@ processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
                 } else {
                     post.label.annotations[ind.sel.global] <- paste0(post.label.annotations[ind.sel.global], annot.text)
                 }
+                pt.segs <- getPointSegmentsForPPT(pt.segs, ind.sel, a.tmp, tmp.dat[ind.sel])
             }
-            pt.segs <- getPointSegmentsForPPT(pt.segs, ind.sel, a.tmp, tmp.dat[ind.sel])
         }
 
         # Clean up PPT chart labels
@@ -944,8 +945,8 @@ processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
         }
         if (length(pt.segs) > 0)
             ppt.chart.labels$SeriesLabels[[ggi]]$CustomPoints <- pt.segs
-        if (length(custom.pts) > 0)
-            ppt.custom.points[[ggi]] <- custom.pts
+        if (any(sapply(custom.pts, Negate(is.null))))
+            ppt.custom.points[[ggi]] <- custom.pts  # If there are any marker borders keep whole series to make merging easier
 
     }
     list(marker.annotations = marker.annotations,

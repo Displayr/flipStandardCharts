@@ -260,15 +260,32 @@ test_that("Scatter plot annotations",
         list(type = "Border", data = "Cost", threstype = "above threshold", threshold = "2.0",
         color = "grey", width = 2))), NA)
 
-    expect_warning(Scatter(dat, annotation.list = list(list(type = "Arrow - up",
+    expect_warning(sc <- Scatter(dat, annotation.list = list(list(type = "Arrow - up",
         data = "Sporadic", threstype = "above threshold", threshold = "1.0",
         color = "red", size = 15, width = 1, font.family = "Arial",
         font.weight = "normal", font.style = "normal", format = ".2f", prefix = "$"),
         list(type = "Marker border", data = "Class", threstype = "above threshold",
-        threshold = "C", width = 3, color = "blue"),
+        threshold = "C", width = 5, color = "#0000FF40"),
         list(type = "Marker border", data = "Date", threstype = "above threshold",
-        threshold = "2017-01-9", width = 1, color = "red"))),
+        threshold = "2017-01-9", width = 2, color = "red"))),
         "Inequalities are not applicable to 'Class'")
+
+    expect_error(viz <- CombinedScatter(dat, annotation.list = list(list(type = "Arrow - up",
+        data = "Sporadic", threstype = "above threshold", threshold = "1.0",
+        color = "red", size = 15, width = 1, font.family = "Arial",
+        font.weight = "normal", font.style = "normal", format = ".2f", prefix = "$"),
+        list(type = "Marker border", data = "Date", threstype = "above threshold",
+        threshold = "2017-01-9", width = 2, color = "red")),
+        scatter.labels.as.hovertext = FALSE), NA)
+    expect_equal(length(attr(viz, "ChartLabels")$SeriesLabels[[1]]$CustomPoints), 3)
+    expect_equal(attr(viz, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[3]],
+        list(Index = 13, Segments = list(list(Field = "Value"),
+        list(Font = list(color = "red", size = 11.2528132033008, family = "Arial",
+        bold = FALSE, italic = FALSE), Text = "↑"))))
+    expect_equal(attr(viz, "CustomPoints")[[1]], list(
+        list(Index = 1, OutlineColor = "red", OutlineWidth = 2),
+        list(Index = 9, OutlineColor = "red", OutlineWidth = 2),
+        NULL, NULL))
 
     expect_error(Scatter(dat, annotation.list = list(list(type = "Arrow - up",
         data = "Sporadic typo", threstype = "above threshold", threshold = "1.0",
