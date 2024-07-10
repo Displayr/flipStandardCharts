@@ -901,7 +901,8 @@ processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
                 point.border.color[ind.sel.global] <- a.tmp$color
                 point.border.width[ind.sel.global] <- a.tmp$width
                 for (ii in ind.sel)
-                    custom.pts[[ii]] <- list(Index = ind.group[ii] - 1, OutlineColor = a.tmp$color, OutlineWidth = a.tmp$width)
+                    custom.pts[[ii]] <- list(Index = ind.group[ii] - 1,
+                        OutlineColor = a.tmp$color, OutlineWidth = a.tmp$width, OutlineStyle = "Solid")
             } else if (!data.label.show) {
                 annot.text <- addAnnotToDataLabel("", a.tmp, tmp.dat[ind.sel], tspan = FALSE)
                 # Remove </span> (7 characters)

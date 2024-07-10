@@ -283,8 +283,8 @@ test_that("Scatter plot annotations",
         list(Font = list(color = "red", size = 11.2528132033008, family = "Arial",
         bold = FALSE, italic = FALSE), Text = "↑"))))
     expect_equal(attr(viz, "CustomPoints")[[1]], list(
-        list(Index = 1, OutlineColor = "red", OutlineWidth = 2),
-        list(Index = 9, OutlineColor = "red", OutlineWidth = 2),
+        list(Index = 1, OutlineColor = "red", OutlineWidth = 2, OutlineStyle = "Solid"),
+        list(Index = 9, OutlineColor = "red", OutlineWidth = 2, OutlineStyle = "Solid"),
         NULL, NULL))
 
     expect_error(Scatter(dat, annotation.list = list(list(type = "Arrow - up",
