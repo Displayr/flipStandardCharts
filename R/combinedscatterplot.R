@@ -319,7 +319,8 @@ CombinedScatter <- function(x = NULL,
                                       labels.or.logos,
                                       !scatter.labels.as.hovertext,
                                       !is.null(scatter.groups),
-                                      if (!scatter.colors.as.categorical) NULL else scatter.colors)
+                                      if (!scatter.colors.as.categorical) NULL else scatter.colors,
+                                      marker.size)
 
     scatter.sizes <- if (is.null(scatter.sizes)) NULL else abs(scatter.sizes)
     x.axis.font.color <- if (!is.null(x.tick.font.color)) x.tick.font.color else "#2C2C2C"
@@ -836,7 +837,7 @@ fitLines <- function(scatter.colors, scatter.colors.as.categorical, scatter.grou
 
 
 processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
-                               data.label.show, is.small.multiples, groups) {
+                               data.label.show, is.small.multiples, groups, marker.size) {
 
     # Annotations need to be separated out by series (i.e. groups) for PPT exporting
     if (is.null(groups))
@@ -902,7 +903,8 @@ processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
                 point.border.width[ind.sel.global] <- a.tmp$width
                 for (ii in ind.sel)
                     custom.pts[[ii]] <- list(Index = ind.group[ii] - 1,
-                        OutlineColor = a.tmp$color, OutlineWidth = a.tmp$width, OutlineStyle = "Solid")
+                        OutlineColor = a.tmp$color, OutlineWidth = a.tmp$width, 
+                        OutlineStyle = "Solid", Style = "Circle", Size = marker.size) # required for PPT to show properly
             } else if (!data.label.show) {
                 annot.text <- addAnnotToDataLabel("", a.tmp, tmp.dat[ind.sel], tspan = FALSE)
                 # Remove </span> (7 characters)
