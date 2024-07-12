@@ -877,7 +877,7 @@ processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
                 return(pt)
             }
         )
-        custom.pts <- vector(mode = "list", length= length(ind.group))
+        custom.pts <- vector(mode = "list", length = length(ind.group))
     
         # Traces for annotation need to occur before main trace to avoid hiding hover info
         annot.text <- rep("", length(ind.group))
@@ -940,7 +940,7 @@ processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
         }
 
         # Clean up PPT chart labels
-        pt.segs <- tidyPointSegments(pt.segs, length(ind.group), index.map = ind.group)
+        pt.segs <- tidyPointSegments(pt.segs, length(ind.group), index.map = ind.group, toggle.show.value = FALSE)
         if (isTRUE(attr(pt.segs, "SeriesShowValue")))
         {
             ppt.chart.labels$SeriesLabels[[ggi]]$ShowValue <- TRUE

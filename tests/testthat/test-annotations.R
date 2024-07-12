@@ -248,9 +248,11 @@ test_that("Scatter plot annotations",
         list(type = "Border", data = "Cost", threstype = "above threshold", threshold = "2.0",
         color = "grey", width = 2))), NA)
     expect_equal(attr(viz.annot.and.labels, "ChartLabels")[[1]][[1]],
-        list(ShowValue = TRUE, CustomPoints = list(list(Index = 16,
-        Segments = list(list(Field = "Value"), list(Font = list(color = "red", size = 6.00150037509377,
-        family = "Impact", bold = FALSE, italic = FALSE), Text = "$2.18")),
+        list(ShowValue = FALSE, CustomPoints = list(list(Index = 1, ShowValue = TRUE),
+        list(Index = 9, ShowValue = TRUE), list(Index = 13, ShowValue = TRUE),
+        list(Index = 16, Segments = list(list(Field = "Value"), list(
+        Font = list(color = "red", size = 6.00150037509377, family = "Impact",
+        bold = FALSE, italic = FALSE), Text = "$2.18")),
         OutlineStyle = "Solid", OutlineColor = "grey", OutlineWidth = 1.50003750093752))))
 
     expect_error(Scatter(dat, annotation.list = list(list(type = "Text - after data label",
@@ -277,7 +279,7 @@ test_that("Scatter plot annotations",
         list(type = "Marker border", data = "Date", threstype = "above threshold",
         threshold = "2017-01-9", width = 2, color = "red")),
         scatter.labels.as.hovertext = FALSE), NA)
-    expect_equal(length(attr(viz, "ChartLabels")$SeriesLabels[[1]]$CustomPoints), 3)
+    expect_equal(length(attr(viz, "ChartLabels")$SeriesLabels[[1]]$CustomPoints), 4)
     expect_equal(attr(viz, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[3]],
         list(Index = 13, Segments = list(list(Field = "Value"),
         list(Font = list(color = "red", size = 11.2528132033008, family = "Arial",
@@ -297,6 +299,18 @@ test_that("Scatter plot annotations",
         list(type = "Marker border", data = "Date", threstype = "above threshold",
         threshold = "2017-01-9", width = 1, color = "red"))),
         "Annotation data does not contain")
+
+    viz <- CombinedScatter(dat, scatter.labels.as.hovertext = FALSE,
+        scatter.colors.column = NULL,
+        annotation.list = list(list(type = "Hide", data = "Cost",
+        threstype = "below threshold", threshold = "1.0")))
+    expect_equal(attr(viz, "ChartLabels"), list(
+        SeriesLabels = list(list(ShowValue = FALSE, CustomPoints = list(
+        list(Index = 5, ShowValue = TRUE), list(Index = 7, ShowValue = TRUE),
+        list(Index = 10, ShowValue = TRUE), list(Index = 14, ShowValue = TRUE),
+        list(Index = 15, ShowValue = TRUE), list(Index = 16, ShowValue = TRUE),
+        list(Index = 17, ShowValue = TRUE)))), PrimaryAxisTitle = "Score",
+        ValueAxisTitle = "Cost"))
 })
 
 tb <- structure(c(NA, NA, NA, NA, 9.07042253521127, 8.55072463768116,
