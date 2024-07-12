@@ -865,7 +865,7 @@ processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
         if (length(ind.group) == 0)
             next
 
-        ppt.chart.labels$SeriesLabels[[ggi]] <- list(ShowValue = FALSE)
+        ppt.chart.labels$SeriesLabels[[ggi]] <- list(ShowValue = data.label.show)
         pt.segs <- lapply(ind.group,
             function(ii)
             {
@@ -881,6 +881,7 @@ processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
     
         # Traces for annotation need to occur before main trace to avoid hiding hover info
         annot.text <- rep("", length(ind.group))
+        has.text.annot <- FALSE
         for (j in seq_along(annotation.list))
         {
             if (!checkAnnotType(annotation.list[[j]]$type, "Scatter"))
@@ -918,6 +919,7 @@ processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
                 } else {
                     marker.annotations[ind.sel.global] <- paste0(marker.annotations[ind.sel.global], annot.text)
                 }
+                has.text.annot <- TRUE
                 pt.segs <- getPointSegmentsForPPT(pt.segs, ind.sel, a.tmp, tmp.dat[ind.sel])
             } else {
                 annot.text <- addAnnotToDataLabel("", a.tmp, tmp.dat[ind.sel], tspan = !is.small.multiples)
@@ -935,13 +937,16 @@ processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
                 } else {
                     post.label.annotations[ind.sel.global] <- paste0(post.label.annotations[ind.sel.global], annot.text)
                 }
+                has.text.annot <- TRUE
                 pt.segs <- getPointSegmentsForPPT(pt.segs, ind.sel, a.tmp, tmp.dat[ind.sel])
             }
         }
 
         # Clean up PPT chart labels
-        pt.segs <- tidyPointSegments(pt.segs, length(ind.group), index.map = ind.group, toggle.show.value = FALSE)
-        if (isTRUE(attr(pt.segs, "SeriesShowValue")))
+        pt.segs <- tidyPointSegments(pt.segs, length(ind.group), index.map = ind.group, toggle.show.value = !has.text.annot)
+        if (has.text.annot)
+            ppt.chart.labels$SeriesLabels[[ggi]]$ShowValue <- FALSE
+        else if (isTRUE(attr(pt.segs, "SeriesShowValue")))
         {
             ppt.chart.labels$SeriesLabels[[ggi]]$ShowValue <- TRUE
             attr(pt.segs, "SeriesShowValue") <- NULL
