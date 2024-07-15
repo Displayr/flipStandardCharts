@@ -878,7 +878,7 @@ processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
             }
         )
         custom.pts <- vector(mode = "list", length = length(ind.group))
-    
+
         # Traces for annotation need to occur before main trace to avoid hiding hover info
         annot.text <- rep("", length(ind.group))
         has.text.annot <- FALSE
@@ -904,7 +904,7 @@ processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
                 point.border.width[ind.sel.global] <- a.tmp$width
                 for (ii in ind.sel)
                     custom.pts[[ii]] <- list(Index = ind.group[ii] - 1,
-                        OutlineColor = a.tmp$color, OutlineWidth = a.tmp$width, 
+                        OutlineColor = a.tmp$color, OutlineWidth = a.tmp$width,
                         OutlineStyle = "Solid", Style = "Circle", Size = marker.size) # required for PPT to show properly
             } else if (!data.label.show) {
                 annot.text <- addAnnotToDataLabel("", a.tmp, tmp.dat[ind.sel], tspan = FALSE)
@@ -945,7 +945,32 @@ processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
         # Clean up PPT chart labels
         pt.segs <- tidyPointSegments(pt.segs, length(ind.group), index.map = ind.group, toggle.show.value = !has.text.annot)
         if (has.text.annot)
-            ppt.chart.labels$SeriesLabels[[ggi]]$ShowValue <- FALSE
+        {
+            # Where labels and text annotations are both present, we need to set
+            # SeriesLabels$ShowValue to FALSE to make PPT use the Segments.
+            # But doing this means the row labels get lost so manually convert label to a text segment
+            if (ppt.chart.labels$SeriesLabels[[ggi]]$ShowValue)
+            {
+                for (ii in 1:length(pt.segs))
+                {
+                    if (is.null(pt.segs[[ii]]$Segments) && isTRUE(pt.segs[[ii]]$ShowValue)) {
+                        pt.segs[[ii]]$ShowValue <- FALSE # Avoid double-up in case this starts working again
+                        pt.segs[[ii]]$Segments <- list(list(Text = labels.or.logos[pt.segs[[ii]]$Index + 1]))
+                    }
+                    else if (length(pt.segs[[ii]]$Segments) > 0)
+                    {
+                        for (j in 1:length(pt.segs[[ii]]$Segments))
+                            if (!is.null(pt.segs[[ii]]$Segments[[j]]$Field) && pt.segs[[ii]]$Segments[[j]]$Field == "Value")
+                            {
+                                pt.segs[[ii]]$Segments[[j]] <- list(Text = labels.or.logos[pt.segs[[ii]]$Index + 1])
+                                break
+                            }
+                    }
+
+                }
+                ppt.chart.labels$SeriesLabels[[ggi]]$ShowValue <- FALSE
+            }
+        }
         else if (isTRUE(attr(pt.segs, "SeriesShowValue")))
         {
             ppt.chart.labels$SeriesLabels[[ggi]]$ShowValue <- TRUE
