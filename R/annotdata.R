@@ -571,7 +571,8 @@ getPointSegmentsForPPT <- function(points, index, annot, dat)
 }
 
 # Tidy up empty segments and points where possible
-tidyPointSegments <- function(points, num.points, show.categoryname = FALSE, index.map = NULL)
+tidyPointSegments <- function(points, num.points, show.categoryname = FALSE, 
+    index.map = NULL, toggle.show.value = TRUE)
 {
     if (length(points) == 0)
         return(points)
@@ -620,7 +621,7 @@ tidyPointSegments <- function(points, num.points, show.categoryname = FALSE, ind
     # Switch default point from ShowValue = FALSE to ShowValue = TRUE
     # This tries to preserve series-level toggling in Excel
     # when there is more than 1 value-only points
-    if (any(pt.info == 1L) && length(points) > 0)
+    if (toggle.show.value && any(pt.info == 1L) && length(points) > 0)
     {
         new.points <- list()
         jj <- 1
