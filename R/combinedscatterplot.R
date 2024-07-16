@@ -281,10 +281,6 @@ CombinedScatter <- function(x = NULL,
         data.label.font.autocolor <- length(unique(scatter.colors[not.na])) > 1
     }
 
-    if (trend.lines) {
-        legend.show <- FALSE
-    }
-
     logo.urls <- getLogoUrls(logos, orig.x, scatter.labels, n)
     labels.or.logos <- if (!is.null(logo.urls)) logo.urls else scatter.labels
     logo.size <- rep(logo.size, n)
@@ -618,11 +614,12 @@ getColors <- function(scatter.groups, scatter.colors, colors, n, not.na,
     if (!is.null(scatter.groups) && !is.null(scatter.colors) && scatter.colors.as.categorical) {
         r.groups <- rle(as.numeric(as.factor(scatter.groups)))$lengths
         r.colors <- rle(as.numeric(as.factor(scatter.colors)))$lengths
-        if (length(r.groups) == length(r.colors) && all(r.groups == r.colors))
+        if (length(r.groups) == length(r.colors) && all(r.groups == r.colors) && legend.show == "Automatic")
             legend.show <- FALSE
     } else if (is.null(scatter.colors) && !is.null(scatter.groups) && scatter.colors.as.categorical) {
         scatter.colors <- scatter.groups
-        legend.show <- FALSE
+        if (legend.show == "Automatic")
+            legend.show <- FALSE
     }
 
     if (!is.null(scatter.colors))
