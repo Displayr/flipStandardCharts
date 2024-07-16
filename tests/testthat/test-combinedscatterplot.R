@@ -32,6 +32,17 @@ test_that("scatter colors as numeric",
     expect_error(CombinedScatter(1:4, 1:4, colors = c("red", "green"),
                                  scatter.colors = c(1,1.2,1.6,2),
                                  scatter.colors.as.categorical = FALSE), NA)
+    expect_warning(CombinedScatter(1:4, 1:4, colors = c("red"),
+                                 scatter.colors = c(1,1.2,1.6,2),
+                                 scatter.colors.as.categorical = FALSE),
+                   "Supply a color palette of 2 or more colors")
+    expect_warning(CombinedScatter(1:4, 1:4, colors = ChartColors(4),
+                                 scatter.colors = c(1,1.2,1.6,2),
+                                 scatter.colors.as.categorical = FALSE),
+                   "qualitative palette should not be used")
+    expect_warning(CombinedScatter(1:10, 1:10,
+                    scatter.colors.as.categorical = FALSE),
+                   "'Colors' variable not provided")
 })
 
 test_that("scatter labels",
