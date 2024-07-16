@@ -338,7 +338,7 @@ Values range from 0 (bottom) to 1 (top).}
 \item{legend.position.x}{A numeric controlling the position of the legend.
 Values range from -0.5 (left) to 1.5 (right).}
 
-\item{legend.title}{Title to show above the legend (and color scale bar)
+\item{legend.title}{Title to show above the legend (and color scale bar)}
 
 \item{legend.title.font.color}{Font color of the legend (and color scale bar) title}
 
