@@ -22,6 +22,7 @@
 #'  When automatic, the legend is only shown when there is more than one group. Defaults to TRUE.
 #'  When FALSE or "Hide", the colorscale and bubble legends are also hidden
 #'  (if not overridden by their own "show" parameters).
+#' @param color.scale.show is the toggle to show the color scale bar.
 #' @importFrom rhtmlCombinedScatter CombinedScatter
 #' @export
 CombinedScatter <- function(x = NULL,
@@ -263,10 +264,10 @@ CombinedScatter <- function(x = NULL,
     opacity <- getOpacity(opacity, scatter.sizes, fit.type)
 
     if (is.null(color.scale.show)) {
-        color.scale.show <- if (isFALSE(legend.show) || legend.show == "Hide") FALSE else TRUE
+        color.scale.show <- !isFALSE(legend.show) && legend.show != "Hide"
     }
     if (is.null(legend.bubbles.show)) {
-        legend.bubbles.show <- if (isFALSE(legend.show) || legend.show == "Hide") FALSE else TRUE
+        legend.bubbles.show <- !isFALSE(legend.show) && legend.show != "Hide"
     }
 
     output <- getColors(scatter.groups, scatter.colors, colors, n, not.na,

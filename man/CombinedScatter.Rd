@@ -491,6 +491,8 @@ if \code{scatter.colors.as.categorical}.}
 
 \item{legend.bubbles.show}{Logical; show legend for bubble sizes.}
 
+\item{color.scale.show}{is the toggle to show the color scale bar.}
+
 \item{label.auto.placement}{Logical; whether the scatter plot labels are positioned automatically
 to reduce overlap.}
 }
