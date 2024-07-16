@@ -85,6 +85,12 @@ CombinedScatter(
   legend.title.font.color = global.font.color,
   legend.title.font.family = global.font.family,
   legend.title.font.size = 12,
+  legend.bubble.font.color = global.font.color,
+  legend.bubble.font.family = global.font.family,
+  legend.bubble.font.size = 10,
+  legend.bubble.title.font.color = global.font.color,
+  legend.bubble.title.font.family = global.font.family,
+  legend.bubble.title.font.size = 12,
   margin.autoexpand = TRUE,
   margin.top = NULL,
   margin.bottom = NULL,
@@ -332,13 +338,25 @@ Values range from 0 (bottom) to 1 (top).}
 \item{legend.position.x}{A numeric controlling the position of the legend.
 Values range from -0.5 (left) to 1.5 (right).}
 
-\item{legend.title}{Title to show above the legend}
+\item{legend.title}{Title to show above the legend (and color scale bar)
 
-\item{legend.title.font.color}{Font color of the legend title}
+\item{legend.title.font.color}{Font color of the legend (and color scale bar) title}
 
-\item{legend.title.font.family}{Font family of the legend title}
+\item{legend.title.font.family}{Font family of the legend (and color scale bar) title}
 
-\item{legend.title.font.size}{Font size of the legend title}
+\item{legend.title.font.size}{Font size of the legend (and color scale bar) title}
+
+\item{legend.bubble.font.color}{Font color of the bubble legend}
+
+\item{legend.bubble.font.family}{Font family of the bubble legend}
+
+\item{legend.bubble.font.size}{Font size of the bubble legend}
+
+\item{legend.bubble.title.font.color}{Font color of the bubble legend}
+
+\item{legend.bubble.title.font.family}{Font color of the bubble legend}
+
+\item{legend.bubble.title.font.size}{Font color of the bubble legend}
 
 \item{margin.autoexpand}{Logical; Whether extra space can be added to the margins
 to allow space for axis/legend/data labels or other chart elements.}

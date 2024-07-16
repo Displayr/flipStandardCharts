@@ -14,10 +14,16 @@
 #'  which they are to be shown, or a string with comma separated indices.
 #' @param panel.x.gap A number between 0 and 1. Controls the horizontal space between panels.
 #' @param panel.y.gap A number between 0 and 1. Controls the vertical space between panels.
-#' @param legend.title Title to show above the legend
-#' @param legend.title.font.color Font color of the legend title
-#' @param legend.title.font.family Font family of the legend title
-#' @param legend.title.font.size Font size of the legend title
+#' @param legend.title Title to show above the legend (and color scale bar)
+#' @param legend.title.font.color Font color of the legend (and color scale bar) title
+#' @param legend.title.font.family Font family of the legend (and color scale bar) title
+#' @param legend.title.font.size Font size of the legend (and color scale bar) title
+#' @param legend.bubble.font.color Font color of the bubble legend
+#' @param legend.bubble.font.family Font family of the bubble legend
+#' @param legend.bubble.font.size Font size of the bubble legend
+#' @param legend.bubble.title.font.color Font color of the bubble legend title
+#' @param legend.bubble.title.font.family Font family of the bubble legend title
+#' @param legend.bubble.title.font.size Font size of the bubble legend title
 #' @param legend.show is the toggle to show the legend. Can be logical or "Automatic", "Show" or "Hide".
 #'  When automatic, the legend is only shown when there is more than one group. Defaults to TRUE.
 #'  When FALSE or "Hide", the colorscale and bubble legends are also hidden
@@ -105,6 +111,12 @@ CombinedScatter <- function(x = NULL,
                             legend.title.font.color = global.font.color,
                             legend.title.font.family = global.font.family,
                             legend.title.font.size = 12,
+                            legend.bubble.font.color = global.font.color,
+                            legend.bubble.font.family = global.font.family,
+                            legend.bubble.font.size = 10,
+                            legend.bubble.title.font.color = global.font.color,
+                            legend.bubble.title.font.family = global.font.family,
+                            legend.bubble.title.font.size = 12,
                             margin.autoexpand = TRUE,
                             margin.top = NULL,
                             margin.bottom = NULL,
@@ -351,6 +363,10 @@ CombinedScatter <- function(x = NULL,
         color.scale = color.scale,
         color.scale.show = color.scale.show,
         color.transparency = opacity,
+        color.scale.title = legend.title,
+        color.scale.title.font.color = legend.font.color,
+        color.scale.title.font.family = legend.font.family,
+        color.scale.title.font.size = legend.font.size,
         label = annotations$labels.or.logos[not.na],
         label.alt = scatter.labels[not.na],
         grid = grid.show,
@@ -366,12 +382,12 @@ CombinedScatter <- function(x = NULL,
         legend.title.font.color = legend.title.font.color,
         legend.title.font.family = legend.title.font.family,
         legend.title.font.size = legend.title.font.size,
-        legend.bubble.font.color = legend.font.color,
-        legend.bubble.font.family = legend.font.family,
-        legend.bubble.font.size = legend.font.size,
-        legend.bubble.title.font.color = legend.font.color,
-        legend.bubble.title.font.family = legend.font.family,
-        legend.bubble.title.font.size = legend.font.size,
+        legend.bubble.font.color = legend.bubble.font.color,
+        legend.bubble.font.family = legend.bubble.font.family,
+        legend.bubble.font.size = legend.bubble.font.size,
+        legend.bubble.title.font.color = legend.bubble.title.font.color,
+        legend.bubble.title.font.family = legend.bubble.title.font.family,
+        legend.bubble.title.font.size = legend.bubble.title.font.size,
         legend.x = legend.position.x,
         legend.y = legend.position.y,
         legend.wrap = legend.wrap,
