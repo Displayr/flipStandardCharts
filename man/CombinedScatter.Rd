@@ -144,7 +144,8 @@ CombinedScatter(
   hovertext.font.size = 11,
   marker.size = 6,
   swap.x.and.y = FALSE,
-  legend.bubbles.show = TRUE,
+  legend.bubbles.show = NULL,
+  color.scale.show = NULL,
   label.auto.placement = TRUE
 )
 }
@@ -222,10 +223,10 @@ This should be input as a comma-seperated list of URLs.}
 
 \item{fit.CI.opacity}{Opacity of confidence interval ribbon as an alpha value (0 to 1).}
 
-\item{legend.show}{Controls whether legend is shown. This can be a logical (\code{TRUE} or \code{FALSE});
-or a string ("Show" or "Hide"). If it is \code{TRUE} or \code{NA} (the default), a legend will be
-shown only if there is more than one data series. To force a legend to be shown even with 1
-data series, use "Show" instead.}
+\item{legend.show}{is the toggle to show the legend. Can be logical or "Automatic", "Show" or "Hide".
+When automatic, the legend is only shown when there is more than one group. Defaults to TRUE.
+When FALSE or "Hide", the colorscale and bubble legends are also hidden
+(if not overridden by their own "show" parameters).}
 
 \item{legend.orientation}{Character; One of 'Vertical' or 'Horizontal'}
 
@@ -489,6 +490,8 @@ if \code{scatter.colors.as.categorical}.}
 \item{swap.x.and.y}{Swap the x and y axis around on the chart.}
 
 \item{legend.bubbles.show}{Logical; show legend for bubble sizes.}
+
+\item{color.scale.show}{is the toggle to show the color scale bar.}
 
 \item{label.auto.placement}{Logical; whether the scatter plot labels are positioned automatically
 to reduce overlap.}

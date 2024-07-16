@@ -18,6 +18,11 @@
 #' @param legend.title.font.color Font color of the legend title
 #' @param legend.title.font.family Font family of the legend title
 #' @param legend.title.font.size Font size of the legend title
+#' @param legend.show is the toggle to show the legend. Can be logical or "Automatic", "Show" or "Hide".
+#'  When automatic, the legend is only shown when there is more than one group. Defaults to TRUE.
+#'  When FALSE or "Hide", the colorscale and bubble legends are also hidden
+#'  (if not overridden by their own "show" parameters).
+#' @param color.scale.show is the toggle to show the color scale bar.
 #' @importFrom rhtmlCombinedScatter CombinedScatter
 #' @export
 CombinedScatter <- function(x = NULL,
@@ -159,7 +164,8 @@ CombinedScatter <- function(x = NULL,
                             hovertext.font.size = 11,
                             marker.size = 6,
                             swap.x.and.y = FALSE,
-                            legend.bubbles.show = TRUE,
+                            legend.bubbles.show = NULL,
+                            color.scale.show = NULL,
                             label.auto.placement = TRUE)
 {
     orig.x <- x
@@ -257,6 +263,13 @@ CombinedScatter <- function(x = NULL,
 
     opacity <- getOpacity(opacity, scatter.sizes, fit.type)
 
+    if (is.null(color.scale.show)) {
+        color.scale.show <- !isFALSE(legend.show) && legend.show != "Hide"
+    }
+    if (is.null(legend.bubbles.show)) {
+        legend.bubbles.show <- !isFALSE(legend.show) && legend.show != "Hide"
+    }
+
     output <- getColors(scatter.groups, scatter.colors, colors, n, not.na,
                         scatter.colors.as.categorical, num.tables, legend.show)
     colors <- output$colors
@@ -340,6 +353,7 @@ CombinedScatter <- function(x = NULL,
         y.levels = levels(y),
         colors = colors,
         color.scale = color.scale,
+        color.scale.show = color.scale.show,
         color.transparency = opacity,
         label = annotations$labels.or.logos[not.na],
         label.alt = scatter.labels[not.na],
@@ -348,7 +362,7 @@ CombinedScatter <- function(x = NULL,
         labels.max.shown = scatter.max.labels,
         label.auto.placement = label.auto.placement,
         legend.show = legend.show,
-        legend.bubbles.show = !is.null(scatter.sizes) && isTRUE(legend.bubbles.show),
+        legend.bubbles.show = legend.bubbles.show,
         legend.font.color = legend.font.color,
         legend.font.family = legend.font.family,
         legend.font.size = legend.font.size,
