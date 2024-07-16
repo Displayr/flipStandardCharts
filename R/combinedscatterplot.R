@@ -218,6 +218,25 @@ CombinedScatter <- function(x = NULL,
     if (is.null(x) && is.null(y))
         stop("At least one of x or y must be supplied.")
 
+    # Warning if non-default selected but corresponding data is missing
+    if (is.null(scatter.sizes) && scatter.sizes.as.diameter)
+        warning("'Sizes' variable not provided.")
+    if (!scatter.colors.as.categorical && is.null(scatter.colors))
+    {
+        warning("'Colors' variable not provided.")
+        scatter.colors.as.categorical <- TRUE
+    }
+    if (!scatter.colors.as.categorical && length(colors) < 2)
+    {
+        warning("Supply a color palette of 2 or more colors to use a color scale")
+        scatter.colors.as.categorical <- TRUE
+    }
+    qualitative.palettes <- c("Default colors", "Primary colors",
+        "Light colors", "Strong colors", "Colorblind safe colors")
+    if (!scatter.colors.as.categorical && !is.null(attr(colors, "palette.type"))
+        && attr(colors, "palette.type") %in% qualitative.palettes)
+        warning("For a numeric 'colors' variable, a qualitative palette should not be used. The colorscale is created by interpolating the colors.")
+
     if (is.null(x))
     {
         x <- rep(0, length(y))
