@@ -108,9 +108,11 @@ Scatter(
   y.zero = FALSE,
   y.zero.line.width = 0,
   y.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
+  y.zero.line.dash = "Dash",
   y.data.reversed = FALSE,
   y.grid.width = 1 * grid.show,
   y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+  y.grid.dash = "Solid",
   y.tick.show = TRUE,
   y.tick.on.label = TRUE,
   y.tick.suffix = "",
@@ -136,9 +138,11 @@ Scatter(
   x.zero = FALSE,
   x.zero.line.width = 0,
   x.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
+  x.zero.line.dash = "Dash",
   x.data.reversed = FALSE,
   x.grid.width = 1 * grid.show,
   x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+  x.grid.dash = "Solid",
   x.tick.show = TRUE,
   x.tick.on.label = TRUE,
   x.tick.suffix = "",
@@ -431,12 +435,16 @@ if the axis is categorical}
 color in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
+\item{y.zero.line.dash}{Line type of y zero line. Can be one of 'Solid', 'Dot', 'Dash'.}
+
 \item{y.data.reversed}{Logical; whether to reverse y-axis or not}
 
 \item{y.grid.width}{Width of y-grid lines in pixels; 0 = no line}
 
 \item{y.grid.color}{Color of y-grid lines as a named color in character
 format (e.g. "black") or a hex code.}
+
+\item{y.grid.dash}{Line type of y grid line. Can be one of 'Solid', 'Dot', 'Dash'.}
 
 \item{y.tick.show}{Whether to display the y-axis tick labels}
 
@@ -504,12 +512,16 @@ if the axis is categorical}
 color in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
+\item{x.zero.line.dash}{Line type of x zero line. Can be one of 'Solid', 'Dot', 'Dash'.}
+
 \item{x.data.reversed}{Logical; whether to reverse x-axis or not}
 
 \item{x.grid.width}{Width of y-grid lines in pixels; 0 = no line}
 
 \item{x.grid.color}{Color of y-grid lines as a named color in character
 format (e.g. "black") or a hex code.}
+
+\item{x.grid.dash}{Line type of x grid line. Can be one of 'Solid', 'Dot', 'Dash'.}
 
 \item{x.tick.show}{Whether to display the x-axis tick labels}
 
