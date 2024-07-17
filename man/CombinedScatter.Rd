@@ -101,6 +101,8 @@ CombinedScatter(
   y.title.font.color = global.font.color,
   y.title.font.family = global.font.family,
   y.title.font.size = 12,
+  y.line.width = 0,
+  y.line.color = rgb(0, 0, 0, maxColorValue = 255),
   y.tick.mark.length = 0,
   y.tick.mark.color = "transparent",
   y.bounds.minimum = NULL,
@@ -380,6 +382,11 @@ character format (e.g. "black") or a hex code.}
 \item{y.title.font.family}{Character; y-axis title font family}
 
 \item{y.title.font.size}{Integer; y-axis title font size}
+
+\item{y.line.width}{y-axis line width in pixels (0 = no line).}
+
+\item{y.line.color}{y-axis line color as a named color in character format
+(e.g. "black") or a hex code.}
 
 \item{y.tick.mark.length}{Length of tick marks in pixels. Ticks are only shown when \code{y.line.width > 0}.}
 
