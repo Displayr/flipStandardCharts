@@ -533,6 +533,11 @@ CombinedScatter <- function(x = NULL,
         bubble.sizes.as.diameter = scatter.sizes.as.diameter,
         debug.mode = grepl("DEBUG_MODE_ON", title))
 
+    cat("ChartLabels\n")
+    dput(ChartLabels)
+    cat("CustomPoints\n")
+    dput(CustomPoints)
+
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     attr(result, "ChartType") <- chartType(scatter.sizes)
