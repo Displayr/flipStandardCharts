@@ -409,10 +409,14 @@ if the axis is categorical}
 color in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
+\item{y.zero.line.dash}{Line type of y zero line. Can be one of 'Solid', 'Dot', 'Dash'.}
+
 \item{y.grid.width}{Width of y-grid lines in pixels; 0 = no line}
 
 \item{y.grid.color}{Color of y-grid lines as a named color in character
 format (e.g. "black") or a hex code.}
+
+\item{y.grid.dash}{Line type of y grid line. Can be one of 'Solid', 'Dot', 'Dash'.}
 
 \item{y.tick.show}{Whether to display the y-axis tick labels}
 
@@ -473,10 +477,14 @@ if the axis is categorical}
 color in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
+\item{x.zero.line.dash}{Line type of x zero line. Can be one of 'Solid', 'Dot', 'Dash'.}
+
 \item{x.grid.width}{Width of y-grid lines in pixels; 0 = no line}
 
 \item{x.grid.color}{Color of y-grid lines as a named color in character
 format (e.g. "black") or a hex code.}
+
+\item{x.grid.dash}{Line type of x grid line. Can be one of 'Solid', 'Dot', 'Dash'.}
 
 \item{x.tick.show}{Whether to display the x-axis tick labels}
 
