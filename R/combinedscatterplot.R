@@ -533,16 +533,17 @@ CombinedScatter <- function(x = NULL,
         bubble.sizes.as.diameter = scatter.sizes.as.diameter,
         debug.mode = grepl("DEBUG_MODE_ON", title))
 
-    cat("ChartLabels\n")
-    dput(ChartLabels)
-    cat("CustomPoints\n")
-    dput(CustomPoints)
-
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     attr(result, "ChartType") <- chartType(scatter.sizes)
     attr(result, "ChartLabels") <- chartLabels(annotations$ppt.chart.labels, x.title, y.title)
     attr(result, "CustomPoints") <- annotations$ppt.custom.points
+
+
+    cat("ChartLabels\n")
+    dput(attr(result, "ChartLabels"))
+    cat("CustomPoints\n")
+    dput(attr(result, "CustomPoints"))
     result
 }
 
