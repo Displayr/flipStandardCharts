@@ -101,6 +101,8 @@ CombinedScatter(
   y.title.font.color = global.font.color,
   y.title.font.family = global.font.family,
   y.title.font.size = 12,
+  y.line.width = 0,
+  y.line.color = rgb(0, 0, 0, maxColorValue = 255),
   y.tick.mark.length = 0,
   y.tick.mark.color = "transparent",
   y.bounds.minimum = NULL,
@@ -109,8 +111,10 @@ CombinedScatter(
   y.tick.maxnum = NULL,
   y.zero.line.width = 0,
   y.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
+  y.zero.line.dash = "Dash",
   y.grid.width = 1 * grid.show,
   y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+  y.grid.dash = "Solid",
   y.tick.show = TRUE,
   y.tick.suffix = "",
   y.tick.prefix = "",
@@ -133,8 +137,10 @@ CombinedScatter(
   x.tick.maxnum = NULL,
   x.zero.line.width = 0,
   x.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
+  x.zero.line.dash = "Dash",
   x.grid.width = 1 * grid.show,
   x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+  x.grid.dash = "Solid",
   x.tick.show = TRUE,
   x.tick.suffix = "",
   x.tick.prefix = "",
@@ -381,6 +387,11 @@ character format (e.g. "black") or a hex code.}
 
 \item{y.title.font.size}{Integer; y-axis title font size}
 
+\item{y.line.width}{y-axis line width in pixels (0 = no line).}
+
+\item{y.line.color}{y-axis line color as a named color in character format
+(e.g. "black") or a hex code.}
+
 \item{y.tick.mark.length}{Length of tick marks in pixels. Ticks are only shown when \code{y.line.width > 0}.}
 
 \item{y.tick.mark.color}{Color of tick marks (default transparent).}
@@ -402,10 +413,14 @@ if the axis is categorical}
 color in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
+\item{y.zero.line.dash}{Line type of y zero line. Can be one of 'Solid', 'Dot', 'Dash'.}
+
 \item{y.grid.width}{Width of y-grid lines in pixels; 0 = no line}
 
 \item{y.grid.color}{Color of y-grid lines as a named color in character
 format (e.g. "black") or a hex code.}
+
+\item{y.grid.dash}{Line type of y grid line. Can be one of 'Solid', 'Dot', 'Dash'.}
 
 \item{y.tick.show}{Whether to display the y-axis tick labels}
 
@@ -466,10 +481,14 @@ if the axis is categorical}
 color in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
+\item{x.zero.line.dash}{Line type of x zero line. Can be one of 'Solid', 'Dot', 'Dash'.}
+
 \item{x.grid.width}{Width of y-grid lines in pixels; 0 = no line}
 
 \item{x.grid.color}{Color of y-grid lines as a named color in character
 format (e.g. "black") or a hex code.}
+
+\item{x.grid.dash}{Line type of x grid line. Can be one of 'Solid', 'Dot', 'Dash'.}
 
 \item{x.tick.show}{Whether to display the x-axis tick labels}
 
