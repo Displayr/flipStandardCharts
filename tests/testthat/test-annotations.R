@@ -227,6 +227,41 @@ test_that("Scatter plot annotations",
         list(type = "Border", data = "Cost", threstype = "above threshold", threshold = "2.0",
         color = "grey", width = 2))), NA)
 
+    expect_error(viz.annot.only <- CombinedScatter(dat, scatter.labels.as.hovertext = TRUE,
+        annotation.list = list(list(type = "Text - after data label",
+        data = "Cost", threstype = "above threshold", threshold = "1.0",
+        color = "red", size = 8, width = 1, font.family = "Arial",
+        font.weight = "normal", font.style = "normal", format = ".2f", prefix = "$"),
+        list(type = "Border", data = "Cost", threstype = "above threshold", threshold = "2.0",
+        color = "grey", width = 2))), NA)
+    expect_equal(attr(viz.annot.only, "ChartLabels")[[1]][[1]],
+        list(ShowValue = FALSE, CustomPoints = list(list(Index = 16,
+        Segments = list(list(Font = list(color = "red", size = 6.00150037509377,
+        family = "Arial", bold = FALSE, italic = FALSE), Text = "$2.18")),
+        OutlineStyle = "Solid", OutlineColor = "grey", OutlineWidth = 1.50003750093752))))
+
+    expect_error(viz.annot.and.labels <- CombinedScatter(dat, scatter.labels.as.hovertext = FALSE,
+        annotation.list = list(list(type = "Text - after data label",
+        data = "Cost", threstype = "above threshold", threshold = "1.0",
+        color = "red", size = 8, width = 1, font.family = "Impact",
+        font.weight = "normal", font.style = "normal", format = ".2f", prefix = "$"),
+        list(type = "Border", data = "Cost", threstype = "above threshold", threshold = "2.0",
+        color = "grey", width = 2))), NA)
+    expect_equal(attr(viz.annot.and.labels, "ChartLabels")[[1]][[1]],
+        list(ShowValue = FALSE, CustomPoints = list(list(Index = 1, ShowValue = FALSE,
+        Segments = list(list(Text = "b"))), list(Index = 9, ShowValue = FALSE,
+        Segments = list(list(Text = "j"))), list(Index = 13, ShowValue = FALSE,
+        Segments = list(list(Text = "n"))), list(Index = 16, Segments = list(
+        list(Text = "q"), list(Font = list(color = "red", size = 6.00150037509377,
+        family = "Impact", bold = FALSE, italic = FALSE), Text = "$2.18")),
+        OutlineStyle = "Solid", OutlineColor = "grey", OutlineWidth = 1.50003750093752))))
+
+    viz <- CombinedScatter(dat, scatter.labels.as.hovertext = FALSE,
+        scatter.colors.column = NULL, annotation.list = list(list(type = "Arrow - up",
+        data = "Cost", threstype = "above threshold", threshold = "1.5",
+        color = "red", size = 15, width = 1, font.family = "Arial",
+        font.weight = "normal", font.style = "normal", format = "", prefix = "")))
+
     expect_error(Scatter(dat, annotation.list = list(list(type = "Text - after data label",
         data = "Class", threstype = "above threshold", threshold = "",
         color = "red", size = 8, width = 1, font.family = "Arial",
@@ -234,15 +269,33 @@ test_that("Scatter plot annotations",
         list(type = "Border", data = "Cost", threstype = "above threshold", threshold = "2.0",
         color = "grey", width = 2))), NA)
 
-    expect_warning(Scatter(dat, annotation.list = list(list(type = "Arrow - up",
+    expect_warning(sc <- Scatter(dat, annotation.list = list(list(type = "Arrow - up",
         data = "Sporadic", threstype = "above threshold", threshold = "1.0",
         color = "red", size = 15, width = 1, font.family = "Arial",
         font.weight = "normal", font.style = "normal", format = ".2f", prefix = "$"),
         list(type = "Marker border", data = "Class", threstype = "above threshold",
-        threshold = "C", width = 3, color = "blue"),
+        threshold = "C", width = 5, color = "#0000FF40"),
         list(type = "Marker border", data = "Date", threstype = "above threshold",
-        threshold = "2017-01-9", width = 1, color = "red"))),
+        threshold = "2017-01-9", width = 2, color = "red"))),
         "Inequalities are not applicable to 'Class'")
+
+    expect_error(viz <- CombinedScatter(dat, annotation.list = list(list(type = "Arrow - up",
+        data = "Sporadic", threstype = "above threshold", threshold = "1.0",
+        color = "red", size = 15, width = 1, font.family = "Arial",
+        font.weight = "normal", font.style = "normal", format = ".2f", prefix = "$"),
+        list(type = "Marker border", data = "Date", threstype = "above threshold",
+        threshold = "2017-01-9", width = 2, color = "red")),
+        scatter.labels.as.hovertext = FALSE), NA)
+    expect_equal(length(attr(viz, "ChartLabels")$SeriesLabels[[1]]$CustomPoints), 4)
+    expect_equal(attr(viz, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[3]],
+        list(Index = 13, Segments = list(list(Text = "n"), list(Font = list(
+        color = "red", size = 11.2528132033008, family = "Arial",
+        bold = FALSE, italic = FALSE), Text = "↑"))))
+    expect_equal(attr(viz, "CustomPoints")[[1]], list(
+        list(Index = 1, OutlineColor = "red", OutlineWidth = 2,
+        OutlineStyle = "Solid", Style = "Circle", Size = 6),
+        list(Index = 9, OutlineColor = "red", OutlineWidth = 2,
+        OutlineStyle = "Solid", Style = "Circle", Size = 6), NULL, NULL))
 
     expect_error(Scatter(dat, annotation.list = list(list(type = "Arrow - up",
         data = "Sporadic typo", threstype = "above threshold", threshold = "1.0",
@@ -253,6 +306,21 @@ test_that("Scatter plot annotations",
         list(type = "Marker border", data = "Date", threstype = "above threshold",
         threshold = "2017-01-9", width = 1, color = "red"))),
         "Annotation data does not contain")
+
+    viz <- CombinedScatter(dat, scatter.labels.as.hovertext = FALSE,
+        scatter.colors.column = NULL,
+        annotation.list = list(list(type = "Hide", data = "Cost",
+        threstype = "below threshold", threshold = "1.0")))
+    expect_equal(attr(viz, "ChartLabels"), list(SeriesLabels = list(
+        list(ShowValue = FALSE, CustomPoints = list(
+        list(Index = 5, ShowValue = FALSE, Segments = list(list(Text = "f"))),
+        list(Index = 7, ShowValue = FALSE, Segments = list(list(Text = "h"))),
+        list(Index = 10, ShowValue = FALSE, Segments = list(list(Text = "k"))),
+        list(Index = 14, ShowValue = FALSE, Segments = list(list(Text = "o"))),
+        list(Index = 15, ShowValue = FALSE, Segments = list(list(Text = "p"))),
+        list(Index = 16, ShowValue = FALSE, Segments = list(list(Text = "q"))),
+        list(Index = 17, ShowValue = FALSE, Segments = list(list(Text = "r")))))),
+        PrimaryAxisTitle = "Score", ValueAxisTitle = "Cost"))
 })
 
 tb <- structure(c(NA, NA, NA, NA, 9.07042253521127, 8.55072463768116,

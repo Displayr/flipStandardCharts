@@ -85,6 +85,12 @@ CombinedScatter(
   legend.title.font.color = global.font.color,
   legend.title.font.family = global.font.family,
   legend.title.font.size = 12,
+  legend.bubble.font.color = global.font.color,
+  legend.bubble.font.family = global.font.family,
+  legend.bubble.font.size = 10,
+  legend.bubble.title.font.color = global.font.color,
+  legend.bubble.title.font.family = global.font.family,
+  legend.bubble.title.font.size = 12,
   margin.autoexpand = TRUE,
   margin.top = NULL,
   margin.bottom = NULL,
@@ -144,7 +150,8 @@ CombinedScatter(
   hovertext.font.size = 11,
   marker.size = 6,
   swap.x.and.y = FALSE,
-  legend.bubbles.show = TRUE,
+  legend.bubbles.show = NULL,
+  color.scale.show = NULL,
   label.auto.placement = TRUE
 )
 }
@@ -222,10 +229,10 @@ This should be input as a comma-seperated list of URLs.}
 
 \item{fit.CI.opacity}{Opacity of confidence interval ribbon as an alpha value (0 to 1).}
 
-\item{legend.show}{Controls whether legend is shown. This can be a logical (\code{TRUE} or \code{FALSE});
-or a string ("Show" or "Hide"). If it is \code{TRUE} or \code{NA} (the default), a legend will be
-shown only if there is more than one data series. To force a legend to be shown even with 1
-data series, use "Show" instead.}
+\item{legend.show}{is the toggle to show the legend. Can be logical or "Automatic", "Show" or "Hide".
+When automatic, the legend is only shown when there is more than one group. Defaults to TRUE.
+When FALSE or "Hide", the colorscale and bubble legends are also hidden
+(if not overridden by their own "show" parameters).}
 
 \item{legend.orientation}{Character; One of 'Vertical' or 'Horizontal'}
 
@@ -331,13 +338,25 @@ Values range from 0 (bottom) to 1 (top).}
 \item{legend.position.x}{A numeric controlling the position of the legend.
 Values range from -0.5 (left) to 1.5 (right).}
 
-\item{legend.title}{Title to show above the legend}
+\item{legend.title}{Title to show above the legend (and color scale bar)}
 
-\item{legend.title.font.color}{Font color of the legend title}
+\item{legend.title.font.color}{Font color of the legend (and color scale bar) title}
 
-\item{legend.title.font.family}{Font family of the legend title}
+\item{legend.title.font.family}{Font family of the legend (and color scale bar) title}
 
-\item{legend.title.font.size}{Font size of the legend title}
+\item{legend.title.font.size}{Font size of the legend (and color scale bar) title}
+
+\item{legend.bubble.font.color}{Font color of the bubble legend}
+
+\item{legend.bubble.font.family}{Font family of the bubble legend}
+
+\item{legend.bubble.font.size}{Font size of the bubble legend}
+
+\item{legend.bubble.title.font.color}{Font color of the bubble legend}
+
+\item{legend.bubble.title.font.family}{Font color of the bubble legend}
+
+\item{legend.bubble.title.font.size}{Font color of the bubble legend}
 
 \item{margin.autoexpand}{Logical; Whether extra space can be added to the margins
 to allow space for axis/legend/data labels or other chart elements.}
@@ -489,6 +508,8 @@ if \code{scatter.colors.as.categorical}.}
 \item{swap.x.and.y}{Swap the x and y axis around on the chart.}
 
 \item{legend.bubbles.show}{Logical; show legend for bubble sizes.}
+
+\item{color.scale.show}{is the toggle to show the color scale bar.}
 
 \item{label.auto.placement}{Logical; whether the scatter plot labels are positioned automatically
 to reduce overlap.}

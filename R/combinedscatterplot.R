@@ -14,10 +14,21 @@
 #'  which they are to be shown, or a string with comma separated indices.
 #' @param panel.x.gap A number between 0 and 1. Controls the horizontal space between panels.
 #' @param panel.y.gap A number between 0 and 1. Controls the vertical space between panels.
-#' @param legend.title Title to show above the legend
-#' @param legend.title.font.color Font color of the legend title
-#' @param legend.title.font.family Font family of the legend title
-#' @param legend.title.font.size Font size of the legend title
+#' @param legend.title Title to show above the legend (and color scale bar)
+#' @param legend.title.font.color Font color of the legend (and color scale bar) title
+#' @param legend.title.font.family Font family of the legend (and color scale bar) title
+#' @param legend.title.font.size Font size of the legend (and color scale bar) title
+#' @param legend.bubble.font.color Font color of the bubble legend
+#' @param legend.bubble.font.family Font family of the bubble legend
+#' @param legend.bubble.font.size Font size of the bubble legend
+#' @param legend.bubble.title.font.color Font color of the bubble legend title
+#' @param legend.bubble.title.font.family Font family of the bubble legend title
+#' @param legend.bubble.title.font.size Font size of the bubble legend title
+#' @param legend.show is the toggle to show the legend. Can be logical or "Automatic", "Show" or "Hide".
+#'  When automatic, the legend is only shown when there is more than one group. Defaults to TRUE.
+#'  When FALSE or "Hide", the colorscale and bubble legends are also hidden
+#'  (if not overridden by their own "show" parameters).
+#' @param color.scale.show is the toggle to show the color scale bar.
 #' @importFrom rhtmlCombinedScatter CombinedScatter
 #' @export
 CombinedScatter <- function(x = NULL,
@@ -100,6 +111,12 @@ CombinedScatter <- function(x = NULL,
                             legend.title.font.color = global.font.color,
                             legend.title.font.family = global.font.family,
                             legend.title.font.size = 12,
+                            legend.bubble.font.color = global.font.color,
+                            legend.bubble.font.family = global.font.family,
+                            legend.bubble.font.size = 10,
+                            legend.bubble.title.font.color = global.font.color,
+                            legend.bubble.title.font.family = global.font.family,
+                            legend.bubble.title.font.size = 12,
                             margin.autoexpand = TRUE,
                             margin.top = NULL,
                             margin.bottom = NULL,
@@ -161,7 +178,8 @@ CombinedScatter <- function(x = NULL,
                             hovertext.font.size = 11,
                             marker.size = 6,
                             swap.x.and.y = FALSE,
-                            legend.bubbles.show = TRUE,
+                            legend.bubbles.show = NULL,
+                            color.scale.show = NULL,
                             label.auto.placement = TRUE)
 {
     orig.x <- x
@@ -214,6 +232,25 @@ CombinedScatter <- function(x = NULL,
     if (is.null(x) && is.null(y))
         stop("At least one of x or y must be supplied.")
 
+    # Warning if non-default selected but corresponding data is missing
+    if (is.null(scatter.sizes) && scatter.sizes.as.diameter)
+        warning("'Sizes' variable not provided.")
+    if (!scatter.colors.as.categorical && is.null(scatter.colors))
+    {
+        warning("'Colors' variable not provided.")
+        scatter.colors.as.categorical <- TRUE
+    }
+    if (!scatter.colors.as.categorical && length(colors) < 2)
+    {
+        warning("Supply a color palette of 2 or more colors to use a color scale")
+        scatter.colors.as.categorical <- TRUE
+    }
+    qualitative.palettes <- c("Default colors", "Primary colors",
+        "Light colors", "Strong colors", "Colorblind safe colors")
+    if (!scatter.colors.as.categorical && !is.null(attr(colors, "palette.type"))
+        && attr(colors, "palette.type") %in% qualitative.palettes)
+        warning("For a numeric 'colors' variable, a qualitative palette should not be used. The colorscale is created by interpolating the colors.")
+
     if (is.null(x))
     {
         x <- rep(0, length(y))
@@ -259,6 +296,13 @@ CombinedScatter <- function(x = NULL,
 
     opacity <- getOpacity(opacity, scatter.sizes, fit.type)
 
+    if (is.null(color.scale.show)) {
+        color.scale.show <- !isFALSE(legend.show) && legend.show != "Hide"
+    }
+    if (is.null(legend.bubbles.show)) {
+        legend.bubbles.show <- !isFALSE(legend.show) && legend.show != "Hide"
+    }
+
     output <- getColors(scatter.groups, scatter.colors, colors, n, not.na,
                         scatter.colors.as.categorical, num.tables, legend.show)
     colors <- output$colors
@@ -268,10 +312,6 @@ CombinedScatter <- function(x = NULL,
 
     if (is.na(data.label.font.autocolor)) {
         data.label.font.autocolor <- length(unique(scatter.colors[not.na])) > 1
-    }
-
-    if (trend.lines) {
-        legend.show <- FALSE
     }
 
     logo.urls <- getLogoUrls(logos, orig.x, scatter.labels, n)
@@ -319,8 +359,10 @@ CombinedScatter <- function(x = NULL,
 
     annotations <- processAnnotations(annotation.list, n, annot.data,
                                       labels.or.logos,
-                                      scatter.labels.as.hovertext,
-                                      !is.null(scatter.groups))
+                                      !scatter.labels.as.hovertext,
+                                      !is.null(scatter.groups),
+                                      if (!scatter.colors.as.categorical) NULL else scatter.colors,
+                                      marker.size)
 
     scatter.sizes <- if (is.null(scatter.sizes)) NULL else abs(scatter.sizes)
     x.axis.font.color <- if (!is.null(x.tick.font.color)) x.tick.font.color else "#2C2C2C"
@@ -340,7 +382,12 @@ CombinedScatter <- function(x = NULL,
         y.levels = levels(y),
         colors = colors,
         color.scale = color.scale,
+        color.scale.show = color.scale.show,
         color.transparency = opacity,
+        color.scale.title = legend.title,
+        color.scale.title.font.color = legend.font.color,
+        color.scale.title.font.family = legend.font.family,
+        color.scale.title.font.size = legend.font.size,
         label = annotations$labels.or.logos[not.na],
         label.alt = scatter.labels[not.na],
         grid = grid.show,
@@ -348,7 +395,7 @@ CombinedScatter <- function(x = NULL,
         labels.max.shown = scatter.max.labels,
         label.auto.placement = label.auto.placement,
         legend.show = legend.show,
-        legend.bubbles.show = !is.null(scatter.sizes) && isTRUE(legend.bubbles.show),
+        legend.bubbles.show = legend.bubbles.show,
         legend.font.color = legend.font.color,
         legend.font.family = legend.font.family,
         legend.font.size = legend.font.size,
@@ -356,12 +403,12 @@ CombinedScatter <- function(x = NULL,
         legend.title.font.color = legend.title.font.color,
         legend.title.font.family = legend.title.font.family,
         legend.title.font.size = legend.title.font.size,
-        legend.bubble.font.color = legend.font.color,
-        legend.bubble.font.family = legend.font.family,
-        legend.bubble.font.size = legend.font.size,
-        legend.bubble.title.font.color = legend.font.color,
-        legend.bubble.title.font.family = legend.font.family,
-        legend.bubble.title.font.size = legend.font.size,
+        legend.bubble.font.color = legend.bubble.font.color,
+        legend.bubble.font.family = legend.bubble.font.family,
+        legend.bubble.font.size = legend.bubble.font.size,
+        legend.bubble.title.font.color = legend.bubble.title.font.color,
+        legend.bubble.title.font.family = legend.bubble.title.font.family,
+        legend.bubble.title.font.size = legend.bubble.title.font.size,
         legend.x = legend.position.x,
         legend.y = legend.position.y,
         legend.wrap = legend.wrap,
@@ -463,11 +510,11 @@ CombinedScatter <- function(x = NULL,
         fit.line.colors = fit$fit.line.colors,
         fit.ci.colors = fit$fit.ci.fill.colors,
         fit.ci.label.colors = fit$fit.ci.label.colors,
-        marker.annotations = annotations$marker.annotations,
-        pre.label.annotations = annotations$pre.label.annotations,
-        post.label.annotations = annotations$post.label.annotations,
-        point.border.color = annotations$point.border.color,
-        point.border.width = annotations$point.border.width,
+        marker.annotations = annotations$marker.annotations[not.na],
+        pre.label.annotations = annotations$pre.label.annotations[not.na],
+        post.label.annotations = annotations$post.label.annotations[not.na],
+        point.border.color = annotations$point.border.color[not.na],
+        point.border.width = annotations$point.border.width[not.na],
         labels.logo.scale = logo.size,
         background.color = background.fill.color,
         plot.background.color = charting.area.fill.color,
@@ -477,7 +524,8 @@ CombinedScatter <- function(x = NULL,
     result <- list(htmlwidget = p)
     class(result) <- "StandardChart"
     attr(result, "ChartType") <- chartType(scatter.sizes)
-    attr(result, "ChartLabels") <- chartLabels(x.title, y.title)
+    attr(result, "ChartLabels") <- chartLabels(annotations$ppt.chart.labels, x.title, y.title)
+    attr(result, "CustomPoints") <- annotations$ppt.custom.points
     result
 }
 
@@ -607,11 +655,12 @@ getColors <- function(scatter.groups, scatter.colors, colors, n, not.na,
     if (!is.null(scatter.groups) && !is.null(scatter.colors) && scatter.colors.as.categorical) {
         r.groups <- rle(as.numeric(as.factor(scatter.groups)))$lengths
         r.colors <- rle(as.numeric(as.factor(scatter.colors)))$lengths
-        if (length(r.groups) == length(r.colors) && all(r.groups == r.colors))
+        if (length(r.groups) == length(r.colors) && all(r.groups == r.colors) && legend.show == "Automatic")
             legend.show <- FALSE
     } else if (is.null(scatter.colors) && !is.null(scatter.groups) && scatter.colors.as.categorical) {
         scatter.colors <- scatter.groups
-        legend.show <- FALSE
+        if (legend.show == "Automatic")
+            legend.show <- FALSE
     }
 
     if (!is.null(scatter.colors))
@@ -753,11 +802,10 @@ chartType <- function(scatter.sizes) {
         "X Y Scatter"
 }
 
-chartLabels <- function(x.title, y.title) {
+chartLabels <- function(chart.labels, x.title, y.title) {
     if (!any(nzchar(x.title)) && !any(nzchar(y.title))) {
-        return(NULL)
+        return(chart.labels)
     }
-    chart.labels <- list()
     if (any(nzchar(x.title))) {
         chart.labels$PrimaryAxisTitle <- x.title
     }
@@ -839,71 +887,162 @@ fitLines <- function(scatter.colors, scatter.colors.as.categorical, scatter.grou
          fit.ci.label.colors = fit.ci.label.colors)
 }
 
+
 processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
-                               annotate.markers, is.small.multiples) {
+                               data.label.show, is.small.multiples, groups, marker.size) {
+
+    # Annotations need to be separated out by series (i.e. groups) for PPT exporting
+    if (is.null(groups))
+        groups <- rep(" ", n)
+    if (is.factor(groups))
+        g.list <- levels(groups) # fix legend order
+    else if (any(class(groups) %in% c("Date", "POSIXct", "POSIXt", "integer", "numeric")))
+        g.list <- sort(unique(groups[!is.na(groups)]))
+    else
+        g.list <- unique(groups[!is.na(groups)])
+    num.groups <- length(g.list)
+
+    # Initialise settings to return
     marker.annotations <- character(n)
     pre.label.annotations <- character(n)
     post.label.annotations <- character(n)
     point.border.color <- character(n)
     point.border.width <- numeric(n)
+    ppt.custom.points <- vector(mode = "list", length = num.groups)
+    ppt.chart.labels <- list(SeriesLabels = vector(mode = "list", length = num.groups))
 
-    for (i in seq_along(annotation.list))
+    for (ggi in 1:num.groups)
     {
-        if (!checkAnnotType(annotation.list[[i]]$type, "Scatter"))
-            next
-        a.tmp <- annotation.list[[i]]
-        tmp.dat <- getAnnotScatterData(annot.data, a.tmp$data, seq_len(nrow(annot.data)))
-        a.tmp$threshold <- ParseText(a.tmp$threshold, tmp.dat)
-        ind.sel <- if (is.null(a.tmp$threstype) || is.null(a.tmp$threshold))    1:length(tmp.dat)
-        else if (is.factor(tmp.dat) && !is.ordered(tmp.dat))         selectFactor(a.tmp$threshold, 1:length(tmp.dat), a.tmp$data, 1)
-        else if (a.tmp$threstype == "above threshold")               which(tmp.dat > a.tmp$threshold)
-        else if (a.tmp$threstype == "below threshold")               which(tmp.dat < a.tmp$threshold)
-        else                                                         which(is.na(tmp.dat))
-
-        if (length(ind.sel) == 0)
+        ind.group <- which(groups == g.list[ggi])
+        if (length(ind.group) == 0)
             next
 
-        if (a.tmp$type == "Marker border") {
-            point.border.color[ind.sel] <- a.tmp$color
-            point.border.width[ind.sel] <- a.tmp$width
-        } else if (annotate.markers) {
-            annot.text <- addAnnotToDataLabel("", a.tmp, tmp.dat[ind.sel], tspan = FALSE)
-            if (a.tmp$type == "Shadow" || a.tmp$type == "Border") {
+        ppt.chart.labels$SeriesLabels[[ggi]] <- list(ShowValue = data.label.show)
+        pt.segs <- lapply(ind.group,
+            function(ii)
+            {
+                pt <- list(Index = ii-1)
+                if (data.label.show)
+                    pt$Segments <-  list(list(Field="Value"))
+                else
+                    pt$Segments <- list()
+                return(pt)
+            }
+        )
+        custom.pts <- vector(mode = "list", length = length(ind.group))
+
+        # Traces for annotation need to occur before main trace to avoid hiding hover info
+        annot.text <- rep("", length(ind.group))
+        has.text.annot <- FALSE
+        for (j in seq_along(annotation.list))
+        {
+            if (!checkAnnotType(annotation.list[[j]]$type, "Scatter"))
+                next
+            a.tmp <- annotation.list[[j]]
+            tmp.dat <- getAnnotScatterData(annot.data, a.tmp$data, ind.group)
+            a.tmp$threshold <- ParseText(a.tmp$threshold, tmp.dat)
+            ind.sel <- if (is.null(a.tmp$threstype) || is.null(a.tmp$threshold))    1:length(tmp.dat)
+                       else if (is.factor(tmp.dat) && !is.ordered(tmp.dat))         selectFactor(a.tmp$threshold, 1:length(tmp.dat), a.tmp$data, ggi)
+                       else if (a.tmp$threstype == "above threshold")               which(tmp.dat > a.tmp$threshold)
+                       else if (a.tmp$threstype == "below threshold")               which(tmp.dat < a.tmp$threshold)
+                       else                                                         which(is.na(tmp.dat))
+
+            if (length(ind.sel) == 0)
+                next
+            ind.sel.global <- ind.group[ind.sel] # get index wrt full data set
+
+            if (a.tmp$type == "Marker border") {
+                point.border.color[ind.sel.global] <- a.tmp$color
+                point.border.width[ind.sel.global] <- a.tmp$width
+                for (ii in ind.sel)
+                    custom.pts[[ii]] <- list(Index = ind.group[ii] - 1,
+                        OutlineColor = a.tmp$color, OutlineWidth = a.tmp$width,
+                        OutlineStyle = "Solid", Style = "Circle", Size = marker.size) # required for PPT to show properly
+            } else if (!data.label.show) {
+                annot.text <- addAnnotToDataLabel("", a.tmp, tmp.dat[ind.sel], tspan = FALSE)
                 # Remove </span> (7 characters)
                 annot.text.prefix <- substr(annot.text, 1, nchar(annot.text) - 7)
-                marker.annotations[ind.sel] <- paste0(annot.text.prefix, marker.annotations[ind.sel], "</span>")
-            } else if (a.tmp$type == "Text - before data label") {
-                marker.annotations[ind.sel] <- paste0(annot.text.prefix, marker.annotations[ind.sel])
-            } else if (a.tmp$type == "Hide") {
-                marker.annotations[ind.sel] <- ""
+                if (a.tmp$type == "Shadow" || a.tmp$type == "Border") {
+                    marker.annotations[ind.sel.global] <- paste0(annot.text.prefix, marker.annotations[ind.sel.global], "</span>")
+                } else if (a.tmp$type == "Text - before data label") {
+                    marker.annotations[ind.sel.global] <- paste0(annot.text.prefix, marker.annotations[ind.sel.global])
+                } else if (a.tmp$type == "Hide") {
+                    marker.annotations[ind.sel.global] <- ""
+                } else {
+                    marker.annotations[ind.sel.global] <- paste0(marker.annotations[ind.sel.global], annot.text)
+                }
+                has.text.annot <- TRUE
+                pt.segs <- getPointSegmentsForPPT(pt.segs, ind.sel, a.tmp, tmp.dat[ind.sel])
             } else {
-                marker.annotations[ind.sel] <- paste0(marker.annotations[ind.sel], annot.text)
-            }
-        } else {
-            annot.text <- addAnnotToDataLabel("", a.tmp, tmp.dat[ind.sel], tspan = !is.small.multiples)
-            if (a.tmp$type == "Shadow" || a.tmp$type == "Border") {
+                annot.text <- addAnnotToDataLabel("", a.tmp, tmp.dat[ind.sel], tspan = !is.small.multiples)
                 close.span = if (is.small.multiples) "</span>" else "</tspan>"
                 annot.text.prefix <- substr(annot.text, 1, nchar(annot.text) - nchar(close.span))
-                pre.label.annotations[ind.sel] <- paste0(pre.label.annotations[ind.sel], annot.text.prefix)
-                post.label.annotations[ind.sel] <- paste0(post.label.annotations[ind.sel], close.span)
-            } else if (a.tmp$type == "Text - before data label") {
-                pre.label.annotations[ind.sel] <- paste0(pre.label.annotations[ind.sel], annot.text.prefix)
-            } else if (a.tmp$type == "Hide") {
-                pre.label.annotations[ind.sel] <- ""
-                post.label.annotations[ind.sel] <- ""
-                labels.or.logos[ind.sel] <- ""
-            } else {
-                post.label.annotations[ind.sel] <- paste0(post.label.annotations[ind.sel], annot.text)
+                if (a.tmp$type == "Shadow" || a.tmp$type == "Border") {
+                    pre.label.annotations[ind.sel.global] <- paste0(pre.label.annotations[ind.sel.global], annot.text.prefix)
+                    post.label.annotations[ind.sel.global] <- paste0(post.label.annotations[ind.sel.global], close.span)
+                } else if (a.tmp$type == "Text - before data label") {
+                    pre.label.annotations[ind.sel.global] <- paste0(pre.label.annotations[ind.sel.global], annot.text.prefix)
+                } else if (a.tmp$type == "Hide") {
+                    pre.label.annotations[ind.sel.global] <- ""
+                    post.label.annotations[ind.sel.global] <- ""
+                    labels.or.logos[ind.sel.global] <- ""
+                } else {
+                    post.label.annotations[ind.sel.global] <- paste0(post.label.annotations[ind.sel.global], annot.text)
+                }
+                has.text.annot <- TRUE
+                pt.segs <- getPointSegmentsForPPT(pt.segs, ind.sel, a.tmp, tmp.dat[ind.sel])
             }
         }
-    }
 
+        # Clean up PPT chart labels
+        pt.segs <- tidyPointSegments(pt.segs, length(ind.group), index.map = ind.group, toggle.show.value = !has.text.annot)
+        if (has.text.annot)
+        {
+            # Where labels and text annotations are both present, we need to set
+            # SeriesLabels$ShowValue to FALSE to make PPT use the Segments.
+            # But doing this means the row labels get lost so manually convert label to a text segment
+            if (ppt.chart.labels$SeriesLabels[[ggi]]$ShowValue)
+            {
+                for (ii in 1:length(pt.segs))
+                {
+                    if (is.null(pt.segs[[ii]]$Segments) && isTRUE(pt.segs[[ii]]$ShowValue)) {
+                        pt.segs[[ii]]$ShowValue <- FALSE # Avoid double-up in case this starts working again
+                        pt.segs[[ii]]$Segments <- list(list(Text = labels.or.logos[pt.segs[[ii]]$Index + 1]))
+                    }
+                    else if (length(pt.segs[[ii]]$Segments) > 0)
+                    {
+                        for (j in 1:length(pt.segs[[ii]]$Segments))
+                            if (!is.null(pt.segs[[ii]]$Segments[[j]]$Field) && pt.segs[[ii]]$Segments[[j]]$Field == "Value")
+                            {
+                                pt.segs[[ii]]$Segments[[j]] <- list(Text = labels.or.logos[pt.segs[[ii]]$Index + 1])
+                                break
+                            }
+                    }
+
+                }
+                ppt.chart.labels$SeriesLabels[[ggi]]$ShowValue <- FALSE
+            }
+        }
+        else if (isTRUE(attr(pt.segs, "SeriesShowValue")))
+        {
+            ppt.chart.labels$SeriesLabels[[ggi]]$ShowValue <- TRUE
+            attr(pt.segs, "SeriesShowValue") <- NULL
+        }
+        if (length(pt.segs) > 0)
+            ppt.chart.labels$SeriesLabels[[ggi]]$CustomPoints <- pt.segs
+        if (any(sapply(custom.pts, Negate(is.null))))
+            ppt.custom.points[[ggi]] <- custom.pts  # If there are any marker borders keep whole series to make merging easier
+
+    }
     list(marker.annotations = marker.annotations,
          pre.label.annotations = pre.label.annotations,
          post.label.annotations = post.label.annotations,
          point.border.color = point.border.color,
          point.border.width = point.border.width,
-         labels.or.logos = labels.or.logos)
+         labels.or.logos = labels.or.logos,
+         ppt.chart.labels = ppt.chart.labels,
+         ppt.custom.points = ppt.custom.points
+    )
 }
 
 #' @importFrom flipTransformations TextAsVector
