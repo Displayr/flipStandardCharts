@@ -373,7 +373,7 @@ CombinedScatter <- function(x = NULL,
                                       !scatter.labels.as.hovertext,
                                       !is.null(scatter.groups),
                                       if (!scatter.colors.as.categorical) NULL else scatter.colors,
-                                      marker.size)
+                                      marker.size, not.na)
 
     scatter.sizes <- if (is.null(scatter.sizes)) NULL else abs(scatter.sizes)
     x.axis.font.color <- if (!is.null(x.tick.font.color)) x.tick.font.color else "#2C2C2C"
@@ -920,17 +920,13 @@ extractUniqueValues <- function(groups, not.na)
 }
 
 processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
-                               data.label.show, is.small.multiples, groups, marker.size) {
+                               data.label.show, is.small.multiples, groups,
+                               marker.size, not.na) {
 
     # Annotations need to be separated out by series (i.e. groups) for PPT exporting
     if (is.null(groups))
         groups <- rep(" ", n)
-    if (is.factor(groups))
-        g.list <- levels(groups) # fix legend order
-    else if (any(class(groups) %in% c("Date", "POSIXct", "POSIXt", "integer", "numeric")))
-        g.list <- sort(unique(groups[!is.na(groups)]))
-    else
-        g.list <- unique(groups[!is.na(groups)])
+    g.list <- extractUniqueValues(groups, not.na)
     num.groups <- length(g.list)
 
     # Initialise settings to return
