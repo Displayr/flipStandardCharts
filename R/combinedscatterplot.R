@@ -253,6 +253,9 @@ CombinedScatter <- function(x = NULL,
         warning("Some points omitted due to missing values in 'scatter.sizes'.")
         not.na <- intersect(not.na, which(is.finite(scatter.sizes)))
     }
+    if (!is.null(scatter.groups)) {
+        not.na <- intersect(not.na, which(!is.na(scatter.groups)))
+    }
 
     opacity <- getOpacity(opacity, scatter.sizes, fit.type)
 
@@ -770,18 +773,17 @@ chartLabels <- function(x.title, y.title) {
 
 fitLines <- function(scatter.colors, scatter.colors.as.categorical, scatter.groups,
                      x, y, not.na, fit.type, fit.ignore.last,
-                     fit.CI.show, fit.window.size, colors, fit.line.colors,
+                     fit.CI.show, fit.window.size, colors, input.fit.line.colors,
                      fit.CI.colors, fit.CI.opacity, x.axis.type) {
     n <- length(x)
+    # "groups" is the vector of the colors of the scatter points.
+    # Not to be confused with "scatter.groups",
+    # which is the vector of the panels of the scatter points.
     groups <- scatter.colors
     if (is.null(groups) || !scatter.colors.as.categorical)
         groups <- rep(" ", n)
-    if (is.factor(groups))
-        g.list <- levels(groups) # fix legend order
-    else if (any(class(groups) %in% c("Date", "POSIXct", "POSIXt", "integer", "numeric")))
-        g.list <- sort(unique(groups[!is.na(groups)]))
-    else
-        g.list <- unique(groups[!is.na(groups)])
+
+    g.list <- extractUniqueValues(groups, not.na)
 
     num.groups <- length(g.list)
     num.panels <- if (is.null(scatter.groups)) 1
@@ -795,18 +797,20 @@ fitLines <- function(scatter.colors, scatter.colors.as.categorical, scatter.grou
     fit.lower.bound <- vector("list", num.lines)
     fit.upper.bound <- vector("list", num.lines)
     fit.line.names <- character(num.lines)
+    fit.line.colors <- character(num.lines)
     fit.ci.fill.colors <- character(num.lines)
     fit.ci.label.colors <- character(num.lines)
 
-    if (is.null(fit.line.colors))
-        fit.line.colors <- colors
+    if (is.null(input.fit.line.colors))
+        input.fit.line.colors <- colors
     if (is.null(fit.CI.colors))
-        fit.CI.colors <- fit.line.colors
+        fit.CI.colors <- input.fit.line.colors
     if (is.null(fit.CI.opacity))
         fit.CI.opacity <- 0.5
 
+    p.list <- extractUniqueValues(scatter.groups, not.na)
+
     j <- 1
-    p.list <- unique(scatter.groups)
     for (p in 1:num.panels)
     {
         p.index <- if (is.null(scatter.groups)) 1:n
@@ -826,10 +830,10 @@ fitLines <- function(scatter.colors, scatter.colors.as.categorical, scatter.grou
             fit.lower.bound[[j]] <- fit$lb
             fit.upper.bound[[j]] <- fit$ub
             fit.line.names[j] <- paste0("Fitted: ", g.list[ggi])
+            fit.line.colors[j] <- input.fit.line.colors[ggi]
             fit.ci.fill.colors[j] <- toRGB(fit.CI.colors[ggi], alpha = fit.CI.opacity)
             fit.ci.label.colors[j] <- fit.CI.colors[ggi]
             j <- j + 1
-
         }
     }
     list(fit.x = fit.x, fit.y = fit.y, fit.group = fit.group,
@@ -838,6 +842,19 @@ fitLines <- function(scatter.colors, scatter.colors.as.categorical, scatter.grou
          fit.line.colors = fit.line.colors,
          fit.ci.fill.colors = fit.ci.fill.colors,
          fit.ci.label.colors = fit.ci.label.colors)
+}
+
+extractUniqueValues <- function(groups, not.na)
+{
+    if (is.factor(groups))
+    {
+        lvls <- levels(groups)
+        return(lvls[lvls %in% groups[not.na]])
+    }
+    else if (any(class(groups) %in% c("Date", "POSIXct", "POSIXt", "integer", "numeric")))
+        return(sort(unique(groups[not.na])))
+    else
+        return(unique(groups[not.na]))
 }
 
 processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
