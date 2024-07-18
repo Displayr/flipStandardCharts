@@ -867,7 +867,10 @@ fitLines <- function(scatter.colors, scatter.colors.as.categorical, scatter.grou
     if (is.null(fit.CI.opacity))
         fit.CI.opacity <- 0.5
 
-    p.list <- extractUniqueValues(scatter.groups, not.na)
+    p.list <- if (!is.null(scatter.groups))
+        extractUniqueValues(scatter.groups, not.na)
+    else
+        NULL
 
     j <- 1
     for (p in 1:num.panels)
