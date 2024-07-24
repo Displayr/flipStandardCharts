@@ -21,6 +21,7 @@
 #' @param legend.bubble.font.color Font color of the bubble legend
 #' @param legend.bubble.font.family Font family of the bubble legend
 #' @param legend.bubble.font.size Font size of the bubble legend
+#' @param legend.bubble.title Title to show above the bubble legend
 #' @param legend.bubble.title.font.color Font color of the bubble legend title
 #' @param legend.bubble.title.font.family Font family of the bubble legend title
 #' @param legend.bubble.title.font.size Font size of the bubble legend title
@@ -115,6 +116,7 @@ CombinedScatter <- function(x = NULL,
                             legend.title.font.color = global.font.color,
                             legend.title.font.family = global.font.family,
                             legend.title.font.size = 12,
+                            legend.bubble.title = "",
                             legend.bubble.font.color = global.font.color,
                             legend.bubble.font.family = global.font.family,
                             legend.bubble.font.size = 10,
@@ -383,6 +385,8 @@ CombinedScatter <- function(x = NULL,
         color.scale <- colors
     if (!any(nzchar(legend.title)) && !is.null(scatter.colors))
         legend.title = scatter.colors.name
+    if (!any(nzchar(legend.bubble.title)) && !is.null(scatter.sizes))
+        legend.bubble.title = scatter.sizes.name
 
     p <- rhtmlCombinedScatter::CombinedScatter(
         X = x[not.na],
@@ -476,7 +480,7 @@ CombinedScatter <- function(x = NULL,
         x.title.font.family = x.title.font.family,
         x.title.font.color = x.title.font.color,
         x.title.font.size = x.title.font.size,
-        z.title = scatter.sizes.name,
+        z.title = legend.bubble.title,
         x.format = x.tick.format,
         y.format = y.tick.format,
         x.hover.format = x.hovertext.format,

@@ -85,6 +85,7 @@ CombinedScatter(
   legend.title.font.color = global.font.color,
   legend.title.font.family = global.font.family,
   legend.title.font.size = 12,
+  legend.bubble.title = "",
   legend.bubble.font.color = global.font.color,
   legend.bubble.font.family = global.font.family,
   legend.bubble.font.size = 10,
@@ -351,6 +352,8 @@ Values range from -0.5 (left) to 1.5 (right).}
 \item{legend.title.font.family}{Font family of the legend (and color scale bar) title}
 
 \item{legend.title.font.size}{Font size of the legend (and color scale bar) title}
+
+\item{legend.bubble.title}{Title to show above the bubble legend}
 
 \item{legend.bubble.font.color}{Font color of the bubble legend}
 
