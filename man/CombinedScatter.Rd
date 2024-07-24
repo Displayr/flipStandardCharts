@@ -10,13 +10,13 @@ CombinedScatter(
   scatter.x.column = 1,
   scatter.y.column = 2,
   scatter.labels = NULL,
-  scatter.labels.name = NULL,
+  scatter.labels.name = "",
   scatter.sizes = NULL,
-  scatter.sizes.name = NULL,
+  scatter.sizes.name = "",
   scatter.sizes.column = 3,
   scatter.sizes.as.diameter = FALSE,
   scatter.colors = NULL,
-  scatter.colors.name = NULL,
+  scatter.colors.name = "",
   scatter.colors.column = 4,
   scatter.colors.as.categorical = TRUE,
   scatter.groups = NULL,
@@ -358,11 +358,11 @@ Values range from -0.5 (left) to 1.5 (right).}
 
 \item{legend.bubble.font.size}{Font size of the bubble legend}
 
-\item{legend.bubble.title.font.color}{Font color of the bubble legend}
+\item{legend.bubble.title.font.color}{Font color of the bubble legend title}
 
-\item{legend.bubble.title.font.family}{Font color of the bubble legend}
+\item{legend.bubble.title.font.family}{Font family of the bubble legend title}
 
-\item{legend.bubble.title.font.size}{Font color of the bubble legend}
+\item{legend.bubble.title.font.size}{Font size of the bubble legend title}
 
 \item{margin.autoexpand}{Logical; Whether extra space can be added to the margins
 to allow space for axis/legend/data labels or other chart elements.}

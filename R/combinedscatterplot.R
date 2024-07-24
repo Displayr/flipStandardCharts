@@ -40,13 +40,13 @@ CombinedScatter <- function(x = NULL,
                             scatter.x.column = 1,
                             scatter.y.column = 2,
                             scatter.labels = NULL,
-                            scatter.labels.name = NULL,
+                            scatter.labels.name = "",
                             scatter.sizes = NULL,
-                            scatter.sizes.name = NULL,
+                            scatter.sizes.name = "",
                             scatter.sizes.column = 3,
                             scatter.sizes.as.diameter = FALSE,
                             scatter.colors = NULL,
-                            scatter.colors.name = NULL,
+                            scatter.colors.name = "",
                             scatter.colors.column = 4,
                             scatter.colors.as.categorical = TRUE,
                             scatter.groups = NULL,
@@ -195,11 +195,11 @@ CombinedScatter <- function(x = NULL,
 
     # Try to store name of variables
     scatter.mult.yvals <- isTRUE(attr(x, "scatter.mult.yvals"))
-    if (!is.null(scatter.sizes) && is.null(scatter.sizes.name))
+    if (!is.null(scatter.sizes) && !any(nzchar(scatter.sizes.name)))
         scatter.sizes.name <- deparse(substitute(scatter.sizes))
-    if (!is.null(scatter.labels) && is.null(scatter.labels.name))
+    if (!is.null(scatter.labels) && !any(nzchar(scatter.labels.name)))
         scatter.labels.name <- deparse(substitute(scatter.labels))
-    if (!is.null(scatter.colors) && is.null(scatter.colors.name))
+    if (!is.null(scatter.colors) && !any(nzchar(scatter.colors.name)))
         scatter.colors.name <- deparse(substitute(scatter.colors))
 
     num.tables <- 1
@@ -329,9 +329,8 @@ CombinedScatter <- function(x = NULL,
     labels.or.logos <- if (!is.null(logo.urls)) logo.urls else scatter.labels
     logo.size <- rep(logo.size, n)
 
-    footer <- processFooter(footer, scatter.labels.name, scatter.colors.name,
-                            scatter.sizes.name, scatter.mult.yvals, footer.wrap,
-                            footer.wrap.nchar)
+    if (any(nzchar(footer)) && footer != " ")
+        footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
 
     # Convert axis to the appropriate type based on axis values and tick format
     # Give warning where possible
@@ -382,6 +381,8 @@ CombinedScatter <- function(x = NULL,
     color.scale <- NULL
     if (!scatter.colors.as.categorical)
         color.scale <- colors
+    if (!any(nzchar(legend.title)) && !is.null(scatter.colors))
+        legend.title = scatter.colors.name
 
     p <- rhtmlCombinedScatter::CombinedScatter(
         X = x[not.na],
@@ -599,14 +600,14 @@ unpackColumnsFromX <- function(x, y, scatter.labels, scatter.x.column,
     }
     if (is.null(scatter.sizes) && .isValidColumnIndex(scatter.sizes.column))
     {
-        if (is.null(scatter.sizes.name) && !is.null(colnames(x)))
+        if (!any(nzchar(scatter.sizes.name)) && !is.null(colnames(x)))
             scatter.sizes.name <- colnames(x)[scatter.sizes.column]
         scatter.sizes.name <- trimws(scatter.sizes.name)
         scatter.sizes <- x[,scatter.sizes.column]
     }
     if (is.null(scatter.colors) && .isValidColumnIndex(scatter.colors.column))
     {
-        if (is.null(scatter.colors.name) || nchar(scatter.colors.name) == 0)
+        if (!any(nzchar(scatter.colors.name)) || nchar(scatter.colors.name) == 0)
             scatter.colors.name <- colnames(x)[scatter.colors.column]
         scatter.colors.name <- trimws(scatter.colors.name)
         scatter.colors <- x[,scatter.colors.column]
@@ -738,7 +739,7 @@ processScatterLabels <- function(scatter.labels, x, data.label.format,
 
 getLogoUrls <- function(logos, x, scatter.labels, n) {
     logo.urls <- NULL
-    if (!is.null(logos) && any(nzchar(logos) != 0))
+    if (!is.null(logos) && any(nzchar(logos)))
     {
         logo.urls <- try(TextAsVector(logos))
         if (inherits(logo.urls, "try-error"))
@@ -761,26 +762,6 @@ getLogoUrls <- function(logos, x, scatter.labels, n) {
 
 isEmptyName <- function(x) {
     !any(nzchar(trimws(x)))
-}
-
-processFooter <- function(footer, scatter.labels.name, scatter.colors.name,
-                          scatter.sizes.name, scatter.mult.yvals, footer.wrap,
-                          footer.wrap.nchar) {
-    if (length(footer) == 0 || nchar(footer) == 0)
-    {
-        footer <- ""
-        if (!isEmptyName(scatter.labels.name))
-            footer <- sprintf("%sPoints labeled by '%s'; ", footer, scatter.labels.name)
-        if (!isEmptyName(scatter.colors.name) && !scatter.mult.yvals)
-            footer <- sprintf("%sPoints colored according to '%s'; ", footer, scatter.colors.name)
-        if (!isEmptyName(scatter.sizes.name) && !scatter.mult.yvals)
-            footer <- sprintf("%sArea of points are proportional to absolute value of '%s'; ",
-                              footer, scatter.sizes.name)
-    }
-    if (any(nzchar(footer)) && footer != " ") {
-        footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
-    }
-    footer
 }
 
 getAxisBoundsUnitsMajor <- function(tick.distance, tick.maxnum, bounds.maximum,
