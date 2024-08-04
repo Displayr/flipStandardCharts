@@ -537,7 +537,6 @@ CombinedScatter <- function(x = NULL,
         point.border.width = annotations$point.border.width[not.na],
         labels.logo.scale = logo.size,
         background.color = background.fill.color,
-        plot.background.color = charting.area.fill.color,
         bubble.sizes.as.diameter = scatter.sizes.as.diameter,
         debug.mode = grepl("DEBUG_MODE_ON", title))
 
