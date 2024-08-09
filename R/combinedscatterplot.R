@@ -54,6 +54,7 @@ CombinedScatter <- function(x = NULL,
                             scatter.groups.column = NULL,
                             scatter.labels.as.hovertext = TRUE,
                             scatter.max.labels = 50,
+                            scatter.max.groups = 50,
                             annotation.list = NULL,
                             colors = ChartColors(12),
                             trend.lines = FALSE,
@@ -260,6 +261,13 @@ CombinedScatter <- function(x = NULL,
     if (!scatter.colors.as.categorical && !is.null(attr(colors, "palette.type"))
         && attr(colors, "palette.type") %in% qualitative.palettes)
         warning("For a numeric 'colors' variable, a qualitative palette should not be used. The colorscale is created by interpolating the colors.")
+
+    if (scatter.colors.as.categorical && length(unique(scatter.colors)) > scatter.max.groups)
+    {
+        warning("The colors variable has been treated as a numeric scale because there ",
+                "are more than ", scatter.max.groups, " categories and would be slow to render")
+        scatter.colors.as.categorical <- FALSE
+    }
 
     if (is.null(x))
     {
