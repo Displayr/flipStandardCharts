@@ -23,6 +23,7 @@ CombinedScatter(
   scatter.groups.column = NULL,
   scatter.labels.as.hovertext = TRUE,
   scatter.max.labels = 50,
+  scatter.max.groups = 50,
   annotation.list = NULL,
   colors = ChartColors(12),
   trend.lines = FALSE,
@@ -202,6 +203,10 @@ the data for small multiples (ignored when \code{scatter.groups} is provided)}
 \item{scatter.max.labels}{Integer; the maximum number of labels to show on a Labeled Scatterplot.
 If the number of labels is greater than this parameter, extra labels will be hidden by default but
 can be toggled on by clicking on the marker.}
+
+\item{scatter.max.groups}{Maximum number of different color categories in data. The is
+equivalent to the number of enteries in the legend. Increasing this too high may cause
+performance issues.}
 
 \item{annotation.list}{Optional list of annotations to modify the data labels.}
 
