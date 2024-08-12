@@ -390,7 +390,7 @@ CombinedScatter <- function(x = NULL,
     labels.font.color <- if (data.label.font.autocolor) NULL else data.label.font.color
     color.scale <- NULL
     if (!scatter.colors.as.categorical)
-        color.scale <- colors
+        color.scale <- unique(colors) # undo possible recycling of colors by PrepareData
     if (!any(nzchar(legend.title)) && !is.null(scatter.colors))
         legend.title = scatter.colors.name
     if (!any(nzchar(legend.bubble.title)) && !is.null(scatter.sizes))
