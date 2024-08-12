@@ -345,10 +345,10 @@ CombinedScatter <- function(x = NULL,
     # Convert axis to the appropriate type based on axis values and tick format
     # Give warning where possible
     x.axis.type <- getAxisType(x[not.na], x.tick.format)
-    x.tick.format <- checkD3Format(x.tick.format, x.axis.type, "X axis", convert = TRUE)
+    x.tick.format <- checkD3Format(x.tick.format, x.axis.type, "X axis")
     x <- convertAxis(x, x.axis.type)
     y.axis.type <- getAxisType(y[not.na], y.tick.format)
-    y.tick.format <- checkD3Format(y.tick.format, y.axis.type, "Y axis", convert = TRUE)
+    y.tick.format <- checkD3Format(y.tick.format, y.axis.type, "Y axis")
     y <- convertAxis(y, y.axis.type)
     x.bounds.units.major <- getAxisBoundsUnitsMajor(x.tick.distance,
                                                     x.tick.maxnum,
