@@ -86,6 +86,8 @@ CombinedScatter(
   legend.title.font.color = global.font.color,
   legend.title.font.family = global.font.family,
   legend.title.font.size = 12,
+  legend.title.wrap = TRUE,
+  legend.title.wrap.nchar = 30,
   legend.bubble.title = "",
   legend.bubble.font.color = global.font.color,
   legend.bubble.font.family = global.font.family,
@@ -93,6 +95,8 @@ CombinedScatter(
   legend.bubble.title.font.color = global.font.color,
   legend.bubble.title.font.family = global.font.family,
   legend.bubble.title.font.size = 12,
+  legend.bubble.title.wrap = TRUE,
+  legend.bubble.title.wrap.nchar = 30,
   margin.autoexpand = TRUE,
   margin.top = NULL,
   margin.bottom = NULL,
@@ -358,6 +362,10 @@ Values range from -0.5 (left) to 1.5 (right).}
 
 \item{legend.title.font.size}{Font size of the legend (and color scale bar) title}
 
+\item{legend.title.wrap}{Whether to wrap the legend (and color scale bar) title}
+
+\item{legend.title.wrap.nchar}{The number of characters before wrapping the legend (and color scale bar) title}
+
 \item{legend.bubble.title}{Title to show above the bubble legend}
 
 \item{legend.bubble.font.color}{Font color of the bubble legend}
@@ -371,6 +379,10 @@ Values range from -0.5 (left) to 1.5 (right).}
 \item{legend.bubble.title.font.family}{Font family of the bubble legend title}
 
 \item{legend.bubble.title.font.size}{Font size of the bubble legend title}
+
+\item{legend.bubble.title.wrap}{Whether to wrap the bubble legend title}
+
+\item{legend.bubble.title.wrap.nchar}{The number of characters before wrapping the bubble legend title}
 
 \item{margin.autoexpand}{Logical; Whether extra space can be added to the margins
 to allow space for axis/legend/data labels or other chart elements.}
