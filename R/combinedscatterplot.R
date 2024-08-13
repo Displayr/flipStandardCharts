@@ -18,6 +18,8 @@
 #' @param legend.title.font.color Font color of the legend (and color scale bar) title
 #' @param legend.title.font.family Font family of the legend (and color scale bar) title
 #' @param legend.title.font.size Font size of the legend (and color scale bar) title
+#' @param legend.title.wrap Whether to wrap the legend (and color scale bar) title
+#' @param legend.title.wrap.nchar The number of characters before wrapping the legend (and color scale bar) title
 #' @param legend.bubble.font.color Font color of the bubble legend
 #' @param legend.bubble.font.family Font family of the bubble legend
 #' @param legend.bubble.font.size Font size of the bubble legend
@@ -25,6 +27,8 @@
 #' @param legend.bubble.title.font.color Font color of the bubble legend title
 #' @param legend.bubble.title.font.family Font family of the bubble legend title
 #' @param legend.bubble.title.font.size Font size of the bubble legend title
+#' @param legend.bubble.title.wrap Whether to wrap the bubble legend title 
+#' @param legend.bubble.title.wrap.nchar The number of characters before wrapping the bubble legend title 
 #' @param legend.show is the toggle to show the legend. Can be logical or "Automatic", "Show" or "Hide".
 #'  When automatic, the legend is only shown when there is more than one group. Defaults to TRUE.
 #'  When FALSE or "Hide", the colorscale and bubble legends are also hidden
@@ -117,6 +121,8 @@ CombinedScatter <- function(x = NULL,
                             legend.title.font.color = global.font.color,
                             legend.title.font.family = global.font.family,
                             legend.title.font.size = 12,
+                            legend.title.wrap = TRUE,
+                            legend.title.wrap.nchar = 30,
                             legend.bubble.title = "",
                             legend.bubble.font.color = global.font.color,
                             legend.bubble.font.family = global.font.family,
@@ -124,6 +130,8 @@ CombinedScatter <- function(x = NULL,
                             legend.bubble.title.font.color = global.font.color,
                             legend.bubble.title.font.family = global.font.family,
                             legend.bubble.title.font.size = 12,
+                            legend.bubble.title.wrap = TRUE,
+                            legend.bubble.title.wrap.nchar = 30,
                             margin.autoexpand = TRUE,
                             margin.top = NULL,
                             margin.bottom = NULL,
@@ -427,12 +435,16 @@ CombinedScatter <- function(x = NULL,
         legend.title.font.color = legend.title.font.color,
         legend.title.font.family = legend.title.font.family,
         legend.title.font.size = legend.title.font.size,
+        legend.title.wrap = legend.title.wrap,
+        legend.title.wrap.n.char = legend.title.wrap.nchar,
         legend.bubble.font.color = legend.bubble.font.color,
         legend.bubble.font.family = legend.bubble.font.family,
         legend.bubble.font.size = legend.bubble.font.size,
         legend.bubble.title.font.color = legend.bubble.title.font.color,
         legend.bubble.title.font.family = legend.bubble.title.font.family,
         legend.bubble.title.font.size = legend.bubble.title.font.size,
+        legend.bubble.title.wrap = legend.bubble.title.wrap,
+        legend.bubble.title.wrap.n.char = legend.bubble.title.wrap.nchar,
         legend.x = legend.position.x,
         legend.y = legend.position.y,
         legend.wrap = legend.wrap,
