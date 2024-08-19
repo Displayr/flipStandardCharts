@@ -172,14 +172,19 @@ checkMatrixNames <- function(x, assign.col.names = TRUE)
         rownames(new.x) <- 1:NROW(new.x)
     if (is.null(colnames(new.x)) && assign.col.names)
         colnames(new.x) <- sprintf("Series %d", 1:NCOL(new.x))
-    ind.dup <- which(duplicated(rownames(new.x)))
+    ind.na <- which(is.na(rownames(new.x)))
+    if (length(ind.na) > 0)
+        rownames(new.x)[ind.na] <- "NA"
+    row.names <- trimws(rownames(new.x))
+    ind.dup <- which(duplicated(row.names))
     if (length(ind.dup) > 0)
     {
         warning("Row names of the input table are not unique: ",
-                paste(unique(rownames(new.x)[ind.dup]), collapse = ", "), " at rows ",
+                paste(unique(row.names[ind.dup]), collapse = ", "), " at rows ",
                 paste(ind.dup, collapse = ", "))
         # Non-space suffix is needed to stop plotly merging the duplicated rows
-        rownames(new.x) <- MakeUniqueNames(rownames(new.x), suffix = "&nbsp;")
+        # We use the html entity for 0-length space to keep it centered
+        rownames(new.x) <- MakeUniqueNames(row.names, suffix = "&#8203;")
     }
     attr(new.x, "sorted.rows") <- attr(x, "sorted.rows")
     return(new.x)
@@ -925,6 +930,9 @@ setMarginsForAxis <- function(margins, labels, axis)
     lab.len <- 0
     lab.nline <- 0
     lab.nchar <- 1
+
+    # remove space added to de-dup labels
+    labels <- gsub("&#8203;", "", labels, fixed = TRUE)
 
     lab.nchar <- max(c(0, nchar(unlist(strsplit(split="<br>", as.character(labels))))), na.rm = TRUE)
     font.asp <- fontAspectRatio(axis$tickfont$family)

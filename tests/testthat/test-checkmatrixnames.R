@@ -222,4 +222,21 @@ test_that("check colnames for cell statistics",
         "9/3/2012-9/16/2012", "9/17/2012-9/30/2012"), "%")))
 })
 
+test_that("Duplicates and NAs",
+{
+    xx <- 1:15
+    names(xx) <- rep(LETTERS[1:3], 5)
+    expect_warning(deduped <- checkMatrixNames(xx))
+    expect_equal(rownames(deduped), c("A", "B", "C", "A&#8203;", "B&#8203;", "C&#8203;",
+        "A&#8203;&#8203;", "B&#8203;&#8203;", "C&#8203;&#8203;",
+        "A&#8203;&#8203;&#8203;", "B&#8203;&#8203;&#8203;", "C&#8203;&#8203;&#8203;",
+        "A&#8203;&#8203;&#8203;&#8203;", "B&#8203;&#8203;&#8203;&#8203;",
+        "C&#8203;&#8203;&#8203;&#8203;"
+    ))
+
+    xx <- 1:3
+    names(xx) <- c('A', NA, 'B')
+    expect_equal(rownames(checkMatrixNames(xx)), c("A", "NA", "B"))
+})
+
 
