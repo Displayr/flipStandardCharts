@@ -10,19 +10,20 @@ CombinedScatter(
   scatter.x.column = 1,
   scatter.y.column = 2,
   scatter.labels = NULL,
-  scatter.labels.name = NULL,
+  scatter.labels.name = "",
   scatter.sizes = NULL,
-  scatter.sizes.name = NULL,
+  scatter.sizes.name = "",
   scatter.sizes.column = 3,
   scatter.sizes.as.diameter = FALSE,
   scatter.colors = NULL,
-  scatter.colors.name = NULL,
+  scatter.colors.name = "",
   scatter.colors.column = 4,
   scatter.colors.as.categorical = TRUE,
   scatter.groups = NULL,
   scatter.groups.column = NULL,
   scatter.labels.as.hovertext = TRUE,
   scatter.max.labels = 50,
+  scatter.max.groups = 50,
   annotation.list = NULL,
   colors = ChartColors(12),
   trend.lines = FALSE,
@@ -55,6 +56,11 @@ CombinedScatter(
   panel.title.font.family = global.font.family,
   panel.title.font.color = global.font.color,
   panel.title.font.size = 14,
+  nrows = 2,
+  share.axes = TRUE,
+  x.order = NULL,
+  panel.x.gap = 0.2,
+  panel.y.gap = 0.3,
   footer = "",
   footer.font.family = global.font.family,
   footer.font.color = global.font.color,
@@ -76,6 +82,21 @@ CombinedScatter(
   legend.font.size = 10,
   legend.position.y = 1,
   legend.position.x = 1.02,
+  legend.title = "",
+  legend.title.font.color = global.font.color,
+  legend.title.font.family = global.font.family,
+  legend.title.font.size = 12,
+  legend.title.wrap = TRUE,
+  legend.title.wrap.nchar = 30,
+  legend.bubble.title = "",
+  legend.bubble.font.color = global.font.color,
+  legend.bubble.font.family = global.font.family,
+  legend.bubble.font.size = 10,
+  legend.bubble.title.font.color = global.font.color,
+  legend.bubble.title.font.family = global.font.family,
+  legend.bubble.title.font.size = 12,
+  legend.bubble.title.wrap = TRUE,
+  legend.bubble.title.wrap.nchar = 30,
   margin.autoexpand = TRUE,
   margin.top = NULL,
   margin.bottom = NULL,
@@ -86,6 +107,8 @@ CombinedScatter(
   y.title.font.color = global.font.color,
   y.title.font.family = global.font.family,
   y.title.font.size = 12,
+  y.line.width = 0,
+  y.line.color = rgb(0, 0, 0, maxColorValue = 255),
   y.tick.mark.length = 0,
   y.tick.mark.color = "transparent",
   y.bounds.minimum = NULL,
@@ -94,8 +117,10 @@ CombinedScatter(
   y.tick.maxnum = NULL,
   y.zero.line.width = 0,
   y.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
+  y.zero.line.dash = "Dash",
   y.grid.width = 1 * grid.show,
   y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+  y.grid.dash = "Solid",
   y.tick.show = TRUE,
   y.tick.suffix = "",
   y.tick.prefix = "",
@@ -118,8 +143,10 @@ CombinedScatter(
   x.tick.maxnum = NULL,
   x.zero.line.width = 0,
   x.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
+  x.zero.line.dash = "Dash",
   x.grid.width = 1 * grid.show,
   x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+  x.grid.dash = "Solid",
   x.tick.show = TRUE,
   x.tick.suffix = "",
   x.tick.prefix = "",
@@ -135,8 +162,19 @@ CombinedScatter(
   hovertext.font.size = 11,
   marker.size = 6,
   swap.x.and.y = FALSE,
-  legend.bubbles.show = TRUE,
-  label.auto.placement = TRUE
+  legend.bubbles.show = NULL,
+  color.scale.show = NULL,
+  label.auto.placement = TRUE,
+  quadrants.show = FALSE,
+  x.midpoint.type = "Average",
+  x.midpoint.input = NULL,
+  x.midpoint.value = NULL,
+  y.midpoint.type = "Average",
+  y.midpoint.input = NULL,
+  y.midpoint.value = NULL,
+  midpoint.line.color = rgb(0, 0, 0, maxColorValue = 255),
+  midpoint.line.dash = "Solid",
+  midpoint.line.width = 1
 )
 }
 \arguments{
@@ -180,6 +218,10 @@ the data for small multiples (ignored when \code{scatter.groups} is provided)}
 If the number of labels is greater than this parameter, extra labels will be hidden by default but
 can be toggled on by clicking on the marker.}
 
+\item{scatter.max.groups}{Maximum number of different color categories in data. The is
+equivalent to the number of enteries in the legend. Increasing this too high may cause
+performance issues.}
+
 \item{annotation.list}{Optional list of annotations to modify the data labels.}
 
 \item{colors}{A vector of colors to use in the chart. When \code{scatter.colors.as.categorical}, the vector of colors should have the length as the number of categories in \code{scatter.colors}. If \code{scatter.colors} is used as numeric vector, then a color ramp is constructed from the colors listed.}
@@ -213,10 +255,10 @@ This should be input as a comma-seperated list of URLs.}
 
 \item{fit.CI.opacity}{Opacity of confidence interval ribbon as an alpha value (0 to 1).}
 
-\item{legend.show}{Controls whether legend is shown. This can be a logical (\code{TRUE} or \code{FALSE});
-or a string ("Show" or "Hide"). If it is \code{TRUE} or \code{NA} (the default), a legend will be
-shown only if there is more than one data series. To force a legend to be shown even with 1
-data series, use "Show" instead.}
+\item{legend.show}{is the toggle to show the legend. Can be logical or "Automatic", "Show" or "Hide".
+When automatic, the legend is only shown when there is more than one group. Defaults to TRUE.
+When FALSE or "Hide", the colorscale and bubble legends are also hidden
+(if not overridden by their own "show" parameters).}
 
 \item{legend.orientation}{Character; One of 'Vertical' or 'Horizontal'}
 
@@ -257,6 +299,17 @@ character format (e.g. "black") or an a hex code.}
 \item{panel.title.font.color}{Font color of panel titles.}
 
 \item{panel.title.font.size}{Font size of panel titles.}
+
+\item{nrows}{Integer; Number of rows to arrange the small multiple panels.}
+
+\item{share.axes}{Force range of the plot to be the same across all panels.}
+
+\item{x.order}{A vector containing the list index of the columns in the order
+which they are to be shown, or a string with comma separated indices.}
+
+\item{panel.x.gap}{A number between 0 and 1. Controls the horizontal space between panels.}
+
+\item{panel.y.gap}{A number between 0 and 1. Controls the vertical space between panels.}
 
 \item{footer}{Character}
 
@@ -311,6 +364,36 @@ Values range from 0 (bottom) to 1 (top).}
 \item{legend.position.x}{A numeric controlling the position of the legend.
 Values range from -0.5 (left) to 1.5 (right).}
 
+\item{legend.title}{Title to show above the legend (and color scale bar)}
+
+\item{legend.title.font.color}{Font color of the legend (and color scale bar) title}
+
+\item{legend.title.font.family}{Font family of the legend (and color scale bar) title}
+
+\item{legend.title.font.size}{Font size of the legend (and color scale bar) title}
+
+\item{legend.title.wrap}{Whether to wrap the legend (and color scale bar) title}
+
+\item{legend.title.wrap.nchar}{The number of characters before wrapping the legend (and color scale bar) title}
+
+\item{legend.bubble.title}{Title to show above the bubble legend}
+
+\item{legend.bubble.font.color}{Font color of the bubble legend}
+
+\item{legend.bubble.font.family}{Font family of the bubble legend}
+
+\item{legend.bubble.font.size}{Font size of the bubble legend}
+
+\item{legend.bubble.title.font.color}{Font color of the bubble legend title}
+
+\item{legend.bubble.title.font.family}{Font family of the bubble legend title}
+
+\item{legend.bubble.title.font.size}{Font size of the bubble legend title}
+
+\item{legend.bubble.title.wrap}{Whether to wrap the bubble legend title}
+
+\item{legend.bubble.title.wrap.nchar}{The number of characters before wrapping the bubble legend title}
+
 \item{margin.autoexpand}{Logical; Whether extra space can be added to the margins
 to allow space for axis/legend/data labels or other chart elements.}
 
@@ -334,6 +417,11 @@ character format (e.g. "black") or a hex code.}
 
 \item{y.title.font.size}{Integer; y-axis title font size}
 
+\item{y.line.width}{y-axis line width in pixels (0 = no line).}
+
+\item{y.line.color}{y-axis line color as a named color in character format
+(e.g. "black") or a hex code.}
+
 \item{y.tick.mark.length}{Length of tick marks in pixels. Ticks are only shown when \code{y.line.width > 0}.}
 
 \item{y.tick.mark.color}{Color of tick marks (default transparent).}
@@ -355,10 +443,14 @@ if the axis is categorical}
 color in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
+\item{y.zero.line.dash}{Line type of y zero line. Can be one of 'Solid', 'Dot', 'Dash'.}
+
 \item{y.grid.width}{Width of y-grid lines in pixels; 0 = no line}
 
 \item{y.grid.color}{Color of y-grid lines as a named color in character
 format (e.g. "black") or a hex code.}
+
+\item{y.grid.dash}{Line type of y grid line. Can be one of 'Solid', 'Dot', 'Dash'.}
 
 \item{y.tick.show}{Whether to display the y-axis tick labels}
 
@@ -419,10 +511,14 @@ if the axis is categorical}
 color in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
+\item{x.zero.line.dash}{Line type of x zero line. Can be one of 'Solid', 'Dot', 'Dash'.}
+
 \item{x.grid.width}{Width of y-grid lines in pixels; 0 = no line}
 
 \item{x.grid.color}{Color of y-grid lines as a named color in character
 format (e.g. "black") or a hex code.}
+
+\item{x.grid.dash}{Line type of x grid line. Can be one of 'Solid', 'Dot', 'Dash'.}
 
 \item{x.tick.show}{Whether to display the x-axis tick labels}
 
@@ -462,8 +558,21 @@ if \code{scatter.colors.as.categorical}.}
 
 \item{legend.bubbles.show}{Logical; show legend for bubble sizes.}
 
+\item{color.scale.show}{is the toggle to show the color scale bar.}
+
 \item{label.auto.placement}{Logical; whether the scatter plot labels are positioned automatically
 to reduce overlap.}
+
+\item{quadrants.show}{Whether to show quadrants (including midpoint lines)}
+\item{x.midpoint.type}{One of "Average", "Median", "Code" or "Custom value"}
+\item{x.midpoint.input}{Input when "Code" is selected for x.midpoint.type}
+\item{x.midpoint.value}{Value when "Custom value" is selected for x.midpoint.type}
+\item{y.midpoint.type}{One of "Average", "Median", "Code" or "Custom value"}
+\item{y.midpoint.input}{Input when "Code" is selected for y.midpoint.type}
+\item{y.midpoint.value}{Value when "Custom value" is selected for y.midpoint.type}
+\item{midpoint.line.color}{Midpoint line color}
+\item{midpoint.line.dash}{Midpoint line type. Can be one of 'Solid', 'Dot', 'Dash'}
+\item{midpoint.line.width}{Midpoint line width in pixels}
 }
 \value{
 an HTML widget for \code{"leaflet"} or a \code{"plotly"} object.
