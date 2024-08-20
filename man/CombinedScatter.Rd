@@ -164,7 +164,17 @@ CombinedScatter(
   swap.x.and.y = FALSE,
   legend.bubbles.show = NULL,
   color.scale.show = NULL,
-  label.auto.placement = TRUE
+  label.auto.placement = TRUE,
+  quadrants.show = FALSE,
+  x.midpoint.type = "Average",
+  x.midpoint.input = NULL,
+  x.midpoint.value = NULL,
+  y.midpoint.type = "Average",
+  y.midpoint.input = NULL,
+  y.midpoint.value = NULL,
+  midpoint.line.color = rgb(0, 0, 0, maxColorValue = 255),
+  midpoint.line.dash = "Solid",
+  midpoint.line.width = 1
 )
 }
 \arguments{
@@ -552,6 +562,17 @@ if \code{scatter.colors.as.categorical}.}
 
 \item{label.auto.placement}{Logical; whether the scatter plot labels are positioned automatically
 to reduce overlap.}
+
+\item{quadrants.show}{Whether to show quadrants (including midpoint lines)}
+\item{x.midpoint.type}{One of "Average", "Median", "Code" or "Custom value"}
+\item{x.midpoint.input}{Input when "Code" is selected for x.midpoint.type}
+\item{x.midpoint.value}{Value when "Custom value" is selected for x.midpoint.type}
+\item{y.midpoint.type}{One of "Average", "Median", "Code" or "Custom value"}
+\item{y.midpoint.input}{Input when "Code" is selected for y.midpoint.type}
+\item{y.midpoint.value}{Value when "Custom value" is selected for y.midpoint.type}
+\item{midpoint.line.color}{Midpoint line color}
+\item{midpoint.line.dash}{Midpoint line type. Can be one of 'Solid', 'Dot', 'Dash'}
+\item{midpoint.line.width}{Midpoint line width in pixels}
 }
 \value{
 an HTML widget for \code{"leaflet"} or a \code{"plotly"} object.

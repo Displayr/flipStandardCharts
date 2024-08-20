@@ -27,8 +27,8 @@
 #' @param legend.bubble.title.font.color Font color of the bubble legend title
 #' @param legend.bubble.title.font.family Font family of the bubble legend title
 #' @param legend.bubble.title.font.size Font size of the bubble legend title
-#' @param legend.bubble.title.wrap Whether to wrap the bubble legend title 
-#' @param legend.bubble.title.wrap.nchar The number of characters before wrapping the bubble legend title 
+#' @param legend.bubble.title.wrap Whether to wrap the bubble legend title
+#' @param legend.bubble.title.wrap.nchar The number of characters before wrapping the bubble legend title
 #' @param legend.show is the toggle to show the legend. Can be logical or "Automatic", "Show" or "Hide".
 #'  When automatic, the legend is only shown when there is more than one group. Defaults to TRUE.
 #'  When FALSE or "Hide", the colorscale and bubble legends are also hidden
@@ -38,6 +38,16 @@
 #' @param x.grid.dash Line type of x grid line. Can be one of 'Solid', 'Dot', 'Dash'.
 #' @param y.zero.line.dash Line type of y zero line. Can be one of 'Solid', 'Dot', 'Dash'.
 #' @param y.grid.dash Line type of y grid line. Can be one of 'Solid', 'Dot', 'Dash'.
+#' @param quadrants.show Whether to show quadrants (including midpoint lines)
+#' @param x.midpoint.type One of "Average", "Median", "Code" or "Custom value"
+#' @param x.midpoint.input Input when "Code" is selected for x.midpoint.type
+#' @param x.midpoint.value Value when "Custom value" is selected for x.midpoint.type
+#' @param y.midpoint.type One of "Average", "Median", "Code" or "Custom value"
+#' @param y.midpoint.input Input when "Code" is selected for y.midpoint.type
+#' @param y.midpoint.value Value when "Custom value" is selected for y.midpoint.type
+#' @param midpoint.line.color Midpoint line color
+#' @param midpoint.line.dash Midpoint line type. Can be one of 'Solid', 'Dot', 'Dash'
+#' @param midpoint.line.width Midpoint line width in pixels
 #' @importFrom rhtmlCombinedScatter CombinedScatter
 #' @export
 CombinedScatter <- function(x = NULL,
@@ -199,7 +209,17 @@ CombinedScatter <- function(x = NULL,
                             swap.x.and.y = FALSE,
                             legend.bubbles.show = NULL,
                             color.scale.show = NULL,
-                            label.auto.placement = TRUE)
+                            label.auto.placement = TRUE,
+                            quadrants.show = FALSE,
+                            x.midpoint.type = "Average",
+                            x.midpoint.input = NULL,
+                            x.midpoint.value = NULL,
+                            y.midpoint.type = "Average",
+                            y.midpoint.input = NULL,
+                            y.midpoint.value = NULL,
+                            midpoint.line.color = rgb(0, 0, 0, maxColorValue = 255),
+                            midpoint.line.dash = "Solid",
+                            midpoint.line.width = 1)
 {
     orig.x <- x
     checkDataIsEnough(x, y)
@@ -404,6 +424,16 @@ CombinedScatter <- function(x = NULL,
     if (!any(nzchar(legend.bubble.title)) && !is.null(scatter.sizes))
         legend.bubble.title = scatter.sizes.name
 
+    x.midpoint <- NULL
+    y.midpoint <- NULL
+    if (quadrants.show) {
+        x.midpoint <- computeMidpointValue(x.midpoint.type, x.midpoint.input, x.midpoint.value, x[not.na], "x")
+        y.midpoint <- computeMidpointValue(y.midpoint.type, y.midpoint.input, y.midpoint.value, y[not.na], "y")
+        if (is.null(x.midpoint) || is.na(x.midpoint) || is.null(y.midpoint) || is.na(y.midpoint)) {
+            quadrants.show <- FALSE
+        }
+    }
+
     p <- rhtmlCombinedScatter::CombinedScatter(
         X = x[not.na],
         Y = y[not.na],
@@ -558,6 +588,12 @@ CombinedScatter <- function(x = NULL,
         labels.logo.scale = logo.size,
         background.color = background.fill.color,
         bubble.sizes.as.diameter = scatter.sizes.as.diameter,
+        quadrants.show = quadrants.show,
+        x.midpoint = x.midpoint,
+        y.midpoint = y.midpoint,
+        midpoint.line.color = midpoint.line.color,
+        midpoint.line.dash = midpoint.line.dash,
+        midpoint.line.width = midpoint.line.width,
         debug.mode = grepl("DEBUG_MODE_ON", title))
 
     result <- list(htmlwidget = p)
@@ -1092,4 +1128,39 @@ reorderPanels <- function(scatter.groups, x.order) {
     indices <- order(x.order)[as.numeric(scatter.groups)]
     lvls <- levels(scatter.groups)[x.order]
     factor(indices, labels = lvls)
+}
+
+computeMidpointValue <- function(midpoint.type, midpoint.input, midpoint.value, data.values, axis) {
+    if (!is.numeric(midpoint.value)) {
+        warning(paste0("Quadrants cannot be shown as the ", axis, " has non-numeric data."))
+        return(NaN)
+    }
+
+    invalid.warning <- paste0("Quadrants cannot be shown as the ", axis, " midpoint value is invalid.")
+    if (midpoint.type == "Custom value") {
+        if (is.null(midpoint.value) || is.na(midpoint.value) || !is.numeric(midpoint.value)) {
+            warning(invalid.warning)
+            midpoint.value <- NaN
+        }
+        return(midpoint.value)
+    } else if (midpoint.type == "Code") {
+        if (is.null(midpoint.input) || !is.numeric(midpoint.input) || length(midpoint.input) == 0) {
+            warning(invalid.warning)
+            midpoint.value <- NaN
+        } else if (length(midpoint.input) > 1 ) {
+            val <- midpoint.input[1]
+            if (is.na(val)) {
+                warning(invalid.warning)
+            } else {
+                warning(paste0("The input for the ", axis, "midpoint has multiple elements. The first element will be used."))
+            }
+        } else (
+            val <- midpoint.input
+        )
+        return(val)
+    } else if (midpoint.type == "Average") {
+        return(mean(data.values))
+    } else { # midpoint.type == "Median"
+        return(median(data.values))
+    }
 }
