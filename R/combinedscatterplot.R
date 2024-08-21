@@ -41,10 +41,12 @@
 #' @param quadrants.show Whether to show quadrants (including midpoint lines)
 #' @param x.midpoint.type One of "Average", "Median", "Calculation" or "Fixed value"
 #' @param x.midpoint.input Input when "Calculation" is selected for x.midpoint.type
-#' @param x.midpoint.value Value when "Fixed value" is selected for x.midpoint.type
+#' @param x.midpoint.value Value when "Fixed value" is selected for x.midpoint.type.
+#'  Can be numeric or string of a number.
 #' @param y.midpoint.type One of "Average", "Median", "Calculation" or "Fixed value"
 #' @param y.midpoint.input Input when "Calculation" is selected for y.midpoint.type
-#' @param y.midpoint.value Value when "Fixed value" is selected for y.midpoint.type
+#' @param y.midpoint.value Value when "Fixed value" is selected for y.midpoint.type.
+#'  Can be numeric or string of a number.
 #' @param x.midpoint.line.color x midpoint line color
 #' @param x.midpoint.line.dash x midpoint line type. Can be one of 'Solid', 'Dot', 'Dash'
 #' @param x.midpoint.line.width x midpoint line width in pixels
@@ -1073,38 +1075,51 @@ computeMidpointValue <- function(midpoint.type, midpoint.input, midpoint.value,
                                    " Specify fixed bounds to ensure the line is shown.")
 
     if (midpoint.type == "Fixed value") {
-        if (is.null(midpoint.value) || is.na(midpoint.value) || !is.numeric(midpoint.value)) {
+        if (is.null(midpoint.value)) {
             return(list(value = NaN,
                         warning = invalid.warning))
-        } else if (midpoint.value < range.min || midpoint.value > range.max)  {
+        }
+        if (is.character(midpoint.value)) {
+            midpoint.value <- charToNumeric(midpoint.value)
+        }
+        if (is.na(midpoint.value) || !is.numeric(midpoint.value)) {
+            return(list(value = NaN,
+                        warning = invalid.warning))
+        }
+        if (midpoint.value < range.min || midpoint.value > range.max)  {
             return(list(value = midpoint.value,
                         warning = out.of.range.warning))
         }
         return(list(value = midpoint.value))
-    } else if (midpoint.type == "Calculation") {
+    }
+
+    if (midpoint.type == "Calculation") {
         if (is.null(midpoint.input) || !is.numeric(midpoint.input) || length(midpoint.input) == 0) {
             return(list(value = NaN, warning = invalid.warning))
-        } else if (length(midpoint.input) > 1 ) {
+        }
+        if (length(midpoint.input) > 1 ) {
             val <- midpoint.input[1]
             if (is.na(val)) {
                 return(list(value = NaN, warning = invalid.warning))
-            } else {
-                return(list(value = val,
-                            warning = paste0("The input for the ", axis,
-                                             " midpoint has multiple elements. The first element will be used.")))
             }
+            return(list(value = val,
+                        warning = paste0("The input for the ", axis,
+                                         " midpoint has multiple elements. The first element will be used.")))
         }
         if (is.na(midpoint.input)) {
             return(list(value = NaN, warning = invalid.warning))
-        } else if (midpoint.input < range.min || midpoint.input > range.max) {
-                return(list(value = midpoint.input,
-                            warning = out.of.range.warning))
+        }
+        if (midpoint.input < range.min || midpoint.input > range.max) {
+            return(list(value = midpoint.input,
+                        warning = out.of.range.warning))
         }
         return(list(value = midpoint.input))
-        return(list(value = val))
-    } else if (midpoint.type == "Average") {
-        return(list(value = mean(data.values)))
-    } else { # midpoint.type == "Median"
-        return(list(value = median(data.values)))
     }
+
+    if (midpoint.type == "Average") {
+        return(list(value = mean(data.values)))
+    }
+
+    # midpoint.type == "Median"
+    list(value = median(data.values))
 }
