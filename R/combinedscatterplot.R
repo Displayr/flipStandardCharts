@@ -1066,13 +1066,11 @@ computeMidpointValue <- function(midpoint.type, midpoint.input, midpoint.value,
 
     invalid.warning <- paste0("Quadrants cannot be shown as the ", axis, " midpoint value is invalid.")
 
-    range.min <- if (!is.null(charToNumeric(bounds.min))) charToNumeric(bounds.min) else min(data.values)
-    range.max <- if (!is.null(charToNumeric(bounds.max))) charToNumeric(bounds.max) else max(data.values)
+    estimated.range <- estimateRange(data.values, bounds.min, bounds.max)
 
     # As we do not know the actual plotted range in R, we can only guess that
     # the midpoint line will not be visible based on the data.
-    out.of.range.warning <- paste0("The ", axis, " midpoint line might not be shown as it could be outside the plot range.",
-                                   " Specify fixed bounds to ensure the line is shown.")
+    out.of.range.warning <- paste0("The ", axis, " midpoint line is not shown as it is outside the plot range.")
 
     if (midpoint.type == "Fixed value") {
         if (is.null(midpoint.value)) {
@@ -1086,7 +1084,7 @@ computeMidpointValue <- function(midpoint.type, midpoint.input, midpoint.value,
             return(list(value = NaN,
                         warning = invalid.warning))
         }
-        if (midpoint.value < range.min || midpoint.value > range.max)  {
+        if (midpoint.value < estimated.range$min || midpoint.value > estimated.range$max)  {
             return(list(value = midpoint.value,
                         warning = out.of.range.warning))
         }
@@ -1109,7 +1107,7 @@ computeMidpointValue <- function(midpoint.type, midpoint.input, midpoint.value,
         if (is.na(midpoint.input)) {
             return(list(value = NaN, warning = invalid.warning))
         }
-        if (midpoint.input < range.min || midpoint.input > range.max) {
+        if (midpoint.input < estimated.range$min || midpoint.input > estimated.range$max) {
             return(list(value = midpoint.input,
                         warning = out.of.range.warning))
         }
@@ -1122,4 +1120,31 @@ computeMidpointValue <- function(midpoint.type, midpoint.input, midpoint.value,
 
     # midpoint.type == "Median"
     list(value = median(data.values))
+}
+
+estimateRange <- function(data.values, bounds.min, bounds.max) {
+    data.min <- min(data.values)
+    data.max <- max(data.values)
+    data.span <- data.max - data.min
+    bounds.min <- charToNumeric(bounds.min)
+    bounds.max <- charToNumeric(bounds.max)
+
+    # Reversed bounds
+    if (!is.null(bounds.min) && !is.null(bounds.max) && bounds.min > bounds.max) {
+        temp.1 <- bounds.min
+        temp.2 <- bounds.max
+        bounds.min <- temp.2
+        bounds.max <- temp.1
+    }
+
+    if (data.span == 0) {
+        range.min <- if (!is.null(bounds.min)) bounds.min else data.min - 1
+        range.max <- if (!is.null(bounds.max)) bounds.max else data.max + 1
+    } else {
+        # Plotly seems to add 0.062 of the span
+        range.min <- if (!is.null(bounds.min)) bounds.min else data.min - data.span *0.062
+        range.max <- if (!is.null(bounds.max)) bounds.max else data.max + data.span *0.062
+    }
+
+    return(list(min = range.min, max = range.max))
 }

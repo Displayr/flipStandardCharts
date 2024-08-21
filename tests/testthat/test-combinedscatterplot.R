@@ -533,7 +533,7 @@ test_that("quadrants",
                                  x.midpoint.type = "Fixed value",
                                  y.midpoint.type = "Fixed value",
                                  x.midpoint.value = 6.5, y.midpoint.value = 3.3),
-                   "The y midpoint line might not be shown as it could be outside the plot range")
+                   "The y midpoint line is not shown as it is outside the plot range")
 
     expect_warning(CombinedScatter(1:10,11:20, quadrants.show = TRUE,
                                    x.midpoint.type = "Fixed value",
