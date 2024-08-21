@@ -1226,6 +1226,10 @@ computeMidpointValue <- function(midpoint.type, midpoint.input, midpoint.value,
         if (is.null(midpoint.input) || !is.numeric(midpoint.input) || length(midpoint.input) == 0) {
             return(list(value = NaN, warning = invalid.warning))
         }
+
+        # Remove attributes from midpoint.input
+        midpoint.input <- as.numeric(midpoint.input)
+
         if (length(midpoint.input) > 1 ) {
             val <- midpoint.input[1]
             if (is.na(val)) {
