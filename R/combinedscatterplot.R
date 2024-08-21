@@ -383,42 +383,12 @@ CombinedScatter <- function(x = NULL,
     if (!scatter.colors.as.categorical)
         color.scale <- colors
 
-    x.midpoint <- NULL
-    y.midpoint <- NULL
-    if (quadrants.show) {
-        output.x <- computeMidpointValue(x.midpoint.type, x.midpoint.input,
-                                           x.midpoint.value, x[not.na], "x",
-                                           x.bounds.minimum, x.bounds.maximum)
-        output.y <- computeMidpointValue(y.midpoint.type, y.midpoint.input,
-                                           y.midpoint.value, y[not.na], "y",
-                                           y.bounds.minimum, y.bounds.maximum)
-
-        if (is.na(output.x$value)) {
-            quadrants.show <- FALSE
-            if (!is.null(output.x$warning)) {
-                warning(output.x$warning)
-            }
-            if (is.na(output.y$value)) {
-                # Only show output.y warning when its value is also invalid
-                if (!is.null(output.y$warning)) {
-                    warning(output.y$warning)
-                }
-            }
-        } else if (is.na(output.y$value)) {
-            quadrants.show <- FALSE
-            # Don't show output.x warning as the wording would assume we are showing quadrants
-            if (!is.null(output.y$warning)) {
-                warning(output.y$warning)
-            }
-        } else { # !is.na(output.x$value) && is.na(output.y$value)
-            if (!is.null(output.x$warning)) {
-                warning(output.x$warning)
-            }
-            if (!is.null(output.y$warning)) {
-                warning(output.y$warning)
-            }
-        }
-    }
+    midpoints <- processMidpoints(quadrants.show, x[not.na], x.midpoint.type,
+                                  x.midpoint.input, x.midpoint.value,
+                                  x.bounds.minimum, x.bounds.maximum,
+                                  y[not.na], y.midpoint.type, y.midpoint.input,
+                                  y.midpoint.value, y.bounds.minimum,
+                                  y.bounds.maximum)
 
     p <- rhtmlCombinedScatter::CombinedScatter(
         X = x[not.na],
@@ -559,9 +529,9 @@ CombinedScatter <- function(x = NULL,
         background.color = background.fill.color,
         plot.background.color = charting.area.fill.color,
         bubble.sizes.as.diameter = scatter.sizes.as.diameter,
-        quadrants.show = quadrants.show,
-        x.midpoint = x.midpoint,
-        y.midpoint = y.midpoint,
+        quadrants.show = midpoints$quadrants.show,
+        x.midpoint = midpoints$x.midpoint,
+        y.midpoint = midpoints$y.midpoint,
         x.midpoint.line.color = x.midpoint.line.color,
         x.midpoint.line.dash = tolower(x.midpoint.line.dash),
         x.midpoint.line.width = x.midpoint.line.width,
@@ -1035,6 +1005,54 @@ reorderPanels <- function(scatter.groups, x.order) {
     indices <- order(x.order)[as.numeric(scatter.groups)]
     lvls <- levels(scatter.groups)[x.order]
     factor(indices, labels = lvls)
+}
+
+processMidpoints <- function(quadrants.show, x, x.midpoint.type,
+                             x.midpoint.input, x.midpoint.value,
+                             x.bounds.minimum, x.bounds.maximum,
+                             y, y.midpoint.type, y.midpoint.input,
+                             y.midpoint.value, y.bounds.minimum,
+                             y.bounds.maximum) {
+    x.midpoint <- NULL
+    y.midpoint <- NULL
+    if (quadrants.show) {
+        output.x <- computeMidpointValue(x.midpoint.type, x.midpoint.input,
+                                         x.midpoint.value, x, "x",
+                                         x.bounds.minimum, x.bounds.maximum)
+        output.y <- computeMidpointValue(y.midpoint.type, y.midpoint.input,
+                                         y.midpoint.value, y, "y",
+                                         y.bounds.minimum, y.bounds.maximum)
+
+        if (is.na(output.x$value)) {
+            quadrants.show <- FALSE
+            if (!is.null(output.x$warning)) {
+                warning(output.x$warning)
+            }
+            if (is.na(output.y$value)) {
+                # Only show output.y warning when its value is also invalid
+                if (!is.null(output.y$warning)) {
+                    warning(output.y$warning)
+                }
+            }
+        } else if (is.na(output.y$value)) {
+            quadrants.show <- FALSE
+            # Don't show output.x warning as the wording would assume we are showing quadrants
+            if (!is.null(output.y$warning)) {
+                warning(output.y$warning)
+            }
+        } else { # !is.na(output.x$value) && is.na(output.y$value)
+            if (!is.null(output.x$warning)) {
+                warning(output.x$warning)
+            }
+            if (!is.null(output.y$warning)) {
+                warning(output.y$warning)
+            }
+            x.midpoint = output.x$value
+            y.midpoint = output.y$value
+        }
+    }
+    list(quadrants.show = quadrants.show, x.midpoint = x.midpoint,
+         y.midpoint = y.midpoint)
 }
 
 computeMidpointValue <- function(midpoint.type, midpoint.input, midpoint.value,
