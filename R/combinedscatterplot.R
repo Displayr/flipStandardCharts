@@ -1195,10 +1195,9 @@ computeMidpointValue <- function(midpoint.type, midpoint.input, midpoint.value,
 
     invalid.warning <- paste0("Quadrants cannot be shown as the ", axis, " midpoint value is invalid.")
 
+    # Estimate the range chosen by Plotly
     estimated.range <- estimateRange(data.values, bounds.min, bounds.max)
 
-    # As we do not know the actual plotted range in R, we can only guess that
-    # the midpoint line will not be visible based on the data.
     out.of.range.warning <- paste0("The ", axis, " midpoint line is not shown as it is outside the plot range.")
 
     if (midpoint.type == "Fixed value") {
