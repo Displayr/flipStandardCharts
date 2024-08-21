@@ -39,15 +39,18 @@
 #' @param y.zero.line.dash Line type of y zero line. Can be one of 'Solid', 'Dot', 'Dash'.
 #' @param y.grid.dash Line type of y grid line. Can be one of 'Solid', 'Dot', 'Dash'.
 #' @param quadrants.show Whether to show quadrants (including midpoint lines)
-#' @param x.midpoint.type One of "Average", "Median", "Code" or "Custom value"
-#' @param x.midpoint.input Input when "Code" is selected for x.midpoint.type
-#' @param x.midpoint.value Value when "Custom value" is selected for x.midpoint.type
-#' @param y.midpoint.type One of "Average", "Median", "Code" or "Custom value"
-#' @param y.midpoint.input Input when "Code" is selected for y.midpoint.type
-#' @param y.midpoint.value Value when "Custom value" is selected for y.midpoint.type
-#' @param midpoint.line.color Midpoint line color
-#' @param midpoint.line.dash Midpoint line type. Can be one of 'Solid', 'Dot', 'Dash'
-#' @param midpoint.line.width Midpoint line width in pixels
+#' @param x.midpoint.type One of "Average", "Median", "Calculation" or "Fixed value"
+#' @param x.midpoint.input Input when "Calculation" is selected for x.midpoint.type
+#' @param x.midpoint.value Value when "Fixed value" is selected for x.midpoint.type
+#' @param y.midpoint.type One of "Average", "Median", "Calculation" or "Fixed value"
+#' @param y.midpoint.input Input when "Calculation" is selected for y.midpoint.type
+#' @param y.midpoint.value Value when "Fixed value" is selected for y.midpoint.type
+#' @param x.midpoint.line.color x midpoint line color
+#' @param x.midpoint.line.dash x midpoint line type. Can be one of 'Solid', 'Dot', 'Dash'
+#' @param x.midpoint.line.width x midpoint line width in pixels
+#' @param y.midpoint.line.color y midpoint line color
+#' @param y.midpoint.line.dash y midpoint line type. Can be one of 'Solid', 'Dot', 'Dash'
+#' @param y.midpoint.line.width y midpoint line width in pixels
 #' @importFrom rhtmlCombinedScatter CombinedScatter
 #' @export
 CombinedScatter <- function(x = NULL,
@@ -217,9 +220,12 @@ CombinedScatter <- function(x = NULL,
                             y.midpoint.type = "Average",
                             y.midpoint.input = NULL,
                             y.midpoint.value = NULL,
-                            midpoint.line.color = rgb(0, 0, 0, maxColorValue = 255),
-                            midpoint.line.dash = "Solid",
-                            midpoint.line.width = 1)
+                            x.midpoint.line.color = rgb(0, 0, 0, maxColorValue = 255),
+                            x.midpoint.line.dash = "Solid",
+                            x.midpoint.line.width = 1,
+                            y.midpoint.line.color = rgb(0, 0, 0, maxColorValue = 255),
+                            y.midpoint.line.dash = "Solid",
+                            y.midpoint.line.width = 1)
 {
     orig.x <- x
     checkDataIsEnough(x, y)
@@ -427,10 +433,37 @@ CombinedScatter <- function(x = NULL,
     x.midpoint <- NULL
     y.midpoint <- NULL
     if (quadrants.show) {
-        x.midpoint <- computeMidpointValue(x.midpoint.type, x.midpoint.input, x.midpoint.value, x[not.na], "x")
-        y.midpoint <- computeMidpointValue(y.midpoint.type, y.midpoint.input, y.midpoint.value, y[not.na], "y")
-        if (is.null(x.midpoint) || is.na(x.midpoint) || is.null(y.midpoint) || is.na(y.midpoint)) {
+        output.x <- computeMidpointValue(x.midpoint.type, x.midpoint.input,
+                                           x.midpoint.value, x[not.na], "x",
+                                           x.bounds.minimum, x.bounds.maximum)
+        output.y <- computeMidpointValue(y.midpoint.type, y.midpoint.input,
+                                           y.midpoint.value, y[not.na], "y",
+                                           y.bounds.minimum, y.bounds.maximum)
+
+        if (is.na(output.x$value)) {
             quadrants.show <- FALSE
+            if (!is.null(output.x$warning)) {
+                warning(output.x$warning)
+            }
+            if (is.na(output.y$value)) {
+                # Only show output.y warning when its value is also invalid
+                if (!is.null(output.y$warning)) {
+                    warning(output.y$warning)
+                }
+            }
+        } else if (is.na(output.y$value)) {
+            quadrants.show <- FALSE
+            # Don't show output.x warning as the wording would assume we are showing quadrants
+            if (!is.null(output.y$warning)) {
+                warning(output.y$warning)
+            }
+        } else { # !is.na(output.x$value) && is.na(output.y$value)
+            if (!is.null(output.x$warning)) {
+                warning(output.x$warning)
+            }
+            if (!is.null(output.y$warning)) {
+                warning(output.y$warning)
+            }
         }
     }
 
@@ -591,9 +624,12 @@ CombinedScatter <- function(x = NULL,
         quadrants.show = quadrants.show,
         x.midpoint = x.midpoint,
         y.midpoint = y.midpoint,
-        midpoint.line.color = midpoint.line.color,
-        midpoint.line.dash = midpoint.line.dash,
-        midpoint.line.width = midpoint.line.width,
+        x.midpoint.line.color = x.midpoint.line.color,
+        x.midpoint.line.dash = tolower(x.midpoint.line.dash),
+        x.midpoint.line.width = x.midpoint.line.width,
+        y.midpoint.line.color = y.midpoint.line.color,
+        y.midpoint.line.dash = tolower(y.midpoint.line.dash),
+        y.midpoint.line.width = y.midpoint.line.width,
         debug.mode = grepl("DEBUG_MODE_ON", title))
 
     result <- list(htmlwidget = p)
@@ -1130,37 +1166,56 @@ reorderPanels <- function(scatter.groups, x.order) {
     factor(indices, labels = lvls)
 }
 
-computeMidpointValue <- function(midpoint.type, midpoint.input, midpoint.value, data.values, axis) {
-    if (!is.numeric(midpoint.value)) {
-        warning(paste0("Quadrants cannot be shown as the ", axis, " has non-numeric data."))
-        return(NaN)
+computeMidpointValue <- function(midpoint.type, midpoint.input, midpoint.value,
+                                 data.values, axis, bounds.min, bounds.max) {
+    if (!is.numeric(data.values)) {
+        return(list(value = NaN,
+                    warning = paste0("Quadrants cannot be shown as the ", axis, "-axis has non-numeric data.")))
     }
 
     invalid.warning <- paste0("Quadrants cannot be shown as the ", axis, " midpoint value is invalid.")
-    if (midpoint.type == "Custom value") {
+
+    range.min <- if (!is.null(charToNumeric(bounds.min))) charToNumeric(bounds.min) else min(data.values)
+    range.max <- if (!is.null(charToNumeric(bounds.max))) charToNumeric(bounds.max) else max(data.values)
+
+    # As we do not know the actual plotted range in R, we can only guess that
+    # the midpoint line will not be visible based on the data.
+    out.of.range.warning <- paste0("The ", axis, " midpoint line might not be shown as it could be outside the plot range.",
+                                   " Specify fixed bounds to ensure the line is shown.")
+
+    if (midpoint.type == "Fixed value") {
         if (is.null(midpoint.value) || is.na(midpoint.value) || !is.numeric(midpoint.value)) {
-            warning(invalid.warning)
-            midpoint.value <- NaN
+            return(list(value = NaN,
+                        warning = invalid.warning))
+        } else if (midpoint.value < range.min || midpoint.value > range.max)  {
+            return(list(value = midpoint.value,
+                        warning = out.of.range.warning))
         }
-        return(midpoint.value)
-    } else if (midpoint.type == "Code") {
+        return(list(value = midpoint.value))
+    } else if (midpoint.type == "Calculation") {
         if (is.null(midpoint.input) || !is.numeric(midpoint.input) || length(midpoint.input) == 0) {
-            warning(invalid.warning)
-            midpoint.value <- NaN
+            return(list(value = NaN, warning = invalid.warning))
         } else if (length(midpoint.input) > 1 ) {
             val <- midpoint.input[1]
             if (is.na(val)) {
-                warning(invalid.warning)
+                return(list(value = NaN, warning = invalid.warning))
             } else {
-                warning(paste0("The input for the ", axis, "midpoint has multiple elements. The first element will be used."))
+                return(list(value = val,
+                            warning = paste0("The input for the ", axis,
+                                             " midpoint has multiple elements. The first element will be used.")))
             }
-        } else (
-            val <- midpoint.input
-        )
-        return(val)
+        }
+        if (is.na(midpoint.input)) {
+            return(list(value = NaN, warning = invalid.warning))
+        } else if (midpoint.input < range.min || midpoint.input > range.max) {
+                return(list(value = midpoint.input,
+                            warning = out.of.range.warning))
+        }
+        return(list(value = midpoint.input))
+        return(list(value = val))
     } else if (midpoint.type == "Average") {
-        return(mean(data.values))
+        return(list(value = mean(data.values)))
     } else { # midpoint.type == "Median"
-        return(median(data.values))
+        return(list(value = median(data.values)))
     }
 }
