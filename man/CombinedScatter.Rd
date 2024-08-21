@@ -569,10 +569,12 @@ to reduce overlap.}
 \item{quadrants.show}{Whether to show quadrants (including midpoint lines)}
 \item{x.midpoint.type}{One of "Average", "Median", "Code" or "Custom value"}
 \item{x.midpoint.input}{Input when "Code" is selected for x.midpoint.type}
-\item{x.midpoint.value}{Value when "Custom value" is selected for x.midpoint.type}
+\item{x.midpoint.value}{Value when "Custom value" is selected for x.midpoint.type.
+  Can be numeric or string of a number.}
 \item{y.midpoint.type}{One of "Average", "Median", "Code" or "Custom value"}
 \item{y.midpoint.input}{Input when "Code" is selected for y.midpoint.type}
-\item{y.midpoint.value}{Value when "Custom value" is selected for y.midpoint.type}
+\item{y.midpoint.value}{Value when "Custom value" is selected for y.midpoint.type.
+  Can be numeric or string of a number.}
 \item{x.midpoint.line.color}{x midpoint line color}
 \item{x.midpoint.line.dash}{x midpoint line type. Can be one of 'Solid', 'Dot', 'Dash'}
 \item{x.midpoint.line.width}{x midpoint line width in pixels}
