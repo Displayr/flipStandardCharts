@@ -797,7 +797,7 @@ processFooter <- function(footer, scatter.labels.name, scatter.colors.name,
     footer
 }
 
-#' @importFrom flipTime ParseDateTime
+#' @importFrom flipTime AsDateTime
 getAxisBoundsUnitsMajor <- function(tick.distance, tick.maxnum, bounds.maximum,
                                     bounds.minimum, values, axis.type) {
     result <- charToNumeric(tick.distance)
@@ -807,29 +807,38 @@ getAxisBoundsUnitsMajor <- function(tick.distance, tick.maxnum, bounds.maximum,
                                          bounds.minimum, values)
         } else {
             tick.maxnum <- charToNumeric(tick.maxnum)
-            tmp.max <- as.numeric(ParseDateTime(bounds.max))
+
+            tmp.max <- if (!is.null(bounds.maximum)) as.numeric(AsDateTime(bounds.maximum)) else NULL
+            tmp.min <- if (!is.null(bounds.minimum)) as.numeric(AsDateTime(bounds.minimum)) else NULL
+
+            # Deal with reversed axes
+            if (!is.null(tmp.max) && !is.null(tmp.max) && tmp.max < tmp.min) {
+                tmp.1 <- tmp.min
+                tmp.2 <- tmp.max
+                tmp.min <- tmp.2
+                tmp.max <- tmp.1
+            }
+
             if (is.null(tmp.max))
                 tmp.max <- max(as.numeric(values), na.rm = TRUE)
-            tmp.min <- as.numeric(ParseDateTime(bounds.min))
             if (is.null(tmp.min))
                 tmp.min <- min(as.numeric(values), na.rm = TRUE)
-            tmp.diff <- (tmp.max - tmp.min)/tick.maxnum
-            if (tmp.diff > 0) # TODO: what about reversed bounds???
+            tmp.diff <- (tmp.max - tmp.min) / tick.maxnum
+            if (tmp.diff > 0)
             {
                 delta <- 10^(ceiling(log10(tmp.diff)))
                 if (delta * 0.2 > tmp.diff)
-                    return(delta * 0.2)
+                    return(delta * 0.2 * 1000)
                 else if (delta * 0.5 > tmp.diff)
-                    return(delta * 0.5)
+                    return(delta * 0.5 * 1000)
                 else
-                    return(delta)
+                    return(delta * 1000)
             } else
                 return(NULL)
         }
     }
     result
 }
-
 
 getTooltipsText <- function(scatter.labels, not.na, x, y, x.tick.format,
                             x.tick.prefix, x.tick.suffix, y.tick.format,
