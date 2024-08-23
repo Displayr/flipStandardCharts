@@ -348,11 +348,13 @@ CombinedScatter <- function(x = NULL,
     x.bounds.units.major <- getAxisBoundsUnitsMajor(x.tick.distance,
                                                     x.tick.maxnum,
                                                     x.bounds.maximum,
-                                                    x.bounds.minimum, x)
+                                                    x.bounds.minimum, x,
+                                                    x.axis.type)
     y.bounds.units.major <- getAxisBoundsUnitsMajor(y.tick.distance,
                                                     y.tick.maxnum,
                                                     y.bounds.maximum,
-                                                    y.bounds.minimum, y)
+                                                    y.bounds.minimum, y,
+                                                    y.axis.type)
     if (x.axis.type != "date") {
         x.bounds.minimum <- charToNumeric(x.bounds.minimum)
         x.bounds.maximum <- charToNumeric(x.bounds.maximum)
@@ -795,12 +797,36 @@ processFooter <- function(footer, scatter.labels.name, scatter.colors.name,
     footer
 }
 
+#' @importFrom flipTime ParseDateTime
 getAxisBoundsUnitsMajor <- function(tick.distance, tick.maxnum, bounds.maximum,
-                                    bounds.minimum, values) {
+                                    bounds.minimum, values, axis.type) {
     result <- charToNumeric(tick.distance)
-    if (is.null(result) && !is.null(tick.maxnum))
-        result <- calcUnitsForMaxNum(tick.maxnum, bounds.maximum,
-                                     bounds.minimum, values)
+    if (is.null(result) && !is.null(tick.maxnum)) {
+        if (axis.type != "date") {
+            result <- calcUnitsForMaxNum(tick.maxnum, bounds.maximum,
+                                         bounds.minimum, values)
+        } else {
+            tick.maxnum <- charToNumeric(tick.maxnum)
+            tmp.max <- as.numeric(ParseDateTime(bounds.max))
+            if (is.null(tmp.max))
+                tmp.max <- max(as.numeric(values), na.rm = TRUE)
+            tmp.min <- as.numeric(ParseDateTime(bounds.min))
+            if (is.null(tmp.min))
+                tmp.min <- min(as.numeric(values), na.rm = TRUE)
+            tmp.diff <- (tmp.max - tmp.min)/tick.maxnum
+            if (tmp.diff > 0) # TODO: what about reversed bounds???
+            {
+                delta <- 10^(ceiling(log10(tmp.diff)))
+                if (delta * 0.2 > tmp.diff)
+                    return(delta * 0.2)
+                else if (delta * 0.5 > tmp.diff)
+                    return(delta * 0.5)
+                else
+                    return(delta)
+            } else
+                return(NULL)
+        }
+    }
     result
 }
 
