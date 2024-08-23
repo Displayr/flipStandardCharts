@@ -38,6 +38,21 @@
 #' @param x.grid.dash Line type of x grid line. Can be one of 'Solid', 'Dot', 'Dash'.
 #' @param y.zero.line.dash Line type of y zero line. Can be one of 'Solid', 'Dot', 'Dash'.
 #' @param y.grid.dash Line type of y grid line. Can be one of 'Solid', 'Dot', 'Dash'.
+#' @param quadrants.show Whether to show quadrants (including midpoint lines)
+#' @param x.midpoint.type One of "Average", "Median", "Calculation" or "Fixed value"
+#' @param x.midpoint.input Input when "Calculation" is selected for x.midpoint.type
+#' @param x.midpoint.value Value when "Fixed value" is selected for x.midpoint.type.
+#'  Can be numeric or string of a number.
+#' @param y.midpoint.type One of "Average", "Median", "Calculation" or "Fixed value"
+#' @param y.midpoint.input Input when "Calculation" is selected for y.midpoint.type
+#' @param y.midpoint.value Value when "Fixed value" is selected for y.midpoint.type.
+#'  Can be numeric or string of a number.
+#' @param x.midpoint.line.color x midpoint line color
+#' @param x.midpoint.line.dash x midpoint line type. Can be one of 'Solid', 'Dot', 'Dash'
+#' @param x.midpoint.line.width x midpoint line width in pixels
+#' @param y.midpoint.line.color y midpoint line color
+#' @param y.midpoint.line.dash y midpoint line type. Can be one of 'Solid', 'Dot', 'Dash'
+#' @param y.midpoint.line.width y midpoint line width in pixels
 #' @importFrom rhtmlCombinedScatter CombinedScatter
 #' @export
 CombinedScatter <- function(x = NULL,
@@ -199,7 +214,20 @@ CombinedScatter <- function(x = NULL,
                             swap.x.and.y = FALSE,
                             legend.bubbles.show = NULL,
                             color.scale.show = NULL,
-                            label.auto.placement = TRUE)
+                            label.auto.placement = TRUE,
+                            quadrants.show = FALSE,
+                            x.midpoint.type = "Average",
+                            x.midpoint.input = NULL,
+                            x.midpoint.value = NULL,
+                            y.midpoint.type = "Average",
+                            y.midpoint.input = NULL,
+                            y.midpoint.value = NULL,
+                            x.midpoint.line.color = rgb(0, 0, 0, maxColorValue = 255),
+                            x.midpoint.line.dash = "Solid",
+                            x.midpoint.line.width = 1,
+                            y.midpoint.line.color = rgb(0, 0, 0, maxColorValue = 255),
+                            y.midpoint.line.dash = "Solid",
+                            y.midpoint.line.width = 1)
 {
     orig.x <- x
     checkDataIsEnough(x, y)
@@ -412,6 +440,13 @@ CombinedScatter <- function(x = NULL,
     if (!any(nzchar(legend.bubble.title)) && !is.null(scatter.sizes))
         legend.bubble.title = scatter.sizes.name
 
+    midpoints <- processMidpoints(quadrants.show, x[not.na], x.midpoint.type,
+                                  x.midpoint.input, x.midpoint.value,
+                                  x.bounds.minimum, x.bounds.maximum,
+                                  y[not.na], y.midpoint.type, y.midpoint.input,
+                                  y.midpoint.value, y.bounds.minimum,
+                                  y.bounds.maximum)
+
     p <- rhtmlCombinedScatter::CombinedScatter(
         X = x[not.na],
         Y = y[not.na],
@@ -566,6 +601,15 @@ CombinedScatter <- function(x = NULL,
         labels.logo.scale = logo.size,
         background.color = background.fill.color,
         bubble.sizes.as.diameter = scatter.sizes.as.diameter,
+        quadrants.show = midpoints$quadrants.show,
+        x.midpoint = midpoints$x.midpoint,
+        y.midpoint = midpoints$y.midpoint,
+        x.midpoint.line.color = x.midpoint.line.color,
+        x.midpoint.line.dash = tolower(x.midpoint.line.dash),
+        x.midpoint.line.width = x.midpoint.line.width,
+        y.midpoint.line.color = y.midpoint.line.color,
+        y.midpoint.line.dash = tolower(y.midpoint.line.dash),
+        y.midpoint.line.width = y.midpoint.line.width,
         debug.mode = grepl("DEBUG_MODE_ON", title))
 
     result <- list(htmlwidget = p)
@@ -1100,4 +1144,147 @@ reorderPanels <- function(scatter.groups, x.order) {
     indices <- order(x.order)[as.numeric(scatter.groups)]
     lvls <- levels(scatter.groups)[x.order]
     factor(indices, labels = lvls)
+}
+
+processMidpoints <- function(quadrants.show, x, x.midpoint.type,
+                             x.midpoint.input, x.midpoint.value,
+                             x.bounds.minimum, x.bounds.maximum,
+                             y, y.midpoint.type, y.midpoint.input,
+                             y.midpoint.value, y.bounds.minimum,
+                             y.bounds.maximum) {
+    x.midpoint <- NULL
+    y.midpoint <- NULL
+    if (quadrants.show) {
+        output.x <- computeMidpointValue(x.midpoint.type, x.midpoint.input,
+                                         x.midpoint.value, x, "x",
+                                         x.bounds.minimum, x.bounds.maximum)
+        output.y <- computeMidpointValue(y.midpoint.type, y.midpoint.input,
+                                         y.midpoint.value, y, "y",
+                                         y.bounds.minimum, y.bounds.maximum)
+
+        if (is.na(output.x$value)) {
+            quadrants.show <- FALSE
+            if (!is.null(output.x$warning)) {
+                warning(output.x$warning)
+            }
+            if (is.na(output.y$value)) {
+                # Only show output.y warning when its value is also invalid
+                if (!is.null(output.y$warning)) {
+                    warning(output.y$warning)
+                }
+            }
+        } else if (is.na(output.y$value)) {
+            quadrants.show <- FALSE
+            # Don't show output.x warning as the wording would assume we are showing quadrants
+            if (!is.null(output.y$warning)) {
+                warning(output.y$warning)
+            }
+        } else { # !is.na(output.x$value) && is.na(output.y$value)
+            if (!is.null(output.x$warning)) {
+                warning(output.x$warning)
+            }
+            if (!is.null(output.y$warning)) {
+                warning(output.y$warning)
+            }
+            x.midpoint = output.x$value
+            y.midpoint = output.y$value
+        }
+    }
+    list(quadrants.show = quadrants.show, x.midpoint = x.midpoint,
+         y.midpoint = y.midpoint)
+}
+
+computeMidpointValue <- function(midpoint.type, midpoint.input, midpoint.value,
+                                 data.values, axis, bounds.min, bounds.max) {
+    if (!is.numeric(data.values)) {
+        return(list(value = NaN,
+                    warning = paste0("Quadrants cannot be shown as the ", axis, "-axis has non-numeric data.")))
+    }
+
+    invalid.warning <- paste0("Quadrants cannot be shown as the ", axis, " midpoint value is invalid.")
+
+    # Estimate the range chosen by Plotly
+    estimated.range <- estimateRange(data.values, bounds.min, bounds.max)
+
+    out.of.range.warning <- paste0("The ", axis, " midpoint line is not shown as it is outside the plot range.")
+
+    if (midpoint.type == "Fixed value") {
+        if (is.null(midpoint.value)) {
+            return(list(value = NaN,
+                        warning = invalid.warning))
+        }
+        if (is.character(midpoint.value)) {
+            midpoint.value <- charToNumeric(midpoint.value)
+        }
+        if (!is.finite(midpoint.value) || !is.numeric(midpoint.value)) {
+            return(list(value = NaN,
+                        warning = invalid.warning))
+        }
+        if (midpoint.value < estimated.range$min || midpoint.value > estimated.range$max)  {
+            return(list(value = midpoint.value,
+                        warning = out.of.range.warning))
+        }
+        return(list(value = midpoint.value))
+    }
+
+    if (midpoint.type == "Calculation") {
+        if (is.null(midpoint.input) || !is.numeric(midpoint.input) || length(midpoint.input) == 0) {
+            return(list(value = NaN, warning = invalid.warning))
+        }
+
+        # Remove attributes from midpoint.input
+        midpoint.input <- as.numeric(midpoint.input)
+
+        if (length(midpoint.input) > 1 ) {
+            val <- midpoint.input[1]
+            if (!is.finite(val)) {
+                return(list(value = NaN, warning = invalid.warning))
+            }
+            return(list(value = val,
+                        warning = paste0("The input for the ", axis,
+                                         " midpoint has multiple elements. The first element will be used.")))
+        }
+        if (!is.finite(midpoint.input)) {
+            return(list(value = NaN, warning = invalid.warning))
+        }
+        if (midpoint.input < estimated.range$min || midpoint.input > estimated.range$max) {
+            return(list(value = midpoint.input,
+                        warning = out.of.range.warning))
+        }
+        return(list(value = midpoint.input))
+    }
+
+    if (midpoint.type == "Average") {
+        return(list(value = mean(data.values, na.rm = TRUE)))
+    }
+
+    # midpoint.type == "Median"
+    list(value = median(data.values, na.rm = TRUE))
+}
+
+estimateRange <- function(data.values, bounds.min, bounds.max) {
+    data.min <- min(data.values, na.rm = TRUE)
+    data.max <- max(data.values, na.rm = TRUE)
+    data.span <- data.max - data.min
+    bounds.min <- charToNumeric(bounds.min)
+    bounds.max <- charToNumeric(bounds.max)
+
+    # Reversed bounds
+    if (!is.null(bounds.min) && !is.null(bounds.max) && bounds.min > bounds.max) {
+        temp.1 <- bounds.min
+        temp.2 <- bounds.max
+        bounds.min <- temp.2
+        bounds.max <- temp.1
+    }
+
+    if (data.span == 0) {
+        range.min <- if (!is.null(bounds.min)) bounds.min else data.min - 1
+        range.max <- if (!is.null(bounds.max)) bounds.max else data.max + 1
+    } else {
+        # Plotly seems to add 0.062 of the span
+        range.min <- if (!is.null(bounds.min)) bounds.min else data.min - data.span *0.062
+        range.max <- if (!is.null(bounds.max)) bounds.max else data.max + data.span *0.062
+    }
+
+    list(min = range.min, max = range.max)
 }
