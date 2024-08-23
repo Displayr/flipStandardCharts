@@ -845,19 +845,22 @@ getAxisBoundsUnitsMajor <- function(tick.distance, tick.maxnum, bounds.maximum,
                 tmp.min <- min(as.numeric(values), na.rm = TRUE)
             tmp.diff <- (tmp.max - tmp.min) / tick.maxnum
             if (tmp.diff > 0)
-            {
-                delta <- 10^(ceiling(log10(tmp.diff)))
-                if (delta * 0.2 > tmp.diff)
-                    return(delta * 0.2 * 1000)
-                else if (delta * 0.5 > tmp.diff)
-                    return(delta * 0.5 * 1000)
-                else
-                    return(delta * 1000)
-            } else
-                return(NULL)
+                result <- tickDeltaFromDiff(tmp.diff) * 1000 # 1000 as time is milliseconds from the epoch in JS
+            else
+                result <- NULL
         }
     }
     result
+}
+
+tickDeltaFromDiff <- function(diff) {
+    delta <- 10^(ceiling(log10(diff)))
+    if (delta * 0.2 > diff)
+        return(delta * 0.2)
+    else if (delta * 0.5 > diff)
+        return(delta * 0.5)
+    else
+        return(delta)
 }
 
 getTooltipsText <- function(scatter.labels, not.na, x, y, x.tick.format,
