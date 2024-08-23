@@ -27,8 +27,8 @@
 #' @param legend.bubble.title.font.color Font color of the bubble legend title
 #' @param legend.bubble.title.font.family Font family of the bubble legend title
 #' @param legend.bubble.title.font.size Font size of the bubble legend title
-#' @param legend.bubble.title.wrap Whether to wrap the bubble legend title 
-#' @param legend.bubble.title.wrap.nchar The number of characters before wrapping the bubble legend title 
+#' @param legend.bubble.title.wrap Whether to wrap the bubble legend title
+#' @param legend.bubble.title.wrap.nchar The number of characters before wrapping the bubble legend title
 #' @param legend.show is the toggle to show the legend. Can be logical or "Automatic", "Show" or "Hide".
 #'  When automatic, the legend is only shown when there is more than one group. Defaults to TRUE.
 #'  When FALSE or "Hide", the colorscale and bubble legends are also hidden
@@ -370,7 +370,7 @@ CombinedScatter <- function(x = NULL,
         x.bounds.minimum <- charToNumeric(x.bounds.minimum)
         x.bounds.maximum <- charToNumeric(x.bounds.maximum)
     }
-    if (y.axis.type == "date") {
+    if (y.axis.type != "date") {
         y.bounds.minimum <- charToNumeric(y.bounds.minimum)
         y.bounds.maximum <- charToNumeric(y.bounds.maximum)
     }
