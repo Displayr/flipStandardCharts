@@ -1208,7 +1208,7 @@ computeMidpointValue <- function(midpoint.type, midpoint.input, midpoint.value,
         if (is.character(midpoint.value)) {
             midpoint.value <- charToNumeric(midpoint.value)
         }
-        if (is.na(midpoint.value) || !is.numeric(midpoint.value)) {
+        if (!is.finite(midpoint.value) || !is.numeric(midpoint.value)) {
             return(list(value = NaN,
                         warning = invalid.warning))
         }
@@ -1229,14 +1229,14 @@ computeMidpointValue <- function(midpoint.type, midpoint.input, midpoint.value,
 
         if (length(midpoint.input) > 1 ) {
             val <- midpoint.input[1]
-            if (is.na(val)) {
+            if (!is.finite(val)) {
                 return(list(value = NaN, warning = invalid.warning))
             }
             return(list(value = val,
                         warning = paste0("The input for the ", axis,
                                          " midpoint has multiple elements. The first element will be used.")))
         }
-        if (is.na(midpoint.input)) {
+        if (!is.finite(midpoint.input)) {
             return(list(value = NaN, warning = invalid.warning))
         }
         if (midpoint.input < estimated.range$min || midpoint.input > estimated.range$max) {
@@ -1247,16 +1247,16 @@ computeMidpointValue <- function(midpoint.type, midpoint.input, midpoint.value,
     }
 
     if (midpoint.type == "Average") {
-        return(list(value = mean(data.values)))
+        return(list(value = mean(data.values, na.rm = TRUE)))
     }
 
     # midpoint.type == "Median"
-    list(value = median(data.values))
+    list(value = median(data.values, na.rm = TRUE))
 }
 
 estimateRange <- function(data.values, bounds.min, bounds.max) {
-    data.min <- min(data.values)
-    data.max <- max(data.values)
+    data.min <- min(data.values, na.rm = TRUE)
+    data.max <- max(data.values, na.rm = TRUE)
     data.span <- data.max - data.min
     bounds.min <- charToNumeric(bounds.min)
     bounds.max <- charToNumeric(bounds.max)
@@ -1278,5 +1278,5 @@ estimateRange <- function(data.values, bounds.min, bounds.max) {
         range.max <- if (!is.null(bounds.max)) bounds.max else data.max + data.span *0.062
     }
 
-    return(list(min = range.min, max = range.max))
+    list(min = range.min, max = range.max)
 }
