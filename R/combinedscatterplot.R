@@ -394,6 +394,14 @@ CombinedScatter <- function(x = NULL,
                                                     y.tick.maxnum,
                                                     y.bounds.maximum,
                                                     y.bounds.minimum, y)
+    if (x.axis.type != "date") {
+        x.bounds.minimum <- charToNumeric(x.bounds.minimum)
+        x.bounds.maximum <- charToNumeric(x.bounds.maximum)
+    }
+    if (y.axis.type != "date") {
+        y.bounds.minimum <- charToNumeric(y.bounds.minimum)
+        y.bounds.maximum <- charToNumeric(y.bounds.maximum)
+    }
 
     tooltips.text <- getTooltipsText(scatter.labels, not.na, x, y, x.tick.format,
                                      x.tick.prefix, x.tick.suffix, y.tick.format,
@@ -558,11 +566,11 @@ CombinedScatter <- function(x = NULL,
         panel.x.gap = panel.x.gap,
         panel.y.gap = panel.y.gap,
         point.radius = 0.5 * marker.size,
-        y.bounds.maximum = charToNumeric(y.bounds.maximum),
-        y.bounds.minimum = charToNumeric(y.bounds.minimum),
+        y.bounds.maximum = y.bounds.maximum,
+        y.bounds.minimum = y.bounds.minimum,
         y.bounds.units.major = y.bounds.units.major,
-        x.bounds.maximum = charToNumeric(x.bounds.maximum),
-        x.bounds.minimum = charToNumeric(x.bounds.minimum),
+        x.bounds.maximum = x.bounds.maximum,
+        x.bounds.minimum = x.bounds.minimum,
         x.bounds.units.major = x.bounds.units.major,
         y.axis.show = y.tick.show,
         x.axis.show = x.tick.show,
