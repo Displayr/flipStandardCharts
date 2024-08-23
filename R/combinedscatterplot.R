@@ -353,6 +353,14 @@ CombinedScatter <- function(x = NULL,
                                                     y.tick.maxnum,
                                                     y.bounds.maximum,
                                                     y.bounds.minimum, y)
+    if (x.axis.type != "date") {
+        x.bounds.minimum <- charToNumeric(x.bounds.minimum)
+        x.bounds.maximum <- charToNumeric(x.bounds.maximum)
+    }
+    if (y.axis.type == "date") {
+        y.bounds.minimum <- charToNumeric(y.bounds.minimum)
+        y.bounds.maximum <- charToNumeric(y.bounds.maximum)
+    }
 
     tooltips.text <- getTooltipsText(scatter.labels, not.na, x, y, x.tick.format,
                                      x.tick.prefix, x.tick.suffix, y.tick.format,
