@@ -368,14 +368,6 @@ CombinedScatter <- function(x = NULL,
                                                     y.bounds.maximum,
                                                     y.bounds.minimum, y,
                                                     y.axis.type)
-    if (x.axis.type != "date") {
-        x.bounds.minimum <- charToNumeric(x.bounds.minimum)
-        x.bounds.maximum <- charToNumeric(x.bounds.maximum)
-    }
-    if (y.axis.type == "date") {
-        y.bounds.minimum <- charToNumeric(y.bounds.minimum)
-        y.bounds.maximum <- charToNumeric(y.bounds.maximum)
-    }
 
     tooltips.text <- getTooltipsText(scatter.labels, not.na, x, y, x.tick.format,
                                      x.tick.prefix, x.tick.suffix, y.tick.format,
@@ -795,26 +787,6 @@ getLogoUrls <- function(logos, x, scatter.labels, n) {
 
 isEmptyName <- function(x) {
     !any(nzchar(trimws(x)))
-}
-
-processFooter <- function(footer, scatter.labels.name, scatter.colors.name,
-                          scatter.sizes.name, scatter.mult.yvals, footer.wrap,
-                          footer.wrap.nchar) {
-    if (length(footer) == 0 || nchar(footer) == 0)
-    {
-        footer <- ""
-        if (!isEmptyName(scatter.labels.name))
-            footer <- sprintf("%sPoints labeled by '%s'; ", footer, scatter.labels.name)
-        if (!isEmptyName(scatter.colors.name) && !scatter.mult.yvals)
-            footer <- sprintf("%sPoints colored according to '%s'; ", footer, scatter.colors.name)
-        if (!isEmptyName(scatter.sizes.name) && !scatter.mult.yvals)
-            footer <- sprintf("%sArea of points are proportional to absolute value of '%s'; ",
-                              footer, scatter.sizes.name)
-    }
-    if (any(nzchar(footer)) && footer != " ") {
-        footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
-    }
-    footer
 }
 
 #' @importFrom flipTime AsDateTime
