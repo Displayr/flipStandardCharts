@@ -389,11 +389,13 @@ CombinedScatter <- function(x = NULL,
     x.bounds.units.major <- getAxisBoundsUnitsMajor(x.tick.distance,
                                                     x.tick.maxnum,
                                                     x.bounds.maximum,
-                                                    x.bounds.minimum, x)
+                                                    x.bounds.minimum, x,
+                                                    x.axis.type)
     y.bounds.units.major <- getAxisBoundsUnitsMajor(y.tick.distance,
                                                     y.tick.maxnum,
                                                     y.bounds.maximum,
-                                                    y.bounds.minimum, y)
+                                                    y.bounds.minimum, y,
+                                                    y.axis.type)
     if (x.axis.type != "date") {
         x.bounds.minimum <- charToNumeric(x.bounds.minimum)
         x.bounds.maximum <- charToNumeric(x.bounds.maximum)
@@ -402,6 +404,7 @@ CombinedScatter <- function(x = NULL,
         y.bounds.minimum <- charToNumeric(y.bounds.minimum)
         y.bounds.maximum <- charToNumeric(y.bounds.maximum)
     }
+
 
     tooltips.text <- getTooltipsText(scatter.labels, not.na, x, y, x.tick.format,
                                      x.tick.prefix, x.tick.suffix, y.tick.format,
@@ -839,15 +842,51 @@ isEmptyName <- function(x) {
     !any(nzchar(trimws(x)))
 }
 
+#' @importFrom flipTime AsDateTime
 getAxisBoundsUnitsMajor <- function(tick.distance, tick.maxnum, bounds.maximum,
-                                    bounds.minimum, values) {
+                                    bounds.minimum, values, axis.type) {
     result <- charToNumeric(tick.distance)
-    if (is.null(result) && !is.null(tick.maxnum))
-        result <- calcUnitsForMaxNum(tick.maxnum, bounds.maximum,
-                                     bounds.minimum, values)
+    if (is.null(result) && !is.null(tick.maxnum)) {
+        if (axis.type != "date") {
+            result <- calcUnitsForMaxNum(tick.maxnum, bounds.maximum,
+                                         bounds.minimum, values)
+        } else {
+            tick.maxnum <- charToNumeric(tick.maxnum)
+
+            tmp.max <- if (!is.null(bounds.maximum)) as.numeric(AsDateTime(bounds.maximum)) else NULL
+            tmp.min <- if (!is.null(bounds.minimum)) as.numeric(AsDateTime(bounds.minimum)) else NULL
+
+            # Deal with reversed axes
+            if (!is.null(tmp.max) && !is.null(tmp.max) && tmp.max < tmp.min) {
+                tmp.1 <- tmp.min
+                tmp.2 <- tmp.max
+                tmp.min <- tmp.2
+                tmp.max <- tmp.1
+            }
+
+            if (is.null(tmp.max))
+                tmp.max <- max(as.numeric(values), na.rm = TRUE)
+            if (is.null(tmp.min))
+                tmp.min <- min(as.numeric(values), na.rm = TRUE)
+            tmp.diff <- (tmp.max - tmp.min) / tick.maxnum
+            if (tmp.diff > 0)
+                result <- tickDeltaFromDiff(tmp.diff) * 1000 # 1000 as time is milliseconds from the epoch in JS
+            else
+                result <- NULL
+        }
+    }
     result
 }
 
+tickDeltaFromDiff <- function(diff) {
+    delta <- 10^(ceiling(log10(diff)))
+    if (delta * 0.2 > diff)
+        return(delta * 0.2)
+    else if (delta * 0.5 > diff)
+        return(delta * 0.5)
+    else
+        return(delta)
+}
 
 getTooltipsText <- function(scatter.labels, not.na, x, y, x.tick.format,
                             x.tick.prefix, x.tick.suffix, y.tick.format,
