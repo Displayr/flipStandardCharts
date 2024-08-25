@@ -53,7 +53,10 @@
 #' @param y.midpoint.line.color y midpoint line color
 #' @param y.midpoint.line.dash y midpoint line type. Can be one of 'Solid', 'Dot', 'Dash'
 #' @param y.midpoint.line.width y midpoint line width in pixels
-#' @importFrom rhtmlCombinedScatter CombinedScatter
+#' @param quadrant.top.left.color Color of the top left quadrant
+#' @param quadrant.top.right.color Color of the top right quadrant
+#' @param quadrant.bottom.left.color Color of the bottom left quadrant
+#' @param quadrant.bottom.right.color Color of the bottom right quadrant
 #' @export
 CombinedScatter <- function(x = NULL,
                             y = NULL,
@@ -227,7 +230,11 @@ CombinedScatter <- function(x = NULL,
                             x.midpoint.line.width = 1,
                             y.midpoint.line.color = rgb(0, 0, 0, maxColorValue = 255),
                             y.midpoint.line.dash = "Solid",
-                            y.midpoint.line.width = 1)
+                            y.midpoint.line.width = 1,
+                            quadrant.top.left.color = "transparent",
+                            quadrant.top.right.color = "transparent",
+                            quadrant.bottom.left.color = "transparent",
+                            quadrant.bottom.right.color = "transparent")
 {
     orig.x <- x
     checkDataIsEnough(x, y)
@@ -610,6 +617,10 @@ CombinedScatter <- function(x = NULL,
         y.midpoint.line.color = y.midpoint.line.color,
         y.midpoint.line.dash = tolower(y.midpoint.line.dash),
         y.midpoint.line.width = y.midpoint.line.width,
+        quadrant.top.left.color = quadrant.top.left.color,
+        quadrant.top.right.color = quadrant.top.right.color,
+        quadrant.bottom.left.color = quadrant.bottom.left.color,
+        quadrant.bottom.right.color = quadrant.bottom.right.color,
         debug.mode = grepl("DEBUG_MODE_ON", title))
 
     result <- list(htmlwidget = p)
