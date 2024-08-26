@@ -853,8 +853,8 @@ getAxisBoundsUnitsMajor <- function(tick.distance, tick.maxnum, bounds.maximum,
         } else {
             tick.maxnum <- charToNumeric(tick.maxnum)
 
-            tmp.max <- if (!is.null(bounds.maximum)) as.numeric(AsDateTime(bounds.maximum)) else NULL
-            tmp.min <- if (!is.null(bounds.minimum)) as.numeric(AsDateTime(bounds.minimum)) else NULL
+            tmp.max <- if (!is.null(bounds.maximum) && bounds.maximum != "") as.numeric(AsDateTime(bounds.maximum)) else NULL
+            tmp.min <- if (!is.null(bounds.minimum) && bounds.minimum != "") as.numeric(AsDateTime(bounds.minimum)) else NULL
 
             # Deal with reversed axes
             if (!is.null(tmp.max) && !is.null(tmp.max) && tmp.max < tmp.min) {
