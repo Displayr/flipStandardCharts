@@ -177,7 +177,11 @@ CombinedScatter(
   x.midpoint.line.width = 1,
   y.midpoint.line.color = rgb(0, 0, 0, maxColorValue = 255),
   y.midpoint.line.dash = "Solid",
-  y.midpoint.line.width = 1
+  y.midpoint.line.width = 1,
+  quadrant.top.left.color = "transparent",
+  quadrant.top.right.color = "transparent",
+  quadrant.bottom.left.color = "transparent",
+  quadrant.bottom.right.color = "transparent"
 )
 }
 \arguments{
@@ -567,20 +571,40 @@ if \code{scatter.colors.as.categorical}.}
 to reduce overlap.}
 
 \item{quadrants.show}{Whether to show quadrants (including midpoint lines)}
-\item{x.midpoint.type}{One of "Average", "Median", "Code" or "Custom value"}
-\item{x.midpoint.input}{Input when "Code" is selected for x.midpoint.type}
-\item{x.midpoint.value}{Value when "Custom value" is selected for x.midpoint.type.
-  Can be numeric or string of a number.}
-\item{y.midpoint.type}{One of "Average", "Median", "Code" or "Custom value"}
-\item{y.midpoint.input}{Input when "Code" is selected for y.midpoint.type}
-\item{y.midpoint.value}{Value when "Custom value" is selected for y.midpoint.type.
-  Can be numeric or string of a number.}
+
+\item{x.midpoint.type}{One of "Average", "Median", "Calculation" or "Fixed value"}
+
+\item{x.midpoint.input}{Input when "Calculation" is selected for x.midpoint.type}
+
+\item{x.midpoint.value}{Value when "Fixed value" is selected for x.midpoint.type.
+Can be numeric or string of a number.}
+
+\item{y.midpoint.type}{One of "Average", "Median", "Calculation" or "Fixed value"}
+
+\item{y.midpoint.input}{Input when "Calculation" is selected for y.midpoint.type}
+
+\item{y.midpoint.value}{Value when "Fixed value" is selected for y.midpoint.type.
+Can be numeric or string of a number.}
+
 \item{x.midpoint.line.color}{x midpoint line color}
+
 \item{x.midpoint.line.dash}{x midpoint line type. Can be one of 'Solid', 'Dot', 'Dash'}
+
 \item{x.midpoint.line.width}{x midpoint line width in pixels}
+
 \item{y.midpoint.line.color}{y midpoint line color}
+
 \item{y.midpoint.line.dash}{y midpoint line type. Can be one of 'Solid', 'Dot', 'Dash'}
+
 \item{y.midpoint.line.width}{y midpoint line width in pixels}
+
+\item{quadrant.top.left.color}{Color of the top left quadrant}
+
+\item{quadrant.top.right.color}{Color of the top right quadrant}
+
+\item{quadrant.bottom.left.color}{Color of the bottom left quadrant}
+
+\item{quadrant.bottom.right.color}{Color of the bottom right quadrant}
 }
 \value{
 an HTML widget for \code{"leaflet"} or a \code{"plotly"} object.
