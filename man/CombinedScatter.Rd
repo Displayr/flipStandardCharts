@@ -181,7 +181,23 @@ CombinedScatter(
   quadrant.top.left.color = "transparent",
   quadrant.top.right.color = "transparent",
   quadrant.bottom.left.color = "transparent",
-  quadrant.bottom.right.color = "transparent"
+  quadrant.bottom.right.color = "transparent",
+  quadrant.top.left.title = "",
+  quadrant.top.left.title.font.family = global.font.family,
+  quadrant.top.left.title.font.color = global.font.color,
+  quadrant.top.left.title.font.size = 12,
+  quadrant.top.right.title = "",
+  quadrant.top.right.title.font.family = global.font.family,
+  quadrant.top.right.title.font.color = global.font.color,
+  quadrant.top.right.title.font.size = 12,
+  quadrant.bottom.left.title = "",
+  quadrant.bottom.left.title.font.family = global.font.family,
+  quadrant.bottom.left.title.font.color = global.font.color,
+  quadrant.bottom.left.title.font.size = 12,
+  quadrant.bottom.right.title = "",
+  quadrant.bottom.right.title.font.family = global.font.family,
+  quadrant.bottom.right.title.font.color = global.font.color,
+  quadrant.bottom.right.title.font.size = 12
 )
 }
 \arguments{
@@ -605,6 +621,38 @@ Can be numeric or string of a number.}
 \item{quadrant.bottom.left.color}{Color of the bottom left quadrant}
 
 \item{quadrant.bottom.right.color}{Color of the bottom right quadrant}
+
+\item{quadrant.top.left.title}{Title to show for the top left quadrant}
+
+\item{quadrant.top.left.title.font.family}{Font family of the top left quadrant title}
+
+\item{quadrant.top.left.title.font.color}{Font color of the top left quadrant title}
+
+\item{quadrant.top.left.title.font.size}{Font size of the top left quadrant title}
+
+\item{quadrant.top.right.title}{Title to show for the top right quadrant}
+
+\item{quadrant.top.right.title.font.family}{Font family of the top right quadrant title}
+
+\item{quadrant.top.right.title.font.color}{Font color of the top right quadrant title}
+
+\item{quadrant.top.right.title.font.size}{Font size of the top right quadrant title}
+
+\item{quadrant.bottom.left.title}{Title to show for the bottom left quadrant}
+
+\item{quadrant.bottom.left.title.font.family}{Font family of the bottom left quadrant title}
+
+\item{quadrant.bottom.left.title.font.color}{Font color of the bottom left quadrant title}
+
+\item{quadrant.bottom.left.title.font.size}{Font size of the bottom left quadrant title}
+
+\item{quadrant.bottom.right.title}{Title to show for the bottom right quadrant}
+
+\item{quadrant.bottom.right.title.font.family}{Font family of the bottom right quadrant title}
+
+\item{quadrant.bottom.right.title.font.color}{Font color of the bottom right quadrant title}
+
+\item{quadrant.bottom.right.title.font.size}{Font size of the bottom right quadrant title}
 }
 \value{
 an HTML widget for \code{"leaflet"} or a \code{"plotly"} object.
