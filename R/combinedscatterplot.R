@@ -57,6 +57,7 @@
 #' @param quadrant.top.right.color Color of the top right quadrant
 #' @param quadrant.bottom.left.color Color of the bottom left quadrant
 #' @param quadrant.bottom.right.color Color of the bottom right quadrant
+#' @importFrom rhtmlCombinedScatter CombinedScatter
 #' @export
 CombinedScatter <- function(x = NULL,
                             y = NULL,
