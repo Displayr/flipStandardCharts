@@ -255,19 +255,19 @@ CombinedScatter <- function(x = NULL,
                             quadrant.top.left.title = "",
                             quadrant.top.left.title.font.family = global.font.family,
                             quadrant.top.left.title.font.color = global.font.color,
-                            quadrant.top.left.title.font.size = 16,
+                            quadrant.top.left.title.font.size = 12,
                             quadrant.top.right.title = "",
-                            quadrant.top.right.title.font.family = global.font.family, 
+                            quadrant.top.right.title.font.family = global.font.family,
                             quadrant.top.right.title.font.color = global.font.color,
-                            quadrant.top.right.title.font.size = 16,
+                            quadrant.top.right.title.font.size = 12,
                             quadrant.bottom.left.title = "",
                             quadrant.bottom.left.title.font.family = global.font.family,
                             quadrant.bottom.left.title.font.color = global.font.color,
-                            quadrant.bottom.left.title.font.size = 16, 
+                            quadrant.bottom.left.title.font.size = 12, 
                             quadrant.bottom.right.title = "",
                             quadrant.bottom.right.title.font.family = global.font.family,
                             quadrant.bottom.right.title.font.color = global.font.color,
-                            quadrant.bottom.right.title.font.size = 16)
+                            quadrant.bottom.right.title.font.size = 12)
 {
     orig.x <- x
     checkDataIsEnough(x, y)
