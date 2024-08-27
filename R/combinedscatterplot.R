@@ -917,7 +917,7 @@ getAxisBoundsUnitsMajor <- function(tick.distance, tick.maxnum, bounds.maximum,
             tmp.min <- if (!is.null(bounds.minimum) && bounds.minimum != "") as.numeric(AsDateTime(bounds.minimum)) else NULL
 
             # Deal with reversed axes
-            if (!is.null(tmp.max) && !is.null(tmp.max) && tmp.max < tmp.min) {
+            if (!is.null(tmp.max) && !is.null(tmp.min) && tmp.max < tmp.min) {
                 tmp.1 <- tmp.min
                 tmp.2 <- tmp.max
                 tmp.min <- tmp.2
