@@ -1354,11 +1354,19 @@ computeMidpointValue <- function(midpoint.type, midpoint.input, midpoint.value,
     }
 
     if (midpoint.type == "Average") {
-        return(list(value = mean(data.values, na.rm = TRUE)))
+        val <- mean(data.values, na.rm = TRUE)
+        if (val < estimated.range$min || val > estimated.range$max)  {
+            return(list(value = val, warning = out.of.range.warning))
+        }
+        return(list(value = val))
     }
 
     # midpoint.type == "Median"
-    list(value = median(data.values, na.rm = TRUE))
+    val <- median(data.values, na.rm = TRUE)
+    if (val < estimated.range$min || val > estimated.range$max)  {
+        return(list(value = val, warning = out.of.range.warning))
+    }
+    list(value = val)
 }
 
 estimateRange <- function(data.values, bounds.min, bounds.max) {
