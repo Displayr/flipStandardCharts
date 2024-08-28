@@ -592,18 +592,18 @@ to reduce overlap.}
 
 \item{quadrants.show}{Whether to show quadrants (including midpoint lines)}
 
-\item{x.midpoint.type}{One of "Average", "Median", "Calculation" or "Fixed value"}
+\item{x.midpoint.type}{One of "Average", "Median", "Calculation" or "Value"}
 
 \item{x.midpoint.input}{Input when "Calculation" is selected for x.midpoint.type}
 
-\item{x.midpoint.value}{Value when "Fixed value" is selected for x.midpoint.type.
+\item{x.midpoint.value}{Value when "Value" is selected for x.midpoint.type.
 Can be numeric or string of a number.}
 
-\item{y.midpoint.type}{One of "Average", "Median", "Calculation" or "Fixed value"}
+\item{y.midpoint.type}{One of "Average", "Median", "Calculation" or "Value"}
 
 \item{y.midpoint.input}{Input when "Calculation" is selected for y.midpoint.type}
 
-\item{y.midpoint.value}{Value when "Fixed value" is selected for y.midpoint.type.
+\item{y.midpoint.value}{Value when "Value" is selected for y.midpoint.type.
 Can be numeric or string of a number.}
 
 \item{x.midpoint.line.color}{x midpoint line color}
