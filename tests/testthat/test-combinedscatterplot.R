@@ -547,6 +547,18 @@ test_that("quadrants",
                    "The y midpoint line is not shown as it is outside the plot range")
 
     expect_warning(CombinedScatter(1:10,11:20, quadrants.show = TRUE,
+                                   x.midpoint.type = "Average",
+                                   y.midpoint.type = "Average",
+                                   x.bounds.minimum = 7),
+                   "The x midpoint line is not shown as it is outside the plot range")
+
+    expect_warning(CombinedScatter(1:10,11:20, quadrants.show = TRUE,
+                                   x.midpoint.type = "Median",
+                                   y.midpoint.type = "Median",
+                                   x.bounds.minimum = 7),
+                   "The x midpoint line is not shown as it is outside the plot range")
+
+    expect_warning(CombinedScatter(1:10,11:20, quadrants.show = TRUE,
                                    x.midpoint.type = "Value",
                                    y.midpoint.type = "Value",
                                    x.midpoint.value = NaN, y.midpoint.value = 3.3),
