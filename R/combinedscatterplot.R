@@ -73,6 +73,12 @@
 #' @param quadrant.bottom.right.title.font.family Font family of the bottom right quadrant title
 #' @param quadrant.bottom.right.title.font.size Font size of the bottom right quadrant title
 #' @param quadrant.bottom.right.title.font.color Font color of the bottom right quadrant title
+#' @param plot.border.show Boolean toggle to show border around plot area. 
+#'  If this is true, then \code{plot.border.*} overrides \code{x.line.*} and \code{y.line.*}.
+#' @param plot.border.color Color of border around plot area (Default is black).
+#' @param plot.border.width Width of border around plot area in px (Default is 1).
+#' @param fixed.aspect Whether of not to force the x and y axis to be at the same scale. Default to FALSE. 
+#'  Cannot be guarenteed if any of the axis bounds are set.
 #' @importFrom rhtmlCombinedScatter CombinedScatter
 #' @export
 CombinedScatter <- function(x = NULL,
@@ -267,7 +273,11 @@ CombinedScatter <- function(x = NULL,
                             quadrant.bottom.right.title = "",
                             quadrant.bottom.right.title.font.family = global.font.family,
                             quadrant.bottom.right.title.font.color = global.font.color,
-                            quadrant.bottom.right.title.font.size = 12)
+                            quadrant.bottom.right.title.font.size = 12,
+                            plot.border.show = FALSE,
+                            plot.border.color = rgb(0, 0, 0, maxColorValue = 255),
+                            plot.border.width = 1,
+                            fixed.aspect = FALSE)
 {
     orig.x <- x
     checkDataIsEnough(x, y)
@@ -673,6 +683,10 @@ CombinedScatter <- function(x = NULL,
         quadrant.bottom.right.title.font.family = quadrant.bottom.right.title.font.family,
         quadrant.bottom.right.title.font.color = quadrant.bottom.right.title.font.color,
         quadrant.bottom.right.title.font.size = quadrant.bottom.right.title.font.size,
+        plot.border.show = plot.border.show,
+        plot.border.color = plot.border.color,
+        plot.border.width = plot.border.width,
+        fixed.aspect = fixed.aspect,
         debug.mode = grepl("DEBUG_MODE_ON", title))
 
     result <- list(htmlwidget = p)

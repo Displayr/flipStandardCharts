@@ -197,7 +197,11 @@ CombinedScatter(
   quadrant.bottom.right.title = "",
   quadrant.bottom.right.title.font.family = global.font.family,
   quadrant.bottom.right.title.font.color = global.font.color,
-  quadrant.bottom.right.title.font.size = 12
+  quadrant.bottom.right.title.font.size = 12,
+  plot.border.show = FALSE,
+  plot.border.color = rgb(0, 0, 0, maxColorValue = 255),
+  plot.border.width = 1,
+  fixed.aspect = FALSE
 )
 }
 \arguments{
@@ -653,6 +657,16 @@ Can be numeric or string of a number.}
 \item{quadrant.bottom.right.title.font.color}{Font color of the bottom right quadrant title}
 
 \item{quadrant.bottom.right.title.font.size}{Font size of the bottom right quadrant title}
+
+\item{plot.border.show}{Boolean toggle to show border around plot area. 
+If this is true, then \code{plot.border.*} overrides \code{x.line.*} and \code{y.line.*}.}
+
+\item{plot.border.color}{Color of border around plot area (Default is black).}
+
+\item{plot.border.width}{Width of border around plot area in px (Default is 1).}
+
+\item{fixed.aspect}{Whether of not to force the x and y axis to be at the same scale. Default to FALSE. 
+Cannot be guarenteed if any of the axis bounds are set.}
 }
 \value{
 an HTML widget for \code{"leaflet"} or a \code{"plotly"} object.
