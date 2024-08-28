@@ -520,13 +520,13 @@ test_that("quadrants",
                                 y.midpoint.type = "Median"), NA)
 
     expect_error(CombinedScatter(1:10,11:20, quadrants.show = TRUE,
-                                x.midpoint.type = "Fixed value",
-                                y.midpoint.type = "Fixed value",
+                                x.midpoint.type = "Value",
+                                y.midpoint.type = "Value",
                                 x.midpoint.value = 6.5, y.midpoint.value = 13.3), NA)
 
     expect_error(CombinedScatter(1:10,11:20, quadrants.show = TRUE,
-                                 x.midpoint.type = "Fixed value",
-                                 y.midpoint.type = "Fixed value",
+                                 x.midpoint.type = "Value",
+                                 y.midpoint.type = "Value",
                                  x.midpoint.value = "6.5", y.midpoint.value = "13.3"), NA)
 
     expect_error(CombinedScatter(1:10,11:20, quadrants.show = TRUE,
@@ -535,26 +535,26 @@ test_that("quadrants",
                                  x.midpoint.input = 2, y.midpoint.input = 16), NA)
 
     expect_warning(CombinedScatter(letters[1:10],11:20, quadrants.show = TRUE,
-                                   x.midpoint.type = "Fixed value",
-                                   y.midpoint.type = "Fixed value",
+                                   x.midpoint.type = "Value",
+                                   y.midpoint.type = "Value",
                                    x.midpoint.value = 6.5, y.midpoint.value = 13.3),
                    "Quadrants cannot be shown as the x-axis has non-numeric data")
 
     expect_warning(CombinedScatter(1:10,11:20, quadrants.show = TRUE,
-                                 x.midpoint.type = "Fixed value",
-                                 y.midpoint.type = "Fixed value",
+                                 x.midpoint.type = "Value",
+                                 y.midpoint.type = "Value",
                                  x.midpoint.value = 6.5, y.midpoint.value = 3.3),
                    "The y midpoint line is not shown as it is outside the plot range")
 
     expect_warning(CombinedScatter(1:10,11:20, quadrants.show = TRUE,
-                                   x.midpoint.type = "Fixed value",
-                                   y.midpoint.type = "Fixed value",
+                                   x.midpoint.type = "Value",
+                                   y.midpoint.type = "Value",
                                    x.midpoint.value = NaN, y.midpoint.value = 3.3),
                    "Quadrants cannot be shown as the x midpoint value is invalid")
 
     expect_warning(CombinedScatter(1:10,11:20, quadrants.show = TRUE,
-                                   x.midpoint.type = "Fixed value",
-                                   y.midpoint.type = "Fixed value",
+                                   x.midpoint.type = "Value",
+                                   y.midpoint.type = "Value",
                                    x.midpoint.value = "abc", y.midpoint.value = 3.3),
                    "Quadrants cannot be shown as the x midpoint value is invalid")
 
