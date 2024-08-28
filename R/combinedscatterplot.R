@@ -39,13 +39,13 @@
 #' @param y.zero.line.dash Line type of y zero line. Can be one of 'Solid', 'Dot', 'Dash'.
 #' @param y.grid.dash Line type of y grid line. Can be one of 'Solid', 'Dot', 'Dash'.
 #' @param quadrants.show Whether to show quadrants (including midpoint lines)
-#' @param x.midpoint.type One of "Average", "Median", "Calculation" or "Fixed value"
+#' @param x.midpoint.type One of "Average", "Median", "Calculation" or "Value"
 #' @param x.midpoint.input Input when "Calculation" is selected for x.midpoint.type
-#' @param x.midpoint.value Value when "Fixed value" is selected for x.midpoint.type.
+#' @param x.midpoint.value Value when "Value" is selected for x.midpoint.type.
 #'  Can be numeric or string of a number.
-#' @param y.midpoint.type One of "Average", "Median", "Calculation" or "Fixed value"
+#' @param y.midpoint.type One of "Average", "Median", "Calculation" or "Value"
 #' @param y.midpoint.input Input when "Calculation" is selected for y.midpoint.type
-#' @param y.midpoint.value Value when "Fixed value" is selected for y.midpoint.type.
+#' @param y.midpoint.value Value when "Value" is selected for y.midpoint.type.
 #'  Can be numeric or string of a number.
 #' @param x.midpoint.line.color x midpoint line color
 #' @param x.midpoint.line.dash x midpoint line type. Can be one of 'Solid', 'Dot', 'Dash'
@@ -263,7 +263,7 @@ CombinedScatter <- function(x = NULL,
                             quadrant.bottom.left.title = "",
                             quadrant.bottom.left.title.font.family = global.font.family,
                             quadrant.bottom.left.title.font.color = global.font.color,
-                            quadrant.bottom.left.title.font.size = 12, 
+                            quadrant.bottom.left.title.font.size = 12,
                             quadrant.bottom.right.title = "",
                             quadrant.bottom.right.title.font.family = global.font.family,
                             quadrant.bottom.right.title.font.color = global.font.color,
@@ -1307,7 +1307,7 @@ computeMidpointValue <- function(midpoint.type, midpoint.input, midpoint.value,
 
     out.of.range.warning <- paste0("The ", axis, " midpoint line is not shown as it is outside the plot range.")
 
-    if (midpoint.type == "Fixed value") {
+    if (midpoint.type == "Value") {
         if (is.null(midpoint.value)) {
             return(list(value = NaN,
                         warning = invalid.warning))
