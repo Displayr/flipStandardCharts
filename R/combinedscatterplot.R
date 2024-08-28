@@ -79,8 +79,6 @@
 #' @param plot.border.width Width of border around plot area in px (Default is 1).
 #' @param fixed.aspect Whether of not to force the x and y axis to be at the same scale. Default to FALSE. 
 #'  Cannot be guarenteed if any of the axis bounds are set.
-#' @param origin Defaults to FALSE. Shows the origin lines as dotted if not along axis.
-#' @param origin.align Defaults to FALSE. Aligns the origin lines as closely to axis as possible.
 #' @importFrom rhtmlCombinedScatter CombinedScatter
 #' @export
 CombinedScatter <- function(x = NULL,
@@ -279,8 +277,6 @@ CombinedScatter <- function(x = NULL,
                             plot.border.show = FALSE,
                             plot.border.color = rgb(0, 0, 0, maxColorValue = 255),
                             plot.border.width = 1,
-                            origin = TRUE,
-                            origin.align = FALSE,
                             fixed.aspect = FALSE)
 {
     orig.x <- x
@@ -689,8 +685,6 @@ CombinedScatter <- function(x = NULL,
         plot.border.show = plot.border.show,
         plot.border.color = plot.border.color,
         plot.border.width = plot.border.width,
-        origin = origin,
-        origin.align = origin.align,
         fixed.aspect = fixed.aspect,
         debug.mode = grepl("DEBUG_MODE_ON", title))
 

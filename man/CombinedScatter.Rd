@@ -201,8 +201,6 @@ CombinedScatter(
   plot.border.show = FALSE,
   plot.border.color = rgb(0, 0, 0, maxColorValue = 255),
   plot.border.width = 1,
-  origin = TRUE,
-  origin.align = FALSE,
   fixed.aspect = FALSE
 )
 }
@@ -666,10 +664,6 @@ If this is true, then \code{plot.border.*} overrides \code{x.line.*} and \code{y
 \item{plot.border.color}{Color of border around plot area (Default is black).}
 
 \item{plot.border.width}{Width of border around plot area in px (Default is 1).}
-
-\item{origin}{Defaults to FALSE. Shows the origin lines as dotted if not along axis.}
-
-\item{origin.align}{Defaults to FALSE. Aligns the origin lines as closely to axis as possible.}
 
 \item{fixed.aspect}{Whether of not to force the x and y axis to be at the same scale. Default to FALSE. 
 Cannot be guarenteed if any of the axis bounds are set.}
