@@ -546,7 +546,7 @@ getPointSegmentsForPPT <- function(points, index, annot, dat)
         # Note that we use i to select elements of dat because it is assumed that we are only
         # passing the relevant sections of the data (i.e. dat is already subsetted by index)
         if (grepl("^Text", annot$type))
-            tmp.seg[[1]]$Text <- formatByD3(dat[i], annot$format, annot$prefix, annot$suffix)
+            tmp.seg[[1]]$Text <- unescape_html(formatByD3(dat[i], annot$format, annot$prefix, annot$suffix))
         else if (annot$data == "Column Comparisons" && grepl("Arrow", annot$type))
             tmp.seg[[1]]$Text <- unescape_html(getColCmpArrowHtml(dat[i], NULL, " ", "&#8593;"))
         else if (annot$data == "Column Comparisons" && grepl("Caret", annot$type))

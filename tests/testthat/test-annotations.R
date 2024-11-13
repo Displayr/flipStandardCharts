@@ -420,3 +420,16 @@ test_that("Recolor text annotations",
     expect_equal(removeColorTags(txt), txt.rmcolor)
 })
 
+test_that("Replace html characters",
+{
+    dat.with.text[1,1,2] <- "&nbsp;A&nbsp;&#x26;&nbsp;B"
+    viz <- Column(dat.with.text[1:5,,], data.label.show = TRUE,
+           annotation.list = list(
+               list(type = "Text - after data label", data = "Column Comparisons",
+                    font.style = "normal", font.weight = "normal",
+                    format = ".3f", prefix = "", suffix = "",
+                    threshold = "-", threstype = "above threshold",
+                    color = "red", font.family = "Courier New")))
+    expect_equal(attr(viz, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[1]]$Segments[[2]]$Text,
+                 " A & B")
+})
