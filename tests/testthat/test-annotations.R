@@ -421,9 +421,9 @@ test_that("Recolor text annotations",
     expect_equal(removeColorTags(txt), txt.rmcolor)
 })
 
-test_that("Strip out html space character",
+test_that("Replace html characters",
 {
-    dat.with.text[1,1,2] <- "&nbsp;A&nbsp;&nbsp;B"
+    dat.with.text[1,1,2] <- "&nbsp;A&nbsp;&#x26;&nbsp;B"
     viz <- Column(dat.with.text[1:5,,], data.label.show = TRUE,
            annotation.list = list(
                list(type = "Text - after data label", data = "Column Comparisons",
@@ -432,5 +432,5 @@ test_that("Strip out html space character",
                     threshold = "-", threstype = "above threshold",
                     color = "red", font.family = "Courier New")))
     expect_equal(attr(viz, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[1]]$Segments[[2]]$Text,
-                 " A  B")
+                 " A & B")
 })
