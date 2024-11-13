@@ -193,7 +193,6 @@ test_that("Input matrix converted to character",
 
 })
 
-
 test_that("No errors for all chart types",
 {
     charting.funcs <- c("Column", "Bar", "Area", "Line", "Pie", "Radar", #"Donut",
