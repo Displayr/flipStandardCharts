@@ -467,7 +467,7 @@ Bar <- function(x,
 
                     if (multi.color.labels)
                     {
-                        for (ii in 1:nrow(chart.matrix)) 
+                        for (ii in 1:nrow(chart.matrix))
                         {
                             for (j in 1:length(pt.segs[[ii]]$Segments))
                                 pt.segs[[ii]]$Segments[[j]]$Font$color <- dlab.color[ii]
@@ -564,6 +564,7 @@ Bar <- function(x,
         annotations =  annotations,
         shapes = zerolines(x.zero, x.zero.line.width, x.zero.line.color,
             y.zero, y.zero.line.width, y.zero.line.color),
+        barcornerradius = "50%",
         bargap = bar.gap, bargroupgap = bar.group.gap,
         barmode = barmode
     )
