@@ -252,5 +252,19 @@ Pie <- function(x,
         attr(result, "ChartType") <- if (type == "Pie") "Pie" else "Doughnut"
     else
         attr(result, "ChartType") <- "Sunburst"
+
+    attr(result, "ChartLabels") <- list(SeriesLabels=list(list(ShowValue = TRUE, Separator = ": ")))
+    if (nzchar(data.label.prefix) || nzchar(data.label.suffix))
+    {
+        tmp.suffix <- if (percentFromD3(data.label.format)) sub("%", "", data.label.suffix)
+                      else                                               data.label.suffix
+        pt.segs <- lapply((1:NROW(x)),
+            function(ii) list(Index = ii-1, Segments = c(
+                list(list(Field = "CategoryName")),
+                list(list(Text = paste0(": ", unescape_html(data.label.prefix)))),
+                list(list(Field = "Value")),
+                if (nzchar(tmp.suffix)) list(list(Text = unescape_html(tmp.suffix))) else NULL)))
+        attr(result, "ChartLabels")$SeriesLabels[[1]]$CustomPoints <- pt.segs
+    }
     result
 }
