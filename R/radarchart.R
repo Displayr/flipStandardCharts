@@ -388,9 +388,9 @@ Radar <- function(x,
                 pt <- list(Index = ii-1)
                 if (data.label.show[ii,ggi])
                     pt$Segments <-  c(
-                    if (nzchar(data.label.prefix[ii,ggi])) list(list(Text = data.label.prefix[ii,ggi])) else NULL,
+                    if (nzchar(data.label.prefix[ii,ggi])) list(list(Text = unescape_html(data.label.prefix[ii,ggi]))) else NULL,
                     list(list(Field="Value")),
-                    if (nzchar(data.label.suffix[ii,ggi])) list(list(Text = data.label.suffix[ii,ggi])) else NULL)
+                    if (nzchar(data.label.suffix[ii,ggi])) list(list(Text = unescape_html(data.label.suffix[ii,ggi]))) else NULL)
                 return(pt)
             }
         )
