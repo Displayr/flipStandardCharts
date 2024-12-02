@@ -190,6 +190,7 @@ Column(
   axis.drag.enable = FALSE,
   bar.gap = 0.15,
   bar.group.gap = 0,
+  bar.corner.radius = 0,
   data.label.show = FALSE,
   data.label.centered = FALSE,
   data.label.font.autocolor = FALSE,
@@ -670,6 +671,8 @@ bar or column charts (in plot fraction).}
 
 \item{bar.group.gap}{Gap between bars at the same location (in plot fraction).
 This is only applicable for grouped bar/column charts.}
+
+\item{bar.corner.radius}{Rounding of bar corners as a percentage of bar width.}
 
 \item{data.label.show}{Logical; whether to show data labels.}
 

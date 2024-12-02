@@ -148,6 +148,7 @@ Bar <- function(x,
                     axis.drag.enable = FALSE,
                     bar.gap = 0.15,
                     bar.group.gap = 0.0,
+                    bar.corner.radius = 0,
                     data.label.show = FALSE,
                     data.label.font.autocolor = FALSE,
                     data.label.font.family = global.font.family,
@@ -217,6 +218,12 @@ Bar <- function(x,
         warning("Parameter 'bar group gap' must be between 0 and 1. ",
                 "Invalid 'bar group gap' set to default value of 0.0.")
         bar.group.gap <- 0.0
+    }
+    if (bar.corner.radius < 0 || bar.corner.radius > 50)
+    {
+        warning("Parameter 'bar corner radius' must be between 0 and 50. ",
+                "Invalid 'bar corner radius' set to default value of 0.0.")
+        bar.corner.radius <- 0.0
     }
 
     # Some minimal data cleaning
@@ -565,6 +572,7 @@ Bar <- function(x,
         shapes = zerolines(x.zero, x.zero.line.width, x.zero.line.color,
             y.zero, y.zero.line.width, y.zero.line.color),
         bargap = bar.gap, bargroupgap = bar.group.gap,
+        barcornerradius = paste0(bar.corner.radius, "%"),
         barmode = barmode
     )
     attr(p, "can-run-in-root-dom") <- TRUE

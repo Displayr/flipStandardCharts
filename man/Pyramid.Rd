@@ -112,6 +112,7 @@ Pyramid(
   tooltip.show = TRUE,
   modebar.show = FALSE,
   axis.drag.enable = FALSE,
+  bar.corner.radius = 0,
   bar.gap = 0.15
 )
 }
@@ -392,6 +393,8 @@ when hovering over an axis. It is turned off by default because it can sometimes
 cause problems with data labels and annotations. Also, is only used when
 \code{zoom.enable = TRUE}. Note that in similar functionality is already available
 using zoom.}
+
+\item{bar.corner.radius}{Rounding of bar corners as a percentage of bar width.}
 
 \item{bar.gap}{Gap between adjacent bars with different coordinates in
 bar or column charts (in plot fraction).}

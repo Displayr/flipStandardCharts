@@ -12,6 +12,8 @@ Sparkline(
   line.thickness = 3,
   line.color = fill.color,
   line.opacity = 1,
+  bar.gap = 0.15,
+  bar.corner.radius = 0,
   global.font.family = "Arial",
   global.font.color = rgb(44, 44, 44, maxColorValue = 255),
   font.unit = "px",
@@ -78,6 +80,10 @@ setting either \code{fill.color} or \code{line.color} while retaining default va
 but if both arguments are used, then \code{fill.color} will be ignored in favour of \code{line.color}.}
 
 \item{line.opacity}{Opacity of \code{line.color} as an alpha value (0 to 1).}
+
+\item{bar.gap}{Gap between adjacent bars (in plot fraction).}
+
+\item{bar.corner.radius}{Rounding of bar corners as a percentage of bar width.}
 
 \item{global.font.family}{Character; font family for all occurrences of any
 font attribute for the chart unless specified individually.}
