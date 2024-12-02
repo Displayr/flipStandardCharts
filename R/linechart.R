@@ -470,9 +470,9 @@ Line <-   function(x,
                 chart.labels$SeriesLabels[[i]]$ShowValue <- FALSE
                 pt.segs <- lapply((1:nrow(chart.matrix)),
                     function(ii) return(list(Index = ii-1, Segments = c(
-                        if (nzchar(dlab.prefix[ii,i])) list(list(Text = dlab.prefix[ii,i])) else NULL,
+                        if (nzchar(dlab.prefix[ii,i])) list(list(Text = unescape_html(dlab.prefix[ii,i]))) else NULL,
                         list(list(Field="Value")),
-                        if (nzchar(dlab.suffix[ii,i])) list(list(Text = dlab.suffix[ii,i])) else NULL))))
+                        if (nzchar(dlab.suffix[ii,i])) list(list(Text = unescape_html(dlab.suffix[ii,i]))) else NULL))))
                 for (ii in setdiff(1:nrow(chart.matrix), ind.show))
                     pt.segs[[ii]]$Segments <- NULL
             }

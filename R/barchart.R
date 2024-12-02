@@ -461,9 +461,9 @@ Bar <- function(x,
                     chart.labels$SeriesLabels[[i]]$ShowValue <- FALSE
                     pt.segs <- lapply((1:nrow(chart.matrix)),
                         function(ii) list(Index = ii-1, Segments = c(
-                            if (nzchar(data.label.prefix[ii,i])) list(list(Text = data.label.prefix[ii,i])) else NULL,
+                            if (nzchar(data.label.prefix[ii,i])) list(list(Text = unescape_html(data.label.prefix[ii,i]))) else NULL,
                             list(list(Field="Value")),
-                            if (nzchar(tmp.suffix[ii])) list(list(Text = tmp.suffix[ii])) else NULL)))
+                            if (nzchar(tmp.suffix[ii])) list(list(Text = unescape_html(tmp.suffix[ii]))) else NULL)))
 
                     if (multi.color.labels)
                     {

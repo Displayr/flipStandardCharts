@@ -70,6 +70,19 @@ for (charting.func in c("Column", "Bar", "Line", "Radar"))
         }
     })
 
+    test_that("Pie chart data labels",
+    {
+        pp <- Pie(data.with.stats[-10,1,])
+        expect_equal(attr(pp, "ChartLabels"),
+            list(SeriesLabels = list(list(ShowValue = TRUE, Separator = ": "))))
+
+        pp <- Donut(data.with.stats[-10,1,], data.label.prefix = "&#8364;")
+        expect_equal(length(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints), 9)
+        expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[9]],
+            list(Index = 8, Segments = list(list(Field = "CategoryName"),
+            list(Text = ": €"), list(Field = "Value"))))
+    })
+
     test_that(paste(charting.func, "ChartLabels with data label annotations"),
     {
         # Some simple cases with annotations

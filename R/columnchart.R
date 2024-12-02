@@ -955,9 +955,9 @@ Column <- function(x,
                 pt <- list(Index = ii-1)
                 if (data.label.show[ii,i])
                     pt$Segments <-  c(
-                    if (nzchar(data.label.prefix[ii,i])) list(list(Text = data.label.prefix[ii,i])) else NULL,
+                    if (nzchar(data.label.prefix[ii,i])) list(list(Text = unescape_html(data.label.prefix[ii,i]))) else NULL,
                     list(list(Field="Value")),
-                    if (nzchar(tmp.suffix[ii])) list(list(Text = tmp.suffix[ii])) else NULL)
+                    if (nzchar(tmp.suffix[ii])) list(list(Text = unescape_html(tmp.suffix[ii]))) else NULL)
                 else
                     pt$ShowValue <- FALSE
                 return(pt)
