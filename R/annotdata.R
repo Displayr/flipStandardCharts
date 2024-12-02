@@ -725,6 +725,9 @@ recolorForPPT <- function(pt, annotation)
 
 # From https://stackoverflow.com/questions/5060076/convert-html-character-entity-encoding-in-r
 unescape_html <- function(str){
+  # html entities are at least 4 characters long
+  if (sum(nchar(str)) < 4)
+      return(str)
   xml2::xml_text(xml2::read_html(paste0("<x>", str, "</x>")))
 }
 
