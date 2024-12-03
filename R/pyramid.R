@@ -113,6 +113,7 @@ Pyramid <- function(x,
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
                     axis.drag.enable = FALSE,
+                    bar.corner.radius = 0.0,
                     bar.gap = 0.15)
 {
     ErrorIfNotEnoughData(x)

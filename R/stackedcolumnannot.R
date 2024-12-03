@@ -234,6 +234,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
                     zoom.enable = TRUE,
                     axis.drag.enable = FALSE,
                     bar.gap = 0.5,
+                    bar.corner.radius = 0.0,
                     data.label.show = FALSE,
                     data.label.centered = TRUE,
                     data.label.font.autocolor = FALSE,
@@ -295,6 +296,12 @@ StackedColumnWithStatisticalSignificance <- function(x,
         warning("Parameter 'bar gap' must be between 0 and 1. ",
                 "Invalid 'bar gap' set to default value of 0.15.")
         bar.gap <- 0.15
+    }
+    if (bar.corner.radius < 0 || bar.corner.radius > 50)
+    {
+        warning("Parameter 'bar corner radius' must be between 0 and 50. ",
+                "Invalid 'bar corner radius' set to default value of 0.0.")
+        bar.corner.radius <- 0.0
     }
     if (reverse.series.order)
         x <- x[,NCOL(x):1,,drop = FALSE]
@@ -808,6 +815,7 @@ StackedColumnWithStatisticalSignificance <- function(x,
             font = list(size = hovertext.font.size, family = hovertext.font.family)),
         hovermode = if (tooltip.show) "x" else FALSE,
         bargap = bar.gap,
+        barcornerradius = paste0(bar.corner.radius, "%"),
         barmode = barmode
     )
     attr(p, "can-run-in-root-dom") <- TRUE

@@ -19,6 +19,8 @@
 #' @param end.points.color Character; color of end point markers.
 #' @param end.points.opacity Opacity of \code{end.points.color} as an alpha value (0 to 1).
 #' @param end.labels.position Character; Whether to put labels above, below or next to end points.
+#' @param bar.gap Gap between adjacent bars (in plot fraction).
+#' @param bar.corner.radius Rounding of bar corners as a percentage of bar width.
 #' @param x.axis.show Logical; Whether to show the x-axis.
 #' @param x.axis.color Character; Color of the x-axis line.
 #' @param x.axis.width Integer; Width of the x-axis line in pixels.
@@ -86,6 +88,8 @@ Sparkline <- function(x,
         line.thickness = 3,
         line.color = fill.color,
         line.opacity = 1,
+        bar.gap = 0.15,
+        bar.corner.radius = 0,
 		global.font.family = "Arial",
 		global.font.color = rgb(44, 44, 44, maxColorValue = 255),
 		font.unit = "px",
@@ -312,6 +316,8 @@ Sparkline <- function(x,
 		hoverlabel = list(bgcolor = hover.bg.color, bordercolor = hover.bg.color,
 			font = list(color = hover.font.color, size = hover.font.size,
 			family = hover.font.family)),
+        bargap = bar.gap,
+        barcornerradius = paste0(bar.corner.radius, "%"),
         plot_bgcolor = "transparent",
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity))
     attr(p, "can-run-in-root-dom") <- TRUE

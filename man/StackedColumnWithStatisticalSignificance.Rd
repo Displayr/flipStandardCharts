@@ -150,6 +150,7 @@ StackedColumnWithStatisticalSignificance(
   zoom.enable = TRUE,
   axis.drag.enable = FALSE,
   bar.gap = 0.5,
+  bar.corner.radius = 0,
   data.label.show = FALSE,
   data.label.centered = TRUE,
   data.label.font.autocolor = FALSE,
@@ -546,6 +547,8 @@ using zoom.}
 
 \item{bar.gap}{Gap between adjacent bars with different coordinates in
 bar or column charts (in plot fraction).}
+
+\item{bar.corner.radius}{Rounding of bar corners as a percentage of bar width.}
 
 \item{data.label.show}{Logical; whether to show data labels.}
 
