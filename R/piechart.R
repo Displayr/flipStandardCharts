@@ -262,11 +262,13 @@ Pie <- function(x,
                       else                                               data.label.suffix
         series.labels <- list()
         for (i in 1:NROW(x))
+        {
             series.labels[[i]] <- list(CustomPoints = list(list(Index = 0, Segments = c(
-            list(list(Field = "CategoryName")),
-            list(list(Text = paste0(": ", unescape_html(data.label.prefix)))),
-            list(list(Field = "Value")),
-            if (nzchar(tmp.suffix)) list(list(Text = unescape_html(tmp.suffix))) else NULL))))
+                list(list(Field = "CategoryName")),
+                list(list(Text = paste0(": ", unescape_html(data.label.prefix)))),
+                list(list(Field = "Value")),
+                if (nzchar(tmp.suffix)) list(list(Text = unescape_html(tmp.suffix))) else NULL))))
+        }
         attr(result, "ChartLabels")$SeriesLabels <- series.labels
     }
     result
