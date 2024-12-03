@@ -135,7 +135,7 @@ test_that("Pie chart data labels",
 
     pp <- Donut(data.with.stats[-10,1,], data.label.prefix = "&#8364;")
     expect_equal(length(attr(pp, "ChartLabels")$SeriesLabels), 9)
-    expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[9]]$CustomPoints,
+    expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[9]]$CustomPoints[[1]],
         list(Index = 0, Segments = list(list(Field = "CategoryName"),
         list(Text = ": €"), list(Field = "Value"))))
 })
