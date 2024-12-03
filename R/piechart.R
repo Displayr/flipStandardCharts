@@ -253,18 +253,21 @@ Pie <- function(x,
     else
         attr(result, "ChartType") <- "Sunburst"
 
-    attr(result, "ChartLabels") <- list(SeriesLabels=list(list(ShowValue = TRUE, Separator = ": ")))
+    attr(result, "ChartLabels") <- list(SeriesLabels = list(list(ShowValue = TRUE, Separator = ": ")))
     if (nzchar(data.label.prefix) || nzchar(data.label.suffix))
     {
+        # If data labels need to be customized, then each data point should be considered it own series
+        # https://github.com/Displayr/q/blob/e0bc6b1e9eb55b5e9f63cd5e28ac6a91023462a8/QLib/ImportExport/Office/PowerpointXML/PptChartInfo.cs#L179
         tmp.suffix <- if (percentFromD3(data.label.format)) sub("%", "", data.label.suffix)
                       else                                               data.label.suffix
-        pt.segs <- lapply((1:NROW(x)),
-            function(ii) list(Index = ii-1, Segments = c(
-                list(list(Field = "CategoryName")),
-                list(list(Text = paste0(": ", unescape_html(data.label.prefix)))),
-                list(list(Field = "Value")),
-                if (nzchar(tmp.suffix)) list(list(Text = unescape_html(tmp.suffix))) else NULL)))
-        attr(result, "ChartLabels")$SeriesLabels[[1]]$CustomPoints <- pt.segs
+        series.labels <- list()
+        for (i in 1:NROW(x))
+            series.labels[[i]] <- list(CustomPoints = list(Index = 0, Segments = c(
+            list(list(Field = "CategoryName")),
+            list(list(Text = paste0(": ", unescape_html(data.label.prefix)))),
+            list(list(Field = "Value")),
+            if (nzchar(tmp.suffix)) list(list(Text = unescape_html(tmp.suffix))) else NULL)))
+        attr(result, "ChartLabels")$SeriesLabels <- series.labels
     }
     result
 }
