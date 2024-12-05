@@ -90,6 +90,8 @@ Line <-   function(x,
                     margin.right = NULL,
                     margin.inner.pad = NULL,
                     hovertext.template = NULL,
+                    hovertext.custom.format = NULL,
+                    hovertext.custom.label = NULL,
                     hovertext.font.family = global.font.family,
                     hovertext.font.size = 11,
                     hovertext.align = "left",
@@ -383,7 +385,8 @@ Line <-   function(x,
                        width = marker.border.width))
         }
         y.label <- y.labels[i]
-        hover.template <- setHoverTemplate(i, xaxis, chart.matrix, hovertext.template)
+        hover.template <- setHoverTemplate(i, xaxis, chart.matrix, hovertext.template, FALSE,
+            hovertext.custom.format, hovertext.custom.label, annot.data)
 
         # Draw line - main trace
         if (any(!is.na(y)))
@@ -501,8 +504,11 @@ Line <-   function(x,
                    showlegend = FALSE, legendgroup = i, hoverinfo = "skip")
             
             # Add hover as a separate trace to avoid conflict between data labels and hover    
-            hover.template <- rep(setHoverTemplate(i, xaxis, chart.matrix, hovertext.template), 
-                length = nrow(chart.matrix))
+            hover.template <- setHoverTemplate(i, xaxis, chart.matrix, hovertext.template, FALSE,
+                hovertext.custom.format, hovertext.custom.label, annot.data)
+            if (length(hover.template) > 1)
+                hover.template <- hover.template[ind.show]
+
             p <- add_trace(p, x = x, y = y, type = "scatter", name = y.label,
                    cliponaxis = FALSE, mode = "markers",
                    marker = list(size = data.label.offset, color=colors[i], opacity = 0),
@@ -510,7 +516,7 @@ Line <-   function(x,
                    hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                    size = hovertext.font.size, family = hovertext.font.family),
                    bgcolor = toRGB(colors[i], alpha = opacity)),
-                   hovertemplate = hover.template[ind.show])
+                   hovertemplate = hover.template)
         }
     }
     serieslabels.num.changes <- vapply(chart.labels$SeriesLabels, function(s) isTRUE(s$ShowValue) + length(s$CustomPoints), numeric(1L))

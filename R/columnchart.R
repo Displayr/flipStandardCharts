@@ -229,9 +229,17 @@
 #' @param x.tick.label.wrap.nchar Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.
 #' @param hovertext.font.family Font family of hover text.
 #' @param hovertext.font.size Font size of hover text.
-#' @param hovertext.template Specify format of the hovertext. This can be a string or matrix
+#' @param hovertext.template (Deprecated; use \code{hovertext.custom.format} instead)
+#'  Specify format of the hovertext. This can be a string or matrix
 #'  which is the same dimensions as \code{chart.matrix}. If no format is specified
 #'  the default is for categorical x-axis "\%x: \%y" or for a numerical x-axis "(\%x, \%y)".
+#' @param hovertext.custom.format This is a string in the d3 formatting code. Variable data can
+#'  be referred to using as x and y (corresponding to the chart data), or by the names of the
+#'  cell statistics (i.e. the same as for annotation data), and it can be appended by a format
+#'  for example: "%{x}: %{y:.2f}" or "%{x}: %y<br>n = %{Count:.0f}".
+#' @param hovertext.custom.label One of "Series label", "Category label", "None". Specify
+#'  how the secondary (transparent) box in the hover text should be populated.
+#'  Leaving this blank will default to "Series label" except for Funnel charts".
 #' @param hovertext.align Horizontal alignment of hover text.
 #'  Only observable when hover contain multiple lines.
 #' @param marker.border.width Width in pixels of border/line
@@ -384,6 +392,8 @@ Column <- function(x,
                     hovertext.font.family = global.font.family,
                     hovertext.font.size = 11,
                     hovertext.template = NULL,
+                    hovertext.custom.format = NULL,
+                    hovertext.custom.label = NULL,
                     hovertext.align = "left",
                     margin.top = NULL,
                     margin.bottom = NULL,
@@ -912,7 +922,8 @@ Column <- function(x,
                        orientation = "v", marker = marker, name = legend.text[i],
                        hoverlabel = list(font = list(color = autoFontColor(tmp.color),
                        size = hovertext.font.size, family = hovertext.font.family)),
-                       hovertemplate = setHoverTemplate(i, xaxis, chart.matrix, hovertext.template),
+                       hovertemplate = setHoverTemplate(i, xaxis, chart.matrix, hovertext.template, 
+                           FALSE, hovertext.custom.format, hovertext.custom.label, annot.data),
                        legendgroup = i, offsetgroup = i)
 
 

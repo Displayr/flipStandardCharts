@@ -138,6 +138,8 @@ Bar <- function(x,
                     hovertext.font.family = global.font.family,
                     hovertext.font.size = 11,
                     hovertext.template = NULL,
+                    hovertext.custom.format = NULL,
+                    hovertext.custom.label = NULL,
                     hovertext.align = "left",
                     marker.border.width = 1,
                     marker.border.colors = NULL,
@@ -365,9 +367,14 @@ Bar <- function(x,
 
         # Evaluate hover template because otherwise scatterplot hover added at end will
         # show incorrect values (note stacking is not an issue)
-        hover.template <- setHoverTemplate(i, yaxis, chart.matrix, hovertext.template, is.bar = TRUE)
-        hover.template <- evalHoverTemplate(hover.template, y, x.hovertext.format,
+        hover.template <- setHoverTemplate(i, yaxis, chart.matrix, hovertext.template, is.bar = TRUE,
+            hovertext.custom.format, hovertext.custom.label, annot.data)
+        if (is.null(hovertext.custom.format))
+        {
+            # Use in legact charts, but does not work with multiple occurrences of x
+            hover.template <- evalHoverTemplate(hover.template, y, x.hovertext.format,
             x.tick.prefix, x.tick.suffix, x, y.hovertext.format, y.tick.prefix, y.tick.suffix)
+        }
 
         tmp.color <- if (multi.colors.within.series) colors else colors[i]
         tmp.border.color <- if (length(marker.border.colors) >= i) marker.border.colors[i] else tmp.color

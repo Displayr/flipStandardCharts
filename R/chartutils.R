@@ -27,11 +27,18 @@ ErrorIfNotEnoughData <- function(x, require.tidy = TRUE, require.notAllMissing =
 # hovertemplate is preferrable to hoverinfo because it allows better control
 # of formatting. Specifically, we can re-order the x/y and control separators
 # and newlines. But the format is slightly more complex
-setHoverTemplate <- function(i, axis, chart.matrix, template = NULL, is.bar = FALSE)
+setHoverTemplate <- function(i, axis, chart.matrix, template = NULL, is.bar = FALSE,
+    custom.template = "" , custom.label = NULL, annot.data = NULL)
 {
-    # if no template is defined, set default base on axis type
+    if (any(nzchar(custom.template)))
+    {
+        template <- substituteAnnotDataIntoTemplate(custom.template, annot.data, i)
+    }
+
+    # Use default if custom template is not specified or is invalid
     if (all(!nzchar(template)))
     {
+        # if no template is defined, set default based on axis type
         if (axis$type == "category")
             template <- if (is.bar) "%{y}: %{x}" else "%{x}: %{y}"
         else
@@ -40,9 +47,18 @@ setHoverTemplate <- function(i, axis, chart.matrix, template = NULL, is.bar = FA
     if (length(template) > 1)
         template <- matrix(template, nrow(chart.matrix), ncol(chart.matrix))[,i]
 
-    # Set label shown in secondary box with series name if defined
-    label <- if (ncol(chart.matrix) == 1 && colnames(chart.matrix)[1] %in% c("Series.1", "Series 1")) ""
-             else colnames(chart.matrix)[i]
+    # Set label shown in secondary box
+    if (is.null(custom.label) || custom.label == "Series label") 
+    {
+        label <- if (ncol(chart.matrix) == 1 && colnames(chart.matrix)[1] %in% c("Series.1", "Series 1")) ""
+                else colnames(chart.matrix)[i]
+    } else if (custom.label == "Category label") 
+    {
+        label <- if (is.bar) "%{y}" else "%{x}"
+    } else {
+        label <- ""
+    }
+
     template <- paste0(template, "<extra>", label, "</extra>")
 
     ind.na <- which(!is.finite(chart.matrix[,i]))
@@ -56,8 +72,72 @@ setHoverTemplate <- function(i, axis, chart.matrix, template = NULL, is.bar = FA
     return(template)
 }
 
+substituteAnnotDataIntoTemplate <- function(template, annot.data, series)
+{
+    # If template is supplied, check annot data for variable names and substitute into template
+    if (!is.null(attr(annot.data, "statistic", exact = TRUE)))
+        annot.data.names <- attr(data, "statistic", exact = TRUE)
+    else
+        annot.data.names <- dimnames(annot.data)[[length(dim(annot.data))]]
+    
+    v.pos <- gregexpr(template, pattern = "%{", fixed = TRUE)[[1]]
+    if (is.null(annot.data) || length(annot.data.names) == 0 || v.pos[1] < 0) # no substitution needed
+        return (template)
 
-# Used by barcharts and radar chart to because x and y coords do not
+    start.pos <- 1
+    end.pos <- nchar(template)
+    new.template <- ""
+    for (i in 1:length(v.pos))
+    {
+        # Leave variables "x" and "y" alone - plotly will handle them
+        # Also for Bar (Pyramid) and Radar charts, we do additional processing
+        # using evalHoverTemplate
+        if (substr(template, v.pos[i] + 2, v.pos[i] + 2) %in% c("x", "y") && 
+            substr(template, v.pos[i] + 3, v.pos[i] + 3) %in% c(":", "}"))
+            next
+        
+        v.end <- regexpr(substr(template, v.pos[i] + 2, end.pos), pattern = "}", fixed = TRUE)[[1]]
+        if (v.end == -1)
+        {
+            warning("Custom hover template ignored as it contains unmatched braces")
+            return ("")
+        }
+
+        # Check if a format is specified along with the variable, e.g "%{x:.2f}"
+        split.pos <- regexpr(substr(template, v.pos[i] + 2, v.pos[i] + v.end), pattern = ":", fixed = TRUE)[[1]]
+        if (split.pos == -1)
+        {
+            v.name <- substr(template, v.pos[i] + 2, v.pos[i] + v.end)
+            v.data <- try(getAnnotData(annot.data, v.name, series))
+            if (inherits(v.data, "try-error"))
+            {
+                warning("Custom hover template ignored as it refers to unknown data")
+                return ("")
+            }
+        }
+        else
+        {
+            v.format <- substr(template, v.pos[i] + split.pos + 2, v.pos[i] + v.end + 2)
+            v.name <- substr(template, v.pos[i] + 2, v.pos[i] + split.pos)
+            v.data.raw <- try(getAnnotData(annot.data, v.name, series))
+            if (inherits(v.data.raw, "try-error"))
+            {
+                warning("Custom hover template ignored as it refers to unknown data")
+                return ("")
+            }
+            v.data <- formatByD3(v.data.raw, v.format)
+        }
+        new.template <- paste0(new.template, 
+                               substr(template, start.pos, v.pos[i] - 1),
+                               v.data)
+        start.pos <- v.pos[i] + v.end + 2
+    }
+    if (start.pos <= end.pos)
+        new.template <- paste0(new.template, substr(template, start.pos, end.pos))
+    return(new.template)
+}
+
+# Used by barcharts (pyramids) and radar chart to because x and y coords do not
 # match values in data
 evalHoverTemplate <- function(template, x, x.hovertext.format, x.tick.prefix, x.tick.suffix,
     y, y.hovertext.format, y.tick.prefix, y.tick.suffix)
@@ -203,7 +283,7 @@ checkTableList <- function(y, trend.lines)
             used.names <- c(used.names, i)
         }
         y.names[i] <- attr(y[[i]], "name", exact = TRUE)[1]
-    }
+}
     if (!trend.lines && length(used.names) > 0)
         warning(sprintf("Tables have been automatically assigned names '%s'. You can name tables using R code: 'attr(table.name, \"name\") <- \"Description\"'", paste(used.names, collapse="', '")))
     if (any(duplicated(y.names)) & !trend.lines)

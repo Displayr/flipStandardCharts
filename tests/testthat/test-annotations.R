@@ -233,7 +233,8 @@ test_that("Scatter plot annotations",
         color = "red", size = 8, width = 1, font.family = "Arial",
         font.weight = "normal", font.style = "normal", format = ".2f", prefix = "$"),
         list(type = "Border", data = "Cost", threstype = "above threshold", threshold = "2.0",
-        color = "grey", width = 2))), NA)
+        color = "grey", width = 2)), hovertext.custom.format = "Cost = $%{Cost:.2f}",
+        hovertext.custom.label = "Category label"), NA)
     expect_equal(attr(viz.annot.only, "ChartLabels")[[1]][[1]],
         list(ShowValue = FALSE, CustomPoints = list(list(Index = 16,
         Segments = list(list(Font = list(color = "red", size = 6.00150037509377,

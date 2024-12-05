@@ -145,6 +145,8 @@ Area <- function(x,
                     hovertext.font.family = global.font.family,
                     hovertext.font.size = 11,
                     hovertext.template = NULL,
+                    hovertext.custom.format = NULL,
+                    hovertext.custom.label = NULL,
                     hovertext.align = "left",
                     line.thickness = NULL,
                     line.colors = colors,
@@ -186,7 +188,10 @@ Area <- function(x,
         data.label.suffix <- sfx[2]
     }
 
+    # Store data for chart annotations
+    annot.data <- x
     chart.matrix <- checkMatrixNames(x)
+
     is.stacked <- grepl("Stacked", type, fixed = TRUE)
     if (is.stacked && ncol(chart.matrix) < 2)
     {
@@ -436,7 +441,8 @@ Area <- function(x,
                            hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                            size = hovertext.font.size, family = hovertext.font.family),
                            bgcolor = colors[i]), legendgroup = i,
-                           hovertemplate = setHoverTemplate(i, xaxis, chart.matrix, hovertext.template),
+                           hovertemplate = setHoverTemplate(i, xaxis, chart.matrix, hovertext.template,
+                               FALSE, hovertext.custom.format, hovertext.custom.label, annot.data),
                            marker = marker, mode = series.mode)
 
             if (fit.type != "None")
@@ -522,7 +528,8 @@ Area <- function(x,
                     fill = fill.bound, fillcolor = toRGB(colors[i], alpha = opacity),
                     line = list(width = line.thickness[i], color = toRGB(line.colors[i], alpha = line.opacity)),
                     stackgroup = "all", legendgroup = i, mode = "lines",
-                    hovertemplate = setHoverTemplate(i, xaxis, chart.matrix, hovertext.template),
+                    hovertemplate = setHoverTemplate(i, xaxis, chart.matrix, hovertext.template, FALSE,
+                        hovertext.custom.format, hovertext.custom.label, annot.data),
                     hoverlabel = list(bgcolor=colors[i],
                     font = list(color = autoFontColor(colors[i]),
                     size = hovertext.font.size, family = hovertext.font.family)))

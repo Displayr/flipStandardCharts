@@ -8,6 +8,13 @@
 #'  used to aggregate the data for small multiples.
 #' @param scatter.groups.column The column of \code{x} which is used to aggregate
 #'  the data for small multiples (ignored when \code{scatter.groups} is provided)
+#' @param hovertext.custom.format This is a string in the d3 formatting code. Variable data can
+#'  be referred to using as x and y (corresponding to the chart data), or by the names of the
+#'  cell statistics (i.e. the same as for annotation data), and it can be appended by a format
+#'  for example: "%{x}: %{y:.2f}" or "%{x}: %y<br>n = %{Count:.0f}".
+#' @param hovertext.custom.label One of "Series label", "Category label", "None". Specify
+#'  how the secondary (transparent) box in the hover text should be populated.
+#'  Leaving this blank will default to "Series label" except for Funnel charts".
 #' @param nrows Integer; Number of rows to arrange the small multiple panels.
 #' @param share.axes Force range of the plot to be the same across all panels.
 #' @param x.order A vector containing the list index of the columns in the order
@@ -234,6 +241,8 @@ CombinedScatter <- function(x = NULL,
                             x.tick.font.size = 10,
                             x.tick.label.wrap = TRUE,
                             x.tick.label.wrap.nchar = 21,
+                            hovertext.custom.format = NULL,
+                            hovertext.custom.label = NULL,
                             hovertext.font.family = global.font.family,
                             hovertext.font.size = 11,
                             marker.size = 6,
@@ -456,11 +465,24 @@ CombinedScatter <- function(x = NULL,
     }
 
 
-    tooltips.text <- getTooltipsText(scatter.labels, not.na, x, y, x.tick.format,
+    tooltips.text <- NULL
+    tooltips.template <- NULL
+    if (!any(nzchar(hovertext.custom.format)))
+        tooltips.text <- getTooltipsText(scatter.labels, not.na, x, y, x.tick.format,
                                      x.tick.prefix, x.tick.suffix, y.tick.format,
                                      y.tick.prefix, y.tick.suffix, scatter.sizes,
                                      scatter.sizes.name, scatter.colors,
                                      scatter.colors.name)
+    else
+    {
+        tooltips.template <- substituteAnnotDataIntoTemplate(hovertext.custom.format, annot.data, " ")
+        if (isTRUE(hovertext.custom.label == "None"))
+            tooltips.template <- paste0(tooltips.template, "<extra></extra>")
+        else if (isTRUE(hovertext.custom.label == "Category label"))
+            tooltips.template <- paste0(tooltips.template, "<extra>%{x}</extra>")
+        if (length(tooltips.template) > 1)
+            tooltips.template <- tooltips.template[not.na]
+    }
 
     if (length(not.na) < n)
         warning("Data points with missing values have been omitted.")
@@ -631,6 +653,7 @@ CombinedScatter <- function(x = NULL,
         tooltip.font.family = hovertext.font.family,
         tooltip.font.size = hovertext.font.size,
         tooltip.text = tooltips.text,
+        tooltip.template = tooltips.template,
         title = title,
         trend.lines.show = trend.lines,
         fit.x = fit$fit.x,
