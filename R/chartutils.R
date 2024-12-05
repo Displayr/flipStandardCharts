@@ -108,10 +108,10 @@ substituteAnnotDataIntoTemplate <- function(template, annot.data, series)
         if (split.pos == -1)
         {
             v.name <- substr(template, v.pos[i] + 2, v.pos[i] + v.end)
-            v.data <- try(getAnnotData(annot.data, v.name, series))
+            v.data <- try(getAnnotData(annot.data, v.name, series, FALSE), silent = TRUE)
             if (inherits(v.data, "try-error"))
             {
-                warning("Custom hover template ignored as it refers to unknown data")
+                warning("Custom hover template ignored as it refers to unknown data. Allowable names are: '", paste(annot.data.names, collapse = "', '"))
                 return ("")
             }
         }
@@ -119,7 +119,7 @@ substituteAnnotDataIntoTemplate <- function(template, annot.data, series)
         {
             v.format <- substr(template, v.pos[i] + split.pos + 2, v.pos[i] + v.end + 2)
             v.name <- substr(template, v.pos[i] + 2, v.pos[i] + split.pos)
-            v.data.raw <- try(getAnnotData(annot.data, v.name, series))
+            v.data.raw <- try(getAnnotData(annot.data, v.name, series, TRUE), silent = TRUE)
             if (inherits(v.data.raw, "try-error"))
             {
                 warning("Custom hover template ignored as it refers to unknown data")
