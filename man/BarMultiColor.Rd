@@ -143,6 +143,7 @@ BarMultiColor(
   axis.drag.enable = FALSE,
   bar.gap = 0.15,
   bar.group.gap = 0,
+  bar.corner.radius = 0,
   average.series = NULL,
   average.color = rgb(230, 230, 230, maxColorValue = 255)
 )
@@ -505,6 +506,8 @@ bar or column charts (in plot fraction).}
 
 \item{bar.group.gap}{Gap between bars at the same location (in plot fraction).
 This is only applicable for grouped bar/column charts.}
+
+\item{bar.corner.radius}{Rounding of bar corners as a percentage of bar width.}
 
 \item{average.series}{a vector of values which create an additional data series named "Average".
 This is usually used by \code{SmallMultiples}. For bar/column charts, the average is shown as a line,
