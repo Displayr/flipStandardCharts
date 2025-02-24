@@ -145,6 +145,7 @@ BarMultiColor <- function(x,
                     axis.drag.enable = FALSE,
                     bar.gap = 0.15,
                     bar.group.gap = 0.0,
+                    bar.corner.radius = 0,
                     average.series = NULL,
                     average.color = rgb(230, 230, 230, maxColorValue = 255))
 {

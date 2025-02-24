@@ -89,6 +89,8 @@ test_that("No warnings",
         "SUMMARY"), weight.name = "weight_", weight.label = "weighting")
     expect_error(ColumnMultiColor(tb, data.label.show = TRUE, data.label.format = ".0f"), NA)
     expect_error(BarMultiColor(tb, data.label.show = TRUE, data.label.format = ".0f"), NA)
+    expect_error(BarMultiColor(tb, bar.corner.radius = 50), NA)
+    expect_error(ColumnMultiColor(tb, bar.corner.radius = 50), NA)
 })
 
 test_that("ColumnMultiColor + missing endpoints",
