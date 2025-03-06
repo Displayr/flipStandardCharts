@@ -7,7 +7,7 @@ parameters:
     default: ""
   remote-deps:
     type: string
-    default: Displayr/rhtmlCombinedScatter@1.0.15
+    default: "" 
   plugins-branch:
     type: string
     default: ""
