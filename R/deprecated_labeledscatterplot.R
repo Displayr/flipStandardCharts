@@ -1,6 +1,7 @@
 #' @importFrom flipTransformations TextAsVector AsNumeric
 #' @importFrom grDevices colorRamp
 #' @importFrom verbs SumEachRow
+#' @importFrom flipU StopForUserError
 scatterplotData <- function(chart.matrix,
                             type,
                             colors = NULL,
@@ -36,7 +37,7 @@ scatterplotData <- function(chart.matrix,
         not.na <- which(!is.na(SumEachRow(chart.matrix, remove.columns = NULL, remove.missing = FALSE)) & col.not.na)
 
         if (length(not.na) == 0)
-            stop("No non-missing values to plot")
+            StopForUserError("No non-missing values to plot")
 
         chart.matrix <- chart.matrix[not.na,,drop=FALSE]
         if (!is.null(colorscale.variable))
@@ -79,25 +80,25 @@ scatterplotData <- function(chart.matrix,
                 group.indices <- group.indices[not.na]
 
             if (length(group.labels) == 1 && length(unique(group.indices)) > 1)
-                stop(paste0("Only one group has been specified: ", group.labels[1]))
+                StopForUserError(paste0("Only one group has been specified: ", group.labels[1]))
 
             if (length(group.indices) != nrow(chart.matrix))
-                stop(paste0("The number of group indices (", length(group.indices), ") needs to equal the number of rows in the table (", nrow(chart.matrix), ")."))
+                StopForUserError(paste0("The number of group indices (", length(group.indices), ") needs to equal the number of rows in the table (", nrow(chart.matrix), ")."))
 
             permitted.indices <- 1:length(group.labels)
             if (any(is.na(group.indices)) || !all(group.indices %in% permitted.indices))
-                stop(paste0("The group indices are not in the correct format."))
+                StopForUserError(paste0("The group indices are not in the correct format."))
 
             group <- group.labels[group.indices]
             pt.ord <- order(group.indices)
         }
         else
-            stop("Group labels were provided but group indices are missing.")
+            StopForUserError("Group labels were provided but group indices are missing.")
     }
     else
     {
         if (!is.null(group.indices.text) && any(group.indices.text != ""))
-            stop("Group indices were provided but group labels are missing.")
+            StopForUserError("Group indices were provided but group labels are missing.")
         else
             group <- rep(" ", nrow(chart.matrix))
     }
@@ -199,4 +200,3 @@ scatterplotData <- function(chart.matrix,
 
     result
 }
-

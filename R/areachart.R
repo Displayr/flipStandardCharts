@@ -194,7 +194,7 @@ Area <- function(x,
         is.stacked <- FALSE
     }
     if (is.stacked && (any(is.na(chart.matrix)) || any(chart.matrix < 0)))
-        stop("Stacked Area charts cannot be produced with missing or negative values. Try using Bar or Column charts with stacking")
+        StopForUserError("Stacked Area charts cannot be produced with missing or negative values. Try using Bar or Column charts with stacking")
     if (any(is.na(as.matrix(chart.matrix))))
         warning("Missing values have been interpolated or omitted.")
 
@@ -565,4 +565,3 @@ Area <- function(x,
     attr(result, "ChartType") <- if (is.stacked) "Area Stacked" else "Area"
     result
 }
-

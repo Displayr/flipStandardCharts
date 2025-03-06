@@ -161,6 +161,7 @@
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict sd
 #' @importFrom flipTransformations AsNumeric
+#' @importFrom flipU StopForUserError
 #' @importFrom verbs Sum
 #' @export
 Distribution <-   function(x,
@@ -279,7 +280,7 @@ Distribution <-   function(x,
             x <- list(x)
     }
     if (!is.list(x))
-        stop("Input data should be a list of numeric vectors or a matrix.")
+        StopForUserError("Input data should be a list of numeric vectors or a matrix.")
 
     # Checking for categories with no data.
     all.missing <- sapply(x, function(x) all(is.na(x)))
@@ -437,7 +438,7 @@ Distribution <-   function(x,
         wgt <- if (is.null(weights)) rep(1, length(values)) else
                 (if (is.list(weights)) weights[[v]] else weights)
         if (length(wgt) != length(values))
-            stop("The data and the weights do not have the same number of observations.")
+            StopForUserError("The data and the weights do not have the same number of observations.")
         # Removing missing values
         not.missing <- !is.na(values)
         values <- values[not.missing]

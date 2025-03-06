@@ -73,14 +73,15 @@
 #' @param quadrant.bottom.right.title.font.family Font family of the bottom right quadrant title
 #' @param quadrant.bottom.right.title.font.size Font size of the bottom right quadrant title
 #' @param quadrant.bottom.right.title.font.color Font color of the bottom right quadrant title
-#' @param plot.border.show Boolean toggle to show border around plot area. 
+#' @param plot.border.show Boolean toggle to show border around plot area.
 #'  If this is true, then \code{plot.border.*} overrides \code{x.line.*} and \code{y.line.*}.
 #' @param plot.border.color Color of border around plot area (Default is black).
 #' @param plot.border.width Width of border around plot area in px (Default is 1).
-#' @param fixed.aspect Whether of not to force the x and y axis to be at the same scale. Default to FALSE. 
+#' @param fixed.aspect Whether of not to force the x and y axis to be at the same scale. Default to FALSE.
 #'  Cannot be guarenteed if any of the axis bounds are set.
 #' @importFrom rhtmlCombinedScatter CombinedScatter
 #' @export
+#' @importFrom flipU StopForUserError
 CombinedScatter <- function(x = NULL,
                             y = NULL,
                             scatter.x.column = 1,
@@ -327,7 +328,7 @@ CombinedScatter <- function(x = NULL,
     scatter.groups <- reorderPanels(scatter.groups, x.order)
 
     if (is.null(x) && is.null(y))
-        stop("At least one of x or y must be supplied.")
+        StopForUserError("At least one of x or y must be supplied.")
 
     # Warning if non-default selected but corresponding data is missing
     if (is.null(scatter.sizes) && scatter.sizes.as.diameter)
@@ -705,9 +706,10 @@ checkDataIsEnough <- function(x, y) {
         ErrorIfNotEnoughData(x, require.tidy = FALSE)
 }
 
+#' @importFrom flipU StopForUserError
 checkNotNa <- function(not.na) {
     if (length(not.na) == 0)
-        stop("No non-NA points to plot.")
+        StopForUserError("No non-NA points to plot.")
 }
 
 convertPercentToProportion <- function(x) {
@@ -792,12 +794,13 @@ nonMissing <- function(x, y) {
     which(x.not.na & y.not.na)
 }
 
+#' @importFrom flipU StopForUserError
 processScatterSizes <- function(scatter.sizes, n) {
     if (is.null(scatter.sizes)) {
         return(scatter.sizes)
     }
     if (length(scatter.sizes) != n)
-        stop("'scatter.sizes' should be a numeric vector with the same number of observations as 'x'.")
+        StopForUserError("'scatter.sizes' should be a numeric vector with the same number of observations as 'x'.")
     sz.tmp <- AsNumeric(scatter.sizes, binary = FALSE)
     if (any(class(scatter.sizes) %in% c("Date", "POSIXct", "POSIXt"))) {
         sz.tmp <- sz.tmp - min(sz.tmp, na.rm = TRUE)
@@ -817,6 +820,7 @@ getOpacity <- function(opacity, scatter.sizes, fit.type) {
 }
 
 #' @importFrom flipChartBasics StripAlphaChannel
+#' @importFrom flipU StopForUserError
 getColors <- function(scatter.groups, scatter.colors, colors, n, not.na,
                       scatter.colors.as.categorical, num.tables, legend.show)
 {
@@ -835,7 +839,7 @@ getColors <- function(scatter.groups, scatter.colors, colors, n, not.na,
     if (!is.null(scatter.colors))
     {
         if (length(scatter.colors) != n)
-            stop("'scatter.colors' should be a vector with the same number of observations as 'x'.")
+            StopForUserError("'scatter.colors' should be a vector with the same number of observations as 'x'.")
         if (any(is.na(scatter.colors)))
         {
             warning("Some points omitted due to missing values in 'scatter.colors'")
@@ -847,7 +851,7 @@ getColors <- function(scatter.groups, scatter.colors, colors, n, not.na,
     if (!is.null(scatter.colors) && !scatter.colors.as.categorical)
     {
         if (num.tables > 1)
-            stop("'scatter.colors' cannot be used with multiple tables")
+            StopForUserError("'scatter.colors' cannot be used with multiple tables")
         legend.show <- FALSE # don't need to worry about order of groups
         colors <- StripAlphaChannel(colors, "Alpha values in selected colors were not used in the numeric color scale. Adjust 'opacity' for transparent points instead")
     }
@@ -1252,7 +1256,7 @@ reorderPanels <- function(scatter.groups, x.order) {
         x.order <- suppressWarnings(as.numeric(TextAsVector(x.order)))
     }
     if (!all(x.order %in% seq_len(n.panels))) {
-        stop("'Order of panels' should be a comma separated list of indices (between 1 and ", n.panels, ")")
+        StopForUserError("'Order of panels' should be a comma separated list of indices (between 1 and ", n.panels, ")")
     }
     scatter.groups <- factor(scatter.groups)
     indices <- order(x.order)[as.numeric(scatter.groups)]

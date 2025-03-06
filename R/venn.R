@@ -32,6 +32,7 @@
 #' @importFrom d3vennR d3vennR
 #' @importFrom verbs Sum
 #' @export
+#' @importFrom flipU StopForUserError
 Venn <- function(x = NULL,
                  weights = NULL,
                  colors = c("#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd",
@@ -56,8 +57,8 @@ Venn <- function(x = NULL,
     if (is.data.frame(x))
     {
         if (any(sapply(x, is.factor)))
-            stop("Data must consist of numeric (0 or 1) or logical (TRUE or FALSE) values ",
-                 "indicating which cases (rows) are included in which sets (columns).")
+            StopForUserError("Data must consist of numeric (0 or 1) or logical (TRUE or FALSE) values ",
+                             "indicating which cases (rows) are included in which sets (columns).")
 
         nms <- colnames(x)
         if (is.null(weights))
@@ -198,6 +199,7 @@ function(){
 #' @param data.label.decimals number of decimal places.
 #' @importFrom janitor round_half_up
 #' @importFrom verbs SumEmptyHandling
+#' @importFrom flipU StopForUserError
 convertDataFrameIntoJSON <- function(x, nms, weights, data.label.decimals)
 {
     # The filtered data might have length zero, so use SumEmptyHandling to ensure result isn't NA
@@ -206,7 +208,7 @@ convertDataFrameIntoJSON <- function(x, nms, weights, data.label.decimals)
     k <- ncol(x)
 
     if (is.null(dim(drop(x))) || length(dim(drop(x))) != 2L || NCOL(x) == 1L)
-        stop("The supplied data needs to be a matrix or data.frame with at least two columns.")
+        StopForUserError("The supplied data needs to be a matrix or data.frame with at least two columns.")
 
     all.subsets <- allSubsets(k)
     sizes <- vapply(all.subsets, .sum, 0)

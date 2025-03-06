@@ -90,6 +90,7 @@
 #' @importFrom stats lm loess rnorm
 #' @importFrom hash hash has.key values
 #' @importFrom flipTransformations AsNumeric
+#' @importFrom flipU StopForUserError
 #' @export
 ScatterplotMatrix <- function(x, weights = 1:NROW(x), seed = 123,
                               modifications = "Enlarge points with multiple observations",
@@ -156,7 +157,7 @@ ScatterplotMatrix <- function(x, weights = 1:NROW(x), seed = 123,
 {
     set.seed(seed)
     if (is.null(ncol(x)) || ncol(x) < 2)
-        stop("Input data must contain at least two variables.")
+        StopForUserError("Input data must contain at least two variables.")
     x <- suppressWarnings(AsNumeric(x, binary = FALSE))
     n <- ncol(x)
     labels <- colnames(x)
@@ -220,7 +221,7 @@ ScatterplotMatrix <- function(x, weights = 1:NROW(x), seed = 123,
     h.offset <- c(panel.gap, rep(0, max(0, n - 2)), panel.gap)[1:n]
     w.offset <- c(panel.gap, rep(0, max(0, n - 2)), panel.gap)[1:n]
     if (panel.gap >= 1/(2*n))
-        stop("'Panel gap' should be between 0 and 1/(2n) (",
+        StopForUserError("'Panel gap' should be between 0 and 1/(2n) (",
              round(1/(2*n), 4), ")")
     res <- subplot(panels, nrows = n, margin = panel.gap,
         heights = rep(1/n, n) - h.offset,
@@ -237,13 +238,13 @@ ScatterplotMatrix <- function(x, weights = 1:NROW(x), seed = 123,
                                  subtitle.font.size, footer.font.size)
     margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left, margin.right, 0)
     margins$autoexpand <- margin.autoexpand
-    
+
     if (nzchar(title))
         annotations[[length(annotations)+1]] <- setTitle(title, title.font, margins)
     if (nzchar(subtitle))
         annotations[[length(annotations)+1]] <- setSubtitle(subtitle, subtitle.font, margins)
     if (nzchar(footer))
-        annotations[[length(annotations)+1]] <- setFooter(footer, footer.font, margins) 
+        annotations[[length(annotations)+1]] <- setFooter(footer, footer.font, margins)
 
     res <- config(res, displayModeBar = modebar.show, showAxisDragHandles = axis.drag.enable)
     res$sizingPolicy$browser$padding <- 0
@@ -343,7 +344,7 @@ panel_scatter <- function(x, y, x.name, y.name, weights, modifications,
         point.marker$size <- pmax(1, sz.scaled)
     }
     else
-        stop(paste("Point setting not handled:", modifications))
+        StopForUserError(paste("Point setting not handled:", modifications))
 
     pp <- plot_ly(x = x.pts, y = y.pts, type = "scatter", mode = "markers",
         marker = point.marker, hoverinfo = "x+y", hoverlabel = point.hover.style,

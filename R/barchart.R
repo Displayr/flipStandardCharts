@@ -181,7 +181,7 @@ Bar <- function(x,
     annot.data <- x
     chart.matrix <- checkMatrixNames(x)
     if (!is.numeric(chart.matrix))
-        stop("Input data should be numeric.")
+        StopForUserError("Input data should be numeric.")
     if (multi.colors.within.series && NCOL(chart.matrix) > 1)
     {
         warning("Bar chart with multi color series can only show a single series. To show multiple series use Small Multiples")
@@ -474,7 +474,7 @@ Bar <- function(x,
 
                     if (multi.color.labels)
                     {
-                        for (ii in 1:nrow(chart.matrix)) 
+                        for (ii in 1:nrow(chart.matrix))
                         {
                             for (j in 1:length(pt.segs[[ii]]$Segments))
                                 pt.segs[[ii]]$Segments[[j]]$Font$color <- dlab.color[ii]
@@ -582,4 +582,3 @@ Bar <- function(x,
     attr(result, "ChartLabels") <- chart.labels
     result
 }
-

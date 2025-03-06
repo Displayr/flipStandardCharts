@@ -38,6 +38,7 @@
 #' @importFrom flipFormat FormatAsReal
 #' @importFrom flipChartBasics ChartColors StripAlphaChannel
 #' @importFrom rhtmlLabeledScatter LabeledScatter
+#' @importFrom flipU StopForUserError
 #' @export
 LabeledScatter <- function(x = NULL,
                                 y = NULL,
@@ -222,7 +223,7 @@ LabeledScatter <- function(x = NULL,
 
     # Basic data checking
     if (is.null(x) && is.null(y))
-        stop("At least one of x or y must be supplied.")
+        StopForUserError("At least one of x or y must be supplied.")
     if (is.null(x))
     {
         x <- rep(0, length(y))
@@ -265,7 +266,7 @@ LabeledScatter <- function(x = NULL,
     if (!is.null(scatter.sizes))
     {
         if (length(scatter.sizes) != n)
-            stop("'scatter.sizes' should be a numeric vector with the same number of observations as 'x'.")
+            StopForUserError("'scatter.sizes' should be a numeric vector with the same number of observations as 'x'.")
         sz.tmp <- AsNumeric(scatter.sizes, binary = FALSE)
         if (any(class(scatter.sizes) %in% c("Date", "POSIXct", "POSIXt")))
             sz.tmp <- sz.tmp - min(sz.tmp, na.rm = TRUE)
@@ -287,7 +288,7 @@ LabeledScatter <- function(x = NULL,
         if (!scatter.colors.as.categorical)
             scatter.colors <- AsNumeric(scatter.colors, binary = FALSE)
         if (length(scatter.colors) != n)
-            stop("'scatter.colors' should be a vector with the same number of observations as 'x'.")
+            StopForUserError("'scatter.colors' should be a vector with the same number of observations as 'x'.")
         if (any(is.na(scatter.colors)))
         {
             warning("Some points omitted due to missing values in 'scatter.colors'")
@@ -295,7 +296,7 @@ LabeledScatter <- function(x = NULL,
         }
     }
     if (all(!not.na))
-        stop("No non-NA points to plot.")
+        StopForUserError("No non-NA points to plot.")
     not.na <- which(not.na) # indexing makes re-ordering easier later
     if (!any(is.finite(scatter.max.labels)) || scatter.max.labels < 0)
             scatter.max.labels <- NULL
@@ -304,7 +305,7 @@ LabeledScatter <- function(x = NULL,
     if (!is.null(scatter.colors) && !scatter.colors.as.categorical)
     {
         if (num.tables > 1)
-            stop("'scatter.colors' cannot be used with multiple tables")
+            StopForUserError("'scatter.colors' cannot be used with multiple tables")
         legend.show <- FALSE # don't need to worry about order of groups
         groups <- 1:n # what about mult tables?
         colors <- StripAlphaChannel(colors, "Alpha values in selected colors were not used in the numeric color scale. Adjust 'opacity' for transparent points instead")

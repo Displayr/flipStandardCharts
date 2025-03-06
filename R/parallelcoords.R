@@ -49,6 +49,7 @@
 #' @importFrom parcoords parcoords
 #' @importFrom htmlwidgets JS
 #' @importFrom jsonlite toJSON
+#' @importFrom flipU StopForUserError
 #' @export
 ParallelCoordinates <- function(x,
                                 opacity = 0.4,
@@ -135,7 +136,7 @@ ParallelCoordinates <- function(x,
     if (!is.null(group))
     {
         if (length(group) != nrow(x))
-            stop("Length of color variable must be the same as x")
+            StopForUserError("Length of color variable must be the same as x")
 
         if (is.factor(group) || is.character(group))
         {

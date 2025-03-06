@@ -5,6 +5,7 @@
 #' @inherit Bar
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom plotly plot_ly layout
+#' @importFrom flipU StopForUserError
 #' @export
 Pyramid <- function(x,
                     annotation.list = NULL,
@@ -127,7 +128,7 @@ Pyramid <- function(x,
     }
     ss <- sign(chart.matrix[is.finite(chart.matrix)])
     if (any(ss * ss[1] < 0))
-        stop("'Pyramid' charts cannot show a mixture of positive and negative values.")
+        StopForUserError("'Pyramid' charts cannot show a mixture of positive and negative values.")
 
     cl <- match.call()
     cl <- c(cl[1], lapply(cl[-1], evalc, env = parent.frame()))
@@ -141,4 +142,3 @@ Pyramid <- function(x,
     do.call(Bar, as.list(cl))
 
 }
-

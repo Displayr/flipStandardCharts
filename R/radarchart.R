@@ -21,6 +21,7 @@
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom plotly plot_ly layout config
 #' @importFrom flipFormat FormatAsReal
+#' @importFrom flipU StopForUserError
 #' @importFrom verbs Sum
 #' @export
 Radar <- function(x,
@@ -143,7 +144,7 @@ Radar <- function(x,
     annot.data <- x
     chart.matrix <- checkMatrixNames(x)
     if (any(!is.finite(chart.matrix)))
-        stop("Radar charts cannot contain missing or non-finite values.\n")
+        StopForUserError("Radar charts cannot contain missing or non-finite values.\n")
     m <- nrow(chart.matrix)
     n <- ncol(chart.matrix)
 
@@ -246,7 +247,7 @@ Radar <- function(x,
     }
     pos <- cbind(pos,
             HoverText = evalHoverTemplate(hovertext.template, pos$Name, "", "", "",
-                unlist(chart.matrix), y.hovertext.format, y.tick.prefix, y.tick.suffix), 
+                unlist(chart.matrix), y.hovertext.format, y.tick.prefix, y.tick.suffix),
             DataLabels = tmp.labels)
 
     # Set margins
@@ -350,7 +351,7 @@ Radar <- function(x,
     if (!is.null(average.series))
     {
         avg.pos <- calcPolarCoord(average.series, r0 = y.bounds.minimum)
-        hover.tmp <- evalHoverTemplate(hovertext.template[1], rownames(chart.matrix), 
+        hover.tmp <- evalHoverTemplate(hovertext.template[1], rownames(chart.matrix),
                     "", "", "", average.series[c(1:m,1)], y.hovertext.format, y.tick.prefix, y.tick.suffix)
         p <- add_trace(p, x = avg.pos[,1], y = avg.pos[,2], name = "Average",
                     type = "scatter", mode = series.mode, fill = "toself",
@@ -475,7 +476,7 @@ Radar <- function(x,
         }
         if (length(pt.segs) > 0)
             chart.labels$SeriesLabels[[ggi]]$CustomPoints <- pt.segs
-        
+
         p <- add_trace(p, x = pos$x[ind], y = pos$y[ind], type = "scatter", mode = "markers",
                     name = g.list[ggi], legendgroup = g.list[ggi], opacity = 0,
                     hovertemplate = paste0(pos$HoverText[ind], "<extra>", pos$Group[ind], "</extra>"),
@@ -670,4 +671,3 @@ calcYAlign <- function(index, length, return.anchor = FALSE)
 
     return(y.align)
 }
-

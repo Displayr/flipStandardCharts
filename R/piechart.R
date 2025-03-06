@@ -32,6 +32,7 @@
 #' Pie(dat, pie.subslice.colors=rainbow(9), pie.subslice.colors.repeat = FALSE)
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom rhtmlDonut Donut
+#' @importFrom flipU StopForUserError
 #' @export
 Pie <- function(x,
                      type = "Pie",
@@ -72,7 +73,7 @@ Pie <- function(x,
                      pie.groups.font.family = data.label.font.family,
                      pie.groups.order = "initial",
                      pie.inner.radius = NULL,
-                     pie.border.color = rgb(255, 255, 255, maxColorValue = 255))
+                pie.border.color = rgb(255, 255, 255, maxColorValue = 255))
 {
     ErrorIfNotEnoughData(x)
     if (isPercentData(x) && isAutoFormat(data.label.format))
@@ -115,7 +116,7 @@ Pie <- function(x,
 
     # Check input data and parameters
     if (length(unique(groups)) > 1 && type == "Donut")
-        stop("The table supplied is two-dimensional and cannot be displayed as a donut chart.  Please change the chart type to 'Pie' and update.")
+        StopForUserError("The table supplied is two-dimensional and cannot be displayed as a donut chart.  Please change the chart type to 'Pie' and update.")
 
     # Give warning about missing values
     ind.missing <- which(!is.finite(y.values) | y.values <= 0)
@@ -190,7 +191,7 @@ Pie <- function(x,
     }
 
     if (pie.inner.radius < 0 || pie.inner.radius > 100)
-        stop("Pie radius should be a number between 0 and 100.")
+        StopForUserError("Pie radius should be a number between 0 and 100.")
 
     # Data label formatting extract from d3 format
     as.percentages <- percentFromD3(data.label.format)

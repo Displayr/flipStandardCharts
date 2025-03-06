@@ -88,6 +88,7 @@
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats qnorm
 #' @importFrom verbs SumEmptyHandling
+#' @importFrom flipU StopForUserError
 #' @export
 StackedColumnWithStatisticalSignificance <- function(x,
                     num.categories.below.axis = 0,
@@ -313,10 +314,10 @@ StackedColumnWithStatisticalSignificance <- function(x,
     # Prepare data for plotting chart
     chart.matrix <- checkMatrixNames(x)
     if (!is.numeric(chart.matrix))
-        stop("Input data should be numeric.")
+        StopForUserError("Input data should be numeric.")
     if (num.categories.below.axis > 0 &&
         any(!is.na(chart.matrix) & chart.matrix < 0))
-        stop("All values in input data must be positive when some categories are shown below the axis")
+        StopForUserError("All values in input data must be positive when some categories are shown below the axis")
     n <- nrow(chart.matrix)
     m <- ncol(chart.matrix)
     x.labels.full <- rownames(chart.matrix)

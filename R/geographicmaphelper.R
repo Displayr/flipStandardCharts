@@ -75,6 +75,7 @@ StatesInCountry <- function(country)
 #' @export
 #' @seealso \code{\link{CountriesOrContinents}}
 #' @seealso \code{\link{StatesInCountry}}
+#' @importFrom flipU StopForUserError
 ZipcodesInCountry <- function(country)
 {
     country <- tidyCountryName(country)
@@ -82,7 +83,7 @@ ZipcodesInCountry <- function(country)
                    `United Kingdom` = uk.postcodes$name,
                    `United States of America` = us.postcodes$name)
     if (is.null(data))
-        stop("Zip code or postcode mapping data is not avaialble for this country.")
+        StopForUserError("Zip code or postcode mapping data is not avaialble for this country.")
     sort(unique(as.character(data)))
 }
 
@@ -96,12 +97,13 @@ ZipcodesInCountry <- function(country)
 #' @seealso \code{\link{CountriesOrContinents}}
 #' @seealso \code{\link{StatesInCountry}}
 #' @seealso \code{\link{ZipcodesInCountry}}
+#' @importFrom flipU StopForUserError
 AreasInCountry <- function(country)
 {
     country <- tidyCountryName(country)
     data <- switch(country, Australia = australia.areas$name)
     if (is.null(data))
-        stop("Area mapping data is not available for this country.")
+        StopForUserError("Area mapping data is not available for this country.")
     sort(unique(as.character(data)))
 }
 
@@ -111,6 +113,7 @@ AreasInCountry <- function(country)
 #' @param country Character string; the country to search for
 #' @return Character string; the corrected country name
 #' @noRd
+#' @importFrom flipU StopForUserError
 tidyCountryName <- function(country)
 {
     requireNamespace("sp")
@@ -131,7 +134,7 @@ tidyCountryName <- function(country)
     }
 
     if (!(country %in% names(admin0.name.map.by.admin)))
-        stop("Country '", country, "' not found.")
+        StopForUserError("Country '", country, "' not found.")
 
     return(country)
 }
@@ -148,7 +151,7 @@ tidyCountryName <- function(country)
 FindCountryFromRegions <- function(states) {
 
     if (is.null(states) || all(!is.na(suppressWarnings(as.numeric(states)))))
-        stop("Cannot guess country without useful state names.")
+        StopForUserError("Cannot guess country without useful state names.")
 
     country.matches <- list()
     for (current in names(admin1.name.map))
@@ -174,7 +177,7 @@ FindCountryFromRegions <- function(states) {
 }
 
 # Check and standarize input format
-#' @importFrom flipU TrimWhitespace
+#' @importFrom flipU TrimWhitespace StopForUserError
 cleanMapInput <- function(table)
 {
     # Correcting rowname errors for country names.
@@ -185,19 +188,19 @@ cleanMapInput <- function(table)
     if (is.null(dim(table)) || length(dim(table)) == 1) # better than is.vector()
     {
         if(is.null(names(table)))
-            stop(paste(table.name, "has no names. The names are required to match known geographic entitites."))
+            StopForUserError(paste(table.name, "has no names. The names are required to match known geographic entitites."))
 
         table <- as.matrix(table)
     }
 
     if (length(dim(table)) != 2)
-        stop(paste("Tables must contain one or more columns of data, and may not have three or more dimensions."))
+        StopForUserError(paste("Tables must contain one or more columns of data, and may not have three or more dimensions."))
 
     if (ncol(table) == 1 && is.null(dimnames(table)[[2]]))
         dimnames(table)[[2]] = table.name
 
     if (is.null(colnames(table)))
-        stop(paste(table.name, "has no column names"))
+        StopForUserError(paste(table.name, "has no column names"))
 
     if (is.null(rownames(table)) || identical(rownames(table), as.character(seq(nrow(table)))))
     {
@@ -207,7 +210,7 @@ cleanMapInput <- function(table)
     }
 
     if (all(!is.na(suppressWarnings(as.numeric(rownames(table))))) && !is.null(statistic) && statistic == "Text")
-        stop(paste(table.name, "contains text and has numeric row names. Did you mean to convert this table to percentages?"))
+        StopForUserError(paste(table.name, "contains text and has numeric row names. Did you mean to convert this table to percentages?"))
 
     if (!is.null(statistic))
         attr(table, "statistic") <- statistic
