@@ -26,6 +26,7 @@
 #'  turning on tooltips with large data sets can make the chart slow to render.
 #' @param enable.zoom Logical, indicating whether of not to allow the chart to be zoomable.
 #' @importFrom verbs SumEachColumn
+#' @importFrom flipU StopForUserError
 #' @export
 MissingCasesPlot <- function(raw.data,
     fill.color = "#5C9AD3",
@@ -80,7 +81,7 @@ MissingCasesPlot <- function(raw.data,
     dat <- as.matrix(is.na(raw.data) * 1)
     index <- 1:nrow(dat)
     if (length(subset) > 1 && length(subset) != nrow(dat))
-        stop("Filters must be from the same data set as the input variables.")
+        StopForUserError("Filters must be from the same data set as the input variables.")
     if (length(subset) == nrow(dat))
     {
         index <- which(subset)

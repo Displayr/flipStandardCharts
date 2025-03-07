@@ -42,7 +42,7 @@
 #' @param right.column.headings An optional comma separated string containing headings for
 #' \code{right.columns}. If not supplied, colnames of the items in \code{right.columns} are used.
 #' @importFrom flipFormat FormatAsReal
-#' @importFrom flipU ConvertCommaSeparatedStringToVector
+#' @importFrom flipU ConvertCommaSeparatedStringToVector StopForUserError
 #' @importFrom flipTables Reorder Cbind TidyTabularData
 #' @importFrom stringr str_trim
 #' @export
@@ -85,10 +85,10 @@ HeatMap <- function(table,
         mat <- matrix(mat) # create single column matrix from vector
         rownames(mat) <- rownames
         # Until VIS-362 is fixed, rhtmlHeatmap cannot handle vectors
-        stop("Input must be two-dimensional.")
+        StopForUserError("Input must be two-dimensional.")
     }
     if (!is.numeric(mat[1, 1]))
-        stop("The input table must contain only numeric values.")
+        StopForUserError("The input table must contain only numeric values.")
 
     mat <- if (sort.rows == "Sort by averages (ascending)") {
         Reorder(mat, rows = "Ascending", columns = "None")
@@ -228,7 +228,7 @@ appendColumns <- function(to.append, mat, cell.decimals, column.headings, row.or
         {
             column.headings <- ConvertCommaSeparatedStringToVector(column.headings)
             if (length(column.headings) != length(column.subtitles))
-                stop("Number of additional column headings is different from number of additional columns.")
+                StopForUserError("Number of additional column headings is different from number of additional columns.")
             column.subtitles <- column.headings
         }
     }
@@ -245,4 +245,3 @@ formatNumeric <- function(x, decimals) {
     }
     return(x)
 }
-

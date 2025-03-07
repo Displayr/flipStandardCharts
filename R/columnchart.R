@@ -320,6 +320,7 @@
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
 #' @importFrom verbs Sum
+#' @importFrom flipU StopForUserError
 #' @examples
 #' z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L),  .Dim = c(5L, 2L),
 #'       .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
@@ -522,7 +523,7 @@ Column <- function(x,
                     data.label.suffix = "",
                     data.label.threshold = NULL,
                     average.series = NULL,
-                    average.color = rgb(230, 230, 230, maxColorValue = 255))
+                   average.color = rgb(230, 230, 230, maxColorValue = 255))
 {
     ErrorIfNotEnoughData(x)
     if (isPercentData(x))
@@ -544,7 +545,7 @@ Column <- function(x,
     annot.data <- x
     chart.matrix <- checkMatrixNames(x)
     if (!is.numeric(chart.matrix))
-        stop("Input data should be numeric.")
+        StopForUserError("Input data should be numeric.")
     if (multi.colors.within.series && NCOL(chart.matrix) > 1)
     {
         warning("Column chart with multi color series can only show a single series. To show multiple series use Small Multiples")
@@ -713,9 +714,9 @@ Column <- function(x,
                 x2.axis.type <- xaxis$type
             }
             else
-                stop("Rownames in data for second axis (", x2.axis.type,
-                     ") do not have the same type as the input data (",
-                     xaxis$type, ").")
+                StopForUserError("Rownames in data for second axis (", x2.axis.type,
+                                 ") do not have the same type as the input data (",
+                                 xaxis$type, ").")
         }
         x2.labels <- formatLabels(x2, "Column", x.tick.label.wrap, x.tick.label.wrap.nchar,
             x.tick.format, y2.tick.format)$labels
@@ -1201,4 +1202,3 @@ Column <- function(x,
         attr(result, "ChartWarning") <- "The secondary values axis cannot be exported to PowerPoint"
     result
 }
-

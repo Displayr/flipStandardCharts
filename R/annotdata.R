@@ -214,7 +214,7 @@ addAnnotScatterTrace <- function(p, orientation, xpos, ypos, text, stackgroup, .
 
 
 
-
+#' @importFrom flipU StopForUserError
 getAnnotData <- function(data, name, series, as.numeric = TRUE)
 {
     # If no annotation data is specified use chart data
@@ -228,7 +228,7 @@ getAnnotData <- function(data, name, series, as.numeric = TRUE)
     }
 
     if (is.null(data))
-        stop("No data has been provided for annotations")
+        StopForUserError("No data has been provided for annotations")
     if (is.null(dim(data)))
         data <- as.matrix(data)
 
@@ -249,12 +249,12 @@ getAnnotData <- function(data, name, series, as.numeric = TRUE)
         name2 <- gsub("%", "Percent", name)
         ind <- match(paste0("", name2), d.names)
         if (is.na(ind))
-          stop("Annotation data does not contain a statistic named '", name, "'. ",
-                "Allowable names are: '", paste(d.names, collapse = "', '"),
-                "'. Check that DATA MANIPULATIONS > Automatically tidy the data ",
-                "is not selected.")
+            StopForUserError("Annotation data does not contain a statistic named '", name, "'. ",
+                             "Allowable names are: '", paste(d.names, collapse = "', '"),
+                             "'. Check that DATA MANIPULATIONS > Automatically tidy the data ",
+                             "is not selected.")
         else
-          name <- name2
+            name <- name2
     }
 
     match.single.stat <- isTRUE(attr(data, "statistic", exact = TRUE) == name)
@@ -571,7 +571,7 @@ getPointSegmentsForPPT <- function(points, index, annot, dat)
 }
 
 # Tidy up empty segments and points where possible
-tidyPointSegments <- function(points, num.points, show.categoryname = FALSE, 
+tidyPointSegments <- function(points, num.points, show.categoryname = FALSE,
     index.map = NULL, toggle.show.value = TRUE)
 {
     if (length(points) == 0)

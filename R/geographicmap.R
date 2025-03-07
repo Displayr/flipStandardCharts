@@ -51,6 +51,7 @@
 #' names(data) <- c("France", "China", "Brazil", "Canada")
 #' GeographicMap(data)
 #' @importFrom verbs Sum
+#' @importFrom flipU StopForUserError
 #' @export
 GeographicMap <- function(x,
                           country,
@@ -142,7 +143,7 @@ GeographicMap <- function(x,
         country <- FindCountryFromRegions(names)
         match.counts[["states"]] <- attr(country, "matches")
         if (max(unlist(match.counts)) == 0)
-            stop("No rows of the input data were matched with geographic entity names.")
+            StopForUserError("No rows of the input data were matched with geographic entity names.")
         map.type <- names(which.max(match.counts))
     }
 
@@ -209,7 +210,7 @@ GeographicMap <- function(x,
         name.map <- australiaAreasNameMap()
     }
     else
-        stop("Unrecognized map.type")
+        StopForUserError("Unrecognized map.type")
 
     if (treat.NA.as.0)
         table[is.na(table)] <- 0
@@ -267,7 +268,7 @@ GeographicMap <- function(x,
         warning(msg)
     }
     if (all(incorrect.names) && zip.country != "Automatic")
-        stop("No names in the data were matched to zip codes in your selected country.")
+        StopForUserError("No names in the data were matched to zip codes in your selected country.")
 
     table <- table[!incorrect.names, , drop = FALSE]
     table.names <- rownames(table)
@@ -601,8 +602,8 @@ plotlyMap <- function(table, name.map, colors, opacity, min.value, max.range, co
         }
     }
     else
-        stop("Only world and USA state or region maps are available with 'plotly' package.",
-             " Change to 'leaflet' to map other types.")
+        StopForUserError("Only world and USA state or region maps are available with 'plotly' package.",
+                         " Change to 'leaflet' to map other types.")
 
     if (treat.NA.as.0)  # set NA color to zero color
     {

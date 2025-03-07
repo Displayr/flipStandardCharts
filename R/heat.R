@@ -90,7 +90,7 @@
 #' \code{right.columns}. If not supplied, colnames of the items in \code{right.columns} are used.
 #'
 #' @importFrom flipFormat FormatAsReal FormatAsPercent
-#' @importFrom flipU ConvertCommaSeparatedStringToVector
+#' @importFrom flipU ConvertCommaSeparatedStringToVector StopForUserError
 #' @importFrom flipTables Reorder Cbind
 #' @importFrom stringr str_trim
 #' @export
@@ -167,10 +167,10 @@ Heat <- function(x,
         x.title <- ""
 
     if (nrow(mat) > 500 || ncol(mat) > 500)
-        stop("Heatmap cannot be plotted with more than 500 rows or columns.")
+        StopForUserError("Heatmap cannot be plotted with more than 500 rows or columns.")
 
     if (!is.numeric(mat[1, 1]))
-        stop("The input data must contain only numeric values.")
+        StopForUserError("The input data must contain only numeric values.")
 
     mat <- if (sort.rows == "Sort by averages (ascending)") {
         Reorder(mat, rows = "Ascending", columns = "None")
@@ -343,7 +343,7 @@ appendColumns <- function(to.append, mat, cell.decimals, column.headings, row.or
         {
             column.headings <- ConvertCommaSeparatedStringToVector(column.headings)
             if (length(column.headings) != length(column.subtitles))
-                stop("Number of additional column headings is different from number of additional columns.")
+                StopForUserError("Number of additional column headings is different from number of additional columns.")
             column.subtitles <- column.headings
         }
     }
@@ -361,5 +361,3 @@ formatNumeric <- function(x, decimals) {
     }
     return(x)
 }
-
-

@@ -21,7 +21,7 @@
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom dygraphs dygraph dySeries dyCSS dyRangeSelector %>% dyOptions dyLegend dyAxis
 #' @importFrom flipTime AsDate AsDateTime
-#' @importFrom flipU IsRServer
+#' @importFrom flipU IsRServer StopForUserError
 #' @importFrom xts xts
 #' @importFrom htmlwidgets onRender
 #' @export
@@ -86,11 +86,10 @@ TimeSeries <- function(x = NULL,
     if (all(is.na(row.names.date)))
     {
         if (IsRServer())
-            stop("Time series charts require dates to be supplied as the row names ",
-                "if the Data source is a table; the first column if the data is pasted or typed; ",
-                "or the first variable if variables are provided as the Data source.")
-        else
-            stop("Row names of input data could not be interpreted as dates.")
+            StopForUserError("Time series charts require dates to be supplied as the row names ",
+                             "if the Data source is a table; the first column if the data is pasted or typed; ",
+                             "or the first variable if variables are provided as the Data source.")
+        StopForUserError("Row names of input data could not be interpreted as dates.")
     }
     is.time <- !all(format(row.names.date, format = "%H:%M:%S") == "00:00:00")
     rownames(x) <- format(row.names.date)
@@ -102,7 +101,7 @@ TimeSeries <- function(x = NULL,
     if (range.bars)
     {
         if (ncol(x) != 3)
-            stop("Data must consist of 3 columns containing low, central and high values.")
+            StopForUserError("Data must consist of 3 columns containing low, central and high values.")
         x <- x[, order(apply(x, 2, mean, na.rm = TRUE))]
         label <- colnames(x)[2]
         colors <- colors[1]

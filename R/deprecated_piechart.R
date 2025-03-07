@@ -1,5 +1,6 @@
 #' @importFrom utils stack
 #' @importFrom flipChartBasics ChartColors
+#' @importFrom flipU StopForUserError
 #' @importFrom verbs Sum
 pieChart <- function(chart.matrix,
                      type,
@@ -74,7 +75,7 @@ pieChart <- function(chart.matrix,
 
     ## Stop if asked for a donut but passed a 2D table
     if (is.data.2d && type == "Donut")
-        stop("The table supplied is two-dimensional and cannot be displayed as a donut chart.  Please change the chart type to 'Pie' and update.")
+        StopForUserError("The table supplied is two-dimensional and cannot be displayed as a donut chart.  Please change the chart type to 'Pie' and update.")
 
     ## First column is values, second groups, third is labels.
     d.values <- as.numeric(pie.data[, 1])

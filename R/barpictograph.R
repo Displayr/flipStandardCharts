@@ -34,6 +34,7 @@
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom httr GET
 #' @importFrom verbs Sum
+#' @importFrom flipU StopForUserError
 #' @export
 #' @examples
 #' BarPictograph(1:5, image = "Sick person")
@@ -100,7 +101,7 @@ BarPictograph <- function(x,
     x <- x[,1, drop = FALSE]
     n <- NROW(x)
     if (n > 100)
-        stop("Input data containing ", n, " rows is too large to show (maximum 100 rows).")
+        StopForUserError("Input data containing ", n, " rows is too large to show (maximum 100 rows).")
 
     # Set default values
     if (is.na(scale) && all(is.na(x)))
@@ -164,25 +165,25 @@ BarPictograph <- function(x,
         prop[is.na(prop)] <- 0
     }
     if (any(prop < 0))
-        stop("Input data cannot be negative\n")
+        StopForUserError("Input data cannot be negative\n")
     if (any(prop > 1))
-        stop("Input data is too large. Try increasing the scale or total icons\n")
+        StopForUserError("Input data is too large. Try increasing the scale or total icons\n")
 
     # Check parameters
     if (!totalIconsAreIntegers(total.icons))
-        stop("Total icons must be a whole number\n")
+        StopForUserError("Total icons must be a whole number\n")
     if (!totalIconsArePositive(total.icons))
-        stop("Total icons must be greater than zero\n")
+        StopForUserError("Total icons must be greater than zero\n")
     if (!is.na(scale) && scale <= 0)
-        stop("Scale must be greater than zero\n")
+        StopForUserError("Scale must be greater than zero\n")
     if (length(icon.nrow) != 1 && length(icon.nrow) != n)
-        stop("icon.nrow should be a single integer or a vector of length ", n, "\n")
+        StopForUserError("icon.nrow should be a single integer or a vector of length ", n, "\n")
     if (length(icon.ncol) != 1)
-        stop("icon.ncol should be a single integer or a vector of length ", 1, "\n")
+        StopForUserError("icon.ncol should be a single integer or a vector of length ", 1, "\n")
     if (pad.icon.row < 0 || pad.icon.row >= 1)
-        stop("pad.icon.row must be smaller than 1 and greater or equal to 0\n")
+        StopForUserError("pad.icon.row must be smaller than 1 and greater or equal to 0\n")
     if (pad.icon.col < 0 || pad.icon.col >= 1)
-        stop("pad.icon.col must be smaller than 1 and greater or equal to 0\n")
+        StopForUserError("pad.icon.col must be smaller than 1 and greater or equal to 0\n")
     if (length(colors) > 1 && length(colors) != n)
         colors <- paste0(colors, rep("", n))[1:n]
 
@@ -308,12 +309,12 @@ BarPictograph <- function(x,
         # Some tests in case image.url is invalid (rhtmlPictograph gives no warning)
         response <- try(GET(image.url), silent = TRUE)
         if (inherits(response, "try-error"))
-            stop("Could not retrieve image from '", image.url, "'. Check that url is correct.")
+            StopForUserError("Could not retrieve image from '", image.url, "'. Check that url is correct.")
         if(response$status_code != 200)
-            stop("Error (status code ", response$status_code, ") retrieving image ", image.url)
+            StopForUserError("Error (status code ", response$status_code, ") retrieving image ", image.url)
         tmp.type <- response$headers$'content-type'
         if (any(grepl("text/html", tmp.type, fixed = TRUE)))
-            stop("The url content type is 'text/html'. Ensure the image url is correct and not redirected.")
+            StopForUserError("The url content type is 'text/html'. Ensure the image url is correct and not redirected.")
         # Give warning because sometimes chrome can fix this, but will show as blank in IE
         unknown.type <- !any(grepl("image", tmp.type, fixed = TRUE))
         if (unknown.type)
@@ -387,9 +388,9 @@ BarPictograph <- function(x,
     else
         num.icons <- length(prop) * total.icons
     if (num.icons > maximum.number.icons)
-        stop("Cannot create a chart with ", num.icons,
-        " icons (maximum allowed is ", maximum.number.icons,
-        "). Try increasing the 'scale' parameter.")
+        StopForUserError("Cannot create a chart with ", num.icons,
+                         " icons (maximum allowed is ", maximum.number.icons,
+                         "). Try increasing the 'scale' parameter.")
 
     result <- list(htmlwidget = graphic(json.str))
     class(result) <- "StandardChart"
@@ -413,7 +414,7 @@ cleanPictographLabels <- function(x)
 }
 
 totalIconsAreIntegers <- function(total.icons) {
-    all(vapply(total.icons, 
+    all(vapply(total.icons,
                FUN = function(x) { is.na(x) || x == ceiling(x)},
                FUN.VALUE = logical(1)))
 }

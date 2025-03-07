@@ -31,7 +31,7 @@
 #' @inherit GeographicMap
 #' @importFrom plotly subplot
 #' @importFrom abind abind
-#' @importFrom flipU CollectWarnings
+#' @importFrom flipU CollectWarnings StopForUserError
 #' @examples
 #' x <- matrix(1:21, 7, 3, dimnames = list(letters[1:7], LETTERS[1:3]))
 #' SmallMultiples(x, "Column", colors=c("red","green","blue"))
@@ -168,7 +168,7 @@ SmallMultiples <- function(x,
         if (!is.numeric(x.order))
             x.order <- suppressWarnings(as.numeric(TextAsVector(x.order)))
         if (any(is.na(x.order)) || any(x.order > npanels))
-            stop("'Order' should be a comma separated list of indices (between 1 and ", npanels, ")")
+            StopForUserError("'Order' should be a comma separated list of indices (between 1 and ", npanels, ")")
         if (is.numeric(x.order) && length(x.order) > 0)
         {
             n.dim <- length(dim(x))
@@ -185,7 +185,7 @@ SmallMultiples <- function(x,
     }
     nrows <- min(npanels, nrows)
     if (npanels > 100)
-        stop("Small multiples cannot show more than 100 panels (current dataset contains ", npanels, " series).\n")
+        StopForUserError("Small multiples cannot show more than 100 panels (current dataset contains ", npanels, " series).\n")
     if (length(colors) < npanels && !chart.type %in% c("GeographicMap", "Pyramid", "Scatter", "BarMultiColor", "ColumnMultiColor"))
         colors <- paste0(rep("", npanels), colors)
     if (!chart.type %in% c("Pyramid", "BarMultiColor", "ColumnMultiColor"))
@@ -281,12 +281,12 @@ SmallMultiples <- function(x,
     {
         w.offset <- c(pad.left, rep(0, max(0, ncols - 2)), pad.right)[1:ncols]
         if (any(w.offset >= 1/ncols))
-            stop("'Left padding' and 'Right padding' should be between 0 and 1/ncols (", round(1/ncols, 4), ")")
+            StopForUserError("'Left padding' and 'Right padding' should be between 0 and 1/ncols (", round(1/ncols, 4), ")")
     }
     h.offset <- c(pad.top, rep(0, max(0, nrows - 2)), pad.bottom)[1:nrows]
     if (any(h.offset >= 1/nrows))
-        stop("'Top padding' and 'Bottom padding' should be between 0 and 1/nrows (",
-             round(1/nrows, 4), ")")
+        StopForUserError("'Top padding' and 'Bottom padding' should be between 0 and 1/nrows (",
+                         round(1/nrows, 4), ")")
 
     # For Column charts, values for y.tick.maxnum default to 11
     # Here we try to generalise to make the axis less crowded

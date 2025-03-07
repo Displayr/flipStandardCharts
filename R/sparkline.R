@@ -81,6 +81,7 @@
 #' Sparkline(xx, type = "Line", x.axis.show = TRUE, y.axis.show = TRUE,
 #'      x.tick.show = FALSE, y.tick.show = FALSE)
 #' @export
+#' @importFrom flipU StopForUserError
 Sparkline <- function(x,
         type = c("Area", "Line", "Curve", "Column", "Box")[1],
         fill.color = "red",
@@ -156,7 +157,7 @@ Sparkline <- function(x,
                 x <- list(x)
         }
         if (!is.list(x))
-            stop("Input data should be a list of numeric vectors or a matrix.")
+            StopForUserError("Input data should be a list of numeric vectors or a matrix.")
         if (length(x) > 1)
         {
             warning("Sparkline charts only show a single series ",
@@ -275,7 +276,7 @@ Sparkline <- function(x,
                 hoverinfo = "x+y",
                 marker = list(color = toRGB(fill.color, alpha = fill.opacity)))
     else
-        stop("Unknown chart type. Please set type to one of 'Area', 'Line', 'Curve', 'Column', 'Bar'.")
+        StopForUserError("Unknown chart type. Please set type to one of 'Area', 'Line', 'Curve', 'Column', 'Bar'.")
 
     if (type %in% c("Line", "Curve", "Area"))
     {
@@ -352,4 +353,3 @@ setLabel <- function(y, xpos, text, shift = 0, position = "Above", font, index =
             showarrow = FALSE, xshift = xshift, yshift = yshift,
             xref = "x", yref = "y", yanchor = yanchor, xanchor = xanchor))
 }
-

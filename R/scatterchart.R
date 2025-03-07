@@ -39,6 +39,7 @@
 #' @importFrom flipTransformations AsNumeric ParseText
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
+#' @importFrom flipU StopForUserError
 #' @export
 Scatter <- function(x = NULL,
                          y = NULL,
@@ -324,7 +325,7 @@ Scatter <- function(x = NULL,
 
     # Basic data checking
     if (is.null(x) && is.null(y))
-        stop("At least one of x or y must be supplied.")
+        StopForUserError("At least one of x or y must be supplied.")
     if (is.null(x))
         x <- rep(0, length(y))
     n <- length(x)
@@ -351,7 +352,7 @@ Scatter <- function(x = NULL,
     if (!is.null(scatter.sizes))
     {
         if (length(scatter.sizes) != n)
-            stop("'scatter.sizes' should be a numeric vector with the same number of observations as 'x'.")
+            StopForUserError("'scatter.sizes' should be a numeric vector with the same number of observations as 'x'.")
         if (any(!is.finite(suppressWarnings(AsNumeric(scatter.sizes, binary = FALSE)))))
         {
             warning(warning.prefix, "Some points omitted due to missing values in 'scatter.sizes'.")
@@ -361,7 +362,7 @@ Scatter <- function(x = NULL,
     if (!is.null(scatter.colors))
     {
         if (length(scatter.colors) != n)
-            stop("'scatter.colors' should be a vector with the same number of observations as 'x'.")
+            StopForUserError("'scatter.colors' should be a vector with the same number of observations as 'x'.")
         if (any(is.na(scatter.colors)))
         {
             warning(warning.prefix, "Some points omitted due to missing values in 'scatter.colors'")
@@ -375,7 +376,7 @@ Scatter <- function(x = NULL,
     }
 
     if (all(!not.na))
-        stop("No non-NA points to plot.")
+        StopForUserError("No non-NA points to plot.")
     if (any(not.na))
     {
         if (!is.null(scatter.labels))
@@ -876,11 +877,12 @@ Scatter <- function(x = NULL,
     result
 }
 
+#' @importFrom flipU StopForUserError
 getAnnotScatterData <- function(data, name, ind)
 {
     if (!name %in% colnames(data))
-        stop("Annotation data does not contain '", name, "'. ",
-            "Allowable names are: '", paste(colnames(data), collapse = "', '"), "'. ")
+        StopForUserError("Annotation data does not contain '", name, "'. ",
+                         "Allowable names are: '", paste(colnames(data), collapse = "', '"), "'. ")
     return(data[ind, name])
 }
 

@@ -4,11 +4,12 @@
 #' @param x The data to be plotted.
 #' @param require.tidy The data is assumed to be a numeric vector, matrix, array, or data frame.
 #' @param require.notAllMissing The data is required to contain at least one non-NA value.
+#' @importFrom flipU StopForUserError
 #' @export
 ErrorIfNotEnoughData <- function(x, require.tidy = TRUE, require.notAllMissing = FALSE)
 {
     .stop <- function()
-        { stop("There is not enough data to create a plot.") }
+        { StopForUserError("There is not enough data to create a plot.") }
     .possiblyTidy <- function(x)
         {is.numeric(x) || is.matrix(x) || is.data.frame(x) || is.array(x)}
     .noData <- function(x)
@@ -17,7 +18,7 @@ ErrorIfNotEnoughData <- function(x, require.tidy = TRUE, require.notAllMissing =
     if (!require.tidy && is.list(x))
         x <- x[[1]]
     if (require.tidy && !.possiblyTidy(x))
-        stop("The data is not in an appropriate format.")
+        StopForUserError("The data is not in an appropriate format.")
     if (.noData(x))
         .stop()
     if (require.notAllMissing && all(is.na(x)))
@@ -190,6 +191,7 @@ checkMatrixNames <- function(x, assign.col.names = TRUE)
     return(new.x)
 }
 
+#' @importFrom flipU StopForUserError
 checkTableList <- function(y, trend.lines)
 {
     num.tables <- length(y)
@@ -219,11 +221,11 @@ checkTableList <- function(y, trend.lines)
         for (i in 2:num.tables)
         {
             if (!setequal(r.names, rownames(y[[i]])))
-                stop(sprintf("Tables should have identical row names but table '%s' differs from table '%s'.",
-                             y.names[i], y.names[1]))
+                StopForUserError(sprintf("Tables should have identical row names but table '%s' differs from table '%s'.",
+                                         y.names[i], y.names[1]))
             if (!setequal(c.names, colnames(y[[i]])))
-                stop(sprintf("Tables should have identical column names but table '%s' differs from table '%s'.",
-                             y.names[i], y.names[1]))
+                StopForUserError(sprintf("Tables should have identical column names but table '%s' differs from table '%s'.",
+                                         y.names[i], y.names[1]))
             if (!is.null(r.names))
                 y[[i]] <- y[[i]][r.names, , drop = FALSE]
             if (!is.null(c.names))
@@ -356,6 +358,7 @@ isReversed <- function(axis)
 #' @param warning.prefix Used by small multiples for nice warning messages.
 #' @importFrom stats supsmu filter
 #' @importFrom mgcv gam
+#' @importFrom flipU StopForUserError
 #' @noRd
 fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE,
                       fit.window.size = 3, warning.prefix = "")
@@ -400,7 +403,7 @@ fitSeries <- function(x, y, fit.type, ignore.last, axis.type, CI.show = FALSE,
         if (grepl("moving average", fit.type, perl = TRUE, ignore.case = TRUE))
         {
             if (!is.finite(fit.window.size) && fit.window.size <= 0)
-                stop("Moving average must have a positive window size")
+                StopForUserError("Moving average must have a positive window size")
             if (length(indU) <= fit.window.size)
             {
                 warning("Trend line could not be shown. The length of the data series ",
@@ -1192,14 +1195,15 @@ setValRange <- function(min, max, values, show.zero = FALSE, use.defaults = TRUE
 }
 
 
+#' @importFrom flipU StopForUserError
 setTicks <- function(minimum, maximum, distance, reversed = FALSE,
                 data = NULL, labels = NULL, type="scatter", label.font.size = 10, is.bar = FALSE)
 {
     #if (is.null(minimum) != is.null(maximum))
     #    warning("To specify the range of an axis, you must specify both the minimum and maximum values.")
     if ((is.null(minimum) || is.null(maximum)) && !is.null(distance))
-        stop("If specifying the distance between ticks on an axis,",
-             "you must also specify the minimum and maximum values.")
+        StopForUserError("If specifying the distance between ticks on an axis,",
+                         "you must also specify the minimum and maximum values.")
 
     # starting values
     mode <- "auto"
@@ -1272,10 +1276,12 @@ cum.data <- function(x, output = "cumulative.percentage")
 # preceding the word at the max.nchar position.
 # E.g. if n = 20 then count 20 characters.  The space preceding character 20
 # is replaced by "<br>".
+#' @importFrom flipU StopForUserError
+#' @noRd
 lineBreakEveryN <- function(x, max.nchar = 21, remove.empty = TRUE)
 {
     if (max.nchar <= 0)
-        stop("Wrap line length cannot be smaller than 1")
+        StopForUserError("Wrap line length cannot be smaller than 1")
 
     patt <- if (remove.empty) "\\s+"
             else              " "

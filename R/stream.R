@@ -25,7 +25,7 @@
 #' @param margin.left Left margin (default should be fine, this allows for fine-tuning plot space)
 #' @importFrom streamgraph streamgraph sg_fill_manual sg_axis_x sg_axis_y sg_colors
 #' @importFrom flipTime AsDateTime
-#' @importFrom flipU MakeUniqueNames
+#' @importFrom flipU MakeUniqueNames StopForUserError
 #' @importFrom verbs SumEachColumn
 #' @importFrom janitor round_half_up
 #' @importFrom stats median
@@ -58,9 +58,9 @@ Stream <- function(x,
     else if (is.data.frame(x))
         x <- as.matrix(x)
     else
-        stop("Stream graphs should have a tabular input (e.g., a matrix).")
+        StopForUserError("Stream graphs should have a tabular input (e.g., a matrix).")
     if (!x.tick.units %in% c("Automatic", "Number", "Day", "Month", "Year"))
-        stop("x.tick.units must be one of 'Automatic', 'Number', 'Day', 'Month' or 'Year'.")
+        StopForUserError("x.tick.units must be one of 'Automatic', 'Number', 'Day', 'Month' or 'Year'.")
 
     # streamgraph requires dates along the columns but for consistency with Time Series, Line, Google Trends etc
     # CChart produces dates along the rows, hence we transpose
@@ -75,11 +75,11 @@ Stream <- function(x,
     columns <- colnames(x)
     x.axis.type <- getAxisType(columns, x.tick.format)
     if (!x.axis.type %in% c("date", "numeric"))
-        stop("Stream requires the rownames of the input data (which form the x-axis) to be dates or numeric. ",
-             "Change 'Chart type' to 'Table' to see the input data.")
+        StopForUserError("Stream requires the rownames of the input data (which form the x-axis) to be dates or numeric. ",
+                         "Change 'Chart type' to 'Table' to see the input data.")
     if (!is.numeric(x))
-        stop("Stream requires numeric data to be plotted along the y-axis. ",
-             "Change 'Chart type' to 'Table' to see the input data.")
+        StopForUserError("Stream requires numeric data to be plotted along the y-axis. ",
+                         "Change 'Chart type' to 'Table' to see the input data.")
 
     if (x.tick.units == "Automatic" && x.axis.type != "date")
         x.tick.units <- "Number"
@@ -89,7 +89,7 @@ Stream <- function(x,
         if (x.tick.format == "")
             x.tick.format = ".0f"
         if (d3FormatType(x.tick.format) != "numeric" || x.axis.type != "numeric")
-            stop("x-axis tick format and units are incompatible.")
+            StopForUserError("x-axis tick format and units are incompatible.")
         columns <- suppressWarnings(as.numeric(columns))
         if (any(is.na((columns))))
             columns <- 1:ncol(x)
@@ -108,7 +108,7 @@ Stream <- function(x,
         if (x.tick.format == "")
             x.tick.format = "%d %b %y"
         if (d3FormatType(x.tick.format) != "date" || x.axis.type != "date")
-            stop("x-axis tick format and units are incompatible.")
+            StopForUserError("x-axis tick format and units are incompatible.")
         columns <- AsDateTime(columns, on.parse.failure = "silent")
         diffs <- as.numeric(diff(columns))
         med.diff <- median(abs(diffs), na.rm = TRUE)

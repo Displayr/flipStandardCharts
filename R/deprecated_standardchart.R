@@ -306,6 +306,7 @@
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
 #' @importFrom stats loess loess.control lm predict
 #' @importFrom verbs Sum SumEachRow
+#' @importFrom flipU StopForUserError
 #' @examples
 #' z <- c(5, 6, 2, 1.5, 9, 2.2)
 #' Chart(y = z, type = "Area")
@@ -696,7 +697,7 @@ Chart <-   function(y = NULL,
     if (!(type %in% c("Area", "Stacked Area", "100% Stacked Area", "Bar", "Stacked Bar", "100% Stacked Bar",
                 "Column", "Stacked Column", "100% Stacked Column", "Line", "Pie", "Donut", "Scatterplot",
                 "Labeled Scatterplot", "Labeled Bubbleplot", "Radar")))
-        stop("The input chart type is not supported.")
+        StopForUserError("The input chart type is not supported.")
 
     is.stacked <- type %in% c("Stacked Area", "100% Stacked Area",
                               "Stacked Bar", "100% Stacked Bar",
@@ -718,9 +719,9 @@ Chart <-   function(y = NULL,
     is.column.chart <- type %in% c("Column", "Stacked Column", "100% Stacked Column")
 
     if (is.null(y) && !is.scatterplot.or.bubbleplot)
-        stop("Input data 'y' is missing.")
+        StopForUserError("Input data 'y' is missing.")
     if (is.null(y) && is.null(scatter.x.var) && is.null(scatter.y.var))
-        stop("Input data 'y' or 'scatter.x.var' or 'scatter.y.var' must be provided.")
+        StopForUserError("Input data 'y' or 'scatter.x.var' or 'scatter.y.var' must be provided.")
 
     if (!is.area.chart && !is.bar.or.column.chart && !is.null(opacity))
         warning("The opacity parameter is only valid for area, bar and column charts.")
@@ -770,7 +771,7 @@ Chart <-   function(y = NULL,
 
     if (!is.null(dim(y[[1]]))) {
         if (type != "Labeled Scatterplot")
-            stop("Multiple tables can only be used with Labeled Scatterplot.")
+            StopForUserError("Multiple tables can only be used with Labeled Scatterplot.")
 
         # Get table names
         num.tables <- length(y)
@@ -796,7 +797,7 @@ Chart <-   function(y = NULL,
         r.names <- rownames(y[[1]])
         c.names <- colnames(y[[1]])
         if (!is.null(r.names) && any(duplicated(r.names)) && length(y) > 1)
-            stop("Row names of tables must be unique or NULL for multiple tables to be plotted but are duplicated.")
+            StopForUserError("Row names of tables must be unique or NULL for multiple tables to be plotted but are duplicated.")
 
         if (num.tables > 1) {
             for (i in 2:num.tables)
@@ -805,11 +806,11 @@ Chart <-   function(y = NULL,
                             else GetTidyTwoDimensionalArray(y[[i]], rows.to.ignore, cols.to.ignore)
 
                 if (!setequal(r.names, rownames(y[[i]])))
-                    stop(sprintf("Tables should have identical row names but table '%s' differs from table '%s'.",
-                                 y.names[i], y.names[1]))
+                    StopForUserError(sprintf("Tables should have identical row names but table '%s' differs from table '%s'.",
+                                             y.names[i], y.names[1]))
                 if (!setequal(c.names, colnames(y[[i]])))
-                    stop(sprintf("Tables should have identical column names but table '%s' differs from table '%s'.",
-                                 y.names[i], y.names[1]))
+                    StopForUserError(sprintf("Tables should have identical column names but table '%s' differs from table '%s'.",
+                                             y.names[i], y.names[1]))
                 if (!is.null(r.names))
                     y[[i]] <- y[[i]][r.names, ]
                 if (!is.null(c.names))
@@ -846,10 +847,10 @@ Chart <-   function(y = NULL,
                 nrow(temp)
             }
             if (length(logo.urls) != logo.required.length)
-                stop(sprintf("Number of URLs supplied in logos is %d but must be equal to the number of %s in the table (%d)\n",
-                             length(logo.urls), ifelse(transpose, "columns", "rows"), logo.required.length))
+                StopForUserError(sprintf("Number of URLs supplied in logos is %d but must be equal to the number of %s in the table (%d)\n",
+                                         length(logo.urls), ifelse(transpose, "columns", "rows"), logo.required.length))
             if (any(nzchar(logo.urls) == 0))
-                stop("Logos cannot be an empty string\n")
+                StopForUserError("Logos cannot be an empty string\n")
             if (num.tables > 1)
                 logo.urls <- rep(logo.urls, num.tables)
             logo.size <- rep(logo.size, length(logo.urls))
@@ -911,33 +912,33 @@ Chart <-   function(y = NULL,
             if (!is.null(scatter.x.var))
             {
                 if (scatter.x.var < 1 || scatter.x.var > ncol(y))
-                    stop("The variable for 'X-coordinates' must be an integer between 1 and ", ncol(y))
+                    StopForUserError("The variable for 'X-coordinates' must be an integer between 1 and ", ncol(y))
                 scatter.x.var <- y[,scatter.x.var]
             }
             if (!is.null(scatter.y.var))
             {
                 if (scatter.y.var < 1 || scatter.y.var > ncol(y))
-                    stop("The variable for 'Y-coordinates' must be an integer between 1 and ", ncol(y))
+                    StopForUserError("The variable for 'Y-coordinates' must be an integer between 1 and ", ncol(y))
                 scatter.y.var <- y[,scatter.y.var]
             }
             if (!is.null(scatter.labels.var))
             {
                 if (scatter.labels.var < 1 || scatter.labels.var > ncol(y))
-                    stop("The variable for 'Labels' must be an integer between 1 and ", ncol(y))
+                    StopForUserError("The variable for 'Labels' must be an integer between 1 and ", ncol(y))
                 scatter.labels.name <- colnames(y)[scatter.labels.var]
                 scatter.labels.var <- y[,scatter.labels.var]
             }
             if (!is.null(scatter.sizes.var))
             {
                 if (scatter.sizes.var < 1 || scatter.sizes.var > ncol(y))
-                    stop("The variable for 'Sizes' must be an integer between 1 and ", ncol(y))
+                    StopForUserError("The variable for 'Sizes' must be an integer between 1 and ", ncol(y))
                 scatter.sizes.name <- colnames(y)[scatter.sizes.var]
                 scatter.sizes.var <- y[,scatter.sizes.var]
             }
             if (!is.null(scatter.colors.var))
             {
                 if (scatter.colors.var < 1 || scatter.colors.var > ncol(y))
-                    stop("The variable 'Colors' must be an integer between 1 and ", ncol(y))
+                    StopForUserError("The variable 'Colors' must be an integer between 1 and ", ncol(y))
                 scatter.colors.name <- colnames(y)[scatter.colors.var]
                 scatter.colors.var <- y[,scatter.colors.var]
             }
@@ -1072,10 +1073,10 @@ Chart <-   function(y = NULL,
         if (all(vapply(chart.matrix, is.numeric, logical(1L))))
             chart.matrix <- as.matrix(chart.matrix)
         else
-            stop(msg)
+            StopForUserError(msg)
     }
     if (scatter.var.from.matrix && !is.numeric(chart.matrix))
-        stop(msg)
+        StopForUserError(msg)
 
     if (is.null(colors))
         colors <- "Default colors"
@@ -1148,20 +1149,20 @@ Chart <-   function(y = NULL,
         if (ncol(chart.matrix) == 1)
         {
             if (type %in% c("Stacked Area", "100% Stacked Area"))
-                stop(paste(type, "requires more than one series. Use Area charts instead for this data."))
+                StopForUserError(paste(type, "requires more than one series. Use Area charts instead for this data."))
             if (type %in% c("Stacked Bar", "100% Stacked Bar"))
-                stop(paste(type, "requires more than one series. Use Bar charts instead for this data."))
+                StopForUserError(paste(type, "requires more than one series. Use Bar charts instead for this data."))
             if (type %in% c("Stacked Column", "100% Stacked Column"))
-                stop(paste(type, "requires more than one series. Use Column charts instead for this data."))
+                StopForUserError(paste(type, "requires more than one series. Use Column charts instead for this data."))
         }
         if (is.stacked && (any(is.na(chart.matrix)) || any(chart.matrix < 0)))
-            stop("Stacked charts cannot be produced with missing or negative values.")
+            StopForUserError("Stacked charts cannot be produced with missing or negative values.")
         if (is.hundred.percent.stacked && any(SumEachRow(chart.matrix, remove.columns = NULL, remove.missing = FALSE) == 0))
-            stop("100% stacked charts cannot be produced with rows that do not contain positive values.")
+            StopForUserError("100% stacked charts cannot be produced with rows that do not contain positive values.")
 
         nms <- row.names(chart.matrix)
         if (length(nms) > length(unique(nms)))
-            stop("Row names of the input table must be unique.")
+            StopForUserError("Row names of the input table must be unique.")
 
         original.chart.matrix <- chart.matrix
 
@@ -1189,7 +1190,7 @@ Chart <-   function(y = NULL,
     if (!is.null(annotations))
     {
         if (!(is.area.or.line.chart || is.bar.or.column.chart))
-            stop("Annotations are not supported for charts of type '", type, "'.")
+            StopForUserError("Annotations are not supported for charts of type '", type, "'.")
         if (data.label.show)
             warning("Data labels use annotations instead of data values.")
         data.label.show <- TRUE
@@ -1198,8 +1199,8 @@ Chart <-   function(y = NULL,
             annotations <- t(annotations)
         annotations[is.na(annotations)] <- ""
         if (any(dim(annotations) != dim(chart.matrix)))
-            stop("Annotations should be a character matrix of the same dimensions as the input data (",
-                paste(if (transpose) rev(dim(chart.matrix)) else dim(chart.matrix), collapse=" x "), ").")
+            StopForUserError("Annotations should be a character matrix of the same dimensions as the input data (",
+                             paste(if (transpose) rev(dim(chart.matrix)) else dim(chart.matrix), collapse=" x "), ").")
     }
 
 
@@ -1458,7 +1459,7 @@ Chart <-   function(y = NULL,
             label.plot[(data.label.max.plot + 1):n.lab] <- ""
         }
         if (is.null(scatterplot.data$label))
-            stop("Data contains no labels but 'Show labels' was checked.")
+            StopForUserError("Data contains no labels but 'Show labels' was checked.")
 
         return(rhtmlLabeledScatter::LabeledScatter(X = scatterplot.data$x,
                        Y = scatterplot.data$y,
@@ -1535,7 +1536,7 @@ Chart <-   function(y = NULL,
 
         number.colors.needed <- ncol(chart.matrix)
         if (length(number.colors.needed) == 0 || number.colors.needed == 0)
-            stop("Chart matrix is empty.")
+            StopForUserError("Chart matrix is empty.")
 
         colors <- ChartColors(number.colors.needed = number.colors.needed,
                                                given.colors = colors,
@@ -1872,9 +1873,9 @@ Chart <-   function(y = NULL,
         y.tickformat <- y.tick.format.manual
 
     if (xor(is.null(x.bounds.minimum), is.null(x.bounds.maximum)))
-        stop("Both x.bounds.minimum and x.bounds.maximum need to be supplied in order to specify a display range.")
+        StopForUserError("Both x.bounds.minimum and x.bounds.maximum need to be supplied in order to specify a display range.")
     if (xor(is.null(y.bounds.minimum), is.null(y.bounds.maximum)))
-        stop("Both y.bounds.minimum and y.bounds.maximum need to be supplied in order to specify a display range.")
+        StopForUserError("Both y.bounds.minimum and y.bounds.maximum need to be supplied in order to specify a display range.")
 
     x.has.bounds <- !is.null(x.bounds.minimum) && !is.null(x.bounds.maximum)
     y.has.bounds <- !is.null(y.bounds.minimum) && !is.null(y.bounds.maximum)
@@ -1970,7 +1971,7 @@ Chart <-   function(y = NULL,
     else if (x.has.bounds || !is.null(x.tick.distance))
     {
         if (!is.x.axis.numeric && !added.bounds.for.area.chart)
-            stop("It is not possible to specify tick range or spacing as the x-axis is not numeric.")
+            StopForUserError("It is not possible to specify tick range or spacing as the x-axis is not numeric.")
         #if (x.data.reversed)
         #    stop("It is not possible to reverse the x-axis whilst specifying tick range or spacing.")
         FALSE
@@ -1999,9 +2000,9 @@ Chart <-   function(y = NULL,
     else if (y.has.bounds || !is.null(y.tick.distance))
     {
         if (y.data.reversed)
-            stop("It is not possible to reverse the y-axis whilst specifying tick range or spacing.")
+            StopForUserError("It is not possible to reverse the y-axis whilst specifying tick range or spacing.")
         if (swap.axes.and.data)
-            stop("It is not possible to specify the tick range or spacing for this chart type.")
+            StopForUserError("It is not possible to specify the tick range or spacing for this chart type.")
         FALSE
     }
     else

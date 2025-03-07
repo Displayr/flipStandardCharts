@@ -1,5 +1,6 @@
 #' @importFrom plotly plot_ly layout config add_annotations
 #' @importFrom flipFormat FormatAsReal
+#' @importFrom flipU StopForUserError
 radarChart <- function(chart.matrix,
                     title = "",
                     title.font.family = NULL,
@@ -62,13 +63,14 @@ radarChart <- function(chart.matrix,
                     data.label.suffix = "",
                     subtitle.axis = NULL,
                     footer.axis = NULL)
+#' @importFrom flipU StopForUserError
 
 {
     ErrorIfNotEnoughData(chart.matrix)
     if (any(!is.finite(chart.matrix)))
-        stop("Missing charts cannot contain missing or non-finite values.")
+        StopForUserError("Missing charts cannot contain missing or non-finite values.")
     if (any(chart.matrix < 0))
-        stop("Radar charts cannot have negative values.")
+        StopForUserError("Radar charts cannot have negative values.")
 
     n <- nrow(chart.matrix)
     m <- ncol(chart.matrix)
@@ -263,4 +265,3 @@ getPolarCoord <- function(r, matrix = T, na = F){
     }
 
 }
-
