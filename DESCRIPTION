@@ -32,7 +32,7 @@ Imports:
     parcoords,
     plotly,
     pryr,
-    rhtmlCombinedScatter (>= 1.0.0),
+    rhtmlCombinedScatter (>= 1.0.15),
     rhtmlDonut,
     rhtmlHeatmap,
     rhtmlLabeledScatter,
