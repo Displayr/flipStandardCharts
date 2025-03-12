@@ -855,11 +855,14 @@ getColors <- function(scatter.groups, scatter.colors, colors, n, not.na,
         legend.show <- FALSE # don't need to worry about order of groups
         colors <- StripAlphaChannel(colors, "Alpha values in selected colors were not used in the numeric color scale. Adjust 'opacity' for transparent points instead")
     }
+
     # Reorder data to make sure legend is ordered correctly
     if (!is.null(scatter.colors) && scatter.colors.as.categorical)
     {
-        groups.ord <- order(suppressWarnings(AsNumeric(scatter.colors[not.na], binary = FALSE)))
+        groups <- suppressWarnings(AsNumeric(scatter.colors, binary = FALSE))
+        groups.ord <- order(groups[not.na])
         not.na <- not.na[groups.ord]
+        colors <- colors[unique(groups[not.na])]
     }
 
     list(colors = colors, scatter.colors = scatter.colors,
