@@ -582,3 +582,29 @@ test_that("quadrants",
                                    x.midpoint.input = c(2,3), y.midpoint.input = 12),
                    "The input for the x midpoint has multiple elements")
 })
+
+test_that("Missing values and named colors",
+{
+    # Scatterplot doesn't actually use names, colors have already been ordered correctly
+    # but functions in flipChartBasics don't know where missing values are
+    named.colors <- c(`Coca-Cola` = "#FF0000",
+                      `Diet Coke` = "#FFC000", `Coke Zero` = "#FFFF00", Pepsi = "#92D050",
+                      `Diet Pepsi` = "#00B050", `Pepsi Max` = "#0070C0", `Unnamed values` = "#CCCCCC")
+    data.missing <- structure(list(
+            X = c("95", "96", NA, "100", "80.5", "91.75"),
+            Y = c("95", "96", NA, "100", "82.75", "91"),
+            Size = c("1", "1", "1", "1", "1", "1"),
+            Colors = c("Coca-Cola", "Diet Coke", "Coke Zero", "Pepsi", "Diet Pepsi", "Pepsi Max")),
+            row.names = c("Coca-Cola", "Diet Coke", "Coke Zero", "Pepsi", "Diet Pepsi", "Pepsi Max"),
+            assigned.rownames = TRUE,
+            scatter.variable.indices = c(x = 1, y = 2, sizes = 3, colors = 4, groups = 4),
+            class = "data.frame")
+
+    # Note these looks the same as if Scatter() was called instead
+    expect_warning(CombinedScatter(data.missing, colors = named.colors), "missing values")
+
+    CombinedScatter(x = 1:5, y = 1:5, scatter.colors.name = "Groups of different sizes",
+                    colors = c(f="red", e="orange", d="yellow", c="green", b="blue", a="purple"),
+                    scatter.colors = factor(letters[c(1,1,3,5,3)], levels = letters[6:1]))
+
+})
