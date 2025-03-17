@@ -859,12 +859,12 @@ getColors <- function(scatter.groups, scatter.colors, colors, n, not.na,
     # Reorder data to make sure legend is ordered correctly
     if (!is.null(scatter.colors) && scatter.colors.as.categorical)
     {
-        groups <- suppressWarnings(AsNumeric(scatter.colors, binary = FALSE))
+        groups <- if (is.numeric(scatter.colors)) as.numeric(factor(scatter.colors))
+                  else suppressWarnings(AsNumeric(scatter.colors, binary = FALSE))
         groups.ord <- order(groups[not.na])
         not.na <- not.na[groups.ord]
         colors <- colors[unique(groups[not.na])]
     }
-
     list(colors = colors, scatter.colors = scatter.colors,
          legend.show = legend.show, not.na = not.na)
 }
