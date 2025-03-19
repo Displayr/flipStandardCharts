@@ -859,11 +859,24 @@ getColors <- function(scatter.groups, scatter.colors, colors, n, not.na,
     # Reorder data to make sure legend is ordered correctly
     if (!is.null(scatter.colors) && scatter.colors.as.categorical)
     {
-        groups <- if (is.numeric(scatter.colors)) as.numeric(factor(scatter.colors))
-                  else suppressWarnings(AsNumeric(scatter.colors, binary = FALSE))
-        groups.ord <- order(groups[not.na])
-        not.na <- not.na[groups.ord]
-        colors <- colors[unique(groups[not.na])]
+        # Get list of all series - including those with all NAs
+        vals <- suppressWarnings(AsNumeric(scatter.colors, binary = FALSE))
+        if (is.factor(scatter.colors))
+        {
+            g.list.all <- levels(scatter.colors)
+        } else
+        {
+            ord.all <- order(vals)
+            g.list.all <- unique(scatter.colors[ord.all])
+        }
+        colors <- paste0(rep("", length(g.list.all)), colors)
+        names(colors) <- g.list.all
+
+        # Extract only non-NA points and order based on series name
+        ord.not.na <- order(vals[not.na])
+        not.na <- not.na[ord.not.na]
+        g.list <- as.character(unique(scatter.colors[not.na]))
+        colors <- colors[g.list]
     }
     list(colors = colors, scatter.colors = scatter.colors,
          legend.show = legend.show, not.na = not.na)

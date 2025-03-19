@@ -583,10 +583,11 @@ test_that("quadrants",
                    "The input for the x midpoint has multiple elements")
 })
 
-test_that("Missing values and named colors",
+test_that("Categorical colors and ordering",
 {
-    # Scatterplot doesn't actually use names, colors have already been ordered correctly
-    # but functions in flipChartBasics don't know where missing values are
+    # Scatterplot doesn't actually use names but we have added them for readability
+    # Functions in flipChartBasics ensures that colors have already been ordered correctly
+    # but they don't know where missing values are
     named.colors <- c(`Coca-Cola` = "#FF0000",
                       `Diet Coke` = "#FFC000", `Coke Zero` = "#FFFF00", Pepsi = "#92D050",
                       `Diet Pepsi` = "#00B050", `Pepsi Max` = "#0070C0", `Unnamed values` = "#CCCCCC")
@@ -602,9 +603,33 @@ test_that("Missing values and named colors",
 
     # Note these looks the same as if Scatter() was called instead
     expect_warning(CombinedScatter(data.missing, colors = named.colors), "missing values")
+    res <- getColors(NULL, data.missing$Colors, named.colors, nrow(data.missing),
+                              which(!is.na(data.missing$X) & !is.na(data.missing$Y)),
+                              TRUE, 1, TRUE)
+    expect_equal(res$colors, named.colors[-c(3,7)])
 
-    CombinedScatter(x = 1:5, y = 1:5, scatter.colors.name = "Groups of different sizes",
-                    colors = c(f="red", e="orange", d="yellow", c="green", b="blue", a="purple"),
-                    scatter.colors = factor(letters[c(1,1,3,5,3)], levels = letters[6:1]))
+    f.manylevels <- factor(letters[c(1,1,3,5,3)], levels = letters[6:1])
+    n <- length(f.manylevels)
+    reverse.colors <- c(f="red", e="orange", d="yellow", c="green", b="blue", a="purple")
+    CombinedScatter(x = 1:5, y = 1:5, scatter.colors.name = "Non-missing levels",
+                    colors = reverse.colors, scatter.colors = f.manylevels)
+    res <- getColors(NULL, f.manylevels, reverse.colors, n, 1:n, TRUE, 1, TRUE)
+    expect_equal(res$colors, reverse.colors[7-c(5,3,1)])
 
+
+    num.nonseq <- c(7, 1, 21, 5, 5)
+    n <- length(num.nonseq)
+    CombinedScatter(x = 1:5, y = 1:5, scatter.colors.name = "Non-sequential numbers",
+                    colors = reverse.colors, scatter.colors = num.nonseq)
+    res <- getColors(NULL, num.nonseq, reverse.colors, n, 1:n, TRUE, 1, TRUE)
+    expect_equal(unname(res$colors), unname(reverse.colors[1:4]))
+    expect_equal(names(res$colors), as.character(sort(unique(num.nonseq))))
+
+    f.char <- letters[c(1,1,3,5,3)]
+    n <- length(f.char)
+    CombinedScatter(x = 1:5, y = 1:5, scatter.colors.name = "Alphabetical",
+                    colors = rev(reverse.colors), scatter.colors = f.char)
+    res <- getColors(NULL, f.char, rev(reverse.colors), n, 1:n, TRUE, 1, TRUE)
+    expect_equal(unname(res$colors), rev(unname(reverse.colors))[1:3])
+    expect_equal(names(res$colors), letters[c(1,3,5)])
 })
