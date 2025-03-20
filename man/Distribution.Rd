@@ -78,6 +78,7 @@ Distribution(
   values.zero = FALSE,
   values.zero.line.width = 0,
   values.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
+  values.zero.line.dash = "Solid",
   values.grid.width = 1 * grid.show,
   values.grid.color = rgb(225, 225, 225, maxColorValue = 255),
   values.tick.show = TRUE,

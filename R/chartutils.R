@@ -884,18 +884,18 @@ setAxis <- function(title, side, axisLabels, titlefont,
                  showticklabels=tickshow))
 }
 
-zerolines <- function(x.zero, x.zero.line.width, x.zero.line.color, y.zero, y.zero.line.width, y.zero.line.color)
+zerolines <- function(x.zero, x.zero.line.width, x.zero.line.color, x.zero.line.dash, y.zero, y.zero.line.width, y.zero.line.color, y.zero.line.dash)
 {
     result <- NULL
     if (isTRUE(x.zero))
         result <- list(type = "line", layer = "above",
             x0 = 0, x1 = 0, xref = "x", y0 = 0, y1 = 1, yref = "paper",
-            line = list(color = x.zero.line.color, width = x.zero.line.width))
+            line = list(color = x.zero.line.color, width = x.zero.line.width, dash = tolower(x.zero.line.dash)))
     if (isTRUE(y.zero))
     {
         y.zeroline <- list(type = "line", layer = "above",
             y0 = 0, y1 = 0, yref = "y", x0 = 0, x1 = 1, xref = "paper",
-            line = list(color = y.zero.line.color, width = y.zero.line.width))
+            line = list(color = y.zero.line.color, width = y.zero.line.width, dash = tolower(y.zero.line.dash)))
         if (is.null(result))
             return (y.zeroline)
         else

@@ -109,6 +109,7 @@
 #' @param values.zero.line.color Color of horizontal zero line as a named
 #' color in character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
+#' @param values.zero.line.dash Line type of zero line. One of "Solid", "Dot", "Dash".
 #' @param values.grid.width Width of y-grid lines in pixels; 0 = no line
 #' @param values.grid.color Color of y-grid lines as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
@@ -236,6 +237,7 @@ Distribution <-   function(x,
     values.zero = FALSE,
     values.zero.line.width = 0,
     values.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
+    values.zero.line.dash = "Solid",
     values.grid.width = 1 * grid.show,
     values.grid.color = rgb(225, 225, 225, maxColorValue = 255),
     values.tick.show = TRUE,
@@ -477,8 +479,8 @@ Distribution <-   function(x,
     annotations[[n+2]] <- setFooter(footer, footer.font, margins, footer.align)
     annotations[[n+3]] <- setSubtitle(subtitle, subtitle.font, margins, subtitle.align)
     annotations <- Filter(Negate(is.null), annotations)
-    value.zeroline <- if (vertical) zerolines(FALSE, 0, "", values.zero, values.zero.line.width, values.zero.line.color)
-        else zerolines(values.zero, values.zero.line.width, values.zero.line.color, FALSE, 0, "")
+    value.zeroline <- if (vertical) zerolines(FALSE, 0, "", "Solid", values.zero, values.zero.line.width, values.zero.line.color, values.zero.line.dash)
+        else zerolines(values.zero, values.zero.line.width, values.zero.line.color, values.zero.line.dash, FALSE, 0, "")
 
     txt <- paste0("p <- layout(p,
         autosize = TRUE,
