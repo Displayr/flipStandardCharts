@@ -288,6 +288,8 @@ shown}
 color in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
+\item{values.zero.line.dash}{Line type of zero line. One of "Solid", "Dot", "Dash".}
+
 \item{values.grid.width}{Width of y-grid lines in pixels; 0 = no line}
 
 \item{values.grid.color}{Color of y-grid lines as a named color in character
