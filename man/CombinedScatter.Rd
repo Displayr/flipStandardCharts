@@ -658,14 +658,14 @@ Can be numeric or string of a number.}
 
 \item{quadrant.bottom.right.title.font.size}{Font size of the bottom right quadrant title}
 
-\item{plot.border.show}{Boolean toggle to show border around plot area. 
+\item{plot.border.show}{Boolean toggle to show border around plot area.
 If this is true, then \code{plot.border.*} overrides \code{x.line.*} and \code{y.line.*}.}
 
 \item{plot.border.color}{Color of border around plot area (Default is black).}
 
 \item{plot.border.width}{Width of border around plot area in px (Default is 1).}
 
-\item{fixed.aspect}{Whether of not to force the x and y axis to be at the same scale. Default to FALSE. 
+\item{fixed.aspect}{Whether of not to force the x and y axis to be at the same scale. Default to FALSE.
 Cannot be guarenteed if any of the axis bounds are set.}
 }
 \value{

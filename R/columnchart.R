@@ -121,6 +121,7 @@
 #' @param y.zero.line.color Color of horizontal zero line as a named
 #' color in character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
+#' @param y.zero.line.dash Line type of y zero line. Can be one of 'Solid', 'Dot', 'Dash'.
 #' @param y.data.reversed Logical; whether to reverse y-axis or not
 #' @param y.grid.width Width of y-grid lines in pixels; 0 = no line
 #' @param y.grid.color Color of y-grid lines as a named color in character
@@ -208,6 +209,7 @@
 #' @param x.zero.line.color Color of horizontal zero (origin) line as a named
 #' color in character format (e.g. "black") or an rgb value (e.g.
 #' rgb(0, 0, 0, maxColorValue = 255)).
+#' @param x.zero.line.dash Line type of x zero line. Can be one of 'Solid', 'Dot', 'Dash'.
 #' @param x.data.reversed Logical; whether to reverse x-axis or not
 #' @param x.grid.width Width of y-grid lines in pixels; 0 = no line
 #' @param x.grid.color Color of y-grid lines as a named color in character
@@ -433,6 +435,7 @@ Column <- function(x,
                     y.zero = TRUE,
                     y.zero.line.width = 0,
                     y.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
+                    y.zero.line.dash = "Solid",
                     y.data.reversed = FALSE,
                     y.grid.width = 1 * grid.show,
                     y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
@@ -487,6 +490,7 @@ Column <- function(x,
                     x.tick.maxnum = 11,
                     x.zero = FALSE,
                     x.zero.line.width = 0,
+                    x.zero.line.dash = "Solid",
                     x.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
                     x.data.reversed = FALSE,
                     x.grid.width = 0 * grid.show,
@@ -1181,8 +1185,8 @@ Column <- function(x,
         xaxis = xaxis,
         margin = margins,
         annotations =  annotations,
-        shapes = zerolines(x.zero, x.zero.line.width, x.zero.line.color,
-            y.zero, y.zero.line.width, y.zero.line.color),
+        shapes = zerolines(x.zero, x.zero.line.width, x.zero.line.color, x.zero.line.dash,
+            y.zero, y.zero.line.width, y.zero.line.color, y.zero.line.dash),
         plot_bgcolor = toRGB(charting.area.fill.color, alpha = charting.area.fill.opacity),
         paper_bgcolor = toRGB(background.fill.color, alpha = background.fill.opacity),
         hoverlabel = list(namelength = -1, bordercolor = "transparent", align = hovertext.align,

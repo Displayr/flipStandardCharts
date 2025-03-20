@@ -101,6 +101,7 @@ StackedColumnWithStatisticalSignificance(
   y.zero = TRUE,
   y.zero.line.width = 3,
   y.zero.line.color = rgb(0, 0, 0, maxColorValue = 255),
+  y.zero.line.dash = "Solid",
   y.data.reversed = FALSE,
   y.grid.width = 1 * grid.show,
   y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
@@ -128,6 +129,7 @@ StackedColumnWithStatisticalSignificance(
   x.zero = FALSE,
   x.zero.line.width = 0,
   x.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
+  x.zero.line.dash = "Solid",
   x.data.reversed = FALSE,
   x.grid.width = 0 * grid.show,
   x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
@@ -421,6 +423,8 @@ For a categorical axis, the index of the category (0-based) should be used.}
 color in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
 
+\item{y.zero.line.dash}{Line type of y zero line. Can be one of 'Solid', 'Dot', 'Dash'.}
+
 \item{y.data.reversed}{Logical; whether to reverse y-axis or not}
 
 \item{y.grid.width}{Width of y-grid lines in pixels; 0 = no line}
@@ -489,6 +493,8 @@ range set.}
 \item{x.zero.line.color}{Color of horizontal zero (origin) line as a named
 color in character format (e.g. "black") or an rgb value (e.g.
 rgb(0, 0, 0, maxColorValue = 255)).}
+
+\item{x.zero.line.dash}{Line type of x zero line. Can be one of 'Solid', 'Dot', 'Dash'.}
 
 \item{x.data.reversed}{Logical; whether to reverse x-axis or not}
 
