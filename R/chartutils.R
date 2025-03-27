@@ -1070,9 +1070,13 @@ setFooter <- function(footer, footer.font, margins, x.align = "center")
                 yanchor = "top", xanchor = x.align, showarrow = FALSE))
 }
 
-# This differs from as.numeric in that it returns NULL
-# instead of NA if there is no valid output
-# Also so basic substitution such as removing commas
+#' Convert text to numeric data
+#'
+#' This differs from as.numeric in that it returns NULL
+#' instead of NA if there is no valid output.
+#' Also performs basic substitution such as removing spaces and commas.
+#' @param x The text to be converted to numbers
+#' @export
 charToNumeric <- function(x)
 {
     if (!is.character(x))
