@@ -267,7 +267,7 @@ Distribution <-   function(x,
     ErrorIfNotEnoughData(x, require.tidy = FALSE, require.notAllMissing = TRUE)
     if (length(x) == 1 && is.list(x) && NCOL(x[[1]]) > 1)
         x <- x[[1]]
-    if (!is.list(x) && is.array(x))
+    if (!is.list(x) && (is.array(x) || inherits(x, "QTable")))
         x <- as.data.frame(checkMatrixNames(x))
     else if (is.numeric(x))
         x <- as.data.frame(x) # not a Q table
@@ -393,7 +393,7 @@ Distribution <-   function(x,
     rng <- x.sorted[c(1, length(x.sorted))]
     if (density.type == "Histogram")
     {
-        bin.min.size <- min(diff(x.sorted))
+        bin.min.size <- min(diff(x.sorted), 1)
         if (bin.min.size < sqrt(.Machine$double.eps))
             bin.min.size <- (rng[2] - rng[1]) * 1e-6
         rng <- rng  + c(-1, 1) * bin.min.size/2 # expand range if values are integers
@@ -437,6 +437,9 @@ Distribution <-   function(x,
         category.axis <- axisName(vertical, v, 1)
         value.axis <- axisName(vertical, v, 2)
         values <- x[[v]]
+        if (length(values) == 1) {
+            values <- rep(values, length = 2)
+        }
         wgt <- if (is.null(weights)) rep(1, length(values)) else
                 (if (is.list(weights)) weights[[v]] else weights)
         if (length(wgt) != length(values))
@@ -623,15 +626,7 @@ addDensities <- function(p,
     p
 }
 
-createWeights <- function(x, weights)
-{
-    rep(list(weights), length(x))
-    # group.sizes <- sapply(x, length)
-    # if (is.null(weights))
-    #     weights <- rep(1, sum(group.sizes))
-    # groups <- rep(1:length(x), group.sizes)
-    # tapply(weights, groups, c)
-}
+
 
 #' @importFrom stats density weighted.mean quantile
 #' @importFrom Hmisc wtd.quantile
