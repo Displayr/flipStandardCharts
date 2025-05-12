@@ -439,6 +439,10 @@ Distribution <-   function(x,
         category.axis <- axisName(vertical, v, 1)
         value.axis <- axisName(vertical, v, 2)
         values <- x[[v]]
+
+        # When values is only a single value we duplicate the value
+        # This makes the density functions work properly and also
+        # avoid errors from formatLabels
         if (length(values) == 1) {
             values <- rep(values, length = 2)
         }
