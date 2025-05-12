@@ -86,7 +86,7 @@ test_that("Histogram", {
     suppressWarnings(Histogram(list(phone$id, phone$q4)))
     suppressWarnings(Histogram(list(Q1 = phone$q2, Q4 = phone$q4)))
 
-        # Weights
+    # Weights
     dt = list(suppressWarnings(flipTransformations::AsNumeric(phone$q4, binary = FALSE)))
     expect_warning(Histogram(dt, weights = NULL), NA)
     expect_error(suppressWarnings(Histogram(dt, weights = 1:3)), "The data and the weights do not have the same number of observations.")
@@ -94,4 +94,16 @@ test_that("Histogram", {
 
 
 
+})
+
+test_that("Summary table input",
+{
+    tb <- structure(c(toocheap = 8.01264), statistic = "Average", class = c("array", "QTable"),
+        dimnets = list(integer(0)), dimduplicates = list(integer(0)), span = list(
+        rows = structure(list("toocheap"), class = "data.frame", names = "", row.names = 1L)), basedescriptiontext = "sample size = 250", basedescription = list(
+        Minimum = 250L, Maximum = 250L, Range = FALSE, Total = 250L,
+        Missing = 0L, EffectiveSampleSize = 250L, EffectiveSampleSizeProportion = 100,
+        FilteredProportion = 0), questiontypes = "Number", footerhtml = "toocheap SUMMARY&lt;br /&gt;sample size = 250; 95% confidence level",
+        name = "toocheap", questions = c("toocheap", "SUMMARY"), assigned.rownames = TRUE)
+    expect_error(Histogram(tb), NA)
 })
