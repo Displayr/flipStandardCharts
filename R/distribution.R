@@ -393,7 +393,7 @@ Distribution <-   function(x,
     rng <- x.sorted[c(1, length(x.sorted))]
     if (density.type == "Histogram")
     {
-        bin.min.size <- min(diff(x.sorted))
+        bin.min.size <- suppressWarnings(min(diff(x.sorted)))
         if (!is.finite(bin.min.size))
             bin.min.size <- 1
         if (bin.min.size < sqrt(.Machine$double.eps))

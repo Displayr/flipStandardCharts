@@ -105,5 +105,5 @@ test_that("Summary table input",
         Missing = 0L, EffectiveSampleSize = 250L, EffectiveSampleSizeProportion = 100,
         FilteredProportion = 0), questiontypes = "Number", footerhtml = "toocheap SUMMARY&lt;br /&gt;sample size = 250; 95% confidence level",
         name = "toocheap", questions = c("toocheap", "SUMMARY"), assigned.rownames = TRUE)
-    expect_error(Histogram(tb), NA)
+    expect_silent(Histogram(tb))
 })
