@@ -1223,9 +1223,13 @@ setTicks <- function(minimum, maximum, distance, reversed = FALSE,
     {
         is.bar <- grepl("Bar", type) && !grepl("Stacked", type)
         if (is.null(minimum))
-            minimum <- min(0, min(data, na.rm = TRUE))
+            minimum <- min(data, na.rm = TRUE)
         if (is.null(maximum))
             maximum <- max(data, na.rm = TRUE)
+        if (all(data > 0))
+            minimum <- 0
+        else if (all(data < 0))
+            maximum <- 0
 
         # Add horizontal space for data labels in bar charts
         pad <- 0
