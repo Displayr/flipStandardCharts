@@ -1219,7 +1219,7 @@ setTicks <- function(minimum, maximum, distance, reversed = FALSE,
     if (reversed)
         autorange <- "reversed"
 
-    if (!is.null(data))
+    if (!is.null(data) && FALSE)
     {
         is.bar <- grepl("Bar", type) && !grepl("Stacked", type)
         if (is.null(minimum))
