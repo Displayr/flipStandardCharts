@@ -1219,7 +1219,7 @@ setTicks <- function(minimum, maximum, distance, reversed = FALSE,
     if (reversed)
         autorange <- "reversed"
 
-    if (!is.null(data) && FALSE)
+    if (!is.null(data))
     {
         is.bar <- grepl("Bar", type) && !grepl("Stacked", type)
         if (is.null(minimum))
@@ -1239,9 +1239,10 @@ setTicks <- function(minimum, maximum, distance, reversed = FALSE,
             lab.len <- max(nchar(as.character(unlist(labels))))
             pad <- (maximum - minimum) * (lab.len+2) * label.font.size / 200
         }
-        if (!is.bar || min(data, na.rm = TRUE) < 0)
+        if (!is.bar || any(data < 0))
             minimum <- minimum - pad
-        maximum <- maximum + pad
+        if (any(data > 0))
+            maximum <- maximum + pad
     }
 
     if (!is.null(minimum) && !is.null(maximum))
