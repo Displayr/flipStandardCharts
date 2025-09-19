@@ -35,16 +35,16 @@ test_that("setTicks",
     expect_equal(ticks$range, c(-5, 20))
 
     ticks <- setTicks(NULL, NULL, NULL, data = -46, labels = "-46")
-    #expect_equal(ticks$range, c(-46, -46)) # plotly can't deal with 0-length range
+    expect_equal(ticks$range, c(-46, 0))
 
     ticks <- setTicks(NULL, NULL, NULL, data = -46, labels = "-46", type = "Bar")
-    #expect_equal(ticks$range, c(-46, -46)) # plotly can't deal with 0-length range
+    expect_equal(ticks$range, c(-57.5, 0))
 
     ticks <- setTicks(NULL, 0, NULL, data = -46, labels = "-46", type = "Bar")
-    #expect_equal(ticks$range, c(-57.5, 11.5)) # this used to be c(-46, 0) with datalabel overlapping rowlabel
+    expect_equal(ticks$range, c(-57.5, 0))
 
     ticks <- setTicks(-50, NULL, NULL, data = -46, labels = "-46")
-    expect_equal(ticks$range, c(-50, -46))
+    expect_equal(ticks$range, c(-50, -0))
 
     ticks <- setTicks(NULL, NULL, NULL, data = 46, labels = "46")
     expect_equal(ticks$range, c(0, 46))
