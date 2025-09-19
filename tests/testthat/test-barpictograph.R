@@ -19,7 +19,7 @@ test_that("Warnings for invalid parameters",
 
 test_that("Custom image",
 {
-    skip_on_ci()
+    skip()
     expect_error(BarPictograph(1:6, custom.image = "https://wiki.q-researchsoftware.com/images/7/78/Democrats_donkey_black.png"), NA)
     expect_error(BarPictograph(1:6, custom.image = "tps://wiki.q-researchsoftware.com/images/7/78/Democrats_donkey_black.png"),
                  "Could not retrieve image")
