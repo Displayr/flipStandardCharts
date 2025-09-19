@@ -1182,6 +1182,9 @@ setValRange <- function(min, max, values, show.zero = FALSE, use.defaults = TRUE
         min <- charToNumeric(min)
         max <- charToNumeric(max)
     }
+    # When there is only a single value don't use it to determine range
+    if (length(unique(values)) == 1)
+        return(list(min = min, max = max))
 
     if  (length(min) == 0 || is.na(min))
         min <- min(unlist(values), if (show.zero) 0 else NULL, na.rm = TRUE)
@@ -1222,10 +1225,10 @@ setTicks <- function(minimum, maximum, distance, reversed = FALSE,
     if (!is.null(data))
     {
         is.bar <- grepl("Bar", type) && !grepl("Stacked", type)
-        if (is.null(minimum))
-            minimum <- min(0, min(data, na.rm = TRUE))
-        if (is.null(maximum))
-            maximum <- max(data, na.rm = TRUE)
+        dat.min <- min(0, data, na.rm = TRUE)
+        dat.max <- max(data, na.rm = TRUE)
+        if (dat.min == dat.max)
+            dat.max <- 0
 
         # Add horizontal space for data labels in bar charts
         pad <- 0
@@ -1233,11 +1236,16 @@ setTicks <- function(minimum, maximum, distance, reversed = FALSE,
         if (!is.null(labels) && is.bar)
         {
             lab.len <- max(nchar(as.character(unlist(labels))))
-            pad <- (maximum - minimum) * (lab.len+2) * label.font.size / 200
+            pad <- (dat.max - dat.min) * (lab.len+2) * label.font.size / 200
         }
-        if (!is.bar || min(data, na.rm = TRUE) < 0)
-            minimum <- minimum - pad
-        maximum <- maximum + pad
+        if (!is.bar || dat.min < 0)
+            dat.min <- dat.min - pad
+        if (dat.max > 0)
+            dat.max <- dat.max + pad
+        if (is.null(minimum))
+            minimum <- dat.min
+        if (is.null(maximum))
+            maximum <- dat.max
     }
 
     if (!is.null(minimum) && !is.null(maximum))
