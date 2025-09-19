@@ -23,3 +23,50 @@ test_that("Conversion of factor with numeric levels to numeric",
     expect_equal(convertAxis(xx, "numeric"), c(7, 5, 4))
 })
 
+test_that("setTicks",
+{
+    ticks <- setTicks(NULL, NULL, NULL)
+    expect_equal(ticks$range, NULL)
+
+    ticks <- setTicks(NULL, 20, NULL, data = 1:5)
+    expect_equal(ticks$range, c(0, 20))
+
+    ticks <- setTicks(NULL, 20, NULL, data = -5:5)
+    expect_equal(ticks$range, c(-5, 20))
+
+    ticks <- setTicks(NULL, NULL, NULL, data = -46, labels = "-46")
+    #expect_equal(ticks$range, c(-46, -46)) # plotly can't deal with 0-length range
+
+    ticks <- setTicks(NULL, NULL, NULL, data = -46, labels = "-46", type = "Bar")
+    #expect_equal(ticks$range, c(-46, -46)) # plotly can't deal with 0-length range
+
+    ticks <- setTicks(NULL, 0, NULL, data = -46, labels = "-46", type = "Bar")
+    #expect_equal(ticks$range, c(-57.5, 11.5)) # this used to be c(-46, 0) with datalabel overlapping rowlabel
+
+    ticks <- setTicks(-50, NULL, NULL, data = -46, labels = "-46")
+    expect_equal(ticks$range, c(-50, -46))
+
+    ticks <- setTicks(NULL, NULL, NULL, data = 46, labels = "46")
+    expect_equal(ticks$range, c(0, 46))
+
+    ticks <- setTicks(NULL, NULL, NULL, data = 46, labels = "46", type = "Bar")
+    expect_equal(ticks$range, c(0, 55.2))
+
+    ticks <- setTicks(40, NULL, NULL, data = 46, labels = "46", type = "Bar")
+    expect_equal(ticks$range, c(40, 55.2))
+
+    neg_data <- -50 + 1:5
+    neg_labels <- sprintf("%.2f", neg_data)
+    ticks <- setTicks(NULL, NULL, NULL, data = neg_data, labels = neg_labels)
+    expect_equal(ticks$range, c(-49, -45))
+
+    ticks <- setTicks(NULL, NULL, NULL, data = neg_data, labels = neg_labels, type = "Bar")
+    expect_equal(ticks$range, c(-50.6, -45))
+
+    pos_and_neg_data <- -5:5
+    pos_and_neg_labels <- sprintf("%.2f", pos_and_neg_data)
+    ticks <- setTicks(NULL, NULL, NULL, data = pos_and_neg_data, labels = pos_and_neg_labels, type = "Bar")
+    expect_equal(ticks$range, c(-8.5, 8.5))
+
+})
+
