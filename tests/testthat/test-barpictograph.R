@@ -19,9 +19,13 @@ test_that("Warnings for invalid parameters",
 
 test_that("Custom image",
 {
-    expect_error(BarPictograph(1:6, custom.image = "https://displayrcors.displayr.com/images/apple_grey.svg"), NA)
-    expect_error(BarPictograph(1:6, custom.image = "tps://displayrcors.displayr.com/images/apple_grey.svg"),
+    skip_on_ci()
+    expect_error(BarPictograph(1:6, custom.image = "https://wiki.q-researchsoftware.com/images/7/78/Democrats_donkey_black.png"), NA)
+    expect_error(BarPictograph(1:6, custom.image = "tps://wiki.q-researchsoftware.com/images/7/78/Democrats_donkey_black.png"),
                  "Could not retrieve image")
+    expect_error(BarPictograph(1:6, custom.image = "https://wiki.q-researchsoftware.com/images/7/78/Demorats_donkey_black.png"),
+                 "Error (status code 404) retrieving image", fixed = TRUE)
+
 })
 
 
