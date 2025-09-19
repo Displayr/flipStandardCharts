@@ -1182,7 +1182,7 @@ setValRange <- function(min, max, values, show.zero = FALSE, use.defaults = TRUE
         min <- charToNumeric(min)
         max <- charToNumeric(max)
     }
-    # When values is only a single value don't use value to determine range
+    # When there is only a single value don't use it to determine range
     if (length(values) == 1)
         return(list(min = min, max = max))
 
