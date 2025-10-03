@@ -45,14 +45,18 @@
 #' @return an HTML widget for \code{"leaflet"} or a \code{"plotly"} object.
 #' @examples
 #' data <- seq(4)
-#' names(data) <- c("New York", "London", "Tokyo", "Paris")
+#' names(data) <- c("Berlin", "London", "Madrid", "Paris")
 #' GeoScatter(data)
+#' cafes <- 1:4
+#' names(cafes) <- c("22 Union Street, Pyrmont", "Social Brew Cafe, Pyrmont", "306 Harris St, Pyrmont", "1 Central Park Ave, Chippendale")
+#' GeoScatter(cafes, colors = flipChartBasics::ChartColors(4, "Reds"))
 #' @importFrom leaflet leaflet addTiles addCircleMarkers colorNumeric addLegend fitBounds labelFormat tileOptions
 #' @importFrom tidygeocoder geocode geo
 #' @importFrom verbs Sum
 #' @importFrom flipU StopForUserError
 #' @importFrom htmltools browsable tagList tags htmlDependency
 #' @importFrom flipChartBasics StripAlphaChannel
+#' @importFrom digest digest
 #' @export
 GeoScatter <- function(x,
                       country = "",
@@ -132,12 +136,8 @@ GeoScatter <- function(x,
     
     locations <- rownames(table)
     
-    # Geocode the locations
-    tryCatch({
-        geocoded_data <- tidygeocoder::geo(address = locations, method = "osm")
-    }, error = function(e) {
-        stop("Failed to geocode locations. Please check that tidygeocoder package is installed and location names are valid.")
-    })
+    # Geocode the locations with caching
+    geocoded_data <- get_cached_geocoding(locations)
     
     failed_geocoding <- is.na(geocoded_data$lat) | is.na(geocoded_data$long)
     if (sum(failed_geocoding) == length(locations)) {
@@ -303,3 +303,167 @@ leafletGeoScatter <- function(df, colors, opacity, min.value, max.value, color.N
 
 # Helper function - null coalescing operator
 `%||%` <- function(x, y) if (is.null(x)) y else x
+
+# Global cache for geocoded locations
+.geoscatter_cache <- new.env(parent = emptyenv())
+
+#' Get cached geocoding results or perform new geocoding
+#' @param locations Vector of location names to geocode
+#' @return Data frame with geocoded results
+get_cached_geocoding <- function(locations) {
+    # Create a unique key for this set of locations
+    locations_key <- create_locations_key(locations)
+    
+    # Check if we have cached results for these exact locations
+    if (exists(locations_key, envir = .geoscatter_cache)) {
+        cat("Using cached geocoding results for", length(locations), "locations.\n")
+        return(get(locations_key, envir = .geoscatter_cache))
+    }
+    
+    # Check for partial matches in cache
+    cached_results <- get_partial_cached_results(locations)
+    new_locations <- setdiff(locations, names(cached_results))
+    
+    if (length(new_locations) == 0) {
+        cat("All", length(locations), "locations found in cache.\n")
+        # All locations are cached, return combined results
+        geocoded_data <- combine_cached_results(locations, cached_results)
+    } else {
+        cat("Geocoding", length(new_locations), "new locations...\n")
+        if (length(new_locations) < length(locations)) {
+            cat("(", length(locations) - length(new_locations), "locations found in cache)\n")
+        }
+        
+        # Geocode only the new locations
+        tryCatch({
+            new_geocoded <- tidygeocoder::geo(address = new_locations, method = "osm")
+        }, error = function(e) {
+            stop("Failed to geocode locations. Please check that tidygeocoder package is installed and location names are valid.")
+        })
+        
+        # Cache the new results individually
+        cache_new_results(new_locations, new_geocoded)
+        
+        # Combine cached and new results
+        all_results <- c(cached_results, setNames(split(new_geocoded[, c("lat", "long")], seq_len(nrow(new_geocoded))), new_locations))
+        geocoded_data <- combine_cached_results(locations, all_results)
+    }
+    
+    # Cache the complete result set
+    assign(locations_key, geocoded_data, envir = .geoscatter_cache)
+    
+    return(geocoded_data)
+}
+
+#' Create a unique key for a set of locations
+#' @param locations Vector of location names
+#' @return String key
+create_locations_key <- function(locations) {
+    # Sort locations to ensure consistent key regardless of order
+    sorted_locations <- sort(tolower(trimws(locations)))
+    # Create hash-like key
+    paste0("locations_", digest::digest(sorted_locations, algo = "xxhash32"))
+}
+
+#' Get partial cached results for locations
+#' @param locations Vector of location names to check
+#' @return Named list of cached lat/long pairs
+get_partial_cached_results <- function(locations) {
+    cached_results <- list()
+    
+    # Check each location individually in cache
+    for (loc in locations) {
+        loc_key <- paste0("single_", tolower(trimws(loc)))
+        if (exists(loc_key, envir = .geoscatter_cache)) {
+            cached_results[[loc]] <- get(loc_key, envir = .geoscatter_cache)
+        }
+    }
+    
+    return(cached_results)
+}
+
+#' Cache new geocoding results individually
+#' @param locations Vector of location names
+#' @param geocoded_data Data frame with geocoding results
+cache_new_results <- function(locations, geocoded_data) {
+    for (i in seq_along(locations)) {
+        loc_key <- paste0("single_", tolower(trimws(locations[i])))
+        result <- list(
+            lat = geocoded_data$lat[i], 
+            long = geocoded_data$long[i]
+        )
+        assign(loc_key, result, envir = .geoscatter_cache)
+    }
+}
+
+#' Combine cached and new results in the correct order
+#' @param locations Original location names in order
+#' @param all_results Named list of lat/long results
+#' @return Data frame in tidygeocoder format
+combine_cached_results <- function(locations, all_results) {
+    # Create result data frame in the same format as tidygeocoder::geo
+    result <- data.frame(
+        address = locations,
+        lat = numeric(length(locations)),
+        long = numeric(length(locations)),
+        stringsAsFactors = FALSE
+    )
+    
+    for (i in seq_along(locations)) {
+        loc <- locations[i]
+        if (loc %in% names(all_results)) {
+            result$lat[i] <- all_results[[loc]]$lat
+            result$long[i] <- all_results[[loc]]$long
+        } else {
+            result$lat[i] <- NA
+            result$long[i] <- NA
+        }
+    }
+    
+    return(result)
+}
+
+#' Clear the geocoding cache
+#' @param pattern Optional pattern to match cache keys (default: clear all)
+#' @export
+clear_geocoding_cache <- function(pattern = NULL) {
+    if (is.null(pattern)) {
+        # Clear entire cache
+        rm(list = ls(envir = .geoscatter_cache), envir = .geoscatter_cache)
+        cat("Geocoding cache cleared.\n")
+    } else {
+        # Clear matching entries
+        keys <- ls(envir = .geoscatter_cache)
+        matching_keys <- keys[grepl(pattern, keys)]
+        if (length(matching_keys) > 0) {
+            rm(list = matching_keys, envir = .geoscatter_cache)
+            cat("Cleared", length(matching_keys), "cache entries matching pattern:", pattern, "\n")
+        } else {
+            cat("No cache entries found matching pattern:", pattern, "\n")
+        }
+    }
+}
+
+#' Get information about the geocoding cache
+#' @export
+geocoding_cache_info <- function() {
+    cache_keys <- ls(envir = .geoscatter_cache)
+    single_keys <- sum(grepl("^single_", cache_keys))
+    locations_keys <- sum(grepl("^locations_", cache_keys))
+    
+    cat("Geocoding cache information:\n")
+    cat("- Individual locations cached:", single_keys, "\n")
+    cat("- Location sets cached:", locations_keys, "\n")
+    cat("- Total cache entries:", length(cache_keys), "\n")
+    
+    # Estimate cache size
+    cache_size <- object.size(.geoscatter_cache)
+    cat("- Approximate cache size:", format(cache_size, units = "auto"), "\n")
+    
+    invisible(list(
+        single_locations = single_keys,
+        location_sets = locations_keys,
+        total_entries = length(cache_keys),
+        cache_size = cache_size
+    ))
+}
