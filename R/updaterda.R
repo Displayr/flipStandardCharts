@@ -17,6 +17,11 @@
 #' ISO_3166_2 - a data.frame of region names
 #' country.center.coords - a data.frame of the latitude and longitude of the center of each country
 #' us.regions - a data.frame of the us.states and regions
+#' us.postcodes - a SpatialPolygonsDataFrame of US postal code areas
+#' uk.postcodes - a SpatialPolygonsDataFrame of UK postal code districts
+#' australia.postcodes - a SpatialPolygonsDataFrame of Australian postal code areas
+#' australia.areas - a SpatialPolygonsDataFrame of Australian SA4 statistical areas
+#' canada.postcodes - a SpatialPolygonsDataFrame of Canadian Forward Sortation Areas (postal codes)
 #'
 #' To load in the existing "sysdata.rda" file, use setwd("C:/Users/jake.NUMDOM2/Git packages/flipStandardCharts/R") and load("sysdata.rda")
 #'
@@ -323,6 +328,23 @@
 # australia.areas <- ms_simplify(australia.areas, keep = 0.005, keep_shapes = TRUE)
 # names(australia.areas@polygons) <- NULL
 
+# # Canadian postcodes (Forward Sortation Areas - FSA)
+# # Statistics Canada provides postal code boundaries as Forward Sortation Areas (3-character codes)
+# # These represent the first three characters of Canadian postal codes (format: A1A 1A1)
+# # Download from Statistics Canada 2021 Census boundary files
+# # URL: https://www12.statcan.gc.ca/census-recensement/2021/geo/sip-pis/boundary-limites/files-fichiers/lfsa000a21a_e.zip
+# download.file(file.path('https://www12.statcan.gc.ca/census-recensement/2021/geo/sip-pis/boundary-limites/files-fichiers/lfsa000a21a_e.zip'),
+#               f <- tempfile(),
+#               mode = "wb")
+# unzip(f, exdir = tempdir())
+# canada.postcodes <- readOGR(tempdir(), "lfsa000a21a_e")
+# # The CFSAUID field contains the Forward Sortation Area code (e.g., "K1A", "M5V", "H3H")
+# colnames(canada.postcodes@data)[which(colnames(canada.postcodes@data) == "CFSAUID")] <- "name"
+# # Simplify polygons to reduce file size while keeping shapes intact
+# canada.postcodes <- ms_simplify(canada.postcodes, keep = 0.02, keep_shapes = TRUE)
+# # Remove polygon names to avoid leaflet display issues
+# names(canada.postcodes@polygons) <- NULL
+
 
 # ### Manually combine 2 counties of Norway, zendesk 16755, 82120
 # ## DS-3647: https://www.lifeinnorway.net/norway-new-counties/
@@ -391,4 +413,10 @@
 #      uk.postcodes,
 #      australia.postcodes,
 #      australia.areas,
+#      canada.postcodes,
 #      file = "R/sysdata.rda")
+
+# # After running this script and regenerating sysdata.rda, you can test Canadian postal codes with:
+# # data <- c(100, 200, 150, 300, 250)
+# # names(data) <- c("K1A", "M5V", "H3H", "V6B", "T2P")  # Examples: Ottawa, Toronto, Montreal, Vancouver, Calgary
+# # GeographicMap(data, zip.country = "Canada")

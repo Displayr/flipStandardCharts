@@ -231,13 +231,18 @@ definedFormatMapTypes <- function(names, zip.country) {
         zip.country <- "Automatic"
 
     if (zip.country != "Automatic")
-        return(switch(zip.country, Australia = "aus_postcodes", USA = "us_postcodes", UK = "uk_postcodes"))
+        return(switch(zip.country, Australia = "aus_postcodes", USA = "us_postcodes", UK = "uk_postcodes", Canada = "canada_postcodes"))
 
     if (suppressWarnings(all(!is.na(as.numeric(names)))) && max(sapply(as.character(names), nchar)) == 4)
         return("aus_postcodes")
 
     if (suppressWarnings(all(!is.na(as.numeric(names)))) && max(sapply(as.character(names), nchar)) == 5)
         return("us_postcodes")
+
+    # Check for Canadian postal codes (format: A1A or A1A 1A1)
+    # Canadian Forward Sortation Areas are 3 characters: Letter-Digit-Letter
+    if (all(grepl("^[A-Za-z][0-9][A-Za-z]", names)) && all(nchar(gsub(" .*", "", names)) == 3))
+        return("canada_postcodes")
 
     # Check if first part (before any space) <= 4 chars, starts with a letter and contains a digit.
     split.names <- strsplit(names, " ", fixed = FALSE)
@@ -255,6 +260,12 @@ tidyPostcodes <- function(names, map.type) {
 
     if (map.type == "us_postcodes")
         return(sapply(names, padWithZeros, 5))
+
+    if (map.type == "canada_postcodes") {
+        # Convert Canadian postal codes to Forward Sortation Area format (first 3 characters)
+        # Remove spaces and extract first 3 characters, then uppercase
+        return(toupper(substr(gsub(" ", "", names), 1, 3)))
+    }
 
     return(names)
 }

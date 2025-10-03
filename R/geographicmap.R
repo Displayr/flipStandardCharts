@@ -38,7 +38,7 @@
 #' maps) or \code{"plotly"} (faster).
 #' @param background If \code{"mapping.package"} is \code{"leaflet"}, add a background
 #' tile from opensteetmaps.
-#' @param zip.country One of \code{"Automatic"}, \code{"USA"}, \code{"UK"} or \code{"Australia"}.
+#' @param zip.country One of \code{"Automatic"}, \code{"USA"}, \code{"UK"}, \code{"Australia"}, or \code{"Canada"}.
 #' If \code{"Automatic"} an attempt is made to infer the country from the data.
 #' @param legend.show Logical; Whether to display a legend with the color scale.
 #' @param legend.font.family Font family of legend.
@@ -203,6 +203,11 @@ GeographicMap <- function(x,
         coords <- uk.postcodes
         remove.regions <- name.map <- NULL
     }
+    else if (map.type == "canada_postcodes")
+    {
+        coords <- canada.postcodes
+        remove.regions <- name.map <- NULL
+    }
     else if (map.type == "aus_areas")
     {
         coords <- australia.areas
@@ -261,7 +266,7 @@ GeographicMap <- function(x,
     if (n.unmatched.names > 0.75 * nrow(table))
         warning(paste0(n.unmatched.names, " rows of the input data were not matched with",
                        " geographic entity names. Please check that the data you are plotting is one of:",
-                       " countries; states of a country; continents; US regions; or US, UK or Australian zip codes."))
+                       " countries; states of a country; continents; US regions; or US, UK, Canadian, or Australian zip codes."))
     if (any(incorrect.names))
     {
         msg <- paste("Unmatched region names:", paste(rownames(table)[incorrect.names], collapse = ", "))
@@ -419,6 +424,7 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
     attribution <- switch(map.type, aus_postcodes = "Based on ABS data",
                             aus_areas = "Based on ABS data",
                             uk_postcodes = "<a href='www.opendoorlogistics.com'>opendoorlogistics.com</a>",
+                            canada_postcodes = "Based on Statistics Canada data",
                            "")
     map <- addTiles(map, attribution = attribution, options = tileOptions(opacity = as.numeric(background)))
 
