@@ -44,7 +44,6 @@ dataLabelPositions <- function(chart.matrix,
         if (is.null(display.threshold))
             display.threshold <- 0.05
         text[abs(chart.matrix) < largest.bar * display.threshold] <- ""
-        text[chart.matrix == 0] <- ""
 
 
     } else
