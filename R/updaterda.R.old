@@ -24,11 +24,12 @@
 
 
 # https://gis.stackexchange.com/questions/374508/spproj4string-equivalent-in-the-proj6-framework
-
+#
+# options("rgdal_show_exportToProj4_warnings"="none")
 # library(httr)
 # library(XML)
 # library(devtools)
-# library(terra)
+# library(rgdal)
 # library(utils)
 # library(rmapshaper)
 
@@ -45,8 +46,7 @@
 #                         'www.naturalearthdata.com/download/50m/cultural',
 #                         'ne_50m_admin_0_countries.zip'), f <- tempfile())
 # unzip(f, exdir=tempdir())
-# map.coordinates.50 <- as(terra::vect(file.path(tempdir(), 'ne_50m_admin_0_countries.shp')), "Spatial")
-# map.coordinates.50@data[] <- lapply(map.coordinates.50@data, function(x) if (is.character(x)) as.factor(x) else x)
+# map.coordinates.50 <- readOGR(tempdir(), 'ne_50m_admin_0_countries', encoding='UTF-8', stringsAsFactors = TRUE)
 # map.coordinates.df <- data.frame(map.coordinates.50)
 # column.class <- sapply(map.coordinates.df, class)
 # column.class <- column.class[column.class == "factor"]
@@ -60,8 +60,7 @@
 #                         'www.naturalearthdata.com/download/110m/cultural',
 #                         'ne_110m_admin_0_countries.zip'), f <- tempfile())
 # unzip(f, exdir=tempdir())
-# map.coordinates.110 <- as(terra::vect(file.path(tempdir(), 'ne_110m_admin_0_countries.shp')), "Spatial")
-# map.coordinates.110@data[] <- lapply(map.coordinates.110@data, function(x) if (is.character(x)) as.factor(x) else x)
+# map.coordinates.110 <- readOGR(tempdir(), 'ne_110m_admin_0_countries', encoding='UTF-8', stringsAsFactors = TRUE)
 # map.coordinates.df <- data.frame(map.coordinates.110)
 # column.class <- sapply(map.coordinates.df, class)
 # column.class <- column.class[column.class == "factor"]
@@ -77,8 +76,7 @@
 #                         'ne_10m_admin_1_states_provinces.zip'), f)
 # d <- tempdir()
 # unzip(f, exdir = d)
-# admin1.coordinates <- as(terra::vect(file.path(d, 'ne_10m_admin_1_states_provinces.shp')), "Spatial")
-# admin1.coordinates@data[] <- lapply(admin1.coordinates@data, function(x) if (is.character(x)) as.factor(x) else x)
+# admin1.coordinates <- readOGR(d, 'ne_10m_admin_1_states_provinces', stringsAsFactors = TRUE)
 # admin1.coordinates.df <- data.frame(admin1.coordinates)
 # column.class <- sapply(admin1.coordinates.df, class)
 # column.class <- column.class[column.class == "factor"]
@@ -279,10 +277,10 @@
 # download.file(file.path('http://www2.census.gov/geo/tiger/GENZ2019/shp/cb_2019_us_zcta510_500k.zip'),
 #              f <- tempfile())
 # unzip(f, exdir = tempdir())
-# us.postcodes <- as(terra::vect(file.path(tempdir(), "cb_2019_us_zcta510_500k.shp")), "Spatial")
-# us.postcodes@data[] <- lapply(us.postcodes@data, function(x) if (is.character(x)) as.factor(x) else x)
+# us.postcodes <- readOGR(tempdir(), "cb_2019_us_zcta510_500k")
 # colnames(us.postcodes@data)[3] <- "name"
 # # Simplify polygons to reduce size. Named polygons causes leaflet map to be blank.
+# set_thin_PROJ6_warnings(TRUE)
 # us.postcodes <- ms_simplify(us.postcodes, keep = 0.01, keep_shapes = TRUE)
 # names(us.postcodes@polygons) <- NULL
 
@@ -292,8 +290,7 @@
 # download.file(file.path('http://www.opendoorlogistics.com/wp-content/uploads/Data/UK-postcode-boundaries-Jan-2015.zip'),
 #               f <- tempfile())
 # unzip(f, exdir = tempdir())
-# uk.postcodes <- as(terra::vect(file.path(tempdir(), "Distribution", "Districts.shp")), "Spatial")
-# uk.postcodes@data[] <- lapply(uk.postcodes@data, function(x) if (is.character(x)) as.factor(x) else x)
+# uk.postcodes <- readOGR(file.path(tempdir(), "Distribution"), "Districts")
 # # Simplify polygons to reduce size - error if this is done in one go so 3 chunks
 # uk.compress <- ms_simplify(uk.postcodes[1:700, ], keep_shapes = TRUE)
 # uk.compress2 <- ms_simplify(uk.postcodes[701:750, ], keep_shapes = TRUE)
@@ -310,8 +307,7 @@
 #               f <- tempfile(),
 #               mode = "wb")
 # unzip(f, exdir = tempdir())
-# australia.postcodes <- as(terra::vect(file.path(tempdir(), "POA_2021_AUST_GDA2020.shp")), "Spatial")
-# australia.postcodes@data[] <- lapply(australia.postcodes@data, function(x) if (is.character(x)) as.factor(x) else x)
+# australia.postcodes <- readOGR(tempdir(), "POA_2021_AUST_GDA2020")
 # colnames(australia.postcodes@data)[2] <- "name"
 # australia.postcodes <- ms_simplify(australia.postcodes, keep = 0.02, keep_shapes = TRUE)
 # names(australia.postcodes@polygons) <- NULL
@@ -322,8 +318,7 @@
 #               f <- tempfile(),
 #               mode = "wb")
 # unzip(f, exdir = tempdir())
-# australia.areas <- as(terra::vect(file.path(tempdir(), "SA4_2016_AUST.shp")), "Spatial")
-# australia.areas@data[] <- lapply(australia.areas@data, function(x) if (is.character(x)) as.factor(x) else x)
+# australia.areas <- readOGR(tempdir(), "SA4_2016_AUST")
 # colnames(australia.areas@data)[2] <- "name"
 # australia.areas <- ms_simplify(australia.areas, keep = 0.005, keep_shapes = TRUE)
 # names(australia.areas@polygons) <- NULL
@@ -339,11 +334,11 @@
 # ## Oppland and Hedmark joined to become Innlandet
 # ## Telemark og Vestfold combined to become Vestfold og Telemark
 # ## names(admin1.name.map[["Norway"]])
-# new.counties <- c("Trøndelag", "Agder", "Viken", "Troms og Finnmark", "Vestland",
+# new.counties <- c("Tr\u00F8ndelag", "Agder", "Viken", "Troms og Finnmark", "Vestland",
 #                   "Innlandet", "Vestfold og Telemark")
-# merge.list <- list(c("Nord-Trøndelag", "Sør-Trøndelag"),
+# merge.list <- list(c("Nord-Tr\u00F8ndelag", "S\u00F8r-Tr\u00F8ndelag"),
 #                    c("Aust-Agder", "Vest-Agder"),
-#                    c("Buskerud", "Akershus", "Østfold"),
+#                    c("Buskerud", "Akershus", "\u00D8stfold"),
 #                    c("Finnmark", "Troms"),
 #                    c("Hordaland", "Sogn og Fjordane"),
 #                    c("Oppland", "Hedmark"),
@@ -365,7 +360,7 @@
 # admin1.coordinates <- ad
 
 # anm <- admin1.name.map
-# anm[["Norway"]]$"Trøndelag" <- "Trondelag"
+# anm[["Norway"]]$"Tr\u00F8ndelag" <- "Trondelag"
 # print(anm[["Norway"]])
 # admin1.name.map <- anm
 
