@@ -1,3 +1,5 @@
+# parameter combos not checked in other tests, previously only checked in table tests
+
 context("Q-file coverage gaps")
 
 named.vector <- structure(c(5, 6, 2, 1.5, 9, 2.2), .Names = c("A", "B", "C", "D", "E", "F"))
@@ -213,29 +215,6 @@ test_that("Stacked Area - legend styling", {
 test_that("Stacked Area - transpose", {
     expect_error(print(Chart(named.matrix, type = "Stacked Area",
                              transpose = TRUE)), NA)
-})
-
-# ---- Labeled Scatterplot: axis titles and marker size ----
-
-test_that("Labeled Scatterplot - y.title and x.title with font params", {
-    expect_warning(print(Chart(two.col.mat, type = "Labeled Scatterplot",
-                               y.title = "Y Axis", y.title.font.size = 14,
-                               x.title = "X Axis", x.title.font.size = 14)))
-})
-
-test_that("Labeled Scatterplot - series.marker.size", {
-    expect_warning(print(Chart(two.col.mat, type = "Labeled Scatterplot",
-                               series.marker.size = 20)))
-})
-
-test_that("Labeled Scatterplot - legend font params", {
-    expect_warning(print(Chart(two.col.mat, type = "Labeled Scatterplot",
-                               scatter.group.indices = paste(rep(1:2, 5), collapse = ", "),
-                               scatter.group.labels = "Group A, Group B",
-                               legend.show = TRUE,
-                               legend.font.family = "Arial",
-                               legend.font.color = "#333333",
-                               legend.font.size = 12)))
 })
 
 # ---- LabeledScatter: title param ----
