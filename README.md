@@ -4,6 +4,9 @@
 
 Standard R interactive charts
 
+## Build
+This project is entirely built and published using GitHub Actions. There is no Circle CI pipeline.
+
 ## Installation
 
 To install from GitHub:

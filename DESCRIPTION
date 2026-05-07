@@ -73,6 +73,6 @@ Suggests:
     flipExampleData,
     ggplot2movies,
     testthat,
-    rgdal
+    terra
 Encoding: UTF-8
 RoxygenNote: 7.3.2
