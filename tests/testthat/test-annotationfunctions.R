@@ -111,6 +111,14 @@ test_that("extractSelectedAnnot",
         "above threshold"), c(`Pepsi Max` = 6L))
     expect_equal(extractSelectedAnnot(tb.as.char[,2,"Column Comparisons"], "",
         "above threshold"), c(`Coca-Cola` = 1L, `Pepsi Max` = 6L, NET = 8L))
+
+    # RS-22196: numeric threshold against character data (annot.data array gets
+    # coerced to character when it also carries a character statistic like
+    # Column Comparisons). Must compare numerically, not lexicographically.
+    expect_equal(extractSelectedAnnot(c("1000", "2000", "400", "300", "30"),
+        50, "below threshold"), 5L)
+    expect_equal(extractSelectedAnnot(c("1000", "2000", "400", "300", "30"),
+        50, "above threshold"), 1:4)
 })
 
 test_that("parseThreshold",

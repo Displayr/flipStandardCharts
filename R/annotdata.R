@@ -283,7 +283,14 @@ extractSelectedAnnot <- function(data, threshold, threstype)
     n <- NROW(data)
     if (is.null(threstype) || is.null(threshold))
         return(1:n)
-    else if (threstype == "above threshold")
+    # Text annotations preserve character data so the original strings can be
+    # shown in the label, but a numeric threshold must still compare numerically.
+    # Coerce when threshold is numeric and data is character (happens when the
+    # annot.data 3d array is char-typed because it also carries a character
+    # statistic such as Column Comparisons).
+    if (is.numeric(threshold) && is.character(data))
+        data <- suppressWarnings(as.numeric(data))
+    if (threstype == "above threshold")
         return(which(data > threshold))
     else if (threstype == "below threshold")
         return(which(data < threshold))
