@@ -86,7 +86,7 @@ addTraceForBarTypeDataLabelAnnotations <- function(p, type, name,
         {
             # shiftleft and shiftright elements could be NULL or NA and should have zero padding then.
             tmp.dat <- getAnnotData(annot.data, a.tmp$data, i,
-                as.numeric = !grepl("Text", a.tmp$type) && a.tmp$data != "Column Comparisons")
+                as.numeric = useNumericAnnotData(a.tmp))
             ind.sel <- extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype)
             tmp.text <- rep("", n)
             left.pad <- paste(rep(" ", SumEmptyHandling(a.tmp$shiftright)), collapse = "")
@@ -278,18 +278,24 @@ getAnnotData <- function(data, name, series, as.numeric = TRUE)
     return(new.dat)
 }
 
+# Whether to coerce the annotation data slice to numeric. Text annotations
+# normally keep the raw string so the original value can be shown in the label,
+# but a numeric d3 format on a Text annotation signals the user wants the value
+# treated numerically (also fixes lexicographic threshold compares when the
+# annot.data array is char-typed). Column Comparisons stays character (letter
+# coding, e.g. "a", "b A").
+useNumericAnnotData <- function(annotation)
+{
+    (!grepl("Text", annotation$type) ||
+        d3FormatType(annotation$format) == "numeric") &&
+        annotation$data != "Column Comparisons"
+}
+
 extractSelectedAnnot <- function(data, threshold, threstype)
 {
     n <- NROW(data)
     if (is.null(threstype) || is.null(threshold))
         return(1:n)
-    # Text annotations preserve character data so the original strings can be
-    # shown in the label, but a numeric threshold must still compare numerically.
-    # Coerce when threshold is numeric and data is character (happens when the
-    # annot.data 3d array is char-typed because it also carries a character
-    # statistic such as Column Comparisons).
-    if (is.numeric(threshold) && is.character(data))
-        data <- suppressWarnings(as.numeric(data))
     if (threstype == "above threshold")
         return(which(data > threshold))
     else if (threstype == "below threshold")
@@ -511,7 +517,7 @@ applyAllAnnotationsToDataLabels <- function(data.label.text, annotation.list,
         annotation.list[[j]]$threshold <- parseThreshold(annotation.list[[j]]$threshold)
         a.tmp <- annotation.list[[j]]
         tmp.dat <- getAnnotData(annot.data, a.tmp$data, series.index,
-            as.numeric = !grepl("Text", a.tmp$type) && a.tmp$data != "Column Comparisons")
+            as.numeric = useNumericAnnotData(a.tmp))
         ind.sel <- intersect(rows.to.show,
                         extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype))
         if (length(ind.sel) > 0)

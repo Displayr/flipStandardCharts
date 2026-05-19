@@ -406,8 +406,7 @@ Radar <- function(x,
                 annotation.list[[j]]$threshold <- parseThreshold(annotation.list[[j]]$threshold)
                 a.tmp <- annotation.list[[j]]
                 tmp.dat <- getAnnotData(annot.data, a.tmp$data, ggi,
-                    as.numeric = !grepl("Text", a.tmp$type) &&
-                    a.tmp$data != "Column Comparisons")
+                    as.numeric = useNumericAnnotData(a.tmp))
                 ind.sel <- extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype)
                 if (length(ind.sel) > 0)
                 {
@@ -453,8 +452,7 @@ Radar <- function(x,
             curr.annot <- overlay.annotation.list[[curr.annot.ind]]
             curr.annot$threshold <- parseThreshold(curr.annot$threshold)
             curr.dat <- getAnnotData(annot.data, curr.annot$data, ggi,
-                as.numeric = !grepl("Text", curr.annot$type) &&
-                curr.annot$data != "Column Comparisons")
+                as.numeric = useNumericAnnotData(curr.annot))
             ind.sel <- extractSelectedAnnot(curr.dat, curr.annot$threshold, curr.annot$threstype)
             if (is.null(curr.annot$color))
                 curr.annot$color <- colors[ggi]
