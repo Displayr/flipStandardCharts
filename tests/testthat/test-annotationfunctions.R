@@ -90,12 +90,14 @@ test_that("getAnnotData",
     expect_equal(getAnnotData(tb.as.char, "z-Statistic", 2),
         c(-1.09428239999305, -1.4400978823522, 0.418738876007761, -0.581744715753815,
         0.912232950688339, 2.35430724535457, -0.0477461092441626, NA))
-    expect_equal(getAnnotData(tb.as.char, "Column Comparisons", 2), rep(NA_real_, 8))
-    expect_equal(getAnnotData(tb.as.char, "Column Comparisons", 2, as.numeric = FALSE),
+    # Column Comparisons is letter-coded — coercion to numeric would introduce
+    # NAs at non-missing positions, so getAnnotData keeps it as character.
+    expect_equal(getAnnotData(tb.as.char, "Column Comparisons", 2),
         c(`Coca-Cola` = "a", `Diet Coke` = NA, `Coke Zero` = NA, `Pepsi ` = NA,
         `Diet Pepsi` = NA, `Pepsi Max` = "c", `Dislike all cola` = NA,
         NET = "-"))
-    expect_equal(getAnnotData(tb.as.char, "Signif", 2, as.numeric = T),
+    # Signif is "TRUE"/"FALSE" — the logical-string branch maps these to 0/1.
+    expect_equal(getAnnotData(tb.as.char, "Signif", 2),
         c(`Coca-Cola` = 0, `Diet Coke` = 0, `Coke Zero` = 0, `Pepsi ` = 0,
           `Diet Pepsi` = 0, `Pepsi Max` = 1, `Dislike all cola` = 0, NET = 0))
 })
@@ -120,60 +122,16 @@ test_that("parseThreshold",
     expect_equal(parseThreshold("Some text"), "Some text")
 })
 
-test_that("useNumericAnnotData",
-{
-    # Non-Text annotations always want numeric data
-    expect_true(useNumericAnnotData(list(type = "Circle - filled", data = "p", format = "")))
-    expect_true(useNumericAnnotData(list(type = "Arrow - up", data = "p", format = "")))
-
-    # Text annotations default to character so the raw value is shown in the label
-    expect_false(useNumericAnnotData(list(type = "Text - after data label",
-        data = "p", format = "")))
-    expect_false(useNumericAnnotData(list(type = "Text - before data label",
-        data = "p", format = NULL)))
-
-    # Text annotation with a d3 number format wants numeric data
-    expect_true(useNumericAnnotData(list(type = "Text - after data label",
-        data = "Column %", format = ".0f")))
-    expect_true(useNumericAnnotData(list(type = "Text - after data label",
-        data = "p", format = ".1%")))
-
-    # Text annotation with a date format stays character
-    expect_false(useNumericAnnotData(list(type = "Text - after data label",
-        data = "Date", format = "%Y-%m-%d")))
-
-    # Column Comparisons is letter-coded; always character regardless of type/format
-    expect_false(useNumericAnnotData(list(type = "Circle - filled",
-        data = "Column Comparisons", format = "")))
-    expect_false(useNumericAnnotData(list(type = "Text - after data label",
-        data = "Column Comparisons", format = ".0f")))
-})
-
-test_that("Numeric threshold on Text annotation with char-typed array",
+test_that("RS-22196: numeric threshold on a numeric stat from a char-typed array",
 {
     # tb.as.char's array is character-typed because it carries Column Comparisons.
     # Column % series 2 values are: 40.83, 8.88, 19.53, 7.69, 3.55, 17.75, 0.59, 100.
-    # With threshold 20 "below threshold" the expected numeric matches are the
-    # 6 rows under 20; without the fix a lexicographic compare against "20"
-    # gives a completely different set.
-    annotation <- list(type = "Text - after data label", data = "Column %",
-        format = ".0f", threshold = 20, threstype = "below threshold")
-
-    tmp.dat <- getAnnotData(tb.as.char, annotation$data, 2,
-        as.numeric = useNumericAnnotData(annotation))
+    # getAnnotData should detect that every non-missing value parses as a number
+    # and return a numeric vector, so the threshold compare is numeric not lex.
+    tmp.dat <- getAnnotData(tb.as.char, "Column %", 2)
     expect_type(tmp.dat, "double")
-    expect_equal(unname(extractSelectedAnnot(tmp.dat, annotation$threshold,
-        annotation$threstype)), c(2L, 3L, 4L, 5L, 6L, 7L))
-
-    # Sanity: with the old behaviour (as.numeric = FALSE) the compare would be
-    # lexicographic and yield the wrong rows. Pin this so a future regression
-    # in useNumericAnnotData is obvious.
-    tmp.dat.char <- getAnnotData(tb.as.char, annotation$data, 2, as.numeric = FALSE)
-    expect_type(tmp.dat.char, "character")
-    # "19.5..." (3), "17.7..." (6), "0.59..." (7), "100" (8) all start with a
-    # char <= "2" so satisfy "< 20" lexicographically.
-    expect_equal(unname(extractSelectedAnnot(tmp.dat.char, annotation$threshold,
-        annotation$threstype)), c(3L, 6L, 7L, 8L))
+    expect_equal(unname(extractSelectedAnnot(tmp.dat, 20, "below threshold")),
+        c(2L, 3L, 4L, 5L, 6L, 7L))
 })
 
 test_that("addAnnotToDataLabel",

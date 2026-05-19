@@ -1018,8 +1018,7 @@ Column <- function(x,
         {
             curr.annot <- overlay.annotation.list[[curr.annot.ind]]
             curr.annot$threshold <- parseThreshold(curr.annot$threshold)
-            curr.dat <- getAnnotData(annot.data, curr.annot$data, i,
-                as.numeric = useNumericAnnotData(curr.annot))
+            curr.dat <- getAnnotData(annot.data, curr.annot$data, i)
             ind.sel <- extractSelectedAnnot(curr.dat, curr.annot$threshold, curr.annot$threstype)
             curr.annot.align <- "middle"
             if (length(ind.sel) == 0 && is.stacked)

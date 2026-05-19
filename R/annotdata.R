@@ -85,8 +85,7 @@ addTraceForBarTypeDataLabelAnnotations <- function(p, type, name,
         if (grepl("Circle", a.tmp$type))
         {
             # shiftleft and shiftright elements could be NULL or NA and should have zero padding then.
-            tmp.dat <- getAnnotData(annot.data, a.tmp$data, i,
-                as.numeric = useNumericAnnotData(a.tmp))
+            tmp.dat <- getAnnotData(annot.data, a.tmp$data, i)
             ind.sel <- extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype)
             tmp.text <- rep("", n)
             left.pad <- paste(rep(" ", SumEmptyHandling(a.tmp$shiftright)), collapse = "")
@@ -215,7 +214,7 @@ addAnnotScatterTrace <- function(p, orientation, xpos, ypos, text, stackgroup, .
 
 
 #' @importFrom flipU StopForUserError
-getAnnotData <- function(data, name, series, as.numeric = TRUE)
+getAnnotData <- function(data, name, series)
 {
     # If no annotation data is specified use chart data
     if (all(!nzchar(name)))
@@ -266,29 +265,26 @@ getAnnotData <- function(data, name, series, as.numeric = TRUE)
         new.dat <- data[,series, ind]
     else
         new.dat <- data[,ind]
-    if (as.numeric) {
-        if (is.character(new.dat) && all(new.dat %in% c("TRUE", "FALSE", "NA"))) {
-            ind.missing <- which(is.na(new.dat) | new.dat == "NA")
-            new.dat <- ifelse (new.dat == "TRUE", 1, 0)
-            new.dat[ind.missing] <- NA
-            return(new.dat)
-        }
-        new.dat <- suppressWarnings(as.numeric(new.dat))
-    }
-    return(new.dat)
-}
 
-# Whether to coerce the annotation data slice to numeric. Text annotations
-# normally keep the raw string so the original value can be shown in the label,
-# but a numeric d3 format on a Text annotation signals the user wants the value
-# treated numerically (also fixes lexicographic threshold compares when the
-# annot.data array is char-typed). Column Comparisons stays character (letter
-# coding, e.g. "a", "b A").
-useNumericAnnotData <- function(annotation)
-{
-    (!grepl("Text", annotation$type) ||
-        d3FormatType(annotation$format) == "numeric") &&
-        annotation$data != "Column Comparisons"
+    # Map logical-like strings to 0/1 so they can drive threshold comparisons.
+    if (is.character(new.dat) &&
+        all(new.dat[!is.na(new.dat)] %in% c("TRUE", "FALSE", "NA")))
+    {
+        ind.missing <- which(is.na(new.dat) | new.dat == "NA")
+        new.dat <- ifelse(new.dat == "TRUE", 1, 0)
+        new.dat[ind.missing] <- NA
+        return(new.dat)
+    }
+
+    # Try to coerce to numeric. If coercion introduces NAs at positions that
+    # weren't missing in the source, the data has genuine non-numeric values
+    # (e.g. Column Comparisons letter coding "a", "b A", "-") so we leave it
+    # as character. This avoids changing the comparison semantics — text data
+    # stays lexicographic, numeric data is numeric.
+    coerced <- suppressWarnings(as.numeric(new.dat))
+    if (!any(is.na(coerced) & !is.na(new.dat)))
+        return(coerced)
+    return(new.dat)
 }
 
 extractSelectedAnnot <- function(data, threshold, threstype)
@@ -516,8 +512,7 @@ applyAllAnnotationsToDataLabels <- function(data.label.text, annotation.list,
             return(data.label.text)
         annotation.list[[j]]$threshold <- parseThreshold(annotation.list[[j]]$threshold)
         a.tmp <- annotation.list[[j]]
-        tmp.dat <- getAnnotData(annot.data, a.tmp$data, series.index,
-            as.numeric = useNumericAnnotData(a.tmp))
+        tmp.dat <- getAnnotData(annot.data, a.tmp$data, series.index)
         ind.sel <- intersect(rows.to.show,
                         extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype))
         if (length(ind.sel) > 0)
