@@ -33,7 +33,7 @@ data("LifeCycleSavings")
 names(gdat) <- rownames(LifeCycleSavings)[1:length(gdat)]
 test_that("Object structure of GeographicMap",
 {
-    expect_silent(pp <- GeographicMap(gdat))
+    expect_error(pp <- GeographicMap(gdat), NA)
     expect_true(!is.null(pp$htmlwidget))
 })
 

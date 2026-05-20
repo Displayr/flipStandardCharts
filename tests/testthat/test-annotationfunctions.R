@@ -90,12 +90,14 @@ test_that("getAnnotData",
     expect_equal(getAnnotData(tb.as.char, "z-Statistic", 2),
         c(-1.09428239999305, -1.4400978823522, 0.418738876007761, -0.581744715753815,
         0.912232950688339, 2.35430724535457, -0.0477461092441626, NA))
-    expect_equal(getAnnotData(tb.as.char, "Column Comparisons", 2), rep(NA_real_, 8))
-    expect_equal(getAnnotData(tb.as.char, "Column Comparisons", 2, as.numeric = FALSE),
+    # Column Comparisons is letter-coded — coercion to numeric would introduce
+    # NAs at non-missing positions, so getAnnotData keeps it as character.
+    expect_equal(getAnnotData(tb.as.char, "Column Comparisons", 2),
         c(`Coca-Cola` = "a", `Diet Coke` = NA, `Coke Zero` = NA, `Pepsi ` = NA,
         `Diet Pepsi` = NA, `Pepsi Max` = "c", `Dislike all cola` = NA,
         NET = "-"))
-    expect_equal(getAnnotData(tb.as.char, "Signif", 2, as.numeric = T),
+    # Signif is "TRUE"/"FALSE" — the logical-string branch maps these to 0/1.
+    expect_equal(getAnnotData(tb.as.char, "Signif", 2),
         c(`Coca-Cola` = 0, `Diet Coke` = 0, `Coke Zero` = 0, `Pepsi ` = 0,
           `Diet Pepsi` = 0, `Pepsi Max` = 1, `Dislike all cola` = 0, NET = 0))
 })
@@ -111,12 +113,25 @@ test_that("extractSelectedAnnot",
         "above threshold"), c(`Pepsi Max` = 6L))
     expect_equal(extractSelectedAnnot(tb.as.char[,2,"Column Comparisons"], "",
         "above threshold"), c(`Coca-Cola` = 1L, `Pepsi Max` = 6L, NET = 8L))
+
 })
 
 test_that("parseThreshold",
 {
     expect_equal(parseThreshold("0.5"), 0.5)
     expect_equal(parseThreshold("Some text"), "Some text")
+})
+
+test_that("RS-22196: numeric threshold on a numeric stat from a char-typed array",
+{
+    # tb.as.char's array is character-typed because it carries Column Comparisons.
+    # Column % series 2 values are: 40.83, 8.88, 19.53, 7.69, 3.55, 17.75, 0.59, 100.
+    # getAnnotData should detect that every non-missing value parses as a number
+    # and return a numeric vector, so the threshold compare is numeric not lex.
+    tmp.dat <- getAnnotData(tb.as.char, "Column %", 2)
+    expect_type(tmp.dat, "double")
+    expect_equal(unname(extractSelectedAnnot(tmp.dat, 20, "below threshold")),
+        c(2L, 3L, 4L, 5L, 6L, 7L))
 })
 
 test_that("addAnnotToDataLabel",
