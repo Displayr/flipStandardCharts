@@ -376,7 +376,7 @@ addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat,
         else if (annotation$type == "Custom text")
             new.text <- annotation$custom.symbol
         else if (grepl("Text", annotation$type))
-            new.text <- formatByD3(tmp.dat, annotation$format, annotation$prefix, annotation$suffix)
+            new.text <- formatByD3(tmp.dat, annotation$format, annotation$prefix, annotation$suffix, decimals = "max")
         else if (annotation$type == "Hide")
             new.text <- ""
         if (any(nzchar(new.style)))
@@ -548,13 +548,17 @@ getPointSegmentsForPPT <- function(points, index, annot, dat)
                         Text = setTextForPPT(annot)))
     }
 
+    # Resolve the "max" decimals fallback once over the whole slice so rows
+    # render with a consistent decimal count instead of varying row by row.
+    text.decimals <- if (is.numeric(dat)) maxDecimalsNeeded(dat) else 0
+
     for (i in 1:length(index))
     {
         # Set text only if it depends on the data
         # Note that we use i to select elements of dat because it is assumed that we are only
         # passing the relevant sections of the data (i.e. dat is already subsetted by index)
         if (grepl("^Text", annot$type))
-            tmp.seg[[1]]$Text <- unescape_html(formatByD3(dat[i], annot$format, annot$prefix, annot$suffix))
+            tmp.seg[[1]]$Text <- unescape_html(formatByD3(dat[i], annot$format, annot$prefix, annot$suffix, decimals = text.decimals))
         else if (annot$data == "Column Comparisons" && grepl("Arrow", annot$type))
             tmp.seg[[1]]$Text <- unescape_html(getColCmpArrowHtml(dat[i], NULL, " ", "&#8593;"))
         else if (annot$data == "Column Comparisons" && grepl("Caret", annot$type))

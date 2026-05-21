@@ -1465,6 +1465,21 @@ decimalsFromD3 <- function(format, default = 0)
     return(SumEmptyHandling(as.numeric(regmatches(format, regexpr("\\d+", format))), remove.missing = FALSE))
 }
 
+# Minimum decimals needed to represent x without truncation, capped at `cap`.
+# Used as the "max" fallback for formatByD3 so integer-valued data renders with
+# no trailing zeros while fractional data keeps enough precision.
+maxDecimalsNeeded <- function(x, cap = 6)
+{
+    x <- x[is.finite(x)]
+    if (length(x) == 0)
+        return(0)
+    tol <- .Machine$double.eps^0.5
+    for (d in 0:cap)
+        if (all(abs(x - round(x, d)) < tol))
+            return(d)
+    cap
+}
+
 #' Whether to format as percentages based on a d3 format string.
 #'
 #' All chart functions should accept d3 formats. This is used by functions
@@ -1485,7 +1500,9 @@ percentFromD3 <- function(format)
 #' @param format D3 formatting string. Accepts percentages, numeric and scientific notation
 #' @param prefix Optional string to prepend to output
 #' @param suffix Optional string to append to output
-#' @param decimals Default number of decimals shown; used if not specified in \code{format}
+#' @param decimals Default number of decimals shown; used if not specified in \code{format}.
+#' Pass the string \code{"max"} to derive the default from the values themselves
+#' (no trailing zeros for integer-valued data; just enough precision otherwise).
 formatByD3 <- function(x, format, prefix = "", suffix = "", percent = FALSE, decimals = 2)
 {
     n <- length(x)
@@ -1496,9 +1513,16 @@ formatByD3 <- function(x, format, prefix = "", suffix = "", percent = FALSE, dec
         format <- vectorize(format, n)
         prefix <- vectorize(prefix, n)
         suffix <- vectorize(suffix, n)
+        # Resolve "max" once against the full vector so all rows render with a
+        # consistent decimal count instead of varying row by row.
+        if (identical(decimals, "max"))
+            decimals <- if (is.numeric(x)) maxDecimalsNeeded(x) else 0
         return(sapply(1:n, function(i)
             formatByD3(x[i], format[i], prefix[i], suffix[i], percent = percent, decimals = decimals)))
     }
+
+    if (identical(decimals, "max"))
+        decimals <- if (is.numeric(x)) maxDecimalsNeeded(x) else 0
 
     x.str <- as.character(x)
     if (format == "Category")
