@@ -1041,7 +1041,7 @@ Column <- function(x,
                 if (curr.annot$data == "Column Comparisons" && grepl("Arrow", curr.annot$type))
                     curr.annot.text <- getColCmpArrowHtml(curr.dat[ind.sel], curr.annot$size, "<br>")
                 else if (curr.annot$type == "Text")
-                    curr.annot.text <- formatByD3(curr.dat[ind.sel], curr.annot$format, curr.annot$prefix, curr.annot$suffix)
+                    curr.annot.text <- formatByD3(curr.dat[ind.sel], curr.annot$format, curr.annot$prefix, curr.annot$suffix, decimals = 0)
                 else if (curr.annot$type == "Arrow - up")
                     curr.annot.text <- "&#8593;"
                 else if (curr.annot$type == "Arrow - down")
