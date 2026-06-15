@@ -24,6 +24,7 @@
 #' @importFrom flipU IsRServer StopForUserError
 #' @importFrom xts xts
 #' @importFrom htmlwidgets onRender
+#' @importFrom htmltools htmlEscape
 #' @export
 TimeSeries <- function(x = NULL,
                     range.bars = FALSE,
@@ -155,7 +156,10 @@ TimeSeries <- function(x = NULL,
 
     write(css, "dygraph.css")
 
-    dg <- dygraph(x, main = title, xlab = x.title, ylab = y.title)
+    # RS-22478: dygraphs renders main/xlab/ylab into the DOM via innerHTML (the
+    # chart_labels plugin in dygraph-combined.js), so HTML-escape these user-supplied
+    # titles to prevent stored XSS via label text.
+    dg <- dygraph(x, main = htmlEscape(title), xlab = htmlEscape(x.title), ylab = htmlEscape(y.title))
 
     y.bounds.minimum <- charToNumeric(y.bounds.minimum)
     if (is.null(y.bounds.minimum))

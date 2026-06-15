@@ -378,7 +378,7 @@ GeographicMap <- function(x,
 #' @importFrom leaflet addLayersControl layersControlOptions setView fitBounds addTiles tileOptions
 #' @importFrom sp proj4string spTransform
 #' @importFrom stats as.formula
-#' @importFrom htmltools browsable tagList tags htmlDependency
+#' @importFrom htmltools browsable tagList tags htmlDependency htmlEscape
 leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
                        legend.show, legend.title, legend.font.family,
                        legend.font.color, legend.font.size,
@@ -431,7 +431,9 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
     if (legend.show)
     {
         map <- addLegend(map, "bottomright", pal = .rev.pal, values = c(max.values, min.value),
-                         title = legend.title,
+                         # RS-22478: leaflet's addLegend prepends the title as a raw HTML
+                         # string (assets/leaflet.js), so escape this user-supplied title.
+                         title = htmlEscape(legend.title),
                          # reverse label ordering so high values are at top
                          labFormat = labelFormat(transform = function(x) sort(x * mult, decreasing = TRUE),
                                                  digits = 3, # seems to work like an upper bound
@@ -476,6 +478,10 @@ leafletMap <- function(coords, colors, opacity, min.value, max.range, color.NA,
     }
     else
     {
+        # RS-22478: series names become layer-control group labels, which Leaflet.js
+        # renders via innerHTML (_addItem). Escape once and reuse for both the polygon
+        # group id and the layers control so the two stay matched.
+        categories <- htmlEscape(categories)
         for (i in 1:n.categories)
         {
             cl <- as.formula(paste("~.pal(table", i, ")", sep = ""))
