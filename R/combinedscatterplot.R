@@ -1176,7 +1176,7 @@ processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
                         OutlineColor = a.tmp$color, OutlineWidth = a.tmp$width,
                         OutlineStyle = "Solid", Style = "Circle", Size = marker.size) # required for PPT to show properly
             } else if (!data.label.show) {
-                annot.text <- addAnnotToDataLabel("", a.tmp, tmp.dat[ind.sel], tspan = FALSE)
+                annot.text <- addAnnotToDataLabel("", a.tmp, tmp.dat[ind.sel], tspan = FALSE, escape.attributes = TRUE)
                 # Remove </span> (7 characters)
                 annot.text.prefix <- substr(annot.text, 1, nchar(annot.text) - 7)
                 if (a.tmp$type == "Shadow" || a.tmp$type == "Border") {
@@ -1191,7 +1191,7 @@ processAnnotations <- function(annotation.list, n, annot.data, labels.or.logos,
                 has.text.annot <- TRUE
                 pt.segs <- getPointSegmentsForPPT(pt.segs, ind.sel, a.tmp, tmp.dat[ind.sel])
             } else {
-                annot.text <- addAnnotToDataLabel("", a.tmp, tmp.dat[ind.sel], tspan = !is.small.multiples)
+                annot.text <- addAnnotToDataLabel("", a.tmp, tmp.dat[ind.sel], tspan = !is.small.multiples, escape.attributes = TRUE)
                 close.span = if (is.small.multiples) "</span>" else "</tspan>"
                 annot.text.prefix <- substr(annot.text, 1, nchar(annot.text) - nchar(close.span))
                 if (a.tmp$type == "Shadow" || a.tmp$type == "Border") {

@@ -320,11 +320,21 @@ extractSelectedAnnot <- function(data, threshold, threstype)
 #' @importFrom verbs Sum
 #' @keywords internal
 addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat,
-                                prepend = FALSE, tspan = FALSE)
+                                prepend = FALSE, tspan = FALSE,
+                                escape.attributes = FALSE)
 {
     open.span <- if (tspan) "<tspan" else "<span"
     close.span <- if (tspan) "</tspan>" else "</span>"
     color.style <- if (tspan) "fill:" else "color:"
+
+    # When TRUE (Scatter, whose labels are rendered via raw innerHTML), HTML-escape
+    # the user-supplied annotation values interpolated below so they cannot break out
+    # of the style attribute or inject markup (RS-22478). Other chart types render
+    # annotations through plotly's own sanitiser and leave this FALSE (unchanged).
+    esc <- if (escape.attributes)
+        function(x) if (is.null(x)) x else htmltools::htmlEscape(as.character(x), attribute = TRUE)
+    else
+        identity
 
     # Fix font size so that the units do not change in size when the font size increases
     left.pad <- ""
@@ -338,27 +348,27 @@ addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat,
 
     if (annotation$type == "Shadow")
         data.label.text <- paste0(left.pad, open.span, " style='text-shadow: 1px 1px ",
-            annotation$size, "px ", annotation$color, ", -1px -1px ",
-            annotation$size, "px ", annotation$color, ";'>", data.label.text, close.span)
+            esc(annotation$size), "px ", esc(annotation$color), ", -1px -1px ",
+            esc(annotation$size), "px ", esc(annotation$color), ";'>", data.label.text, close.span)
     else if (annotation$type == "Border")
-        data.label.text <- paste0(left.pad, open.span, " style='outline: ", annotation$width, "px solid ",
-            annotation$color, "; outline-offset: ", annotation$offset, "px;'>", data.label.text, close.span)
+        data.label.text <- paste0(left.pad, open.span, " style='outline: ", esc(annotation$width), "px solid ",
+            esc(annotation$color), "; outline-offset: ", esc(annotation$offset), "px;'>", data.label.text, close.span)
     else if (annotation$type == "Recolor text")
-        data.label.text <- paste0(open.span, " style='", color.style, annotation$color, "'>",
+        data.label.text <- paste0(open.span, " style='", color.style, esc(annotation$color), "'>",
             removeColorTags(data.label.text), close.span)
     else
     {
         new.style <- ""
         if (!is.null(annotation$color))
-            new.style <- paste0(new.style, color.style, annotation$color, ";")
+            new.style <- paste0(new.style, color.style, esc(annotation$color), ";")
         if (!is.null(annotation$size))
-            new.style <- paste0(new.style, "font-size:", annotation$size, ";")
+            new.style <- paste0(new.style, "font-size:", esc(annotation$size), ";")
         if (!is.null(annotation$font.family))
-            new.style <- paste0(new.style, "font-family:", annotation$font.family, ";")
+            new.style <- paste0(new.style, "font-family:", esc(annotation$font.family), ";")
         if (!is.null(annotation$font.weight))
-            new.style <- paste0(new.style, "font-weight:", annotation$font.weight, ";")
+            new.style <- paste0(new.style, "font-weight:", esc(annotation$font.weight), ";")
         if (!is.null(annotation$font.style))
-            new.style <- paste0(new.style, "font-style:", annotation$font.style, ";")
+            new.style <- paste0(new.style, "font-style:", esc(annotation$font.style), ";")
 
         new.text <- ""
         if (annotation$data == "Column Comparisons" && grepl("Arrow", annotation$type))
@@ -374,9 +384,9 @@ addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat,
         else if (annotation$type == "Caret - down")
             new.text <- "&#9660;"
         else if (annotation$type == "Custom text")
-            new.text <- annotation$custom.symbol
+            new.text <- esc(annotation$custom.symbol)
         else if (grepl("Text", annotation$type))
-            new.text <- formatByD3(tmp.dat, annotation$format, annotation$prefix, annotation$suffix)
+            new.text <- esc(formatByD3(tmp.dat, annotation$format, annotation$prefix, annotation$suffix))
         else if (annotation$type == "Hide")
             new.text <- ""
         if (any(nzchar(new.style)))
