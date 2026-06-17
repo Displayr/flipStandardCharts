@@ -7,7 +7,6 @@
 #' Bean(rnorm(100))
 #' Bean(list(rnorm(100), rexp(100)))
 #' @importFrom utils modifyList
-#' @importFrom pryr modify_call
 #' @export
 Bean <- function(x,
                    weights = NULL,
@@ -99,24 +98,3 @@ Bean <- function(x,
 
     do.call(Distribution, args)
 }
-#
-#     args <- modifyList(as.list(args(Bean)), list(density.type = "Density",
-#                                                                  show.mean = FALSE,
-#                                                                  show.median = FALSE,
-#                                                                  show.quartiles = FALSE,
-#                                                                  show.range = FALSE,
-#                                                                   show.values = TRUE))
-#     call <- match.call()
-#     nms <- names(args)
-#     nms <- nms[nms != ""]
-#     nms <- nms[!nms %in% names(call)]
-#     args <- args[nms]
-#     args <- args[!sapply(args, is.null)]
-#     call[[1]] <- Distribution
-#     call <- modify_call(call, args)
-#    # eval(call)
-#     do.call(Distribution, (as.list(call[-1])))
-
-
-
-

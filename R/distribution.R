@@ -799,8 +799,7 @@ distributionArgs <- function(call, chart.function, arguments)
     nms <- nms[nms != ""]
     nms <- nms[!nms %in% names(call)]
     args <- args[nms]
-    args <- args[!sapply(args, is.null)]
     call[[1]] <- Distribution
-    call <- modify_call(call, args)
+    call <- modifyList(as.list(call), args, keep.null = FALSE) |> as.call()
     as.list(call[-1])
 }

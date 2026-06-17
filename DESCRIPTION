@@ -31,7 +31,6 @@ Imports:
     leaflet,
     parcoords,
     plotly,
-    pryr,
     rhtmlCombinedScatter (>= 1.0.15),
     rhtmlDonut,
     rhtmlHeatmap,
@@ -66,8 +65,7 @@ Remotes:
     Displayr/dygraphs,
     Displayr/verbs,
     hrbrmstr/streamgraph,
-    Displayr/parcoords,
-    hadley/pryr
+    Displayr/parcoords
 Suggests:
     dplyr,
     flipExampleData,
