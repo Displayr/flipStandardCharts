@@ -739,7 +739,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
                     show.zero, zero.line.width, zero.line.color,
                     hovertext.format.manual, labels = NULL, num.series = 1,
                     with.bars = FALSE, tickcolor = "transparent", num.maxticks = NULL,
-                    zoom.enable = TRUE)
+                    zoom.enable = TRUE, griddash = "Solid")
 {
     axis.type <- if (side %in% c("bottom", "top")) axisLabels$x.axis.type else axisLabels$y.axis.type
     has.line <- !is.null(linewidth) && linewidth > 0
@@ -869,6 +869,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
                  showline = has.line, linecolor = linecolor,
                  linewidth = if (!has.line) NULL else linewidth,
                  showgrid = gridwidth > 0, gridwidth = gridwidth,
+                 griddash = tolower(griddash),
                  gridcolor = gridcolor, tickmode = tickmode, nticks = nticks,
                  tickvals = ticks$tickvals, ticktext = ticks$ticktext,
                  ticklabelposition = "outside", tickangle = tickangle,

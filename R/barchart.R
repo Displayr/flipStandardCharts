@@ -97,6 +97,7 @@ Bar <- function(x,
                     y.data.reversed = FALSE,
                     y.grid.width = 0 * grid.show,
                     y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+                    y.grid.dash = "Solid",
                     y.tick.show = TRUE,
                     y.tick.suffix = "",
                     y.tick.prefix = "",
@@ -126,6 +127,7 @@ Bar <- function(x,
                     x.data.reversed = FALSE,
                     x.grid.width = 1 * grid.show,
                     x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+                    x.grid.dash = "Solid",
                     x.tick.show = TRUE,
                     x.tick.suffix = "",
                     x.tick.prefix = "",
@@ -306,7 +308,8 @@ Bar <- function(x,
                   y.tick.format, y.tick.prefix, y.tick.suffix, y.tick.show,
                   y.zero, y.zero.line.width, y.zero.line.color,
                   y.hovertext.format, with.bars = TRUE, num.maxticks = y.tick.maxnum,
-                  tickcolor = y.tick.mark.color, zoom.enable = zoom.enable)
+                  tickcolor = y.tick.mark.color, zoom.enable = zoom.enable,
+                  griddash = y.grid.dash)
     if (yaxis$type == "category")
         yaxis$nticks = NROW(chart.matrix)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
@@ -315,7 +318,8 @@ Bar <- function(x,
                   x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show,
                   x.zero, x.zero.line.width, x.zero.line.color,
                   x.hovertext.format, num.maxticks = x.tick.maxnum,
-                  tickcolor = x.tick.mark.color, zoom.enable = zoom.enable)
+                  tickcolor = x.tick.mark.color, zoom.enable = zoom.enable,
+                  griddash = x.grid.dash)
 
     # Work out margin spacing
     margins <- list(t = 20, b = 20, r = 60, l = 80, pad = 0)

@@ -126,6 +126,7 @@
 #' @param y.grid.width Width of y-grid lines in pixels; 0 = no line
 #' @param y.grid.color Color of y-grid lines as a named color in character
 #' format (e.g. "black") or a hex code.
+#' @param y.grid.dash Line type of y grid line. Can be one of 'Solid', 'Dot', 'Dash'.
 #' @param y.tick.show Whether to display the y-axis tick labels
 #' @param y.tick.suffix y-axis tick label suffix
 #' @param y.tick.prefix y-axis tick label prefix
@@ -214,6 +215,7 @@
 #' @param x.grid.width Width of y-grid lines in pixels; 0 = no line
 #' @param x.grid.color Color of y-grid lines as a named color in character
 #' format (e.g. "black") or a hex code.
+#' @param x.grid.dash Line type of x grid line. Can be one of 'Solid', 'Dot', 'Dash'.
 #' @param x.tick.show Whether to display the x-axis tick labels
 #' @param x.tick.suffix x-axis tick label suffix
 #' @param x.tick.prefix x-axis tick label prefix
@@ -439,6 +441,7 @@ Column <- function(x,
                     y.data.reversed = FALSE,
                     y.grid.width = 1 * grid.show,
                     y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+                    y.grid.dash = "Solid",
                     y.tick.show = TRUE,
                     y.tick.suffix = "",
                     y.tick.prefix = "",
@@ -495,6 +498,7 @@ Column <- function(x,
                     x.data.reversed = FALSE,
                     x.grid.width = 0 * grid.show,
                     x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+                    x.grid.dash = "Solid",
                     x.tick.show = TRUE,
                     x.tick.suffix = "",
                     x.tick.prefix = "",
@@ -659,14 +663,14 @@ Column <- function(x,
                   y.tick.prefix, y.tick.suffix,
                   y.tick.show, y.zero, y.zero.line.width, y.zero.line.color,
                   y.hovertext.format, num.maxticks = y.tick.maxnum, tickcolor = y.tick.mark.color,
-                  zoom.enable = zoom.enable)
+                  zoom.enable = zoom.enable, griddash = y.grid.dash)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance, x.tick.format,
                   x.tick.prefix, x.tick.suffix, x.tick.show, x.zero, x.zero.line.width, x.zero.line.color,
                   x.hovertext.format, axisFormat$labels, num.series = NCOL(chart.matrix),
                   with.bars = TRUE, tickcolor = x.tick.mark.color, num.maxticks = x.tick.maxnum,
-                  zoom.enable = zoom.enable)
+                  zoom.enable = zoom.enable, griddash = x.grid.dash)
 
     yaxis2 <- NULL
 
