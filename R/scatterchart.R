@@ -148,6 +148,7 @@ Scatter <- function(x = NULL,
                          y.data.reversed = FALSE,
                          y.grid.width = 1 * grid.show,
                          y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+                         y.grid.dash = "Solid",
                          y.tick.show = TRUE,
                          y.tick.on.label = TRUE,
                          y.tick.suffix = "",
@@ -177,6 +178,7 @@ Scatter <- function(x = NULL,
                          x.data.reversed = FALSE,
                          x.grid.width = 1 * grid.show,
                          x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+                         x.grid.dash = "Solid",
                          x.tick.show = TRUE,
                          x.tick.on.label = TRUE,
                          x.tick.suffix = "",
@@ -603,14 +605,16 @@ Scatter <- function(x = NULL,
                   y.tick.distance, y.tick.format, y.tick.prefix, y.tick.suffix,
                   y.tick.show, y.zero, y.zero.line.width, y.zero.line.color,
                   y.hovertext.format, num.maxticks = y.tick.maxnum,
-                  tickcolor = y.tick.mark.color, zoom.enable = zoom.enable)
+                  tickcolor = y.tick.mark.color, zoom.enable = zoom.enable,
+                  griddash = y.grid.dash)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
                   x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length,
                   x.tick.distance, x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show,
                   x.zero, x.zero.line.width, x.zero.line.color,
                   x.hovertext.format, axisFormat$labels, num.maxticks = x.tick.maxnum,
-                  tickcolor = x.tick.mark.color, zoom.enable = zoom.enable)
+                  tickcolor = x.tick.mark.color, zoom.enable = zoom.enable,
+                  griddash = x.grid.dash)
     if (!y.tick.on.label)
         yaxis$tickson <- "boundaries"
     if (!x.tick.on.label)
