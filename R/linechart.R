@@ -302,21 +302,19 @@ Line <-   function(x,
     ytick <- setTicks(y.range$min, y.range$max, y.tick.distance, y.data.reversed)
 
     yaxis <- setAxis(y.title, "left", axisFormat, y.title.font,
-                  y.line.color, y.line.width, y.grid.width * grid.show, y.grid.color,
+                  y.line.color, y.line.width, y.grid.width * grid.show, y.grid.color, y.grid.dash,
                   ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance,
                   y.tick.format, y.tick.prefix, y.tick.suffix,
                   y.tick.show, y.zero, y.zero.line.width, y.zero.line.color,
                   y.hovertext.format, num.maxticks = y.tick.maxnum,
-                  tickcolor = y.tick.mark.color, zoom.enable = zoom.enable,
-                  griddash = y.grid.dash)
+                  tickcolor = y.tick.mark.color, zoom.enable = zoom.enable)
     xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
-                  x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color,
+                  x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color, x.grid.dash,
                   xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance,
                   x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show,
                   x.zero, x.zero.line.width, x.zero.line.color,
                   x.hovertext.format, axisFormat$labels, num.maxticks = x.tick.maxnum,
-                  tickcolor = x.tick.mark.color, zoom.enable = zoom.enable,
-                  griddash = x.grid.dash)
+                  tickcolor = x.tick.mark.color, zoom.enable = zoom.enable)
 
     # Work out margin spacing
     margins <- list(t = 20, b = 20, r = 60, l = 80, pad = 0)

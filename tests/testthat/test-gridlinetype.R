@@ -32,6 +32,15 @@ test_that("Grid line type defaults to solid", {
     expect_equal(built$yaxis$griddash, "solid")
 })
 
+# Column's secondary (y2) axis is also built via setAxis - it only runs when
+# a secondary series is supplied, so griddash being mandatory must not break it.
+test_that("Grid line type applied to secondary (y2) axis", {
+    pp <- suppressWarnings(Column(dat, x2 = dat[, 1, drop = FALSE],
+                                  y2.grid.width = 1, y2.grid.dash = "Dot"))
+    built <- plotly::plotly_build(pp$htmlwidget)$x$layout
+    expect_equal(built$yaxis2$griddash, "dot")
+})
+
 # Distribution family shares one values axis (built via setAxis); the
 # categories axis is drawn separately and carries no griddash.
 test_that("Grid line type applied to the values axis of distribution charts", {

@@ -477,13 +477,12 @@ Distribution <-   function(x,
         values.bounds.maximum <- rng[2]
     values.axis <- setAxis(values.title, if (vertical) "left" else "bottom",
          axisFormat, values.title.font,
-         values.line.color, values.line.width, values.grid.width, values.grid.color,
+         values.line.color, values.line.width, values.grid.width, values.grid.color, values.grid.dash,
          values.tick, values.tick.font, values.tick.angle, values.tick.mark.length,
          values.tick.distance, values.tick.format, values.tick.prefix,
          values.tick.suffix, values.tick.show, values.zero, values.zero.line.width,
          values.zero.line.color, values.hovertext.format, num.maxticks = values.tick.maxnum,
-         tickcolor = values.tick.mark.color, zoom.enable = zoom.enable,
-         griddash = values.grid.dash)
+         tickcolor = values.tick.mark.color, zoom.enable = zoom.enable)
     hover.mode <- if (tooltip.show) "'closest'" else "FALSE"
     annotations <- setCategoriesAxesTitles(vertical, labels, categories.tick.font, categories.tick.angle, categories.tick.mark.length)
     n <- length(annotations)

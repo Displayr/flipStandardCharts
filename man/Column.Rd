@@ -144,6 +144,7 @@ Column(
   y2.data.reversed = FALSE,
   y2.grid.width = 0 * grid.show,
   y2.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+  y2.grid.dash = "Solid",
   y2.tick.show = TRUE,
   y2.tick.suffix = "",
   y2.tick.prefix = "",
@@ -551,6 +552,8 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{y2.grid.color}{Color of y-grid lines as a named color in character
 format (e.g. "black") or a hex code.}
+
+\item{y2.grid.dash}{Line type of y2 grid line. Can be one of 'Solid', 'Dot', 'Dash'.}
 
 \item{y2.tick.show}{Whether to display the y-axis tick labels}
 

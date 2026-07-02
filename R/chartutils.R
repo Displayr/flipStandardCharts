@@ -733,13 +733,13 @@ setDateTickDistance <- function(date.labels, num.maxticks)
 }
 
 setAxis <- function(title, side, axisLabels, titlefont,
-                    linecolor, linewidth, gridwidth, gridcolor,
+                    linecolor, linewidth, gridwidth, gridcolor, griddash,
                     ticks, tickfont, tickangle, ticklen, tickdistance,
                     tickformatmanual, tickprefix, ticksuffix, tickshow,
                     show.zero, zero.line.width, zero.line.color,
                     hovertext.format.manual, labels = NULL, num.series = 1,
                     with.bars = FALSE, tickcolor = "transparent", num.maxticks = NULL,
-                    zoom.enable = TRUE, griddash)
+                    zoom.enable = TRUE)
 {
     axis.type <- if (side %in% c("bottom", "top")) axisLabels$x.axis.type else axisLabels$y.axis.type
     has.line <- !is.null(linewidth) && linewidth > 0
