@@ -56,6 +56,7 @@ Pyramid(
   y.data.reversed = FALSE,
   y.grid.width = 0,
   y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+  y.grid.dash = "Solid",
   y.tick.show = TRUE,
   y.tick.suffix = "",
   y.tick.prefix = "",
@@ -83,6 +84,7 @@ Pyramid(
   x.data.reversed = FALSE,
   x.grid.width = 0,
   x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+  x.grid.dash = "Solid",
   x.tick.show = FALSE,
   x.tick.suffix = "",
   x.tick.prefix = "",
@@ -242,6 +244,8 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 \item{y.grid.color}{Color of y-grid lines as a named color in character
 format (e.g. "black") or a hex code.}
 
+\item{y.grid.dash}{Line type of y grid line. Can be one of 'Solid', 'Dot', 'Dash'.}
+
 \item{y.tick.show}{Whether to display the y-axis tick labels}
 
 \item{y.tick.suffix}{y-axis tick label suffix}
@@ -312,6 +316,8 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{x.grid.color}{Color of y-grid lines as a named color in character
 format (e.g. "black") or a hex code.}
+
+\item{x.grid.dash}{Line type of x grid line. Can be one of 'Solid', 'Dot', 'Dash'.}
 
 \item{x.tick.show}{Whether to display the x-axis tick labels}
 

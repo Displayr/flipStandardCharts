@@ -733,7 +733,7 @@ setDateTickDistance <- function(date.labels, num.maxticks)
 }
 
 setAxis <- function(title, side, axisLabels, titlefont,
-                    linecolor, linewidth, gridwidth, gridcolor,
+                    linecolor, linewidth, gridwidth, gridcolor, griddash,
                     ticks, tickfont, tickangle, ticklen, tickdistance,
                     tickformatmanual, tickprefix, ticksuffix, tickshow,
                     show.zero, zero.line.width, zero.line.color,
@@ -869,6 +869,7 @@ setAxis <- function(title, side, axisLabels, titlefont,
                  showline = has.line, linecolor = linecolor,
                  linewidth = if (!has.line) NULL else linewidth,
                  showgrid = gridwidth > 0, gridwidth = gridwidth,
+                 griddash = tolower(griddash),
                  gridcolor = gridcolor, tickmode = tickmode, nticks = nticks,
                  tickvals = ticks$tickvals, ticktext = ticks$ticktext,
                  ticklabelposition = "outside", tickangle = tickangle,

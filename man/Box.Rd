@@ -57,6 +57,7 @@ Box(
   values.zero.line.color = rgb(44, 44, 44, maxColorValue = 255),
   values.grid.width = 1 * grid.show,
   values.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+  values.grid.dash = "Solid",
   values.tick.show = TRUE,
   values.tick.suffix = "",
   values.tick.prefix = "",
@@ -219,6 +220,8 @@ rgb(0, 0, 0, maxColorValue = 255)).}
 
 \item{values.grid.color}{Color of y-grid lines as a named color in character
 format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).}
+
+\item{values.grid.dash}{Line type of values grid line. Can be one of 'Solid', 'Dot', 'Dash'.}
 
 \item{values.tick.show}{Whether to display the y-axis tick labels}
 

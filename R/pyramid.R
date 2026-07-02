@@ -58,6 +58,7 @@ Pyramid <- function(x,
                     y.data.reversed = FALSE,
                     y.grid.width = 0,
                     y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+                    y.grid.dash = "Solid",
                     y.tick.show = TRUE,
                     y.tick.suffix = "",
                     y.tick.prefix = "",
@@ -85,6 +86,7 @@ Pyramid <- function(x,
                     x.data.reversed = FALSE,
                     x.grid.width = 0,
                     x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+                    x.grid.dash = "Solid",
                     x.tick.show = FALSE,
                     x.tick.suffix = "",
                     x.tick.prefix = "",
@@ -139,6 +141,8 @@ Pyramid <- function(x,
     cl$multi.colors.within.series <- TRUE
     cl$x.tick.show <- x.tick.show
     cl$x.grid.width <- x.grid.width
+    cl$x.grid.dash <- x.grid.dash
+    cl$y.grid.dash <- y.grid.dash
     do.call(Bar, as.list(cl))
 
 }

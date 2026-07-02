@@ -113,6 +113,7 @@
 #' @param values.grid.width Width of y-grid lines in pixels; 0 = no line
 #' @param values.grid.color Color of y-grid lines as a named color in character
 #' format (e.g. "black") or an rgb value (e.g. rgb(0, 0, 0, maxColorValue = 255)).
+#' @param values.grid.dash Line type of values grid line. Can be one of 'Solid', 'Dot', 'Dash'.
 #' @param values.tick.show Whether to display the y-axis tick labels
 #' @param values.tick.suffix y-axis tick label suffix
 #' @param values.tick.prefix y-axis tick label prefix
@@ -240,6 +241,7 @@ Distribution <-   function(x,
     values.zero.line.dash = "Solid",
     values.grid.width = 1 * grid.show,
     values.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+    values.grid.dash = "Solid",
     values.tick.show = TRUE,
     values.tick.suffix = "",
     values.tick.prefix = "",
@@ -475,7 +477,7 @@ Distribution <-   function(x,
         values.bounds.maximum <- rng[2]
     values.axis <- setAxis(values.title, if (vertical) "left" else "bottom",
          axisFormat, values.title.font,
-         values.line.color, values.line.width, values.grid.width, values.grid.color,
+         values.line.color, values.line.width, values.grid.width, values.grid.color, values.grid.dash,
          values.tick, values.tick.font, values.tick.angle, values.tick.mark.length,
          values.tick.distance, values.tick.format, values.tick.prefix,
          values.tick.suffix, values.tick.show, values.zero, values.zero.line.width,
