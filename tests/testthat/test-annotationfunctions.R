@@ -167,3 +167,40 @@ test_that("addAnnotToDataLabel",
     }
 })
 
+test_that("RS-22530: annotation font color is resolved per-series",
+{
+    # For a per-series-colored chart, data.label.font.color arrives as a single
+    # comma-joined string (one hex per series). The auto-generated
+    # "Column Comparisons" annotation reuses that string verbatim (flipChart
+    # cchart.R), so each series' exported annotation segment must pick out its
+    # OWN color rather than being styled with the whole comma-joined string.
+    gatherSegColors <- function(pt.segs)
+    {
+        cols <- character(0)
+        for (pt in pt.segs)
+        {
+            if (is.null(pt$Segments)) next
+            for (s in pt$Segments)
+                if (!is.null(s$Font$color)) cols <- c(cols, s$Font$color)
+        }
+        cols
+    }
+    annot <- list(list(type = "Text - after data label", data = "Column Comparisons",
+        threstype = "above threshold", threshold = "", format = "",
+        prefix = "", suffix = "", color = "#FAA634,#a1a1a4,#46166B",
+        size = 10, font.family = "Arial"))
+    dlab <- paste0("d", 1:8)
+    expected <- c("#FAA634", "#a1a1a4", "#46166B")
+    for (s in 1:3)
+    {
+        # Initialise customPoints the same way the chart functions do: one point
+        # per row, each carrying the base data-label Value segment.
+        attr(dlab, "customPoints") <- lapply(1:8,
+            function(ii) list(Index = ii - 1, Segments = list(list(Field = "Value"))))
+        out <- applyAllAnnotationsToDataLabels(dlab, annot, tb.as.char,
+            series.index = s, rows.to.show = 1:8, chart.type = "Column")
+        seg.colors <- gatherSegColors(attr(out, "customPoints"))
+        expect_equal(unique(seg.colors), expected[s])
+    }
+})
+

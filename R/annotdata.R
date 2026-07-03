@@ -318,6 +318,7 @@ extractSelectedAnnot <- function(data, threshold, threstype)
 #' annotation is directly inserted into an svg text element, whereas span is
 #' used with Plotly-drawn labels (Plotly automatically converts it to tspan).
 #' @importFrom verbs Sum
+#' @importFrom flipU ConvertCommaSeparatedStringToVector
 #' @keywords internal
 addAnnotToDataLabel <- function(data.label.text, annotation, tmp.dat,
                                 prepend = FALSE, tspan = FALSE)
@@ -512,6 +513,19 @@ applyAllAnnotationsToDataLabels <- function(data.label.text, annotation.list,
             return(data.label.text)
         annotation.list[[j]]$threshold <- parseThreshold(annotation.list[[j]]$threshold)
         a.tmp <- annotation.list[[j]]
+
+        # Resolve the annotation color to this series' color when multiple colors
+        # have been supplied (e.g. an annotation configured to match each series'
+        # own color arrives as a single comma-joined string of per-series colors).
+        # Both the HTML (addAnnotToDataLabel) and PPT (getPointSegmentsForPPT)
+        # paths below assume a scalar color, so this must happen before either.
+        if (!is.null(a.tmp$color))
+        {
+            color.vec <- ConvertCommaSeparatedStringToVector(a.tmp$color)
+            if (length(color.vec) > 1)
+                a.tmp$color <- color.vec[((series.index - 1) %% length(color.vec)) + 1]
+        }
+
         tmp.dat <- getAnnotData(annot.data, a.tmp$data, series.index)
         ind.sel <- intersect(rows.to.show,
                         extractSelectedAnnot(tmp.dat, a.tmp$threshold, a.tmp$threstype))
