@@ -1618,9 +1618,6 @@ vectorize <- function(x, n, nrow = NULL, split = ",")
     input.is.matrix <- length(dim(x)) >= 2
     if (is.character(x) && !input.is.matrix && !is.null(split))
         x <- TextAsVector(x, split = split)
-    # FS2-4532: size a per-series input to exactly n series before it is expanded across
-    # rows - recycle if fewer values than series, silently drop the excess if more. (A
-    # full per-point matrix is left as-is; it already has one value per position.)
     if (!input.is.matrix)
         x <- rep(x, length = n)
     if (!is.null(nrow) && is.finite(nrow))
@@ -1651,7 +1648,7 @@ getColumn <- function(x, i)
 }
 
 
-# FS2-4532: parse a per-series numeric setting (line thickness, marker size) that may
+# Parse a per-series numeric setting (line thickness, marker size) that may
 # arrive as a numeric value (old Plugins) or a comma-separated string (new Plugins) into
 # a numeric vector sized to n series. A non-numeric entry stays NA in its own slot
 # (position-preserving) and warns; values recycle if fewer than n and truncate if more.
