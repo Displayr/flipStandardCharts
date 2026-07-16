@@ -257,7 +257,8 @@ Line <-   function(x,
 
     line.type <- vectorize(tolower(line.type), ncol(chart.matrix))
     marker.symbols <- vectorize(marker.symbols, ncol(chart.matrix))
-    marker.size <- vectorize(marker.size, ncol(chart.matrix), nrow(chart.matrix))
+    marker.size <- vectorize(readMarkerSize(marker.size, ncol(chart.matrix)),
+                             ncol(chart.matrix), nrow(chart.matrix))
     dlab.color <- if (data.label.font.autocolor) colors
                   else vectorize(data.label.font.color, ncol(chart.matrix))
     dlab.pos <- vectorize(tolower(data.label.position), ncol(chart.matrix))

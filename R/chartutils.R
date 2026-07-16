@@ -1667,6 +1667,27 @@ readLineThickness <- function(line.thickness, n)
     return(line.thickness)
 }
 
+# FS2-4532: parse marker size input (numeric, or a comma-separated string from the
+# per-series control) into a numeric vector recycled/truncated to n series.
+readMarkerSize <- function(marker.size, n)
+{
+    if (is.character(marker.size))
+    {
+        tmp.txt <- TextAsVector(marker.size)
+        marker.size <- suppressWarnings(as.numeric(tmp.txt))
+        na.ind <- which(is.na(marker.size))
+        if (length(na.ind) == 1)
+            warning("Non-numeric marker size value '", tmp.txt[na.ind], "' was ignored.")
+        if (length(na.ind) > 1)
+            warning("Non-numeric marker size values '",
+                    paste(tmp.txt[na.ind], collapse = "', '"), "' were ignored.")
+        marker.size <- marker.size[!is.na(marker.size)]
+        if (length(marker.size) == 0)
+            marker.size <- 6
+    }
+    rep(marker.size, length = n) # recycle if fewer, truncate if more
+}
+
 # Returns true if the d3 format corresponds to the output
 # of PrepareNumbers when the user has set Number Type to "Automatic"
 isAutoFormat <- function(x)
