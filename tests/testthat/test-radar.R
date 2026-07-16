@@ -73,3 +73,9 @@ test_that("Adjustable y.bounds.minimum",
         "Please specify a value outside [12, 26].", fixed = TRUE)
 })
 
+test_that("FS2-4532: Radar renders with per-series marker size string", {
+    dat <- matrix(c(1, 4, 2, 5, 3, 6), nrow = 2,
+                  dimnames = list(c("a", "b"), c("x", "y", "z")))
+    expect_error(Radar(dat, marker.show = TRUE, marker.size = "6,10,14"), NA)
+})
+
