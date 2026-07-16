@@ -1681,11 +1681,10 @@ readMarkerSize <- function(marker.size, n)
         if (length(na.ind) > 1)
             warning("Non-numeric marker size values '",
                     paste(tmp.txt[na.ind], collapse = "', '"), "' were ignored.")
-        marker.size <- marker.size[!is.na(marker.size)]
-        if (length(marker.size) == 0)
-            marker.size <- 6
     }
-    rep(marker.size, length = n) # recycle if fewer, truncate if more
+    # Position-preserving (matches readLineThickness): a non-numeric entry stays NA in
+    # its own slot rather than shifting later series. recycle if fewer, truncate if more.
+    rep(marker.size, length = n)
 }
 
 # Returns true if the d3 format corresponds to the output

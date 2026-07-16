@@ -18,8 +18,9 @@ test_that("FS2-4532: readMarkerSize parses, recycles and truncates", {
     expect_equal(flipStandardCharts:::readMarkerSize("6, 10", 3), c(6, 10, 6))
     expect_equal(flipStandardCharts:::readMarkerSize("6,10,14,20", 3), c(6, 10, 14))
     expect_warning(flipStandardCharts:::readMarkerSize("6,foo,14", 3))
+    # Position-preserving: the bad token stays NA in its own slot (matches readLineThickness)
     expect_equal(suppressWarnings(flipStandardCharts:::readMarkerSize("6,foo,14", 3)),
-                 c(6, 14, 6))
+                 c(6, NA, 14))
 })
 
 test_that("FS2-4532: Line renders with per-series marker size string", {
