@@ -85,7 +85,7 @@ test_that("FS2-4532: Radar renders with per-series marker size string", {
 
     # One trace per series (named after the column), each with the marker size
     # parsed from "6,10,14" recycled across the series' data points. This would
-    # fail without readMarkerSize(): pre-fix, marker.size stayed a character
+    # fail without readNumericSeries(): pre-fix, marker.size stayed a character
     # matrix and each trace's marker$size would be a character vector like
     # c("6,10,14", "6,10,14") rather than the numeric per-series constant.
     expect_type(trace.sizes[["x"]], "double")

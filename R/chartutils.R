@@ -1650,41 +1650,25 @@ getColumn <- function(x, i)
 }
 
 
-readLineThickness <- function(line.thickness, n)
+# FS2-4532: parse a per-series numeric setting (line thickness, marker size) that may
+# arrive as a numeric value (old Plugins) or a comma-separated string (new Plugins) into
+# a numeric vector sized to n series. A non-numeric entry stays NA in its own slot
+# (position-preserving) and warns; values recycle if fewer than n and truncate if more.
+# `what` names the setting in the warning, e.g. "line thickness" or "marker size".
+readNumericSeries <- function(x, n, what)
 {
-    if (is.character(line.thickness))
+    if (is.character(x))
     {
-        tmp.txt <- TextAsVector(line.thickness)
-        line.thickness <- suppressWarnings(as.numeric(tmp.txt))
-        na.ind <- which(is.na(line.thickness))
+        tmp.txt <- TextAsVector(x)
+        x <- suppressWarnings(as.numeric(tmp.txt))
+        na.ind <- which(is.na(x))
         if (length(na.ind) == 1)
-            warning("Non-numeric line thickness value '", tmp.txt[na.ind], "' was ignored.")
+            warning("Non-numeric ", what, " value '", tmp.txt[na.ind], "' was ignored.")
         if (length(na.ind) > 1)
-            warning("Non-numeric line thickness values '",
-            paste(tmp.txt[na.ind], collapse = "', '"), "' were ignored.")
-    }
-    line.thickness <- suppressWarnings(line.thickness * rep(1, n)) # suppress warnings about recyling
-    return(line.thickness)
-}
-
-# FS2-4532: parse marker size input (numeric, or a comma-separated string from the
-# per-series control) into a numeric vector recycled/truncated to n series.
-readMarkerSize <- function(marker.size, n)
-{
-    if (is.character(marker.size))
-    {
-        tmp.txt <- TextAsVector(marker.size)
-        marker.size <- suppressWarnings(as.numeric(tmp.txt))
-        na.ind <- which(is.na(marker.size))
-        if (length(na.ind) == 1)
-            warning("Non-numeric marker size value '", tmp.txt[na.ind], "' was ignored.")
-        if (length(na.ind) > 1)
-            warning("Non-numeric marker size values '",
+            warning("Non-numeric ", what, " values '",
                     paste(tmp.txt[na.ind], collapse = "', '"), "' were ignored.")
     }
-    # Position-preserving (matches readLineThickness): a non-numeric entry stays NA in
-    # its own slot rather than shifting later series. recycle if fewer, truncate if more.
-    rep(marker.size, length = n)
+    rep(x, length = n) # recycle if fewer, truncate if more; positions preserved
 }
 
 # Returns true if the d3 format corresponds to the output

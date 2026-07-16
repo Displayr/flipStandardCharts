@@ -12,15 +12,19 @@ test_that("Line thickness",
                    "Non-numeric line thickness values '4..3', 'l' were ignored")
 })
 
-test_that("FS2-4532: readMarkerSize parses, recycles and truncates", {
-    expect_equal(flipStandardCharts:::readMarkerSize(6, 3), c(6, 6, 6))
-    expect_equal(flipStandardCharts:::readMarkerSize("6,10,14", 3), c(6, 10, 14))
-    expect_equal(flipStandardCharts:::readMarkerSize("6, 10", 3), c(6, 10, 6))
-    expect_equal(flipStandardCharts:::readMarkerSize("6,10,14,20", 3), c(6, 10, 14))
-    expect_warning(flipStandardCharts:::readMarkerSize("6,foo,14", 3))
-    # Position-preserving: the bad token stays NA in its own slot (matches readLineThickness)
-    expect_equal(suppressWarnings(flipStandardCharts:::readMarkerSize("6,foo,14", 3)),
+test_that("FS2-4532: readNumericSeries parses, recycles and truncates", {
+    expect_equal(flipStandardCharts:::readNumericSeries(6, 3, "marker size"), c(6, 6, 6))
+    expect_equal(flipStandardCharts:::readNumericSeries("6,10,14", 3, "marker size"), c(6, 10, 14))
+    expect_equal(flipStandardCharts:::readNumericSeries("6, 10", 3, "marker size"), c(6, 10, 6))
+    expect_equal(flipStandardCharts:::readNumericSeries("6,10,14,20", 3, "marker size"), c(6, 10, 14))
+    expect_warning(flipStandardCharts:::readNumericSeries("6,foo,14", 3, "marker size"),
+                   "Non-numeric marker size value 'foo' was ignored")
+    # Position-preserving: the bad token stays NA in its own slot
+    expect_equal(suppressWarnings(flipStandardCharts:::readNumericSeries("6,foo,14", 3, "marker size")),
                  c(6, NA, 14))
+    # `what` names the setting in the warning
+    expect_warning(flipStandardCharts:::readNumericSeries("1,x,y", 3, "line thickness"),
+                   "Non-numeric line thickness values 'x', 'y' were ignored")
 })
 
 test_that("FS2-4532: Line renders with per-series marker size string", {
