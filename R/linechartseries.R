@@ -139,7 +139,7 @@ prepareLineSeries <- function(x,
 
     line.type <- vectorize(tolower(line.type), ncol(chart.matrix))
     marker.symbols <- vectorize(marker.symbols, ncol(chart.matrix))
-    marker.size <- vectorize(readMarkerSize(marker.size, ncol(chart.matrix)),
+    marker.size <- vectorize(readNumericSeries(marker.size, ncol(chart.matrix), "marker size"),
                              ncol(chart.matrix), nrow(chart.matrix))
     dlab.color <- if (data.label.font.autocolor) colors
                   else vectorize(data.label.font.color, ncol(chart.matrix))
@@ -173,18 +173,7 @@ prepareLineSeries <- function(x,
     if (is.null(rownames(chart.matrix)))
         rownames(chart.matrix) <- 1:nrow(chart.matrix)
 
-    if (is.character(line.thickness))
-    {
-        tmp.txt <- TextAsVector(line.thickness)
-        line.thickness <- suppressWarnings(as.numeric(tmp.txt))
-        na.ind <- which(is.na(line.thickness))
-        if (length(na.ind) == 1)
-            warning("Non-numeric line thickness value '", tmp.txt[na.ind], "' was ignored.")
-        if (length(na.ind) > 1)
-            warning("Non-numeric line thickness values '",
-            paste(tmp.txt[na.ind], collapse = "', '"), "' were ignored.")
-    }
-    line.thickness <- readLineThickness(line.thickness, ncol(chart.matrix))
+    line.thickness <- readNumericSeries(line.thickness, ncol(chart.matrix), "line thickness")
     opacity <- opacity * rep(1, ncol(chart.matrix))
 
     prepared <- list(
