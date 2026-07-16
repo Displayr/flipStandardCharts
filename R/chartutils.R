@@ -1629,6 +1629,8 @@ vectorize <- function(x, n, nrow = NULL, split = ",")
             x <- TextAsVector(x, split = split)
         res <- suppressWarnings(paste0(x, rep("", n)))
     }
+    if (length(res) > n)   # FS2-4532: silently ignore selections beyond the number of series
+        res <- res[seq_len(n)]
     if (!is.null(nrow))
         res <- matrix(res, nrow = nrow, byrow = !input.is.matrix)
     return(res)
