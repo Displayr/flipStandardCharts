@@ -77,5 +77,22 @@ test_that("FS2-4532: Radar renders with per-series marker size string", {
     dat <- matrix(c(1, 4, 2, 5, 3, 6), nrow = 2,
                   dimnames = list(c("a", "b"), c("x", "y", "z")))
     expect_error(Radar(dat, marker.show = TRUE, marker.size = "6,10,14"), NA)
+
+    pp <- Radar(dat, marker.show = TRUE, marker.size = "6,10,14")
+    pb <- plotly::plotly_build(pp$htmlwidget)
+    trace.sizes <- setNames(lapply(pb$x$data, function(tr) tr$marker$size),
+                             vapply(pb$x$data, function(tr) as.character(tr$name), character(1)))
+
+    # One trace per series (named after the column), each with the marker size
+    # parsed from "6,10,14" recycled across the series' data points. This would
+    # fail without readMarkerSize(): pre-fix, marker.size stayed a character
+    # matrix and each trace's marker$size would be a character vector like
+    # c("6,10,14", "6,10,14") rather than the numeric per-series constant.
+    expect_type(trace.sizes[["x"]], "double")
+    expect_type(trace.sizes[["y"]], "double")
+    expect_type(trace.sizes[["z"]], "double")
+    expect_equal(unique(trace.sizes[["x"]]), 6)
+    expect_equal(unique(trace.sizes[["y"]]), 10)
+    expect_equal(unique(trace.sizes[["z"]]), 14)
 })
 
