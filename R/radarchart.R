@@ -216,7 +216,7 @@ Radar <- function(x,
     data.label.suffix <- rbind(vectorize(data.label.suffix, n, m, split = NULL), "")
     marker.show <- vectorize(marker.show, n, m)
     marker.symbols <- vectorize(marker.symbols, n, m)
-    marker.size <- vectorize(marker.size, n, m)
+    marker.size <- vectorize(readNumericSeries(marker.size, n, "marker size"), n, m)
 
     # Convert data (polar) into x, y coordinates
     pos <- do.call(rbind, lapply(as.data.frame(chart.matrix), calcPolarCoord,

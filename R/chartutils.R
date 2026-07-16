@@ -1616,6 +1616,10 @@ autoFontColor <- function (colors)
 vectorize <- function(x, n, nrow = NULL, split = ",")
 {
     input.is.matrix <- length(dim(x)) >= 2
+    if (is.character(x) && !input.is.matrix && !is.null(split))
+        x <- TextAsVector(x, split = split)
+    if (!input.is.matrix)
+        x <- rep(x, length = n)
     if (!is.null(nrow) && is.finite(nrow))
         n <- n * nrow
 
@@ -1624,11 +1628,7 @@ vectorize <- function(x, n, nrow = NULL, split = ",")
     else if (is.numeric(x))
         res <- suppressWarnings(rep(0, n) + x)
     else
-    {
-        if (!is.null(split))
-            x <- TextAsVector(x, split = split)
         res <- suppressWarnings(paste0(x, rep("", n)))
-    }
     if (!is.null(nrow))
         res <- matrix(res, nrow = nrow, byrow = !input.is.matrix)
     return(res)
@@ -1648,21 +1648,25 @@ getColumn <- function(x, i)
 }
 
 
-readLineThickness <- function(line.thickness, n)
+# Parse a per-series numeric setting (line thickness, marker size) that may
+# arrive as a numeric value (old Plugins) or a comma-separated string (new Plugins) into
+# a numeric vector sized to n series. A non-numeric entry stays NA in its own slot
+# (position-preserving) and warns; values recycle if fewer than n and truncate if more.
+# `what` names the setting in the warning, e.g. "line thickness" or "marker size".
+readNumericSeries <- function(x, n, what)
 {
-    if (is.character(line.thickness))
+    if (is.character(x))
     {
-        tmp.txt <- TextAsVector(line.thickness)
-        line.thickness <- suppressWarnings(as.numeric(tmp.txt))
-        na.ind <- which(is.na(line.thickness))
+        tmp.txt <- TextAsVector(x)
+        x <- suppressWarnings(as.numeric(tmp.txt))
+        na.ind <- which(is.na(x))
         if (length(na.ind) == 1)
-            warning("Non-numeric line thickness value '", tmp.txt[na.ind], "' was ignored.")
+            warning("Non-numeric ", what, " value '", tmp.txt[na.ind], "' was ignored.")
         if (length(na.ind) > 1)
-            warning("Non-numeric line thickness values '",
-            paste(tmp.txt[na.ind], collapse = "', '"), "' were ignored.")
+            warning("Non-numeric ", what, " values '",
+                    paste(tmp.txt[na.ind], collapse = "', '"), "' were ignored.")
     }
-    line.thickness <- suppressWarnings(line.thickness * rep(1, n)) # suppress warnings about recyling
-    return(line.thickness)
+    rep(x, length = n) # recycle if fewer, truncate if more; positions preserved
 }
 
 # Returns true if the d3 format corresponds to the output

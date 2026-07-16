@@ -257,7 +257,8 @@ Line <-   function(x,
 
     line.type <- vectorize(tolower(line.type), ncol(chart.matrix))
     marker.symbols <- vectorize(marker.symbols, ncol(chart.matrix))
-    marker.size <- vectorize(marker.size, ncol(chart.matrix), nrow(chart.matrix))
+    marker.size <- vectorize(readNumericSeries(marker.size, ncol(chart.matrix), "marker size"),
+                             ncol(chart.matrix), nrow(chart.matrix))
     dlab.color <- if (data.label.font.autocolor) colors
                   else vectorize(data.label.font.color, ncol(chart.matrix))
     dlab.pos <- vectorize(tolower(data.label.position), ncol(chart.matrix))
@@ -336,18 +337,6 @@ Line <-   function(x,
     y.labels <- colnames(chart.matrix)
 
     ## Add a trace for each col of data in the matrix
-    if (is.character(line.thickness))
-    {
-        tmp.txt <- TextAsVector(line.thickness)
-        line.thickness <- suppressWarnings(as.numeric(tmp.txt))
-        na.ind <- which(is.na(line.thickness))
-        if (length(na.ind) == 1)
-            warning("Non-numeric line thickness value '", tmp.txt[na.ind], "' was ignored.")
-        if (length(na.ind) > 1)
-            warning("Non-numeric line thickness values '",
-            paste(tmp.txt[na.ind], collapse = "', '"), "' were ignored.")
-    }
-
     # Add invisible line to force all categorical labels to be shown
     tmp.min <- if (any(is.finite(chart.matrix))) min(chart.matrix[is.finite(chart.matrix)])
                else y.bounds.minimum
@@ -356,7 +345,7 @@ Line <-   function(x,
                    type = "scatter", mode = tmp.mode,
                    hoverinfo = "skip", showlegend = FALSE, opacity = 0)
 
-    line.thickness <- readLineThickness(line.thickness, ncol(chart.matrix))
+    line.thickness <- readNumericSeries(line.thickness, ncol(chart.matrix), "line thickness")
     opacity <- opacity * rep(1, ncol(chart.matrix))
     for (i in 1:ncol(chart.matrix))
     {

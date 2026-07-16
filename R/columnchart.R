@@ -826,7 +826,7 @@ Column <- function(x,
                        else  vectorize(x2.marker.show, n2, m2)
 
         x2.line.type <- vectorize(tolower(x2.line.type), n2)
-        x2.line.thickness <- readLineThickness(x2.line.thickness, n2)
+        x2.line.thickness <- readNumericSeries(x2.line.thickness, n2, "line thickness")
         x2.opacity <- x2.opacity * rep(1, n2)
         x2.marker.symbols <- vectorize(x2.marker.symbols, n2, m2)
         x2.marker.size <- vectorize(x2.marker.size, n2, m2)
