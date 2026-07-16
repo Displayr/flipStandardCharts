@@ -1616,6 +1616,13 @@ autoFontColor <- function (colors)
 vectorize <- function(x, n, nrow = NULL, split = ",")
 {
     input.is.matrix <- length(dim(x)) >= 2
+    if (is.character(x) && !input.is.matrix && !is.null(split))
+        x <- TextAsVector(x, split = split)
+    # FS2-4532: size a per-series input to exactly n series before it is expanded across
+    # rows - recycle if fewer values than series, silently drop the excess if more. (A
+    # full per-point matrix is left as-is; it already has one value per position.)
+    if (!input.is.matrix)
+        x <- rep(x, length = n)
     if (!is.null(nrow) && is.finite(nrow))
         n <- n * nrow
 
@@ -1624,13 +1631,7 @@ vectorize <- function(x, n, nrow = NULL, split = ",")
     else if (is.numeric(x))
         res <- suppressWarnings(rep(0, n) + x)
     else
-    {
-        if (!is.null(split))
-            x <- TextAsVector(x, split = split)
         res <- suppressWarnings(paste0(x, rep("", n)))
-    }
-    if (length(res) > n)   # FS2-4532: silently ignore selections beyond the number of series
-        res <- res[seq_len(n)]
     if (!is.null(nrow))
         res <- matrix(res, nrow = nrow, byrow = !input.is.matrix)
     return(res)
