@@ -216,7 +216,9 @@ test_that("enable.zoom = FALSE fixes axis range",
 test_that("font.unit = \"pt\" scales all font sizes by 1.3333 (rounded)",
 {
     built <- plotly::plotly_build(MissingCasesPlot(small, font.unit = "pt"))$x
-    expect_equal(built$layout$annotations[[1]]$font$size, round(16 * 1.3333, 0))
+    expect_equal(built$layout$annotations[[1]]$font$size, round(16 * 1.3333, 0)) # title 16 -> 21
+    expect_equal(built$layout$xaxis$tickfont$size, round(11 * 1.3333, 0)) # x tick 11 -> 15
+    expect_equal(built$layout$yaxis$tickfont$size, round(10 * 1.3333, 0)) # y tick 10 -> 13
 })
 
 test_that("font.unit = \"px\" (default) leaves font sizes unchanged",
@@ -255,8 +257,9 @@ test_that("All-missing data uses fill.color as the base color",
     colnames(allNA) <- c("X", "Y")
     built <- plotly::plotly_build(MissingCasesPlot(allNA))$x
     heatmap.trace <- Filter(function(tr) identical(tr$type, "heatmap"), built$data)[[1]]
-    # both colorscale endpoints collapse to the same (fill) color
+    # both colorscale endpoints collapse to the fill color (#5C9AD3)
     expect_equal(heatmap.trace$colorscale[1, 2], heatmap.trace$colorscale[2, 2])
+    expect_equal(heatmap.trace$colorscale[1, 2], "rgba(92,154,211,1)")
 })
 
 test_that("All-present data (no missing) uses base.color as fill",
@@ -265,7 +268,9 @@ test_that("All-present data (no missing) uses base.color as fill",
     colnames(noNA) <- c("X", "Y")
     built <- plotly::plotly_build(MissingCasesPlot(noNA))$x
     heatmap.trace <- Filter(function(tr) identical(tr$type, "heatmap"), built$data)[[1]]
+    # both colorscale endpoints collapse to the base color (#E6E6E6)
     expect_equal(heatmap.trace$colorscale[1, 2], heatmap.trace$colorscale[2, 2])
+    expect_equal(heatmap.trace$colorscale[1, 2], "rgba(230,230,230,1)")
     # na.ind is empty, so no extra "lines" trace is added - only the heatmap trace
     expect_equal(length(built$data), 1)
 })
