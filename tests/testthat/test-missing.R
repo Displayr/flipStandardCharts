@@ -72,8 +72,8 @@ bigMissing <- matrix(1, nrow = 1100, ncol = 2)
 bigMissing[1:1050, 1] <- NA
 colnames(bigMissing) <- c("A", "B")
 
-medMissing <- matrix(1, nrow = 500, ncol = 2)
-medMissing[1:300, 1] <- NA
+medMissing <- matrix(1, nrow = 1000, ncol = 2)
+medMissing[1:1000, 1] <- NA
 colnames(medMissing) <- c("A", "B")
 
 # Helper: pull out the fill line color from the built plotly object
@@ -119,7 +119,7 @@ test_that("Auto x-axis angle: few columns (ncol < 10) keeps ticks horizontal",
     expect_equal(built$layout$xaxis$tickangle, 0)
 })
 
-test_that("Label wrap follows explicit x.tick.label.wrap when angle is 0",
+test_that("Explicit x.tick.label.wrap overrides wrapping for a nonzero angle",
 {
     # x.tick.angle = 90 means the default wrap (angle == 0) would be FALSE;
     # explicitly passing x.tick.label.wrap = TRUE should override that default.
@@ -253,7 +253,9 @@ test_that("Auto fill-opacity: medium density (> 200, <= 1000) sets opacity 0.5",
 
 test_that("Auto fill-opacity: low density (<= 200) sets opacity 1.0",
 {
-    expect_equal(getFillLineColor(MissingCasesPlot(small)),
+    lowMissing <- matrix(1, nrow = 200, ncol = 2)
+    lowMissing[, 1] <- NA
+    expect_equal(getFillLineColor(MissingCasesPlot(lowMissing)),
                  rgb(t(col2rgb("#5C9AD3")), maxColorValue = 255, alpha = 255 * 1.0))
 })
 
@@ -297,7 +299,8 @@ test_that("Row count > 200 switches to scatter-only base trace (no heatmap)",
 
 test_that("Row count <= 200 uses heatmap trace",
 {
-    built <- plotly::plotly_build(MissingCasesPlot(small))$x
+    boundaryMatrix <- matrix(1, nrow = 200, ncol = 2)
+    built <- plotly::plotly_build(MissingCasesPlot(boundaryMatrix))$x
     expect_true(any(sapply(built$data, function(tr) identical(tr$type, "heatmap"))))
 })
 
