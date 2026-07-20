@@ -97,6 +97,14 @@ test_that("Subset filters out excluded rows",
 {
     built <- plotly::plotly_build(MissingCasesPlot(small, subset = subset.matching))$x
     expect_equal(built$layout$yaxis$range, c(5, 1))
+    # subset.matching keeps rows 1-5 only. Elephant's 2 missing values are in
+    # rows 6-7 (excluded), so its missing count should drop from 2 to 0.
+    # Fish's missing values are in rows 5-10; only row 5 remains, so its
+    # missing count should drop from 6 to 1 (of the 5 remaining rows).
+    labels <- built$layout$xaxis$ticktext
+    names(labels) <- c("Dog", "Elephant", "Bugs & Spiders", "Fish")
+    expect_match(labels[["Elephant"]], "0 cases")
+    expect_match(labels[["Fish"]], "1 cases")
 })
 
 test_that("Auto x-axis angle: many columns (ncol >= 10) rotates ticks",
@@ -113,7 +121,10 @@ test_that("Auto x-axis angle: few columns (ncol < 10) keeps ticks horizontal",
 
 test_that("Label wrap follows explicit x.tick.label.wrap when angle is 0",
 {
-    built <- plotly::plotly_build(MissingCasesPlot(small, x.tick.angle = 0))$x
+    # x.tick.angle = 90 means the default wrap (angle == 0) would be FALSE;
+    # explicitly passing x.tick.label.wrap = TRUE should override that default.
+    built <- plotly::plotly_build(MissingCasesPlot(small, x.tick.angle = 90,
+                                                     x.tick.label.wrap = TRUE))$x
     expect_true(all(grepl("<br>", built$layout$xaxis$ticktext)))
 })
 
@@ -210,6 +221,7 @@ test_that("enable.zoom = FALSE fixes axis range",
 {
     built <- plotly::plotly_build(MissingCasesPlot(small, enable.zoom = FALSE))$x
     expect_true(built$layout$xaxis$fixedrange)
+    expect_true(built$layout$yaxis$fixedrange)
     expect_equal(built$layout$dragmode, FALSE)
 })
 
