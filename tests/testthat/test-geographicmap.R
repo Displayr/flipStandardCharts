@@ -136,3 +136,28 @@ test_that("DS-3647: Can recognize new counties of Norway",
                        `Troms og Finnmark` = 9))
     expect_silent(GeographicMap(tbl, mapping.package = "leaflet"))
 })
+
+test_that ("GeographicRegionRowNames deprecated wrapper: country", {
+    result <- NULL
+    expect_error(result <- GeographicRegionRowNames("country"), NA)
+    expect_equal(result, CountriesOrContinents("country"))
+    expect_is(result, "character")
+    expect_gt(length(result), 0)
+})
+
+test_that ("GeographicRegionRowNames deprecated wrapper: name", {
+    result <- NULL
+    expect_error(result <- GeographicRegionRowNames("name"), NA)
+    expect_equal(result, CountriesOrContinents("name"))
+    expect_is(result, "character")
+    expect_gt(length(result), 0)
+})
+
+test_that ("GeographicRegionRowNames deprecated wrapper: continent", {
+    result <- NULL
+    expect_error(result <- GeographicRegionRowNames("continent"), NA)
+    expect_equal(result, CountriesOrContinents("continent"))
+    expect_is(result, "character")
+    expect_gt(length(result), 0)
+    expect_equal(result, levels(flipStandardCharts:::map.coordinates.50[["continent"]]))
+})
