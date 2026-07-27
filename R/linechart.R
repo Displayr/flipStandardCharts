@@ -201,91 +201,12 @@ Line <-   function(x,
     }
 
     ErrorIfNotEnoughData(x)
-    if (isPercentData(x))
-    {
-        if (isAutoFormat(y.tick.format))
-            y.tick.format <- paste0(y.tick.format, "%")
-        if (isAutoFormat(y.hovertext.format))
-            y.hovertext.format <- paste0(y.hovertext.format, "%")
-        if (isAutoFormat(data.label.format))
-            data.label.format <- paste0(data.label.format, "%")
+    # Assigned by the list2env below, but declared here because static analysis cannot
+    # see through it. Everything else it sets is already a formal of this function.
+    annot.data <- chart.matrix <- n <- x.labels.full <- NULL
+    data.label.font <- dlab.pos <- dlab.prefix <- dlab.suffix <- NULL
+    list2env(prepareLineSeriesFrom(sys.frame(sys.nframe())), environment())
 
-        sfx <- checkSuffixForExtraPercent(c(y.tick.suffix, data.label.suffix),
-            c(y.tick.format, data.label.format))
-        y.tick.suffix <- sfx[1]
-        data.label.suffix <- sfx[2]
-    }
-
-
-    # Store data for chart annotations
-    annot.data <- x
-    chart.matrix <- checkMatrixNames(x)
-
-    if (is.null(line.thickness))
-        line.thickness <- 3
-    matrix.labels <- names(dimnames(chart.matrix))
-    if (nchar(x.title) == 0 && length(matrix.labels) == 2)
-        x.title <- matrix.labels[1]
-    x.labels.full <- rownames(chart.matrix)
-    if (any(is.na(chart.matrix)))
-        warning("Missing values have been omitted.")
-
-    # Constants
-    if (grepl("^curved", tolower(shape)))
-        shape <- "spline"
-    if (grepl("^straight", tolower(shape)))
-        shape <- "linear"
-    if (is.null(marker.show) || isTRUE(marker.show == "none")) # included for backwards compatibility
-        marker.show <- FALSE
-    if (is.null(opacity))
-        opacity <- if (fit.type == "None") 1 else 0.6
-    if (is.null(marker.opacity))
-        marker.opacity <- opacity
-    if (is.null(marker.border.opacity))
-        marker.border.opacity <- marker.opacity
-
-    # Set colors
-    n <- ncol(chart.matrix)
-    colors <- vectorize(colors, n)
-    if (fit.type != "None" && is.null(fit.line.colors))
-        fit.line.colors <- colors
-    if (fit.CI.show && is.null(fit.CI.colors))
-        fit.CI.colors <- fit.line.colors
-    if (is.null(marker.colors))
-        marker.colors <- colors
-    if (is.null(marker.border.colors))
-        marker.border.colors <- marker.colors
-    marker.colors <- vectorize(marker.colors, n)
-    marker.border.colors <- vectorize(marker.border.colors, n)
-
-    if (data.label.show.at.ends || marker.show.at.ends)
-    {
-        ends.show <- matrix(FALSE, nrow(chart.matrix), ncol(chart.matrix))
-        for (i in 1:ncol(chart.matrix))
-        {
-            ind <- which(is.finite(chart.matrix[,i])) # ignore NAs
-            if (length(ind) > 0)
-            {
-                ends.show[min(ind),i] <- TRUE
-                ends.show[max(ind),i] <- TRUE
-            }
-        }
-    }
-    data.label.show <- if (data.label.show.at.ends) ends.show
-                       else vectorize(data.label.show, ncol(chart.matrix), nrow(chart.matrix))
-    marker.show <- if (marker.show.at.ends) ends.show
-                   else  vectorize(marker.show, ncol(chart.matrix), nrow(chart.matrix))
-
-    line.type <- vectorize(tolower(line.type), ncol(chart.matrix))
-    marker.symbols <- vectorize(marker.symbols, ncol(chart.matrix))
-    marker.size <- vectorize(marker.size, ncol(chart.matrix), nrow(chart.matrix))
-    dlab.color <- if (data.label.font.autocolor) colors
-                  else vectorize(data.label.font.color, ncol(chart.matrix))
-    dlab.pos <- vectorize(tolower(data.label.position), ncol(chart.matrix))
-    dlab.prefix <- vectorize(data.label.prefix, ncol(chart.matrix), nrow(chart.matrix), split = NULL)
-    dlab.suffix <- vectorize(data.label.suffix, ncol(chart.matrix), nrow(chart.matrix), split = NULL)
-    data.label.font = lapply(dlab.color,
-        function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
     subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
     x.title.font = list(family = x.title.font.family, size = x.title.font.size, color = x.title.font.color)
@@ -295,24 +216,9 @@ Line <-   function(x,
     footer.font = list(family = footer.font.family, size = footer.font.size, color = footer.font.color)
     legend.font = list(family = legend.font.family, size = legend.font.size, color = legend.font.color)
 
-    legend.show <- setShowLegend(legend.show, NCOL(chart.matrix))
     legend <- setLegend("Line", legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
                         legend.border.color, legend.border.line.width,
                         legend.position.x, legend.position.y, FALSE, legend.orientation)
-    footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar, truncate=FALSE)
-
-    if (!is.null(average.series))
-    {
-        chart.matrix <- cbind(chart.matrix, average.series)
-        colnames(chart.matrix)[ncol(chart.matrix)] <- "Average"
-        colors <- c(colors, average.color)
-        fit.line.colors <- c(fit.line.colors, average.color)
-        fit.CI.colors <- c(fit.CI.colors, average.color)
-        line.type <- line.type[c(1:n,1)]
-        marker.show <- cbind(marker.show, FALSE)
-        marker.size <- marker.size[,c(1:n,1)] # doesn't matter - marker is not shown
-        marker.symbols <- marker.symbols[c(1:n,1)]
-    }
 
     # Format axis labels
     axisFormat <- formatLabels(chart.matrix, "Line", x.tick.label.wrap, x.tick.label.wrap.nchar,
@@ -351,23 +257,8 @@ Line <-   function(x,
 
     ## Initiate plotly object
     p <- plot_ly(as.data.frame(chart.matrix))
-    if (is.null(rownames(chart.matrix)))
-        rownames(chart.matrix) <- 1:nrow(chart.matrix)
     x.labels <- axisFormat$labels
     y.labels <- colnames(chart.matrix)
-
-    ## Add a trace for each col of data in the matrix
-    if (is.character(line.thickness))
-    {
-        tmp.txt <- TextAsVector(line.thickness)
-        line.thickness <- suppressWarnings(as.numeric(tmp.txt))
-        na.ind <- which(is.na(line.thickness))
-        if (length(na.ind) == 1)
-            warning("Non-numeric line thickness value '", tmp.txt[na.ind], "' was ignored.")
-        if (length(na.ind) > 1)
-            warning("Non-numeric line thickness values '",
-            paste(tmp.txt[na.ind], collapse = "', '"), "' were ignored.")
-    }
 
     # Add invisible line to force all categorical labels to be shown
     tmp.min <- if (any(is.finite(chart.matrix))) min(chart.matrix[is.finite(chart.matrix)])
@@ -377,8 +268,7 @@ Line <-   function(x,
                    type = "scatter", mode = tmp.mode,
                    hoverinfo = "skip", showlegend = FALSE, opacity = 0)
 
-    line.thickness <- readLineThickness(line.thickness, ncol(chart.matrix))
-    opacity <- opacity * rep(1, ncol(chart.matrix))
+    ## Add a trace for each col of data in the matrix
     for (i in 1:ncol(chart.matrix))
     {
         y <- as.numeric(chart.matrix[, i])
