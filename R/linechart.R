@@ -14,6 +14,12 @@
 #'      data series. This value will override \code{data.label.show}.
 #' @param marker.show.at.ends Logical; show markers at the begining and end of each
 #'      data series. The value will override \code{marker.show}.
+#' @param data.label.auto.placement Logical; position the data labels so that they do
+#'      not overlap each other or the data points, instead of placing them at a fixed
+#'      offset given by \code{data.label.position}. Only has an effect when data labels
+#'      are shown. The chart is then drawn using rhtmlCombinedScatter rather than plotly,
+#'      which does not support every other charting option; a warning names any setting
+#'      that has been ignored as a result.
 #' @importFrom grDevices rgb
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom plotly plot_ly config toRGB add_trace add_text layout hide_colorbar
@@ -170,6 +176,7 @@ Line <-   function(x,
                     axis.drag.enable = FALSE,
                     data.label.show = FALSE,
                     data.label.show.at.ends = FALSE,
+                    data.label.auto.placement = FALSE,
                     data.label.position = "Top",
                     data.label.font.family = global.font.family,
                     data.label.font.color = global.font.color,
@@ -179,6 +186,20 @@ Line <-   function(x,
                     data.label.prefix = "",
                     data.label.suffix = "")
 {
+    # Automatic placement only means anything when there are labels to place.
+    # Compared with %in% rather than any(), because vectorize returns the character
+    # form for text input, which cannot be coerced by a logical operator.
+    data.labels.requested <- isTRUE(data.label.show.at.ends) ||
+        any(vectorize(data.label.show, 1L) %in% c(TRUE, "TRUE"))
+    if (isTRUE(data.label.auto.placement) && data.labels.requested)
+    {
+        # labeledLine takes the same arguments as Line, except for the flag selecting
+        # it, so the whole call is forwarded as-is.
+        args <- mget(setdiff(names(formals()), "data.label.auto.placement"),
+                     sys.frame(sys.nframe()))
+        return(do.call(labeledLine, args))
+    }
+
     ErrorIfNotEnoughData(x)
     if (isPercentData(x))
     {

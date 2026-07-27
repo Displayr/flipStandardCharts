@@ -1,0 +1,632 @@
+#' Line chart with automatically placed data labels
+#'
+#' Draws a line chart using rhtmlCombinedScatter instead of plotly, so that the data
+#' labels can be positioned by the label placement algorithm rather than sitting at a
+#' fixed offset from each point. Called by \code{\link{Line}} when
+#' \code{data.label.auto.placement} is turned on; it is not intended to be called
+#' directly, and it accepts the same arguments as \code{Line} so that dispatch is a
+#' straight pass-through.
+#'
+#' Some \code{Line} arguments have no equivalent in rhtmlCombinedScatter. These are
+#' ignored, with a warning naming them, rather than causing an error.
+#' @inheritParams Line
+#' @importFrom grDevices rgb
+#' @importFrom flipChartBasics ChartColors
+#' @importFrom plotly toRGB
+#' @importFrom rhtmlCombinedScatter CombinedScatter
+#' @noRd
+labeledLine <- function(x,
+                    type = "Line",
+                    line.type = "Solid",
+                    shape = c("linear", "spline")[1],
+                    smoothing = 1,
+                    colors = ChartColors(max(1, ncol(x), na.rm = TRUE)),
+                    average.series = NULL,
+                    average.color = rgb(230, 230, 230, maxColorValue = 255),
+                    annotation.list = NULL,
+                    opacity = NULL,
+                    fit.type = "None", # can be "Smooth" or anything else
+                    fit.window.size = 2,
+                    fit.line.colors = colors,
+                    fit.ignore.last = FALSE,
+                    fit.line.type = "dot",
+                    fit.line.width = 1,
+                    fit.line.name = "Fitted",
+                    fit.line.opacity = 1,
+                    fit.CI.show = FALSE,
+                    fit.CI.colors = fit.line.colors,
+                    fit.CI.opacity = 0.4,
+                    global.font.family = "Arial",
+                    global.font.color = rgb(44, 44, 44, maxColorValue = 255),
+                    title = "",
+                    title.font.family = global.font.family,
+                    title.font.color = global.font.color,
+                    title.font.size = 16,
+                    title.align = "center",
+                    subtitle = "",
+                    subtitle.font.family = global.font.family,
+                    subtitle.font.color = global.font.color,
+                    subtitle.font.size = 12,
+                    subtitle.align = "center",
+                    footer = "",
+                    footer.font.family = global.font.family,
+                    footer.font.color = global.font.color,
+                    footer.font.size = 8,
+                    footer.align = "center",
+                    footer.wrap = TRUE,
+                    footer.wrap.nchar = 100,
+                    grid.show = TRUE,
+                    background.fill.color = "transparent",
+                    background.fill.opacity = 1,
+                    charting.area.fill.color = background.fill.color,
+                    charting.area.fill.opacity = 0,
+                    legend.show = NA,
+                    legend.orientation = "Vertical",
+                    legend.wrap = TRUE,
+                    legend.wrap.nchar = 30,
+                    legend.fill.color = background.fill.color,
+                    legend.fill.opacity = 0,
+                    legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
+                    legend.border.line.width = 0,
+                    legend.font.color = global.font.color,
+                    legend.font.family = global.font.family,
+                    legend.font.size = 10,
+                    legend.position.x = NULL,
+                    legend.position.y = NULL,
+                    legend.ascending = NA,
+                    margin.autoexpand = TRUE,
+                    margin.top = NULL,
+                    margin.bottom = NULL,
+                    margin.left = NULL,
+                    margin.right = NULL,
+                    margin.inner.pad = NULL,
+                    hovertext.template = NULL,
+                    hovertext.font.family = global.font.family,
+                    hovertext.font.size = 11,
+                    hovertext.align = "left",
+                    y.title = "",
+                    y.title.font.color = global.font.color,
+                    y.title.font.family = global.font.family,
+                    y.title.font.size = 12,
+                    y.line.width = 0,
+                    y.line.color = rgb(0, 0, 0, maxColorValue = 255),
+                    y.tick.mark.length = 0,
+                    y.tick.mark.color = "transparent",
+                    y.bounds.minimum = NULL,
+                    y.bounds.maximum = NULL,
+                    y.tick.distance = NULL,
+                    y.tick.maxnum = NULL,
+                    y.zero = TRUE,
+                    y.zero.line.width = 0,
+                    y.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
+                    y.zero.line.dash = "Solid",
+                    y.data.reversed = FALSE,
+                    y.grid.width = 1 * grid.show,
+                    y.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+                    y.grid.dash = "Solid",
+                    y.tick.show = TRUE,
+                    y.tick.suffix = "",
+                    y.tick.prefix = "",
+                    y.tick.format = "",
+                    y.hovertext.format = y.tick.format,
+                    y.tick.angle = NULL,
+                    y.tick.font.color = global.font.color,
+                    y.tick.font.family = global.font.family,
+                    y.tick.font.size = 10,
+                    x.title = "",
+                    x.title.font.color = global.font.color,
+                    x.title.font.family = global.font.family,
+                    x.title.font.size = 12,
+                    x.line.width = 0,
+                    x.line.color = rgb(0, 0, 0, maxColorValue = 255),
+                    x.tick.marks = "",
+                    x.tick.mark.length = 3,
+                    x.tick.mark.color = "transparent",
+                    x.bounds.minimum = NULL,
+                    x.bounds.maximum = NULL,
+                    x.tick.distance = NULL,
+                    x.tick.maxnum = 11,
+                    x.zero = FALSE,
+                    x.zero.line.width = 0,
+                    x.zero.line.color = rgb(225, 225, 225, maxColorValue = 255),
+                    x.zero.line.dash = "Solid",
+                    x.data.reversed = FALSE,
+                    x.grid.width = 0 * grid.show,
+                    x.grid.color = rgb(225, 225, 225, maxColorValue = 255),
+                    x.grid.dash = "Solid",
+                    x.tick.show = TRUE,
+                    x.tick.format = "",
+                    x.tick.prefix = "",
+                    x.tick.suffix = "",
+                    x.hovertext.format = x.tick.format,
+                    x.tick.angle = NULL,
+                    x.tick.font.color = global.font.color,
+                    x.tick.font.family = global.font.family,
+                    x.tick.font.size = 10,
+                    x.tick.label.wrap = TRUE,
+                    x.tick.label.wrap.nchar = 21,
+                    line.thickness = 3,
+                    marker.show = NULL,
+                    marker.show.at.ends = FALSE,
+                    marker.symbols = "circle",
+                    marker.colors = colors,
+                    marker.opacity = NULL,
+                    marker.size = 6,
+                    marker.border.width = 1,
+                    marker.border.colors = colors,
+                    marker.border.opacity = NULL,
+                    tooltip.show = TRUE,
+                    modebar.show = FALSE,
+                    zoom.enable = TRUE,
+                    axis.drag.enable = FALSE,
+                    data.label.show = FALSE,
+                    data.label.show.at.ends = FALSE,
+                    data.label.position = "Top",
+                    data.label.font.family = global.font.family,
+                    data.label.font.color = global.font.color,
+                    data.label.font.autocolor = FALSE,
+                    data.label.font.size = 10,
+                    data.label.format = "",
+                    data.label.prefix = "",
+                    data.label.suffix = "")
+{
+    ErrorIfNotEnoughData(x)
+    # Checked before anything below vectorizes the arguments, so that the values
+    # compared against the defaults are the ones the caller actually passed.
+    warnUnsupportedByAutoPlacement(mget(names(formals()), sys.frame(sys.nframe())),
+                                   NCOL(x))
+
+    if (isPercentData(x))
+    {
+        if (isAutoFormat(y.tick.format))
+            y.tick.format <- paste0(y.tick.format, "%")
+        if (isAutoFormat(y.hovertext.format))
+            y.hovertext.format <- paste0(y.hovertext.format, "%")
+        if (isAutoFormat(data.label.format))
+            data.label.format <- paste0(data.label.format, "%")
+
+        sfx <- checkSuffixForExtraPercent(c(y.tick.suffix, data.label.suffix),
+            c(y.tick.format, data.label.format))
+        y.tick.suffix <- sfx[1]
+        data.label.suffix <- sfx[2]
+    }
+
+    # Store data for chart annotations
+    annot.data <- x
+    chart.matrix <- checkMatrixNames(x)
+
+    if (is.null(line.thickness))
+        line.thickness <- 3
+    matrix.labels <- names(dimnames(chart.matrix))
+    if (nchar(x.title) == 0 && length(matrix.labels) == 2)
+        x.title <- matrix.labels[1]
+    if (any(is.na(chart.matrix)))
+        warning("Missing values have been omitted.")
+
+    # Constants
+    if (grepl("^curved", tolower(shape)))
+        shape <- "spline"
+    if (grepl("^straight", tolower(shape)))
+        shape <- "linear"
+    if (is.null(marker.show) || isTRUE(marker.show == "none")) # included for backwards compatibility
+        marker.show <- FALSE
+    if (is.null(opacity))
+        opacity <- if (fit.type == "None") 1 else 0.6
+    if (is.null(marker.opacity))
+        marker.opacity <- opacity
+    if (is.null(marker.border.opacity))
+        marker.border.opacity <- marker.opacity
+
+    # Set colors
+    n <- ncol(chart.matrix)
+    colors <- vectorize(colors, n)
+    if (fit.type != "None" && is.null(fit.line.colors))
+        fit.line.colors <- colors
+    if (fit.CI.show && is.null(fit.CI.colors))
+        fit.CI.colors <- fit.line.colors
+    if (is.null(marker.colors))
+        marker.colors <- colors
+    if (is.null(marker.border.colors))
+        marker.border.colors <- marker.colors
+    marker.colors <- vectorize(marker.colors, n)
+    marker.border.colors <- vectorize(marker.border.colors, n)
+
+    if (data.label.show.at.ends || marker.show.at.ends)
+    {
+        ends.show <- matrix(FALSE, nrow(chart.matrix), ncol(chart.matrix))
+        for (i in 1:ncol(chart.matrix))
+        {
+            ind <- which(is.finite(chart.matrix[,i])) # ignore NAs
+            if (length(ind) > 0)
+            {
+                ends.show[min(ind),i] <- TRUE
+                ends.show[max(ind),i] <- TRUE
+            }
+        }
+    }
+    data.label.show <- if (data.label.show.at.ends) ends.show
+                       else vectorize(data.label.show, ncol(chart.matrix), nrow(chart.matrix))
+    marker.show <- if (marker.show.at.ends) ends.show
+                   else  vectorize(marker.show, ncol(chart.matrix), nrow(chart.matrix))
+
+    line.type <- vectorize(tolower(line.type), ncol(chart.matrix))
+    marker.symbols <- vectorize(marker.symbols, ncol(chart.matrix))
+    marker.size <- vectorize(marker.size, ncol(chart.matrix), nrow(chart.matrix))
+    dlab.color <- if (data.label.font.autocolor) colors
+                  else vectorize(data.label.font.color, ncol(chart.matrix))
+    dlab.prefix <- vectorize(data.label.prefix, ncol(chart.matrix), nrow(chart.matrix), split = NULL)
+    dlab.suffix <- vectorize(data.label.suffix, ncol(chart.matrix), nrow(chart.matrix), split = NULL)
+    data.label.font <- lapply(dlab.color,
+        function(cc) list(family = data.label.font.family, size = data.label.font.size, color = cc))
+
+    legend.show <- setShowLegend(legend.show, NCOL(chart.matrix))
+    footer <- autoFormatLongLabels(footer, footer.wrap, footer.wrap.nchar)
+
+    if (!is.null(average.series))
+    {
+        chart.matrix <- cbind(chart.matrix, average.series)
+        colnames(chart.matrix)[ncol(chart.matrix)] <- "Average"
+        colors <- c(colors, average.color)
+        marker.colors <- c(marker.colors, average.color)
+        marker.border.colors <- c(marker.border.colors, average.color)
+        fit.line.colors <- c(fit.line.colors, average.color)
+        fit.CI.colors <- c(fit.CI.colors, average.color)
+        line.type <- line.type[c(1:n,1)]
+        marker.show <- cbind(marker.show, FALSE)
+        marker.size <- marker.size[,c(1:n,1)] # doesn't matter - marker is not shown
+        marker.symbols <- marker.symbols[c(1:n,1)]
+    }
+
+    if (is.null(rownames(chart.matrix)))
+        rownames(chart.matrix) <- 1:nrow(chart.matrix)
+
+    if (is.character(line.thickness))
+    {
+        tmp.txt <- TextAsVector(line.thickness)
+        line.thickness <- suppressWarnings(as.numeric(tmp.txt))
+        na.ind <- which(is.na(line.thickness))
+        if (length(na.ind) == 1)
+            warning("Non-numeric line thickness value '", tmp.txt[na.ind], "' was ignored.")
+        if (length(na.ind) > 1)
+            warning("Non-numeric line thickness values '",
+            paste(tmp.txt[na.ind], collapse = "', '"), "' were ignored.")
+    }
+    line.thickness <- readLineThickness(line.thickness, ncol(chart.matrix))
+    opacity <- opacity * rep(1, ncol(chart.matrix))
+
+    # Counted with %in% because vectorize returns the character form for text input
+    n.labels <- sum(data.label.show %in% c(TRUE, "TRUE"))
+    if (n.labels >= 100)
+        warning("Data labels are not automatically placed when 100 or more labels are ",
+                "shown. ", n.labels, " labels are shown in this chart.")
+
+    n.row <- nrow(chart.matrix)
+    n.col <- ncol(chart.matrix)
+
+    # The widget decides the axis type from the class of X, and does its own tick
+    # formatting and label wrapping. Dates are parsed here because table rownames
+    # always arrive as character, so the widget cannot recognise them on its own.
+    axis.format <- formatLabels(chart.matrix, "Line", FALSE, x.tick.label.wrap.nchar,
+                                x.tick.format, y.tick.format)
+    x.axis.type <- axis.format$x.axis.type
+    x.labels <- switch(x.axis.type,
+        date = axis.format$labels,
+        numeric = suppressWarnings(as.numeric(gsub(",", "", rownames(chart.matrix)))),
+        rownames(chart.matrix))
+    if (x.axis.type == "numeric" && any(is.na(x.labels)))
+        x.labels <- rownames(chart.matrix) # fall back to a categorical axis
+
+    x.values <- rep(x.labels, times = n.col)
+    y.values <- as.numeric(chart.matrix)
+    groups <- rep(colnames(chart.matrix), each = n.row)
+
+    # Data labels, hovertext and the PPT export metadata are all built per series.
+    # Points whose label is hidden are given an empty label: the placement algorithm
+    # skips those, and they do not count towards its 100 label limit.
+    labels <- rep("", n.row * n.col)
+    tooltips <- rep("", n.row * n.col)
+    chart.labels <- list(SeriesLabels = list())
+    for (i in 1:n) # does not include average.series
+    {
+        offset <- (i - 1) * n.row
+        ind.show <- which(data.label.show[,i] & is.finite(chart.matrix[,i]))
+        source.text <- formatByD3(chart.matrix[,i], data.label.format,
+            dlab.prefix[,i], dlab.suffix[,i], decimals = 0)
+
+        # Add attribute for PPT exporting
+        chart.labels$SeriesLabels[[i]] <- list(Position = "Top",
+            Font = setFontForPPT(data.label.font[[i]]), ShowValue = length(ind.show) > 0)
+
+        if (length(ind.show) > 0)
+        {
+            # Initialise custom points if annotations are used
+            pt.segs <- NULL
+            if (!is.null(annotation.list) || length(ind.show) < n.row ||
+                any(nzchar(dlab.prefix[,i])) || any(nzchar(dlab.suffix[,i])))
+            {
+                chart.labels$SeriesLabels[[i]]$ShowValue <- FALSE
+                pt.segs <- lapply((1:n.row),
+                    function(ii) return(list(Index = ii-1, Segments = c(
+                        if (nzchar(dlab.prefix[ii,i])) list(list(Text = unescape_html(dlab.prefix[ii,i]))) else NULL,
+                        list(list(Field="Value")),
+                        if (nzchar(dlab.suffix[ii,i])) list(list(Text = unescape_html(dlab.suffix[ii,i]))) else NULL))))
+                for (ii in setdiff(1:n.row, ind.show))
+                    pt.segs[[ii]]$Segments <- NULL
+            }
+
+            # Apply annotations
+            attr(source.text, "customPoints") <- pt.segs
+            # tspan because the widget draws labels as SVG and its sanitiser drops
+            # a <span>, discarding the label text along with it
+            source.text <- applyAllAnnotationsToDataLabels(source.text, annotation.list,
+                annot.data, i, ind.show, "Line", clean.pt.segs = TRUE, tspan = TRUE)
+            pt.segs <- attr(source.text, "customPoints")
+            if (isTRUE(attr(pt.segs, "SeriesShowValue")))
+            {
+                chart.labels$SeriesLabels[[i]]$ShowValue <- TRUE
+                attr(pt.segs, "SeriesShowValue") <- NULL
+            }
+            if (length(pt.segs) > 0)
+                chart.labels$SeriesLabels[[i]]$CustomPoints <- pt.segs
+
+            labels[offset + ind.show] <- source.text[ind.show]
+        }
+    }
+
+    # The widget shows the series name in a separate part of the tooltip, so the
+    # <extra> block that plotly uses for it is dropped here.
+    if (tooltip.show)
+    {
+        for (i in 1:n.col)
+        {
+            offset <- (i - 1) * n.row
+            template <- setHoverTemplate(i, list(type = x.axis.type), chart.matrix,
+                                         hovertext.template)
+            template <- sub("<extra>.*</extra>$", "", template)
+            tooltips[offset + (1:n.row)] <- evalHoverTemplate(
+                rep(template, length = n.row),
+                x.labels, x.hovertext.format, x.tick.prefix, x.tick.suffix,
+                as.numeric(chart.matrix[,i]), y.hovertext.format,
+                y.tick.prefix, y.tick.suffix)
+        }
+    }
+
+    # Markers are drawn by the widget for every point, so hidden markers are given a
+    # radius of zero. Hover still works because the line trace carries the tooltip.
+    # as.vector is needed so these serialise as flat arrays rather than nested ones.
+    point.radius <- as.vector(ifelse(marker.show, marker.size / 2, 0))
+    point.border.colors <- as.vector(ifelse(marker.show,
+        rep(marker.border.colors, each = n.row), ""))
+    point.border.widths <- as.vector(ifelse(marker.show, marker.border.width, 0))
+
+    fit <- fitSeriesForCombinedScatter(chart.matrix, x.labels, x.axis.type, fit.type,
+        fit.ignore.last, fit.CI.show, fit.window.size, fit.line.name, fit.line.colors,
+        fit.CI.colors, fit.CI.opacity)
+
+    p <- rhtmlCombinedScatter::CombinedScatter(
+        X = x.values,
+        Y = y.values,
+        group = groups,
+        x.levels = if (x.axis.type == "category") rownames(chart.matrix) else NULL,
+        colors = colors,
+        color.transparency = if (length(unique(marker.opacity)) == 1) marker.opacity[1] else NULL,
+        label = labels,
+        labels.show = TRUE,
+        label.auto.placement = TRUE,
+        labels.font.family = data.label.font.family,
+        labels.font.color = if (data.label.font.autocolor) NULL else dlab.color[1],
+        labels.font.size = data.label.font.size,
+        lines.show = TRUE,
+        line.colors = toRGB(colors, alpha = opacity),
+        line.thickness = line.thickness,
+        line.type = line.type,
+        line.shape = shape,
+        line.smoothing = smoothing,
+        point.radius = point.radius,
+        point.border.color = point.border.colors,
+        point.border.width = point.border.widths,
+        grid = grid.show,
+        legend.show = legend.show,
+        legend.font.color = legend.font.color,
+        legend.font.family = legend.font.family,
+        legend.font.size = legend.font.size,
+        legend.x = legend.position.x,
+        legend.y = legend.position.y,
+        legend.wrap = legend.wrap,
+        legend.wrap.n.char = legend.wrap.nchar,
+        legend.orientation = legend.orientation,
+        margin.autoexpand = margin.autoexpand,
+        margin.top = margin.top,
+        margin.bottom = margin.bottom,
+        margin.left = margin.left,
+        margin.right = margin.right,
+        title = title,
+        title.font.family = title.font.family,
+        title.font.color = title.font.color,
+        title.font.size = title.font.size,
+        title.alignment = title.align,
+        subtitle = subtitle,
+        subtitle.font.family = subtitle.font.family,
+        subtitle.font.color = subtitle.font.color,
+        subtitle.font.size = subtitle.font.size,
+        subtitle.alignment = subtitle.align,
+        footer = footer,
+        footer.font.family = footer.font.family,
+        footer.font.color = footer.font.color,
+        footer.font.size = footer.font.size,
+        y.title = y.title,
+        y.title.font.family = y.title.font.family,
+        y.title.font.color = y.title.font.color,
+        y.title.font.size = y.title.font.size,
+        x.title = x.title,
+        x.title.font.family = x.title.font.family,
+        x.title.font.color = x.title.font.color,
+        x.title.font.size = x.title.font.size,
+        x.axis.show = x.tick.show,
+        x.axis.font.family = x.tick.font.family,
+        x.axis.font.color = x.tick.font.color,
+        x.axis.font.size = x.tick.font.size,
+        x.axis.tick.length = x.tick.mark.length,
+        x.axis.tick.color = x.tick.mark.color,
+        x.axis.tick.angle = x.tick.angle,
+        x.axis.line.width = x.line.width,
+        x.axis.line.color = x.line.color,
+        x.axis.zero.line.width = x.zero.line.width,
+        x.axis.zero.line.color = x.zero.line.color,
+        x.axis.zero.line.dash = tolower(x.zero.line.dash),
+        x.axis.grid.width = x.grid.width,
+        x.axis.grid.color = x.grid.color,
+        x.axis.grid.dash = tolower(x.grid.dash),
+        x.axis.label.wrap = x.tick.label.wrap,
+        x.axis.label.wrap.n.char = x.tick.label.wrap.nchar,
+        y.axis.show = y.tick.show,
+        y.axis.font.family = y.tick.font.family,
+        y.axis.font.color = y.tick.font.color,
+        y.axis.font.size = y.tick.font.size,
+        y.axis.tick.length = y.tick.mark.length,
+        y.axis.tick.color = y.tick.mark.color,
+        y.axis.line.width = y.line.width,
+        y.axis.line.color = y.line.color,
+        y.axis.zero.line.width = y.zero.line.width,
+        y.axis.zero.line.color = y.zero.line.color,
+        y.axis.zero.line.dash = tolower(y.zero.line.dash),
+        y.axis.grid.width = y.grid.width,
+        y.axis.grid.color = y.grid.color,
+        y.axis.grid.dash = tolower(y.grid.dash),
+        x.format = x.tick.format,
+        y.format = y.tick.format,
+        x.hover.format = x.hovertext.format,
+        y.hover.format = y.hovertext.format,
+        x.prefix = x.tick.prefix,
+        y.prefix = y.tick.prefix,
+        x.suffix = x.tick.suffix,
+        y.suffix = y.tick.suffix,
+        x.bounds.minimum = x.bounds.minimum,
+        x.bounds.maximum = x.bounds.maximum,
+        x.bounds.units.major = x.tick.distance,
+        y.bounds.minimum = y.bounds.minimum,
+        y.bounds.maximum = y.bounds.maximum,
+        y.bounds.units.major = y.tick.distance,
+        origin = x.zero || y.zero,
+        tooltip.text = if (tooltip.show) tooltips else NULL,
+        tooltip.font.family = hovertext.font.family,
+        tooltip.font.size = hovertext.font.size,
+        trend.lines.show = FALSE,
+        fit.x = fit$fit.x,
+        fit.y = fit$fit.y,
+        fit.group = fit$fit.group,
+        fit.lower.bound = fit$fit.lower.bound,
+        fit.upper.bound = fit$fit.upper.bound,
+        fit.line.names = fit$fit.line.names,
+        fit.line.type = fit.line.type,
+        fit.line.width = fit.line.width,
+        fit.line.opacity = fit.line.opacity,
+        fit.line.colors = fit$fit.line.colors,
+        fit.ci.colors = fit$fit.ci.fill.colors,
+        fit.ci.label.colors = fit$fit.ci.label.colors,
+        background.color = toRGB(background.fill.color, alpha = background.fill.opacity),
+        plot.background.color = toRGB(charting.area.fill.color,
+                                      alpha = charting.area.fill.opacity),
+        debug.mode = grepl("DEBUG_MODE_ON", title))
+
+    serieslabels.num.changes <- vapply(chart.labels$SeriesLabels,
+        function(s) isTRUE(s$ShowValue) + length(s$CustomPoints), numeric(1L))
+    if (sum(serieslabels.num.changes) == 0)
+        chart.labels <- NULL
+
+    result <- list(htmlwidget = p)
+    class(result) <- "StandardChart"
+    attr(result, "ChartType") <- if (all(marker.show)) "Line Markers" else "Line"
+    attr(result, "ChartLabels") <- chart.labels
+    result
+}
+
+#' Fits a line to each series in the form expected by rhtmlCombinedScatter
+#'
+#' Unlike the plotly line chart, which adds one trace per fitted series, the widget takes
+#' the fits as parallel lists indexed by series.
+#' @return A list of the fit.* arguments of \code{CombinedScatter}, all NULL when
+#'     \code{fit.type} is "None".
+#' @noRd
+fitSeriesForCombinedScatter <- function(chart.matrix, x.labels, x.axis.type, fit.type,
+    fit.ignore.last, fit.CI.show, fit.window.size, fit.line.name, fit.line.colors,
+    fit.CI.colors, fit.CI.opacity)
+{
+    empty <- list(fit.x = NULL, fit.y = NULL, fit.group = NULL, fit.line.names = NULL,
+                  fit.lower.bound = NULL, fit.upper.bound = NULL, fit.line.colors = NULL,
+                  fit.ci.fill.colors = NULL, fit.ci.label.colors = NULL)
+    if (fit.type == "None")
+        return(empty)
+
+    n.col <- ncol(chart.matrix)
+    fit.x <- fit.y <- fit.lb <- fit.ub <- vector("list", n.col)
+    for (i in 1:n.col)
+    {
+        tmp.fit <- fitSeries(x.labels, as.numeric(chart.matrix[,i]), fit.type,
+                             fit.ignore.last, x.axis.type, fit.CI.show, fit.window.size)
+        fit.x[[i]] <- tmp.fit$x
+        fit.y[[i]] <- tmp.fit$y
+        fit.lb[[i]] <- tmp.fit$lb
+        fit.ub[[i]] <- tmp.fit$ub
+    }
+    has.ci <- fit.CI.show && !any(vapply(fit.lb, is.null, logical(1L)))
+    list(fit.x = fit.x,
+         fit.y = fit.y,
+         fit.group = colnames(chart.matrix),
+         fit.line.names = if (n.col == 1) fit.line.name
+                          else sprintf("%s: %s", fit.line.name, colnames(chart.matrix)),
+         fit.lower.bound = if (has.ci) fit.lb else NULL,
+         fit.upper.bound = if (has.ci) fit.ub else NULL,
+         fit.line.colors = fit.line.colors,
+         fit.ci.fill.colors = if (has.ci) toRGB(fit.CI.colors, alpha = fit.CI.opacity) else NULL,
+         fit.ci.label.colors = if (has.ci) fit.CI.colors else NULL)
+}
+
+# Arguments of Line() that rhtmlCombinedScatter has no equivalent for. Each entry is the
+# value the argument has to hold for the chart to be unaffected; anything else is dropped.
+UNSUPPORTED.BY.AUTO.PLACEMENT <- list(
+    marker.symbols = "circle",
+    x.tick.maxnum = 11,
+    y.tick.maxnum = NULL,
+    x.data.reversed = FALSE,
+    y.data.reversed = FALSE,
+    x.tick.marks = "",
+    y.tick.angle = NULL,
+    legend.ascending = NA,
+    legend.fill.opacity = 0,
+    legend.border.line.width = 0,
+    margin.inner.pad = NULL,
+    footer.align = "center",
+    hovertext.align = "left",
+    modebar.show = FALSE,
+    zoom.enable = TRUE,
+    axis.drag.enable = FALSE,
+    data.label.position = "Top")
+
+#' Warns about arguments that automatic data label placement cannot honour
+#'
+#' @param args A named list of the evaluated arguments of \code{labeledLine}.
+#' @param n.col The number of series being charted.
+#' @noRd
+warnUnsupportedByAutoPlacement <- function(args, n.col)
+{
+    ignored <- names(UNSUPPORTED.BY.AUTO.PLACEMENT)
+    ignored <- ignored[vapply(ignored,
+        function(nm) !identical(args[[nm]], UNSUPPORTED.BY.AUTO.PLACEMENT[[nm]]),
+        logical(1L))]
+
+    # These are per-series in a plotly line chart but only global in the widget
+    if (length(unique(args$marker.opacity)) > 1)
+        ignored <- c(ignored, "marker.opacity")
+    if (!args$data.label.font.autocolor &&
+        length(unique(vectorize(args$data.label.font.color, n.col))) > 1)
+        ignored <- c(ignored, "data.label.font.color")
+
+    if (length(ignored) > 0)
+        warning("Automatic data label placement does not support ",
+                ngettext(length(ignored), "the setting ", "the settings "),
+                paste0("'", sort(ignored), "'", collapse = ", "),
+                ". Turn off 'Automatically place data labels' to use ",
+                ngettext(length(ignored), "it", "them"), ".")
+    invisible(NULL)
+}

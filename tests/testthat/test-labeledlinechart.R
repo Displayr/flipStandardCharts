@@ -1,0 +1,176 @@
+context("labeled line chart")
+
+z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L), .Dim = c(5L, 2L),
+    .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
+
+# Convenience: build the chart and return the htmlwidget payload
+widgetOf <- function(...) suppressWarnings(Line(...))$htmlwidget$x
+
+# The widget JSON encodes the labels, so they come back as one string
+labelsOf <- function(x) as.character(jsonlite::fromJSON(as.character(x$label)))
+
+test_that("Line only dispatches to labeledLine when there are labels to place",
+{
+    expect_s3_class(Line(z, data.label.auto.placement = TRUE)$htmlwidget, "plotly")
+    expect_s3_class(Line(z, data.label.auto.placement = FALSE,
+                         data.label.show = TRUE)$htmlwidget, "plotly")
+    expect_s3_class(Line(z, data.label.auto.placement = TRUE,
+                         data.label.show = TRUE)$htmlwidget, "rhtmlCombinedScatter")
+    expect_s3_class(Line(z, data.label.auto.placement = TRUE,
+                         data.label.show.at.ends = TRUE)$htmlwidget,
+                    "rhtmlCombinedScatter")
+    expect_s3_class(Line(z, data.label.auto.placement = TRUE,
+                         data.label.show = c(TRUE, FALSE))$htmlwidget,
+                    "rhtmlCombinedScatter")
+})
+
+test_that("Series-specific line settings are passed through per series",
+{
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  line.type = c("Solid", "Dot"), line.thickness = "2, 8",
+                  colors = c("#FF0000", "#00AA00"), opacity = 0.5)
+    expect_equal(as.character(x$lineType), "[\"solid\",\"dot\"]")
+    expect_equal(as.character(x$lineThickness), "[2,8]")
+    # opacity is folded into the line color, as the plotly line chart does
+    expect_equal(as.character(x$lineColors),
+                 "[\"rgba(255,0,0,0.5)\",\"rgba(0,170,0,0.5)\"]")
+    expect_true(x$linesShow)
+})
+
+test_that("Markers are sized per point, with hidden markers at zero",
+{
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  marker.show.at.ends = TRUE, marker.size = c(6, 14))
+    expect_equal(x$pointRadius, c(3, 0, 0, 0, 3, 7, 0, 0, 0, 7))
+
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE)
+    expect_equal(x$pointRadius, rep(0, 10)) # marker.show defaults to FALSE
+})
+
+test_that("Data labels are only supplied for the points that show them",
+{
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = c(TRUE, FALSE))
+    expect_equal(labelsOf(x), c("1", "2", "3", "4", "5", "", "", "", "", ""))
+
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  data.label.format = ".1f", data.label.prefix = "<",
+                  data.label.suffix = ">")
+    expect_equal(labelsOf(x)[1:3], c("<1.0>", "<2.0>", "<3.0>"))
+})
+
+test_that("Data label font color falls back to the series color when autocoloring",
+{
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  data.label.font.autocolor = TRUE)
+    expect_null(x$labelsFontColor)
+
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  data.label.font.color = "#123456")
+    expect_equal(x$labelsFontColor, "#123456")
+})
+
+test_that("Data label annotations are emitted as tspan so the SVG sanitiser keeps them",
+{
+    recolor <- list(list(type = "Recolor text", data = "",
+        threstype = "above threshold", threshold = "3", color = "#00FF00"))
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  annotation.list = recolor)
+    expect_match(labelsOf(x)[4], "<tspan style='fill:#00FF00'>4</tspan>", fixed = TRUE)
+    expect_false(any(grepl("<span", labelsOf(x), fixed = TRUE)))
+
+    hide <- list(list(type = "Hide", data = "",
+        threstype = "above threshold", threshold = "4"))
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  annotation.list = hide)
+    expect_equal(labelsOf(x), c("1", "2", "3", "4", "", "2", "3", "4", "", ""))
+})
+
+test_that("Hovertext is resolved in R and passed as tooltip text",
+{
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE)
+    expect_equal(x$tooltipText[1:3], c("T: 1.00", "U: 2.00", "V: 3.00"))
+
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  hovertext.template = "%{x} had %{y}", y.hovertext.format = ".2f",
+                  y.tick.prefix = "$")
+    expect_equal(x$tooltipText[1:2], c("T had $1.00", "U had $2.00"))
+
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  tooltip.show = FALSE)
+    expect_null(x$tooltipText)
+})
+
+test_that("The axis type is determined in R and the labels left for the widget",
+{
+    zd <- z
+    rownames(zd) <- c("Jan 2020", "Feb 2020", "Mar 2020", "Apr 2020", "May 2020")
+    x <- widgetOf(zd, data.label.auto.placement = TRUE, data.label.show = TRUE)
+    expect_true(x$xIsDateTime)
+    expect_null(x$xLevels)
+
+    zn <- z
+    rownames(zn) <- c("10", "20", "30", "40", "50")
+    x <- widgetOf(zn, data.label.auto.placement = TRUE, data.label.show = TRUE)
+    expect_false(x$xIsDateTime)
+    expect_equal(as.character(x$X), "[10,20,30,40,50,10,20,30,40,50]")
+
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE)
+    expect_false(x$xIsDateTime)
+    expect_equal(as.character(x$xLevels), "[\"T\",\"U\",\"V\",\"W\",\"X\"]")
+})
+
+test_that("PPT export metadata matches the plotly line chart",
+{
+    auto <- suppressWarnings(Line(z, data.label.auto.placement = TRUE,
+                                  data.label.show = TRUE))
+    plain <- Line(z, data.label.show = TRUE)
+    expect_equal(attr(auto, "ChartLabels"), attr(plain, "ChartLabels"))
+    expect_equal(attr(auto, "ChartType"), attr(plain, "ChartType"))
+
+    auto <- suppressWarnings(Line(z, data.label.auto.placement = TRUE,
+        data.label.show = TRUE, data.label.prefix = "<"))
+    plain <- Line(z, data.label.show = TRUE, data.label.prefix = "<")
+    expect_equal(attr(auto, "ChartLabels"), attr(plain, "ChartLabels"))
+})
+
+test_that("Charting options with no widget equivalent warn instead of failing",
+{
+    expect_warning(Line(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                        marker.symbols = "square"),
+                   "does not support the setting 'marker.symbols'")
+    expect_warning(Line(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                        modebar.show = TRUE, y.tick.maxnum = 5),
+                   "does not support the settings 'modebar.show', 'y.tick.maxnum'")
+    # Defaults must not warn, including ones that get vectorized later on
+    expect_warning(Line(z, data.label.auto.placement = TRUE, data.label.show = TRUE),
+                   NA)
+})
+
+test_that("Automatic placement warns once it exceeds the widget's label limit",
+{
+    big <- matrix(1:120, 60, 2, dimnames = list(paste0("r", 1:60), c("A", "B")))
+    expect_warning(Line(big, data.label.auto.placement = TRUE, data.label.show = TRUE),
+                   "100 or more labels")
+    small <- matrix(1:98, 49, 2, dimnames = list(paste0("r", 1:49), c("A", "B")))
+    expect_warning(Line(small, data.label.auto.placement = TRUE,
+                        data.label.show = TRUE), NA)
+})
+
+test_that("Other line chart features still render",
+{
+    expect_error(suppressWarnings(Line(z, data.label.auto.placement = TRUE,
+        data.label.show = TRUE, average.series = c(1.5, 2.5, 3.5, 4.5, 5.5))), NA)
+    expect_error(suppressWarnings(Line(z, data.label.auto.placement = TRUE,
+        data.label.show = TRUE, fit.type = "Smooth")), NA)
+    expect_error(suppressWarnings(Line(z, data.label.auto.placement = TRUE,
+        data.label.show = TRUE, fit.type = "Smooth", fit.CI.show = TRUE)), NA)
+    expect_error(suppressWarnings(Line(z[, 1, drop = FALSE],
+        data.label.auto.placement = TRUE, data.label.show = TRUE)), NA)
+    expect_error(suppressWarnings(Line(structure(z / 100, statistic = "%"),
+        data.label.auto.placement = TRUE, data.label.show = TRUE)), NA)
+
+    with.na <- structure(c(1, NA, 3, 4, NA, 2, 3, NA, 5, 6), .Dim = c(5L, 2L),
+        .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
+    expect_warning(Line(with.na, data.label.auto.placement = TRUE,
+                        data.label.show = TRUE), "Missing values")
+})
