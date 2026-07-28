@@ -119,6 +119,32 @@ test_that("The axis type is determined in R and the labels left for the widget",
     expect_equal(as.character(x$xLevels), "[\"T\",\"U\",\"V\",\"W\",\"X\"]")
 })
 
+test_that("Missing values are sent as null so the widget can break the line at them",
+{
+    # A gap must reach the widget as the JSON null literal. jsonlite would otherwise
+    # encode it as the string "NA", which the widget cannot recognise as missing: the
+    # axis is then classified as categorical, and plotly draws straight through the gap
+    # instead of breaking the line.
+    with.na <- structure(c(1, 2, NA, 4, 5, 2, 3, 4, 5, 6), .Dim = c(5L, 2L),
+        .Dimnames = list(letters[1:5], c("A", "B")))
+    x <- widgetOf(with.na, data.label.auto.placement = TRUE, data.label.show = TRUE)
+    expect_match(as.character(x$Y), "null", fixed = TRUE)
+    expect_false(grepl('"NA"', as.character(x$Y), fixed = TRUE))
+
+    # The gap must stay in place rather than being dropped, so that it separates the
+    # points on either side of it
+    y <- jsonlite::fromJSON(as.character(x$Y))
+    expect_equal(y, c(1, 2, NA, 4, 5, 2, 3, 4, 5, 6))
+
+    # and it carries no label of its own
+    expect_equal(labelsOf(x)[3], "")
+
+    no.na <- with.na; no.na[3, 1] <- 3
+    expect_false(grepl("null", as.character(
+        widgetOf(no.na, data.label.auto.placement = TRUE,
+                 data.label.show = TRUE)$Y), fixed = TRUE))
+})
+
 test_that("PPT export metadata matches the plotly line chart",
 {
     auto <- suppressWarnings(Line(z, data.label.auto.placement = TRUE,
