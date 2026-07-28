@@ -172,6 +172,72 @@ test_that("The margins match the plotly line chart's",
     expectSameMargins(z, margin.autoexpand = FALSE)
 })
 
+test_that("The axis range mode and tick count match the plotly line chart's",
+{
+    # y.zero and x.zero reach plotly as the axis range mode, and the tick maximums as the
+    # tick count. Neither had an equivalent in the widget, so with y.zero defaulting to
+    # TRUE the y axis stopped short of zero and the chart reflowed. Both are taken from
+    # the axes setAxis built, so whatever it decides is what the widget is told.
+    num <- z
+    rownames(num) <- c("10", "20", "30", "40", "50")
+
+    # plotly_build represents an unset axis attribute as an empty list, where setAxis
+    # itself leaves it NULL, so both stand for "not set"
+    unset <- function(v) if (length(v) == 0) NULL else v
+
+    expectSameAxes <- function(dat, ...) {
+        a <- plotly::plotly_build(
+            Line(dat, data.label.show = TRUE, ...)$htmlwidget)$x$layout
+        b <- widgetOf(dat, data.label.auto.placement = TRUE, data.label.show = TRUE, ...)
+        expect_equal(unset(a$yaxis$rangemode), unset(b$yAxisRangeMode))
+        expect_equal(unset(a$xaxis$rangemode), unset(b$xAxisRangeMode))
+        expect_equal(unset(a$yaxis$nticks), unset(b$yAxisTickMaxnum))
+        expect_equal(unset(a$xaxis$nticks), unset(b$xAxisTickMaxnum))
+        # setAxis rotates long categorical labels, and the widget has to rotate them too
+        expect_equal(unset(a$xaxis$tickangle), unset(b$xAxisTickAngle))
+        expect_equal(unset(a$yaxis$tickangle), unset(b$yAxisTickAngle))
+    }
+
+    expectSameAxes(z)                                  # y.zero defaults to TRUE
+    expectSameAxes(z, y.zero = FALSE)
+    expectSameAxes(num)                                # a numeric x axis sets nticks
+    expectSameAxes(num, x.zero = TRUE)
+    expectSameAxes(z, y.tick.maxnum = 4)
+    expectSameAxes(num, x.tick.maxnum = 3)
+    expectSameAxes(num, y.zero = FALSE, x.zero = FALSE,
+                   y.tick.maxnum = 5, x.tick.maxnum = 4)
+
+    long <- z
+    rownames(long) <- paste(c("Alpha","Beta","Gamma","Delta","Epsilon"), "category")
+    expectSameAxes(long)                               # long labels get rotated
+    expect_equal(widgetOf(long, data.label.auto.placement = TRUE,
+                          data.label.show = TRUE)$xAxisTickAngle, 90)
+
+    # The default really is tozero, which is the case that was wrong
+    expect_equal(widgetOf(z, data.label.auto.placement = TRUE,
+                          data.label.show = TRUE)$yAxisRangeMode, "tozero")
+})
+
+test_that("The footer is padded down the bottom margin as the plotly chart does",
+{
+    # The widget places the title, subtitle and footer inside the reserved margins rather
+    # than laying them out itself, which only lands in the same place if the footer text
+    # carries the padding setFooter adds.
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  footer = "A footer")
+    expect_match(x$footer, "A footer", fixed = TRUE)
+    expect_match(x$footer, "&nbsp;", fixed = TRUE)   # setFooter's leading pad
+
+    plain <- Line(z, data.label.show = TRUE, footer = "A footer")$htmlwidget
+    footer.annot <- Filter(function(a) identical(a$text, x$footer),
+                           plotly::plotly_build(plain)$x$layout$annotations)
+    expect_length(footer.annot, 1)                   # byte-identical to Line's
+
+    # No footer means no padding to send
+    expect_equal(widgetOf(z, data.label.auto.placement = TRUE,
+                          data.label.show = TRUE)$footer, "")
+})
+
 test_that("PPT export metadata matches the plotly line chart",
 {
     auto <- suppressWarnings(Line(z, data.label.auto.placement = TRUE,
@@ -192,8 +258,8 @@ test_that("Charting options with no widget equivalent warn instead of failing",
                         marker.symbols = "square"),
                    "does not support the setting 'marker.symbols'")
     expect_warning(Line(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
-                        modebar.show = TRUE, y.tick.maxnum = 5),
-                   "does not support the settings 'modebar.show', 'y.tick.maxnum'")
+                        modebar.show = TRUE, x.data.reversed = TRUE),
+                   "does not support the settings 'modebar.show', 'x.data.reversed'")
     # Defaults must not warn, including ones that get vectorized later on
     expect_warning(Line(z, data.label.auto.placement = TRUE, data.label.show = TRUE),
                    NA)

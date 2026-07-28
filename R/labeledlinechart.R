@@ -196,7 +196,20 @@ labeledLine <- function(x,
     # axis objects they are worked out from are of no use to the widget, which builds its
     # own axes. Left to itself the widget asks for a small fixed margin and lets plotly's
     # automargin grow it, which gives a tighter chart than Line.
-    margins <- prepareLineAxesFrom(sys.frame(sys.nframe()))$margins
+    # The axis objects are also the source of the range mode and tick count, so that
+    # whatever setAxis decides for the plotly chart reaches the widget too
+    prepared.axes <- prepareLineAxesFrom(sys.frame(sys.nframe()))
+    margins <- prepared.axes$margins
+    xaxis <- prepared.axes$xaxis
+    yaxis <- prepared.axes$yaxis
+
+    # The widget places the title, subtitle and footer inside these margins, the way the
+    # plotly chart does. setFooter pads the footer text down the bottom margin, so the
+    # padded text is what has to be sent rather than the footer itself.
+    footer.font <- list(family = footer.font.family, size = footer.font.size,
+                        color = footer.font.color)
+    footer.annot <- setFooter(footer, footer.font, margins, footer.align)
+    footer.text <- if (is.null(footer.annot)) "" else footer.annot$text
 
     # The widget decides the axis type from the class of X, and does its own tick
     # formatting and label wrapping. Dates are parsed here because table rownames
@@ -351,7 +364,7 @@ labeledLine <- function(x,
         subtitle.font.color = subtitle.font.color,
         subtitle.font.size = subtitle.font.size,
         subtitle.alignment = subtitle.align,
-        footer = footer,
+        footer = footer.text,
         footer.font.family = footer.font.family,
         footer.font.color = footer.font.color,
         footer.font.size = footer.font.size,
@@ -369,7 +382,9 @@ labeledLine <- function(x,
         x.axis.font.size = x.tick.font.size,
         x.axis.tick.length = x.tick.mark.length,
         x.axis.tick.color = x.tick.mark.color,
-        x.axis.tick.angle = x.tick.angle,
+        # setAxis rotates long categorical labels, so the angle it worked out has to be
+        # used rather than the argument the caller passed
+        x.axis.tick.angle = xaxis$tickangle,
         x.axis.line.width = x.line.width,
         x.axis.line.color = x.line.color,
         x.axis.zero.line.width = x.zero.line.width,
@@ -380,6 +395,10 @@ labeledLine <- function(x,
         x.axis.grid.dash = tolower(x.grid.dash),
         x.axis.label.wrap = x.tick.label.wrap,
         x.axis.label.wrap.n.char = x.tick.label.wrap.nchar,
+        # Taken from the axes setAxis built, so that x.zero and x.tick.maxnum reach the
+        # widget by the same route the plotly chart uses
+        x.axis.range.mode = xaxis$rangemode,
+        x.axis.tick.maxnum = xaxis$nticks,
         y.axis.show = y.tick.show,
         y.axis.font.family = y.tick.font.family,
         y.axis.font.color = y.tick.font.color,
@@ -394,6 +413,9 @@ labeledLine <- function(x,
         y.axis.grid.width = y.grid.width,
         y.axis.grid.color = y.grid.color,
         y.axis.grid.dash = tolower(y.grid.dash),
+        y.axis.tick.angle = yaxis$tickangle,
+        y.axis.range.mode = yaxis$rangemode,
+        y.axis.tick.maxnum = yaxis$nticks,
         x.format = x.tick.format,
         y.format = y.tick.format,
         x.hover.format = x.hovertext.format,
@@ -487,12 +509,9 @@ fitSeriesForCombinedScatter <- function(chart.matrix, x.labels, x.axis.type, fit
 # value the argument has to hold for the chart to be unaffected; anything else is dropped.
 UNSUPPORTED.BY.AUTO.PLACEMENT <- list(
     marker.symbols = "circle",
-    x.tick.maxnum = 11,
-    y.tick.maxnum = NULL,
     x.data.reversed = FALSE,
     y.data.reversed = FALSE,
     x.tick.marks = "",
-    y.tick.angle = NULL,
     legend.ascending = NA,
     legend.fill.opacity = 0,
     legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
