@@ -172,6 +172,46 @@ test_that("Charting options with no widget equivalent warn instead of failing",
                    NA)
 })
 
+test_that("Marker border opacity is folded into the border color",
+{
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  marker.show = TRUE, marker.border.width = 2,
+                  marker.border.colors = c("#FF0000", "#00FF00"),
+                  marker.border.opacity = 0.4)
+    expect_equal(unique(x$pointBorderColor),
+                 c("rgba(255,0,0,0.4)", "rgba(0,255,0,0.4)"))
+
+    # Hidden markers carry no border at all, so the widget does not draw one
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  marker.border.colors = "#FF0000", marker.border.opacity = 0.4)
+    expect_equal(unique(x$pointBorderColor), "")
+})
+
+test_that("Arguments defaulting to another argument only warn when they diverge",
+{
+    # marker.colors defaults to colors, and passing the series colors is exactly right,
+    # so it must only warn when the caller asks for something different
+    expect_warning(Line(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                        colors = c("#FF0000", "#00FF00")), NA)
+    expect_warning(Line(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                        marker.colors = c("#FF0000", "#00FF00")),
+                   "does not support the setting 'marker.colors'")
+    expect_warning(Line(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                        colors = c("#FF0000", "#00FF00"),
+                        marker.colors = c("#FF0000", "#00FF00")), NA)
+
+    # legend.fill.color defaults to background.fill.color, likewise
+    expect_warning(Line(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                        background.fill.color = "#EEEEEE"), NA)
+    expect_warning(Line(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                        legend.fill.color = "#EEEEEE"),
+                   "does not support the setting 'legend.fill.color'")
+
+    expect_warning(Line(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                        legend.border.color = "#FF00FF"),
+                   "does not support the setting 'legend.border.color'")
+})
+
 test_that("Automatic placement warns once it exceeds the widget's label limit",
 {
     big <- matrix(1:120, 60, 2, dimnames = list(paste0("r", 1:60), c("A", "B")))

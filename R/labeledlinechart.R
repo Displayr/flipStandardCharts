@@ -282,9 +282,12 @@ labeledLine <- function(x,
     # Markers are drawn by the widget for every point, so hidden markers are given a
     # radius of zero. Hover still works because the line trace carries the tooltip.
     # as.vector is needed so these serialise as flat arrays rather than nested ones.
+    # The border opacity is folded into the color, as the plotly chart does, because the
+    # widget takes only a color per point for the border
+    border.colors <- toRGB(marker.border.colors, alpha = marker.border.opacity)
     point.radius <- as.vector(ifelse(marker.show, marker.size / 2, 0))
     point.border.colors <- as.vector(ifelse(marker.show,
-        rep(marker.border.colors, each = n.row), ""))
+        rep(border.colors, each = n.row), ""))
     point.border.widths <- as.vector(ifelse(marker.show, marker.border.width, 0))
 
     fit <- fitSeriesForCombinedScatter(chart.matrix, x.labels, x.axis.type, fit.type,
@@ -482,6 +485,7 @@ UNSUPPORTED.BY.AUTO.PLACEMENT <- list(
     y.tick.angle = NULL,
     legend.ascending = NA,
     legend.fill.opacity = 0,
+    legend.border.color = rgb(44, 44, 44, maxColorValue = 255),
     legend.border.line.width = 0,
     margin.inner.pad = NULL,
     footer.align = "center",
@@ -509,6 +513,14 @@ warnUnsupportedByAutoPlacement <- function(args, n.col)
     if (!args$data.label.font.autocolor &&
         length(unique(vectorize(args$data.label.font.color, n.col))) > 1)
         ignored <- c(ignored, "data.label.font.color")
+
+    # These default to another argument, so they can only be judged against it. The
+    # widget takes one set of series colors, used for the markers and for automatically
+    # colored data labels alike, so markers cannot be colored separately from the lines.
+    if (!identical(args$marker.colors, args$colors))
+        ignored <- c(ignored, "marker.colors")
+    if (!identical(args$legend.fill.color, args$background.fill.color))
+        ignored <- c(ignored, "legend.fill.color")
 
     if (length(ignored) > 0)
         warning("Automatic data label placement does not support ",
