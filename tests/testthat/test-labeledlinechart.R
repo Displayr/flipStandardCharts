@@ -238,6 +238,17 @@ test_that("The footer is padded down the bottom margin as the plotly chart does"
                           data.label.show = TRUE)$footer, "")
 })
 
+test_that("The footer alignment is passed on",
+{
+    for (al in c("left", "center", "right"))
+        expect_equal(widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                              footer = "A footer", footer.align = al)$footerAlignment, al)
+
+    # and no longer reported as unsupported
+    expect_warning(Line(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                        footer = "A footer", footer.align = "right"), NA)
+})
+
 test_that("PPT export metadata matches the plotly line chart",
 {
     auto <- suppressWarnings(Line(z, data.label.auto.placement = TRUE,
