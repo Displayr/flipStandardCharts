@@ -198,6 +198,120 @@ prepareLineSeries <- function(x,
     prepared
 }
 
+#' Names that prepareLineAxes returns
+#' @noRd
+PREPARED.LINE.AXES <- c("axisFormat", "xaxis", "yaxis", "legend", "legend.text",
+                        "margins")
+
+#' Works out the axes and margin spacing of a line chart
+#'
+#' Extracted so that \code{labeledLine} can reserve the same margins as
+#' \code{\link{Line}} rather than estimating them a second time. It only needs
+#' \code{margins}, but the margins are worked out from the axis objects, so those are
+#' built here too and \code{Line} takes them from the same place.
+#'
+#' The margins are only a starting point. Both renderers leave plotly's automargin on, and
+#' automargin can grow a margin but never shrink one, so what is reserved here is a lower
+#' bound: whichever is larger, this estimate or the width of the text as measured in the
+#' browser. That is why the estimate has to be shared. The widget asks for a small fixed
+#' margin of its own and lets automargin do the work, which produces a tighter chart than
+#' Line and a visible reflow when automatic data label placement is turned on.
+#'
+#' @return A named list of the values in \code{PREPARED.LINE.AXES}.
+#' @noRd
+prepareLineAxes <- function(chart.matrix, legend.show,
+    title, title.font.size, subtitle, subtitle.font.size, footer, footer.font.size,
+    x.title, x.title.font.family, x.title.font.size, x.title.font.color,
+    x.line.color, x.line.width, x.grid.width, x.grid.color, x.grid.dash,
+    x.tick.font.family, x.tick.font.size, x.tick.font.color,
+    x.tick.angle, x.tick.mark.length, x.tick.distance,
+    x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show, x.tick.mark.color,
+    x.tick.maxnum, x.tick.label.wrap, x.tick.label.wrap.nchar,
+    x.bounds.minimum, x.bounds.maximum, x.zero, x.zero.line.width, x.zero.line.color,
+    x.data.reversed, x.hovertext.format,
+    y.title, y.title.font.family, y.title.font.size, y.title.font.color,
+    y.line.color, y.line.width, y.grid.width, y.grid.color, y.grid.dash,
+    y.tick.font.family, y.tick.font.size, y.tick.font.color,
+    y.tick.angle, y.tick.mark.length, y.tick.distance,
+    y.tick.format, y.tick.prefix, y.tick.suffix, y.tick.show, y.tick.mark.color,
+    y.tick.maxnum, y.bounds.minimum, y.bounds.maximum, y.zero, y.zero.line.width,
+    y.zero.line.color, y.data.reversed, y.hovertext.format,
+    grid.show, zoom.enable,
+    legend.font.family, legend.font.size, legend.font.color,
+    legend.ascending, legend.fill.color,
+    legend.fill.opacity, legend.border.color, legend.border.line.width,
+    legend.position.x, legend.position.y, legend.orientation,
+    legend.wrap, legend.wrap.nchar,
+    margin.top, margin.bottom, margin.left, margin.right, margin.inner.pad,
+    margin.autoexpand)
+{
+    # Built here rather than taken from the caller, so that both callers can pass their
+    # own arguments straight through without holding any intermediate values
+    x.title.font <- list(family = x.title.font.family, size = x.title.font.size,
+                         color = x.title.font.color)
+    y.title.font <- list(family = y.title.font.family, size = y.title.font.size,
+                         color = y.title.font.color)
+    xtick.font <- list(family = x.tick.font.family, size = x.tick.font.size,
+                       color = x.tick.font.color)
+    ytick.font <- list(family = y.tick.font.family, size = y.tick.font.size,
+                       color = y.tick.font.color)
+    legend.font <- list(family = legend.font.family, size = legend.font.size,
+                        color = legend.font.color)
+
+    legend <- setLegend("Line", legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
+                        legend.border.color, legend.border.line.width,
+                        legend.position.x, legend.position.y, FALSE, legend.orientation)
+
+    # Format axis labels
+    axisFormat <- formatLabels(chart.matrix, "Line", x.tick.label.wrap, x.tick.label.wrap.nchar,
+                               x.tick.format, y.tick.format)
+    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, axisFormat, x.zero, is.null(x.tick.distance))
+    y.range <- setValRange(y.bounds.minimum, y.bounds.maximum, chart.matrix, y.zero, is.null(y.tick.distance))
+    xtick <- setTicks(x.range$min, x.range$max, x.tick.distance, x.data.reversed)
+    ytick <- setTicks(y.range$min, y.range$max, y.tick.distance, y.data.reversed)
+
+    yaxis <- setAxis(y.title, "left", axisFormat, y.title.font,
+                  y.line.color, y.line.width, y.grid.width * grid.show, y.grid.color, y.grid.dash,
+                  ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance,
+                  y.tick.format, y.tick.prefix, y.tick.suffix,
+                  y.tick.show, y.zero, y.zero.line.width, y.zero.line.color,
+                  y.hovertext.format, num.maxticks = y.tick.maxnum,
+                  tickcolor = y.tick.mark.color, zoom.enable = zoom.enable)
+    xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
+                  x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color, x.grid.dash,
+                  xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance,
+                  x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show,
+                  x.zero, x.zero.line.width, x.zero.line.color,
+                  x.hovertext.format, axisFormat$labels, num.maxticks = x.tick.maxnum,
+                  tickcolor = x.tick.mark.color, zoom.enable = zoom.enable)
+
+    # Work out margin spacing
+    margins <- list(t = 20, b = 20, r = 60, l = 80, pad = 0)
+    margins <- setMarginsForAxis(margins, axisFormat, xaxis)
+    margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
+                                 subtitle.font.size, footer.font.size)
+
+    legend.text <- autoFormatLongLabels(colnames(chart.matrix), legend.wrap, legend.wrap.nchar)
+    margins <- setMarginsForLegend(margins, legend.show, legend, legend.text)
+    margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
+                    margin.right, margin.inner.pad)
+    margins$autoexpand <- margin.autoexpand
+
+    prepared <- list(axisFormat = axisFormat, xaxis = xaxis, yaxis = yaxis,
+                     legend = legend, legend.text = legend.text, margins = margins)
+    stopifnot(setequal(names(prepared), PREPARED.LINE.AXES))
+    prepared
+}
+
+#' Calls prepareLineAxes with the calling chart function's own values
+#'
+#' The caller must have every formal of \code{prepareLineAxes} in scope, whether as its
+#' own argument or as something it has worked out, such as the tick fonts.
+#' @param frame The calling function's frame, from \code{sys.frame(sys.nframe())}.
+#' @noRd
+prepareLineAxesFrom <- function(frame)
+    do.call(prepareLineAxes, mget(names(formals(prepareLineAxes)), frame))
+
 #' Calls prepareLineSeries with the calling chart function's own arguments
 #'
 #' The caller must have every formal of \code{prepareLineSeries} among its own, which

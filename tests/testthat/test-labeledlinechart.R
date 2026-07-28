@@ -145,6 +145,33 @@ test_that("Missing values are sent as null so the widget can break the line at t
                  data.label.show = TRUE)$Y), fixed = TRUE))
 })
 
+test_that("The margins match the plotly line chart's",
+{
+    # Turning automatic placement on should not reflow the chart, so labeledLine reserves
+    # the margins Line works out rather than letting the widget use its own smaller ones.
+    # Compared after plotly_build, which is where the layout Line asked for is resolved.
+    long <- z
+    rownames(long) <- paste(c("Alpha","Beta","Gamma","Delta","Epsilon"), "category")
+
+    expectSameMargins <- function(dat, ...) {
+        a <- plotly::plotly_build(
+            Line(dat, data.label.show = TRUE, ...)$htmlwidget)$x$layout$margin
+        b <- widgetOf(dat, data.label.auto.placement = TRUE, data.label.show = TRUE, ...)
+        expect_equal(c(l = a$l, r = a$r, t = a$t, b = a$b),
+                     c(l = b$marginLeft, r = b$marginRight,
+                       t = b$marginTop, b = b$marginBottom))
+        expect_equal(a$autoexpand, b$marginAutoexpand)
+    }
+
+    expectSameMargins(z)
+    expectSameMargins(z, title = "T", subtitle = "S", footer = "F",
+                      x.title = "X", y.title = "Y")
+    expectSameMargins(long)                       # grows the bottom margin
+    expectSameMargins(z, legend.show = FALSE)     # shrinks the right margin
+    expectSameMargins(z, margin.left = 123, margin.top = 45)   # caller overrides win
+    expectSameMargins(z, margin.autoexpand = FALSE)
+})
+
 test_that("PPT export metadata matches the plotly line chart",
 {
     auto <- suppressWarnings(Line(z, data.label.auto.placement = TRUE,

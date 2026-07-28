@@ -207,53 +207,15 @@ Line <-   function(x,
     data.label.font <- dlab.pos <- dlab.prefix <- dlab.suffix <- NULL
     list2env(prepareLineSeriesFrom(sys.frame(sys.nframe())), environment())
 
+    # The axis and tick fonts are assembled by prepareLineAxes, which is the only thing
+    # that needs them; these three are used to place the text below
     title.font = list(family = title.font.family, size = title.font.size, color = title.font.color)
     subtitle.font = list(family = subtitle.font.family, size = subtitle.font.size, color = subtitle.font.color)
-    x.title.font = list(family = x.title.font.family, size = x.title.font.size, color = x.title.font.color)
-    y.title.font = list(family = y.title.font.family, size = y.title.font.size, color = y.title.font.color)
-    ytick.font = list(family = y.tick.font.family, size = y.tick.font.size, color = y.tick.font.color)
-    xtick.font = list(family = x.tick.font.family, size = x.tick.font.size, color = x.tick.font.color)
     footer.font = list(family = footer.font.family, size = footer.font.size, color = footer.font.color)
-    legend.font = list(family = legend.font.family, size = legend.font.size, color = legend.font.color)
 
-    legend <- setLegend("Line", legend.font, legend.ascending, legend.fill.color, legend.fill.opacity,
-                        legend.border.color, legend.border.line.width,
-                        legend.position.x, legend.position.y, FALSE, legend.orientation)
-
-    # Format axis labels
-    axisFormat <- formatLabels(chart.matrix, "Line", x.tick.label.wrap, x.tick.label.wrap.nchar,
-                               x.tick.format, y.tick.format)
-    x.range <- setValRange(x.bounds.minimum, x.bounds.maximum, axisFormat, x.zero, is.null(x.tick.distance))
-    y.range <- setValRange(y.bounds.minimum, y.bounds.maximum, chart.matrix, y.zero, is.null(y.tick.distance))
-    xtick <- setTicks(x.range$min, x.range$max, x.tick.distance, x.data.reversed)
-    ytick <- setTicks(y.range$min, y.range$max, y.tick.distance, y.data.reversed)
-
-    yaxis <- setAxis(y.title, "left", axisFormat, y.title.font,
-                  y.line.color, y.line.width, y.grid.width * grid.show, y.grid.color, y.grid.dash,
-                  ytick, ytick.font, y.tick.angle, y.tick.mark.length, y.tick.distance,
-                  y.tick.format, y.tick.prefix, y.tick.suffix,
-                  y.tick.show, y.zero, y.zero.line.width, y.zero.line.color,
-                  y.hovertext.format, num.maxticks = y.tick.maxnum,
-                  tickcolor = y.tick.mark.color, zoom.enable = zoom.enable)
-    xaxis <- setAxis(x.title, "bottom", axisFormat, x.title.font,
-                  x.line.color, x.line.width, x.grid.width * grid.show, x.grid.color, x.grid.dash,
-                  xtick, xtick.font, x.tick.angle, x.tick.mark.length, x.tick.distance,
-                  x.tick.format, x.tick.prefix, x.tick.suffix, x.tick.show,
-                  x.zero, x.zero.line.width, x.zero.line.color,
-                  x.hovertext.format, axisFormat$labels, num.maxticks = x.tick.maxnum,
-                  tickcolor = x.tick.mark.color, zoom.enable = zoom.enable)
-
-    # Work out margin spacing
-    margins <- list(t = 20, b = 20, r = 60, l = 80, pad = 0)
-    margins <- setMarginsForAxis(margins, axisFormat, xaxis)
-    margins <- setMarginsForText(margins, title, subtitle, footer, title.font.size,
-                                 subtitle.font.size, footer.font.size)
-
-    legend.text <- autoFormatLongLabels(colnames(chart.matrix), legend.wrap, legend.wrap.nchar)
-    margins <- setMarginsForLegend(margins, legend.show, legend, legend.text)
-    margins <- setCustomMargins(margins, margin.top, margin.bottom, margin.left,
-                    margin.right, margin.inner.pad)
-    margins$autoexpand <- margin.autoexpand
+    # Assigned by the list2env below; declared because static analysis cannot see it
+    axisFormat <- xaxis <- yaxis <- legend <- legend.text <- margins <- NULL
+    list2env(prepareLineAxesFrom(sys.frame(sys.nframe())), environment())
 
     ## Initiate plotly object
     p <- plot_ly(as.data.frame(chart.matrix))

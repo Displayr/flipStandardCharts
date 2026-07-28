@@ -191,9 +191,18 @@ labeledLine <- function(x,
     n.row <- nrow(chart.matrix)
     n.col <- ncol(chart.matrix)
 
+    # Reserve the same margins as the plotly line chart, so that turning automatic data
+    # label placement on does not reflow the chart. Only the margins are wanted here; the
+    # axis objects they are worked out from are of no use to the widget, which builds its
+    # own axes. Left to itself the widget asks for a small fixed margin and lets plotly's
+    # automargin grow it, which gives a tighter chart than Line.
+    margins <- prepareLineAxesFrom(sys.frame(sys.nframe()))$margins
+
     # The widget decides the axis type from the class of X, and does its own tick
     # formatting and label wrapping. Dates are parsed here because table rownames
-    # always arrive as character, so the widget cannot recognise them on its own.
+    # always arrive as character, so the widget cannot recognise them on its own. Note
+    # that this deliberately does not wrap the labels, unlike the call above that feeds
+    # the margin estimate: the widget wraps them itself.
     axis.format <- formatLabels(chart.matrix, "Line", FALSE, x.tick.label.wrap.nchar,
                                 x.tick.format, y.tick.format)
     x.axis.type <- axis.format$x.axis.type
@@ -326,11 +335,12 @@ labeledLine <- function(x,
         legend.wrap = legend.wrap,
         legend.wrap.n.char = legend.wrap.nchar,
         legend.orientation = legend.orientation,
-        margin.autoexpand = margin.autoexpand,
-        margin.top = margin.top,
-        margin.bottom = margin.bottom,
-        margin.left = margin.left,
-        margin.right = margin.right,
+        # Already includes any margin.* the caller set, via setCustomMargins
+        margin.autoexpand = margins$autoexpand,
+        margin.top = margins$t,
+        margin.bottom = margins$b,
+        margin.left = margins$l,
+        margin.right = margins$r,
         title = title,
         title.font.family = title.font.family,
         title.font.color = title.font.color,
