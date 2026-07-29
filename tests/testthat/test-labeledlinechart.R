@@ -159,9 +159,14 @@ test_that("Hovertext is resolved in R and passed as tooltip text",
                   y.tick.prefix = "$")
     expect_equal(x$tooltipText[1:2], c("T had $1.00", "U had $2.00"))
 
+    # Turning the tooltip off has to turn hover off, not just withhold the text: the
+    # widget would otherwise build a tooltip of its own from the label and coordinates
     x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
                   tooltip.show = FALSE)
     expect_null(x$tooltipText)
+    expect_false(x$tooltipShow)
+    expect_true(widgetOf(z, data.label.auto.placement = TRUE,
+                         data.label.show = TRUE)$tooltipShow)
 })
 
 test_that("The axis type is determined in R and the labels left for the widget",
