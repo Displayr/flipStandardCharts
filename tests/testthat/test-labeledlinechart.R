@@ -318,6 +318,37 @@ test_that("The footer alignment is passed on",
                         footer = "A footer", footer.align = "right"), NA)
 })
 
+test_that("x.zero and y.zero are honoured independently",
+{
+    # The widget's origin flag gates both zero lines at once, so each is turned off
+    # through its own width. Setting one flag used to draw both lines.
+    num <- z
+    rownames(num) <- c("10", "20", "30", "40", "50")
+
+    countShapes <- function(p) {
+        sh <- plotly::plotly_build(p)$x$layout$shapes
+        if (is.null(sh)) 0 else if (!is.null(sh$type)) 1 else length(sh)
+    }
+
+    for (xz in c(FALSE, TRUE)) for (yz in c(FALSE, TRUE)) {
+        args <- list(num, data.label.show = TRUE, x.zero = xz, y.zero = yz,
+                     x.zero.line.width = 2, y.zero.line.width = 3)
+        x <- do.call(widgetOf, c(args, list(data.label.auto.placement = TRUE)))
+        # each width is zero exactly when its own flag is off
+        expect_equal(x$xAxisZeroLineWidth, if (xz) 2 else 0)
+        expect_equal(x$yAxisZeroLineWidth, if (yz) 3 else 0)
+        # and that comes to the same number of lines as the plotly chart draws
+        expect_equal(x$xAxisZeroLineWidth > 0, xz)
+        expect_equal(countShapes(do.call(Line, args)$htmlwidget), sum(xz, yz))
+    }
+
+    # The range still reaches zero for whichever axis asks for it, independently
+    x <- widgetOf(num, data.label.show = TRUE, x.zero = TRUE, y.zero = FALSE,
+                  data.label.auto.placement = TRUE)
+    expect_equal(x$xAxisRangeMode, "tozero")
+    expect_equal(x$yAxisRangeMode, "normal")
+})
+
 test_that("PPT export metadata matches the plotly line chart",
 {
     auto <- suppressWarnings(Line(z, data.label.auto.placement = TRUE,
