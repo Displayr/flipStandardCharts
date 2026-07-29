@@ -69,20 +69,84 @@ test_that("Data label font color falls back to the series color when autocolorin
     expect_equal(x$labelsFontColor, "#123456")
 })
 
-test_that("Data label annotations are emitted as tspan so the SVG sanitiser keeps them",
+test_that("Annotation markup is sent beside the data label, not inside it",
 {
+    # The widget escapes the label, because for a scatter plot it is untrusted text from
+    # the data, and takes the markup separately. Markup left in the label is escaped and
+    # then shows as literal "<tspan ...>" text on the chart.
     recolor <- list(list(type = "Recolor text", data = "",
         threstype = "above threshold", threshold = "3", color = "#00FF00"))
     x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
                   annotation.list = recolor)
-    expect_match(labelsOf(x)[4], "<tspan style='fill:#00FF00'>4</tspan>", fixed = TRUE)
-    expect_false(any(grepl("<span", labelsOf(x), fixed = TRUE)))
+    expect_equal(labelsOf(x), c("1", "2", "3", "4", "5", "2", "3", "4", "5", "6"))
+    expect_false(any(grepl("span", labelsOf(x), fixed = TRUE)))
 
+    # Recoloring wraps the label, so it arrives as an opening tag before and a closing
+    # tag after it
+    expect_equal(x$preLabelAnnotations[4], "<tspan style='fill:#00FF00'>")
+    expect_equal(x$postLabelAnnotations[4], "</tspan>")
+    expect_equal(x$preLabelAnnotations[1], "")          # below the threshold
+    expect_equal(x$postLabelAnnotations[1], "")
+    # and never as <span>, which the SVG sanitiser discards along with its contents
+    expect_false(any(grepl("<span", x$preLabelAnnotations, fixed = TRUE)))
+    expect_false(any(grepl("<span", x$postLabelAnnotations, fixed = TRUE)))
+
+    # An annotation that only follows the label leaves the front alone
+    arrow <- list(list(type = "Arrow - up", data = "", threstype = "above threshold",
+        threshold = "3", color = "red", size = 14, width = 1, offset = 0,
+        font.family = "Arial", font.weight = "normal", font.style = "normal"))
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  annotation.list = arrow)
+    expect_equal(x$preLabelAnnotations[4], "")
+    expect_match(x$postLabelAnnotations[4], "^<tspan style='fill:red")
+    expect_match(x$postLabelAnnotations[4], "&#8593;</tspan>$")
+
+    # Hiding a label empties it, and leaves no markup that would show on its own
     hide <- list(list(type = "Hide", data = "",
         threstype = "above threshold", threshold = "4"))
     x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
                   annotation.list = hide)
     expect_equal(labelsOf(x), c("1", "2", "3", "4", "", "2", "3", "4", "", ""))
+    expect_equal(x$preLabelAnnotations[c(5, 9, 10)], c("", "", ""))
+    expect_equal(x$postLabelAnnotations[c(5, 9, 10)], c("", "", ""))
+
+    # With no annotations there is nothing beside the label at all
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE)
+    expect_true(all(!nzchar(x$preLabelAnnotations)))
+    expect_true(all(!nzchar(x$postLabelAnnotations)))
+})
+
+test_that("The annotated label matches the plotly line chart's, for every type",
+{
+    # pre + label + post is what the widget renders, and it has to come to the same thing
+    # as the single string the plotly chart is given
+    mk <- function(type, extra = list()) list(c(list(type = type, data = "",
+        threstype = "above threshold", threshold = "3", color = "red", size = 14,
+        width = 1, offset = 0, font.family = "Arial", font.weight = "normal",
+        font.style = "normal", format = ".2f", prefix = "", suffix = ""), extra))
+
+    fromPlotly <- function(p) {
+        b <- plotly::plotly_build(p)
+        unlist(Filter(Negate(is.null), lapply(b$x$data, function(tr)
+            if (!is.null(tr$mode) && grepl("text", tr$mode) && !is.null(tr$text))
+                tr$text else NULL)))
+    }
+    # the widget needs tspan and fill where plotly takes span and color
+    norm <- function(v) {
+        v <- gsub("tspan", "span", v, fixed = TRUE)
+        sort(gsub("fill:", "color:", v[nzchar(v)], fixed = TRUE))
+    }
+
+    for (ty in c("Arrow - up", "Arrow - down", "Border", "Caret - up", "Caret - down",
+                 "Recolor text", "Hide", "Shadow", "Text - after data label",
+                 "Text - before data label")) {
+        annot <- mk(ty)
+        a <- suppressWarnings(Line(z, data.label.show = TRUE, annotation.list = annot))
+        x <- widgetOf(z, data.label.show = TRUE, annotation.list = annot,
+                      data.label.auto.placement = TRUE)
+        combined <- paste0(x$preLabelAnnotations, labelsOf(x), x$postLabelAnnotations)
+        expect_equal(norm(combined), norm(fromPlotly(a$htmlwidget)), info = ty)
+    }
 })
 
 test_that("Hovertext is resolved in R and passed as tooltip text",

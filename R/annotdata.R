@@ -765,12 +765,15 @@ unescape_html <- function(str){
 # then the last tag will override the others
 removeColorTags <- function(text)
 {
+    # Charts drawn as SVG rather than by plotly use <tspan> and fill instead of <span> and
+    # color, so both spellings are recognised. Matching only one leaves the earlier color
+    # in place, and the recoloring then has no visible effect on it.
     # if there is an exact match then remove entire tag
-    exact.match <- gregexpr("<span style='color:[A-Za-z0-9#]+'>", text)[[1]]
+    exact.match <- gregexpr("<t?span style='(color|fill):[A-Za-z0-9#]+'>", text)[[1]]
     if (!isTRUE(exact.match == -1))
     {
-        closetags.match <- gregexpr("</span>", text)[[1]]
-        opentags.match <- gregexpr("<span", text)[[1]]
+        closetags.match <- gregexpr("</t?span>", text)[[1]]
+        opentags.match <- gregexpr("<t?span", text)[[1]]
         j <- 1; k <- 1;
         rm.start <- c()
         rm.end <- c()
@@ -800,6 +803,6 @@ removeColorTags <- function(text)
         for (i in length(rm.start):1)
             substr(text, rm.start[i], rm.end[i]) <- paste(rep(" ", rm.end[i] - rm.start[i] + 1), collapse = "")
     }
-    text <- gsub("color:[A-Za-z0-9#]+;", "", text)
+    text <- gsub("(color|fill):[A-Za-z0-9#]+;", "", text)
     return(text)
 }

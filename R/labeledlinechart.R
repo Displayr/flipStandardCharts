@@ -235,6 +235,10 @@ labeledLine <- function(x,
     # skips those, and they do not count towards its 100 label limit.
     labels <- rep("", n.row * n.col)
     tooltips <- rep("", n.row * n.col)
+    # Annotation markup is kept out of the label and sent alongside it, because the widget
+    # escapes the label as text but appends these as markup
+    pre.annots <- rep("", n.row * n.col)
+    post.annots <- rep("", n.row * n.col)
     chart.labels <- list(SeriesLabels = list())
     for (i in 1:n) # does not include average.series
     {
@@ -264,13 +268,24 @@ labeledLine <- function(x,
                     pt.segs[[ii]]$Segments <- NULL
             }
 
-            # Apply annotations
-            attr(source.text, "customPoints") <- pt.segs
-            # tspan because the widget draws labels as SVG and its sanitiser drops
-            # a <span>, discarding the label text along with it
-            source.text <- applyAllAnnotationsToDataLabels(source.text, annotation.list,
+            # Apply annotations. The widget treats the label as text and escapes it, and
+            # takes the markup separately, so the annotations are worked out around a
+            # placeholder standing in for the label and then split off either side of it.
+            # Going through applyAllAnnotationsToDataLabels rather than assembling the
+            # markup here is what keeps every annotation type identical to the plotly
+            # chart, including the ones that wrap the label rather than sit beside it.
+            # tspan because the widget draws its labels as SVG.
+            placeholder <- rep(ANNOTATION.LABEL.PLACEHOLDER, n.row)
+            attr(placeholder, "customPoints") <- pt.segs
+            placeholder <- applyAllAnnotationsToDataLabels(placeholder, annotation.list,
                 annot.data, i, ind.show, "Line", clean.pt.segs = TRUE, tspan = TRUE)
-            pt.segs <- attr(source.text, "customPoints")
+            pt.segs <- attr(placeholder, "customPoints")
+
+            around <- splitAroundPlaceholder(placeholder)
+            pre.annots[offset + ind.show] <- around$before[ind.show]
+            post.annots[offset + ind.show] <- around$after[ind.show]
+            # an annotation that hides a label removes the placeholder with it
+            source.text[!around$kept] <- ""
             if (isTRUE(attr(pt.segs, "SeriesShowValue")))
             {
                 chart.labels$SeriesLabels[[i]]$ShowValue <- TRUE
@@ -324,6 +339,8 @@ labeledLine <- function(x,
         colors = colors,
         color.transparency = if (length(unique(marker.opacity)) == 1) marker.opacity[1] else NULL,
         label = labels,
+        pre.label.annotations = pre.annots,
+        post.label.annotations = post.annots,
         labels.show = TRUE,
         label.auto.placement = TRUE,
         labels.font.family = data.label.font.family,
@@ -463,6 +480,30 @@ labeledLine <- function(x,
     attr(result, "ChartType") <- if (all(marker.show)) "Line Markers" else "Line"
     attr(result, "ChartLabels") <- chart.labels
     result
+}
+
+#' Stands in for a data label while the annotations around it are worked out
+#'
+#' A control character, so that it cannot occur in a formatted value, a prefix or a
+#' suffix and be mistaken for the placeholder.
+#' @noRd
+ANNOTATION.LABEL.PLACEHOLDER <- "\001"
+
+#' Splits annotated placeholder text into the markup either side of the label
+#'
+#' @param text Annotations applied to \code{ANNOTATION.LABEL.PLACEHOLDER}. Annotations
+#'     either precede the label, follow it, or wrap it, so each entry holds at most one
+#'     placeholder; an annotation that hides a label leaves none.
+#' @return A list of \code{before} and \code{after}, the markup on each side, and
+#'     \code{kept}, FALSE where the label was hidden.
+#' @noRd
+splitAroundPlaceholder <- function(text)
+{
+    kept <- grepl(ANNOTATION.LABEL.PLACEHOLDER, text, fixed = TRUE)
+    before <- after <- rep("", length(text))
+    before[kept] <- sub(paste0(ANNOTATION.LABEL.PLACEHOLDER, ".*$"), "", text[kept])
+    after[kept] <- sub(paste0("^.*", ANNOTATION.LABEL.PLACEHOLDER), "", text[kept])
+    list(before = before, after = after, kept = kept)
 }
 
 #' Fits a line to each series in the form expected by rhtmlCombinedScatter
