@@ -416,6 +416,23 @@ test_that("Arguments defaulting to another argument only warn when they diverge"
                    "does not support the setting 'legend.border.color'")
 })
 
+test_that("Every fit line is given a color, so the widget can draw them all",
+{
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  colors = "red", fit.type = "Smooth", fit.CI.show = TRUE)
+    fitColors <- function(v) as.character(jsonlite::fromJSON(as.character(v)))
+    # One color for two series used to send a single entry, leaving the widget with
+    # nothing to color the second fit line with
+    expect_equal(fitColors(x$fitLineColors), rep("red", 2))
+    expect_equal(fitColors(x$fitCILabelColors), rep("red", 2))
+    expect_equal(length(fitColors(x$fitCIColors)), 2)
+
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  colors = "red", fit.type = "Smooth",
+                  average.series = rep(9, 5), average.color = "#123456")
+    expect_equal(fitColors(x$fitLineColors), c("red", "red", "#123456"))
+})
+
 test_that("Automatic placement warns once it exceeds the widget's label limit",
 {
     big <- matrix(1:120, 60, 2, dimnames = list(paste0("r", 1:60), c("A", "B")))

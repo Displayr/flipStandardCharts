@@ -103,6 +103,15 @@ prepareLineSeries <- function(x,
         fit.line.colors <- colors
     if (fit.CI.show && is.null(fit.CI.colors))
         fit.CI.colors <- fit.line.colors
+    # These default to colors, and the default is resolved before colors is recycled here,
+    # so they have to be recycled too. Left as they came, one color for several series
+    # leaves the later fit lines with no color at all, and an average series takes the
+    # place of the second one. They stay NULL when no fit is drawn, because vectorize
+    # would turn that into empty strings.
+    if (!is.null(fit.line.colors))
+        fit.line.colors <- vectorize(fit.line.colors, n)
+    if (!is.null(fit.CI.colors))
+        fit.CI.colors <- vectorize(fit.CI.colors, n)
     if (is.null(marker.colors))
         marker.colors <- colors
     if (is.null(marker.border.colors))
