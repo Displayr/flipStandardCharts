@@ -174,7 +174,7 @@ labeledLine <- function(x,
     # Checked before anything below vectorizes the arguments, so that the values
     # compared against the defaults are the ones the caller actually passed.
     warnUnsupportedByAutoPlacement(mget(names(formals()), sys.frame(sys.nframe())),
-                                   NCOL(x))
+                                   NCOL(x), NROW(x))
 
     # Assigned by the list2env below, but declared here because static analysis cannot
     # see through it. Everything else it sets is already a formal of this function.
@@ -573,17 +573,24 @@ UNSUPPORTED.BY.AUTO.PLACEMENT <- list(
 #'
 #' @param args A named list of the evaluated arguments of \code{labeledLine}.
 #' @param n.col The number of series being charted.
+#' @param n.row The number of points in each series.
 #' @noRd
-warnUnsupportedByAutoPlacement <- function(args, n.col)
+warnUnsupportedByAutoPlacement <- function(args, n.col, n.row)
 {
     ignored <- names(UNSUPPORTED.BY.AUTO.PLACEMENT)
     ignored <- ignored[vapply(ignored,
         function(nm) !identical(args[[nm]], UNSUPPORTED.BY.AUTO.PLACEMENT[[nm]]),
         logical(1L))]
 
-    # These are per-series in a plotly line chart but only global in the widget
-    if (length(unique(args$marker.opacity)) > 1)
-        ignored <- c(ignored, "marker.opacity")
+    # These are per-series in a plotly line chart but only global in the widget.
+    # marker.opacity falls back to opacity, so the value the markers end up with is the
+    # one to judge, and the argument the caller actually set is the one to name. Only
+    # worth mentioning while markers are drawn, as their opacity is invisible otherwise.
+    effective.marker.opacity <- if (is.null(args$marker.opacity)) args$opacity
+                                else args$marker.opacity
+    if (length(unique(effective.marker.opacity)) > 1 && markersAreShown(args, n.col, n.row))
+        ignored <- c(ignored, if (is.null(args$marker.opacity)) "opacity (for the markers)"
+                              else "marker.opacity")
     if (!args$data.label.font.autocolor &&
         length(unique(vectorize(args$data.label.font.color, n.col))) > 1)
         ignored <- c(ignored, "data.label.font.color")
@@ -603,4 +610,17 @@ warnUnsupportedByAutoPlacement <- function(args, n.col)
                 ". Turn off 'Automatically place data labels' to use ",
                 ngettext(length(ignored), "it", "them"), ".")
     invisible(NULL)
+}
+
+#' Whether any marker is drawn, judged from the arguments as the caller passed them
+#'
+#' @inheritParams warnUnsupportedByAutoPlacement
+#' @noRd
+markersAreShown <- function(args, n.col, n.row)
+{
+    if (isTRUE(args$marker.show.at.ends))
+        return(TRUE)
+    if (is.null(args$marker.show) || isTRUE(args$marker.show == "none"))
+        return(FALSE)
+    any(vectorize(args$marker.show, n.col, n.row) %in% c(TRUE, "TRUE"))
 }

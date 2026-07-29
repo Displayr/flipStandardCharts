@@ -416,6 +416,40 @@ test_that("Arguments defaulting to another argument only warn when they diverge"
                    "does not support the setting 'legend.border.color'")
 })
 
+test_that("Marker opacity is judged by the value the markers end up with",
+{
+    auto <- function(...) Line(z, data.label.auto.placement = TRUE,
+                              data.label.show = TRUE, ...)
+
+    # marker.opacity defaults to opacity, so a per-series opacity leaves the markers with
+    # per-series values the widget cannot draw. The warning names the argument that was
+    # actually passed, and says it is only the markers that miss out, because the lines
+    # do get an opacity each.
+    expect_warning(auto(opacity = c(0.3, 1), marker.show = TRUE),
+                   "does not support the setting 'opacity \\(for the markers\\)'")
+    expect_warning(auto(marker.opacity = c(0.3, 1), marker.show = TRUE),
+                   "does not support the setting 'marker.opacity'")
+
+    # Nothing is lost while the markers are hidden, which is the default
+    expect_warning(auto(opacity = c(0.3, 1)), NA)
+    expect_warning(auto(marker.opacity = c(0.3, 1)), NA)
+    expect_warning(auto(opacity = c(0.3, 1), marker.show = FALSE), NA)
+
+    # One opacity for the whole chart is supported either way
+    expect_warning(auto(opacity = 0.5, marker.show = TRUE), NA)
+    expect_warning(auto(marker.opacity = 0.5, marker.show = TRUE), NA)
+
+    # Markers drawn only at the ends of the series are still markers
+    expect_warning(auto(opacity = c(0.3, 1), marker.show.at.ends = TRUE),
+                   "'opacity \\(for the markers\\)'")
+
+    # The line opacity is honoured per series, so it is not part of the complaint
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  colors = c("#FF0000", "#00FF00"), opacity = c(0.3, 1))
+    expect_equal(as.character(jsonlite::fromJSON(as.character(x$lineColors))),
+                 c("rgba(255,0,0,0.3)", "rgba(0,255,0,1)"))
+})
+
 test_that("Every fit line is given a color, so the widget can draw them all",
 {
     x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
