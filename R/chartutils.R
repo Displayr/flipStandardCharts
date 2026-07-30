@@ -1701,11 +1701,11 @@ isPercentData <- function(data)
 # one distinct value. A comma-separated string is parsed first, so the Plugins' per-series
 # input form cannot reach arithmetic or toRGB as text. `what` names the setting in the
 # warning, e.g. "marker.opacity".
-firstOpacity <- function(x, what)
+firstOpacity <- function(x, what, warn = TRUE)
 {
     values <- readNumericSeries(x, if (is.character(x)) length(TextAsVector(x)) else length(x),
                                 what)
-    if (length(unique(values)) > 1)
+    if (warn && length(unique(values)) > 1)
         warning("Only one ", what, " can be used for the whole chart, so ", values[1],
                 " was applied. Use a color with an alpha value to vary transparency ",
                 "by series.")

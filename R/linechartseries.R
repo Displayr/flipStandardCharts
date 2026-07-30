@@ -96,12 +96,19 @@ prepareLineSeries <- function(x,
     # given a color with an alpha instead. Collapsing here rather than at each point of use
     # keeps the two chart paths identical and stops a vector reaching toRGB, which rejects
     # an alpha longer than the color it is applied to.
+    # Only a value the caller set is worth warning about. Markers inherit `opacity`, which is
+    # legitimately per series, and warnUnsupportedByAutoPlacement already reports that case
+    # when markers are actually drawn.
+    marker.opacity.given <- !is.null(marker.opacity)
+    marker.border.opacity.given <- !is.null(marker.border.opacity)
     if (is.null(marker.opacity))
         marker.opacity <- opacity
     if (is.null(marker.border.opacity))
         marker.border.opacity <- marker.opacity
-    marker.opacity <- firstOpacity(marker.opacity, "marker.opacity")
-    marker.border.opacity <- firstOpacity(marker.border.opacity, "marker.border.opacity")
+    marker.opacity <- firstOpacity(marker.opacity, "marker.opacity",
+                                   warn = marker.opacity.given)
+    marker.border.opacity <- firstOpacity(marker.border.opacity, "marker.border.opacity",
+                                          warn = marker.border.opacity.given)
 
     # Set colors
     n <- ncol(chart.matrix)

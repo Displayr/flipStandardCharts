@@ -61,4 +61,11 @@ test_that("The opacity family accepts every input form without erroring",
     # One value, or several that agree, is silent
     expect_warning(Line(z, marker.show = TRUE, marker.opacity = 0.5), NA)
     expect_warning(Line(z, marker.show = TRUE, marker.opacity = "0.5, 0.5"), NA)
+
+    # A per-series opacity is legitimate, and markers inherit it - so the chart must not
+    # complain about a marker.opacity the caller never set. On the plain plotly route (no
+    # data.label.auto.placement), nothing else warns about a per-series opacity either, with
+    # or without markers shown.
+    expect_warning(Line(z, opacity = c(0.3, 1)), NA)
+    expect_warning(Line(z, marker.show = TRUE, opacity = c(0.3, 1)), NA)
 })
