@@ -500,7 +500,9 @@ if a vector is passed, then each element will be applied to a data series.}
 
 \item{marker.colors}{Character; a vector containing on/mae or more colors specified as hex codes.}
 
-\item{marker.opacity}{Opacity for markers as an alpha value (0 to 1).}
+\item{marker.opacity}{A single value between 0 and 1 for the opacity of the
+markers. Unlike \code{opacity} this cannot vary by series; give a color with
+an alpha value to do that.}
 
 \item{marker.size}{Size in pixels of marker}
 
@@ -509,7 +511,9 @@ around series bars; 0 is no line}
 
 \item{marker.border.colors}{Character; a vector containing one or more colors specified as hex codes.}
 
-\item{marker.border.opacity}{Opacity of border around bars as an alpha value (0 to 1).}
+\item{marker.border.opacity}{A single value between 0 and 1 for the opacity of the
+marker borders. Unlike \code{opacity} this cannot vary by series; give a color
+with an alpha value to do that.}
 
 \item{tooltip.show}{Logical; whether to show a tooltip on hover.}
 

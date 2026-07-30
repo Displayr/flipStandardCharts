@@ -91,10 +91,17 @@ prepareLineSeries <- function(x,
         marker.show <- FALSE
     if (is.null(opacity))
         opacity <- if (fit.type == "None") 1 else 0.6
+    # opacity is per series, but the marker opacities are single values: the widget takes
+    # one transparency for the whole chart, and a series that should be more transparent is
+    # given a color with an alpha instead. Collapsing here rather than at each point of use
+    # keeps the two chart paths identical and stops a vector reaching toRGB, which rejects
+    # an alpha longer than the color it is applied to.
     if (is.null(marker.opacity))
         marker.opacity <- opacity
     if (is.null(marker.border.opacity))
         marker.border.opacity <- marker.opacity
+    marker.opacity <- firstOpacity(marker.opacity, "marker.opacity")
+    marker.border.opacity <- firstOpacity(marker.border.opacity, "marker.border.opacity")
 
     # Set colors
     n <- ncol(chart.matrix)
@@ -174,7 +181,7 @@ prepareLineSeries <- function(x,
         rownames(chart.matrix) <- 1:nrow(chart.matrix)
 
     line.thickness <- readNumericSeries(line.thickness, ncol(chart.matrix), "line thickness")
-    opacity <- opacity * rep(1, ncol(chart.matrix))
+    opacity <- readNumericSeries(opacity, ncol(chart.matrix), "opacity")
 
     prepared <- list(
         y.tick.format = y.tick.format, y.hovertext.format = y.hovertext.format,

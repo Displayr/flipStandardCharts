@@ -1697,6 +1697,21 @@ isPercentData <- function(data)
     return(FALSE)
 }
 
+# Reduces a setting that must be a single value to one, warning if the caller gave more than
+# one distinct value. A comma-separated string is parsed first, so the Plugins' per-series
+# input form cannot reach arithmetic or toRGB as text. `what` names the setting in the
+# warning, e.g. "marker.opacity".
+firstOpacity <- function(x, what)
+{
+    values <- readNumericSeries(x, if (is.character(x)) length(TextAsVector(x)) else length(x),
+                                what)
+    if (length(unique(values)) > 1)
+        warning("Only one ", what, " can be used for the whole chart, so ", values[1],
+                " was applied. Use a color with an alpha value to vary transparency ",
+                "by series.")
+    values[1]
+}
+
 # y.tick.format, y.hovertext.format, y2.tick.format, y2.hovertext.format
 # data.label.format
 checkSuffixForExtraPercent <- function(suffix, format)

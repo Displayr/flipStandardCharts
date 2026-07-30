@@ -14,6 +14,12 @@
 #'      data series. This value will override \code{data.label.show}.
 #' @param marker.show.at.ends Logical; show markers at the begining and end of each
 #'      data series. The value will override \code{marker.show}.
+#' @param marker.opacity A single value between 0 and 1 for the opacity of the
+#'      markers. Unlike \code{opacity} this cannot vary by series; give a color with
+#'      an alpha value to do that.
+#' @param marker.border.opacity A single value between 0 and 1 for the opacity of the
+#'      marker borders. Unlike \code{opacity} this cannot vary by series; give a color
+#'      with an alpha value to do that.
 #' @param data.label.auto.placement Logical; position the data labels so that they do
 #'      not overlap each other or the data points, instead of placing them at a fixed
 #'      offset given by \code{data.label.position}. Only has an effect when data labels

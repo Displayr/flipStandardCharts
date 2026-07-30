@@ -32,3 +32,33 @@ test_that("FS2-4532: Line renders with per-series marker size string", {
                   dimnames = list(c("a", "b"), c("x", "y", "z")))
     expect_error(Line(dat, marker.show = TRUE, marker.size = "6,10,14"), NA)
 })
+
+test_that("The opacity family accepts every input form without erroring",
+{
+    z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L), .Dim = c(5L, 2L),
+        .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
+
+    # A comma-separated string is what the Plugins pass for a per-series setting, and it
+    # reached arithmetic and toRGB as text
+    expect_error(suppressWarnings(Line(z, marker.show = TRUE, opacity = "0.5, 0.9")), NA)
+    expect_error(suppressWarnings(Line(z, marker.show = TRUE, marker.opacity = "0.5, 0.5")), NA)
+    expect_error(suppressWarnings(Line(z, marker.show = TRUE, marker.opacity = c(0.5, 0.9))), NA)
+    expect_error(suppressWarnings(
+        Line(z, marker.show = TRUE, marker.border.opacity = "0.5, 0.9")), NA)
+
+    # opacity stays per series: the traces get one each
+    p <- plotly::plotly_build(Line(z, opacity = c(0.3, 1),
+        colors = c("#FF0000", "#00FF00"))$htmlwidget)
+    line.colors <- Filter(Negate(is.null), lapply(p$x$data, function(tr) tr$line$color))
+    expect_true(any(grepl("rgba\\(255,0,0,0.3\\)", line.colors)))
+    expect_true(any(grepl("rgba\\(0,255,0,1\\)", line.colors)))
+
+    # marker.opacity is a single value by contract, so more than one warns and the first wins
+    expect_warning(Line(z, marker.show = TRUE, marker.opacity = c(0.3, 1)),
+                   "marker.opacity")
+    expect_warning(Line(z, marker.show = TRUE, marker.border.opacity = c(0.3, 1)),
+                   "marker.border.opacity")
+    # One value, or several that agree, is silent
+    expect_warning(Line(z, marker.show = TRUE, marker.opacity = 0.5), NA)
+    expect_warning(Line(z, marker.show = TRUE, marker.opacity = "0.5, 0.5"), NA)
+})

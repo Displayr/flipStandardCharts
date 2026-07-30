@@ -295,7 +295,9 @@ if a vector is passed, then each element will be applied to a data series.}
 
 \item{marker.colors}{Character; a vector containing on/mae or more colors specified as hex codes.}
 
-\item{marker.opacity}{Opacity for markers as an alpha value (0 to 1).}
+\item{marker.opacity}{A single value between 0 and 1 for the opacity of the
+markers. Unlike \code{opacity} this cannot vary by series; give a color with
+an alpha value to do that.}
 
 \item{data.label.show}{Logical; whether to show data labels.}
 

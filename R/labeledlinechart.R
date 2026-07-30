@@ -10,6 +10,12 @@
 #' Some \code{Line} arguments have no equivalent in rhtmlCombinedScatter. These are
 #' ignored, with a warning naming them, rather than causing an error.
 #' @inheritParams Line
+#' @param marker.opacity A single value between 0 and 1 for the opacity of the
+#'      markers. Unlike \code{opacity} this cannot vary by series; give a color with
+#'      an alpha value to do that.
+#' @param marker.border.opacity A single value between 0 and 1 for the opacity of the
+#'      marker borders. Unlike \code{opacity} this cannot vary by series; give a color
+#'      with an alpha value to do that.
 #' @importFrom grDevices rgb
 #' @importFrom flipChartBasics ChartColors
 #' @importFrom plotly toRGB
