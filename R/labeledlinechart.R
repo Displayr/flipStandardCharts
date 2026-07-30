@@ -338,6 +338,11 @@ labeledLine <- function(x,
         rep(border.colors, each = n.row), ""))
     point.border.widths <- as.vector(ifelse(marker.show, marker.border.width, 0))
 
+    # One symbol per point, as the widget slices these per series. Unlike the border color
+    # a hidden marker keeps its symbol, because "" is not a valid plotly symbol and the
+    # zero radius already hides the point.
+    point.symbols <- as.vector(rep(marker.symbols, each = n.row))
+
     fit <- fitSeriesForCombinedScatter(chart.matrix, x.labels, x.axis.type, fit.type,
         fit.ignore.last, fit.CI.show, fit.window.size, fit.line.name, fit.line.colors,
         fit.CI.colors, fit.CI.opacity)
@@ -348,7 +353,7 @@ labeledLine <- function(x,
         group = groups,
         x.levels = if (x.axis.type == "category") rownames(chart.matrix) else NULL,
         colors = colors,
-        color.transparency = if (length(unique(marker.opacity)) == 1) marker.opacity[1] else NULL,
+        color.transparency = marker.opacity,
         label = labels,
         pre.label.annotations = pre.annots,
         post.label.annotations = post.annots,
@@ -364,6 +369,7 @@ labeledLine <- function(x,
         line.shape = shape,
         line.smoothing = smoothing,
         point.radius = point.radius,
+        point.symbol = point.symbols,
         point.border.color = point.border.colors,
         point.border.width = point.border.widths,
         grid = grid.show,

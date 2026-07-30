@@ -524,3 +524,26 @@ test_that("Other line chart features still render",
     expect_warning(Line(with.na, data.label.auto.placement = TRUE,
                         data.label.show = TRUE), "Missing values")
 })
+
+test_that("Marker symbols are sent to the widget per series",
+{
+    # Unlike label/tooltipText, CombinedScatter passes point.symbol straight through
+    # without JSON-encoding it (same as point.radius), and the widget's JS explicitly
+    # requires Array.isArray(x.pointSymbol) to slice it per point, so this is compared
+    # as a plain vector rather than through decodeJson.
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  marker.show = TRUE, marker.symbols = c("square", "diamond"))
+    expect_equal(x$pointSymbol, c(rep("square", 5), rep("diamond", 5)))
+
+    # The comma-separated form the Plugins send
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  marker.show = TRUE, marker.symbols = "square, diamond")
+    expect_equal(x$pointSymbol, c(rep("square", 5), rep("diamond", 5)))
+
+    # A hidden marker keeps its series' symbol: an empty string is not a valid plotly
+    # symbol, and a radius of zero already hides the point
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  marker.symbols = c("square", "diamond"))
+    expect_equal(x$pointSymbol, c(rep("square", 5), rep("diamond", 5)))
+    expect_equal(x$pointRadius, rep(0, 10))
+})
