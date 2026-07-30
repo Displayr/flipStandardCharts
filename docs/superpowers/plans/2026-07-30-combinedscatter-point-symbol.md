@@ -540,6 +540,17 @@ Run: `grep -n "pointSymbol\|point.symbol" R/rhtmlCombinedScatter.R`
 Expected: the parameter in the signature and `pointSymbol = point.symbol` in the payload.
 If absent, the build did not regenerate — do not hand-edit `R/`.
 
+- [ ] **Step 3b: Regenerate the man page**
+
+The gulp build only *copies* `theSrc/R/htmlwidget.R` to `R/rhtmlCombinedScatter.R`
+(`rhtmlBuildUtils/src/tasks/misc/copy.js`); nothing in it runs roxygen. `point.symbol` would
+therefore appear in `\usage` with no `\item`, which is an R CMD check WARNING
+("Undocumented arguments in documentation object") — and CI runs `rcmdcheck` with
+`error_on = "warning"`, so it fails the build.
+
+Run: `"C:\Program Files\R\R-4.5.1\bin\Rscript.exe" -e "roxygen2::roxygenise()"`
+Expected: `man/CombinedScatter.Rd` gains a `point.symbol` item. Commit `man/` with `R/`.
+
 - [ ] **Step 4: Install locally**
 
 Run: `"C:\Program Files\R\R-4.5.1\bin\Rscript.exe" -e "install.packages('.', repos = NULL, type = 'source')"`
@@ -558,7 +569,20 @@ Run: `npm start` and open a line chart with groups. Check, in this order:
    value. The label that hides must be the one clicked — this is `markerIndexToDataIndex`.
 4. **A square marker with a border** is bordered by a square, not a circle.
 5. **The legend swatch** shows the line style and the symbol together.
-6. **A scatterplot** (`line.show` false) looks exactly as it did before.
+6. **A scatterplot** (`line.show` false) looks exactly as it did before. Include a panelled
+   one with `legend.show = "Show"` and no groups — that is where the sanctioned legend
+   change is observable.
+7. **The legend swatch of a hidden-marker line chart** (`point.radius` all zeros, which is
+   flipStandardCharts' default since `marker.show` is FALSE). `mode: 'lines+markers'` makes
+   plotly draw a marker in the swatch, and its size is the mean of `marker.size` clamped to
+   `[2, 16]` — `itemsizing: 'constant'` substitutes 12 only for a truthy value, so a mean of
+   0 clamps *up* to 2. Expect a 2px dot that master did not draw, possibly opaque against a
+   translucent line, since flipStandardCharts folds `opacity` into `line.colors` while
+   markers keep `colors`. If it is visible, gate the merged mode **chart-wide**: compute once
+   in `createPlotlyData` whether any marker is drawn and keep `mode: 'lines'` when none is.
+   Never gate per series — a series with an all-zero slice would emit no `.point` elements
+   while its neighbours do, and `markerIndexToDataIndex` would map clicks to the wrong rows,
+   which is the hazard invariant 3 exists to catch.
 
 - [ ] **Step 6: Commit and open the PR**
 
