@@ -171,12 +171,11 @@ Radar <- function(x,
     # and the first is used. Radar has no marker.border.opacity. Only a value the caller set
     # is worth warning about, and only when a marker is actually drawn - an opacity you
     # cannot see is not worth a warning.
-    marker.opacity.given <- !is.null(marker.opacity)
+    # Unlike Line, Radar's marker.opacity default is a scalar (1.0, above) rather than
+    # inheriting from opacity - so there is no is.null(marker.opacity) fallback here.
     markers.drawn <- markersAreDrawn(marker.show, FALSE, n, m)
-    if (is.null(marker.opacity))
-        marker.opacity <- opacity
     marker.opacity <- firstOpacity(marker.opacity, "marker.opacity",
-                                   warn = marker.opacity.given && markers.drawn)
+                                   warn = markers.drawn)
 
     # Set colors
     colors <- vectorize(colors, n)
@@ -321,7 +320,7 @@ Radar <- function(x,
         line.thickness <- 3
 
     line.thickness <- vectorize(line.thickness, n)
-    opacity <- vectorize(opacity, n)
+    opacity <- readNumericSeries(opacity, n, "opacity")
     hovertext.show <- vectorize(hovertext.show, n)
     data.label.show <- rbind(vectorize(data.label.show, n, m), FALSE)
     data.label.offset <- sapply(vectorize(data.label.offset, n), charToNumeric)

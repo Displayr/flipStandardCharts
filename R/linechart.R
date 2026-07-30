@@ -392,7 +392,7 @@ Line <-   function(x,
                    showlegend = FALSE, legendgroup = i,
                    hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                    size = hovertext.font.size, family = hovertext.font.family),
-                   bgcolor = toRGB(colors[i], alpha = opacity)),
+                   bgcolor = toRGB(colors[i], alpha = opacity[i])),
                    hovertemplate = hover.template[ind.show])
         }
     }

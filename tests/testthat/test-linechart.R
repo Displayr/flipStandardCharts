@@ -27,6 +27,15 @@ test_that("FS2-4532: readNumericSeries parses, recycles and truncates", {
                    "Non-numeric line thickness values 'x', 'y' were ignored")
 })
 
+test_that("FS2-4532: firstOpacity drops a non-numeric entry rather than taking it verbatim", {
+    # A non-numeric first entry stays NA through readNumericSeries; firstOpacity must not
+    # let that NA reach toRGB(alpha = NA), which silently draws a fully opaque colour.
+    expect_warning(flipStandardCharts:::firstOpacity("x, 0.5", "marker.opacity"),
+                   "Non-numeric marker.opacity value 'x' was ignored")
+    expect_equal(suppressWarnings(flipStandardCharts:::firstOpacity("x, 0.5", "marker.opacity")),
+                 0.5)
+})
+
 test_that("FS2-4532: Line renders with per-series marker size string", {
     dat <- matrix(c(1, 4, 2, 5, 3, 6), nrow = 2,
                   dimnames = list(c("a", "b"), c("x", "y", "z")))
@@ -41,6 +50,11 @@ test_that("The opacity family accepts every input form without erroring",
     # A comma-separated string is what the Plugins pass for a per-series setting, and it
     # reached arithmetic and toRGB as text
     expect_error(suppressWarnings(Line(z, marker.show = TRUE, opacity = "0.5, 0.9")), NA)
+    # The hover background on the data-label path indexes opacity by series (toRGB takes a
+    # length-1 alpha), so both the string and vector forms of a per-series opacity need
+    # covering here specifically
+    expect_error(suppressWarnings(Line(z, opacity = "0.5, 0.9", data.label.show = TRUE)), NA)
+    expect_error(suppressWarnings(Line(z, opacity = c(0.3, 1), data.label.show = TRUE)), NA)
     expect_error(suppressWarnings(Line(z, marker.show = TRUE, marker.opacity = "0.5, 0.5")), NA)
     expect_error(suppressWarnings(Line(z, marker.show = TRUE, marker.opacity = c(0.5, 0.9))), NA)
     expect_error(suppressWarnings(

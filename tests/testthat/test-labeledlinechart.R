@@ -459,6 +459,13 @@ test_that("Marker opacity is judged by the value the markers end up with",
     expect_warning(auto(marker.opacity = c(0.3, 1), marker.show = TRUE),
                    "Only one marker.opacity can be used")
 
+    # The warning text only pins the count of distinct values; pin the winning value too,
+    # so a future max()/mean()/last() collapse would be caught here rather than only by
+    # the warning message.
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  marker.show = TRUE, marker.opacity = c(0.3, 1))
+    expect_equal(x$transparency, 0.3)
+
     # Nothing is lost while the markers are hidden, which is the default
     expect_warning(auto(opacity = c(0.3, 1)), NA)
     expect_warning(auto(marker.opacity = c(0.3, 1)), NA)
@@ -560,6 +567,10 @@ test_that("Per-series input that means the default does not warn",
     # Repeating the default is still the default
     expect_warning(auto(marker.show = TRUE, marker.symbols = "circle, circle"), NA)
     expect_warning(auto(data.label.position = "Top, Top"), NA)
+
+    # prepareLineSeries lowercases data.label.position and honours it regardless of case,
+    # so a differently-cased spelling of the default must not warn either
+    expect_warning(auto(data.label.position = "top"), NA)
 
     # A genuinely unsupported setting still warns
     expect_warning(auto(data.label.position = "Bottom"),

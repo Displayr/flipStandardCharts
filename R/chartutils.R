@@ -1717,6 +1717,11 @@ firstOpacity <- function(x, what, warn = TRUE)
 {
     values <- readNumericSeries(x, if (is.character(x)) length(TextAsVector(x)) else length(x),
                                 what)
+    # A non-numeric entry stays NA (readNumericSeries already warned about it); dropping it
+    # here means a non-numeric first entry does not silently win as an opaque toRGB(alpha = NA).
+    values <- values[!is.na(values)]
+    if (length(values) == 0)
+        values <- 1
     if (warn && length(unique(values)) > 1)
         warning("Only one ", what, " can be used for the whole chart, so ", values[1],
                 " was applied. Use a color with an alpha value to vary transparency ",

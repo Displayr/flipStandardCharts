@@ -96,6 +96,12 @@ test_that("FS2-4532: Radar renders with per-series marker size string", {
     expect_equal(unique(trace.sizes[["z"]]), 14)
 })
 
+test_that("FS2-4532: Radar's own opacity accepts the string form without erroring", {
+    # opacity is per series for Radar too; the string form is what the Plugins pass, and
+    # vectorize() alone leaves it as character, which fails downstream in toRGB.
+    expect_error(Radar(matrix2d, opacity = "0.5, 0.9"), NA)
+})
+
 test_that("FS2-4532: marker.opacity accepts every input form without erroring", {
     # A comma-separated string is what the Plugins pass for a per-series setting, and it
     # reached toRGB as text; a vector of more than one value reached toRGB unindexed. Radar
