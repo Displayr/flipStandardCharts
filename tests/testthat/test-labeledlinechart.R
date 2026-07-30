@@ -34,7 +34,7 @@ test_that("Series-specific line settings are passed through per series",
     # opacity is folded into the line color, as the plotly line chart does
     expect_equal(as.character(x$lineColors),
                  "[\"rgba(255,0,0,0.5)\",\"rgba(0,170,0,0.5)\"]")
-    expect_true(x$linesShow)
+    expect_true(x$lineShow)
 })
 
 test_that("Markers are sized per point, with hidden markers at zero",
