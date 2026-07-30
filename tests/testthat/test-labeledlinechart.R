@@ -395,8 +395,8 @@ test_that("PPT export metadata matches the plotly line chart",
 test_that("Charting options with no widget equivalent warn instead of failing",
 {
     expect_warning(Line(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
-                        marker.symbols = "square"),
-                   "does not support the setting 'marker.symbols'")
+                        legend.ascending = TRUE),
+                   "does not support the setting 'legend.ascending'")
     expect_warning(Line(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
                         modebar.show = TRUE, x.data.reversed = TRUE),
                    "does not support the settings 'modebar.show', 'x.data.reversed'")
@@ -457,7 +457,7 @@ test_that("Marker opacity is judged by the value the markers end up with",
     expect_warning(auto(opacity = c(0.3, 1), marker.show = TRUE),
                    "does not support the setting 'opacity \\(for the markers\\)'")
     expect_warning(auto(marker.opacity = c(0.3, 1), marker.show = TRUE),
-                   "does not support the setting 'marker.opacity'")
+                   "Only one marker.opacity can be used")
 
     # Nothing is lost while the markers are hidden, which is the default
     expect_warning(auto(opacity = c(0.3, 1)), NA)
@@ -546,4 +546,22 @@ test_that("Marker symbols are sent to the widget per series",
                   marker.symbols = c("square", "diamond"))
     expect_equal(x$pointSymbol, c(rep("square", 5), rep("diamond", 5)))
     expect_equal(x$pointRadius, rep(0, 10))
+})
+
+test_that("Per-series input that means the default does not warn",
+{
+    auto <- function(...) Line(z, data.label.auto.placement = TRUE,
+                               data.label.show = TRUE, ...)
+
+    # Supported now, so no warning whatever form it arrives in
+    expect_warning(auto(marker.show = TRUE, marker.symbols = c("square", "diamond")), NA)
+    expect_warning(auto(marker.show = TRUE, marker.symbols = "square, diamond"), NA)
+
+    # Repeating the default is still the default
+    expect_warning(auto(marker.show = TRUE, marker.symbols = "circle, circle"), NA)
+    expect_warning(auto(data.label.position = "Top, Top"), NA)
+
+    # A genuinely unsupported setting still warns
+    expect_warning(auto(data.label.position = "Bottom"),
+                   "does not support the setting 'data.label.position'")
 })

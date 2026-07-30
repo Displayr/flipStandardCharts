@@ -571,7 +571,6 @@ fitSeriesForCombinedScatter <- function(chart.matrix, x.labels, x.axis.type, fit
 # Arguments of Line() that rhtmlCombinedScatter has no equivalent for. Each entry is the
 # value the argument has to hold for the chart to be unaffected; anything else is dropped.
 UNSUPPORTED.BY.AUTO.PLACEMENT <- list(
-    marker.symbols = "circle",
     x.data.reversed = FALSE,
     y.data.reversed = FALSE,
     x.tick.marks = "",
@@ -594,20 +593,34 @@ UNSUPPORTED.BY.AUTO.PLACEMENT <- list(
 #' @noRd
 warnUnsupportedByAutoPlacement <- function(args, n.col, n.row)
 {
+    # Compared after vectorizing, because a per-series setting may spell the default out
+    # once per series ("Top, Top") or as a vector, and neither is a change worth warning
+    # about. Only character settings can arrive per series; the rest are compared as they
+    # are.
     ignored <- names(UNSUPPORTED.BY.AUTO.PLACEMENT)
-    ignored <- ignored[vapply(ignored,
-        function(nm) !identical(args[[nm]], UNSUPPORTED.BY.AUTO.PLACEMENT[[nm]]),
-        logical(1L))]
+    ignored <- ignored[vapply(ignored, function(nm)
+    {
+        given <- args[[nm]]
+        default <- UNSUPPORTED.BY.AUTO.PLACEMENT[[nm]]
+        # The identical() check comes first because vectorize() parses a character value as
+        # comma-separated text: an empty string (e.g. x.tick.marks' default) splits to zero
+        # tokens and recycles to NA instead of back to "", which would falsely count as a
+        # change from the default.
+        if (identical(given, default))
+            return(FALSE)
+        if (is.character(given) && is.character(default) && length(default) == 1)
+            return(!all(vectorize(given, n.col) == default))
+        TRUE
+    }, logical(1L))]
 
-    # These are per-series in a plotly line chart but only global in the widget.
-    # marker.opacity falls back to opacity, so the value the markers end up with is the
-    # one to judge, and the argument the caller actually set is the one to name. Only
-    # worth mentioning while markers are drawn, as their opacity is invisible otherwise.
-    effective.marker.opacity <- if (is.null(args$marker.opacity)) args$opacity
-                                else args$marker.opacity
-    if (length(unique(effective.marker.opacity)) > 1 && markersAreShown(args, n.col, n.row))
-        ignored <- c(ignored, if (is.null(args$marker.opacity)) "opacity (for the markers)"
-                              else "marker.opacity")
+    # marker.opacity is a single value by contract, so the only opacity the widget cannot
+    # honour is a per-series `opacity` inherited by markers that are drawn. opacity itself
+    # defaults to NULL, and vectorize(NULL, n) warns ("'x' is NULL..."), so that case is
+    # ruled out before vectorizing rather than after.
+    if (is.null(args$marker.opacity) && !is.null(args$opacity) &&
+        length(unique(vectorize(args$opacity, n.col))) > 1 &&
+        markersAreShown(args, n.col, n.row))
+        ignored <- c(ignored, "opacity (for the markers)")
     if (!args$data.label.font.autocolor &&
         length(unique(vectorize(args$data.label.font.color, n.col))) > 1)
         ignored <- c(ignored, "data.label.font.color")
