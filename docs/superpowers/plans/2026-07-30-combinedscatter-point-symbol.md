@@ -38,10 +38,20 @@ because none of it can be verified until this widget is installed.
 - The gulp build fails on Node 22 (gulp3 → natives → graceful-fs). Before any gulp task,
   either add `"resolutions": { "graceful-fs": "^4" }` to `package.json` and re-run
   `yarn install`, or switch to an older Node with nvm.
-- **With `line.show` false the trace output must not change at all.** Scatterplot and
-  LabeledScatter use these same functions.
+- **With `line.show` false the trace output must not change**, with one sanctioned
+  exception below. Scatterplot and LabeledScatter use these same functions.
+  - Exception, ruled on during execution: an ungrouped multi-panel markers-only chart now
+    puts **one** entry in the legend rather than one per panel. Master created the marker
+    trace with 8 arguments, so `showlegend` defaulted to `true` on every panel — the
+    `p === 0` guard beside it was only ever passed to the line trace. One entry is the
+    intended behaviour, so the repetition was a bug; Task 2 pins the new behaviour with a
+    `line.show` false multi-panel spec. Mention it in the PR body, since it changes what a
+    panelled Scatterplot renders.
 - Symbol names pass through to plotly unchanged. flipStandardCharts already sends plotly
   names (`circle`, `square`, `diamond`, `triangle-up`), so no mapping is needed.
+- End every commit message with the trailer
+  `Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>`. The commit commands
+  in the tasks below show the subject and body only.
 
 ## File Structure
 
