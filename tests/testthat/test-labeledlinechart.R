@@ -6,8 +6,10 @@ z <- structure(c(1L, 2L, 3L, 4L, 5L, 2L, 3L, 4L, 5L, 6L), .Dim = c(5L, 2L),
 # Convenience: build the chart and return the htmlwidget payload
 widgetOf <- function(...) suppressWarnings(Line(...))$htmlwidget$x
 
-# The widget JSON encodes the labels, so they come back as one string
-labelsOf <- function(x) as.character(jsonlite::fromJSON(as.character(x$label)))
+# The widget JSON encodes the labels and the tooltip text, so each comes back as one string
+decodeJson <- function(v) as.character(jsonlite::fromJSON(as.character(v)))
+labelsOf <- function(x) decodeJson(x$label)
+tooltipsOf <- function(x) decodeJson(x$tooltipText)
 
 test_that("Line only dispatches to labeledLine when there are labels to place",
 {
@@ -152,12 +154,12 @@ test_that("The annotated label matches the plotly line chart's, for every type",
 test_that("Hovertext is resolved in R and passed as tooltip text",
 {
     x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE)
-    expect_equal(x$tooltipText[1:3], c("T: 1.00", "U: 2.00", "V: 3.00"))
+    expect_equal(tooltipsOf(x)[1:3], c("T: 1.00", "U: 2.00", "V: 3.00"))
 
     x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
                   hovertext.template = "%{x} had %{y}", y.hovertext.format = ".2f",
                   y.tick.prefix = "$")
-    expect_equal(x$tooltipText[1:2], c("T had $1.00", "U had $2.00"))
+    expect_equal(tooltipsOf(x)[1:2], c("T had $1.00", "U had $2.00"))
 
     # Turning the tooltip off has to turn hover off, not just withhold the text: the
     # widget would otherwise build a tooltip of its own from the label and coordinates
