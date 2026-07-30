@@ -535,7 +535,7 @@ data series. This value will override \code{data.label.show}.}
 not overlap each other or the data points, instead of placing them at a fixed
 offset given by \code{data.label.position}. Only has an effect when data labels
 are shown. The chart is then drawn using rhtmlCombinedScatter rather than plotly,
-which does not support every other charting option; a warning names any setting
+which does not support every charting option; a warning names any setting
 that has been ignored as a result.}
 
 \item{data.label.position}{Character; one of 'top' or 'bottom'. This can
