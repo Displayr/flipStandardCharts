@@ -190,6 +190,33 @@ test_that("The axis type is determined in R and the labels left for the widget",
     expect_equal(as.character(x$xLevels), "[\"T\",\"U\",\"V\",\"W\",\"X\"]")
 })
 
+test_that("The axis type decides the x values of the trend line as well as the data",
+{
+    # A trend line has to sit on the same axis as the points it is fitted to, and the axis
+    # type is what puts it there: fitSeries maps a categorical axis onto 0..n-1 to do the
+    # fitting and then hands back the original labels, which is what pairs with x.levels.
+    # Pinned because the axis type reaches the fit separately from the values, so the two
+    # can disagree without anything else in the payload looking wrong.
+    fitXOf <- function(x) jsonlite::fromJSON(as.character(x$fitX), simplifyMatrix = FALSE)
+
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  fit.type = "Smooth")
+    expect_equal(decodeJson(x$xLevels), rownames(z))
+    expect_equal(fitXOf(x), list(rownames(z), rownames(z)))
+
+    # A numeric axis is a different shape entirely: the fit is drawn over 100 interpolated
+    # points spanning the data rather than at the values, so a categorical axis mistaken
+    # for a numeric one does not merely mislabel the trend line, it changes what is drawn
+    zn <- z
+    rownames(zn) <- c("10", "20", "30", "40", "50")
+    x <- widgetOf(zn, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  fit.type = "Smooth")
+    expect_null(x$xLevels)
+    fit.x <- fitXOf(x)
+    expect_equal(lengths(fit.x), c(100L, 100L))
+    expect_equal(range(fit.x[[1]]), c(10, 50))
+})
+
 test_that("Missing values are sent as null so the widget can break the line at them",
 {
     # A gap must reach the widget as the JSON null literal. jsonlite would otherwise

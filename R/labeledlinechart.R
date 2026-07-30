@@ -223,8 +223,13 @@ labeledLine <- function(x,
         date = axis.format$labels,
         numeric = suppressWarnings(as.numeric(gsub(",", "", rownames(chart.matrix)))),
         rownames(chart.matrix))
-    if (x.axis.type == "numeric" && any(is.na(x.labels)))
-        x.labels <- rownames(chart.matrix) # fall back to a categorical axis
+    # There is deliberately no local fallback for labels that do not parse as numbers.
+    # getAxisType only calls an axis numeric once this same parse succeeds on every label,
+    # so it cannot happen, and a fallback here could not repair the chart if it did:
+    # prepareLineAxes above has already worked the range, ticks, tick angle and margins out
+    # from the same axis type, so switching it here would only trade one disagreement for
+    # another. Should the parse ever need to give way, it has to give way inside
+    # getAxisType, where every consumer of the axis type sees it.
 
     x.values <- rep(x.labels, times = n.col)
     y.values <- as.numeric(chart.matrix)
