@@ -502,9 +502,14 @@ getColCmpArrowHtml <- function(cell.text, arrow.size, sep = " ",
 # to correspond to rows in \code{chart.matrix}
 # To specify that annotations are only applied to a subset of rows, use \code{rows.to.show}.
 
+# Set \code{tspan} for widgets that draw their labels as SVG rather than letting plotly
+# render the markup, so that annotations are emitted as <tspan style='fill:...'> instead
+# of <span style='color:...'>. An SVG label sanitiser discards a <span> outright, taking
+# the label text with it.
+
 applyAllAnnotationsToDataLabels <- function(data.label.text, annotation.list,
     annot.data, series.index, rows.to.show,
-    chart.type, clean.pt.segs = FALSE)
+    chart.type, clean.pt.segs = FALSE, tspan = FALSE)
 {
     pt.segs <- attr(data.label.text, "customPoints", exact = TRUE)
     for (j in seq_along(annotation.list))
@@ -533,7 +538,7 @@ applyAllAnnotationsToDataLabels <- function(data.label.text, annotation.list,
         {
             if (!grepl("Circle", a.tmp$type))
                 data.label.text[ind.sel] <- addAnnotToDataLabel(data.label.text[ind.sel],
-                    a.tmp, tmp.dat[ind.sel])
+                    a.tmp, tmp.dat[ind.sel], tspan = tspan)
             pt.segs <- getPointSegmentsForPPT(pt.segs, ind.sel, a.tmp, tmp.dat[ind.sel])
         }
     }
@@ -760,12 +765,15 @@ unescape_html <- function(str){
 # then the last tag will override the others
 removeColorTags <- function(text)
 {
+    # Charts drawn as SVG rather than by plotly use <tspan> and fill instead of <span> and
+    # color, so both spellings are recognised. Matching only one leaves the earlier color
+    # in place, and the recoloring then has no visible effect on it.
     # if there is an exact match then remove entire tag
-    exact.match <- gregexpr("<span style='color:[A-Za-z0-9#]+'>", text)[[1]]
+    exact.match <- gregexpr("<t?span style='(color|fill):[A-Za-z0-9#]+'>", text)[[1]]
     if (!isTRUE(exact.match == -1))
     {
-        closetags.match <- gregexpr("</span>", text)[[1]]
-        opentags.match <- gregexpr("<span", text)[[1]]
+        closetags.match <- gregexpr("</t?span>", text)[[1]]
+        opentags.match <- gregexpr("<t?span", text)[[1]]
         j <- 1; k <- 1;
         rm.start <- c()
         rm.end <- c()
@@ -795,6 +803,6 @@ removeColorTags <- function(text)
         for (i in length(rm.start):1)
             substr(text, rm.start[i], rm.end[i]) <- paste(rep(" ", rm.end[i] - rm.start[i] + 1), collapse = "")
     }
-    text <- gsub("color:[A-Za-z0-9#]+;", "", text)
+    text <- gsub("(color|fill):[A-Za-z0-9#]+;", "", text)
     return(text)
 }

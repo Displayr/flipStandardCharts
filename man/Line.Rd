@@ -151,6 +151,7 @@ Line(
   axis.drag.enable = FALSE,
   data.label.show = FALSE,
   data.label.show.at.ends = FALSE,
+  data.label.auto.placement = FALSE,
   data.label.position = "Top",
   data.label.font.family = global.font.family,
   data.label.font.color = global.font.color,
@@ -529,6 +530,13 @@ using zoom.}
 
 \item{data.label.show.at.ends}{Logical; show data labels at the beginning and end of each
 data series. This value will override \code{data.label.show}.}
+
+\item{data.label.auto.placement}{Logical; position the data labels so that they do
+not overlap each other or the data points, instead of placing them at a fixed
+offset given by \code{data.label.position}. Only has an effect when data labels
+are shown. The chart is then drawn using rhtmlCombinedScatter rather than plotly,
+which does not support every charting option; a warning names any setting
+that has been ignored as a result.}
 
 \item{data.label.position}{Character; one of 'top' or 'bottom'. This can
 be a single value or a vector with one value for each series.}

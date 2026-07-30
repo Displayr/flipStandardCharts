@@ -127,6 +127,166 @@ for (charting.func in c("Column", "Bar", "Line", "Radar"))
     })
 }
 
+test_that("Line ChartLabels for the cases the loop above does not reach",
+{
+    dd <- data.with.stats[-10,,]
+
+    # A suffix is described the same way a prefix is, after the value rather than before
+    pp <- Line(dd, data.label.show = TRUE, data.label.suffix = " pts")
+    expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$ShowValue, FALSE)
+    expect_equal(length(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints), 9)
+    expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[9]],
+        list(Index = 8, Segments = list(list(Field = "Value"), list(Text = " pts"))))
+
+    # A suffix that the percentage formatting already supplies is dropped, so there is
+    # nothing left to describe
+    expect_warning(pp <- Line(dd, data.label.show = TRUE, data.label.suffix = "%"),
+                   "first '%' in the suffix will be ignored")
+    expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$ShowValue, TRUE)
+    expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints, NULL)
+
+    # Only the series that show a label say so
+    pp <- Line(dd, data.label.show = c(TRUE, FALSE, TRUE))
+    expect_equal(vapply(attr(pp, "ChartLabels")$SeriesLabels,
+                        function(s) isTRUE(s$ShowValue), logical(1)),
+                 c(TRUE, FALSE, TRUE))
+
+    # The average series is not one of the data series, so it is not described
+    pp <- Line(dd, data.label.show = TRUE, average.series = rep(10, nrow(dd)))
+    expect_equal(length(attr(pp, "ChartLabels")$SeriesLabels), 3)
+
+    # The font colour and size are carried through for PowerPoint to apply, converted from
+    # pixels to points. The family is deliberately not: a segment that does not override
+    # the font family takes it from the series labels, so there is nothing to carry.
+    pp <- Line(dd, data.label.show = TRUE, data.label.font.size = 14,
+               data.label.font.family = "Courier New")
+    expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$Font$size, 10.5, tol = 1e-2)
+    expect_equal(names(attr(pp, "ChartLabels")$SeriesLabels[[1]]$Font), c("color", "size"))
+
+    # The annotation types the loop does not cover, each described as a segment
+    pp <- Line(dd, data.label.show = TRUE, annotation.list = list(list(
+        type = "Arrow - up", data = "p", threstype = "below threshold",
+        threshold = "0.05", color = "#ff0000", size = 12)))
+    expect_equal(length(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints), 4)
+    expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[1]]$Index, 1)
+    expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[1]]$Segments[[2]]$Text,
+                 "↑")
+
+    pp <- Line(dd, data.label.show = TRUE, annotation.list = list(list(
+        type = "Text - after data label", data = "p", threstype = "below threshold",
+        threshold = "0.05", color = "red", size = 8, format = ".3f", prefix = " +/-",
+        font.family = "Arial", font.weight = "normal", font.style = "normal")))
+    seg <- attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[1]]$Segments
+    expect_equal(seg[[1]], list(Field = "Value"))
+    expect_match(seg[[2]]$Text, "^ [+]/-0[.]")
+})
+
+test_that("Automatic data label placement does not change ChartLabels",
+{
+    # PowerPoint export reads this attribute, and the placement happens in the browser,
+    # so what is exported has to be exactly what the plotly line chart exports.
+    dd <- data.with.stats[-10,,]
+    an <- function(type, extra = list()) list(c(list(type = type, data = "p",
+        threstype = "below threshold", threshold = "0.05", color = "#ff0000", size = 21,
+        width = 2, offset = 1, font.family = "Arial", font.weight = "normal",
+        font.style = "normal", format = ".2f", prefix = "", suffix = ""), extra))
+
+    cases <- list(
+        list(data.label.show = TRUE),
+        list(data.label.show = TRUE, data.label.font.autocolor = TRUE),
+        list(data.label.show = TRUE, data.label.prefix = "$"),
+        list(data.label.show = TRUE, data.label.prefix = "<", data.label.suffix = ">"),
+        list(data.label.show = TRUE, data.label.format = ".1f"),
+        list(data.label.show = TRUE, data.label.font.size = 14,
+             data.label.font.family = "Courier New"),
+        list(data.label.show = TRUE, data.label.show.at.ends = TRUE),
+        list(data.label.show = c(TRUE, FALSE, TRUE)),
+        list(data.label.show = TRUE, average.series = rep(10, nrow(dd))),
+        list(data.label.show = TRUE, annotation.list = an("Border")),
+        list(data.label.show = TRUE, annotation.list = an("Hide")),
+        list(data.label.show = TRUE,
+             annotation.list = an("Custom text", list(custom.symbol = "*"))),
+        list(data.label.show = TRUE, annotation.list = an("Recolor text")),
+        list(data.label.show = TRUE, annotation.list = an("Arrow - up")),
+        list(data.label.show = TRUE, annotation.list = an("Caret - down")),
+        list(data.label.show = TRUE, annotation.list = an("Shadow")),
+        list(data.label.show = TRUE, annotation.list = an("Text - after data label")),
+        list(data.label.show = TRUE, annotation.list = an("Text - before data label")),
+        list(data.label.show = TRUE, data.label.prefix = "$",
+             annotation.list = an("Recolor text")),
+        list(data.label.show = TRUE, data.label.show.at.ends = TRUE,
+             annotation.list = an("Recolor text")))
+
+    for (i in seq_along(cases)) {
+        args <- c(list(dd), cases[[i]])
+        a <- suppressWarnings(do.call(Line, args))
+        b <- suppressWarnings(do.call(Line,
+                 c(args, list(data.label.auto.placement = TRUE))))
+        expect_s3_class(b$htmlwidget, "rhtmlCombinedScatter")
+        expect_equal(attr(b, "ChartLabels"), attr(a, "ChartLabels"),
+                     info = paste("case", i, paste(names(cases[[i]]), collapse = ", ")))
+        expect_equal(attr(b, "ChartType"), attr(a, "ChartType"))
+    }
+
+    # Two annotations at once, on a single series
+    args <- list(dd[, 1, , drop = FALSE], data.label.show = TRUE,
+                 annotation.list = c(an("Custom text", list(custom.symbol = "*")),
+                                     an("Recolor text")))
+    a <- suppressWarnings(do.call(Line, args))
+    b <- suppressWarnings(do.call(Line, c(args, list(data.label.auto.placement = TRUE))))
+    expect_equal(attr(b, "ChartLabels"), attr(a, "ChartLabels"))
+
+    # Nothing to export when no labels are shown, and the plotly chart is used anyway
+    b <- Line(dd, data.label.auto.placement = TRUE)
+    expect_equal(attr(b, "ChartLabels"), NULL)
+    expect_s3_class(b$htmlwidget, "plotly")
+})
+
+test_that("Automatic data label placement describes the labels for PowerPoint",
+{
+    # Read directly rather than only against the plotly chart, so that the shape the
+    # exporter relies on is written down here.
+    dd <- data.with.stats[-10,,]
+
+    pp <- suppressWarnings(Line(dd, data.label.show = TRUE,
+                                data.label.auto.placement = TRUE))
+    expect_equal(length(attr(pp, "ChartLabels")$SeriesLabels), 3)
+    expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]],
+        list(Position = "Top", Font = list(color = "#2C2C2C", size = 7.50187546886722),
+             ShowValue = TRUE))
+
+    # Automatic placement is a screen behaviour, so the exported position is still Top
+    pp <- suppressWarnings(Line(dd, data.label.show = TRUE,
+             data.label.position = "Bottom", data.label.auto.placement = TRUE))
+    expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$Position, "Top")
+
+    # A prefix becomes segments, and the series stops claiming to show the bare value
+    pp <- suppressWarnings(Line(dd, data.label.show = TRUE, data.label.prefix = "$",
+                                data.label.auto.placement = TRUE))
+    expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$ShowValue, FALSE)
+    expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[9]],
+        list(Index = 8, Segments = list(list(Text = "$"), list(Field = "Value"))))
+
+    # Hiding a label is recorded as that point showing no value
+    pp <- suppressWarnings(Line(dd[, -3, ], data.label.show = TRUE,
+        data.label.auto.placement = TRUE, annotation.list = list(list(type = "Hide",
+        data = "p", threstype = "above threshold", threshold = "0.05"))))
+    expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[1]]$Index, 0)
+    expect_equal(attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[1]]$ShowValue,
+                 FALSE)
+
+    # An annotation that outlines the label carries the outline for PowerPoint to draw
+    pp <- suppressWarnings(Line(dd, data.label.show = TRUE,
+        data.label.auto.placement = TRUE, annotation.list = list(list(type = "Border",
+        data = "p", threstype = "below threshold", threshold = "0.05",
+        color = "#ff0000", width = 2, offset = 1))))
+    cp <- attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints[[4]]
+    expect_equal(cp$Index, 7)
+    expect_equal(cp$OutlineStyle, "Solid")
+    expect_equal(cp$OutlineColor, "#ff0000")
+    expect_equal(cp$OutlineWidth, 1.5, tol = 1e-2)
+})
+
 test_that("Pie chart data labels",
 {
     pp <- Pie(data.with.stats[-10,1,])

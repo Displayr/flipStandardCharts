@@ -165,3 +165,31 @@ test_that("line-of-best-fit",
 
 })
 
+test_that("Fit lines take a color each when one color is given for every series",
+{
+    zz <- structure(c(1:5, 2:6, 3:7), .Dim = c(5L, 3L),
+        .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B", "C")))
+    fitColorsOf <- function(...)
+    {
+        traces <- plotly::plotly_build(suppressWarnings(Line(...))$htmlwidget)$x$data
+        unlist(lapply(traces, function(tr)
+            if (!is.null(tr$name) && grepl("^Fitted", tr$name)) tr$line$color else NULL))
+    }
+
+    # fit.line.colors defaults to colors, which is recycled to the series, so a single
+    # color has to reach every fit line rather than only the first
+    expect_equal(fitColorsOf(zz, colors = "red", fit.type = "Smooth"), rep("red", 3))
+    expect_equal(fitColorsOf(zz, colors = "red", fit.type = "Smooth", fit.CI.show = TRUE),
+                 rep("red", 3))
+
+    # The average series is appended after the real ones, so its color comes last
+    expect_equal(fitColorsOf(zz, colors = "red", fit.type = "Smooth",
+                             average.series = rep(9, 5), average.color = "#123456"),
+                 c(rep("red", 3), "#123456"))
+
+    # An explicit color per series is still used as given
+    expect_equal(fitColorsOf(zz, fit.type = "Smooth",
+                             fit.line.colors = c("#111111", "#222222", "#333333")),
+                 c("#111111", "#222222", "#333333"))
+})
+
