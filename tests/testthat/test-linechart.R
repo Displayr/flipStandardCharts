@@ -68,4 +68,10 @@ test_that("The opacity family accepts every input form without erroring",
     # or without markers shown.
     expect_warning(Line(z, opacity = c(0.3, 1)), NA)
     expect_warning(Line(z, marker.show = TRUE, opacity = c(0.3, 1)), NA)
+
+    # The contract warning is for a value the caller set, and only when a marker is drawn:
+    # an opacity you cannot see is not worth a warning
+    expect_warning(Line(z, marker.opacity = c(0.3, 1)), NA)
+    expect_warning(Line(z, marker.show = TRUE, marker.opacity = c(0.3, 1)),
+                   "Only one marker.opacity can be used")
 })

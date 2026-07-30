@@ -98,17 +98,20 @@ prepareLineSeries <- function(x,
     # an alpha longer than the color it is applied to.
     # Only a value the caller set is worth warning about. Markers inherit `opacity`, which is
     # legitimately per series, and warnUnsupportedByAutoPlacement already reports that case
-    # when markers are actually drawn.
+    # when markers are actually drawn. And a difference that cannot be seen, because no
+    # marker is drawn at all, is not worth warning about either.
     marker.opacity.given <- !is.null(marker.opacity)
     marker.border.opacity.given <- !is.null(marker.border.opacity)
+    markers.drawn <- markersAreDrawn(marker.show, marker.show.at.ends,
+                                     ncol(chart.matrix), nrow(chart.matrix))
     if (is.null(marker.opacity))
         marker.opacity <- opacity
     if (is.null(marker.border.opacity))
         marker.border.opacity <- marker.opacity
     marker.opacity <- firstOpacity(marker.opacity, "marker.opacity",
-                                   warn = marker.opacity.given)
+                                   warn = marker.opacity.given && markers.drawn)
     marker.border.opacity <- firstOpacity(marker.border.opacity, "marker.border.opacity",
-                                          warn = marker.border.opacity.given)
+                                          warn = marker.border.opacity.given && markers.drawn)
 
     # Set colors
     n <- ncol(chart.matrix)

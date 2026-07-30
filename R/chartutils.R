@@ -1697,6 +1697,18 @@ isPercentData <- function(data)
     return(FALSE)
 }
 
+# Whether any marker is drawn, from the arguments as the caller passed them. Used to decide
+# whether a difference in marker appearance is worth warning about: one that cannot be seen
+# is not.
+markersAreDrawn <- function(marker.show, marker.show.at.ends, n.col, n.row)
+{
+    if (isTRUE(marker.show.at.ends))
+        return(TRUE)
+    if (is.null(marker.show) || isTRUE(marker.show == "none"))
+        return(FALSE)
+    any(vectorize(marker.show, n.col, n.row) %in% c(TRUE, "TRUE"))
+}
+
 # Reduces a setting that must be a single value to one, warning if the caller gave more than
 # one distinct value. A comma-separated string is parsed first, so the Plugins' per-series
 # input form cannot reach arithmetic or toRGB as text. `what` names the setting in the

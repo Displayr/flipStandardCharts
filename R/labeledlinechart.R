@@ -629,9 +629,5 @@ warnUnsupportedByAutoPlacement <- function(args, n.col, n.row)
 #' @noRd
 markersAreShown <- function(args, n.col, n.row)
 {
-    if (isTRUE(args$marker.show.at.ends))
-        return(TRUE)
-    if (is.null(args$marker.show) || isTRUE(args$marker.show == "none"))
-        return(FALSE)
-    any(vectorize(args$marker.show, n.col, n.row) %in% c(TRUE, "TRUE"))
+    markersAreDrawn(args$marker.show, args$marker.show.at.ends, n.col, n.row)
 }
