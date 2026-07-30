@@ -96,3 +96,24 @@ test_that("FS2-4532: Radar renders with per-series marker size string", {
     expect_equal(unique(trace.sizes[["z"]]), 14)
 })
 
+test_that("FS2-4532: marker.opacity accepts every input form without erroring", {
+    # A comma-separated string is what the Plugins pass for a per-series setting, and it
+    # reached toRGB as text; a vector of more than one value reached toRGB unindexed. Radar
+    # has no marker.border.opacity.
+    expect_error(suppressWarnings(
+        Radar(matrix2d, marker.show = TRUE, marker.opacity = "0.5, 0.9")), NA)
+    expect_error(suppressWarnings(
+        Radar(matrix2d, marker.show = TRUE, marker.opacity = c(0.5, 0.9))), NA)
+
+    # marker.opacity is a single value by contract, so more than one distinct value warns
+    # and the first wins - but only when a marker is actually drawn, so an opacity you
+    # cannot see is not worth a warning
+    expect_warning(Radar(matrix2d, marker.opacity = c(0.3, 1)), NA)
+    expect_warning(Radar(matrix2d, marker.show = TRUE, marker.opacity = c(0.3, 1)),
+                   "Only one marker.opacity can be used")
+
+    # One value, or several that agree, is silent
+    expect_warning(Radar(matrix2d, marker.show = TRUE, marker.opacity = 0.5), NA)
+    expect_warning(Radar(matrix2d, marker.show = TRUE, marker.opacity = "0.5, 0.5"), NA)
+})
+

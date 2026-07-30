@@ -53,9 +53,8 @@ test_that("The opacity family accepts every input form without erroring",
     expect_true(any(grepl("rgba\\(255,0,0,0.3\\)", line.colors)))
     expect_true(any(grepl("rgba\\(0,255,0,1\\)", line.colors)))
 
-    # marker.opacity is a single value by contract, so more than one warns and the first wins
-    expect_warning(Line(z, marker.show = TRUE, marker.opacity = c(0.3, 1)),
-                   "marker.opacity")
+    # marker.border.opacity is a single value by contract, so more than one warns and the
+    # first wins
     expect_warning(Line(z, marker.show = TRUE, marker.border.opacity = c(0.3, 1)),
                    "marker.border.opacity")
     # One value, or several that agree, is silent
@@ -74,4 +73,5 @@ test_that("The opacity family accepts every input form without erroring",
     expect_warning(Line(z, marker.opacity = c(0.3, 1)), NA)
     expect_warning(Line(z, marker.show = TRUE, marker.opacity = c(0.3, 1)),
                    "Only one marker.opacity can be used")
+    expect_warning(Line(z, marker.border.opacity = c(0.3, 1)), NA)
 })

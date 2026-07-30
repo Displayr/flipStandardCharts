@@ -166,8 +166,17 @@ Radar <- function(x,
         opacity <- 0.4
     if (is.null(marker.show))
         marker.show <- FALSE
+    # marker.opacity is a single value, the same contract prepareLineSeries enforces for
+    # Line: unlike opacity it cannot vary by series, so more than one distinct value warns
+    # and the first is used. Radar has no marker.border.opacity. Only a value the caller set
+    # is worth warning about, and only when a marker is actually drawn - an opacity you
+    # cannot see is not worth a warning.
+    marker.opacity.given <- !is.null(marker.opacity)
+    markers.drawn <- markersAreDrawn(marker.show, FALSE, n, m)
     if (is.null(marker.opacity))
         marker.opacity <- opacity
+    marker.opacity <- firstOpacity(marker.opacity, "marker.opacity",
+                                   warn = marker.opacity.given && markers.drawn)
 
     # Set colors
     colors <- vectorize(colors, n)
