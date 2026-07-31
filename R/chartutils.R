@@ -1618,10 +1618,13 @@ vectorize <- function(x, n, nrow = NULL, split = ",")
     input.is.matrix <- length(dim(x)) >= 2
     if (is.character(x) && !input.is.matrix && !is.null(split))
         x <- TextAsVector(x, split = split)
-    if (!input.is.matrix)
-        x <- rep(x, length = n)
     if (!is.null(nrow) && is.finite(nrow))
         n <- n * nrow
+    # Sized against the final target length, not the series count, so a setting given one
+    # value per data point keeps them all. Recycling to the series count first would
+    # collapse a per-point vector to its leading values and repeat those instead.
+    if (!input.is.matrix)
+        x <- rep(x, length = n)
 
     if (is.logical(x))
         res <- suppressWarnings(rep(TRUE, n) & x)
@@ -1700,9 +1703,10 @@ isPercentData <- function(data)
 # Whether any marker is drawn, from the arguments as the caller passed them. Used to decide
 # whether a difference in marker appearance is worth warning about: one that cannot be seen
 # is not.
-markersAreDrawn <- function(marker.show, marker.show.at.ends, n.col, n.row)
+markersAreDrawn <- function(marker.show, marker.show.at.ends, marker.show.at.last.end,
+                            n.col, n.row)
 {
-    if (isTRUE(marker.show.at.ends))
+    if (isTRUE(marker.show.at.ends) || isTRUE(marker.show.at.last.end))
         return(TRUE)
     if (is.null(marker.show) || isTRUE(marker.show == "none"))
         return(FALSE)

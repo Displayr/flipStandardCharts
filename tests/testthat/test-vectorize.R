@@ -23,22 +23,55 @@ test_that("vectorize builds a per-point matrix from an exact per-series vector",
     expect_equal(m[2, ], c(6, 10, 14))
 })
 
-test_that("vectorize on the matrix path recycles a short per-series vector into constant columns", {
-    # 2 values, 3 series, 2 rows -> series 3 recycles series 1; every column constant
+# On the nrow path a value is only read per series when there is exactly one per series.
+# Anything else is recycled across the whole matrix row-major, so it spreads over the points
+# rather than staying constant down each column. The two tests below pin that down. Settings
+# that must be read per series are reduced to one value per series before they get here --
+# readNumericSeries() does it for marker.size and line.thickness -- and the per-series
+# settings that are not, line.type and marker.symbols, are vectorized without an nrow.
+
+test_that("vectorize recycles a short vector across the matrix, not down each column", {
+    # 2 values, 3 series, 2 rows -> recycled row-major, so no column is constant
     m <- flipStandardCharts:::vectorize(c(6, 10), 3, nrow = 2)
     expect_equal(dim(m), c(2, 3))
     expect_equal(m[1, ], c(6, 10, 6))
-    expect_equal(m[2, ], c(6, 10, 6))
+    expect_equal(m[2, ], c(10, 6, 10))
 })
 
-test_that("vectorize on the matrix path silently drops excess per-series selections", {
-    # 4 symbols, 3 series, 4 rows -> 4th symbol ignored, each column constant per series
+test_that("vectorize recycles an over-length vector across the matrix rather than truncating", {
+    # 4 symbols, 3 series, 4 rows -> every symbol is used, spread over the points
     m <- flipStandardCharts:::vectorize("circle,square,diamond,star", 3, nrow = 4)
     expect_equal(dim(m), c(4, 3))
-    expect_true(all(m[, 1] == "circle"))
-    expect_true(all(m[, 2] == "square"))
-    expect_true(all(m[, 3] == "diamond"))
-    expect_false(any(m == "star"))
+    expect_equal(m[1, ], c("circle", "square", "diamond"))
+    expect_equal(m[2, ], c("star", "circle", "square"))
+    expect_equal(m[3, ], c("diamond", "star", "circle"))
+    expect_equal(m[4, ], c("square", "diamond", "star"))
+})
+
+test_that("vectorize truncates an over-length vector when there is no nrow", {
+    # The per-series settings that rely on truncation -- line.type, marker.symbols -- ask
+    # for a plain vector, and there the excess is still dropped.
+    expect_equal(flipStandardCharts:::vectorize("circle,square,diamond,star", 3),
+                 c("circle", "square", "diamond"))
+})
+
+test_that("vectorize preserves a logical per-point vector given one value per position", {
+    # 1 series, 5 points: the vector describes the points, not the series. Sizing it to the
+    # series count before the nrow expansion would collapse it to its first value.
+    expect_equal(flipStandardCharts:::vectorize(c(TRUE, FALSE, TRUE, FALSE, FALSE), 1, nrow = 5),
+                 matrix(c(TRUE, FALSE, TRUE, FALSE, FALSE), nrow = 5))
+
+    # 2 series, 3 points; a flat per-point vector fills the matrix row-major
+    input <- c(TRUE, FALSE, FALSE, FALSE, TRUE, TRUE)
+    expect_equal(flipStandardCharts:::vectorize(input, 2, nrow = 3),
+                 matrix(input, nrow = 3, byrow = TRUE))
+})
+
+test_that("vectorize preserves a character per-point vector", {
+    # data.label.prefix reaches vectorize as split = NULL with an nrow, so a per-point
+    # character vector has to survive the same way the logical one does.
+    expect_equal(flipStandardCharts:::vectorize(LETTERS[1:5], 1, nrow = 5, split = NULL),
+                 matrix(LETTERS[1:5], nrow = 5))
 })
 
 test_that("vectorize preserves every value of a full per-point matrix input", {
