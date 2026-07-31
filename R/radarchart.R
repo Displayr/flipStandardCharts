@@ -12,6 +12,8 @@
 #' @param y.tick.show Whether to display the y-axis tick labels (i.e. radial distance from center)
 #' @param x.tick.show  Whether to display the x-axis tick labels (i.e. labels around the sides of the radar chart)
 #' @param line.thickness Thickness of outline of radar polygons.
+#' @param line.type Character; one of 'solid', 'dot', 'dashed', for the outline of the radar
+#'  polygons. This can be a single value or a vector with one value for each series.
 #' @param data.label.values.only Logical; whether to show only the values in the
 #'  datal labels instead of the default category label and values.
 #' @param data.label.offset Numeric; controls the distance between the data points to
@@ -65,6 +67,7 @@ Radar <- function(x,
                     pad.left = 0,
                     pad.right = 0,
                     line.thickness = 3,
+                    line.type = "Solid",
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
                     zoom.enable = TRUE,
@@ -320,7 +323,11 @@ Radar <- function(x,
     if (is.null(line.thickness))
         line.thickness <- 3
 
-    line.thickness <- vectorize(line.thickness, n)
+    # Parsed rather than just recycled, as marker.size and opacity here already are, so that
+    # the Plugins' comma-separated form reaches plotly as numbers instead of text
+    line.thickness <- readNumericSeries(line.thickness, n, "line thickness")
+    # Lowercased for plotly's dash names, as the line chart does with the same setting
+    line.type <- vectorize(tolower(line.type), n)
     opacity <- readNumericSeries(opacity, n, "opacity")
     hovertext.show <- vectorize(hovertext.show, n)
     data.label.show <- rbind(vectorize(data.label.show, n, m), FALSE)
@@ -354,7 +361,8 @@ Radar <- function(x,
                     fillcolor = toRGB(colors[ggi], alpha = opacity[ggi]),
                     legendgroup = g.list[ggi], showlegend = TRUE,
                     hoverinfo = "skip", hoveron = "points",
-                    line = list(width = line.thickness[ggi], color = toRGB(colors[ggi])))
+                    line = list(width = line.thickness[ggi], dash = line.type[ggi],
+                                color = toRGB(colors[ggi])))
     }
 
     if (!is.null(average.series))

@@ -123,3 +123,59 @@ test_that("FS2-4532: marker.opacity accepts every input form without erroring", 
     expect_warning(Radar(matrix2d, marker.show = TRUE, marker.opacity = "0.5, 0.5"), NA)
 })
 
+
+# The radar polygons are ordinary scatter traces with polar coordinates worked out in
+# advance, so they take a line dash the same way the line chart's traces do. Each series
+# has more than one trace; the polygon is the first one carrying the series' name.
+polygonLine <- function(pp, nm)
+{
+    pb <- plotly::plotly_build(pp$htmlwidget)
+    for (tr in pb$x$data)
+        if (identical(as.character(tr$name)[1], nm))
+            return(tr$line)
+    NULL
+}
+
+test_that("Radar draws a line type per series", {
+    pp <- Radar(matrix2d, line.type = "Solid, Dot")
+    expect_equal(polygonLine(pp, "Random values")$dash, "solid")
+    expect_equal(polygonLine(pp, "More random values")$dash, "dot")
+})
+
+test_that("Radar accepts a single line type for every series", {
+    pp <- Radar(matrix2d, line.type = "Dot")
+    expect_equal(polygonLine(pp, "Random values")$dash, "dot")
+    expect_equal(polygonLine(pp, "More random values")$dash, "dot")
+})
+
+test_that("Radar lines are solid by default", {
+    pp <- Radar(matrix2d)
+    expect_equal(polygonLine(pp, "Random values")$dash, "solid")
+})
+
+test_that("Radar line type is recycled and truncated like its line thickness", {
+    # Two series here, so the third line type is dropped
+    pp <- Radar(matrix2d, line.type = "Dot, Solid, Dash", line.thickness = c(2, 5))
+    expect_equal(polygonLine(pp, "Random values")$dash, "dot")
+    expect_equal(polygonLine(pp, "More random values")$dash, "solid")
+    expect_equal(polygonLine(pp, "Random values")$width, 2)
+    expect_equal(polygonLine(pp, "More random values")$width, 5)
+
+    # A single type covers every series
+    pp <- Radar(matrix2d, line.type = "Dash")
+    expect_equal(polygonLine(pp, "Random values")$dash, "dash")
+    expect_equal(polygonLine(pp, "More random values")$dash, "dash")
+})
+
+test_that("Radar reads line thickness the way the line chart does", {
+    # readNumericSeries, as marker.size and opacity here already use: a comma-separated
+    # string becomes numbers, and a value that is not one is dropped with a warning rather
+    # than reaching plotly as text
+    expect_warning(Radar(matrix2d, line.thickness = "2, foo"),
+                   "Non-numeric line thickness value 'foo' was ignored")
+
+    pp <- Radar(matrix2d, line.thickness = "2, 5")
+    expect_true(is.numeric(polygonLine(pp, "Random values")$width))
+    expect_equal(polygonLine(pp, "Random values")$width, 2)
+    expect_equal(polygonLine(pp, "More random values")$width, 5)
+})

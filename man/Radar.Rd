@@ -46,6 +46,7 @@ Radar(
   pad.left = 0,
   pad.right = 0,
   line.thickness = 3,
+  line.type = "Solid",
   tooltip.show = TRUE,
   modebar.show = FALSE,
   zoom.enable = TRUE,
@@ -210,6 +211,9 @@ and axis lines}
 \item{pad.right}{Spacing on the right of the chart. Mainly used by SmallMultiples.}
 
 \item{line.thickness}{Thickness of outline of radar polygons.}
+
+\item{line.type}{Character; one of 'solid', 'dot', 'dashed', for the outline of the radar
+polygons. This can be a single value or a vector with one value for each series.}
 
 \item{tooltip.show}{Logical; whether to show a tooltip on hover.}
 
