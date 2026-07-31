@@ -97,11 +97,12 @@ prepareLineSeries <- function(x,
     # given a color with an alpha instead. Collapsing here rather than at each point of use
     # keeps the two chart paths identical and stops a vector reaching toRGB, which rejects
     # an alpha longer than the color it is applied to.
-    # Only a value the caller set is worth warning about. Markers inherit `opacity`, which is
-    # legitimately per series, and warnUnsupportedByAutoPlacement already reports that case
-    # when markers are actually drawn. And a difference that cannot be seen, because no
-    # marker is drawn at all, is not worth warning about either.
-    marker.opacity.given <- !is.null(marker.opacity)
+    # The collapse is worth reporting whether the caller set the value or the markers
+    # inherited it from `opacity`: either way the later series are drawn at the first one's
+    # transparency, and the chart cannot show which of the two happened. A difference that
+    # cannot be seen, because no marker is drawn at all, is still not worth a warning.
+    # The border is only reported when the caller set it, because otherwise it inherits the
+    # same `opacity` and would say the same thing twice.
     marker.border.opacity.given <- !is.null(marker.border.opacity)
     markers.drawn <- markersAreDrawn(marker.show, marker.show.at.ends, marker.show.at.last.end,
                                      ncol(chart.matrix), nrow(chart.matrix))
@@ -109,8 +110,7 @@ prepareLineSeries <- function(x,
         marker.opacity <- opacity
     if (is.null(marker.border.opacity))
         marker.border.opacity <- marker.opacity
-    marker.opacity <- firstOpacity(marker.opacity, "marker.opacity",
-                                   warn = marker.opacity.given && markers.drawn)
+    marker.opacity <- firstOpacity(marker.opacity, "marker.opacity", warn = markers.drawn)
     marker.border.opacity <- firstOpacity(marker.border.opacity, "marker.border.opacity",
                                           warn = marker.border.opacity.given && markers.drawn)
 
@@ -144,8 +144,9 @@ prepareLineSeries <- function(x,
 
     line.type <- vectorize(tolower(line.type), ncol(chart.matrix))
     marker.symbols <- vectorize(marker.symbols, ncol(chart.matrix))
-    marker.size <- vectorize(readNumericSeries(marker.size, ncol(chart.matrix), "marker size"),
-                             ncol(chart.matrix), nrow(chart.matrix))
+    if (!isPerPointSetting(marker.size, ncol(chart.matrix), nrow(chart.matrix)))
+        marker.size <- readNumericSeries(marker.size, ncol(chart.matrix), "marker size")
+    marker.size <- vectorize(marker.size, ncol(chart.matrix), nrow(chart.matrix))
     dlab.color <- if (data.label.font.autocolor) colors
                   else vectorize(data.label.font.color, ncol(chart.matrix))
     dlab.pos <- vectorize(tolower(data.label.position), ncol(chart.matrix))

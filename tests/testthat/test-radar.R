@@ -179,3 +179,15 @@ test_that("Radar reads line thickness the way the line chart does", {
     expect_equal(polygonLine(pp, "Random values")$width, 2)
     expect_equal(polygonLine(pp, "More random values")$width, 5)
 })
+
+test_that("A per-point marker.size matrix reaches every point it names", {
+    szmat <- cbind(c(2, 4, 6, 8, 10, 12), c(3, 5, 7, 9, 11, 13))
+    pp <- Radar(matrix2d, marker.show = TRUE, marker.size = szmat)
+    pb <- plotly::plotly_build(pp$htmlwidget)
+    sized <- Filter(function(tr) !is.null(tr$marker$size) && !is.null(tr$name), pb$x$data)
+    sizes <- setNames(lapply(sized, function(tr) as.numeric(tr$marker$size)),
+                      vapply(sized, function(tr) as.character(tr$name)[1], character(1)))
+    # The radar closes its polygon, so each series repeats its first point at the end
+    expect_equal(sizes[["Random values"]][1:6], c(2, 4, 6, 8, 10, 12))
+    expect_equal(sizes[["More random values"]][1:6], c(3, 5, 7, 9, 11, 13))
+})

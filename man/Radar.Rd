@@ -212,7 +212,7 @@ and axis lines}
 
 \item{line.thickness}{Thickness of outline of radar polygons.}
 
-\item{line.type}{Character; one of 'solid', 'dot', 'dashed', for the outline of the radar
+\item{line.type}{Character; one of 'solid', 'dot', 'dash', for the outline of the radar
 polygons. This can be a single value or a vector with one value for each series.}
 
 \item{tooltip.show}{Logical; whether to show a tooltip on hover.}

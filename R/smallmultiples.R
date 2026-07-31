@@ -114,6 +114,13 @@ SmallMultiples <- function(x,
                            ...)
 {
     chart.type <- gsub(" ", "", chart.type)
+    # Every panel has to come back as a plotly object: the panels are stitched with
+    # plotly::subplot and their layout attributes are edited directly before that. A charting
+    # function that returns some other widget cannot be panelled this way. Line() is the one
+    # that can do either - with data.label.auto.placement it returns rhtmlCombinedScatter
+    # instead - and it is only reachable here through `...`, so nothing stops the two meeting.
+    # Nothing passes that argument today. Wiring it up for line charts means either keeping it
+    # away from here or teaching this function to lay out widgets itself.
     chart <- get0(chart.type, mode = "function")
     eval(colors)
     if (is.null(fit.line.colors))

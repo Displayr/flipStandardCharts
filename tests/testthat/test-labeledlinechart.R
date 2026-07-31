@@ -451,11 +451,10 @@ test_that("Marker opacity is judged by the value the markers end up with",
                               data.label.show = TRUE, ...)
 
     # marker.opacity defaults to opacity, so a per-series opacity leaves the markers with
-    # per-series values the widget cannot draw. The warning names the argument that was
-    # actually passed, and says it is only the markers that miss out, because the lines
-    # do get an opacity each.
+    # per-series values that only one of can be drawn. Inherited or passed directly, the
+    # complaint is the same one, because the outcome is the same.
     expect_warning(auto(opacity = c(0.3, 1), marker.show = TRUE),
-                   "does not support the setting 'opacity \\(for the markers\\)'")
+                   "Only one marker.opacity can be used")
     expect_warning(auto(marker.opacity = c(0.3, 1), marker.show = TRUE),
                    "Only one marker.opacity can be used")
 
@@ -475,9 +474,13 @@ test_that("Marker opacity is judged by the value the markers end up with",
     expect_warning(auto(opacity = 0.5, marker.show = TRUE), NA)
     expect_warning(auto(marker.opacity = 0.5, marker.show = TRUE), NA)
 
-    # Markers drawn only at the ends of the series are still markers
-    expect_warning(auto(opacity = c(0.3, 1), marker.show.at.ends = TRUE),
-                   "'opacity \\(for the markers\\)'")
+    # Markers drawn only at the ends of the series are still markers. The complaint comes
+    # from the marker opacity contract, which both chart routes share, rather than from the
+    # list of settings automatic placement cannot honour - turning automatic placement off
+    # would not give the markers a per-series opacity either.
+    raised <- capture_warnings(auto(opacity = c(0.3, 1), marker.show.at.ends = TRUE))
+    expect_true(any(grepl("Only one marker.opacity can be used", raised)))
+    expect_false(any(grepl("for the markers", raised)))
 
     # The line opacity is honoured per series, so it is not part of the complaint
     x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
@@ -575,4 +578,23 @@ test_that("Per-series input that means the default does not warn",
     # A genuinely unsupported setting still warns
     expect_warning(auto(data.label.position = "Bottom"),
                    "does not support the setting 'data.label.position'")
+})
+
+test_that("Automatic placement is chosen from every series, not just the first", {
+    # data.label.show is per series here, so whether any label is requested cannot be read
+    # off its first element - the answer would then depend on which series asked for labels
+    expect_s3_class(Line(z, data.label.auto.placement = TRUE,
+                         data.label.show = c(FALSE, TRUE))$htmlwidget,
+                    "rhtmlCombinedScatter")
+
+    # A per-point matrix is the same question one dimension further out
+    shown <- matrix(FALSE, 5, 2)
+    shown[3, 2] <- TRUE
+    expect_s3_class(Line(z, data.label.auto.placement = TRUE,
+                         data.label.show = shown)$htmlwidget,
+                    "rhtmlCombinedScatter")
+
+    # Still no labels, so still plotly
+    expect_s3_class(Line(z, data.label.auto.placement = TRUE,
+                         data.label.show = c(FALSE, FALSE))$htmlwidget, "plotly")
 })

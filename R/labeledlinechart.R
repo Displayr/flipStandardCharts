@@ -610,14 +610,10 @@ warnUnsupportedByAutoPlacement <- function(args, n.col, n.row)
         TRUE
     }, logical(1L))]
 
-    # marker.opacity is a single value by contract, so the only opacity the widget cannot
-    # honour is a per-series `opacity` inherited by markers that are drawn. opacity itself
-    # defaults to NULL, and vectorize(NULL, n) warns ("'x' is NULL..."), so that case is
-    # ruled out before vectorizing rather than after.
-    if (is.null(args$marker.opacity) && !is.null(args$opacity) &&
-        length(unique(vectorize(args$opacity, n.col))) > 1 &&
-        markersAreShown(args, n.col, n.row))
-        ignored <- c(ignored, "opacity (for the markers)")
+    # A per-series opacity inherited by the markers is not listed here. One marker opacity for
+    # the whole chart is the contract on both routes, so prepareLineSeries reports it for
+    # either; naming it here as well would say it twice, and would promise that turning
+    # automatic placement off gives the markers a per-series opacity, which it does not.
     if (!args$data.label.font.autocolor &&
         length(unique(vectorize(args$data.label.font.color, n.col))) > 1)
         ignored <- c(ignored, "data.label.font.color")

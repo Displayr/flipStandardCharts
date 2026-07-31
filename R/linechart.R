@@ -5,7 +5,8 @@
 #' @inherit Area
 #' @param shape Either "linear" for straight lines between data points or "spline" for curved lines.
 #' @param smoothing Numeric; smoothing if \code{shape} is "spline".
-#' @param line.type Character; one of 'solid', 'dot', 'dashed'.
+#' @param line.type Character; one of 'solid', 'dot', 'dash'. This can be a single value
+#'     or a vector with one value for each series.
 #' @param marker.symbols Character; marker symbols, which are only shown if marker.show = TRUE.
 #'     if a vector is passed, then each element will be applied to a data series.
 #' @param data.label.position Character; one of 'top' or 'bottom'. This can
@@ -200,12 +201,17 @@ Line <-   function(x,
                     data.label.prefix = "",
                     data.label.suffix = "")
 {
-    # Automatic placement only means anything when there are labels to place.
-    # Compared with %in% rather than any(), because vectorize returns the character
-    # form for text input, which cannot be coerced by a logical operator.
+    # Automatic placement only means anything when there are labels to place. Any one series
+    # or point asking for a label is enough, so the setting is only split out of its text
+    # form here, never sized: sizing it to a series count would answer from the values that
+    # survived rather than from all of them, and the answer would depend on which series
+    # asked. Compared with %in% rather than any(), because the text form cannot be coerced
+    # by a logical operator.
+    data.label.show.given <- if (is.character(data.label.show)) TextAsVector(data.label.show)
+                             else data.label.show
     data.labels.requested <- isTRUE(data.label.show.at.ends) ||
         isTRUE(data.label.show.at.last.end) ||
-        any(vectorize(data.label.show, 1L) %in% c(TRUE, "TRUE"))
+        any(data.label.show.given %in% c(TRUE, "TRUE"))
     if (isTRUE(data.label.auto.placement) && data.labels.requested)
     {
         # labeledLine takes the same arguments as Line, except for the flag selecting
@@ -299,7 +305,9 @@ Line <-   function(x,
                        y = y[ind.single],
                        legendgroup = i,
                        name = y.label,
-                       marker = list(color = toRGB(colors[i], alpha = marker.opacity), size = marker.size[1], symbol = marker.symbols[i]),
+                       marker = list(color = toRGB(colors[i], alpha = marker.opacity),
+                                     size = marker.size[ind.single, i],
+                                     symbol = marker.symbols[i]),
                        text = autoFormatLongLabels(x.labels.full[ind.single], wordwrap=T, truncate=F),
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family)),

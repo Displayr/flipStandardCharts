@@ -171,7 +171,8 @@ will be parsed automatically.}
 
 \item{type}{One of "Column", "Stacked Column" or "100\% Stacked Column"}
 
-\item{line.type}{Character; one of 'solid', 'dot', 'dashed'.}
+\item{line.type}{Character; one of 'solid', 'dot', 'dash'. This can be a single value
+or a vector with one value for each series.}
 
 \item{shape}{Either "linear" for straight lines between data points or "spline" for curved lines.}
 

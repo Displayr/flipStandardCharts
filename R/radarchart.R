@@ -12,7 +12,7 @@
 #' @param y.tick.show Whether to display the y-axis tick labels (i.e. radial distance from center)
 #' @param x.tick.show  Whether to display the x-axis tick labels (i.e. labels around the sides of the radar chart)
 #' @param line.thickness Thickness of outline of radar polygons.
-#' @param line.type Character; one of 'solid', 'dot', 'dashed', for the outline of the radar
+#' @param line.type Character; one of 'solid', 'dot', 'dash', for the outline of the radar
 #'  polygons. This can be a single value or a vector with one value for each series.
 #' @param data.label.values.only Logical; whether to show only the values in the
 #'  datal labels instead of the default category label and values.
@@ -228,7 +228,9 @@ Radar <- function(x,
     data.label.suffix <- rbind(vectorize(data.label.suffix, n, m, split = NULL), "")
     marker.show <- vectorize(marker.show, n, m)
     marker.symbols <- vectorize(marker.symbols, n, m)
-    marker.size <- vectorize(readNumericSeries(marker.size, n, "marker size"), n, m)
+    if (!isPerPointSetting(marker.size, n, m))
+        marker.size <- readNumericSeries(marker.size, n, "marker size")
+    marker.size <- vectorize(marker.size, n, m)
 
     # Convert data (polar) into x, y coordinates
     pos <- do.call(rbind, lapply(as.data.frame(chart.matrix), calcPolarCoord,

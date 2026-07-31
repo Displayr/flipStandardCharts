@@ -75,12 +75,14 @@ test_that("The opacity family accepts every input form without erroring",
     expect_warning(Line(z, marker.show = TRUE, marker.opacity = 0.5), NA)
     expect_warning(Line(z, marker.show = TRUE, marker.opacity = "0.5, 0.5"), NA)
 
-    # A per-series opacity is legitimate, and markers inherit it - so the chart must not
-    # complain about a marker.opacity the caller never set. On the plain plotly route (no
-    # data.label.auto.placement), nothing else warns about a per-series opacity either, with
-    # or without markers shown.
+    # Markers inherit a per-series opacity, but only one of them can be used, so the chart
+    # says which one it took rather than quietly drawing later series at the first series'
+    # transparency. The inherited case warns like an explicit one: the caller cannot tell the
+    # difference by looking at the chart.
+    expect_warning(Line(z, marker.show = TRUE, opacity = c(0.3, 1)),
+                   "Only one marker.opacity can be used")
+    # No marker is drawn, so there is no difference to see and nothing to say
     expect_warning(Line(z, opacity = c(0.3, 1)), NA)
-    expect_warning(Line(z, marker.show = TRUE, opacity = c(0.3, 1)), NA)
 
     # The contract warning is for a value the caller set, and only when a marker is drawn:
     # an opacity you cannot see is not worth a warning
@@ -88,4 +90,38 @@ test_that("The opacity family accepts every input form without erroring",
     expect_warning(Line(z, marker.show = TRUE, marker.opacity = c(0.3, 1)),
                    "Only one marker.opacity can be used")
     expect_warning(Line(z, marker.border.opacity = c(0.3, 1)), NA)
+})
+
+test_that("An isolated point is drawn at its own series' marker size", {
+    # A point with a gap on both sides has no line to sit on, so it is drawn by a trace of
+    # its own. Each series' isolated points must take that series' size, not the first one's.
+    dat <- cbind(A = c(1, NA, 3, 4, NA), B = c(NA, 2, NA, 4, 5))
+    rownames(dat) <- letters[1:5]
+    pb <- plotly::plotly_build(suppressWarnings(
+        Line(dat, marker.show = TRUE, marker.size = c(6, 14))$htmlwidget))
+
+    # The isolated-point traces are the marker-only ones; the series themselves draw lines
+    isolated <- Filter(function(tr) identical(as.character(tr$mode)[1], "markers") &&
+                                    !is.null(tr$name), pb$x$data)
+    sizes <- setNames(lapply(isolated, function(tr) as.numeric(tr$marker$size)),
+                      vapply(isolated, function(tr) as.character(tr$name)[1], character(1)))
+    expect_equal(sizes[["A"]], 6)
+    expect_equal(sizes[["B"]], 14)
+})
+
+test_that("A per-point marker.size matrix reaches every point it names", {
+    # One size per position, which the Plugins never send but a caller can, and which the
+    # per-series parsing used to flatten to its first few cells
+    z2 <- cbind(A = 1:5, B = 2:6)
+    rownames(z2) <- letters[1:5]
+    szmat <- cbind(c(2, 4, 6, 8, 10), c(3, 5, 7, 9, 11))
+    pb <- plotly::plotly_build(Line(z2, marker.show = TRUE, marker.size = szmat)$htmlwidget)
+    sizes <- setNames(lapply(Filter(function(tr) !is.null(tr$marker$size) && !is.null(tr$name),
+                                    pb$x$data),
+                             function(tr) as.numeric(tr$marker$size)),
+                      vapply(Filter(function(tr) !is.null(tr$marker$size) && !is.null(tr$name),
+                                    pb$x$data),
+                             function(tr) as.character(tr$name)[1], character(1)))
+    expect_equal(sizes[["A"]], c(2, 4, 6, 8, 10))
+    expect_equal(sizes[["B"]], c(3, 5, 7, 9, 11))
 })

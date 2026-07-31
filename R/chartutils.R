@@ -1651,6 +1651,12 @@ getColumn <- function(x, i)
 }
 
 
+# Whether a setting already carries one value per data point, as a matrix or as a flat vector
+# the size of the chart. Reading such input per series would size it to the series count and
+# throw the rest away, so it goes to vectorize untouched instead.
+isPerPointSetting <- function(x, n.col, n.row)
+    length(dim(x)) >= 2 || length(x) == n.col * n.row
+
 # Parse a per-series numeric setting (line thickness, marker size) that may
 # arrive as a numeric value (old Plugins) or a comma-separated string (new Plugins) into
 # a numeric vector sized to n series. A non-numeric entry stays NA in its own slot
