@@ -496,6 +496,7 @@ labeledLine <- function(x,
     class(result) <- "StandardChart"
     attr(result, "ChartType") <- if (all(marker.show)) "Line Markers" else "Line"
     attr(result, "ChartLabels") <- chart.labels
+    attr(result, "CustomPoints") <- markerPointsForPPT(marker.show, marker.size, n)
     result
 }
 

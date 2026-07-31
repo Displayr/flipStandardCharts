@@ -358,6 +358,41 @@ resolveEndsShow <- function(setting, at.ends, at.last.end, chart.matrix)
     vectorize(setting, ncol(chart.matrix), nrow(chart.matrix))
 }
 
+#' Per-point marker settings for the PowerPoint export
+#'
+#' flipChart turns each entry into the marker settings for that point. \code{Index} has to come
+#' first, because the merge there drops it by position and treats everything after it as a
+#' marker field; for the same reason the index convention is recorded on the list rather than
+#' inside an entry, where it would become a marker property.
+#'
+#' Nothing is emitted when every point shows a marker: the series-level settings already say
+#' so, and an entry per point would be a long way of repeating them. That test is deliberately
+#' the same expression as the \code{ChartType} attribute, average series included, so the two
+#' cannot disagree about which case a chart is in. An average series never shows a marker, so a
+#' chart with one always takes the itemised path.
+#'
+#' @param marker.show Logical matrix, points down the rows and series across the columns.
+#' @param marker.size Numeric matrix of the same shape.
+#' @param n The number of charted series, excluding any average series.
+#' @return A list with one element per charted series, each a list of \code{list(Index, Size)}
+#'     for the points showing a marker, carrying an \code{IndexBase} attribute.
+#' @noRd
+markerPointsForPPT <- function(marker.show, marker.size, n)
+{
+    all.shown <- all(marker.show)
+    res <- lapply(seq_len(n), function(i)
+    {
+        if (all.shown)
+            return(list())
+        # Zero-based and local to the series, matching this chart's own ChartLabels.
+        # CombinedScatter numbers its points across the whole chart instead.
+        lapply(which(marker.show[, i]),
+               function(r) list(Index = r - 1, Size = marker.size[r, i]))
+    })
+    attr(res, "IndexBase") <- "series"
+    res
+}
+
 #' Calls prepareLineSeries with the calling chart function's own arguments
 #'
 #' The caller must have every formal of \code{prepareLineSeries} among its own, which
