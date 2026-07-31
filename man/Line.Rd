@@ -138,6 +138,7 @@ Line(
   line.thickness = 3,
   marker.show = NULL,
   marker.show.at.ends = FALSE,
+  marker.show.at.last.end = FALSE,
   marker.symbols = "circle",
   marker.colors = colors,
   marker.opacity = NULL,
@@ -151,6 +152,7 @@ Line(
   axis.drag.enable = FALSE,
   data.label.show = FALSE,
   data.label.show.at.ends = FALSE,
+  data.label.show.at.last.end = FALSE,
   data.label.auto.placement = FALSE,
   data.label.position = "Top",
   data.label.font.family = global.font.family,
@@ -495,6 +497,10 @@ the plotly symbol dictionary using either numerics or strings.}
 \item{marker.show.at.ends}{Logical; show markers at the begining and end of each
 data series. The value will override \code{marker.show}.}
 
+\item{marker.show.at.last.end}{Logical; show a marker at the end of each data series
+only, rather than at both ends. This value will override \code{marker.show} and
+\code{marker.show.at.ends}.}
+
 \item{marker.symbols}{Character; marker symbols, which are only shown if marker.show = TRUE.
 if a vector is passed, then each element will be applied to a data series.}
 
@@ -534,6 +540,10 @@ using zoom.}
 
 \item{data.label.show.at.ends}{Logical; show data labels at the beginning and end of each
 data series. This value will override \code{data.label.show}.}
+
+\item{data.label.show.at.last.end}{Logical; show a data label at the end of each data
+series only, rather than at both ends. This value will override
+\code{data.label.show} and \code{data.label.show.at.ends}.}
 
 \item{data.label.auto.placement}{Logical; position the data labels so that they do
 not overlap each other or the data points, instead of placing them at a fixed

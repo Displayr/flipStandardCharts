@@ -173,7 +173,8 @@ Radar <- function(x,
     # cannot see is not worth a warning.
     # Unlike Line, Radar's marker.opacity default is a scalar (1.0, above) rather than
     # inheriting from opacity - so there is no is.null(marker.opacity) fallback here.
-    markers.drawn <- markersAreDrawn(marker.show, FALSE, n, m)
+    # Radar has neither 'at ends' setting, so both are passed as FALSE
+    markers.drawn <- markersAreDrawn(marker.show, FALSE, FALSE, n, m)
     marker.opacity <- firstOpacity(marker.opacity, "marker.opacity",
                                    warn = markers.drawn)
 

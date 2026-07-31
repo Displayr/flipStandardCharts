@@ -12,8 +12,14 @@
 #'    be a single value or a vector with one value for each series.
 #' @param data.label.show.at.ends Logical; show data labels at the beginning and end of each
 #'      data series. This value will override \code{data.label.show}.
+#' @param data.label.show.at.last.end Logical; show a data label at the end of each data
+#'      series only, rather than at both ends. This value will override
+#'      \code{data.label.show} and \code{data.label.show.at.ends}.
 #' @param marker.show.at.ends Logical; show markers at the begining and end of each
 #'      data series. The value will override \code{marker.show}.
+#' @param marker.show.at.last.end Logical; show a marker at the end of each data series
+#'      only, rather than at both ends. This value will override \code{marker.show} and
+#'      \code{marker.show.at.ends}.
 #' @param marker.opacity A single value between 0 and 1 for the opacity of the
 #'      markers. Unlike \code{opacity} this cannot vary by series; give a color with
 #'      an alpha value to do that.
@@ -169,6 +175,7 @@ Line <-   function(x,
                     line.thickness = 3,
                     marker.show = NULL,
                     marker.show.at.ends = FALSE,
+                    marker.show.at.last.end = FALSE,
                     marker.symbols = "circle",
                     marker.colors = colors,
                     marker.opacity = NULL,
@@ -182,6 +189,7 @@ Line <-   function(x,
                     axis.drag.enable = FALSE,
                     data.label.show = FALSE,
                     data.label.show.at.ends = FALSE,
+                    data.label.show.at.last.end = FALSE,
                     data.label.auto.placement = FALSE,
                     data.label.position = "Top",
                     data.label.font.family = global.font.family,
@@ -196,6 +204,7 @@ Line <-   function(x,
     # Compared with %in% rather than any(), because vectorize returns the character
     # form for text input, which cannot be coerced by a logical operator.
     data.labels.requested <- isTRUE(data.label.show.at.ends) ||
+        isTRUE(data.label.show.at.last.end) ||
         any(vectorize(data.label.show, 1L) %in% c(TRUE, "TRUE"))
     if (isTRUE(data.label.auto.placement) && data.labels.requested)
     {

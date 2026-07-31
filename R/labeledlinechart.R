@@ -148,6 +148,7 @@ labeledLine <- function(x,
                     line.thickness = 3,
                     marker.show = NULL,
                     marker.show.at.ends = FALSE,
+                    marker.show.at.last.end = FALSE,
                     marker.symbols = "circle",
                     marker.colors = colors,
                     marker.opacity = NULL,
@@ -161,6 +162,7 @@ labeledLine <- function(x,
                     axis.drag.enable = FALSE,
                     data.label.show = FALSE,
                     data.label.show.at.ends = FALSE,
+                    data.label.show.at.last.end = FALSE,
                     data.label.position = "Top",
                     data.label.font.family = global.font.family,
                     data.label.font.color = global.font.color,
@@ -642,5 +644,6 @@ warnUnsupportedByAutoPlacement <- function(args, n.col, n.row)
 #' @noRd
 markersAreShown <- function(args, n.col, n.row)
 {
-    markersAreDrawn(args$marker.show, args$marker.show.at.ends, n.col, n.row)
+    markersAreDrawn(args$marker.show, args$marker.show.at.ends,
+                    args$marker.show.at.last.end, n.col, n.row)
 }
