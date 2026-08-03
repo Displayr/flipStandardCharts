@@ -11,9 +11,13 @@
 #' @param pad.right Spacing on the right of the chart. Mainly used by SmallMultiples.
 #' @param y.tick.show Whether to display the y-axis tick labels (i.e. radial distance from center)
 #' @param x.tick.show  Whether to display the x-axis tick labels (i.e. labels around the sides of the radar chart)
-#' @param line.thickness Thickness of outline of radar polygons.
+#' @param line.thickness Thickness of outline of radar polygons. Either a single value, or
+#'  one value per series as a vector or as a comma-separated string ("2,5"); fewer values
+#'  than series are recycled and any excess is ignored. A value that is not a number becomes
+#'  a missing value in its own place, with a warning naming it.
 #' @param line.type Character; one of 'solid', 'dot', 'dash', for the outline of the radar
-#'  polygons. This can be a single value or a vector with one value for each series.
+#'  polygons. Either a single value, or one value per series as a vector or as a
+#'  comma-separated string ("Solid,Dot").
 #' @param data.label.values.only Logical; whether to show only the values in the
 #'  datal labels instead of the default category label and values.
 #' @param data.label.offset Numeric; controls the distance between the data points to

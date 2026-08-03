@@ -4,14 +4,28 @@
 #' @inherit Column
 #' @inherit Area
 #' @param shape Either "linear" for straight lines between data points or "spline" for curved
-#'     lines. This can be a single value or a vector with one value for each series, so one
-#'     chart can mix the two.
-#' @param smoothing Numeric; smoothing for the series whose \code{shape} is "spline". This can
-#'     be a single value or a vector with one value for each series.
-#' @param line.type Character; one of 'solid', 'dot', 'dash'. This can be a single value
-#'     or a vector with one value for each series.
+#'     lines. Either a single value, or one value per series as a vector or as a
+#'     comma-separated string ("Straight,Curved"), so one chart can mix the two.
+#' @param smoothing Numeric between 0 and 1.3; how tightly a curved line is drawn through
+#'     its points. Either a single value, or one value per series as a vector or as a
+#'     comma-separated string ("1,1.3"); fewer values than series are recycled and any
+#'     excess is ignored. Only applies to a series whose \code{shape} is "spline", and is
+#'     ignored for one drawn straight.
+#' @param line.type Character; one of 'solid', 'dot', 'dash'. Either a single value, or one
+#'     value per series as a vector or as a comma-separated string ("Solid,Dot"); fewer
+#'     values than series are recycled and any excess is ignored.
 #' @param marker.symbols Character; marker symbols, which are only shown if marker.show = TRUE.
-#'     if a vector is passed, then each element will be applied to a data series.
+#'     Either a single value, or one value per series as a vector or as a comma-separated
+#'     string ("circle,square"); fewer values than series are recycled and any excess is
+#'     ignored. Honoured whether or not \code{data.label.auto.placement} is on.
+#' @param marker.size Size in pixels of marker. Either a single value, or one value per
+#'     series as a vector or as a comma-separated string ("6,10,14"); fewer values than
+#'     series are recycled and any excess is ignored. A value that is not a number becomes
+#'     a missing value in its own place, with a warning naming it, so the series after it
+#'     keep the sizes they were given. A matrix of one size per data point is also accepted
+#'     and is used as given.
+#' @param line.thickness Thickness, in pixels, of the series line. Accepts the same forms as
+#'     \code{marker.size}.
 #' @param data.label.position Character; one of 'top' or 'bottom'. This can
 #'    be a single value or a vector with one value for each series.
 #' @param data.label.show.at.ends Logical; show data labels at the beginning and end of each
