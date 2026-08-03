@@ -356,7 +356,14 @@ labeledLine <- function(x,
         labels.show = TRUE,
         label.auto.placement = TRUE,
         labels.font.family = data.label.font.family,
-        labels.font.color = if (data.label.font.autocolor) NULL else dlab.color[1],
+        # One colour per point, in the same order as the labels: the widget colours each
+        # label individually, so a colour per series is spread across that series' points.
+        # Sized to the charted columns rather than to dlab.color, which is worked out before
+        # an average series adds one and so would leave the arrays a series short.
+        # Automatic colouring still sends nothing, leaving each label to take the colour of
+        # its own point, which is already the series colour.
+        labels.font.color = if (data.label.font.autocolor) NULL
+                            else rep(vectorize(dlab.color, n.col), each = n.row),
         labels.font.size = data.label.font.size,
         line.show = TRUE,
         line.colors = toRGB(colors, alpha = opacity),
@@ -613,10 +620,6 @@ warnUnsupportedByAutoPlacement <- function(args, n.col, n.row)
     # the whole chart is the contract on both routes, so prepareLineSeries reports it for
     # either; naming it here as well would say it twice, and would promise that turning
     # automatic placement off gives the markers a per-series opacity, which it does not.
-    if (!args$data.label.font.autocolor &&
-        length(unique(vectorize(args$data.label.font.color, n.col))) > 1)
-        ignored <- c(ignored, "data.label.font.color")
-
     # These default to another argument, so they can only be judged against it. The
     # widget takes one set of series colors, used for the markers and for automatically
     # colored data labels alike, so markers cannot be colored separately from the lines.
