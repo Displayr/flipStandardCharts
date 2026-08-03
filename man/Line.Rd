@@ -138,6 +138,7 @@ Line(
   line.thickness = 3,
   marker.show = NULL,
   marker.show.at.ends = FALSE,
+  marker.show.at.last.end = FALSE,
   marker.symbols = "circle",
   marker.colors = colors,
   marker.opacity = NULL,
@@ -151,6 +152,7 @@ Line(
   axis.drag.enable = FALSE,
   data.label.show = FALSE,
   data.label.show.at.ends = FALSE,
+  data.label.show.at.last.end = FALSE,
   data.label.auto.placement = FALSE,
   data.label.position = "Top",
   data.label.font.family = global.font.family,
@@ -169,11 +171,19 @@ will be parsed automatically.}
 
 \item{type}{One of "Column", "Stacked Column" or "100\% Stacked Column"}
 
-\item{line.type}{Character; one of 'solid', 'dot', 'dashed'.}
+\item{line.type}{Character; one of 'solid', 'dot', 'dash'. Either a single value, or one
+value per series as a vector or as a comma-separated string ("Solid,Dot"); fewer
+values than series are recycled and any excess is ignored.}
 
-\item{shape}{Either "linear" for straight lines between data points or "spline" for curved lines.}
+\item{shape}{Either "linear" for straight lines between data points or "spline" for curved
+lines. Either a single value, or one value per series as a vector or as a
+comma-separated string ("Straight,Curved"), so one chart can mix the two.}
 
-\item{smoothing}{Numeric; smoothing if \code{shape} is "spline".}
+\item{smoothing}{Numeric between 0 and 1.3; how tightly a curved line is drawn through
+its points. Either a single value, or one value per series as a vector or as a
+comma-separated string ("1,1.3"); fewer values than series are recycled and any
+excess is ignored. Only applies to a series whose \code{shape} is "spline", and is
+ignored for one drawn straight.}
 
 \item{colors}{Character; a vector containing one or more colors specified as hex codes.}
 
@@ -487,7 +497,8 @@ character format (e.g. "black") or an a hex code.}
 
 \item{x.tick.label.wrap.nchar}{Integer; number of characters in each line when \code{label.wrap} is \code{TRUE}.}
 
-\item{line.thickness}{Thickness, in pixels, of the series line}
+\item{line.thickness}{Thickness, in pixels, of the series line. Accepts the same forms as
+\code{marker.size}.}
 
 \item{marker.show}{Can be "none", "automatic" or a vector referencing
 the plotly symbol dictionary using either numerics or strings.}
@@ -495,21 +506,36 @@ the plotly symbol dictionary using either numerics or strings.}
 \item{marker.show.at.ends}{Logical; show markers at the begining and end of each
 data series. The value will override \code{marker.show}.}
 
+\item{marker.show.at.last.end}{Logical; show a marker at the end of each data series
+only, rather than at both ends. This value will override \code{marker.show} and
+\code{marker.show.at.ends}.}
+
 \item{marker.symbols}{Character; marker symbols, which are only shown if marker.show = TRUE.
-if a vector is passed, then each element will be applied to a data series.}
+Either a single value, or one value per series as a vector or as a comma-separated
+string ("circle,square"); fewer values than series are recycled and any excess is
+ignored. Honoured whether or not \code{data.label.auto.placement} is on.}
 
 \item{marker.colors}{Character; a vector containing on/mae or more colors specified as hex codes.}
 
-\item{marker.opacity}{Opacity for markers as an alpha value (0 to 1).}
+\item{marker.opacity}{A single value between 0 and 1 for the opacity of the
+markers. Unlike \code{opacity} this cannot vary by series; give a color with
+an alpha value to do that.}
 
-\item{marker.size}{Size in pixels of marker}
+\item{marker.size}{Size in pixels of marker. Either a single value, or one value per
+series as a vector or as a comma-separated string ("6,10,14"); fewer values than
+series are recycled and any excess is ignored. A value that is not a number becomes
+a missing value in its own place, with a warning naming it, so the series after it
+keep the sizes they were given. A matrix of one size per data point is also accepted
+and is used as given.}
 
 \item{marker.border.width}{Width in pixels of border/line
 around series bars; 0 is no line}
 
 \item{marker.border.colors}{Character; a vector containing one or more colors specified as hex codes.}
 
-\item{marker.border.opacity}{Opacity of border around bars as an alpha value (0 to 1).}
+\item{marker.border.opacity}{A single value between 0 and 1 for the opacity of the
+marker borders. Unlike \code{opacity} this cannot vary by series; give a color
+with an alpha value to do that.}
 
 \item{tooltip.show}{Logical; whether to show a tooltip on hover.}
 
@@ -530,6 +556,10 @@ using zoom.}
 
 \item{data.label.show.at.ends}{Logical; show data labels at the beginning and end of each
 data series. This value will override \code{data.label.show}.}
+
+\item{data.label.show.at.last.end}{Logical; show a data label at the end of each data
+series only, rather than at both ends. This value will override
+\code{data.label.show} and \code{data.label.show.at.ends}.}
 
 \item{data.label.auto.placement}{Logical; position the data labels so that they do
 not overlap each other or the data points, instead of placing them at a fixed

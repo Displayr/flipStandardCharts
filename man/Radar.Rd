@@ -46,6 +46,7 @@ Radar(
   pad.left = 0,
   pad.right = 0,
   line.thickness = 3,
+  line.type = "Solid",
   tooltip.show = TRUE,
   modebar.show = FALSE,
   zoom.enable = TRUE,
@@ -209,7 +210,14 @@ and axis lines}
 
 \item{pad.right}{Spacing on the right of the chart. Mainly used by SmallMultiples.}
 
-\item{line.thickness}{Thickness of outline of radar polygons.}
+\item{line.thickness}{Thickness of outline of radar polygons. Either a single value, or
+one value per series as a vector or as a comma-separated string ("2,5"); fewer values
+than series are recycled and any excess is ignored. A value that is not a number becomes
+a missing value in its own place, with a warning naming it.}
+
+\item{line.type}{Character; one of 'solid', 'dot', 'dash', for the outline of the radar
+polygons. Either a single value, or one value per series as a vector or as a
+comma-separated string ("Solid,Dot").}
 
 \item{tooltip.show}{Logical; whether to show a tooltip on hover.}
 
@@ -289,13 +297,22 @@ in character format (e.g. "black") or an a hex code.}
 the plotly symbol dictionary using either numerics or strings.}
 
 \item{marker.symbols}{Character; marker symbols, which are only shown if marker.show = TRUE.
-if a vector is passed, then each element will be applied to a data series.}
+Either a single value, or one value per series as a vector or as a comma-separated
+string ("circle,square"); fewer values than series are recycled and any excess is
+ignored. Honoured whether or not \code{data.label.auto.placement} is on.}
 
-\item{marker.size}{Size in pixels of marker}
+\item{marker.size}{Size in pixels of marker. Either a single value, or one value per
+series as a vector or as a comma-separated string ("6,10,14"); fewer values than
+series are recycled and any excess is ignored. A value that is not a number becomes
+a missing value in its own place, with a warning naming it, so the series after it
+keep the sizes they were given. A matrix of one size per data point is also accepted
+and is used as given.}
 
 \item{marker.colors}{Character; a vector containing on/mae or more colors specified as hex codes.}
 
-\item{marker.opacity}{Opacity for markers as an alpha value (0 to 1).}
+\item{marker.opacity}{A single value between 0 and 1 for the opacity of the
+markers. Unlike \code{opacity} this cannot vary by series; give a color with
+an alpha value to do that.}
 
 \item{data.label.show}{Logical; whether to show data labels.}
 

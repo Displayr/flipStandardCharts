@@ -11,7 +11,13 @@
 #' @param pad.right Spacing on the right of the chart. Mainly used by SmallMultiples.
 #' @param y.tick.show Whether to display the y-axis tick labels (i.e. radial distance from center)
 #' @param x.tick.show  Whether to display the x-axis tick labels (i.e. labels around the sides of the radar chart)
-#' @param line.thickness Thickness of outline of radar polygons.
+#' @param line.thickness Thickness of outline of radar polygons. Either a single value, or
+#'  one value per series as a vector or as a comma-separated string ("2,5"); fewer values
+#'  than series are recycled and any excess is ignored. A value that is not a number becomes
+#'  a missing value in its own place, with a warning naming it.
+#' @param line.type Character; one of 'solid', 'dot', 'dash', for the outline of the radar
+#'  polygons. Either a single value, or one value per series as a vector or as a
+#'  comma-separated string ("Solid,Dot").
 #' @param data.label.values.only Logical; whether to show only the values in the
 #'  datal labels instead of the default category label and values.
 #' @param data.label.offset Numeric; controls the distance between the data points to
@@ -65,6 +71,7 @@ Radar <- function(x,
                     pad.left = 0,
                     pad.right = 0,
                     line.thickness = 3,
+                    line.type = "Solid",
                     tooltip.show = TRUE,
                     modebar.show = FALSE,
                     zoom.enable = TRUE,
@@ -166,8 +173,17 @@ Radar <- function(x,
         opacity <- 0.4
     if (is.null(marker.show))
         marker.show <- FALSE
-    if (is.null(marker.opacity))
-        marker.opacity <- opacity
+    # marker.opacity is a single value, the same contract prepareLineSeries enforces for
+    # Line: unlike opacity it cannot vary by series, so more than one distinct value warns
+    # and the first is used. Radar has no marker.border.opacity. Only a value the caller set
+    # is worth warning about, and only when a marker is actually drawn - an opacity you
+    # cannot see is not worth a warning.
+    # Unlike Line, Radar's marker.opacity default is a scalar (1.0, above) rather than
+    # inheriting from opacity - so there is no is.null(marker.opacity) fallback here.
+    # Radar has neither 'at ends' setting, so both are passed as FALSE
+    markers.drawn <- markersAreDrawn(marker.show, FALSE, FALSE, n, m)
+    marker.opacity <- firstOpacity(marker.opacity, "marker.opacity",
+                                   warn = markers.drawn)
 
     # Set colors
     colors <- vectorize(colors, n)
@@ -216,6 +232,8 @@ Radar <- function(x,
     data.label.suffix <- rbind(vectorize(data.label.suffix, n, m, split = NULL), "")
     marker.show <- vectorize(marker.show, n, m)
     marker.symbols <- vectorize(marker.symbols, n, m)
+    if (!isPerPointSetting(marker.size, n, m))
+        marker.size <- readNumericSeries(marker.size, n, "marker size")
     marker.size <- vectorize(marker.size, n, m)
 
     # Convert data (polar) into x, y coordinates
@@ -311,8 +329,12 @@ Radar <- function(x,
     if (is.null(line.thickness))
         line.thickness <- 3
 
-    line.thickness <- vectorize(line.thickness, n)
-    opacity <- vectorize(opacity, n)
+    # Parsed rather than just recycled, as marker.size and opacity here already are, so that
+    # the Plugins' comma-separated form reaches plotly as numbers instead of text
+    line.thickness <- readNumericSeries(line.thickness, n, "line thickness")
+    # Lowercased for plotly's dash names, as the line chart does with the same setting
+    line.type <- vectorize(tolower(line.type), n)
+    opacity <- readNumericSeries(opacity, n, "opacity")
     hovertext.show <- vectorize(hovertext.show, n)
     data.label.show <- rbind(vectorize(data.label.show, n, m), FALSE)
     data.label.offset <- sapply(vectorize(data.label.offset, n), charToNumeric)
@@ -345,7 +367,8 @@ Radar <- function(x,
                     fillcolor = toRGB(colors[ggi], alpha = opacity[ggi]),
                     legendgroup = g.list[ggi], showlegend = TRUE,
                     hoverinfo = "skip", hoveron = "points",
-                    line = list(width = line.thickness[ggi], color = toRGB(colors[ggi])))
+                    line = list(width = line.thickness[ggi], dash = line.type[ggi],
+                                color = toRGB(colors[ggi])))
     }
 
     if (!is.null(average.series))

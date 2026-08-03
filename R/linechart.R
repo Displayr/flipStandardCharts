@@ -3,17 +3,47 @@
 #' Line chart
 #' @inherit Column
 #' @inherit Area
-#' @param shape Either "linear" for straight lines between data points or "spline" for curved lines.
-#' @param smoothing Numeric; smoothing if \code{shape} is "spline".
-#' @param line.type Character; one of 'solid', 'dot', 'dashed'.
+#' @param shape Either "linear" for straight lines between data points or "spline" for curved
+#'     lines. Either a single value, or one value per series as a vector or as a
+#'     comma-separated string ("Straight,Curved"), so one chart can mix the two.
+#' @param smoothing Numeric between 0 and 1.3; how tightly a curved line is drawn through
+#'     its points. Either a single value, or one value per series as a vector or as a
+#'     comma-separated string ("1,1.3"); fewer values than series are recycled and any
+#'     excess is ignored. Only applies to a series whose \code{shape} is "spline", and is
+#'     ignored for one drawn straight.
+#' @param line.type Character; one of 'solid', 'dot', 'dash'. Either a single value, or one
+#'     value per series as a vector or as a comma-separated string ("Solid,Dot"); fewer
+#'     values than series are recycled and any excess is ignored.
 #' @param marker.symbols Character; marker symbols, which are only shown if marker.show = TRUE.
-#'     if a vector is passed, then each element will be applied to a data series.
+#'     Either a single value, or one value per series as a vector or as a comma-separated
+#'     string ("circle,square"); fewer values than series are recycled and any excess is
+#'     ignored. Honoured whether or not \code{data.label.auto.placement} is on.
+#' @param marker.size Size in pixels of marker. Either a single value, or one value per
+#'     series as a vector or as a comma-separated string ("6,10,14"); fewer values than
+#'     series are recycled and any excess is ignored. A value that is not a number becomes
+#'     a missing value in its own place, with a warning naming it, so the series after it
+#'     keep the sizes they were given. A matrix of one size per data point is also accepted
+#'     and is used as given.
+#' @param line.thickness Thickness, in pixels, of the series line. Accepts the same forms as
+#'     \code{marker.size}.
 #' @param data.label.position Character; one of 'top' or 'bottom'. This can
 #'    be a single value or a vector with one value for each series.
 #' @param data.label.show.at.ends Logical; show data labels at the beginning and end of each
 #'      data series. This value will override \code{data.label.show}.
+#' @param data.label.show.at.last.end Logical; show a data label at the end of each data
+#'      series only, rather than at both ends. This value will override
+#'      \code{data.label.show} and \code{data.label.show.at.ends}.
 #' @param marker.show.at.ends Logical; show markers at the begining and end of each
 #'      data series. The value will override \code{marker.show}.
+#' @param marker.show.at.last.end Logical; show a marker at the end of each data series
+#'      only, rather than at both ends. This value will override \code{marker.show} and
+#'      \code{marker.show.at.ends}.
+#' @param marker.opacity A single value between 0 and 1 for the opacity of the
+#'      markers. Unlike \code{opacity} this cannot vary by series; give a color with
+#'      an alpha value to do that.
+#' @param marker.border.opacity A single value between 0 and 1 for the opacity of the
+#'      marker borders. Unlike \code{opacity} this cannot vary by series; give a color
+#'      with an alpha value to do that.
 #' @param data.label.auto.placement Logical; position the data labels so that they do
 #'      not overlap each other or the data points, instead of placing them at a fixed
 #'      offset given by \code{data.label.position}. Only has an effect when data labels
@@ -163,6 +193,7 @@ Line <-   function(x,
                     line.thickness = 3,
                     marker.show = NULL,
                     marker.show.at.ends = FALSE,
+                    marker.show.at.last.end = FALSE,
                     marker.symbols = "circle",
                     marker.colors = colors,
                     marker.opacity = NULL,
@@ -176,6 +207,7 @@ Line <-   function(x,
                     axis.drag.enable = FALSE,
                     data.label.show = FALSE,
                     data.label.show.at.ends = FALSE,
+                    data.label.show.at.last.end = FALSE,
                     data.label.auto.placement = FALSE,
                     data.label.position = "Top",
                     data.label.font.family = global.font.family,
@@ -186,11 +218,17 @@ Line <-   function(x,
                     data.label.prefix = "",
                     data.label.suffix = "")
 {
-    # Automatic placement only means anything when there are labels to place.
-    # Compared with %in% rather than any(), because vectorize returns the character
-    # form for text input, which cannot be coerced by a logical operator.
+    # Automatic placement only means anything when there are labels to place. Any one series
+    # or point asking for a label is enough, so the setting is only split out of its text
+    # form here, never sized: sizing it to a series count would answer from the values that
+    # survived rather than from all of them, and the answer would depend on which series
+    # asked. Compared with %in% rather than any(), because the text form cannot be coerced
+    # by a logical operator.
+    data.label.show.given <- if (is.character(data.label.show)) TextAsVector(data.label.show)
+                             else data.label.show
     data.labels.requested <- isTRUE(data.label.show.at.ends) ||
-        any(vectorize(data.label.show, 1L) %in% c(TRUE, "TRUE"))
+        isTRUE(data.label.show.at.last.end) ||
+        any(data.label.show.given %in% c(TRUE, "TRUE"))
     if (isTRUE(data.label.auto.placement) && data.labels.requested)
     {
         # labeledLine takes the same arguments as Line, except for the flag selecting
@@ -237,7 +275,7 @@ Line <-   function(x,
         x <- x.labels
 
         lines <- list(width = line.thickness[i], dash = line.type[i],
-                      shape = shape, smoothing = smoothing,
+                      shape = shape[i], smoothing = smoothing[i],
                       color = toRGB(colors[i], alpha = opacity[i]))
 
 
@@ -284,7 +322,9 @@ Line <-   function(x,
                        y = y[ind.single],
                        legendgroup = i,
                        name = y.label,
-                       marker = list(color = toRGB(colors[i], alpha = marker.opacity), size = marker.size[1], symbol = marker.symbols[i]),
+                       marker = list(color = toRGB(colors[i], alpha = marker.opacity),
+                                     size = marker.size[ind.single, i],
+                                     symbol = marker.symbols[i]),
                        text = autoFormatLongLabels(x.labels.full[ind.single], wordwrap=T, truncate=F),
                        hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                        size = hovertext.font.size, family = hovertext.font.family)),
@@ -386,7 +426,7 @@ Line <-   function(x,
                    showlegend = FALSE, legendgroup = i,
                    hoverlabel = list(font = list(color = autoFontColor(colors[i]),
                    size = hovertext.font.size, family = hovertext.font.family),
-                   bgcolor = toRGB(colors[i], alpha = opacity)),
+                   bgcolor = toRGB(colors[i], alpha = opacity[i])),
                    hovertemplate = hover.template[ind.show])
         }
     }
@@ -421,6 +461,7 @@ Line <-   function(x,
     class(result) <- "StandardChart"
     attr(result, "ChartType") <- if (all(marker.show)) "Line Markers" else "Line"
     attr(result, "ChartLabels") <- chart.labels
+    attr(result, "CustomPoints") <- markerPointsForPPT(marker.show, marker.size, n)
     result
 }
 

@@ -91,3 +91,22 @@ expect_error(Column(dat2dpos, x2 = dat2d, opacity = 0.2, x2.data.label.show.at.e
 expect_error(Column(dat2dpos, x2 = dat2d, opacity = 0.2, x2.data.label.show.at.ends = TRUE,
     x2.marker.show.at.ends = TRUE, type = "Stacked"), NA)
 })
+
+test_that("A per-point data.label.show vector selects the points it names", {
+    # A 1D input is a single series, so the whole vector describes the points. The smoke
+    # tests above pass whatever gets selected; these pin down which points those are.
+    # ChartLabels records the exception to ShowValue at each point that differs from it.
+    pp <- Column(1:5, data.label.show = c(TRUE, FALSE, TRUE, FALSE, FALSE))
+    lab <- attr(pp, "ChartLabels")$SeriesLabels[[1]]
+    expect_true(lab$ShowValue)
+    # Zero-based indices of the hidden points: everything except points 1 and 3
+    expect_equal(vapply(lab$CustomPoints, function(cp) cp$Index, numeric(1)), c(1, 3, 4))
+    expect_true(all(vapply(lab$CustomPoints, function(cp) !cp$ShowValue, logical(1))))
+})
+
+test_that("A per-point data.label.prefix vector applies each prefix to its own point", {
+    pp <- Column(1:5, data.label.show = TRUE, data.label.prefix = LETTERS[1:5])
+    segs <- attr(pp, "ChartLabels")$SeriesLabels[[1]]$CustomPoints
+    # Each point carries its own prefix rather than every point repeating the first
+    expect_equal(vapply(segs, function(cp) cp$Segments[[1]]$Text, character(1)), LETTERS[1:5])
+})

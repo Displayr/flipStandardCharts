@@ -148,6 +148,7 @@ labeledLine <- function(x,
                     line.thickness = 3,
                     marker.show = NULL,
                     marker.show.at.ends = FALSE,
+                    marker.show.at.last.end = FALSE,
                     marker.symbols = "circle",
                     marker.colors = colors,
                     marker.opacity = NULL,
@@ -161,6 +162,7 @@ labeledLine <- function(x,
                     axis.drag.enable = FALSE,
                     data.label.show = FALSE,
                     data.label.show.at.ends = FALSE,
+                    data.label.show.at.last.end = FALSE,
                     data.label.position = "Top",
                     data.label.font.family = global.font.family,
                     data.label.font.color = global.font.color,
@@ -332,6 +334,11 @@ labeledLine <- function(x,
         rep(border.colors, each = n.row), ""))
     point.border.widths <- as.vector(ifelse(marker.show, marker.border.width, 0))
 
+    # One symbol per point, as the widget slices these per series. Unlike the border color
+    # a hidden marker keeps its symbol, because "" is not a valid plotly symbol and the
+    # zero radius already hides the point.
+    point.symbols <- as.vector(rep(marker.symbols, each = n.row))
+
     fit <- fitSeriesForCombinedScatter(chart.matrix, x.labels, x.axis.type, fit.type,
         fit.ignore.last, fit.CI.show, fit.window.size, fit.line.name, fit.line.colors,
         fit.CI.colors, fit.CI.opacity)
@@ -342,7 +349,7 @@ labeledLine <- function(x,
         group = groups,
         x.levels = if (x.axis.type == "category") rownames(chart.matrix) else NULL,
         colors = colors,
-        color.transparency = if (length(unique(marker.opacity)) == 1) marker.opacity[1] else NULL,
+        color.transparency = marker.opacity,
         label = labels,
         pre.label.annotations = pre.annots,
         post.label.annotations = post.annots,
@@ -358,6 +365,7 @@ labeledLine <- function(x,
         line.shape = shape,
         line.smoothing = smoothing,
         point.radius = point.radius,
+        point.symbol = point.symbols,
         point.border.color = point.border.colors,
         point.border.width = point.border.widths,
         grid = grid.show,
@@ -488,6 +496,7 @@ labeledLine <- function(x,
     class(result) <- "StandardChart"
     attr(result, "ChartType") <- if (all(marker.show)) "Line Markers" else "Line"
     attr(result, "ChartLabels") <- chart.labels
+    attr(result, "CustomPoints") <- markerPointsForPPT(marker.show, marker.size, n)
     result
 }
 
@@ -559,7 +568,6 @@ fitSeriesForCombinedScatter <- function(chart.matrix, x.labels, x.axis.type, fit
 # Arguments of Line() that rhtmlCombinedScatter has no equivalent for. Each entry is the
 # value the argument has to hold for the chart to be unaffected; anything else is dropped.
 UNSUPPORTED.BY.AUTO.PLACEMENT <- list(
-    marker.symbols = "circle",
     x.data.reversed = FALSE,
     y.data.reversed = FALSE,
     x.tick.marks = "",
@@ -571,8 +579,7 @@ UNSUPPORTED.BY.AUTO.PLACEMENT <- list(
     hovertext.align = "left",
     modebar.show = FALSE,
     zoom.enable = TRUE,
-    axis.drag.enable = FALSE,
-    data.label.position = "Top")
+    axis.drag.enable = FALSE)
 
 #' Warns about arguments that automatic data label placement cannot honour
 #'
@@ -582,20 +589,30 @@ UNSUPPORTED.BY.AUTO.PLACEMENT <- list(
 #' @noRd
 warnUnsupportedByAutoPlacement <- function(args, n.col, n.row)
 {
+    # Compared after vectorizing, because a per-series setting may spell the default out
+    # once per series ("Top, Top") or as a vector, and neither is a change worth warning
+    # about. Only character settings can arrive per series; the rest are compared as they
+    # are.
     ignored <- names(UNSUPPORTED.BY.AUTO.PLACEMENT)
-    ignored <- ignored[vapply(ignored,
-        function(nm) !identical(args[[nm]], UNSUPPORTED.BY.AUTO.PLACEMENT[[nm]]),
-        logical(1L))]
+    ignored <- ignored[vapply(ignored, function(nm)
+    {
+        given <- args[[nm]]
+        default <- UNSUPPORTED.BY.AUTO.PLACEMENT[[nm]]
+        # The identical() check comes first because vectorize() parses a character value as
+        # comma-separated text: an empty string (e.g. x.tick.marks' default) splits to zero
+        # tokens and recycles to NA instead of back to "", which would falsely count as a
+        # change from the default.
+        if (identical(given, default))
+            return(FALSE)
+        if (is.character(given) && is.character(default) && length(default) == 1)
+            return(!all(tolower(vectorize(given, n.col)) == tolower(default)))
+        TRUE
+    }, logical(1L))]
 
-    # These are per-series in a plotly line chart but only global in the widget.
-    # marker.opacity falls back to opacity, so the value the markers end up with is the
-    # one to judge, and the argument the caller actually set is the one to name. Only
-    # worth mentioning while markers are drawn, as their opacity is invisible otherwise.
-    effective.marker.opacity <- if (is.null(args$marker.opacity)) args$opacity
-                                else args$marker.opacity
-    if (length(unique(effective.marker.opacity)) > 1 && markersAreShown(args, n.col, n.row))
-        ignored <- c(ignored, if (is.null(args$marker.opacity)) "opacity (for the markers)"
-                              else "marker.opacity")
+    # A per-series opacity inherited by the markers is not listed here. One marker opacity for
+    # the whole chart is the contract on both routes, so prepareLineSeries reports it for
+    # either; naming it here as well would say it twice, and would promise that turning
+    # automatic placement off gives the markers a per-series opacity, which it does not.
     if (!args$data.label.font.autocolor &&
         length(unique(vectorize(args$data.label.font.color, n.col))) > 1)
         ignored <- c(ignored, "data.label.font.color")
@@ -623,9 +640,6 @@ warnUnsupportedByAutoPlacement <- function(args, n.col, n.row)
 #' @noRd
 markersAreShown <- function(args, n.col, n.row)
 {
-    if (isTRUE(args$marker.show.at.ends))
-        return(TRUE)
-    if (is.null(args$marker.show) || isTRUE(args$marker.show == "none"))
-        return(FALSE)
-    any(vectorize(args$marker.show, n.col, n.row) %in% c(TRUE, "TRUE"))
+    markersAreDrawn(args$marker.show, args$marker.show.at.ends,
+                    args$marker.show.at.last.end, n.col, n.row)
 }

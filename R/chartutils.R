@@ -1616,19 +1616,24 @@ autoFontColor <- function (colors)
 vectorize <- function(x, n, nrow = NULL, split = ",")
 {
     input.is.matrix <- length(dim(x)) >= 2
+    if (is.character(x) && !input.is.matrix && !is.null(split))
+        x <- TextAsVector(x, split = split)
     if (!is.null(nrow) && is.finite(nrow))
         n <- n * nrow
+    # Sized against the final target length, not the series count, so a setting given one
+    # value per data point keeps them all. Recycling to the series count first would
+    # collapse a per-point vector to its leading values and repeat those instead.
+    # A setting nobody supplied is left alone: rep() warns on NULL, and the result is the
+    # same with or without it.
+    if (!input.is.matrix && !is.null(x))
+        x <- rep(x, length = n)
 
     if (is.logical(x))
         res <- suppressWarnings(rep(TRUE, n) & x)
     else if (is.numeric(x))
         res <- suppressWarnings(rep(0, n) + x)
     else
-    {
-        if (!is.null(split))
-            x <- TextAsVector(x, split = split)
         res <- suppressWarnings(paste0(x, rep("", n)))
-    }
     if (!is.null(nrow))
         res <- matrix(res, nrow = nrow, byrow = !input.is.matrix)
     return(res)
@@ -1648,21 +1653,33 @@ getColumn <- function(x, i)
 }
 
 
-readLineThickness <- function(line.thickness, n)
+# Whether a setting already carries one value per data point, as a matrix or as a flat vector
+# the size of the chart. Reading such input per series would size it to the series count and
+# throw the rest away, so it goes to vectorize untouched instead.
+isPerPointSetting <- function(x, n.col, n.row)
+    length(dim(x)) >= 2 || length(x) == n.col * n.row
+
+# Parse a per-series numeric setting (line thickness, marker size) that may
+# arrive as a numeric value (old Plugins) or a comma-separated string (new Plugins) into
+# a numeric vector sized to n series. A non-numeric entry stays NA in its own slot
+# (position-preserving) and warns; values recycle if fewer than n and truncate if more.
+# `what` names the setting in the warning, e.g. "line thickness" or "marker size".
+readNumericSeries <- function(x, n, what)
 {
-    if (is.character(line.thickness))
+    if (is.null(x))   # nothing to parse, and rep() would warn about it
+        return(NULL)
+    if (is.character(x))
     {
-        tmp.txt <- TextAsVector(line.thickness)
-        line.thickness <- suppressWarnings(as.numeric(tmp.txt))
-        na.ind <- which(is.na(line.thickness))
+        tmp.txt <- TextAsVector(x)
+        x <- suppressWarnings(as.numeric(tmp.txt))
+        na.ind <- which(is.na(x))
         if (length(na.ind) == 1)
-            warning("Non-numeric line thickness value '", tmp.txt[na.ind], "' was ignored.")
+            warning("Non-numeric ", what, " value '", tmp.txt[na.ind], "' was ignored.")
         if (length(na.ind) > 1)
-            warning("Non-numeric line thickness values '",
-            paste(tmp.txt[na.ind], collapse = "', '"), "' were ignored.")
+            warning("Non-numeric ", what, " values '",
+                    paste(tmp.txt[na.ind], collapse = "', '"), "' were ignored.")
     }
-    line.thickness <- suppressWarnings(line.thickness * rep(1, n)) # suppress warnings about recyling
-    return(line.thickness)
+    rep(x, length = n) # recycle if fewer, truncate if more; positions preserved
 }
 
 # Returns true if the d3 format corresponds to the output
@@ -1691,6 +1708,39 @@ isPercentData <- function(data)
             return(isTRUE(grepl("%", stat)))
     }
     return(FALSE)
+}
+
+# Whether any marker is drawn, from the arguments as the caller passed them. Used to decide
+# whether a difference in marker appearance is worth warning about: one that cannot be seen
+# is not.
+markersAreDrawn <- function(marker.show, marker.show.at.ends, marker.show.at.last.end,
+                            n.col, n.row)
+{
+    if (isTRUE(marker.show.at.ends) || isTRUE(marker.show.at.last.end))
+        return(TRUE)
+    if (is.null(marker.show) || isTRUE(marker.show == "none"))
+        return(FALSE)
+    any(vectorize(marker.show, n.col, n.row) %in% c(TRUE, "TRUE"))
+}
+
+# Reduces a setting that must be a single value to one, warning if the caller gave more than
+# one distinct value. A comma-separated string is parsed first, so the Plugins' per-series
+# input form cannot reach arithmetic or toRGB as text. `what` names the setting in the
+# warning, e.g. "marker.opacity".
+firstOpacity <- function(x, what, warn = TRUE)
+{
+    values <- readNumericSeries(x, if (is.character(x)) length(TextAsVector(x)) else length(x),
+                                what)
+    # A non-numeric entry stays NA (readNumericSeries already warned about it); dropping it
+    # here means a non-numeric first entry does not silently win as an opaque toRGB(alpha = NA).
+    values <- values[!is.na(values)]
+    if (length(values) == 0)
+        values <- 1
+    if (warn && length(unique(values)) > 1)
+        warning("Only one ", what, " can be used for the whole chart, so ", values[1],
+                " was applied. Use a color with an alpha value to vary transparency ",
+                "by series.")
+    values[1]
 }
 
 # y.tick.format, y.hovertext.format, y2.tick.format, y2.hovertext.format

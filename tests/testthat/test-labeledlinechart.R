@@ -395,8 +395,8 @@ test_that("PPT export metadata matches the plotly line chart",
 test_that("Charting options with no widget equivalent warn instead of failing",
 {
     expect_warning(Line(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
-                        marker.symbols = "square"),
-                   "does not support the setting 'marker.symbols'")
+                        legend.ascending = TRUE),
+                   "does not support the setting 'legend.ascending'")
     expect_warning(Line(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
                         modebar.show = TRUE, x.data.reversed = TRUE),
                    "does not support the settings 'modebar.show', 'x.data.reversed'")
@@ -451,13 +451,19 @@ test_that("Marker opacity is judged by the value the markers end up with",
                               data.label.show = TRUE, ...)
 
     # marker.opacity defaults to opacity, so a per-series opacity leaves the markers with
-    # per-series values the widget cannot draw. The warning names the argument that was
-    # actually passed, and says it is only the markers that miss out, because the lines
-    # do get an opacity each.
+    # per-series values that only one of can be drawn. Inherited or passed directly, the
+    # complaint is the same one, because the outcome is the same.
     expect_warning(auto(opacity = c(0.3, 1), marker.show = TRUE),
-                   "does not support the setting 'opacity \\(for the markers\\)'")
+                   "Only one marker.opacity can be used")
     expect_warning(auto(marker.opacity = c(0.3, 1), marker.show = TRUE),
-                   "does not support the setting 'marker.opacity'")
+                   "Only one marker.opacity can be used")
+
+    # The warning text only pins the count of distinct values; pin the winning value too,
+    # so a future max()/mean()/last() collapse would be caught here rather than only by
+    # the warning message.
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  marker.show = TRUE, marker.opacity = c(0.3, 1))
+    expect_equal(x$transparency, 0.3)
 
     # Nothing is lost while the markers are hidden, which is the default
     expect_warning(auto(opacity = c(0.3, 1)), NA)
@@ -468,9 +474,13 @@ test_that("Marker opacity is judged by the value the markers end up with",
     expect_warning(auto(opacity = 0.5, marker.show = TRUE), NA)
     expect_warning(auto(marker.opacity = 0.5, marker.show = TRUE), NA)
 
-    # Markers drawn only at the ends of the series are still markers
-    expect_warning(auto(opacity = c(0.3, 1), marker.show.at.ends = TRUE),
-                   "'opacity \\(for the markers\\)'")
+    # Markers drawn only at the ends of the series are still markers. The complaint comes
+    # from the marker opacity contract, which both chart routes share, rather than from the
+    # list of settings automatic placement cannot honour - turning automatic placement off
+    # would not give the markers a per-series opacity either.
+    raised <- capture_warnings(auto(opacity = c(0.3, 1), marker.show.at.ends = TRUE))
+    expect_true(any(grepl("Only one marker.opacity can be used", raised)))
+    expect_false(any(grepl("for the markers", raised)))
 
     # The line opacity is honoured per series, so it is not part of the complaint
     x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
@@ -523,4 +533,85 @@ test_that("Other line chart features still render",
         .Dimnames = list(c("T", "U", "V", "W", "X"), c("A", "B")))
     expect_warning(Line(with.na, data.label.auto.placement = TRUE,
                         data.label.show = TRUE), "Missing values")
+})
+
+test_that("Marker symbols are sent to the widget per series",
+{
+    # Unlike label/tooltipText, CombinedScatter passes point.symbol straight through
+    # without JSON-encoding it (same as point.radius), and the widget's JS explicitly
+    # requires Array.isArray(x.pointSymbol) to slice it per point, so this is compared
+    # as a plain vector rather than through decodeJson.
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  marker.show = TRUE, marker.symbols = c("square", "diamond"))
+    expect_equal(x$pointSymbol, c(rep("square", 5), rep("diamond", 5)))
+
+    # The comma-separated form the Plugins send
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  marker.show = TRUE, marker.symbols = "square, diamond")
+    expect_equal(x$pointSymbol, c(rep("square", 5), rep("diamond", 5)))
+
+    # A hidden marker keeps its series' symbol: an empty string is not a valid plotly
+    # symbol, and a radius of zero already hides the point
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  marker.symbols = c("square", "diamond"))
+    expect_equal(x$pointSymbol, c(rep("square", 5), rep("diamond", 5)))
+    expect_equal(x$pointRadius, rep(0, 10))
+})
+
+test_that("Per-series input that means the default does not warn",
+{
+    auto <- function(...) Line(z, data.label.auto.placement = TRUE,
+                               data.label.show = TRUE, ...)
+
+    # Supported now, so no warning whatever form it arrives in
+    expect_warning(auto(marker.show = TRUE, marker.symbols = c("square", "diamond")), NA)
+    expect_warning(auto(marker.show = TRUE, marker.symbols = "square, diamond"), NA)
+
+    # Repeating the default is still the default
+    expect_warning(auto(marker.show = TRUE, marker.symbols = "circle, circle"), NA)
+    expect_warning(auto(data.label.position = "Top, Top"), NA)
+
+    # prepareLineSeries lowercases data.label.position and honours it regardless of case,
+    # so a differently-cased spelling of the default must not warn either
+    expect_warning(auto(data.label.position = "top"), NA)
+
+    # data.label.position is no longer among the settings automatic placement complains
+    # about: it decides where each label goes, so a fixed position was never going to apply
+    expect_warning(auto(data.label.position = "Bottom"), NA)
+
+    # A genuinely unsupported setting still warns, so the check itself still works
+    expect_warning(auto(x.data.reversed = TRUE),
+                   "does not support the setting 'x.data.reversed'")
+})
+
+test_that("Automatic placement is chosen from every series, not just the first", {
+    # data.label.show is per series here, so whether any label is requested cannot be read
+    # off its first element - the answer would then depend on which series asked for labels
+    expect_s3_class(Line(z, data.label.auto.placement = TRUE,
+                         data.label.show = c(FALSE, TRUE))$htmlwidget,
+                    "rhtmlCombinedScatter")
+
+    # A per-point matrix is the same question one dimension further out
+    shown <- matrix(FALSE, 5, 2)
+    shown[3, 2] <- TRUE
+    expect_s3_class(Line(z, data.label.auto.placement = TRUE,
+                         data.label.show = shown)$htmlwidget,
+                    "rhtmlCombinedScatter")
+
+    # Still no labels, so still plotly
+    expect_s3_class(Line(z, data.label.auto.placement = TRUE,
+                         data.label.show = c(FALSE, FALSE))$htmlwidget, "plotly")
+})
+
+test_that("Each series keeps its own line shape and smoothing on the labeledLine path", {
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  shape = "Straight, Curved", smoothing = "1, 1.3")
+    expect_equal(decodeJson(x$lineShape), c("linear", "spline"))
+    expect_equal(decodeJson(x$lineSmoothing), c("1", "1.3"))
+
+    # A single shape covers every series, and still arrives one per series
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  shape = "Curved", smoothing = 1.3)
+    expect_equal(decodeJson(x$lineShape), c("spline", "spline"))
+    expect_equal(decodeJson(x$lineSmoothing), c("1.3", "1.3"))
 })

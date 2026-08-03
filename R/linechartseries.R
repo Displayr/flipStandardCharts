@@ -11,7 +11,7 @@ PREPARED.LINE.SERIES <- c(
     # the data being charted
     "annot.data", "chart.matrix", "n", "x.title", "x.labels.full",
     # series styling, one value per series
-    "shape", "colors", "opacity", "line.type", "line.thickness",
+    "shape", "smoothing", "colors", "opacity", "line.type", "line.thickness",
     "fit.line.colors", "fit.CI.colors",
     # markers, per series except marker.show and marker.size which are per point
     "marker.show", "marker.symbols", "marker.colors", "marker.opacity",
@@ -43,12 +43,13 @@ PREPARED.LINE.SERIES <- c(
 #'     \code{average.series} is supplied.
 #' @noRd
 prepareLineSeries <- function(x,
-    shape, colors, average.series, average.color, opacity,
+    shape, smoothing, colors, average.series, average.color, opacity,
     fit.type, fit.line.colors, fit.CI.show, fit.CI.colors,
     line.type, line.thickness,
-    marker.show, marker.show.at.ends, marker.symbols, marker.colors,
+    marker.show, marker.show.at.ends, marker.show.at.last.end, marker.symbols, marker.colors,
     marker.opacity, marker.size, marker.border.colors, marker.border.opacity,
-    data.label.show, data.label.show.at.ends, data.label.position,
+    data.label.show, data.label.show.at.ends, data.label.show.at.last.end,
+    data.label.position,
     data.label.font.family, data.label.font.color, data.label.font.autocolor,
     data.label.font.size, data.label.format, data.label.prefix, data.label.suffix,
     legend.show, footer, footer.wrap, footer.wrap.nchar,
@@ -83,18 +84,31 @@ prepareLineSeries <- function(x,
         warning("Missing values have been omitted.")
 
     # Constants
-    if (grepl("^curved", tolower(shape)))
-        shape <- "spline"
-    if (grepl("^straight", tolower(shape)))
-        shape <- "linear"
     if (is.null(marker.show) || isTRUE(marker.show == "none")) # included for backwards compatibility
         marker.show <- FALSE
     if (is.null(opacity))
         opacity <- if (fit.type == "None") 1 else 0.6
+    # opacity is per series, but the marker opacities are single values: the widget takes
+    # one transparency for the whole chart, and a series that should be more transparent is
+    # given a color with an alpha instead. Collapsing here rather than at each point of use
+    # keeps the two chart paths identical and stops a vector reaching toRGB, which rejects
+    # an alpha longer than the color it is applied to.
+    # The collapse is worth reporting whether the caller set the value or the markers
+    # inherited it from `opacity`: either way the later series are drawn at the first one's
+    # transparency, and the chart cannot show which of the two happened. A difference that
+    # cannot be seen, because no marker is drawn at all, is still not worth a warning.
+    # The border is only reported when the caller set it, because otherwise it inherits the
+    # same `opacity` and would say the same thing twice.
+    marker.border.opacity.given <- !is.null(marker.border.opacity)
+    markers.drawn <- markersAreDrawn(marker.show, marker.show.at.ends, marker.show.at.last.end,
+                                     ncol(chart.matrix), nrow(chart.matrix))
     if (is.null(marker.opacity))
         marker.opacity <- opacity
     if (is.null(marker.border.opacity))
         marker.border.opacity <- marker.opacity
+    marker.opacity <- firstOpacity(marker.opacity, "marker.opacity", warn = markers.drawn)
+    marker.border.opacity <- firstOpacity(marker.border.opacity, "marker.border.opacity",
+                                          warn = marker.border.opacity.given && markers.drawn)
 
     # Set colors
     n <- ncol(chart.matrix)
@@ -119,26 +133,21 @@ prepareLineSeries <- function(x,
     marker.colors <- vectorize(marker.colors, n)
     marker.border.colors <- vectorize(marker.border.colors, n)
 
-    if (data.label.show.at.ends || marker.show.at.ends)
-    {
-        ends.show <- matrix(FALSE, nrow(chart.matrix), ncol(chart.matrix))
-        for (i in 1:ncol(chart.matrix))
-        {
-            ind <- which(is.finite(chart.matrix[,i])) # ignore NAs
-            if (length(ind) > 0)
-            {
-                ends.show[min(ind),i] <- TRUE
-                ends.show[max(ind),i] <- TRUE
-            }
-        }
-    }
-    data.label.show <- if (data.label.show.at.ends) ends.show
-                       else vectorize(data.label.show, ncol(chart.matrix), nrow(chart.matrix))
-    marker.show <- if (marker.show.at.ends) ends.show
-                   else  vectorize(marker.show, ncol(chart.matrix), nrow(chart.matrix))
+    data.label.show <- resolveEndsShow(data.label.show, data.label.show.at.ends,
+                                       data.label.show.at.last.end, chart.matrix)
+    marker.show <- resolveEndsShow(marker.show, marker.show.at.ends,
+                                   marker.show.at.last.end, chart.matrix)
 
+    # Curved and Straight are what the Plugins send, spline and linear are what plotly takes.
+    # Sized per series like the rest of the line settings, so one chart can mix the two.
+    shape <- vectorize(tolower(shape), ncol(chart.matrix))
+    shape[grepl("^curved", shape)] <- "spline"
+    shape[grepl("^straight", shape)] <- "linear"
+    smoothing <- readNumericSeries(smoothing, ncol(chart.matrix), "smoothing")
     line.type <- vectorize(tolower(line.type), ncol(chart.matrix))
     marker.symbols <- vectorize(marker.symbols, ncol(chart.matrix))
+    if (!isPerPointSetting(marker.size, ncol(chart.matrix), nrow(chart.matrix)))
+        marker.size <- readNumericSeries(marker.size, ncol(chart.matrix), "marker size")
     marker.size <- vectorize(marker.size, ncol(chart.matrix), nrow(chart.matrix))
     dlab.color <- if (data.label.font.autocolor) colors
                   else vectorize(data.label.font.color, ncol(chart.matrix))
@@ -164,6 +173,8 @@ prepareLineSeries <- function(x,
         fit.line.colors <- c(fit.line.colors, average.color)
         fit.CI.colors <- c(fit.CI.colors, average.color)
         line.type <- line.type[c(1:n,1)]
+        shape <- shape[c(1:n,1)]
+        smoothing <- smoothing[c(1:n,1)]
         marker.show <- cbind(marker.show, FALSE)
         marker.size <- marker.size[,c(1:n,1)] # doesn't matter - marker is not shown
         marker.symbols <- marker.symbols[c(1:n,1)]
@@ -172,19 +183,8 @@ prepareLineSeries <- function(x,
     if (is.null(rownames(chart.matrix)))
         rownames(chart.matrix) <- 1:nrow(chart.matrix)
 
-    if (is.character(line.thickness))
-    {
-        tmp.txt <- TextAsVector(line.thickness)
-        line.thickness <- suppressWarnings(as.numeric(tmp.txt))
-        na.ind <- which(is.na(line.thickness))
-        if (length(na.ind) == 1)
-            warning("Non-numeric line thickness value '", tmp.txt[na.ind], "' was ignored.")
-        if (length(na.ind) > 1)
-            warning("Non-numeric line thickness values '",
-            paste(tmp.txt[na.ind], collapse = "', '"), "' were ignored.")
-    }
-    line.thickness <- readLineThickness(line.thickness, ncol(chart.matrix))
-    opacity <- opacity * rep(1, ncol(chart.matrix))
+    line.thickness <- readNumericSeries(line.thickness, ncol(chart.matrix), "line thickness")
+    opacity <- readNumericSeries(opacity, ncol(chart.matrix), "opacity")
 
     prepared <- list(
         y.tick.format = y.tick.format, y.hovertext.format = y.hovertext.format,
@@ -192,7 +192,8 @@ prepareLineSeries <- function(x,
         data.label.suffix = data.label.suffix,
         annot.data = annot.data, chart.matrix = chart.matrix, n = n,
         x.title = x.title, x.labels.full = x.labels.full,
-        shape = shape, colors = colors, opacity = opacity, line.type = line.type,
+        shape = shape, smoothing = smoothing, colors = colors, opacity = opacity,
+        line.type = line.type,
         line.thickness = line.thickness, fit.line.colors = fit.line.colors,
         fit.CI.colors = fit.CI.colors,
         marker.show = marker.show, marker.symbols = marker.symbols,
@@ -320,6 +321,83 @@ prepareLineAxes <- function(chart.matrix, legend.show,
 #' @noRd
 prepareLineAxesFrom <- function(frame)
     do.call(prepareLineAxes, mget(names(formals(prepareLineAxes)), frame))
+
+#' The points at the extremes of each series, ignoring missing values
+#'
+#' @param chart.matrix The charted data, points down the rows and series across the columns.
+#' @param last.only Mark only the final point of each series instead of both extremes.
+#' @return A logical matrix the shape of \code{chart.matrix}.
+#' @noRd
+endPointsMatrix <- function(chart.matrix, last.only = FALSE)
+{
+    res <- matrix(FALSE, nrow(chart.matrix), ncol(chart.matrix))
+    for (i in seq_len(ncol(chart.matrix)))
+    {
+        ind <- which(is.finite(chart.matrix[, i])) # ignore NAs
+        if (length(ind) == 0)                      # nothing to mark in an empty series
+            next
+        if (!last.only)
+            res[min(ind), i] <- TRUE
+        res[max(ind), i] <- TRUE
+    }
+    res
+}
+
+#' Which points show a data label or marker, once the 'at ends' settings are applied
+#'
+#' The more specific setting wins: marking the last end overrides marking both ends, which
+#' in turn overrides whatever the caller asked for point by point. Each setting is resolved
+#' on its own, so data labels can sit at both ends while markers sit only at the last.
+#'
+#' @param setting The per-point setting to fall back on, as the caller gave it.
+#' @param at.ends Whether to mark the first and last point of each series.
+#' @param at.last.end Whether to mark only the last point of each series.
+#' @inheritParams endPointsMatrix
+#' @return A logical matrix the shape of \code{chart.matrix}.
+#' @noRd
+resolveEndsShow <- function(setting, at.ends, at.last.end, chart.matrix)
+{
+    if (isTRUE(at.last.end))
+        return(endPointsMatrix(chart.matrix, last.only = TRUE))
+    if (isTRUE(at.ends))
+        return(endPointsMatrix(chart.matrix))
+    vectorize(setting, ncol(chart.matrix), nrow(chart.matrix))
+}
+
+#' Per-point marker settings for the PowerPoint export
+#'
+#' flipChart turns each entry into the marker settings for that point. \code{Index} has to come
+#' first, because the merge there drops it by position and treats everything after it as a
+#' marker field; for the same reason the index convention is recorded on the list rather than
+#' inside an entry, where it would become a marker property.
+#'
+#' Nothing is emitted when every point shows a marker: the series-level settings already say
+#' so, and an entry per point would be a long way of repeating them. That test is deliberately
+#' the same expression as the \code{ChartType} attribute, average series included, so the two
+#' cannot disagree about which case a chart is in. An average series never shows a marker, so a
+#' chart with one always takes the itemised path.
+#'
+#' @param marker.show Logical matrix, points down the rows and series across the columns.
+#' @param marker.size Numeric matrix of the same shape.
+#' @param n The number of charted series, excluding any average series.
+#' @return A list with one element per charted series, each a list of \code{list(Index, Size)}
+#'     for the points showing a marker, carrying an \code{IndexBase} attribute.
+#' @noRd
+markerPointsForPPT <- function(marker.show, marker.size, n)
+{
+    all.shown <- all(marker.show)
+    res <- lapply(seq_len(n), function(i)
+    {
+        if (all.shown)
+            return(list())
+        # Zero-based and local to the series, matching this chart's own ChartLabels.
+        # CombinedScatter numbers its points across the whole chart instead.
+        lapply(which(marker.show[, i]),
+               function(r) list(Index = r - 1, Size = marker.size[r, i]))
+    })
+    attr(res, "IndexBase") <- "series"
+    res
+}
 
 #' Calls prepareLineSeries with the calling chart function's own arguments
 #'
