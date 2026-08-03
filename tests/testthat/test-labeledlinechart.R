@@ -575,9 +575,13 @@ test_that("Per-series input that means the default does not warn",
     # so a differently-cased spelling of the default must not warn either
     expect_warning(auto(data.label.position = "top"), NA)
 
-    # A genuinely unsupported setting still warns
-    expect_warning(auto(data.label.position = "Bottom"),
-                   "does not support the setting 'data.label.position'")
+    # data.label.position is no longer among the settings automatic placement complains
+    # about: it decides where each label goes, so a fixed position was never going to apply
+    expect_warning(auto(data.label.position = "Bottom"), NA)
+
+    # A genuinely unsupported setting still warns, so the check itself still works
+    expect_warning(auto(x.data.reversed = TRUE),
+                   "does not support the setting 'x.data.reversed'")
 })
 
 test_that("Automatic placement is chosen from every series, not just the first", {
