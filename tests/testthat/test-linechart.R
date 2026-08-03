@@ -125,3 +125,42 @@ test_that("A per-point marker.size matrix reaches every point it names", {
     expect_equal(sizes[["A"]], c(2, 4, 6, 8, 10))
     expect_equal(sizes[["B"]], c(3, 5, 7, 9, 11))
 })
+
+# The first trace carrying each series' name is the one drawing its line; the chart also adds
+# an unnamed trace to force categorical labels, and further named ones for data labels.
+seriesLine <- function(pp, nm)
+{
+    pb <- plotly::plotly_build(pp$htmlwidget)
+    for (tr in pb$x$data)
+        if (identical(as.character(tr$name)[1], nm) && !is.null(tr$line$shape))
+            return(tr$line)
+    NULL
+}
+
+test_that("Line joins each series with the shape asked for", {
+    z2 <- cbind(A = 1:5, B = 2:6)
+    rownames(z2) <- letters[1:5]
+    pp <- Line(z2, shape = "Straight, Curved")
+    expect_equal(seriesLine(pp, "A")$shape, "linear")
+    expect_equal(seriesLine(pp, "B")$shape, "spline")
+})
+
+test_that("Line accepts a single shape for every series", {
+    z2 <- cbind(A = 1:5, B = 2:6)
+    rownames(z2) <- letters[1:5]
+    pp <- Line(z2, shape = "Curved")
+    expect_equal(seriesLine(pp, "A")$shape, "spline")
+    expect_equal(seriesLine(pp, "B")$shape, "spline")
+
+    # The plotly spellings work too, whatever their case
+    expect_equal(seriesLine(Line(z2, shape = "Spline"), "A")$shape, "spline")
+    expect_equal(seriesLine(Line(z2), "A")$shape, "linear")
+})
+
+test_that("Line smooths each series by its own amount", {
+    z2 <- cbind(A = 1:5, B = 2:6)
+    rownames(z2) <- letters[1:5]
+    pp <- Line(z2, shape = "Curved", smoothing = "0.5, 1.3")
+    expect_equal(seriesLine(pp, "A")$smoothing, 0.5)
+    expect_equal(seriesLine(pp, "B")$smoothing, 1.3)
+})

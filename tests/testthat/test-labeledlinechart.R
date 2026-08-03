@@ -598,3 +598,17 @@ test_that("Automatic placement is chosen from every series, not just the first",
     expect_s3_class(Line(z, data.label.auto.placement = TRUE,
                          data.label.show = c(FALSE, FALSE))$htmlwidget, "plotly")
 })
+
+test_that("The line shape reaches the widget once when every series agrees", {
+    # A chart that does not mix shapes sends a single value, which any version of the widget
+    # understands; only a mixed chart needs one that reads them per series.
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  shape = "Curved", smoothing = 1.3)
+    expect_length(x$lineShape, 1)
+    expect_length(x$lineSmoothing, 1)
+
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  shape = "Straight, Curved", smoothing = "1, 1.3")
+    expect_length(x$lineShape, 2)
+    expect_length(x$lineSmoothing, 2)
+})

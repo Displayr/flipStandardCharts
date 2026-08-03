@@ -3,8 +3,11 @@
 #' Line chart
 #' @inherit Column
 #' @inherit Area
-#' @param shape Either "linear" for straight lines between data points or "spline" for curved lines.
-#' @param smoothing Numeric; smoothing if \code{shape} is "spline".
+#' @param shape Either "linear" for straight lines between data points or "spline" for curved
+#'     lines. This can be a single value or a vector with one value for each series, so one
+#'     chart can mix the two.
+#' @param smoothing Numeric; smoothing for the series whose \code{shape} is "spline". This can
+#'     be a single value or a vector with one value for each series.
 #' @param line.type Character; one of 'solid', 'dot', 'dash'. This can be a single value
 #'     or a vector with one value for each series.
 #' @param marker.symbols Character; marker symbols, which are only shown if marker.show = TRUE.
@@ -258,7 +261,7 @@ Line <-   function(x,
         x <- x.labels
 
         lines <- list(width = line.thickness[i], dash = line.type[i],
-                      shape = shape, smoothing = smoothing,
+                      shape = shape[i], smoothing = smoothing[i],
                       color = toRGB(colors[i], alpha = opacity[i]))
 
 

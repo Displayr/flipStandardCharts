@@ -174,9 +174,12 @@ will be parsed automatically.}
 \item{line.type}{Character; one of 'solid', 'dot', 'dash'. This can be a single value
 or a vector with one value for each series.}
 
-\item{shape}{Either "linear" for straight lines between data points or "spline" for curved lines.}
+\item{shape}{Either "linear" for straight lines between data points or "spline" for curved
+lines. This can be a single value or a vector with one value for each series, so one
+chart can mix the two.}
 
-\item{smoothing}{Numeric; smoothing if \code{shape} is "spline".}
+\item{smoothing}{Numeric; smoothing for the series whose \code{shape} is "spline". This can
+be a single value or a vector with one value for each series.}
 
 \item{colors}{Character; a vector containing one or more colors specified as hex codes.}
 

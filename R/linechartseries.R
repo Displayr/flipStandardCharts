@@ -11,7 +11,7 @@ PREPARED.LINE.SERIES <- c(
     # the data being charted
     "annot.data", "chart.matrix", "n", "x.title", "x.labels.full",
     # series styling, one value per series
-    "shape", "colors", "opacity", "line.type", "line.thickness",
+    "shape", "smoothing", "colors", "opacity", "line.type", "line.thickness",
     "fit.line.colors", "fit.CI.colors",
     # markers, per series except marker.show and marker.size which are per point
     "marker.show", "marker.symbols", "marker.colors", "marker.opacity",
@@ -43,7 +43,7 @@ PREPARED.LINE.SERIES <- c(
 #'     \code{average.series} is supplied.
 #' @noRd
 prepareLineSeries <- function(x,
-    shape, colors, average.series, average.color, opacity,
+    shape, smoothing, colors, average.series, average.color, opacity,
     fit.type, fit.line.colors, fit.CI.show, fit.CI.colors,
     line.type, line.thickness,
     marker.show, marker.show.at.ends, marker.show.at.last.end, marker.symbols, marker.colors,
@@ -84,10 +84,6 @@ prepareLineSeries <- function(x,
         warning("Missing values have been omitted.")
 
     # Constants
-    if (grepl("^curved", tolower(shape)))
-        shape <- "spline"
-    if (grepl("^straight", tolower(shape)))
-        shape <- "linear"
     if (is.null(marker.show) || isTRUE(marker.show == "none")) # included for backwards compatibility
         marker.show <- FALSE
     if (is.null(opacity))
@@ -142,6 +138,12 @@ prepareLineSeries <- function(x,
     marker.show <- resolveEndsShow(marker.show, marker.show.at.ends,
                                    marker.show.at.last.end, chart.matrix)
 
+    # Curved and Straight are what the Plugins send, spline and linear are what plotly takes.
+    # Sized per series like the rest of the line settings, so one chart can mix the two.
+    shape <- vectorize(tolower(shape), ncol(chart.matrix))
+    shape[grepl("^curved", shape)] <- "spline"
+    shape[grepl("^straight", shape)] <- "linear"
+    smoothing <- readNumericSeries(smoothing, ncol(chart.matrix), "smoothing")
     line.type <- vectorize(tolower(line.type), ncol(chart.matrix))
     marker.symbols <- vectorize(marker.symbols, ncol(chart.matrix))
     if (!isPerPointSetting(marker.size, ncol(chart.matrix), nrow(chart.matrix)))
@@ -171,6 +173,8 @@ prepareLineSeries <- function(x,
         fit.line.colors <- c(fit.line.colors, average.color)
         fit.CI.colors <- c(fit.CI.colors, average.color)
         line.type <- line.type[c(1:n,1)]
+        shape <- shape[c(1:n,1)]
+        smoothing <- smoothing[c(1:n,1)]
         marker.show <- cbind(marker.show, FALSE)
         marker.size <- marker.size[,c(1:n,1)] # doesn't matter - marker is not shown
         marker.symbols <- marker.symbols[c(1:n,1)]
@@ -188,7 +192,8 @@ prepareLineSeries <- function(x,
         data.label.suffix = data.label.suffix,
         annot.data = annot.data, chart.matrix = chart.matrix, n = n,
         x.title = x.title, x.labels.full = x.labels.full,
-        shape = shape, colors = colors, opacity = opacity, line.type = line.type,
+        shape = shape, smoothing = smoothing, colors = colors, opacity = opacity,
+        line.type = line.type,
         line.thickness = line.thickness, fit.line.colors = fit.line.colors,
         fit.CI.colors = fit.CI.colors,
         marker.show = marker.show, marker.symbols = marker.symbols,
