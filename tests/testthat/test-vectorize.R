@@ -88,3 +88,16 @@ test_that("vectorize preserves every value of a full per-point matrix input", {
     cinput <- matrix(letters[seq_len(n.rows * n.cols)], nrow = n.rows, ncol = n.cols)
     expect_identical(flipStandardCharts:::vectorize(cinput, n.cols, nrow = n.rows), cinput)
 })
+
+test_that("A setting that was never set produces no warning", {
+    # NULL reaches rep(x, length = n), which warns "'x' is NULL so the result will be NULL".
+    # An argument nobody supplied is not worth a warning, and skipping rep for it gives the
+    # same answer anyway.
+    expect_warning(flipStandardCharts:::vectorize(NULL, 3), NA)
+    expect_warning(flipStandardCharts:::vectorize(NULL, 3, nrow = 2), NA)
+    expect_warning(flipStandardCharts:::readNumericSeries(NULL, 3, "smoothing"), NA)
+
+    # and the answer is unchanged
+    expect_equal(suppressWarnings(flipStandardCharts:::vectorize(NULL, 3)), c("", "", ""))
+    expect_null(suppressWarnings(flipStandardCharts:::readNumericSeries(NULL, 3, "smoothing")))
+})

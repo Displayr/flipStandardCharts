@@ -1623,7 +1623,9 @@ vectorize <- function(x, n, nrow = NULL, split = ",")
     # Sized against the final target length, not the series count, so a setting given one
     # value per data point keeps them all. Recycling to the series count first would
     # collapse a per-point vector to its leading values and repeat those instead.
-    if (!input.is.matrix)
+    # A setting nobody supplied is left alone: rep() warns on NULL, and the result is the
+    # same with or without it.
+    if (!input.is.matrix && !is.null(x))
         x <- rep(x, length = n)
 
     if (is.logical(x))
@@ -1664,6 +1666,8 @@ isPerPointSetting <- function(x, n.col, n.row)
 # `what` names the setting in the warning, e.g. "line thickness" or "marker size".
 readNumericSeries <- function(x, n, what)
 {
+    if (is.null(x))   # nothing to parse, and rep() would warn about it
+        return(NULL)
     if (is.character(x))
     {
         tmp.txt <- TextAsVector(x)

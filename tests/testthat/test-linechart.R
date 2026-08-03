@@ -164,3 +164,12 @@ test_that("Line smooths each series by its own amount", {
     expect_equal(seriesLine(pp, "A")$smoothing, 0.5)
     expect_equal(seriesLine(pp, "B")$smoothing, 1.3)
 })
+
+test_that("Unset line and marker settings do not warn", {
+    z2 <- cbind(A = 1:5, B = 2:6)
+    rownames(z2) <- letters[1:5]
+    expect_warning(Line(z2, smoothing = NULL), NA)
+    expect_warning(Line(z2, shape = NULL), NA)
+    expect_warning(Line(z2, marker.symbols = NULL), NA)
+    expect_warning(Line(z2, line.type = NULL), NA)
+})
