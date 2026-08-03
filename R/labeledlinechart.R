@@ -362,11 +362,8 @@ labeledLine <- function(x,
         line.colors = toRGB(colors, alpha = opacity),
         line.thickness = line.thickness,
         line.type = line.type,
-        # Sent as one value when every series agrees, so a chart that does not mix shapes
-        # still draws correctly on a widget from before these were read per series. The
-        # version requirement is deliberately loose (see 99902cb), so the two can be paired.
-        line.shape = if (length(unique(shape)) == 1) shape[1] else shape,
-        line.smoothing = if (length(unique(smoothing)) == 1) smoothing[1] else smoothing,
+        line.shape = shape,
+        line.smoothing = smoothing,
         point.radius = point.radius,
         point.symbol = point.symbols,
         point.border.color = point.border.colors,
