@@ -579,8 +579,7 @@ UNSUPPORTED.BY.AUTO.PLACEMENT <- list(
     hovertext.align = "left",
     modebar.show = FALSE,
     zoom.enable = TRUE,
-    axis.drag.enable = FALSE,
-    data.label.position = "Top")
+    axis.drag.enable = FALSE)
 
 #' Warns about arguments that automatic data label placement cannot honour
 #'
