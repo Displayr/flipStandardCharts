@@ -574,6 +574,11 @@ fitSeriesForCombinedScatter <- function(chart.matrix, x.labels, x.axis.type, fit
 
 # Arguments of Line() that rhtmlCombinedScatter has no equivalent for. Each entry is the
 # value the argument has to hold for the chart to be unaffected; anything else is dropped.
+#
+# A per-series opacity inherited by the markers is deliberately not among them. One marker
+# opacity for the whole chart is the contract on both routes, so prepareLineSeries reports the
+# collapse for either; naming it here as well would say it twice, and would promise that
+# turning automatic placement off gives the markers a per-series opacity, which it does not.
 UNSUPPORTED.BY.AUTO.PLACEMENT <- list(
     x.data.reversed = FALSE,
     y.data.reversed = FALSE,
@@ -616,10 +621,6 @@ warnUnsupportedByAutoPlacement <- function(args, n.col, n.row)
         TRUE
     }, logical(1L))]
 
-    # A per-series opacity inherited by the markers is not listed here. One marker opacity for
-    # the whole chart is the contract on both routes, so prepareLineSeries reports it for
-    # either; naming it here as well would say it twice, and would promise that turning
-    # automatic placement off gives the markers a per-series opacity, which it does not.
     # These default to another argument, so they can only be judged against it. The
     # widget takes one set of series colors, used for the markers and for automatically
     # colored data labels alike, so markers cannot be colored separately from the lines.

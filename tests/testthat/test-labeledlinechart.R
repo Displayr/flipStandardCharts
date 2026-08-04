@@ -649,6 +649,11 @@ test_that("An average series does not shift the data label colours", {
                   data.label.font.color = c("#FF0000", "#00AA00"),
                   average.series = rep(3, 5))
     cols <- decodeJson(x$labelsFontColor)
+    # The length is what tells the two sizings apart. Sized to the charted series alone this
+    # would be 10 rather than 15, and the values below would be identical either way: the
+    # average series labels nothing, and the widget recycles a short array, so the wrong
+    # sizing draws the same chart.
+    expect_length(cols, 15)
     expect_equal(cols[1:5], rep("#FF0000", 5))
     expect_equal(cols[6:10], rep("#00AA00", 5))
 })
