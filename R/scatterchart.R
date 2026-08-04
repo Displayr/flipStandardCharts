@@ -516,9 +516,12 @@ Scatter <- function(x = NULL,
     if (is.null(marker.border.colors))
         marker.border.colors <- colors
     line.colors <- vectorize(line.colors, num.groups)
-    # The numeric trace is given the border colours whole rather than one per series, and
-    # they default to the point colours, so they are left per point for the same reason.
-    if (!scatter.colors.as.numeric)
+    # The numeric trace is given the border colours whole rather than one per series, and by
+    # default they are the point colours, so a value that is already one per point is left
+    # alone. A palette the caller supplied is not one per point: it is still sized to the
+    # series count, as the settings around it are, rather than reaching a trace of n points
+    # with fewer than n colours and bordering only the first few.
+    if (!isPerPointSetting(marker.border.colors, num.groups, n))
         marker.border.colors <- vectorize(marker.border.colors, num.groups)
 
     marker.symbols <- vectorize(marker.symbols, num.groups)

@@ -154,3 +154,28 @@ test_that("A categorical colour scale still takes one colour per series", {
     cols <- unique(vapply(named, function(tr) as.character(tr$marker$color)[1], character(1)))
     expect_length(cols, 2)
 })
+
+test_that("A supplied marker border palette covers every point of a numeric scale", {
+    # The border colours default to the point colours, so on a numeric scale they are per
+    # point and must stay that way. A palette the caller supplied is not per point, and
+    # leaving it alone gave a two-colour palette to a ten-point trace, bordering the first
+    # two and leaving the rest with plotly's default. It collapses to the series' value
+    # instead, as the other per-series settings do when there is one series.
+    d <- data.frame(x = 1:10, y = 1:10, col = c(1, 1, 1, 1, 1, 1, 1, 1, 9, 10))
+    attr(d, "scatter.variable.indices") <- c(x = 1, y = 2, sizes = NA, colors = 3)
+    numericTrace <- function(...) {
+        pb <- plotly::plotly_build(suppressWarnings(
+            Scatter(d, scatter.sizes.column = 0, scatter.colors.column = 3,
+                    scatter.colors.as.categorical = FALSE, colors = c("blue", "red"),
+                    ...))$htmlwidget)
+        Filter(function(tr) length(tr$marker$color) > 1, pb$x$data)[[1]]
+    }
+
+    # A palette is not left partially applied
+    borders <- as.character(numericTrace(marker.border.colors = c("black", "red"))$marker$line$color)
+    expect_length(unique(borders), 1)
+    expect_match(borders[1], "rgba(0,0,0", fixed = TRUE)
+
+    # The default still follows the point colours, one each
+    expect_length(as.character(numericTrace()$marker$line$color), 10)
+})
