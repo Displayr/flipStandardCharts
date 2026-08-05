@@ -502,7 +502,11 @@ Scatter <- function(x = NULL,
     groups <- groups[not.na]
     num.series <- if (scatter.colors.as.numeric) 1 else num.groups
 
-    colors <- vectorize(colors, num.groups)
+    # A numeric colour scale has already turned the palette into one colour per data point
+    # above, so from here `colors` is not a per-series palette and must not be sized to the
+    # series count: there is only one series, and every point would take the first colour.
+    if (!scatter.colors.as.numeric)
+        colors <- vectorize(colors, num.groups)
     if (is.null(fit.line.colors))
         fit.line.colors <- colors
     if (is.null(fit.CI.colors))
@@ -512,7 +516,13 @@ Scatter <- function(x = NULL,
     if (is.null(marker.border.colors))
         marker.border.colors <- colors
     line.colors <- vectorize(line.colors, num.groups)
-    marker.border.colors <- vectorize(marker.border.colors, num.groups)
+    # The numeric trace is given the border colours whole rather than one per series, and by
+    # default they are the point colours, so a value that is already one per point is left
+    # alone. A palette the caller supplied is not one per point: it is still sized to the
+    # series count, as the settings around it are, rather than reaching a trace of n points
+    # with fewer than n colours and bordering only the first few.
+    if (!isPerPointSetting(marker.border.colors, num.groups, n))
+        marker.border.colors <- vectorize(marker.border.colors, num.groups)
 
     marker.symbols <- vectorize(marker.symbols, num.groups)
     data.label.font.color <- vectorize(data.label.font.color, num.groups)

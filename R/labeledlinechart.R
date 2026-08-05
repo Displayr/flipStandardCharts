@@ -356,7 +356,14 @@ labeledLine <- function(x,
         labels.show = TRUE,
         label.auto.placement = TRUE,
         labels.font.family = data.label.font.family,
-        labels.font.color = if (data.label.font.autocolor) NULL else dlab.color[1],
+        # One colour per point, in the same order as the labels: the widget colours each
+        # label individually, so a colour per series is spread across that series' points.
+        # Sized to the charted columns rather than to dlab.color, which is worked out before
+        # an average series adds one and so would leave the arrays a series short.
+        # Automatic colouring still sends nothing, leaving each label to take the colour of
+        # its own point, which is already the series colour.
+        labels.font.color = if (data.label.font.autocolor) NULL
+                            else rep(vectorize(dlab.color, n.col), each = n.row),
         labels.font.size = data.label.font.size,
         line.show = TRUE,
         line.colors = toRGB(colors, alpha = opacity),
@@ -567,6 +574,11 @@ fitSeriesForCombinedScatter <- function(chart.matrix, x.labels, x.axis.type, fit
 
 # Arguments of Line() that rhtmlCombinedScatter has no equivalent for. Each entry is the
 # value the argument has to hold for the chart to be unaffected; anything else is dropped.
+#
+# A per-series opacity inherited by the markers is deliberately not among them. One marker
+# opacity for the whole chart is the contract on both routes, so prepareLineSeries reports the
+# collapse for either; naming it here as well would say it twice, and would promise that
+# turning automatic placement off gives the markers a per-series opacity, which it does not.
 UNSUPPORTED.BY.AUTO.PLACEMENT <- list(
     x.data.reversed = FALSE,
     y.data.reversed = FALSE,
@@ -608,14 +620,6 @@ warnUnsupportedByAutoPlacement <- function(args, n.col, n.row)
             return(!all(tolower(vectorize(given, n.col)) == tolower(default)))
         TRUE
     }, logical(1L))]
-
-    # A per-series opacity inherited by the markers is not listed here. One marker opacity for
-    # the whole chart is the contract on both routes, so prepareLineSeries reports it for
-    # either; naming it here as well would say it twice, and would promise that turning
-    # automatic placement off gives the markers a per-series opacity, which it does not.
-    if (!args$data.label.font.autocolor &&
-        length(unique(vectorize(args$data.label.font.color, n.col))) > 1)
-        ignored <- c(ignored, "data.label.font.color")
 
     # These default to another argument, so they can only be judged against it. The
     # widget takes one set of series colors, used for the markers and for automatically

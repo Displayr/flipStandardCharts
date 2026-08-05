@@ -66,9 +66,10 @@ test_that("Data label font color falls back to the series color when autocolorin
                   data.label.font.autocolor = TRUE)
     expect_null(x$labelsFontColor)
 
+    # A colour that was set is sent, now as one entry per point rather than one for the chart
     x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
                   data.label.font.color = "#123456")
-    expect_equal(x$labelsFontColor, "#123456")
+    expect_equal(decodeJson(x$labelsFontColor), rep("#123456", 10))
 })
 
 test_that("Annotation markup is sent beside the data label, not inside it",
@@ -614,4 +615,45 @@ test_that("Each series keeps its own line shape and smoothing on the labeledLine
                   shape = "Curved", smoothing = 1.3)
     expect_equal(decodeJson(x$lineShape), c("spline", "spline"))
     expect_equal(decodeJson(x$lineSmoothing), c("1.3", "1.3"))
+})
+
+test_that("Each series can colour its data labels", {
+    # The widget takes one colour per point, in the same order as the labels themselves:
+    # every point of the first series, then of the second
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  data.label.font.color = c("#FF0000", "#00AA00"))
+    expect_equal(decodeJson(x$labelsFontColor),
+                 c(rep("#FF0000", 5), rep("#00AA00", 5)))
+
+    # A single colour still covers the whole chart
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  data.label.font.color = "#123456")
+    expect_equal(decodeJson(x$labelsFontColor), rep("#123456", 10))
+
+    # Automatic colouring still sends nothing, so each label takes its own series' colour
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  data.label.font.autocolor = TRUE)
+    expect_null(x$labelsFontColor)
+})
+
+test_that("A per-series data label colour is no longer reported as unsupported", {
+    auto <- function(...) Line(z, data.label.auto.placement = TRUE,
+                               data.label.show = TRUE, ...)
+    expect_warning(auto(data.label.font.color = c("#FF0000", "#00AA00")), NA)
+})
+
+test_that("An average series does not shift the data label colours", {
+    # chart.matrix gains a column for the average, so the per-point colours have to be
+    # sized to that rather than to the charted series alone
+    x <- widgetOf(z, data.label.auto.placement = TRUE, data.label.show = TRUE,
+                  data.label.font.color = c("#FF0000", "#00AA00"),
+                  average.series = rep(3, 5))
+    cols <- decodeJson(x$labelsFontColor)
+    # The length is what tells the two sizings apart. Sized to the charted series alone this
+    # would be 10 rather than 15, and the values below would be identical either way: the
+    # average series labels nothing, and the widget recycles a short array, so the wrong
+    # sizing draws the same chart.
+    expect_length(cols, 15)
+    expect_equal(cols[1:5], rep("#FF0000", 5))
+    expect_equal(cols[6:10], rep("#00AA00", 5))
 })
