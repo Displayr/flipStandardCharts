@@ -407,9 +407,18 @@ Line <-   function(x,
             if (length(pt.segs) > 0)
                 chart.labels$SeriesLabels[[i]]$CustomPoints <- pt.segs
 
+            # An invisible marker under each label holds the text clear of what is drawn at
+            # that point: half the line thickness, or the marker's own size where one is
+            # shown. Both sides are indexed by the labelled points showing a marker, so a
+            # label takes the size of the marker it sits on. Indexing only the left hand
+            # side left the right hand side one entry per labelled point, which recycled
+            # into the shorter selection - a warning, and every such label offset by
+            # whichever marker happened to line up with it.
             data.label.offset <- rep(line.thickness[i]/2, length(ind.show))
-            if (any(marker.show[,i]))
-                data.label.offset[which(marker.show[ind.show,i])] <- pmax(marker.size[ind.show,i], data.label.offset)
+            ind.marked <- which(marker.show[ind.show,i])
+            if (length(ind.marked) > 0)
+                data.label.offset[ind.marked] <- pmax(marker.size[ind.show[ind.marked],i],
+                                                      data.label.offset[ind.marked])
             p <- add_trace(p, x = x, y = y, type = "scatter", name = y.label,
                    cliponaxis = FALSE, mode = "markers+text",
                    marker = list(size = data.label.offset, color=colors[i], opacity = 0),
