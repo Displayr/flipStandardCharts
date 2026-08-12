@@ -24,6 +24,18 @@ labelOverrides <- function(...)
            function(lab) vapply(lab$CustomPoints, function(cp) cp$Index, numeric(1)))
 }
 
+# The invisible marker plotly draws under each data label, one series per element, in the
+# order the series are charted. Its size is what holds the text clear of the line, so it is
+# the only place the offset can be read back from. Deliberately not wrapped in
+# suppressWarnings: a length mismatch here shows up as a warning before it shows up as a
+# wrong number.
+labelOffsets <- function(...)
+{
+    pb <- plotly::plotly_build(Line(...)$htmlwidget)
+    traces <- Filter(function(tr) isTRUE(tr$mode == "markers+text"), pb$x$data)
+    lapply(traces, function(tr) as.numeric(tr$marker$size))
+}
+
 test_that("Markers at ends are drawn at the first and last point of each series", {
     sizes <- markerSizes(z, marker.show.at.ends = TRUE, marker.size = 8)
     expect_equal(sizes[["A"]], c(8, 0, 0, 0, 8))
@@ -104,6 +116,28 @@ test_that("The two settings each mark different points independently", {
     expect_equal(labelOverrides(z, data.label.show.at.ends = TRUE,
                                 marker.show.at.last.end = TRUE),
                  list(c(1, 2, 3), c(1, 2, 3)))
+})
+
+test_that("A data label clears whatever is drawn at its own point", {
+    # Half the line thickness where the line is all there is, and the marker's own size
+    # where a marker is drawn. Sized per point so that a label reading its neighbour's
+    # marker rather than its own is visible in the numbers.
+    sizes <- cbind(c(10, 20, 30, 40, 50), c(11, 21, 31, 41, 51))
+
+    expect_warning(offsets <- labelOffsets(z, marker.show.at.ends = TRUE,
+        data.label.show = TRUE, marker.size = sizes, line.thickness = 4), NA)
+    expect_equal(offsets, list(c(10, 2, 2, 2, 50), c(11, 2, 2, 2, 51)))
+
+    expect_warning(offsets <- labelOffsets(z, marker.show.at.last.end = TRUE,
+        data.label.show = TRUE, marker.size = sizes, line.thickness = 4), NA)
+    expect_equal(offsets, list(c(2, 2, 2, 2, 50), c(2, 2, 2, 2, 51)))
+
+    # Labels only where a marker is not, so the marker sizes never apply
+    expect_warning(offsets <- labelOffsets(z, marker.show.at.last.end = TRUE,
+        data.label.show = cbind(c(TRUE, TRUE, FALSE, FALSE, FALSE),
+                                c(TRUE, TRUE, FALSE, FALSE, FALSE)),
+        marker.size = sizes, line.thickness = 4), NA)
+    expect_equal(offsets, list(c(2, 2), c(2, 2)))
 })
 
 test_that("markersAreDrawn reports markers requested at either kind of end", {
