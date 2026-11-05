@@ -69,6 +69,7 @@ Remotes:
 Suggests:
     dplyr,
     flipExampleData,
+    flipSnapshotTestUtils,
     ggplot2movies,
     testthat,
     terra,

@@ -5,14 +5,249 @@ on:
   push:
 
 jobs:
+  # DPI-5056 snapshot push test (do not merge): nixr-public's build-flake-installable.yaml from its local branch
+  # DPI-5056-snapshot-artifacts, inlined because a branch of nixr-public can't be used, with NixR's test branch
+  # DPI-5056-snapshot-push-test, which gives these tests chromium. It grants contents: write and pull-requests: write,
+  # as a chart package's caller workflow would.
   build:
     name: Build flipStandardCharts
     permissions:
       checks: write
-      contents: read
-    uses: Displayr/nixr-public/.github/workflows/build-flake-installable.yaml@master
-    with:
-      installable-path: pkgs.x86_64-linux.rPackages.flipStandardCharts
-      build-args: --override-input flipStandardCharts .
-      installable-name: flipStandardCharts
-    secrets: inherit
+      contents: write
+      pull-requests: write
+    runs-on: [self-hosted, linux, X64, nix]
+    env:
+      NIXR_FLAKE_URI: git+ssh://git@github.com/DisplayR/NixR?ref=DPI-5056-snapshot-push-test
+      INSTALLABLE_PATH: git+ssh://git@github.com/DisplayR/NixR?ref=DPI-5056-snapshot-push-test#pkgs.x86_64-linux.rPackages.flipStandardCharts
+ 
+    timeout-minutes: 360 # Building chromium takes a very, very long time.
+    steps:
+      - name: Configure SSH access
+        id: configure-ssh
+        env:
+          GH_R_PACKAGES_READ_ONLY: ${{ secrets.R_PACKAGES_READONLY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$GH_R_PACKAGES_READ_ONLY" > ~/.ssh/gh_r_packages_read_only
+          chmod 700 ~/.ssh/gh_r_packages_read_only
+          # Create SSH socket file to persist addition of SSH key via ssh-add. It is done this way as adding it to the working directory caused a failure in the nix expression 'toString ./.'. 
+          # Start ssh-agent. The dry run flag (-u) is used as if the socket file is created by mktemp, ssh-agent considers it "in use" and refuses to use it.
+          export SSH_AUTH_SOCK=$(mktemp -u --suffix=ssh-socket)
+          ssh-agent -a $SSH_AUTH_SOCK > /dev/null	
+          ssh-add ~/.ssh/gh_r_packages_read_only
+          ssh-add -L
+          echo "ssh_auth_sock=$SSH_AUTH_SOCK" >> $GITHUB_OUTPUT
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check if internal R package
+        id: check-internal-r-package
+        env:
+          SSH_AUTH_SOCK: ${{ steps.configure-ssh.outputs.ssh_auth_sock }}
+        run: |
+          # Use the isInternalPackage function defined in displayrUtils
+          IS_INTERNAL=$(nix eval --raw --impure --expr "let
+            isInternalPackage = (builtins.getFlake \"${NIXR_FLAKE_URI}\").pkgs.x86_64-linux.displayrUtils.isInternalPackage \"${INSTALLABLE_PATH}\";
+          in
+            if isInternalPackage then \"1\" else \"0\"
+          ")
+          echo "is_internal_r_package=$IS_INTERNAL" >> $GITHUB_OUTPUT
+      - name: Create job output directory
+        id: out
+        run: |
+          dir=$(mktemp -d "$RUNNER_TEMP/nix-out.XXXXXX")
+          echo "dir=$dir" >> "$GITHUB_OUTPUT"
+      - name: Build pkgs.x86_64-linux.rPackages.flipStandardCharts
+        env:
+          SSH_AUTH_SOCK: ${{ steps.configure-ssh.outputs.ssh_auth_sock }}
+          BUILD_ARGS: --override-input flipStandardCharts .
+          OUT_DIR: ${{ steps.out.outputs.dir }}
+        run: |
+          echo "Building $INSTALLABLE_PATH with build args:\n$BUILD_ARGS"
+          nix build $INSTALLABLE_PATH --print-build-logs $BUILD_ARGS --out-link "$OUT_DIR/result-build"
+          nix log "$OUT_DIR/result-build" || true
+      - name: R CMD CHECK pkgs.x86_64-linux.rPackages.flipStandardCharts
+        if: steps.check-internal-r-package.outputs.is_internal_r_package == '1'
+        # Lets the tests run, and their snapshot diffs be published, even if the check fails.
+        continue-on-error: true
+        env:
+          SSH_AUTH_SOCK: ${{ steps.configure-ssh.outputs.ssh_auth_sock }}
+          BUILD_ARGS: --override-input flipStandardCharts .
+          OUT_DIR: ${{ steps.out.outputs.dir }}
+        run: |
+          echo "Running R CMD CHECK for $INSTALLABLE_PATH with build args:\n$BUILD_ARGS"
+          # NixR's ci-run script builds the check, prints its log and exits with its status. On a re-run of this job it
+          # reruns a check whose failure was cached; see ci-run.sh in NixR.
+          # shellcheck disable=SC2086 # BUILD_ARGS holds several arguments.
+          nix run "$NIXR_FLAKE_URI#ci-run" -- RCMDCHECK "$INSTALLABLE_PATH" "$OUT_DIR/result-check" $BUILD_ARGS
+      - name: Test pkgs.x86_64-linux.rPackages.flipStandardCharts
+        id: test
+        if: steps.check-internal-r-package.outputs.is_internal_r_package == '1'
+        env:
+          SSH_AUTH_SOCK: ${{ steps.configure-ssh.outputs.ssh_auth_sock }}
+          BUILD_ARGS: --override-input flipStandardCharts .
+          OUT_DIR: ${{ steps.out.outputs.dir }}
+        run: |
+          echo "Testing $INSTALLABLE_PATH with build args:\n$BUILD_ARGS"
+          # NixR's ci-run script builds the tests, prints their log and exits with their status. On a re-run of this job
+          # it reruns tests whose failure was cached; see ci-run.sh in NixR.
+          # shellcheck disable=SC2086 # BUILD_ARGS holds several arguments.
+          nix run "$NIXR_FLAKE_URI#ci-run" -- tests "$INSTALLABLE_PATH" "$OUT_DIR/result-tests" $BUILD_ARGS
+      - name: Publish Test Report
+        if: always() && (steps.test.outcome == 'success' || steps.test.outcome == 'failure')
+        uses: mikepenz/action-junit-report@v5
+        with:
+          report_paths: '${{ steps.out.outputs.dir }}/result-tests/testthat.xml'
+          check_name: 'Test report -  flipStandardCharts'
+          # A missing testthat.xml means the tests never ran; report that as a failure rather than an empty pass.
+          require_tests: true
+      - name: Find chart snapshot diffs
+        id: snapshots
+        if: always() && (steps.test.outcome == 'success' || steps.test.outcome == 'failure')
+        env:
+          OUT_DIR: ${{ steps.out.outputs.dir }}
+          INSTALLABLE: pkgs.x86_64-linux.rPackages.flipStandardCharts
+        run: |
+          package="${INSTALLABLE##*.}"
+          dir="$OUT_DIR/result-tests/snapshots/diff"
+          count=0
+          if [ -d "$dir" ]; then
+            count=$(find -L "$dir" -maxdepth 1 -type f | wc -l)
+          fi
+          {
+            echo "package=$package"
+            echo "dir=$dir"
+            echo "count=$count"
+          } >> "$GITHUB_OUTPUT"
+      - name: Upload chart snapshot diffs
+        id: upload-snapshots
+        if: always() && steps.snapshots.outputs.count > 0
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.snapshots.outputs.package }} snapshot diffs
+          path: ${{ steps.snapshots.outputs.dir }}/
+          if-no-files-found: error
+          # A re-run of the job uploads again under the same name.
+          overwrite: true
+      - name: Report chart snapshot diffs
+        if: always() && steps.snapshots.outputs.count > 0
+        env:
+          COUNT: ${{ steps.snapshots.outputs.count }}
+          PACKAGE: ${{ steps.snapshots.outputs.package }}
+          ARTIFACT_URL: ${{ steps.upload-snapshots.outputs.artifact-url }}
+          DIR: ${{ steps.snapshots.outputs.dir }}
+        run: |
+          where="${ARTIFACT_URL:-the artifact \"$PACKAGE snapshot diffs\" on the run summary page}"
+          printf '\n::warning title=%s snapshot diffs::%s chart snapshots differ from tests/testthat/snapshots/accepted. Download the new screenshots from %s\n' "$PACKAGE" "$COUNT" "$where"
+          {
+            echo "### $PACKAGE snapshot diffs"
+            echo
+            if [ -n "$ARTIFACT_URL" ]; then
+              echo "$COUNT screenshots differ from \`tests/testthat/snapshots/accepted\`. [Download them]($ARTIFACT_URL)."
+            else
+              echo "$COUNT screenshots differ from \`tests/testthat/snapshots/accepted\`. The upload failed; see the step log."
+            fi
+            echo
+            for file in "$DIR"/*; do
+              echo "- \`${file##*/}\`"
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Push chart snapshot diffs
+        id: push-snapshots
+        # Only a package's own repository holds its accepted snapshots; NixR's runs build every package.
+        if: >-
+          always() && steps.snapshots.outputs.count > 0
+          && github.repository == format('Displayr/{0}', steps.snapshots.outputs.package)
+        env:
+          DIR: ${{ steps.snapshots.outputs.dir }}
+          EVENT: ${{ github.event_name }}
+          HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          BRANCH: ${{ github.head_ref || github.ref_name }}
+          REF_TYPE: ${{ github.event_name == 'pull_request' && 'branch' || github.ref_type }}
+          SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          skip() {
+            printf '\n::notice title=Snapshots not pushed::%s\n' "$1"
+            printf '%s\n' "Snapshot diffs weren't pushed: $1" >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          }
+          if [ "$EVENT" = pull_request ] && [ "$HEAD_REPO" != "$GITHUB_REPOSITORY" ]; then
+            skip "this pull request is from a fork, and its token can't push to $GITHUB_REPOSITORY. Use the artifact instead."
+          fi
+          if [ "$REF_TYPE" != branch ]; then
+            skip "the run isn't for a branch."
+          fi
+          case "$BRANCH" in
+            snapshots/*) skip "$BRANCH already holds pushed snapshots." ;;
+          esac
+          target="snapshots/$BRANCH"
+          work="$(mktemp -d "$RUNNER_TEMP/snapshots.XXXXXX")"
+          trap 'git worktree remove --force "$work"' EXIT
+          git worktree add --quiet --detach "$work" "$SHA"
+          cp "$DIR"/* "$work/tests/testthat/snapshots/accepted/"
+          chmod u+w "$work"/tests/testthat/snapshots/accepted/*
+          git -C "$work" add tests/testthat/snapshots/accepted
+          git -C "$work" -c user.name='github-actions[bot]' \
+            -c user.email='41898094+github-actions[bot]@users.noreply.github.com' \
+            commit --quiet -m "Snapshots from run $RUN_ID"
+          # GITHUB_TOKEN pushes don't start workflow runs, so this doesn't test the snapshot branch.
+          if ! git -C "$work" push --force origin "HEAD:refs/heads/$target"; then
+            skip "pushing to $target failed. The caller workflow must grant contents: write and pull-requests: write."
+          fi
+          echo "branch=$target" >> "$GITHUB_OUTPUT"
+          echo "base=$BRANCH" >> "$GITHUB_OUTPUT"
+      - name: Open a pull request for chart snapshot diffs
+        if: always() && steps.push-snapshots.outputs.branch != ''
+        uses: actions/github-script@v7
+        env:
+          HEAD: ${{ steps.push-snapshots.outputs.branch }}
+          BASE: ${{ steps.push-snapshots.outputs.base }}
+          PACKAGE: ${{ steps.snapshots.outputs.package }}
+          COUNT: ${{ steps.snapshots.outputs.count }}
+        with:
+          script: |
+            const { HEAD: head, BASE: base, PACKAGE: pkg, COUNT: count } = process.env;
+            const { owner, repo } = context.repo;
+            const runUrl = `${context.serverUrl}/${owner}/${repo}/actions/runs/${context.runId}`;
+            const body = `${count} chart snapshots of ${pkg} differed from \`tests/testthat/snapshots/accepted\` in [run ${context.runId}](${runUrl}). ` +
+              `Merging this accepts the new screenshots. Check each image first: a difference may be a bug rather than an expected change.\n\n` +
+              `Each run with mismatches force-pushes \`${head}\` again.`;
+            let pr;
+            try {
+              const open = await github.rest.pulls.list({ owner, repo, state: 'open', head: `${owner}:${head}`, base });
+              if (open.data.length > 0) {
+                pr = open.data[0];
+                await github.rest.pulls.update({ owner, repo, pull_number: pr.number, body });
+              } else {
+                pr = (await github.rest.pulls.create({
+                  owner, repo, head, base, body, draft: true,
+                  title: `Accept ${pkg} chart snapshots from run ${context.runId}`,
+                })).data;
+              }
+            } catch (error) {
+              core.notice(`Couldn't open a pull request for ${head}: ${error.message}. The caller workflow must grant pull-requests: write.`, { title: 'Snapshot pull request not opened' });
+              await core.summary.addRaw(`Snapshots were pushed to \`${head}\`, but no pull request was opened: ${error.message}\n`).write();
+              return;
+            }
+            core.notice(`New screenshots are in ${pr.html_url}`, { title: 'Snapshot pull request' });
+            await core.summary.addRaw(`New screenshots are in [pull request #${pr.number}](${pr.html_url}), from \`${head}\` into \`${base}\`.\n`).write();
+      - name: Cleanup job specific SSH socket
+        if: always()
+        env:
+          SSH_AUTH_SOCK: ${{ steps.configure-ssh.outputs.ssh_auth_sock }}
+        run: rm "$SSH_AUTH_SOCK"
+      - name: Remove job output links
+        if: always() && steps.out.outputs.dir != ''
+        env:
+          OUT_DIR: ${{ steps.out.outputs.dir }}
+        # Removes the out-links (and so their GC roots), not the store paths they point to.
+        run: |
+          if [ -n "$RUNNER_TEMP" ] && [ "${OUT_DIR%/*}" = "$RUNNER_TEMP" ] && [[ "${OUT_DIR##*/}" == nix-out.?* ]]; then
+            rm -rf "$OUT_DIR"
+          else
+            echo "Not removing unexpected path: $OUT_DIR"
+            exit 1
+          fi
+
