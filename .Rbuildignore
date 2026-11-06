@@ -2,3 +2,5 @@
 ^\.Rproj\.user$
 .circleci
 .*~
+^AGENTS\.md$
+^CLAUDE\.md$
