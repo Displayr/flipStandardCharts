@@ -19,11 +19,11 @@ test_that("Warnings for invalid parameters",
 
 test_that("Custom image",
 {
-    skip_if_offline()
-    expect_error(BarPictograph(1:6, custom.image = "https://wiki.q-researchsoftware.com/images/7/78/Democrats_donkey_black.png"), NA)
-    expect_error(BarPictograph(1:6, custom.image = "tps://wiki.q-researchsoftware.com/images/7/78/Democrats_donkey_black.png"),
+    server <- localImageServer()
+    expect_error(BarPictograph(1:6, custom.image = server$url("/Democrats_donkey_black.png")), NA)
+    expect_error(BarPictograph(1:6, custom.image = sub("^http", "tps", server$url("/Democrats_donkey_black.png"))),
                  "Could not retrieve image")
-    expect_error(BarPictograph(1:6, custom.image = "https://wiki.q-researchsoftware.com/images/7/78/Demorats_donkey_black.png"),
+    expect_error(BarPictograph(1:6, custom.image = server$url("/Demorats_donkey_black.png")),
                  "Error (status code 404) retrieving image", fixed = TRUE)
 
 })
