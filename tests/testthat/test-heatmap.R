@@ -87,6 +87,12 @@ table.class.obj <- structure(c(0.472972972972973, 0.486486486486487, 0.517241379
                             "40 to 44", "45 to 49", "50 to 54", "55 to 64", "65+"),
                             `D3 - Gender` = c("Male", "Female")))
 
+test_that("HeatMap shows a message when no values can be shaded",
+{
+    expect_error(HeatMap(matrix(NA_real_, 2, 2)),
+                 "There is not enough data to create a plot.", class = "UserError")
+})
+
 test_that("xtabs and table object",
 {
     expect_error(Heat(table.class.obj), NA)

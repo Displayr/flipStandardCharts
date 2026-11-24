@@ -153,7 +153,7 @@ Heat <- function(x,
                     right.column.headings = "") {
 
     mat <- checkMatrixNames(stripClassAndCallFromXtabs(x), assign.col.names = FALSE)
-    ErrorIfNotEnoughData(mat)
+    mat <- checkHeatmapValues(mat, standardization)
     if (isPercentData(x))
     {
         if (isAutoFormat(y.hovertext.format))
@@ -348,6 +348,23 @@ appendColumns <- function(to.append, mat, cell.decimals, column.headings, row.or
         }
     }
     return(list(columns.append = columns.append, column.subtitles = column.subtitles))
+}
+
+# rhtmlHeatmap builds its color scale from the range of the values after standardization,
+# which must be finite. Infinite values are drawn as missing.
+checkHeatmapValues <- function(mat, standardization)
+{
+    mat[is.infinite(mat)] <- NA
+    ErrorIfNotEnoughData(mat, require.notAllMissing = TRUE)
+    margin <- switch(standardization, "Standardize rows" = 1, "Standardize columns" = 2)
+    if (!is.null(margin) && !any(apply(mat, margin, sd, na.rm = TRUE) > 0, na.rm = TRUE))
+    {
+        dimension <- if (margin == 1) "row" else "column"
+        StopForUserError("Sorry, we can't standardize the heatmap by ", dimension,
+                         " because no ", dimension, " has two or more different values. ",
+                         "Please set the standardization to None to show the values.")
+    }
+    mat
 }
 
 # Format numeric left and right columns with same decimals as heatmap
