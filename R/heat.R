@@ -185,10 +185,16 @@ Heat <- function(x,
         Reorder(mat, rows = "None", columns = "Descending")
     } else
         mat
+    clustered.mat <- mat
     mat <- checkHeatmapValues(mat, standardization)
 
     default.range <- range(mat, na.rm = TRUE)
     color.range <- unlist(setValRange(values.bounds.minimum, values.bounds.maximum, mat))
+    if (standardization != "None" && length(color.range) > 0)
+    {
+        warning("Minimum value and Maximum value are ignored because the shading is standardized.")
+        color.range <- NULL
+    }
     if (!is.null(color.range[1]) && color.range[1] > default.range[1])
     {
         warning("Minimum value cannot be larger than ", default.range[1], ".")
@@ -223,6 +229,10 @@ Heat <- function(x,
     } else {
         if (colv) "column" else "none"
     }
+    if (rowv)
+        rowv <- dendrogramWithInfinite(clustered.mat)
+    if (colv)
+        colv <- dendrogramWithInfinite(t(clustered.mat))
 
     scale <- if (standardization == "Standardize rows") {
         "row"
@@ -366,6 +376,20 @@ checkHeatmapValues <- function(mat, standardization)
                          "Please set the standardization to None to show the values.")
     }
     mat
+}
+
+# rhtmlHeatmap can't cluster infinite values, so a matrix holding any is clustered here the way
+# rhtmlHeatmap does it, with each infinite value placed one range past the finite values.
+#' @importFrom stats as.dendrogram dist hclust reorder
+dendrogramWithInfinite <- function(mat)
+{
+    if (!any(is.infinite(mat)))
+        return(TRUE)
+    finite <- mat[is.finite(mat)]
+    spread <- diff(range(finite))
+    mat[mat == Inf] <- max(finite) + spread
+    mat[mat == -Inf] <- min(finite) - spread
+    reorder(as.dendrogram(hclust(dist(mat))), rowMeans(mat, na.rm = TRUE))
 }
 
 # Format numeric left and right columns with same decimals as heatmap

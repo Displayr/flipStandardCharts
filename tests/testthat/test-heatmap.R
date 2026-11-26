@@ -100,6 +100,13 @@ test_that("HeatMap sorts a row holding an infinite value by its average",
     expect_equal(heatmap$x$matrix$rows, c("b", "c", "a"))
 })
 
+test_that("HeatMap clusters a row of infinite values with a dendrogram",
+{
+    x <- matrix(c(Inf, 1, 5, Inf, 3, 4), 3, dimnames = list(c("a", "b", "c"), c("x", "y")))
+    heatmap <- HeatMap(x, sort.rows = "Dendrogram", sort.columns = "Dendrogram")
+    expect_equal(heatmap$x$matrix$rows, c("a", "c", "b"))
+})
+
 test_that("xtabs and table object",
 {
     expect_error(Heat(table.class.obj), NA)

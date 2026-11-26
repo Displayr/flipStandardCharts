@@ -129,5 +129,19 @@ test_that("Heat sorts a row holding an infinite value by its average",
     expect_equal(heatmap$htmlwidget$x$matrix$rows, c("b", "c", "a"))
 })
 
+test_that("Heat clusters a row of infinite values with a dendrogram",
+{
+    x <- matrix(c(Inf, 1, 5, Inf, 3, 4), 3, dimnames = list(c("a", "b", "c"), c("x", "y")))
+    heatmap <- Heat(x, sort.rows = "Dendrogram", sort.columns = "Dendrogram")
+    expect_equal(heatmap$htmlwidget$x$matrix$rows, c("a", "c", "b"))
+})
+
+test_that("Heat ignores the minimum and maximum values when the shading is standardized",
+{
+    expect_warning(Heat(matrix(1:4, 2), standardization = "Standardize rows",
+                        values.bounds.minimum = 0, values.bounds.maximum = 10),
+                   "Minimum value and Maximum value are ignored because the shading is standardized.")
+})
+
 
 
