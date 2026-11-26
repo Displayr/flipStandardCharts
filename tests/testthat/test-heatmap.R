@@ -87,6 +87,26 @@ table.class.obj <- structure(c(0.472972972972973, 0.486486486486487, 0.517241379
                             "40 to 44", "45 to 49", "50 to 54", "55 to 64", "65+"),
                             `D3 - Gender` = c("Male", "Female")))
 
+test_that("HeatMap shows a message when no values can be shaded",
+{
+    expect_error(HeatMap(matrix(NA_real_, 2, 2)),
+                 "There is not enough data to create a plot.", class = "UserError")
+})
+
+test_that("HeatMap sorts a row holding an infinite value by its average",
+{
+    x <- matrix(c(Inf, 1, 5, 2, 3, 4), 3, dimnames = list(c("a", "b", "c"), c("x", "y")))
+    heatmap <- HeatMap(x, sort.rows = "Sort by averages (ascending)")
+    expect_equal(heatmap$x$matrix$rows, c("b", "c", "a"))
+})
+
+test_that("HeatMap clusters a row of infinite values with a dendrogram",
+{
+    x <- matrix(c(Inf, 1, 5, Inf, 3, 4), 3, dimnames = list(c("a", "b", "c"), c("x", "y")))
+    heatmap <- HeatMap(x, sort.rows = "Dendrogram", sort.columns = "Dendrogram")
+    expect_equal(heatmap$x$matrix$rows, c("a", "c", "b"))
+})
+
 test_that("xtabs and table object",
 {
     expect_error(Heat(table.class.obj), NA)

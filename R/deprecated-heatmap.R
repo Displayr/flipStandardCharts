@@ -103,6 +103,8 @@ HeatMap <- function(table,
         Reorder(mat, rows = "None", columns = "Descending")
     } else
         mat
+    clustered.mat <- mat
+    mat <- checkHeatmapValues(mat, standardization)
 
     color <- if (color == "Heat") {
         "YlOrRd"
@@ -134,6 +136,10 @@ HeatMap <- function(table,
     } else {
         if (colv) "column" else "none"
     }
+    if (rowv)
+        rowv <- dendrogramWithInfinite(clustered.mat)
+    if (colv)
+        colv <- dendrogramWithInfinite(t(clustered.mat))
 
     scale <- if (standardization == "Standardize rows") {
         "row"

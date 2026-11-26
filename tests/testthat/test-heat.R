@@ -87,5 +87,61 @@ test_that("Heat single column",
               expect_error(Heat(seq(10)), NA)
           })
 
+test_that("Heat shows a message when no values can be shaded",
+{
+    expect_error(Heat(matrix(NA_real_, 2, 2)),
+                 "There is not enough data to create a plot.", class = "UserError")
+    expect_error(Heat(matrix(c(Inf, -Inf, NaN, NA), 2, 2)),
+                 "There is not enough data to create a plot.", class = "UserError")
+})
+
+test_that("Heat shows infinite values as missing",
+{
+    x <- dat1
+    x[1, 1] <- Inf
+    expect_error(Heat(x), NA)
+    expect_error(Heat(x, values.bounds.minimum = 0, values.bounds.maximum = 20), NA)
+})
+
+test_that("Heat shows a message when standardization leaves no values to shade",
+{
+    expect_error(Heat(matrix(c(1, 2, 1, 2), 2), standardization = "Standardize rows"),
+                 "no row has two or more different values", class = "UserError")
+    expect_error(Heat(matrix(c(1, 1, 2, 2), 2), standardization = "Standardize columns"),
+                 "no column has two or more different values", class = "UserError")
+})
+
+test_that("Heat standardizes rows when only some rows have different values",
+{
+    expect_error(Heat(matrix(c(1, 2, 5, 2), 2), standardization = "Standardize rows"), NA)
+})
+
+test_that("Heat checks the input size before standardization",
+{
+    expect_error(Heat(matrix(rep(1:501, 2), 501), standardization = "Standardize rows"),
+                 "Heatmap cannot be plotted with more than 500 rows or columns.", class = "UserError")
+})
+
+test_that("Heat sorts a row holding an infinite value by its average",
+{
+    x <- matrix(c(Inf, 1, 5, 2, 3, 4), 3, dimnames = list(c("a", "b", "c"), c("x", "y")))
+    heatmap <- Heat(x, sort.rows = "Sort by averages (ascending)")
+    expect_equal(heatmap$htmlwidget$x$matrix$rows, c("b", "c", "a"))
+})
+
+test_that("Heat clusters a row of infinite values with a dendrogram",
+{
+    x <- matrix(c(Inf, 1, 5, Inf, 3, 4), 3, dimnames = list(c("a", "b", "c"), c("x", "y")))
+    heatmap <- Heat(x, sort.rows = "Dendrogram", sort.columns = "Dendrogram")
+    expect_equal(heatmap$htmlwidget$x$matrix$rows, c("a", "c", "b"))
+})
+
+test_that("Heat ignores the minimum and maximum values when the shading is standardized",
+{
+    expect_warning(Heat(matrix(1:4, 2), standardization = "Standardize rows",
+                        values.bounds.minimum = 0, values.bounds.maximum = 10),
+                   "Minimum value and Maximum value are ignored because the shading is standardized.")
+})
+
 
 
