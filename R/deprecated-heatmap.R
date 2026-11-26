@@ -89,7 +89,6 @@ HeatMap <- function(table,
     }
     if (!is.numeric(mat[1, 1]))
         StopForUserError("The input table must contain only numeric values.")
-    mat <- checkHeatmapValues(mat, standardization)
 
     mat <- if (sort.rows == "Sort by averages (ascending)") {
         Reorder(mat, rows = "Ascending", columns = "None")
@@ -104,6 +103,7 @@ HeatMap <- function(table,
         Reorder(mat, rows = "None", columns = "Descending")
     } else
         mat
+    mat <- checkHeatmapValues(mat, standardization)
 
     color <- if (color == "Heat") {
         "YlOrRd"

@@ -153,7 +153,7 @@ Heat <- function(x,
                     right.column.headings = "") {
 
     mat <- checkMatrixNames(stripClassAndCallFromXtabs(x), assign.col.names = FALSE)
-    mat <- checkHeatmapValues(mat, standardization)
+    ErrorIfNotEnoughData(mat)
     if (isPercentData(x))
     {
         if (isAutoFormat(y.hovertext.format))
@@ -185,6 +185,7 @@ Heat <- function(x,
         Reorder(mat, rows = "None", columns = "Descending")
     } else
         mat
+    mat <- checkHeatmapValues(mat, standardization)
 
     default.range <- range(mat, na.rm = TRUE)
     color.range <- unlist(setValRange(values.bounds.minimum, values.bounds.maximum, mat))

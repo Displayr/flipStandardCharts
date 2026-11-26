@@ -93,6 +93,13 @@ test_that("HeatMap shows a message when no values can be shaded",
                  "There is not enough data to create a plot.", class = "UserError")
 })
 
+test_that("HeatMap sorts a row holding an infinite value by its average",
+{
+    x <- matrix(c(Inf, 1, 5, 2, 3, 4), 3, dimnames = list(c("a", "b", "c"), c("x", "y")))
+    heatmap <- HeatMap(x, sort.rows = "Sort by averages (ascending)")
+    expect_equal(heatmap$x$matrix$rows, c("b", "c", "a"))
+})
+
 test_that("xtabs and table object",
 {
     expect_error(Heat(table.class.obj), NA)

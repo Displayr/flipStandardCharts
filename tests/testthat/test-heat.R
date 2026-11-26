@@ -116,5 +116,18 @@ test_that("Heat standardizes rows when only some rows have different values",
     expect_error(Heat(matrix(c(1, 2, 5, 2), 2), standardization = "Standardize rows"), NA)
 })
 
+test_that("Heat checks the input size before standardization",
+{
+    expect_error(Heat(matrix(rep(1:501, 2), 501), standardization = "Standardize rows"),
+                 "Heatmap cannot be plotted with more than 500 rows or columns.", class = "UserError")
+})
+
+test_that("Heat sorts a row holding an infinite value by its average",
+{
+    x <- matrix(c(Inf, 1, 5, 2, 3, 4), 3, dimnames = list(c("a", "b", "c"), c("x", "y")))
+    heatmap <- Heat(x, sort.rows = "Sort by averages (ascending)")
+    expect_equal(heatmap$htmlwidget$x$matrix$rows, c("b", "c", "a"))
+})
+
 
 
